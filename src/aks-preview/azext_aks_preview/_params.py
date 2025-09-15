@@ -85,12 +85,14 @@ from azext_aks_preview._consts import (
     CONST_NODEPOOL_MODE_USER,
     CONST_NODEPOOL_MODE_GATEWAY,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+    CONST_NODEPOOL_MODE_MACHINES,
     CONST_NONE_UPGRADE_CHANNEL,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
     CONST_OS_DISK_TYPE_EPHEMERAL,
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_AZURELINUX3,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_UBUNTU,
@@ -149,7 +151,7 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_FQDN,
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
-    CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD
+    CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
 )
 
 from azext_aks_preview._validators import (
@@ -265,9 +267,11 @@ node_mode_types = [
     CONST_NODEPOOL_MODE_USER,
     CONST_NODEPOOL_MODE_GATEWAY,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+    CONST_NODEPOOL_MODE_MACHINES,
 ]
 node_os_skus_create = [
     CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_AZURELINUX3,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
@@ -281,6 +285,7 @@ node_os_skus = node_os_skus_create + [
 ]
 node_os_skus_update = [
     CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_AZURELINUX3,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
@@ -638,7 +643,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+            "sku", arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
@@ -689,6 +694,12 @@ def load_arguments(self, _):
         c.argument(
             "azure_keyvault_kms_key_vault_resource_id",
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
+        )
+        c.argument(
+            "kms_infrastructure_encryption",
+            arg_type=get_enum_type(["Enabled", "Disabled"]),
+            default="Disabled",
+            is_preview=True,
         )
         c.argument("http_proxy_config")
         c.argument(
@@ -862,6 +873,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument("dns_zone_resource_ids", is_preview=True)
+        c.argument('disable_run_command', action='store_true')
         c.argument("enable_keda", action="store_true", is_preview=True)
         c.argument(
             "enable_vpa",
@@ -1073,6 +1085,7 @@ def load_arguments(self, _):
         c.argument("vm_sizes", is_preview=True)
         c.argument("enable_imds_restriction", action="store_true", is_preview=True)
         c.argument("enable_managed_system_pool", action="store_true", is_preview=True)
+        c.argument("enable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1151,7 +1164,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+            "sku", arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
@@ -1302,6 +1315,8 @@ def load_arguments(self, _):
             validator=validate_apiserver_subnet_id,
             is_preview=True,
         )
+        c.argument('enable_run_command', action='store_true')
+        c.argument('disable_run_command', action='store_true')
         c.argument("enable_keda", action="store_true", is_preview=True)
         c.argument("disable_keda", action="store_true", is_preview=True)
         c.argument(
@@ -1516,6 +1531,8 @@ def load_arguments(self, _):
         c.argument('migrate_vmas_to_vms', is_preview=True, action='store_true')
         c.argument("disable_http_proxy", action="store_true", is_preview=True)
         c.argument("enable_http_proxy", action="store_true", is_preview=True)
+        c.argument("enable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
+        c.argument("disable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1874,6 +1891,11 @@ def load_arguments(self, _):
             'localdns_config',
             help='Path to a JSON file to configure the local DNS profile for an existing nodepool.',
         )
+        c.argument(
+            "node_vm_size",
+            options_list=["--node-vm-size", "-s"],
+            completer=get_vm_size_completion_list,
+        )
 
     with self.argument_context("aks nodepool upgrade") as c:
         c.argument("max_surge", validator=validate_max_surge)
@@ -1930,6 +1952,61 @@ def load_arguments(self, _):
     with self.argument_context("aks machine show") as c:
         c.argument(
             "machine_name", help="to display specific information for all machines."
+        )
+
+    with self.argument_context("aks machine add") as c:
+        c.argument("tags", tags_type, help="The tags to set to the machine")
+        c.argument(
+            "priority",
+            arg_type=get_enum_type(node_priorities),
+            validator=validate_priority,
+        )
+        c.argument(
+            "vm_size",
+            completer=get_vm_size_completion_list,
+        )
+        c.argument("os_type")
+        c.argument(
+            "machine_name", help="The machine name."
+        )
+        c.argument(
+            "os_sku", arg_type=get_enum_type(node_os_skus), validator=validate_os_sku
+        )
+        c.argument(
+            "zones",
+            zones_type,
+            options_list=["--zones", "-z"],
+            help="Space-separated list of availability zones where agent nodes will be placed.",
+        )
+        c.argument(
+            "enable_fips_image",
+            action="store_true"
+        )
+        c.argument(
+            "disable_fips_image",
+            action="store_true"
+        )
+        # network setting
+        c.argument("vnet_subnet_id", validator=validate_vnet_subnet_id)
+        c.argument("pod_subnet_id", validator=validate_pod_subnet_id)
+        c.argument("enable_node_public_ip", action="store_true")
+        c.argument(
+            "node_public_ip_prefix_id",
+            options_list=["--node-public-ip-prefix-id"],
+            help="The resource ID of the node public IP prefix to use for the node public IPs.",
+        )
+        c.argument(
+            "node_public_ip_tags",
+            arg_type=tags_type,
+            validator=validate_node_public_ip_tags,
+            help="space-separated tags: key[=value] [key[=value] ...].",
+        )
+        # kubernetes setting
+        c.argument(
+            "kubernetes_version",
+            options_list=["--kubernetes-version"],
+            validator=validate_k8s_version,
+            help="Version of Kubernetes to use for the machine.",
         )
 
     with self.argument_context("aks operation") as c:
@@ -2760,6 +2837,17 @@ def load_arguments(self, _):
                 options_list=["--name", "-n"],
                 help="Name of the load balancer configuration. Required.",
             )
+
+    with self.argument_context("aks bastion") as c:
+        c.argument("bastion")
+        c.argument("port", type=int)
+        c.argument("admin", action="store_true")
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true",
+        )
 
 
 def _get_default_install_location(exe_name):

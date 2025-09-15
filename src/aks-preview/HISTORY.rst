@@ -11,22 +11,96 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Add support for `ManagedSystem` Agent Pool Mode.
+* Add machine command `az aks machine add` to add a machine to an existing machine pool.
+
+18.0.0b37
++++++++
+* Enable autoscaler support for the VirtualMachines agent pool type.
+* Add `--node-vm-size` to `az aks update` to allow changing the VM size for VirtualMachines node pools.
+
+18.0.0b36
++++++++
+* Add option `AzureLinux3` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
+18.0.0b35
++++++++
+* Vendor new SDK and bump API version to 2025-07-02-preview.
+
+18.0.0b34
++++++++
+* Add machines agent pool support for `az aks nodepool add` command.
+
+18.0.0b33
++++++++
+* `az aks create`: Add new parameter `--kms-infrastructure-encryption` to enable KMS infrastructure encryption.
+
+18.0.0b32
++++++++
+* Remove the sku preview flag from help command for AKS automatic
+
+18.0.0b31
++++++++
+* Remove DATA_STORAGE references
+
+18.0.0b30
++++++++
+* Remove interactive AI-powered debugging tool `az aks agent`. To use the debugging tool, please enable it in the aks-agent extension by running `az extension add --name aks-agent`.
+
+18.0.0b29
++++++++
+* Refactor code to suppress ssh access warning message when creating an automatic cluster.
+
+18.0.0b28
++++++++
+* Add interactive AI-powered debugging tool `az aks agent`.
+
+18.0.0b27
++++++++
+* Add framework for interactive AI-powered debugging tool.
+- Add `--enable-upstream-kubescheduler-user-configuration` to `az aks create` and `az aks update`.
+- Add `--disable-upstream-kubescheduler-user-configuration` to `az aks update`.
+
+18.0.0b26
++++++++
+* Add `az aks identity-binding` command group for identity binding feature.
+
+18.0.0b25
++++++++
+* Update for `az aks machine show` and `az aks machine list` to show more details about the machine.
+
+18.0.0b24
++++++++
+* Suppress the ssh access annoying message if the cluster sku name is automatic.
+
+18.0.0b23
++++++++
+* `az aks create`: Add new parameter `--disable-run-command` to disable run command feature for the cluster
+* `az aks update`: Add  new parameters `--disable-run-command` and `--enable-run-command` to toggle the run command feature on or off
+
+18.0.0b22
++++++++
+* Vendor new SDK and bump API version to 2025-06-02-preview.
+
+18.0.0b21
++++++++
+* Add command `az aks bastion` to enable connections to managed Kubernetes clusters via Azure Bastion.
+
+18.0.0b20
++++++++
+* Fix the bug affecting VMAS to VMS migration in the `az aks update` command using the `--migrate-vmas-to-vms` option.
 
 18.0.0b19
 +++++++
-- Add `--localdns-config` to `az aks nodepool add` and to `az aks nodepool update` to support configuring a local DNS profile for agent pools.
-
+* Add support for `ManagedSystem` Agent Pool Mode.
+* Add `--localdns-config` to `az aks nodepool add` and to `az aks nodepool update` to support configuring a local DNS profile for agent pools.
 
 18.0.0b18
 +++++++
 * Add validation error when neither --location or --cluster and --resource-group-name are specified for az extension type list or az extension type version list
 
-
-
 18.0.0b17
 +++++++
-* Remove `__import__('pkg_resources').declare_namespace(__name__)` from `vendored_sdks/__init__.py`` to fix the namespace package issue.
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` from `vendored_sdks/__init__.py` to fix the namespace package issue.
 
 18.0.0b16
 +++++++

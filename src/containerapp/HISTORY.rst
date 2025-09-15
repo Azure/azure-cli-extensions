@@ -4,6 +4,18 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp update/up': Disallow changing `--revisions-mode` to Labels.
+* 'az containerapp session code-interpreter': Fix `--path` in examples
+* 'az containerapp sessionpool create/update': Support `--lifecycle-type` and `--max-alive-period`
+* 'az containerapp up': support for `--kind` parameter
+* 'az containerapp env premium-ingress': Deprecate `--min-replicas` and `--max-replicas` parameters, use workload profile scale instead.
+
+1.2.0b3
+++++++
+* 'az containerapp job list': Fix only 20 items returned
+
+1.2.0b2
+++++++
 * 'az containerapp session code-interpreter execute': Extend maximum supported value of `--timeout-in-seconds` from 60 to 220.
 * 'az containerapp job create': Fix message with `--help`
 * 'az containerapp arc': Enable setup custom core dns for Openshift on Arc

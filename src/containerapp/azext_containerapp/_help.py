@@ -161,6 +161,9 @@ helps['containerapp up'] = """
     - name: Create a container app and deploy a model from Azure AI Foundry
       text: |
             az containerapp up -n my-containerapp -l westus3 --model-registry azureml --model-name Phi-4 --model-version 7
+    - name: Create an Azure Functions on Azure Container Apps (kind=functionapp)
+      text: |
+            az containerapp up -n my-containerapp --image my-app:v1.0 --kind functionapp
 """
 
 
@@ -917,7 +920,7 @@ helps['containerapp create'] = """
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --enable-java-agent
-    - name: Create a container app with kind as functionapp
+    - name: Create an Azure Functions on Azure Container Apps (kind=functionapp)
       text: |
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
@@ -2075,7 +2078,7 @@ helps['containerapp session code-interpreter upload-file'] = """
     - name: Upload a file to a session.
       text: |
           az containerapp session code-interpreter upload-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filepath example.txt --path /
+              --filepath example.txt --path my-directory
 """
 
 helps['containerapp session code-interpreter show-file-content'] = """
@@ -2084,7 +2087,7 @@ helps['containerapp session code-interpreter show-file-content'] = """
     examples:
     - name: Show content of file.
       text: az containerapp session code-interpreter show-file-content -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filename example.txt --path /
+              --filename example.txt --path my-directory
 """
 
 helps['containerapp session code-interpreter show-file-metadata'] = """
@@ -2093,7 +2096,7 @@ helps['containerapp session code-interpreter show-file-metadata'] = """
     examples:
     - name: Show the meta-data details of a file uploaded to a session.
       text: az containerapp session code-interpreter show-file-metadata -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filename example.txt --path /
+              --filename example.txt --path my-directory
 """
 
 helps['containerapp session code-interpreter delete-file'] = """
@@ -2102,7 +2105,7 @@ helps['containerapp session code-interpreter delete-file'] = """
     examples:
     - name: Delete a file .
       text: az containerapp session code-interpreter delete-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filename example.txt --path /
+              --filename example.txt --path my-directory
 """
 
 helps['containerapp session code-interpreter list-files'] = """
@@ -2111,7 +2114,7 @@ helps['containerapp session code-interpreter list-files'] = """
     examples:
     - name: List files uploaded in a code-interpreter session.
       text: |
-          az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession --path /
+          az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession --path my-directory
 """
 
 helps['containerapp java'] = """
@@ -2384,7 +2387,7 @@ helps['containerapp env premium-ingress'] = """
     examples:
     - name: Enable premium ingress for the environment.
       text: |
-          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
+          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
 """
 
 helps['containerapp env premium-ingress add'] = """
@@ -2395,7 +2398,7 @@ helps['containerapp env premium-ingress add'] = """
     examples:
     - name: Add the premium ingress settings for the environment.
       text: |
-          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
+          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
 """
 
 helps['containerapp env premium-ingress update'] = """

@@ -85,6 +85,7 @@ from azext_aks_preview.addonconfiguration import (
     add_virtual_node_role_assignment,
     enable_addons,
 )
+
 from azext_aks_preview.aks_diagnostics import aks_kanalyze_cmd, aks_kollect_cmd
 from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_create,
@@ -93,12 +94,29 @@ from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_up,
     aks_draft_cmd_update,
 )
+from azext_aks_preview.bastion.bastion import (
+    aks_bastion_parse_bastion_resource,
+    aks_bastion_get_local_port,
+    aks_bastion_extension,
+    aks_bastion_set_kubeconfig,
+    aks_bastion_runner,
+    aks_batsion_clean_up
+)
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
+)
+from azext_aks_preview.aks_identity_binding.commands import (
+    aks_ib_cmd_create,
+    aks_ib_cmd_delete,
+    aks_ib_cmd_show,
+    aks_ib_cmd_list,
 )
 from azext_aks_preview.managednamespace import (
     aks_managed_namespace_add,
     aks_managed_namespace_update,
+)
+from azext_aks_preview.machine import (
+    add_machine,
 )
 from azure.cli.command_modules.acs._helpers import (
     get_user_assigned_identity_by_resource_id
@@ -594,6 +612,7 @@ def aks_create(
     azure_keyvault_kms_key_id=None,
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
+    kms_infrastructure_encryption="Disabled",
     http_proxy_config=None,
     bootstrap_artifact_source=CONST_ARTIFACT_SOURCE_DIRECT,
     bootstrap_container_registry_resource_id=None,
@@ -673,6 +692,7 @@ def aks_create(
     enable_optimized_addon_scaling=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
+    disable_run_command=False,
     # advanced networking
     enable_acns=None,
     disable_acns_observability=None,
@@ -734,6 +754,7 @@ def aks_create(
     enable_imds_restriction=False,
     # managed system pool
     enable_managed_system_pool=False,
+    enable_upstream_kubescheduler_user_configuration=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -906,6 +927,8 @@ def aks_update(
     disable_optimized_addon_scaling=False,
     cluster_snapshot_id=None,
     custom_ca_trust_certificates=None,
+    enable_run_command=False,
+    disable_run_command=False,
     # safeguards parameters
     safeguards_level=None,
     safeguards_version=None,
@@ -947,6 +970,8 @@ def aks_update(
     enable_imds_restriction=False,
     disable_imds_restriction=False,
     migrate_vmas_to_vms=False,
+    enable_upstream_kubescheduler_user_configuration=False,
+    disable_upstream_kubescheduler_user_configuration=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1490,6 +1515,7 @@ def aks_agentpool_update(
     disable_fips_image=False,
     # local DNS
     localdns_config=None,
+    node_vm_size=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2047,6 +2073,46 @@ def aks_machine_list(cmd, client, resource_group_name, cluster_name, nodepool_na
 
 def aks_machine_show(cmd, client, resource_group_name, cluster_name, nodepool_name, machine_name):
     return client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+
+
+# pylint: disable=unused-argument
+def aks_machine_add(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    nodepool_name,
+    machine_name=None,
+    zones=None,
+    tags=None,
+    priority=None,
+    os_type=None,
+    os_sku=None,
+    enable_fips_image=False,
+    disable_fips_image=False,
+    vnet_subnet_id=None,
+    pod_subnet_id=None,
+    enable_node_public_ip=False,
+    node_public_ip_prefix_id=None,
+    node_public_ip_tags=None,
+    vm_size=None,
+    kubernetes_version=None,
+    no_wait=False,
+):
+    existedMachine = None
+    try:
+        existedMachine = client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+    except ResourceNotFoundError:
+        pass
+
+    if existedMachine:
+        raise ClientRequestError(
+            f"Machine '{machine_name}' already exists. Please use 'az aks machine update' to update it."
+        )
+
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    return add_machine(cmd, client, raw_parameters, no_wait)
 
 
 def aks_addon_list_available():
@@ -4339,3 +4405,45 @@ def aks_loadbalancer_rebalance_nodes(
     }
 
     return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
+
+
+def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, yes=False):
+    import asyncio
+    import tempfile
+
+    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+
+    try:
+        aks_bastion_extension(yes)
+    except DecoratorEarlyExitException as ex:
+        logger.error(ex)
+        return
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        logger.info("creating temporary directory: %s", temp_dir)
+        try:
+            kubeconfig_path = os.path.join(temp_dir, ".kube", "config")
+            mc = client.get(resource_group_name, name)
+            mc_id = mc.id
+            nrg = mc.node_resource_group
+            bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg])
+            port = aks_bastion_get_local_port(port)
+            aks_get_credentials(cmd, client, resource_group_name, name, admin=admin, path=kubeconfig_path)
+            aks_bastion_set_kubeconfig(kubeconfig_path, port)
+            asyncio.run(
+                aks_bastion_runner(
+                    bastion_resource,
+                    port,
+                    mc_id,
+                    kubeconfig_path,
+                    test_hook=os.getenv("AKS_BASTION_TEST_HOOK"),
+                )
+            )
+        finally:
+            aks_batsion_clean_up()
+
+
+aks_identity_binding_create = aks_ib_cmd_create
+aks_identity_binding_delete = aks_ib_cmd_delete
+aks_identity_binding_show = aks_ib_cmd_show
+aks_identity_binding_list = aks_ib_cmd_list

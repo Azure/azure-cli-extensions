@@ -1,0 +1,4968 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/test-onl-endpt-000005-22?api-version=0000-00-00
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.MachineLearningServices/workspaces/taji-east2/onlineEndpoints/test-onl-endpt-000005-22''
+        under resource group ''taji-east2'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '282'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:31:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2",
+        "name": "taji-east2", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "eastus2", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "taji-east2", "description": "", "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/tajieast26149039407",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Keyvault/vaults/tajieast25100515424",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.insights/components/tajieast26940793840",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "v1LegacyMode":
+        false, "softDeleteEnabled": false, "containerRegistry": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/36d312cd652a4c9a8b25e3057a35b13a",
+        "notebookInfo": {"resourceId": "9cf2f3137976423892aeb3c0838e82a6", "fqdn":
+        "ml-taji-east2-eastus2-36d312cd-652a-4c9a-8b25-e3057a35b13a.eastus2.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        false, "workspaceId": "36d312cd-652a-4c9a-8b25-e3057a35b13a", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://eastus2.api.azureml.ms/discovery", "mlFlowTrackingUri": "azureml://eastus2.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2",
+        "sdkTelemetryAppInsightsKey": "e1f7b545-6243-4abf-ba76-c5691d2edb62", "sasGetterUri":
+        ""}, "identity": {"type": "SystemAssigned", "principalId": "a8e32292-f6e3-4994-846c-463ae1aad701",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "sku": {"name": "Basic",
+        "tier": "Basic"}, "systemData": {"createdAt": "2022-07-06T15:56:09.3149433Z",
+        "createdBy": "tajiharris@microsoft.com", "createdByType": "User", "lastModifiedAt":
+        "2022-07-06T15:56:09.3149433Z", "lastModifiedBy": "tajiharris@microsoft.com",
+        "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2433'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:31:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-a4809be7c10d0e4e97092c3001ae5a51-e96ca01c7575d8d9-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.017'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"endpointkey1": "newval1", "dummy": "dummy"}, "location": "eastus2",
+      "identity": {"type": "SystemAssigned"}, "properties": {"authMode": "AMLToken",
+      "description": "some description", "properties": {}, "mirrorTraffic": {}, "traffic":
+      {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '247'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/test-onl-endpt-000005-22?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/onlineEndpoints/test-onl-endpt-000005-22",
+        "name": "test-onl-endpt-000005-22", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": "some description", "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/taji-east2/providers/microsoft.machinelearningservices/workspaces/taji-east2/onlineendpoints/test-onl-endpt-000005-22",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829?api-version=2022-02-01-preview"},
+        "scoringUri": null, "swaggerUri": null, "authMode": "AMLToken", "provisioningState":
+        "Creating", "compute": null, "traffic": {}, "mirrorTraffic": {}, "publicNetworkAccess":
+        "Enabled"}, "systemData": {"createdAt": "2022-08-05T21:31:08.5779865Z", "createdBy":
+        "Taji Harris", "lastModifiedAt": "2022-08-05T21:31:08.5779866Z"}, "tags":
+        {"endpointkey1": "newval1", "dummy": "dummy"}, "location": "eastus2", "kind":
+        "Managed", "identity": {"type": "SystemAssigned", "principalId": "57f42c3a-53e4-420e-97a6-5b29b641fb89",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829?api-version=2022-02-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1456'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:31:09 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/taji-east2/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/onlineEndpoints/test-onl-endpt-000005-22?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-a596401078acec45a3f2c8fc2ddbbe9e-225ef943bc4bdd78-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '2.161'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829",
+        "name": "oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829",
+        "startTime": "2022-08-05T21:31:08.4490697Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:31:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-a84dc47edf42744bb75f313482de75e5-8656b7023a242574-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.033'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829",
+        "name": "oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829",
+        "startTime": "2022-08-05T21:31:08.4490697Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-e534a260d2d26a449f4bd0fbaed95b7e-50f94cdfedca7051-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.170'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829",
+        "name": "oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829",
+        "startTime": "2022-08-05T21:31:08.4490697Z", "endTime": "2022-08-05T21:32:39.0008002Z",
+        "percentComplete": 100.0, "status": "Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '445'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-d48bf3682cda4043a8ff59e44a6d20cb-ec190334e7a45d6a-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.050'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/test-onl-endpt-000005-22?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/onlineEndpoints/test-onl-endpt-000005-22",
+        "name": "test-onl-endpt-000005-22", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": "some description", "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/taji-east2/providers/microsoft.machinelearningservices/workspaces/taji-east2/onlineendpoints/test-onl-endpt-000005-22",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829?api-version=2022-02-01-preview"},
+        "scoringUri": "https://test-onl-endpt-000005-22.eastus2.inference.ml.azure.com/score",
+        "swaggerUri": "https://test-onl-endpt-000005-22.eastus2.inference.ml.azure.com/swagger.json",
+        "authMode": "AMLToken", "provisioningState": "Succeeded", "compute": null,
+        "traffic": {}, "mirrorTraffic": {}, "publicNetworkAccess": "Enabled"}, "systemData":
+        {"createdAt": "2022-08-05T21:31:08.7012632Z", "createdBy": "Taji Harris",
+        "lastModifiedAt": "2022-08-05T21:31:08.7012632Z"}, "tags": {"endpointkey1":
+        "newval1", "dummy": "dummy"}, "location": "eastus2", "kind": "Managed", "identity":
+        {"type": "SystemAssigned", "principalId": "57f42c3a-53e4-420e-97a6-5b29b641fb89",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1598'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-42bf779dcc170a49b68824ea8b6ba4e0-4e3961c4d3fdd546-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.048'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/test-onl-endpt-000005-22/deployments/deploy-0000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.MachineLearningServices/workspaces/taji-east2/onlineEndpoints/test-onl-endpt-000005-22/deployments/blue''
+        under resource group ''taji-east2'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '299'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/test-onl-endpt-000005-22?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/onlineEndpoints/test-onl-endpt-000005-22",
+        "name": "test-onl-endpt-000005-22", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": "some description", "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/taji-east2/providers/microsoft.machinelearningservices/workspaces/taji-east2/onlineendpoints/test-onl-endpt-000005-22",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829?api-version=2022-02-01-preview"},
+        "scoringUri": "https://test-onl-endpt-000005-22.eastus2.inference.ml.azure.com/score",
+        "swaggerUri": "https://test-onl-endpt-000005-22.eastus2.inference.ml.azure.com/swagger.json",
+        "authMode": "AMLToken", "provisioningState": "Succeeded", "compute": null,
+        "traffic": {}, "mirrorTraffic": {}, "publicNetworkAccess": "Enabled"}, "systemData":
+        {"createdAt": "2022-08-05T21:31:08.7012632Z", "createdBy": "Taji Harris",
+        "lastModifiedAt": "2022-08-05T21:31:08.7012632Z"}, "tags": {"endpointkey1":
+        "newval1", "dummy": "dummy"}, "location": "eastus2", "kind": "Managed", "identity":
+        {"type": "SystemAssigned", "principalId": "57f42c3a-53e4-420e-97a6-5b29b641fb89",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1598'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-0fd144cee8a18045b2810f25594a31f9-1adf27ec1194673f-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.027'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "tajieast26149039407", "containerName": "azureml-blobstore-36d312cd-652a-4c9a-8b25-e3057a35b13a",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2022-07-06T15:56:20.5241006Z",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2022-07-06T15:56:21.3090095Z", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '980'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-912456a9e2b6b141abc054444bf4842d-0e3a403e5a3ac717-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.101'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "918bc199f8218ce191b734d59c5f0a05a8d65bf5819833d6270ccfc46acb87eb"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-49a5c6433a60844bbed7b0fc91b99fe4-b11b91a8afe33914-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.186'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.12.0 Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+      x-ms-date:
+      - Fri, 05 Aug 2022 21:32:41 GMT
+      x-ms-version:
+      - '2021-06-08'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/onlinescoring/score.py
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '1018'
+      content-type:
+      - application/octet-stream
+      date:
+      - Fri, 05 Aug 2022 21:32:44 GMT
+      etag:
+      - '"0x8DA6F6198C0E7E2"'
+      last-modified:
+      - Tue, 26 Jul 2022 23:50:19 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      vary:
+      - Origin
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Tue, 26 Jul 2022 23:50:19 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-name:
+      - 075358a3-6984-4e39-8e72-f1c0019985d3
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - '1'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-06-08'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.12.0 Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+      x-ms-date:
+      - Fri, 05 Aug 2022 21:32:42 GMT
+      x-ms-version:
+      - '2021-06-08'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/onlinescoring/score.py
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 05 Aug 2022 21:32:44 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2021-06-08'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: '{"properties": {"isAnonymous": true, "isArchived": false, "codeUri": "https://tajieast26149039407.blob.core.windows.net/azureml-blobstore-36d312cd-652a-4c9a-8b25-e3057a35b13a/LocalUpload/82584ec72731b53d4cbb85882f58c777/onlinescoring"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '236'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/codes/000000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/codes/075358a3-6984-4e39-8e72-f1c0019985d3/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/codes/versions",
+        "properties": {"description": null, "tags": {}, "properties": {}, "isArchived":
+        false, "isAnonymous": false, "codeUri": "https://tajieast26149039407.blob.core.windows.net/azureml-blobstore-36d312cd-652a-4c9a-8b25-e3057a35b13a/LocalUpload/82584ec72731b53d4cbb85882f58c777/onlinescoring"},
+        "systemData": {"createdAt": "2022-07-26T23:50:20.2037887Z", "createdBy": "Taji
+        Harris", "createdByType": "User", "lastModifiedAt": "2022-08-05T21:32:46.066067Z",
+        "lastModifiedBy": "Taji Harris", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '810'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-a8dd8bbe8f18aa44ab2254c743e380f8-2de014f1b056362d-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.697'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"isAnonymous": false, "isArchived": false, "condaFile":
+      "channels:\n- conda-forge\ndependencies:\n- python=3.6.1\n- numpy=1.19.4\n-
+      pip=21.2.4\n- scikit-learn=0.19.1\n- scipy=1.5.1\n- pip:\n  - azureml-defaults==1.33.0\n  -
+      inference-schema[numpy-support]==1.3.0\n  - joblib==1.0.1\n  - numpy==1.19.4\n  -
+      scikit-learn==0.19.1\n  - scipy==1.5.1\nname: model-env\n", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04:20210727.v1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '457'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/online-endpoint-mir-test/versions/3?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/environments/online-endpoint-mir-test/versions/3",
+        "name": "3", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": null, "tags": {}, "properties": {}, "isArchived":
+        false, "isAnonymous": false, "environmentType": "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04:20210727.v1",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.6.1\",\n    \"numpy=1.19.4\",\n    \"pip=21.2.4\",\n    \"scikit-learn=0.19.1\",\n    \"scipy=1.5.1\",\n    {\n      \"pip\":
+        [\n        \"azureml-defaults==1.33.0\",\n        \"inference-schema[numpy-support]==1.3.0\",\n        \"joblib==1.0.1\",\n        \"numpy==1.19.4\",\n        \"scikit-learn==0.19.1\",\n        \"scipy==1.5.1\"\n      ]\n    }\n  ],\n  \"name\":
+        \"model-env\"\n}", "osType": "Linux"}, "systemData": {"createdAt": "2022-07-21T21:47:29.7414805Z",
+        "createdBy": "Taji Harris", "createdByType": "User", "lastModifiedAt": "2022-07-21T21:47:29.7414805Z",
+        "lastModifiedBy": "Taji Harris", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:46 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/taji-east2/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/environments/online-endpoint-mir-test/versions/3?api-version=2022-05-01
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-b9c051dded27c044959f7fe5ca0e254c-64ef932edf7c22a2-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.292'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "tajieast26149039407", "containerName": "azureml-blobstore-36d312cd-652a-4c9a-8b25-e3057a35b13a",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2022-07-06T15:56:20.5241006Z",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2022-07-06T15:56:21.3090095Z", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '980'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-1be1f06fdeff25479d56780a170edcf6-3f766aed73a732d7-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.106'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "918bc199f8218ce191b734d59c5f0a05a8d65bf5819833d6270ccfc46acb87eb"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-e46179b70e83ce4cb089b561e915f089-116d57c12b65694d-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.103'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.12.0 Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+      x-ms-date:
+      - Fri, 05 Aug 2022 21:32:45 GMT
+      x-ms-version:
+      - '2021-06-08'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/sklearn_regression_model.pkl
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '658'
+      content-type:
+      - application/octet-stream
+      date:
+      - Fri, 05 Aug 2022 21:32:48 GMT
+      etag:
+      - '"0x8DA6B62A3B9AAE2"'
+      last-modified:
+      - Thu, 21 Jul 2022 21:47:42 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      vary:
+      - Origin
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Thu, 21 Jul 2022 21:47:42 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-name:
+      - mir_test_model
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - '1'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-06-08'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.12.0 Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+      x-ms-date:
+      - Fri, 05 Aug 2022 21:32:46 GMT
+      x-ms-version:
+      - '2021-06-08'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/sklearn_regression_model.pkl
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 05 Aug 2022 21:32:48 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2021-06-08'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: '{"properties": {"properties": {}, "tags": {}, "isAnonymous": false, "isArchived":
+      false, "modelType": "custom_model", "modelUri": "azureml://subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/taji-east2/workspaces/taji-east2/datastores/workspaceblobstore/paths/LocalUpload/98caf8d63f6927ada93b4a519b7df6d5/sklearn_regression_model.pkl"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '352'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/models/00000000-0000-0000-0000-000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/models/mir_test_model/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/models/versions",
+        "properties": {"description": null, "tags": {}, "properties": {}, "isArchived":
+        false, "isAnonymous": false, "flavors": {}, "modelType": "custom_model", "modelUri":
+        "azureml://subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/workspaces/taji-east2/datastores/workspaceblobstore/paths/LocalUpload/98caf8d63f6927ada93b4a519b7df6d5/sklearn_regression_model.pkl",
+        "jobName": null}, "systemData": {"createdAt": "2022-07-21T21:47:43.2569366Z",
+        "createdBy": "Taji Harris", "createdByType": "User", "lastModifiedAt": "2022-08-05T21:32:49.543929Z",
+        "lastModifiedBy": "Taji Harris", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '912'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-23ef85759529024e8fa914613e7d38ab-60f6f3d406d0831c-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.460'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2",
+        "name": "taji-east2", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "eastus2", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "taji-east2", "description": "", "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/tajieast26149039407",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Keyvault/vaults/tajieast25100515424",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.insights/components/tajieast26940793840",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "v1LegacyMode":
+        false, "softDeleteEnabled": false, "containerRegistry": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/36d312cd652a4c9a8b25e3057a35b13a",
+        "notebookInfo": {"resourceId": "9cf2f3137976423892aeb3c0838e82a6", "fqdn":
+        "ml-taji-east2-eastus2-36d312cd-652a-4c9a-8b25-e3057a35b13a.eastus2.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        false, "workspaceId": "36d312cd-652a-4c9a-8b25-e3057a35b13a", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://eastus2.api.azureml.ms/discovery", "mlFlowTrackingUri": "azureml://eastus2.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2",
+        "sdkTelemetryAppInsightsKey": "e1f7b545-6243-4abf-ba76-c5691d2edb62", "sasGetterUri":
+        ""}, "identity": {"type": "SystemAssigned", "principalId": "a8e32292-f6e3-4994-846c-463ae1aad701",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "sku": {"name": "Basic",
+        "tier": "Basic"}, "systemData": {"createdAt": "2022-07-06T15:56:09.3149433Z",
+        "createdBy": "tajiharris@microsoft.com", "createdByType": "User", "lastModifiedAt":
+        "2022-07-06T15:56:09.3149433Z", "lastModifiedBy": "tajiharris@microsoft.com",
+        "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2433'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-9e32f29f039b3947a823464511b9db13-bc97523898a19ba5-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.014'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {}, "location": "eastus2", "properties": {"codeConfiguration":
+      {"codeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/taji-east2/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/codes/075358a3-6984-4e39-8e72-f1c0019985d3/versions/1",
+      "scoringScript": "score.py"}, "description": "description for online deployment",
+      "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/taji-east2/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/environments/online-endpoint-mir-test/versions/3",
+      "environmentVariables": {}, "properties": {}, "appInsightsEnabled": false, "endpointComputeType":
+      "Managed", "instanceType": "Standard_DS2_V2", "model": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/taji-east2/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/models/mir_test_model/versions/1",
+      "privateNetworkConnection": false, "scaleSettings": {"scaleType": "Default"}},
+      "sku": {"name": "Default", "capacity": 1}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1033'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/test-onl-endpt-000005-22/deployments/deploy-0000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/onlineEndpoints/test-onl-endpt-000005-22/deployments/blue",
+        "name": "blue", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments",
+        "properties": {"description": "description for online deployment", "properties":
+        {"AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=2022-02-01-preview"},
+        "codeConfiguration": {"codeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/codes/075358a3-6984-4e39-8e72-f1c0019985d3/versions/1",
+        "scoringScript": "score.py"}, "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/environments/online-endpoint-mir-test/versions/3",
+        "environmentVariables": {}, "scaleSettings": {"scaleType": "Default"}, "requestSettings":
+        {"maxQueueWait": "PT0S", "requestTimeout": "PT0S", "maxConcurrentRequestsPerInstance":
+        1}, "modelMountPath": null, "appInsightsEnabled": false, "livenessProbe":
+        null, "readinessProbe": null, "provisioningState": "Updating", "instanceType":
+        "Standard_DS2_V2", "model": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/models/mir_test_model/versions/1",
+        "privateNetworkConnection": false, "egressPublicNetworkAccess": "Enabled",
+        "endpointComputeType": "Managed"}, "systemData": {"createdAt": "2022-08-05T21:32:53.1813184Z",
+        "createdBy": "Taji Harris", "lastModifiedAt": "2022-08-05T21:32:53.1813184Z"},
+        "tags": {}, "location": "eastus2", "kind": "Managed", "sku": {"name": "Default",
+        "tier": "Standard", "capacity": 1}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=2022-02-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '2093'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/taji-east2/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/onlineEndpoints/test-onl-endpt-000005-22/deployments/blue?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-d8a7244232886f478500ce72ef1ce30e-c9dc299b1d784635-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '24'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.110'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:32:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-61992be1838f2e41b0a8f88315b73448-c620425b8f4284af-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.114'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:33:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-015e5c4f1512d04b8f40da98cd36b457-aef9f8832c014913-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.080'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:33:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-5bd7d21e7a8db04a948e18f062abd332-41f8dbe8339b8b6f-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.073'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:33:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-d7a6bcf697e8054b88c9c05390c5e9f7-f68e59d82e07da50-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.110'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:33:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-766cb90fa5eecf4485dfcf1f5710ebdf-8e639831bc85510a-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.101'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:33:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-9e57477ccc0ca1468689faf0eff58ec7-f854dbb2fc58e003-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.072'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:33:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-e84365aeb71bd646ab5c3d87c878372b-b963a7227c008e06-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.098'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:33:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-bae876ed6beee34590cbe8312015817a-4bdf87b06204fda2-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.072'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:33:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-7c3c19b40bfd6442b229a570c90baefd-bbb6a47c81fbdbd7-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.105'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:33:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-b6728381927dd54f819ac6df6f8e5896-5680b40231e1bc1d-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.087'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:33:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-e1576870e46b654587a36c2dc7aee251-f4dfc1ddae9c5f16-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.079'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:33:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-bea1fa8c5a37864f92902bc3804644a1-40cdec535763d1d2-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.069'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:34:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-85c59430f2c13546aa1ac833ccd78884-356b35463cc662bf-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.422'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:34:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-460049217b42bb49b4d44de8f7aa7c9b-0d736a6787221ea0-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.083'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:34:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-50914b0ed772d141b86074ab315452ee-89f264aec3c3ff45-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.212'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:34:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-0537b260181fda45a933570d8c4abb2f-ed81ba2b1b6c3f3e-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.843'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:34:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-53331f82121721498888f47e8a946ac3-ecca9ceeec7eefbb-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.074'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:34:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-a9f59d4133ec4d4aa7dc9521ae837dcf-41c39db37bbd2dc1-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.096'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:34:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-289762cb02293d4eb50fe2c0acb6bd82-683e84c01ef6ef26-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.080'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:34:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-a6d8ee6c5d4fae4f953729db3cb78e07-993f76668f986a01-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.222'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:34:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-b02637aabafed4488d5c70003c81d9e7-f1dfa33ec7453631-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.643'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:34:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-732be23784e56b40af8f250d4f618293-737a83fe77a8a908-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.088'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:34:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-7dac3bbb589c3f438cc6ea84482904c6-d8078b4a0b62793d-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.083'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:35:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-cf117c9dac678540b84a7cb9128e5ceb-40c43508fbd8b2d8-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.087'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:35:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-f87561d9cc3fda449e2a568a09fa63f3-830907a60a7d7825-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.079'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:35:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-a67110a41c32344298e53b740bdc12ca-ae932bad38414845-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.080'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:35:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-50781ec8938d5f41b3ac5c04b81966cf-a3ee0abc582b4ec0-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.119'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:35:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-1aadc6255c04e647a0ca97dbb01d4314-0a5ceee5c0fccbde-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.662'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:35:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-089b63fa0b81564d9640bb71847297d7-59409085d7c82ac9-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.127'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:35:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-b124e50da0332d41ab03ceb91cb0dc9d-49ba231438228408-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.583'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:35:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-94ae1cc710edd542bf4cc284626362c9-4d90d7d033e7f274-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.820'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:35:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-ddb78e49bc8daf4e84dbc4f756e93aaa-65155ded1a3be818-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.094'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:35:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-f33b953a515a5b4f8c84a33d81047cd4-5cc4b347069953ac-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.086'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:36:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-715b9530bb2c5847a0c31d1aa26491a7-a6f3ce8f30850ff0-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.223'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:36:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-acde46ba4c23da4aa3a85336d155e924-4cc0bd7c3f3324ca-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.090'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:36:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-4510ab5f53a1b74db12e40c49f306fa0-20e3b58c025dae10-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.527'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:36:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-549ccc223c9c9843b1f429453445c505-0192f621d42b03ec-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.656'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:36:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-f245e3081b26294a8c480691be0ae3d0-2dbdcc71bd612057-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.184'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:36:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-5b021c11257f5644be768c9e67f01a7e-e9a2c0c2578e1d40-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.080'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:36:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-4358875ef7c284479edafa12fcf2eee7-2a05fed032d21ea0-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.072'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:36:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-2966b9e0f9595146828e484b7fc5f935-d8832dbddbbfe632-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.084'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:36:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-cde36cc451d16f4e8eb1f21a043be2eb-056cca541fc4d066-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.098'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:36:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-6a782e0ae173244081d143ba10c6fe91-845389bf1e45c5c9-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.079'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:36:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-daa0da6a5ac3e0429cac374ca3dabe23-73a88e956b032efa-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.080'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:37:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-48fbbbbc53b5fd42a66d2b88c750d494-b612052c0cfa9f33-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.096'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:37:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-e3fe7dde787c584495e9c3fb4e7958f6-16fe4fa6abc5af77-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.972'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:37:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-4293b289dbe03d479c3e3f660df17cdf-11f0a8923c7dcd72-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.082'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:37:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-ece4367a9af02b4c893f0099cdde3038-37fc4c0ac0e47fa5-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.071'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:37:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-68bc28a2a669a04abe1d35874c5e31e7-c7493dd8f77ef251-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.094'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:37:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-435f0a3200665c42bffeec64c14f1a41-5539179a6668c9b5-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.661'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:37:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-493b588a081a5f43be75170db1f2b20c-de2256e0a525f339-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.087'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:37:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-c6c2e062fce07444b0417d23df729235-97ca65c100bb8dbd-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.083'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:37:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-c3fb5f1990e8d14c9b88e6701f670c17-1fc15e21e8e799b1-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.090'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:37:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-293138da25d472448bf06640da51b55e-f570c176a51f2cc0-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.078'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:37:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-58bbd7f2ad4f6e4aaac277ed4ad24ad9-9e0b68e6fec1a904-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.881'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:38:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-42fe7d157d9c3947a6f5ed9391ca6335-9c6fdc1f72897ccb-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.136'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:38:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-176fd36ca00b01408def54b56513db58-f92dbab583573aa7-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.072'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:38:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-dd10a958548fe64aa38489fd89c78091-0fb1931137291fac-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.862'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:38:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-cdb653594227584db728e45ec69fd50f-5713fa5b2e43ef02-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.070'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:38:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-776f6c0d14fe7941ab5d03807c386656-45689aa08e362e7c-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.069'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "percentComplete": 0.0, "status":
+        "Updating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:38:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-c49e8021856f854885767ccae24d31fa-599a89dfe9847438-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.086'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "name": "od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e",
+        "startTime": "2022-08-05T21:32:53.1758838Z", "endTime": "2022-08-05T21:38:34.2170075Z",
+        "percentComplete": 100.0, "status": "Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '445'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:38:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-71a649b98284f045bda410ec86c28a11-6535e1e2f942987f-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.101'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/test-onl-endpt-000005-22/deployments/deploy-0000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/onlineEndpoints/test-onl-endpt-000005-22/deployments/blue",
+        "name": "blue", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments",
+        "properties": {"description": "description for online deployment", "properties":
+        {"AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=2022-02-01-preview"},
+        "codeConfiguration": {"codeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/codes/075358a3-6984-4e39-8e72-f1c0019985d3/versions/1",
+        "scoringScript": "score.py"}, "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/environments/online-endpoint-mir-test/versions/3",
+        "environmentVariables": {}, "scaleSettings": {"scaleType": "Default"}, "requestSettings":
+        {"maxQueueWait": "PT0S", "requestTimeout": "PT5S", "maxConcurrentRequestsPerInstance":
+        1}, "modelMountPath": null, "appInsightsEnabled": false, "livenessProbe":
+        {"failureThreshold": 30, "successThreshold": 1, "timeout": "PT2S", "period":
+        "PT10S", "initialDelay": "PT10S"}, "readinessProbe": {"failureThreshold":
+        30, "successThreshold": 1, "timeout": "PT2S", "period": "PT10S", "initialDelay":
+        "PT10S"}, "provisioningState": "Succeeded", "instanceType": "Standard_DS2_V2",
+        "model": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/models/mir_test_model/versions/1",
+        "privateNetworkConnection": false, "egressPublicNetworkAccess": "Enabled",
+        "endpointComputeType": "Managed"}, "systemData": {"createdAt": "2022-08-05T21:32:53.1813184Z",
+        "createdBy": "Taji Harris", "lastModifiedAt": "2022-08-05T21:32:53.1813184Z"},
+        "tags": {}, "location": "eastus2", "kind": "Managed", "sku": {"name": "Default",
+        "tier": "Standard", "capacity": 1}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2306'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:38:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-945d10d2ff05ad4b9fbaf87a25e8d018-a687cc8d95279d22-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/test-onl-endpt-000005-22/deployments/deploy-0000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/onlineEndpoints/test-onl-endpt-000005-22/deployments/blue",
+        "name": "blue", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments",
+        "properties": {"description": "description for online deployment", "properties":
+        {"AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=2022-02-01-preview"},
+        "codeConfiguration": {"codeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/codes/075358a3-6984-4e39-8e72-f1c0019985d3/versions/1",
+        "scoringScript": "score.py"}, "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/environments/online-endpoint-mir-test/versions/3",
+        "environmentVariables": {}, "scaleSettings": {"scaleType": "Default"}, "requestSettings":
+        {"maxQueueWait": "PT0S", "requestTimeout": "PT5S", "maxConcurrentRequestsPerInstance":
+        1}, "modelMountPath": null, "appInsightsEnabled": false, "livenessProbe":
+        {"failureThreshold": 30, "successThreshold": 1, "timeout": "PT2S", "period":
+        "PT10S", "initialDelay": "PT10S"}, "readinessProbe": {"failureThreshold":
+        30, "successThreshold": 1, "timeout": "PT2S", "period": "PT10S", "initialDelay":
+        "PT10S"}, "provisioningState": "Succeeded", "instanceType": "Standard_DS2_V2",
+        "model": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/models/mir_test_model/versions/1",
+        "privateNetworkConnection": false, "egressPublicNetworkAccess": "Enabled",
+        "endpointComputeType": "Managed"}, "systemData": {"createdAt": "2022-08-05T21:32:53.1813184Z",
+        "createdBy": "Taji Harris", "lastModifiedAt": "2022-08-05T21:32:53.1813184Z"},
+        "tags": {}, "location": "eastus2", "kind": "Managed", "sku": {"name": "Default",
+        "tier": "Standard", "capacity": 1}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2306'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:38:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-92d7328d51d4a04cb4785011646fed04-7cfbcf9fc3cac35b-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/test-onl-endpt-000005-22?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/onlineEndpoints/test-onl-endpt-000005-22",
+        "name": "test-onl-endpt-000005-22", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+        "properties": {"description": "some description", "properties": {"azureml.onlineendpointid":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/taji-east2/providers/microsoft.machinelearningservices/workspaces/taji-east2/onlineendpoints/test-onl-endpt-000005-22",
+        "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:e4a8fb17-f430-4294-8182-14bab4d86829?api-version=2022-02-01-preview"},
+        "scoringUri": "https://test-onl-endpt-000005-22.eastus2.inference.ml.azure.com/score",
+        "swaggerUri": "https://test-onl-endpt-000005-22.eastus2.inference.ml.azure.com/swagger.json",
+        "authMode": "AMLToken", "provisioningState": "Succeeded", "compute": null,
+        "traffic": {}, "mirrorTraffic": {}, "publicNetworkAccess": "Enabled"}, "systemData":
+        {"createdAt": "2022-08-05T21:31:08.7012632Z", "createdBy": "Taji Harris",
+        "lastModifiedAt": "2022-08-05T21:31:08.7012632Z"}, "tags": {"endpointkey1":
+        "newval1", "dummy": "dummy"}, "location": "eastus2", "kind": "Managed", "identity":
+        {"type": "SystemAssigned", "principalId": "57f42c3a-53e4-420e-97a6-5b29b641fb89",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1598'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:38:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-353148933ca32c4192c91f374c87b718-fe309c6ed2ae15e8-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.782'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/test-onl-endpt-000005-22/deployments?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/onlineEndpoints/test-onl-endpt-000005-22/deployments/blue",
+        "name": "blue", "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments",
+        "properties": {"description": "description for online deployment", "properties":
+        {"AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/od:36d312cd-652a-4c9a-8b25-e3057a35b13a:86bca246-136c-4e55-9eed-7ab691c7b74e?api-version=2022-02-01-preview"},
+        "codeConfiguration": {"codeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/codes/075358a3-6984-4e39-8e72-f1c0019985d3/versions/1",
+        "scoringScript": "score.py"}, "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/environments/online-endpoint-mir-test/versions/3",
+        "environmentVariables": {}, "scaleSettings": {"scaleType": "Default"}, "requestSettings":
+        {"maxQueueWait": "PT0S", "requestTimeout": "PT5S", "maxConcurrentRequestsPerInstance":
+        1}, "modelMountPath": null, "appInsightsEnabled": false, "livenessProbe":
+        {"failureThreshold": 30, "successThreshold": 1, "timeout": "PT2S", "period":
+        "PT10S", "initialDelay": "PT10S"}, "readinessProbe": {"failureThreshold":
+        30, "successThreshold": 1, "timeout": "PT2S", "period": "PT10S", "initialDelay":
+        "PT10S"}, "provisioningState": "Succeeded", "instanceType": "Standard_DS2_V2",
+        "model": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/taji-east2/models/mir_test_model/versions/1",
+        "privateNetworkConnection": false, "egressPublicNetworkAccess": "Enabled",
+        "endpointComputeType": "Managed"}, "systemData": {"createdAt": "2022-08-05T21:32:53.1813184Z",
+        "createdBy": "Taji Harris", "lastModifiedAt": "2022-08-05T21:32:53.1813184Z"},
+        "tags": {}, "location": "eastus2", "kind": "Managed", "sku": {"name": "Default",
+        "tier": "Standard", "capacity": 1}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2319'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:38:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-8d65a64d891620419bab3003ed6918ca-c776554a58858846-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.171'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Darwin-21.5.0-x86_64-i386-64bit)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/onlineEndpoints/test-onl-endpt-000005-22?api-version=0000-00-00
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:92ae7754-da32-4149-a9dd-175111b062b8?api-version=2022-02-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 05 Aug 2022 21:38:40 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationResults/oe:36d312cd-652a-4c9a-8b25-e3057a35b13a:92ae7754-da32-4149-a9dd-175111b062b8?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.382'
+    status:
+      code: 202
+      message: Accepted
+version: 1

@@ -5,7 +5,7 @@
 
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import register_resource_type, SDKProfile
+from azure.cli.core.profiles import register_resource_type
 
 # pylint: disable=unused-import
 import azext_aks_preview._help
@@ -16,7 +16,7 @@ def register_aks_preview_resource_type():
     register_resource_type(
         "latest",
         CUSTOM_MGMT_AKS_PREVIEW,
-        SDKProfile("2025-05-02-preview", {"container_services": "2017-07-01"}),
+        None,
     )
 
 

@@ -495,6 +495,10 @@ helps['aks create'] = f"""
         - name: --azure-keyvault-kms-key-vault-resource-id
           type: string
           short-summary: Resource ID of Azure Key Vault.
+        - name: --kms-infrastructure-encryption
+          type: string
+          short-summary: Enable encryption at rest of Kubernetes resource objects using service-managed keys.
+          long-summary: Enable infrastructure encryption for Kubernetes resource objects. This feature provides encryption at rest for cluster secrets and configuration using service-managed keys. For more information see https://aka.ms/aks/kubernetesResourceObjectEncryption.
         - name: --enable-image-cleaner
           type: bool
           short-summary: Enable ImageCleaner Service.
@@ -520,6 +524,9 @@ helps['aks create'] = f"""
         - name: --enable-keda
           type: bool
           short-summary: Enable KEDA workload auto-scaler.
+        - name: --disable-run-command
+          type: bool
+          short-summary: Disable Run command feature for the cluster.
         - name: --enable-defender
           type: bool
           short-summary: Enable Microsoft Defender security profile.
@@ -654,6 +661,9 @@ helps['aks create'] = f"""
           type: bool
           short-summary: Create a default ManagedSystem mode that is fully managed by AKS.
           long-summary: When set, the default system node pool is created with ManagedSystem mode, where all properties except name and mode are managed by AKS. Learn more at https://aka.ms/aks/nodepool/mode.
+        - name: --enable-upstream-kubescheduler-user-configuration
+          type: bool
+          short-summary: Enable user-defined scheduler configuration for kube-scheduler upstream on the cluster
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -1124,6 +1134,12 @@ helps['aks update'] = """
         - name: --disable-keda
           type: bool
           short-summary: Disable KEDA workload auto-scaler.
+        - name: --enable-run-command
+          type: bool
+          short-summary: Enable Run command feature for the cluster.
+        - name: --disable-run-command
+          type: bool
+          short-summary: Disable Run command feature for the cluster.
         - name: --enable-defender
           type: bool
           short-summary: Enable Microsoft Defender security profile.
@@ -1289,6 +1305,12 @@ helps['aks update'] = """
         - name: --enable-http-proxy
           type: bool
           short-summary: Enable HTTP Proxy Configuration on the cluster.
+        - name: --enable-upstream-kubescheduler-user-configuration
+          type: bool
+          short-summary: Enable user-defined scheduler configuration for kube-scheduler upstream on the cluster
+        - name: --disable-upstream-kubescheduler-user-configuration
+          type: bool
+          short-summary: Disable user-defined scheduler configuration for kube-scheduler upstream on the cluster
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1900,7 +1922,7 @@ helps['aks nodepool add'] = """
           short-summary: The OS Type. Linux or Windows. Windows not supported yet for "VirtualMachines" VM set type.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu, CBLMariner, Ubuntu2204 or Ubuntu2404 when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022 or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
+          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, CBLMariner, AzureLinux or AzureLinux3 when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022 or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -2229,6 +2251,9 @@ helps['aks nodepool update'] = """
         - name: --localdns-config
           type: string
           short-summary: Set the localDNS Profile for a nodepool with a JSON config file.
+        - name: --node-vm-size -s
+          type: string
+          short-summary: VM size for Kubernetes nodes. Only configurable when updating the autoscale settings of a VirtualMachines node pool.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2240,6 +2265,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Change a node pool to system mode
         text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
+      - name: Update cluster autoscaler vm size, min-count and max-count for virtual machines node pool
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --update-cluster-autoscaler --node-vm-size "Standard_D2s_v3" --min-count 2 --max-count 4
 """
 
 helps['aks nodepool get-upgrades'] = """
@@ -2361,9 +2388,66 @@ helps['aks machine'] = """
    short-summary: Get information about machines in a nodepool of a managed clusters
 """
 
+helps['aks machine add'] = """
+   type: command
+   short-summary: Add a machine to the specified node pool
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster.
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster.
+       - name: --machine-name
+         type: string
+         short-summary: Host name of the machine.
+       - name: --zones -z
+         type: string array
+         short-summary: Space-separated list of availability zones where a machine will be placed.
+       - name: --priority
+         type: string
+         short-summary: The priority of the machine.
+       - name: --tags
+         type: string
+         short-summary: The tags of the machine.
+       - name: --vm-size
+         type: string
+         short-summary: The size of the machine
+       - name: --os-type
+         type: string
+         short-summary: The operating system type of the machine.
+       - name: --os-sku
+         type: string
+         short-summary: The os-sku of the agent node pool.
+       - name: --kubernetes-version
+         type: string
+         short-summary: Version of Kubernetes to use for creating the machine, such as "1.7.12" or "1.8.7".
+       - name: --enable-fips-image
+         type: bool
+         short-summary: Switch to use FIPS-enabled OS on the machine.
+       - name: --disable-fips-image
+         type: bool
+         short-summary: Switch to use non-FIPS-enabled OS on the machine.
+       - name: --vnet-subnet-id
+         type: string
+         short-summary: The ID of a subnet in an existing VNet into which to deploy the machine.
+       - name: --pod-subnet-id
+         type: string
+         short-summary: The ID of a subnet in an existing VNet into which to assign pods in the machine (requires azure network-plugin).
+       - name: --enable-node-public-ip
+         type: bool
+         short-summary: Enable the machine public IP.
+       - name: --node-public-ip-prefix-id
+         type: string
+         short-summary: Public IP prefix ID used to assign public IPs to the machine.
+       - name: --node-public-ip-tags
+         type: string
+         short-summary: The ipTags of the machine public IPs.
+"""
+
 helps['aks machine list'] = """
    type: command
-   short-summary: Get information about IP Addresses, Hostname for all machines in an agentpool
+   short-summary: List the details for all machines in an agentpool
    parameters:
        - name: --cluster-name
          type: string
@@ -2371,14 +2455,14 @@ helps['aks machine list'] = """
        - name: --nodepool-name
          type: string
          short-summary: Name of the agentpool of a managed cluster
-   exmaples:
-       - name: Get information about IP Addresses, Hostname for all machines in an agentpool
-         text: az aks machine list --cluster-name <clusterName> --nodepool-name <apName>
+   examples:
+       - name: List the details for all machines in an agentpool
+         text: az aks machine list --resource-group <resourceGroupName> --cluster-name <clusterName> --nodepool-name <apName>
 """
 
 helps['aks machine show'] = """
    type: command
-   short-summary: Show IP Addresses, Hostname for a specific machine in an agentpool for a managedcluster.
+   short-summary: Show the details of a specific machine in an agentpool of a managedcluster.
    parameters:
        - name: --cluster-name
          type: string
@@ -2388,10 +2472,10 @@ helps['aks machine show'] = """
          short-summary: Name of the agentpool of a managed cluster
        - name: --machine-name
          type: string
-         short-summary: Get IP Addresses, Hostname for a specific machine in an agentpool
-   exmaples:
-       - name: Get IP Addresses, Hostname for a specific machine in an agentpool
-         text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
+         short-summary: Name of the machine
+   examples:
+       - name: Show the details of a specific machine in an agentpool of a managedcluster.
+         text: az aks machine show --resource-group <resourceGroupName> --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
 """
 
 helps['aks operation'] = """
@@ -3863,4 +3947,74 @@ helps['aks loadbalancer show'] = """
           text: az aks loadbalancer show -g MyResourceGroup -n secondary --cluster-name MyManagedCluster
         - name: Show details of a load balancer configuration in table format
           text: az aks loadbalancer show -g MyResourceGroup -n kubernetes --cluster-name MyManagedCluster -o table
+"""
+
+helps['aks bastion'] = """
+    type: command
+    short-summary: Connect to a managed Kubernetes cluster using Azure Bastion.
+    long-summary: The command will launch a subshell with the kubeconfig set to connect to the cluster via Bastion. Use exit or Ctrl-D (i.e. EOF) to exit the subshell.
+    parameters:
+        - name: --bastion
+          type: string
+          short-summary: The name or resource ID of a pre-deployed Bastion resource configured to connect to the current AKS cluster.
+          long-summary: If not specified, the command will try to identify an existing Bastion resource within the cluster's node resource group.
+        - name: --port
+          type: int
+          short-summary: The local port number used for the bastion connection.
+          long-summary: If not provided, a random port will be used.
+        - name: --admin
+          type: bool
+          short-summary: Use the cluster admin credentials to connect to the bastion.
+    examples:
+        - name: Connect to a managed Kubernetes cluster using Azure Bastion with custom port and admin credentials.
+          text: az aks bastion -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
+"""
+
+helps['aks identity-binding'] = """
+    type: group
+    short-summary: Commands to manage identity bindings in Azure Kubernetes Service.
+"""
+helps['aks identity-binding show'] = """
+    type: command
+    short-summary: Show details of a specific identity binding in a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the identity binding to show.
+"""
+helps['aks identity-binding list'] = """
+    type: command
+    short-summary: List all identity bindings under a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+"""
+helps['aks identity-binding create'] = """
+    type: command
+    short-summary: Create a new identity binding in a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the identity binding to show.
+        - name: --managed-identity-resource-id
+          type: string
+          short-summary: The resource ID of the managed identity to use.
+"""
+helps['aks identity-binding delete'] = """
+    type: command
+    short-summary: Delete a specific identity binding in a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the identity binding to show.
 """

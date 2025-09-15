@@ -7,7 +7,7 @@ import base64
 import os
 from azure.cli.core.util import get_file_json
 from types import SimpleNamespace
-from typing import Dict, TypeVar, Union, List
+from typing import Dict, TypeVar, Union, List, Tuple
 
 from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorMode, DecoratorEarlyExitException
 from azure.cli.command_modules.acs.agentpool_decorator import (
@@ -21,6 +21,7 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
+    ArgumentUsageError,
 )
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
@@ -41,6 +42,7 @@ from azext_aks_preview._consts import (
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
     CONST_DEFAULT_VMS_VM_SIZE,
     CONST_DEFAULT_WINDOWS_VMS_VM_SIZE,
+    CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_GPU_DRIVER_NONE,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
@@ -567,6 +569,9 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         return self.raw_param.get("ssh_access")
 
+    def get_sku_name(self) -> str:
+        return self.raw_param.get("sku")
+
     def get_yes(self) -> bool:
         """Obtain the value of yes.
 
@@ -835,6 +840,195 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             return profile
         return None
 
+    def get_node_count_and_enable_cluster_autoscaler_min_max_count_vms(
+        self,
+    ) -> Tuple[int, bool, Union[int, None], Union[int, None]]:
+        """Obtain the value of node_count, enable_cluster_autoscaler, min_count and max_count.
+
+        This function will verify the parameters through function "__validate_counts_in_autoscaler" by default.
+
+        This function is for Virtual Machines nodepool only.
+
+        :return: a tuple containing four elements: node_count of int type, enable_cluster_autoscaler of bool type,
+        min_count of int type or None and max_count of int type or None
+        """
+        # node_count
+        # read the original value passed by the command
+        node_count = self.raw_param.get("node_count")
+        # enable_cluster_autoscaler
+        # read the original value passed by the command
+        enable_cluster_autoscaler = self.raw_param.get("enable_cluster_autoscaler", False)
+        # min_count
+        # read the original value passed by the command
+        min_count = self.raw_param.get("min_count")
+        # max_count
+        # read the original value passed by the command
+        max_count = self.raw_param.get("max_count")
+        # try to read the property value corresponding to the parameter from the `agentpool` object
+
+        # validation
+        self._AKSAgentPoolContext__validate_counts_in_autoscaler(
+            node_count,
+            enable_cluster_autoscaler,
+            min_count,
+            max_count,
+            mode=self.get_mode(),
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        return node_count, enable_cluster_autoscaler, min_count, max_count
+
+    def get_node_count_from_vms_agentpool(
+        self, agentpool: AgentPool
+    ) -> Union[int, None]:
+        """Get current node count for vms agentpool.
+
+        :return: the node count of the vms agentpool
+        """
+        count = 0
+        if agentpool.virtual_machine_nodes_status:
+            for node_status in agentpool.virtual_machine_nodes_status:
+                if node_status.count is not None:
+                    count += node_status.count
+        if count == 0:
+            # If no node status is available, return None
+            return None
+        return count
+
+    def get_update_enable_disable_cluster_autoscaler_and_min_max_count_vmsize_vms(
+        self,
+    ) -> Tuple[bool, bool, bool, Union[int, None], Union[int, None], str]:
+        """Obtain the value of update_cluster_autoscaler, enable_cluster_autoscaler, disable_cluster_autoscaler,
+        min_count and max_count, and vm size.
+
+        This function is for VMs agentpool only.
+
+        This function will verify the parameters through function "__validate_counts_in_autoscaler"
+        by default. Besides if both enable_cluster_autoscaler and update_cluster_autoscaler are specified, a
+        MutuallyExclusiveArgumentError will be raised. If enable_cluster_autoscaler or update_cluster_autoscaler is
+        specified and there are multiple agent pool profiles, an ArgumentUsageError will be raised.
+        If enable_cluster_autoscaler is specified and autoscaler is already enabled in `ap`,
+        it will output warning messages and exit with code 0.
+        If update_cluster_autoscaler is specified and autoscaler is not enabled in `ap`, it will raise an
+        InvalidArgumentValueError.
+        If disable_cluster_autoscaler is specified and autoscaler is not enabled in `ap`,
+        it will output warning messages and exit with code 0.
+
+        :return: a tuple containing four elements: update_cluster_autoscaler of bool type, enable_cluster_autoscaler
+        of bool type, disable_cluster_autoscaler of bool type, min_count of int type or None and max_count of int type
+        or None
+        """
+        update_cluster_autoscaler = self.raw_param.get("update_cluster_autoscaler", False)
+
+        # enable_cluster_autoscaler
+        # read the original value passed by the command
+        enable_cluster_autoscaler = self.raw_param.get("enable_cluster_autoscaler", False)
+
+        # disable_cluster_autoscaler
+        # read the original value passed by the command
+        disable_cluster_autoscaler = self.raw_param.get("disable_cluster_autoscaler", False)
+
+        # min_count
+        # read the original value passed by the command
+        min_count = self.raw_param.get("min_count")
+
+        # max_count
+        # read the original value passed by the command
+        max_count = self.raw_param.get("max_count")
+
+        # vm_size
+        # read the original value passed by the command
+        vm_size = self.raw_param.get("node_vm_size")
+
+        # validation
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            # For multi-agent pool, use the az aks nodepool command
+            if (enable_cluster_autoscaler or update_cluster_autoscaler) and len(self._agentpools) > 1:
+                raise ArgumentUsageError(
+                    'There are more than one node pool in the cluster. Please use "az aks nodepool" command '
+                    "to update per node pool auto scaler settings"
+                )
+
+        if enable_cluster_autoscaler + update_cluster_autoscaler + disable_cluster_autoscaler > 1:
+            raise MutuallyExclusiveArgumentError(
+                "Can only specify one of --enable-cluster-autoscaler, --update-cluster-autoscaler and "
+                "--disable-cluster-autoscaler"
+            )
+
+        if not update_cluster_autoscaler and vm_size is not None:
+            raise MutuallyExclusiveArgumentError(
+                "--node-vm-size is only applicable when updating cluster autoscaler settings "
+                "with --update-cluster-autoscaler"
+            )
+
+        self._AKSAgentPoolContext__validate_counts_in_autoscaler(
+            None,
+            enable_cluster_autoscaler or update_cluster_autoscaler,
+            min_count,
+            max_count,
+            mode=self.get_mode(),
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+
+        autoscale_profile = (
+            self.agentpool.virtual_machines_profile
+            and self.agentpool.virtual_machines_profile.scale
+            and self.agentpool.virtual_machines_profile.scale.autoscale
+        )
+
+        manual_scale_profile = (
+            self.agentpool.virtual_machines_profile
+            and self.agentpool.virtual_machines_profile.scale
+            and self.agentpool.virtual_machines_profile.scale.manual
+        )
+
+        # if enabling cluster autoscaler
+        if enable_cluster_autoscaler:
+            if autoscale_profile:
+                logger.warning(
+                    "Cluster autoscaler is already enabled for this node pool.\n"
+                    'Please run "az aks --update-cluster-autoscaler" '
+                    "if you want to update min-count or max-count."
+                )
+                raise DecoratorEarlyExitException()
+            if manual_scale_profile:
+                if len(manual_scale_profile) != 1:
+                    raise InvalidArgumentValueError(
+                        "Autoscaler cannot be enabled on node pool with multiple manual scale profiles.\n"
+                        "Please ensure that only one manual scale profile exists before enabling autoscaler."
+                    )
+
+        # if updating cluster autoscaler
+        if update_cluster_autoscaler and not autoscale_profile:
+            raise InvalidArgumentValueError(
+                "Cluster autoscaler is not enabled for this virtual machines node pool.\n"
+                'Run "az aks nodepool update --enable-cluster-autoscaler" '
+                "to enable cluster with min-count and max-count."
+            )
+
+        # if disabling cluster autoscaler
+        if disable_cluster_autoscaler and not autoscale_profile:
+            logger.warning(
+                "Cluster autoscaler is already disabled for this node pool."
+            )
+            raise DecoratorEarlyExitException()
+
+        # if vm_size is not specified, use the size from the existing agentpool profile
+        if vm_size is None:
+            if autoscale_profile:
+                vm_size = autoscale_profile.size
+
+            if manual_scale_profile:
+                vm_size = manual_scale_profile[0].size
+
+        return (
+            update_cluster_autoscaler,
+            enable_cluster_autoscaler,
+            disable_cluster_autoscaler,
+            min_count,
+            max_count,
+            vm_size,
+        )
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -982,13 +1176,18 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         self._ensure_agentpool(agentpool)
 
         ssh_access = self.context.get_ssh_access()
+        sku_name = self.context.get_sku_name()
+        if sku_name and sku_name.lower() == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            return agentpool
         if ssh_access is not None:
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.ssh_access = ssh_access
             if ssh_access == CONST_SSH_ACCESS_LOCALUSER:
-                logger.warning("The new node pool will enable SSH access, recommended to use '--ssh-access disabled' "
-                               "option to disable SSH access for the node pool to make it more secure.")
+                logger.warning(
+                    "The new node pool will enable SSH access, recommended to use "
+                    "'--ssh-access disabled' option to disable SSH access for the node pool to make it more secure."
+                )
         return agentpool
 
     def set_up_skip_gpu_driver_install(self, agentpool: AgentPool) -> AgentPool:
@@ -1080,20 +1279,46 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         sizes = self.context.get_vm_sizes()
         if len(sizes) != 1:
-            raise InvalidArgumentValueError(f"We only accept single sku size for manual profile. {sizes} is invalid.")
-        count, _, _, _ = self.context.get_node_count_and_enable_cluster_autoscaler_min_max_count()
-        agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
-            scale=self.models.ScaleProfile(
-                manual=[
-                    self.models.ManualScaleProfile(
-                        size=sizes[0],
-                        count=count,
-                    )
-                ]
-            )
+            raise InvalidArgumentValueError(f"We only accept single sku size for scale profile. {sizes} is invalid.")
+
+        (
+            node_count,
+            enable_auto_scaling,
+            min_count,
+            max_count,
+        ) = (
+            self.context.get_node_count_and_enable_cluster_autoscaler_min_max_count_vms()
         )
+
+        if enable_auto_scaling:
+            agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
+                scale=self.models.ScaleProfile(
+                    autoscale=self.models.AutoScaleProfile(
+                        size=sizes[0],
+                        min_count=min_count,
+                        max_count=max_count,
+                    )
+                )
+            )
+        else:
+            agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
+                scale=self.models.ScaleProfile(
+                    manual=[
+                        self.models.ManualScaleProfile(
+                            size=sizes[0],
+                            count=node_count,
+                        )
+                    ]
+                )
+            )
+
+        # properties that doesn't need to be set for virtual machines agentpool
+        # they are for vmss only
         agentpool.vm_size = None
         agentpool.count = None
+        agentpool.enable_auto_scaling = False
+        agentpool.min_count = None
+        agentpool.max_count = None
 
         return agentpool
 
@@ -1504,6 +1729,101 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update local DNS profile
         agentpool = self.update_localdns_profile(agentpool)
+
+        # update auto scaler related properties for vms pool
+        agentpool = self.update_auto_scaler_properties_vms(agentpool)
+
+        return agentpool
+
+    def update_auto_scaler_properties(self, agentpool: AgentPool) -> AgentPool:
+        """Update auto scaler related properties for vmss Agentpool object.
+
+        This function is for vmss agentpool only.
+
+        :return: the Agentpool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        # skip it for virtual machines pool
+        if self.context.get_vm_set_type() == CONST_VIRTUAL_MACHINES:
+            return agentpool
+
+        vm_size = self.context.raw_param.get("node_vm_size")
+        if vm_size is not None:
+            raise InvalidArgumentValueError(
+                "--node-vm-size can only be used with virtual machines agentpools. "
+                "Updating VM size is not supported for virtual machine scale set agentpools."
+            )
+
+        (
+            update_cluster_autoscaler,
+            enable_cluster_autoscaler,
+            disable_cluster_autoscaler,
+            min_count,
+            max_count,
+        ) = (
+            self.context.get_update_enable_disable_cluster_autoscaler_and_min_max_count()
+        )
+
+        if update_cluster_autoscaler or enable_cluster_autoscaler:
+            agentpool.enable_auto_scaling = True
+            agentpool.min_count = min_count
+            agentpool.max_count = max_count
+
+        if disable_cluster_autoscaler:
+            agentpool.enable_auto_scaling = False
+            agentpool.min_count = None
+            agentpool.max_count = None
+
+        return agentpool
+
+    def update_auto_scaler_properties_vms(self, agentpool: AgentPool) -> AgentPool:
+        """Update auto scaler related properties for vmss Agentpool object.
+
+        This function is for vms agentpool only.
+
+        :return: the Agentpool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        # for virtual machines agentpool only, skip for other agentpool types
+        if self.context.get_vm_set_type() != CONST_VIRTUAL_MACHINES:
+            return agentpool
+
+        (
+            update_cluster_autoscaler,
+            enable_cluster_autoscaler,
+            disable_cluster_autoscaler,
+            min_count,
+            max_count,
+            vm_size,
+        ) = (
+            self.context.get_update_enable_disable_cluster_autoscaler_and_min_max_count_vmsize_vms()
+        )
+
+        if update_cluster_autoscaler or enable_cluster_autoscaler:
+            agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
+                scale=self.models.ScaleProfile(
+                    autoscale=self.models.AutoScaleProfile(
+                        size=vm_size,
+                        min_count=min_count,
+                        max_count=max_count,
+                    )
+                )
+            )
+
+        if disable_cluster_autoscaler:
+            current_node_count = self.context.get_node_count_from_vms_agentpool(agentpool)
+            agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
+                scale=self.models.ScaleProfile(
+                    manual=[
+                        self.models.ManualScaleProfile(
+                            size=vm_size,
+                            count=current_node_count,
+                        )
+                    ]
+                )
+            )
 
         return agentpool
 

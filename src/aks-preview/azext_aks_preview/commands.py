@@ -15,6 +15,7 @@ from azext_aks_preview._client_factory import (
     cf_machines,
     cf_operations,
     cf_load_balancers,
+    cf_identity_bindings,
 )
 
 from azext_aks_preview._format import (
@@ -186,6 +187,7 @@ def load_command_table(self, _):
         g.custom_command(
             "operation-abort", "aks_operation_abort", supports_no_wait=True
         )
+        g.custom_command("bastion", "aks_bastion")
 
     # AKS maintenance configuration commands
     with self.command_group(
@@ -290,6 +292,7 @@ def load_command_table(self, _):
         g.custom_show_command(
             "show", "aks_machine_show", table_transformer=aks_machine_show_table_format
         )
+        g.custom_command("add", "aks_machine_add", supports_no_wait=True)
 
     with self.command_group(
         "aks operation", operations_sdk, client_factory=cf_operations
@@ -505,3 +508,12 @@ def load_command_table(self, _):
             'list_k8s_extension_type_versions',
             table_transformer=aks_extension_type_versions_list_table_format
         )
+
+# AKS identity binding commands
+    with self.command_group(
+        "aks identity-binding", managed_clusters_sdk, client_factory=cf_identity_bindings
+    ) as g:
+        g.custom_command("create", "aks_identity_binding_create")
+        g.custom_command("delete", "aks_identity_binding_delete")
+        g.custom_show_command("show", "aks_identity_binding_show")
+        g.custom_command("list", "aks_identity_binding_list")

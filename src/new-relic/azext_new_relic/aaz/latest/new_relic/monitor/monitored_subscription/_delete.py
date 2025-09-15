@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor monitored-subscription delete",
 )
 class Delete(AAZCommand):
-    """Delete the subscriptions that are being monitored by the NewRelic monitor resource
+    """Delete subscriptions being monitored by the New Relic monitor resource, removing their observability and monitoring capabilities.
 
     :example: Delete the subscriptions that are being monitored by the NewRelic monitor resource
         az new-relic monitor monitored-subscription delete --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default
