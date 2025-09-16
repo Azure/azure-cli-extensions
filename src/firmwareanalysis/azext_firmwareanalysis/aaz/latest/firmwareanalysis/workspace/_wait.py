@@ -12,19 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "firmwareanalysis workspace generate-upload-url",
+    "firmwareanalysis workspace wait",
 )
-class GenerateUploadUrl(AAZCommand):
-    """Get a url for file upload.
-
-    :example: Get a url for file upload.
-        az firmwareanalysis workspace generate-upload-url --resource-group {ResourceGroupName} --workspace-name {workspaceName} --firmware-id {firmwareId}
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2025-08-02",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/generateuploadurl", "2025-08-02"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}", "2025-08-02"],
         ]
     }
 
@@ -48,7 +44,7 @@ class GenerateUploadUrl(AAZCommand):
             required=True,
         )
         _args_schema.workspace_name = AAZStrArg(
-            options=["--workspace-name"],
+            options=["-n", "--name", "--workspace-name"],
             help="The name of the firmware analysis workspace.",
             required=True,
             id_part="name",
@@ -56,20 +52,11 @@ class GenerateUploadUrl(AAZCommand):
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]*$",
             ),
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.firmware_id = AAZStrArg(
-            options=["--firmware-id"],
-            arg_group="Body",
-            help="A unique ID for the firmware to be uploaded.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.WorkspacesGenerateUploadUrl(ctx=self.ctx)()
+        self.WorkspacesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -81,10 +68,10 @@ class GenerateUploadUrl(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class WorkspacesGenerateUploadUrl(AAZHttpOperation):
+    class WorkspacesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -98,13 +85,13 @@ class GenerateUploadUrl(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.IoTFirmwareDefense/workspaces/{workspaceName}/generateUploadUrl",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.IoTFirmwareDefense/workspaces/{workspaceName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -142,24 +129,10 @@ class GenerateUploadUrl(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("firmwareId", AAZStrType, ".firmware_id")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -179,15 +152,69 @@ class GenerateUploadUrl(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.url = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.sku = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            sku = cls._schema_on_200.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _GenerateUploadUrlHelper:
-    """Helper class for GenerateUploadUrl"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["GenerateUploadUrl"]
+__all__ = ["Wait"]

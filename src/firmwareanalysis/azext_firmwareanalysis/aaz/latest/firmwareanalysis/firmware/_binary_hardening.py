@@ -22,9 +22,9 @@ class BinaryHardening(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-10",
+        "version": "2025-08-02",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}/binaryhardeningresults", "2024-01-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}/binaryhardeningresults", "2025-08-02"],
         ]
     }
 
@@ -49,6 +49,9 @@ class BinaryHardening(AAZCommand):
             options=["--firmware-id"],
             help="The id of the firmware.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -133,7 +136,7 @@ class BinaryHardening(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-10",
+                    "api-version", "2025-08-02",
                     required=True,
                 ),
             }
@@ -170,7 +173,7 @@ class BinaryHardening(AAZCommand):
                 serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             value = cls._schema_on_200.value
@@ -183,9 +186,7 @@ class BinaryHardening(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -195,36 +196,40 @@ class BinaryHardening(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.architecture = AAZStrType(
-                nullable=True,
-            )
             properties.binary_hardening_id = AAZStrType(
                 serialized_name="binaryHardeningId",
-                nullable=True,
             )
-            properties["class"] = AAZStrType(
-                nullable=True,
+            properties.executable_architecture = AAZStrType(
+                serialized_name="executableArchitecture",
             )
-            properties.features = AAZObjectType(
-                flags={"client_flatten": True},
+            properties.executable_class = AAZStrType(
+                serialized_name="executableClass",
             )
             properties.file_path = AAZStrType(
                 serialized_name="filePath",
-                nullable=True,
             )
-            properties.rpath = AAZStrType(
-                nullable=True,
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
             )
-            properties.runpath = AAZStrType(
-                nullable=True,
+            properties.rpath = AAZStrType()
+            properties.runpath = AAZStrType()
+            properties.security_hardening_features = AAZObjectType(
+                serialized_name="securityHardeningFeatures",
             )
 
-            features = cls._schema_on_200.value.Element.properties.features
-            features.canary = AAZBoolType()
-            features.nx = AAZBoolType()
-            features.pie = AAZBoolType()
-            features.relro = AAZBoolType()
-            features.stripped = AAZBoolType()
+            security_hardening_features = cls._schema_on_200.value.Element.properties.security_hardening_features
+            security_hardening_features.canary = AAZBoolType()
+            security_hardening_features.no_execute = AAZBoolType(
+                serialized_name="noExecute",
+            )
+            security_hardening_features.position_independent_executable = AAZBoolType(
+                serialized_name="positionIndependentExecutable",
+            )
+            security_hardening_features.relocation_read_only = AAZBoolType(
+                serialized_name="relocationReadOnly",
+            )
+            security_hardening_features.stripped = AAZBoolType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

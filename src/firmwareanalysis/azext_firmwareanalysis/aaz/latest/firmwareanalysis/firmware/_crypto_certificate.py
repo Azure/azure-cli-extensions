@@ -22,9 +22,9 @@ class CryptoCertificate(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-10",
+        "version": "2025-08-02",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}/cryptocertificates", "2024-01-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}/cryptocertificates", "2025-08-02"],
         ]
     }
 
@@ -49,6 +49,9 @@ class CryptoCertificate(AAZCommand):
             options=["--firmware-id"],
             help="The id of the firmware.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -133,7 +136,7 @@ class CryptoCertificate(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-10",
+                    "api-version", "2025-08-02",
                     required=True,
                 ),
             }
@@ -170,7 +173,7 @@ class CryptoCertificate(AAZCommand):
                 serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             value = cls._schema_on_200.value
@@ -183,9 +186,7 @@ class CryptoCertificate(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -195,128 +196,77 @@ class CryptoCertificate(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.certificate_key_algorithm = AAZStrType(
+                serialized_name="certificateKeyAlgorithm",
+            )
+            properties.certificate_key_size = AAZIntType(
+                serialized_name="certificateKeySize",
+            )
+            properties.certificate_name = AAZStrType(
+                serialized_name="certificateName",
+            )
+            properties.certificate_role = AAZStrType(
+                serialized_name="certificateRole",
+            )
+            properties.certificate_usage = AAZListType(
+                serialized_name="certificateUsage",
+            )
             properties.crypto_cert_id = AAZStrType(
                 serialized_name="cryptoCertId",
-                nullable=True,
             )
-            properties.encoding = AAZStrType(
-                nullable=True,
-            )
+            properties.encoding = AAZStrType()
             properties.expiration_date = AAZStrType(
                 serialized_name="expirationDate",
-                nullable=True,
             )
             properties.file_paths = AAZListType(
                 serialized_name="filePaths",
-                nullable=True,
                 flags={"read_only": True},
             )
-            properties.fingerprint = AAZStrType(
-                nullable=True,
-            )
+            properties.fingerprint = AAZStrType()
             properties.is_expired = AAZBoolType(
                 serialized_name="isExpired",
-                nullable=True,
             )
             properties.is_self_signed = AAZBoolType(
                 serialized_name="isSelfSigned",
-                nullable=True,
             )
             properties.is_short_key_size = AAZBoolType(
                 serialized_name="isShortKeySize",
-                nullable=True,
             )
             properties.is_weak_signature = AAZBoolType(
                 serialized_name="isWeakSignature",
-                nullable=True,
             )
             properties.issued_date = AAZStrType(
                 serialized_name="issuedDate",
-                nullable=True,
             )
-            properties.issuer = AAZObjectType(
-                nullable=True,
-            )
-            properties.key_algorithm = AAZStrType(
-                serialized_name="keyAlgorithm",
-                nullable=True,
-            )
-            properties.key_size = AAZIntType(
-                serialized_name="keySize",
-                nullable=True,
-            )
-            properties.name = AAZStrType(
-                nullable=True,
-            )
+            properties.issuer = AAZObjectType()
+            _CryptoCertificateHelper._build_schema_crypto_certificate_entity_read(properties.issuer)
             properties.paired_key = AAZObjectType(
                 serialized_name="pairedKey",
-                nullable=True,
             )
-            properties.role = AAZStrType(
-                nullable=True,
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.serial_number = AAZStrType(
                 serialized_name="serialNumber",
-                nullable=True,
             )
             properties.signature_algorithm = AAZStrType(
                 serialized_name="signatureAlgorithm",
-                nullable=True,
             )
-            properties.subject = AAZObjectType(
-                nullable=True,
-            )
-            properties.usage = AAZListType(
-                nullable=True,
-            )
+            properties.subject = AAZObjectType()
+            _CryptoCertificateHelper._build_schema_crypto_certificate_entity_read(properties.subject)
+
+            certificate_usage = cls._schema_on_200.value.Element.properties.certificate_usage
+            certificate_usage.Element = AAZStrType()
 
             file_paths = cls._schema_on_200.value.Element.properties.file_paths
             file_paths.Element = AAZStrType()
 
-            issuer = cls._schema_on_200.value.Element.properties.issuer
-            issuer.common_name = AAZStrType(
-                serialized_name="commonName",
-                nullable=True,
-            )
-            issuer.country = AAZStrType(
-                nullable=True,
-            )
-            issuer.organization = AAZStrType(
-                nullable=True,
-            )
-            issuer.organizational_unit = AAZStrType(
-                serialized_name="organizationalUnit",
-                nullable=True,
-            )
-            issuer.state = AAZStrType(
-                nullable=True,
-            )
-
             paired_key = cls._schema_on_200.value.Element.properties.paired_key
-            paired_key.id = AAZStrType()
+            paired_key.paired_key_id = AAZStrType(
+                serialized_name="pairedKeyId",
+            )
             paired_key.type = AAZStrType()
-
-            subject = cls._schema_on_200.value.Element.properties.subject
-            subject.common_name = AAZStrType(
-                serialized_name="commonName",
-                nullable=True,
-            )
-            subject.country = AAZStrType(
-                nullable=True,
-            )
-            subject.organization = AAZStrType(
-                nullable=True,
-            )
-            subject.organizational_unit = AAZStrType(
-                serialized_name="organizationalUnit",
-                nullable=True,
-            )
-            subject.state = AAZStrType(
-                nullable=True,
-            )
-
-            usage = cls._schema_on_200.value.Element.properties.usage
-            usage.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -343,6 +293,37 @@ class CryptoCertificate(AAZCommand):
 
 class _CryptoCertificateHelper:
     """Helper class for CryptoCertificate"""
+
+    _schema_crypto_certificate_entity_read = None
+
+    @classmethod
+    def _build_schema_crypto_certificate_entity_read(cls, _schema):
+        if cls._schema_crypto_certificate_entity_read is not None:
+            _schema.common_name = cls._schema_crypto_certificate_entity_read.common_name
+            _schema.country = cls._schema_crypto_certificate_entity_read.country
+            _schema.organization = cls._schema_crypto_certificate_entity_read.organization
+            _schema.organizational_unit = cls._schema_crypto_certificate_entity_read.organizational_unit
+            _schema.state = cls._schema_crypto_certificate_entity_read.state
+            return
+
+        cls._schema_crypto_certificate_entity_read = _schema_crypto_certificate_entity_read = AAZObjectType()
+
+        crypto_certificate_entity_read = _schema_crypto_certificate_entity_read
+        crypto_certificate_entity_read.common_name = AAZStrType(
+            serialized_name="commonName",
+        )
+        crypto_certificate_entity_read.country = AAZStrType()
+        crypto_certificate_entity_read.organization = AAZStrType()
+        crypto_certificate_entity_read.organizational_unit = AAZStrType(
+            serialized_name="organizationalUnit",
+        )
+        crypto_certificate_entity_read.state = AAZStrType()
+
+        _schema.common_name = cls._schema_crypto_certificate_entity_read.common_name
+        _schema.country = cls._schema_crypto_certificate_entity_read.country
+        _schema.organization = cls._schema_crypto_certificate_entity_read.organization
+        _schema.organizational_unit = cls._schema_crypto_certificate_entity_read.organizational_unit
+        _schema.state = cls._schema_crypto_certificate_entity_read.state
 
 
 __all__ = ["CryptoCertificate"]
