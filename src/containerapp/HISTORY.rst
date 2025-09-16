@@ -7,7 +7,9 @@ upcoming
 * 'az containerapp update/up': Disallow changing `--revisions-mode` to Labels.
 * 'az containerapp session code-interpreter': Fix `--path` in examples
 * 'az containerapp sessionpool create/update': Support `--lifecycle-type` and `--max-alive-period`
+* 'az containerapp up': support for `--kind` parameter
 * 'az containerapp env premium-ingress': Deprecate `--min-replicas` and `--max-replicas` parameters, use workload profile scale instead.
+* 'az containerapp sessionpool create/update': Support `--probe-yaml`
 
 1.2.0b3
 ++++++

@@ -1897,6 +1897,11 @@ def load_arguments(self, _):
             'localdns_config',
             help='Path to a JSON file to configure the local DNS profile for an existing nodepool.',
         )
+        c.argument(
+            "node_vm_size",
+            options_list=["--node-vm-size", "-s"],
+            completer=get_vm_size_completion_list,
+        )
 
     with self.argument_context("aks nodepool upgrade") as c:
         c.argument("max_surge", validator=validate_max_surge)

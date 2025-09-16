@@ -1455,6 +1455,9 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
             type=CONST_VIRTUAL_MACHINES,
             count=None,
             vm_size=None,
+            enable_auto_scaling=False,
+            min_count=None,
+            max_count=None,
             virtual_machines_profile=self.models.VirtualMachinesProfile(
                 scale=self.models.ScaleProfile(
                     manual=[
