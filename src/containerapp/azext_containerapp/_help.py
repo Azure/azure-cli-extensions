@@ -166,7 +166,6 @@ helps['containerapp up'] = """
             az containerapp up -n my-containerapp --image my-app:v1.0 --kind functionapp
 """
 
-
 helps['containerapp replica count'] = """
     type: command
     short-summary: Count of a container app's replica(s)
@@ -181,7 +180,7 @@ helps['containerapp replica count'] = """
 
 helps['containerapp function'] = """
     type: group
-    short-summary: Commands to view functions in a container app.
+    short-summary: Commands related to Azure Function on Azure Container Apps.
 """
 
 helps['containerapp function list'] = """
@@ -212,6 +211,48 @@ helps['containerapp function show'] = """
     - name: Show details of a function for a specific revision
       text: |
           az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision-name MyRevision
+"""
+
+helps['containerapp function list-keys'] = """
+    type: command
+    short-summary: List function keys for a specific function in a container app.
+    examples:
+    - name: List function keys for a specific function
+      text: |
+          az containerapp function list-keys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --function-name MyFunctionName
+"""
+
+helps['containerapp function update-keys'] = """
+    type: command
+    short-summary: Update function keys for a specific function in a container app.
+    examples:
+    - name: Update a function key for a specific function
+      text: |
+          az containerapp function update-keys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --function-name MyFunctionName --key-name MyKeyName --key-value MyKeyValue
+"""
+
+helps['containerapp function list-hostkeys'] = """
+    type: command
+    short-summary: List host keys for a container app.
+    examples:
+    - name: List host keys for a container app
+      text: |
+          az containerapp function list-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision
+"""
+
+helps['containerapp function update-hostkeys'] = """
+    type: command
+    short-summary: Update host keys for a container app.
+    examples:
+    - name: Update a host key for a container app with function key type
+      text: |
+          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type functionKeys
+    - name: Update a host key for a container app with master key type
+      text: |
+          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type masterKey
+    - name: Update a host key for a container app with system key type
+      text: |
+          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type systemKeys
 """
 
 # Environment Commands
@@ -2045,6 +2086,11 @@ helps['containerapp sessionpool create'] = """
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 --container-type CustomContainer \\
               --cooldown-period 360 --location eastasia
+    - name: Create or update a Session Pool with container type CustomContainer with container probes
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 --container-type CustomContainer \\
+              --probe-yaml config.yaml --location eastasia
 """
 
 helps['containerapp sessionpool update'] = """
@@ -2054,6 +2100,9 @@ helps['containerapp sessionpool update'] = """
     - name: Update a session pool's max concurrent sessions configuration and image.
       text: |
           az containerapp sessionpool update -n mysessionpool -g MyResourceGroup --max-sessions 20 --image MyNewImage
+    - name: Update the container probes of a CustomContainer type session pool.
+      text: |
+          az containerapp sessionpool update -n mysessionpool -g MyResourceGroup --probe-yaml config.yaml
 """
 
 helps['containerapp sessionpool delete'] = """

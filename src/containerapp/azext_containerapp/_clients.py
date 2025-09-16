@@ -1770,3 +1770,79 @@ class MaintenanceConfigPreviewClient():
             if r.status_code == 202:
                 operation_url = r.headers.get(HEADER_LOCATION)
                 poll_results(cmd, operation_url)
+
+    class ContainerAppFunctionsPreviewClient:
+    api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def list_function_keys(cls, cmd, resource_group_name, name, function_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/functions/{}/listkeys?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            function_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        return r.json()
+
+    @classmethod
+    def update_function_keys(cls, cmd, resource_group_name, name, function_name, key_name, key_value=None):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/functions/{}/keys/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            function_name,
+            key_name,
+            cls.api_version)
+
+        body = {}
+        if key_value:
+            body["value"] = key_value
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(body))
+        return r.json()
+
+    @classmethod
+    def list_host_keys(cls, cmd, resource_group_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/host/default/listkeys?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        return r.json()
+
+    @classmethod
+    def update_host_keys(cls, cmd, resource_group_name, name, key_type, key_name, key_value=None):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/host/default/{}/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            key_type,
+            key_name,
+            cls.api_version)
+
+        body = {}
+        if key_value:
+            body["value"] = key_value
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(body))
+        return r.json()

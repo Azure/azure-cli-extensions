@@ -97,6 +97,12 @@ from .containerapp_functions_decorator import (
     ContainerAppFunctionsListDecorator,
     ContainerAppFunctionsShowDecorator
 )
+from .containerapp_function_keys_decorator import (
+    ContainerAppFunctionKeysListDecorator,
+    ContainerAppFunctionKeysUpdateDecorator,
+    ContainerAppFunctionHostKeysListDecorator,
+    ContainerAppFunctionHostKeysUpdateDecorator
+)
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -3122,7 +3128,8 @@ def create_session_pool(cmd,
                         registry_user=None,
                         mi_user_assigned=None,
                         registry_identity=None,
-                        mi_system_assigned=False):
+                        mi_system_assigned=False,
+                        probe_yaml=None):
     raw_parameters = locals()
     session_pool_decorator = SessionPoolCreateDecorator(
         cmd=cmd,
@@ -3163,7 +3170,8 @@ def update_session_pool(cmd,
                         registry_user=None,
                         mi_user_assigned=None,
                         registry_identity=None,
-                        mi_system_assigned=False):
+                        mi_system_assigned=False,
+                        probe_yaml=None):
     raw_parameters = locals()
     session_pool_decorator = SessionPoolUpdateDecorator(
         cmd=cmd,
@@ -3976,3 +3984,52 @@ def show_containerapp_function(cmd, resource_group_name, name, function_name, re
     )
 
     return containerapp_functions_show_decorator.show()
+
+# Container App Function Key Commands
+def list_containerapp_function_keys(cmd, name, resource_group_name, function_name, revision=None):
+    """List function keys for a specific function"""
+    raw_parameters = locals()
+    containerapp_function_decorator = ContainerAppFunctionKeysListDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return containerapp_function_decorator.list_keys()
+
+
+def update_containerapp_function_keys(cmd, name, resource_group_name, function_name, key_name, key_value=None, revision=None):
+    """Update function keys for a specific function"""
+    raw_parameters = locals()
+    containerapp_function_decorator = ContainerAppFunctionKeysUpdateDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return containerapp_function_decorator.update_keys()
+
+
+def list_containerapp_function_hostkeys(cmd, name, resource_group_name, revision=None):
+    """List host keys for the container app function host"""
+    raw_parameters = locals()
+    containerapp_function_decorator = ContainerAppFunctionHostKeysListDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return containerapp_function_decorator.list_host_keys()
+
+
+def update_containerapp_function_hostkeys(cmd, name, resource_group_name, key_type, key_name, key_value=None, revision=None):
+    """Update host keys for the container app function host"""
+    raw_parameters = locals()
+    containerapp_function_decorator = ContainerAppFunctionHostKeysUpdateDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return containerapp_function_decorator.update_host_keys()
+

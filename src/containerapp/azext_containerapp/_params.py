@@ -471,6 +471,7 @@ def load_arguments(self, _):
         c.argument('startup_command', nargs='*', options_list=['--command'], help="A list of supported commands on the container that will executed during startup. Space-separated values e.g. \"/bin/queue\" \"mycommand\". Empty string to clear existing values")
         c.argument('args', nargs='*', help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
         c.argument('target_port', type=int, validator=validate_target_port_range, help="The session port used for ingress traffic.")
+        c.argument('probe_yaml', type=file_type, help='Path to a .yaml file with the configuration of the container probes. Only applicable for Custom Container Session Pool', is_preview=True)
 
     with self.argument_context('containerapp sessionpool', arg_group='Registry') as c:
         c.argument('registry_server', validator=validate_registry_server, help="The container registry server hostname, e.g. myregistry.azurecr.io.")
@@ -529,14 +530,33 @@ def load_arguments(self, _):
         c.argument('termination_grace_period', options_list=['--termination-grace-period', '-t'], type=int, help="Time in seconds to drain requests during ingress shutdown. Default 500, minimum 0, maximum 3600.")
         c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 4, maximum 30.")
         c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")
-
-    with self.argument_context('containerapp function list') as c:
+    
+    with self.argument_context('containerapp function') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('name', options_list=['--name', '-n'], help="The name of the Container App.")
+        
+    with self.argument_context('containerapp function list') as c:
         c.argument('revision_name', options_list=['--revision-name', '-r'], help="The name of the revision to list functions from. It is required if container app is running in multiple active revision mode.")
 
     with self.argument_context('containerapp function show') as c:
-        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('name', options_list=['--name', '-n'], help="The name of the Container App.")
         c.argument('function_name', options_list=['--function-name', '-f'], help="The name of the function to show details for.")
         c.argument('revision_name', options_list=['--revision-name', '-r'], help="The name of the revision to get the function from. It is required if container app is running in multiple active revision mode.")
+
+    with self.argument_context('containerapp function list-keys') as c:
+        c.argument('revision', options_list=['--revision'], help="The name of the container app revision.")
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function.")
+
+    with self.argument_context('containerapp function update-keys') as c:
+        c.argument('revision', options_list=['--revision'], help="The name of the container app revision.")
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function.")
+        c.argument('key_name', options_list=['--key-name'], help="The name of the key to update.")
+        c.argument('key_value', options_list=['--key-value'], help="The value of the key to update.")
+
+    with self.argument_context('containerapp function list-hostkeys') as c:
+        c.argument('revision', options_list=['--revision'], help="The name of the container app revision.")
+
+    with self.argument_context('containerapp function update-hostkeys') as c:
+        c.argument('revision', options_list=['--revision'], help="The name of the container app revision.")
+        c.argument('key_name', options_list=['--key-name'], help="The name of the host key to update.")
+        c.argument('key_value', options_list=['--key-value'], help="The value of the host key to update.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKeys', 'masterKey', 'systemKeys']), help="The type of the host key.")
