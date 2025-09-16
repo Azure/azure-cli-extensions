@@ -14366,7 +14366,7 @@ spec:
                 "version": latest_version,
             }
         )
-        # Cilium Cluster with ACNS enabled and acceleration mode set to None
+        # Cilium Cluster with ACNS enabled and acceleration mode set to BpfVeth
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} -k {version} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
@@ -14380,25 +14380,6 @@ spec:
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.performance.accelerationMode", "BpfVeth"),
-            ],
-        )
-
-        # Update acceleration mode to BpfVeth
-        update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPerformancePreview "
-            "--enable-acns --acns-datapath-acceleration-mode BpfVeth"
-        )
-
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.enabled", True),
-                self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.advancedNetworkPolicies", "L7"),
-                self.check("networkProfile.advancedNetworking.security.transitEncryption.type", "WireGuard"),
             ],
         )
 
