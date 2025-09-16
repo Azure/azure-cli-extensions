@@ -93,6 +93,10 @@ from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, Ses
 from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterCommandsPreviewDecorator
 from .containerapp_job_registry_decorator import ContainerAppJobRegistryPreviewSetDecorator
 from .containerapp_env_maintenance_config_decorator import ContainerAppEnvMaintenanceConfigPreviewDecorator
+from .containerapp_functions_decorator import (
+    ContainerAppFunctionsListDecorator,
+    ContainerAppFunctionsShowDecorator
+)
 from .containerapp_function_keys_decorator import (
     ContainerAppFunctionKeysListDecorator,
     ContainerAppFunctionKeysUpdateDecorator,
@@ -3947,6 +3951,40 @@ def remove_environment_premium_ingress(cmd, name, resource_group_name, no_wait=F
     except Exception as e:
         handle_raw_exception(e)
 
+
+# Container App Functions commands
+def list_containerapp_functions(cmd, resource_group_name, name, revision_name=None):
+    """List functions for a container app or specific revision"""
+    containerapp_functions_list_decorator = ContainerAppFunctionsListDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters={
+            'resource_group_name': resource_group_name,
+            'container_app_name': name,
+            'revision_name': revision_name
+        },
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_functions_list_decorator.list()
+
+
+def show_containerapp_function(cmd, resource_group_name, name, function_name, revision_name=None):
+    """Show details of a specific function for a container app or revision"""
+    containerapp_functions_show_decorator = ContainerAppFunctionsShowDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters={
+            'resource_group_name': resource_group_name,
+            'container_app_name': name,
+            'function_name': function_name,
+            'revision_name': revision_name
+        },
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_functions_show_decorator.show()
+
 # Container App Function Key Commands
 def list_containerapp_function_keys(cmd, name, resource_group_name, function_name, revision=None):
     """List function keys for a specific function"""
@@ -3994,3 +4032,4 @@ def update_containerapp_function_hostkeys(cmd, name, resource_group_name, key_ty
         models=CONTAINER_APPS_SDK_MODELS
     )
     return containerapp_function_decorator.update_host_keys()
+

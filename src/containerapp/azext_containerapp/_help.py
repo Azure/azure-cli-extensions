@@ -180,7 +180,37 @@ helps['containerapp replica count'] = """
 
 helps['containerapp function'] = """
     type: group
-    short-summary: Commands to manage function keys in a container app.
+    short-summary: Commands related to Azure Function on Azure Container Apps.
+"""
+
+helps['containerapp function list'] = """
+    type: command
+    short-summary: List all functions in a container app or a specific revision. (pass --revisionName parameter)
+    long-summary: |
+        revisionName is required only if Container App active Revision Mode is setup in Multiple Revision Mode. (Default: Single Revision Mode)
+        Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
+    examples:
+    - name: List all functions in a container app. (single active revision mode)
+      text: |
+          az containerapp function list -n my-containerapp -g MyResourceGroup
+    - name: List all functions for a specific revision
+      text: |
+          az containerapp function list -n my-containerapp -g MyResourceGroup --revision-name MyRevision
+"""
+
+helps['containerapp function show'] = """
+    type: command
+    short-summary: Show details of a specific function in a container app or a specific revision within app. (pass --revisionName parameter)
+    long-summary: |
+        revisionName is required only if Container App active Revision Mode is setup in Multiple Revision Mode. (Default: Single Revision Mode)
+        Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
+    examples:
+    - name: Show details of a function in a container app. (single active revision mode)
+      text: |
+          az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction
+    - name: Show details of a function for a specific revision
+      text: |
+          az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision-name MyRevision
 """
 
 helps['containerapp function list-keys'] = """

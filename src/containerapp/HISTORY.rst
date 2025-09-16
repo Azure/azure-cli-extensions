@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp function show/list': New command group to list and show functions in container apps.
 * 'az containerapp function list-keys': List function keys for a specific function in a container app
 * 'az containerapp function update-keys': Update specific function key for a specific function in a container app
 * 'az containerapp function list-hostkeys': List host keys for a container app
