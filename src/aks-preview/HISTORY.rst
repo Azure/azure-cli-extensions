@@ -13,11 +13,14 @@ Pending
 +++++++
 * Add machine command `az aks machine add` to add a machine to an existing machine pool.
 
+18.0.0b38
++++++++
+* Add option `AzureLinuxOSGuard` and `AzureLinux3OSGuard` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
 18.0.0b37
 +++++++
 * Enable autoscaler support for the VirtualMachines agent pool type.
 * Add `--node-vm-size` to `az aks update` to allow changing the VM size for VirtualMachines node pools.
-* Add option `AzureLinuxOSGuard` and `AzureLinux3OSGuard` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
 18.0.0b36
 +++++++
