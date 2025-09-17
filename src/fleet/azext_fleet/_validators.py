@@ -60,6 +60,11 @@ def validate_assign_identity(namespace):
                 "--assign-identity is not a valid Azure resource ID.")
 
 
+def validate_enable_vnet_integration(namespace):
+    if namespace.enable_vnet_integration and not namespace.enable_managed_identity:
+            raise CLIError("--enable-vnet-integration requires managed identity to be enabled. "
+                          "Please add --enable-managed-identity to your command.")
+
 def validate_targets(namespace):
     ts = namespace.targets
     if not ts:

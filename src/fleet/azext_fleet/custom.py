@@ -107,11 +107,6 @@ def create_fleet(cmd,
     elif assign_identity is not None:
         raise CLIError("Cannot assign identity without enabling managed identity.")
 
-    if enable_vnet_integration:
-        if not enable_managed_identity and assign_identity is None:
-            raise CLIError("When vnet integration is enabled, either system-assigned or "
-                           "user-assigned identity must be provided.")
-
     fleet = fleet_model(
         location=location,
         tags=tags,

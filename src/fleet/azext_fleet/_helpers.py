@@ -158,8 +158,11 @@ def _load_kubernetes_configuration(filename):
 
 def assign_network_contributor_role_to_subnet(cmd, object_id, subnet_id):
     if not add_role_assignment(cmd, 'Network Contributor', object_id, scope=subnet_id):
-        logger.warning("Failed to create Network Contributor role assignment on the subnet.\n"
-                       "Please ensure you have sufficient permissions to assign roles on subnet %s.", subnet_id)
+        logger.warning("Failed to create Network Contributor role assignment on the subnet %s.\n"
+                       "This role assignment is required for the managed identity to access the subnet.\n"
+                       "Please ensure you have sufficient permissions, or ask an administrator to run:\n"
+                       "az role assignment create --assignee %s --role 'Network Contributor' --scope %s",
+                       subnet_id, object_id, subnet_id)
 
 
 def get_msi_object_id(cmd, msi_resource_id):
