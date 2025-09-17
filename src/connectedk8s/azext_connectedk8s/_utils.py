@@ -48,7 +48,7 @@ if TYPE_CHECKING:
     from kubernetes.client import CoreV1Api, V1NodeList
     from requests import Response
 
-    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.models import (
+    from azext_connectedk8s.vendored_sdks.preview_2025_08_01.models import (
         ConnectedCluster,
     )
 
@@ -823,7 +823,7 @@ def get_helm_values(
     chart_location_url = f"{config_dp_endpoint}/{chart_location_url_segment}"
     dp_request_identity = connected_cluster.identity
     identity = connected_cluster.id
-    request_dict = connected_cluster.serialize()
+    request_dict = connected_cluster.as_dict()
     request_dict["identity"]["tenantId"] = dp_request_identity.tenant_id
     request_dict["identity"]["principalId"] = dp_request_identity.principal_id
     request_dict["id"] = identity
@@ -901,6 +901,70 @@ def health_check_dp(cmd: CLICommand, config_dp_endpoint: str) -> bool:
         summary="Error while performing DP health check",
     )
     raise CLIInternalError("Error while performing DP health check")
+
+
+def update_gateway_cluster_link(
+    cmd: CLICommand,
+    subscription_id: str,
+    resource_group: str,
+    cluster_name: str,
+    gateway_resource_id: str | None = None,
+) -> bool:
+    """
+    Associates or disassociates a gateway with a cluster.
+
+    If `gateway_resource_id` is provided, performs association.
+    If `gateway_resource_id` is None, performs disassociation.
+    """
+    api_version = "2025-02-19-preview"
+    is_association = gateway_resource_id is not None
+    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
+    url = consts.GATEWAY_ASSOCIATE_URL.format(
+        subscription_id=subscription_id,
+        resource_group=resource_group,
+        cluster_name=cluster_name,
+        api_version=api_version,
+    )
+
+    headers = ["Content-Type=application/json", "Accept=application/json"]
+
+    token = os.getenv("AZURE_ACCESS_TOKEN")
+    if token:
+        headers.append(f"Authorization=Bearer {token}")
+
+    operation_type = "association" if is_association else "disassociation"
+    body = {
+        "properties": {
+            "gatewayProperties": {
+                "gatewayResourceId": gateway_resource_id  # None in case of disassociation
+            }
+        }
+    }
+    response = send_request_with_retries(
+        cmd.cli_ctx,
+        method="put",
+        url=url,
+        headers=headers,
+        fault_type=consts.GATEWAY_LINK_FAULT_TYPE,
+        summary=f"Error during gateway {operation_type}",
+        request_body=json.dumps(body),
+        resource=resource,
+    )
+
+    if response.status_code == 200:
+        logger.info(
+            f"Gateway {operation_type} succeeded for cluster '{cluster_name}' in resource group '{resource_group}'."
+        )
+        return True
+
+    telemetry.set_exception(
+        exception=f"Gateway {operation_type} failed",
+        fault_type=consts.GATEWAY_LINK_FAULT_TYPE,
+        summary=f"Gateway {operation_type} failed",
+    )
+    raise CLIInternalError(
+        f"Gateway {operation_type} failed for cluster '{cluster_name}'."
+    )
 
 
 def send_request_with_retries(
@@ -992,10 +1056,10 @@ def arm_exception_handler(
         status_code = ex.status_code
         if status_code == 404 and return_if_not_found:
             return
-        if status_code // 100 == 4:
+        if status_code is not None and status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        if status_code // 100 == 5:
+        if status_code is not None and status_code // 100 == 5:
             raise AzureInternalError(
                 "Http response error occured while making ARM request: "
                 + str(ex)
