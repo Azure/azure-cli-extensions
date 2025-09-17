@@ -96,7 +96,7 @@ def load_arguments(self, _):
             ),
             help=(
                 "Enable AKS MCP integration for enhanced capabilities. "
-                "Defaults to traditional toolsets; use --aks-mcp to opt in or "
-                "--no-aks-mcp to stay in traditional mode."
+                "Traditional mode is the default. Use --aks-mcp to enable MCP mode, or "
+                "--no-aks-mcp to explicitly disable it."
             ),
         )
