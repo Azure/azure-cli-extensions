@@ -150,7 +150,3 @@ Release History
 1.6.4
 ++++++
 * Fix help text for `fleet list` command.
-
-1.6.5
-++++++
-* create_fleet now creates a role assignment on both the agent and API server subnets when the fleet is set to privateV2 and a user-assigned MSI is used.
