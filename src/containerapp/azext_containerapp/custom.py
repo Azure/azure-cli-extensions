@@ -91,6 +91,7 @@ from .java_component_decorator import (
 )
 from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
 from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterCommandsPreviewDecorator
+from .containerapp_session_custom_container_decorator import SessionCustomContainerCommandsPreviewDecorator
 from .containerapp_job_registry_decorator import ContainerAppJobRegistryPreviewSetDecorator
 from .containerapp_env_maintenance_config_decorator import ContainerAppEnvMaintenanceConfigPreviewDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
@@ -111,6 +112,7 @@ from ._clients import (
     JavaComponentPreviewClient,
     SessionPoolPreviewClient,
     SessionCodeInterpreterPreviewClient,
+    SessionCustomContainerPreviewClient,
     DotNetComponentPreviewClient,
     MaintenanceConfigPreviewClient,
     HttpRouteConfigPreviewClient,
@@ -3345,6 +3347,25 @@ def delete_file_session_code_interpreter(cmd,
     session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
 
     r = session_code_interpreter_decorator.delete_file()
+
+    return r
+
+
+# session custom container commands
+def stop_session_custom_container(cmd,
+                                  name,
+                                  resource_group_name,
+                                  identifier):
+    raw_parameters = locals()
+    session_custom_container_decorator = SessionCustomContainerCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCustomContainerPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_custom_container_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_custom_container_decorator.stop_session()
 
     return r
 

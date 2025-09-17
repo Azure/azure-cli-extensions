@@ -10,6 +10,7 @@ upcoming
 * 'az containerapp up': support for `--kind` parameter
 * 'az containerapp env premium-ingress': Deprecate `--min-replicas` and `--max-replicas` parameters, use workload profile scale instead.
 * 'az containerapp sessionpool create/update': Support `--probe-yaml`
+* 'az containerapp session stop': Support stop session for custom container sessions
 
 1.2.0b3
 ++++++
