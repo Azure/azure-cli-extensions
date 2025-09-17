@@ -632,7 +632,8 @@ def _run_interactive_mode_sync(ai, cmd, resource_group_name, name,
     run_interactive_loop(
         ai, console, prompt, None, None,
         show_tool_output=show_tool_output,
-        system_prompt_additions=aks_context
+        system_prompt_additions=aks_context,
+        check_version=False
     )
 
 

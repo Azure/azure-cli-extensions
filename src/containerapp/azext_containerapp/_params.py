@@ -471,6 +471,7 @@ def load_arguments(self, _):
         c.argument('startup_command', nargs='*', options_list=['--command'], help="A list of supported commands on the container that will executed during startup. Space-separated values e.g. \"/bin/queue\" \"mycommand\". Empty string to clear existing values")
         c.argument('args', nargs='*', help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
         c.argument('target_port', type=int, validator=validate_target_port_range, help="The session port used for ingress traffic.")
+        c.argument('probe_yaml', type=file_type, help='Path to a .yaml file with the configuration of the container probes. Only applicable for Custom Container Session Pool', is_preview=True)
 
     with self.argument_context('containerapp sessionpool', arg_group='Registry') as c:
         c.argument('registry_server', validator=validate_registry_server, help="The container registry server hostname, e.g. myregistry.azurecr.io.")
@@ -478,10 +479,16 @@ def load_arguments(self, _):
         c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
         c.argument('registry_identity', validator=validate_registry_user, help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-assigned identity, use a resource ID for a user-assigned identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
 
-    # sessions code interpreter commands
-    with self.argument_context('containerapp session code-interpreter') as c:
+    # sessions commands
+    with self.argument_context('containerapp session') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp session stop') as c:
+        c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
+
+    # sessions code interpreter commands
+    with self.argument_context('containerapp session code-interpreter') as c:
         c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
         c.argument('session_pool_location', help="The location of the session pool")
 
