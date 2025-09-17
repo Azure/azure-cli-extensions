@@ -58,9 +58,9 @@ helps[
         - name: --status
           type: bool
           short-summary: Show AKS agent configuration and status information.
-        - name: --no-aks-mcp
+        - name: --aks-mcp
           type: bool
-          short-summary: Disable AKS MCP integration and use traditional toolsets.
+          short-summary: Enable AKS MCP integration for enhanced capabilities (default is traditional mode; use --no-aks-mcp to stay traditional).
 
     examples:
         - name: Ask about pod issues in the cluster with Azure OpenAI
