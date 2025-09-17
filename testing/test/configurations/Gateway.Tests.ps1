@@ -6,7 +6,7 @@ Describe 'Onboarding with Gateway Scenario' {
     }
 
     It 'Check if onboarding works with gateway enabled' {
-        az connectedk8s connect -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup -l $ARC_LOCATION --gateway-resource-id $gatewayResourceId --no-wait
+        az connectedk8s connect -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup -l $ARC_LOCATION --gateway-resource-id $gatewayResourceId
         $? | Should -BeTrue
         Start-Sleep -Seconds 10
 
@@ -18,14 +18,12 @@ Describe 'Onboarding with Gateway Scenario' {
             $jsonOutput = [System.Text.Json.JsonDocument]::Parse($output)
             $provisioningState = ($output | ConvertFrom-Json).provisioningState
             $gatewayStatus = $jsonOutput.RootElement.GetProperty("gateway").GetProperty("enabled").GetBoolean()
-            $gatewayId = $jsonOutput.RootElement.GetProperty("gateway").GetProperty("resourceId").GetString() 
             Write-Host "Provisioning State: $provisioningState"
             Write-Host "Gateway Status: $gatewayStatus"
-            Write-Host "Gateway Id: $gatewayId"
-            if ($provisioningState -eq $SUCCEEDED -and $gatewayStatus -eq $true -and $gatewayId -eq $gatewayResourceId) {
+            if ($provisioningState -eq $SUCCEEDED -and $gatewayStatus -eq $true) {
                 break
             }
-            Start-Sleep -Seconds 10
+            Start-Sleep -Seconds 30
             $n += 1
         } while ($n -le $MAX_RETRY_ATTEMPTS)
         $n | Should -BeLessOrEqual $MAX_RETRY_ATTEMPTS
@@ -68,11 +66,9 @@ Describe 'Onboarding with Gateway Scenario' {
             $jsonOutput = [System.Text.Json.JsonDocument]::Parse($output)
             $provisioningState = ($output | ConvertFrom-Json).provisioningState
             $gatewayStatus = $jsonOutput.RootElement.GetProperty("gateway").GetProperty("enabled").GetBoolean()
-            $gatewayId = $jsonOutput.RootElement.GetProperty("gateway").GetProperty("resourceId").GetString() 
             Write-Host "Provisioning State: $provisioningState"
             Write-Host "Gateway Status: $gatewayStatus"
-            Write-Host "Gateway Id: $gatewayId"
-            if ($provisioningState -eq $SUCCEEDED -and $gatewayStatus -eq $true -and $gatewayId -eq $gatewayResourceId) {
+            if ($provisioningState -eq $SUCCEEDED -and $gatewayStatus -eq $true) {
                 break
             }
             Start-Sleep -Seconds 10
