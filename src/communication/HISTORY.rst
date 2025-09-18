@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.13.1
+1.14.0
 ++++++
 * Add Delivery Report option to SMS send command.
 
