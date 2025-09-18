@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6.1
++++++
+* `az dataprotection backup-instance update`: New parameters: `--backup-configuration` to update AKS datasource parameters.
+
 1.6.0
 +++++
 * Added support for User-Assigned Managed Identities for Backup Instances.
