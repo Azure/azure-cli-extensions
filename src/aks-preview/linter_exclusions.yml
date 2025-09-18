@@ -117,6 +117,9 @@ aks create:
     acns_advanced_networkpolicies:
       rule_exclusions:
         - option_length_too_long
+    acns_datapath_acceleration_mode:
+      rule_exclusions:
+        - option_length_too_long
     acns_transit_encryption_type:
       rule_exclusions:
         - option_length_too_long
@@ -281,6 +284,9 @@ aks update:
     acns_advanced_networkpolicies:
       rule_exclusions:
         - option_length_too_long
+    acns_datapath_acceleration_mode:
+      rule_exclusions:
+        - option_length_too_long
     acns_transit_encryption_type:
       rule_exclusions:
         - option_length_too_long
@@ -435,5 +441,10 @@ aks nodepool delete:
 aks identity-binding create:
   parameters:
     managed_identity_resource_id:
+      rule_exclusions:
+        - option_length_too_long
+aks machine add:
+  parameters:
+    node_public_ip_prefix_id:
       rule_exclusions:
         - option_length_too_long

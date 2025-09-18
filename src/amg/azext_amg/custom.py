@@ -62,6 +62,13 @@ class GrafanaCreate(_GrafanaCreate):
         if not args.skip_system_assigned_identity:
             args.identity = {"type": "SystemAssigned"}
 
+        if args.sku_tier and str(args.sku_tier).lower() == "essential":
+            raise ArgumentUsageError(
+                "Creation of Grafana resources with the 'Essential' SKU tier is not supported. "
+                "Supported SKU tiers are: 'Standard'. "
+                "Please specify a supported SKU tier using the '--sku-tier' parameter."
+            )
+
     # override the output method to create role assignments after instance creation
     def _output(self, *args, **kwargs):
         from azure.cli.core.commands.arm import resolve_role_id
