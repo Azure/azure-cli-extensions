@@ -11,6 +11,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+18.0.0b39
++++++++
 * Add machine command `az aks machine add` to add a machine to an existing machine pool.
 * Add blue-green upgrade strategy support for AKS node pools:
   - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades. 
