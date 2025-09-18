@@ -152,6 +152,8 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_UPGRADE_STRATEGY_ROLLING,
+    CONST_UPGRADE_STRATEGY_BLUE_GREEN,
 )
 
 from azext_aks_preview._validators import (
@@ -223,6 +225,7 @@ from azext_aks_preview._validators import (
     validate_gateway_prefix_size,
     validate_max_unavailable,
     validate_max_blocked_nodes,
+    validate_drain_batch_size,
     validate_resource_group_parameter,
     validate_location_resource_group_cluster_parameters,
 )
@@ -505,6 +508,11 @@ app_routing_nginx_configs = [
 gpu_driver_types = [
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+]
+
+upgrade_strategies = [
+    CONST_UPGRADE_STRATEGY_ROLLING,
+    CONST_UPGRADE_STRATEGY_BLUE_GREEN,
 ]
 
 
@@ -1678,12 +1686,20 @@ def load_arguments(self, _):
         c.argument("node_taints", validator=validate_nodepool_taints)
         c.argument("node_osdisk_type", arg_type=get_enum_type(node_os_disk_types))
         c.argument("node_osdisk_size", type=int)
+        # upgrade strategy
+        c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
+        # rolling upgrade params
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
+        # blue-green upgrade parameters
+        c.argument("drain_batch_size", validator=validate_drain_batch_size)
+        c.argument("drain_timeout_bg", type=int)
+        c.argument("batch_soak_duration", type=int)
+        c.argument("final_soak_duration", type=int)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -1816,12 +1832,20 @@ def load_arguments(self, _):
         c.argument("labels", nargs="*", validator=validate_nodepool_labels)
         c.argument("tags", tags_type)
         c.argument("node_taints", validator=validate_nodepool_taints)
+        # upgrade strategy
+        c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
+        # rolling upgrade parameters
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
+        # blue-green upgrade parameters
+        c.argument("drain_batch_size", validator=validate_drain_batch_size)
+        c.argument("drain_timeout_bg", type=int)
+        c.argument("batch_soak_duration", type=int)
+        c.argument("final_soak_duration", type=int)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
@@ -1898,12 +1922,20 @@ def load_arguments(self, _):
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
+        # upgrade strategy
+        c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
+        # rolling upgrade parameters
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
+        # blue-green upgrade parameters
+        c.argument("drain_batch_size", validator=validate_drain_batch_size)
+        c.argument("drain_timeout_bg", type=int)
+        c.argument("batch_soak_duration", type=int)
+        c.argument("final_soak_duration", type=int)
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument(
             "yes",
