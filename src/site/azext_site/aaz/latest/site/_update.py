@@ -93,11 +93,12 @@ class Update(AAZCommand):
         _args_schema.labels = AAZDictArg(
             options=["--labels"],
             arg_group="Properties",
-            help="Key-value pairs for labeling the site resource.",
+            help="Key-value pairs for labeling the site resource; to delete a label, set its value to null, or to delete all labels, set --labels to null.",
+            nullable=True,
         )
 
         labels = cls._args_schema.labels
-        labels.Element = AAZStrArg()
+        labels.Element = AAZStrArg(nullable=True)
 
         # define Arg Group "SiteAddress"
 
@@ -234,12 +235,12 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
-                properties.set_prop("labels", AAZDictType, ".labels")
+                properties.set_prop("labels", AAZDictType, ".labels", typ_kwargs={"nullable": True})
                 properties.set_prop("siteAddress", AAZObjectType)
 
             labels = _builder.get(".properties.labels")
             if labels is not None:
-                labels.set_elements(AAZStrType, ".")
+                labels.set_elements(AAZStrType, ".", typ_kwargs={"nullable": True})
 
             site_address = _builder.get(".properties.siteAddress")
             if site_address is not None:
@@ -415,12 +416,12 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
-                properties.set_prop("labels", AAZDictType, ".labels")
+                properties.set_prop("labels", AAZDictType, ".labels", typ_kwargs={"nullable": True})
                 properties.set_prop("siteAddress", AAZObjectType)
 
             labels = _builder.get(".properties.labels")
             if labels is not None:
-                labels.set_elements(AAZStrType, ".")
+                labels.set_elements(AAZStrType, ".", typ_kwargs={"nullable": True})
 
             site_address = _builder.get(".properties.siteAddress")
             if site_address is not None:
@@ -600,12 +601,12 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
-                properties.set_prop("labels", AAZDictType, ".labels")
+                properties.set_prop("labels", AAZDictType, ".labels", typ_kwargs={"nullable": True})
                 properties.set_prop("siteAddress", AAZObjectType)
 
             labels = _builder.get(".properties.labels")
             if labels is not None:
-                labels.set_elements(AAZStrType, ".")
+                labels.set_elements(AAZStrType, ".", typ_kwargs={"nullable": True})
 
             site_address = _builder.get(".properties.siteAddress")
             if site_address is not None:
