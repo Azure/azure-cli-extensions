@@ -301,9 +301,9 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
         new_backup_config_json = test.cmd('az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService').get_output_in_json()
 
         # mutate a visible field to make the change observable
-        new_backup_config_json['included_namespaces'] = ['nsA', 'nsB']
-        new_backup_config_json['label_selectors'] = ['app=web']
-        new_backup_config_json['excluded_resource_types'] = ['ResourceX']
+        new_backup_config_json['included_namespaces'] = ["nsA", "nsB"]
+        new_backup_config_json['label_selectors'] = ["app=web"]
+        new_backup_config_json['excluded_resource_types'] = ["ResourceX"]
         new_backup_config_json['include_cluster_scope_resources'] = False
         new_backup_config_json['snapshot_volumes'] = False
         test.kwargs.update({

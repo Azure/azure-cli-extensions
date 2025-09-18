@@ -269,11 +269,11 @@ def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, 
     # Policy changes
     # - Updating the vaulted blob container list for vaulted blob backups
     # - Updating the backup datasource parameters for AKS backups
-    datasource_type = backup_instance["properties"]["data_source_info"]["datasource_type"]
+    datasource_type = backup_instance["properties"]["dataSourceInfo"]["datasourceType"]
 
     # If user provided any of the datasource parameter update inputs, handle according to datasource type
     if vaulted_blob_container_list is not None or backup_configuration is not None:
-        if datasource_type == "AzureKubernetesService":
+        if datasource_type == "Microsoft.ContainerService/managedClusters":
             if vaulted_blob_container_list is not None:
                 raise InvalidArgumentValueError('Invalid argument --vaulted-blob-container-list for given datasource type.')
             elif backup_configuration is not None:
@@ -286,7 +286,7 @@ def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, 
                         raise InvalidArgumentValueError("Provided --backup-configuration is not valid JSON")
                 backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = [backup_configuration]
 
-        elif datasource_type == "AzureBlob":
+        elif datasource_type == "Microsoft.Storage/storageAccounts/blobServices":
             if backup_configuration is not None:
                 raise InvalidArgumentValueError('Invalid argument --backup-configuration for given datasource type.')
             elif vaulted_blob_container_list is not None:
