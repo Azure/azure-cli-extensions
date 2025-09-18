@@ -13,18 +13,18 @@ Pending
 +++++++
 * Add machine command `az aks machine add` to add a machine to an existing machine pool.
 
-18.0.0b37
-+++++++
-* Enable autoscaler support for the VirtualMachines agent pool type.
-* Add `--node-vm-size` to `az aks update` to allow changing the VM size for VirtualMachines node pools.
-
-18.0.0b37
+18.0.0b38
 +++++++
 * `az aks create`: Add new parameter `--container-storage-version` to enable the given version of Azure Container Storage.
 * `az aks update`: Add new parameter `--container-storage-version` to enable the given version of Azure Container Storage.
 * `az aks create`: Change behavior of `--enable-azure-container-storage` to enable latest Azure Container Storage by default.
 * `az aks update`: Change behavior of `--enable-azure-container-storage` to enable latest Azure Container Storage by default.
 * `az aks update`: Change behavior of `--disable-azure-container-storage` to handle disable based on the installed version.
+
+18.0.0b37
++++++++
+* Enable autoscaler support for the VirtualMachines agent pool type.
+* Add `--node-vm-size` to `az aks update` to allow changing the VM size for VirtualMachines node pools.
 
 18.0.0b36
 +++++++
