@@ -13,6 +13,14 @@ Pending
 +++++++
 * Add option `Windows2025` to `--os-sku` for `az aks nodepool add`.
 
+18.0.0b40
++++++++
+* `az aks create`: Add new parameter `--container-storage-version` to enable the given version of Azure Container Storage.
+* `az aks update`: Add new parameter `--container-storage-version` to enable the given version of Azure Container Storage.
+* `az aks create`: Change behavior of `--enable-azure-container-storage` to enable latest Azure Container Storage by default.
+* `az aks update`: Change behavior of `--enable-azure-container-storage` to enable latest Azure Container Storage by default.
+* `az aks update`: Change behavior of `--disable-azure-container-storage` to handle disable based on the installed version.
+
 18.0.0b39
 +++++++
 * Add option `AzureLinuxOSGuard` and `AzureLinux3OSGuard` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
@@ -29,14 +37,6 @@ Pending
 +++++++
 * Enable autoscaler support for the VirtualMachines agent pool type.
 * Add `--node-vm-size` to `az aks update` to allow changing the VM size for VirtualMachines node pools.
-
-18.0.0b37
-+++++++
-* `az aks create`: Add new parameter `--container-storage-version` to enable the given version of Azure Container Storage.
-* `az aks update`: Add new parameter `--container-storage-version` to enable the given version of Azure Container Storage.
-* `az aks create`: Change behavior of `--enable-azure-container-storage` to enable latest Azure Container Storage by default.
-* `az aks update`: Change behavior of `--enable-azure-container-storage` to enable latest Azure Container Storage by default.
-* `az aks update`: Change behavior of `--disable-azure-container-storage` to handle disable based on the installed version.
 
 18.0.0b36
 +++++++
