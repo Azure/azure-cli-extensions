@@ -120,6 +120,11 @@ class MaxBlockedNodesNamespace:
         self.max_blocked_nodes = max_blocked_nodes
 
 
+class DrainBatchSizeNamespace:
+    def __init__(self, drain_batch_size):
+        self.drain_batch_size = drain_batch_size
+
+
 class SpotMaxPriceNamespace:
     def __init__(self, spot_max_price):
         self.priority = "Spot"
@@ -199,6 +204,59 @@ class TestMaxBlockedNodes(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace("-3"))
         self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
+
+
+class TestDrainBatchSize(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["1", "5", "10", "33%", "50%", "100%"]
+        for v in valid:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace(v))
+
+    def test_none_value(self):
+        # None should be ignored without raising an exception
+        validators.validate_drain_batch_size(DrainBatchSizeNamespace(None))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("foobar"))
+        self.assertTrue("integer or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_invalid_percentage_format(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("50percent"))
+        self.assertTrue("integer or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_zero(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("0"))
+        self.assertTrue("non-zero value" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_zero_percentage(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("0%"))
+        self.assertTrue("non-zero value" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("-3"))
+        self.assertTrue("non-zero value" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative_percentage(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("-5%"))
+        self.assertTrue("non-zero value" in str(cm.exception), msg=str(cm.exception))
+
+    def test_edge_cases(self):
+        # Test edge cases that should be valid
+        valid_edge_cases = ["1", "1%", "999", "999%"]
+        for v in valid_edge_cases:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace(v))
+
+    def test_large_numbers(self):
+        # Test large numbers that should still be valid
+        large_valid = ["1000", "1000%", "9999"]
+        for v in large_valid:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace(v))
 
 
 class TestSpotMaxPrice(unittest.TestCase):

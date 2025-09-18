@@ -109,6 +109,10 @@ CONST_PATCH_UPGRADE_CHANNEL = "patch"
 CONST_NODE_IMAGE_UPGRADE_CHANNEL = "node-image"
 CONST_NONE_UPGRADE_CHANNEL = "none"
 
+# consts for upgrade strategy
+CONST_UPGRADE_STRATEGY_ROLLING = "Rolling"
+CONST_UPGRADE_STRATEGY_BLUE_GREEN = "BlueGreen"
+
 # consts for node os upgrade channel
 CONST_NODE_OS_CHANNEL_NODE_IMAGE = "NodeImage"
 CONST_NODE_OS_CHANNEL_NONE = "None"

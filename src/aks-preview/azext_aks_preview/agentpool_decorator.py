@@ -488,6 +488,105 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return undrainable_node_behavior
 
+    def get_upgrade_strategy(self) -> Union[str, None]:
+        """Obtain the value of upgrade_strategy.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        upgrade_strategy = self.raw_param.get("upgrade_strategy")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_strategy is not None
+            ):
+                upgrade_strategy = self.agentpool.upgrade_strategy
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return upgrade_strategy
+
+    def get_drain_batch_size(self) -> Union[str, None]:
+        """Obtain the value of drain_batch_size.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        drain_batch_size = self.raw_param.get("drain_batch_size")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings_blue_green is not None and
+                self.agentpool.upgrade_settings_blue_green.drain_batch_size is not None
+            ):
+                drain_batch_size = self.agentpool.upgrade_settings_blue_green.drain_batch_size
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return drain_batch_size
+
+    def get_drain_timeout_bg(self) -> Union[int, None]:
+        """Obtain the value of drain_timeout_bg.
+
+        :return: int or None
+        """
+        # read the original value passed by the command
+        drain_timeout_bg = self.raw_param.get("drain_timeout_bg")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings_blue_green is not None and
+                self.agentpool.upgrade_settings_blue_green.drain_timeout_in_minutes is not None
+            ):
+                drain_timeout_bg = self.agentpool.upgrade_settings_blue_green.drain_timeout_in_minutes
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return drain_timeout_bg
+
+    def get_batch_soak_duration(self) -> Union[int, None]:
+        """Obtain the value of batch_soak_duration.
+
+        :return: int or None
+        """
+        # read the original value passed by the command
+        batch_soak_duration = self.raw_param.get("batch_soak_duration")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings_blue_green is not None and
+                self.agentpool.upgrade_settings_blue_green.batch_soak_duration_in_minutes is not None
+            ):
+                batch_soak_duration = self.agentpool.upgrade_settings_blue_green.batch_soak_duration_in_minutes
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return batch_soak_duration
+
+    def get_final_soak_duration(self) -> Union[int, None]:
+        """Obtain the value of final_soak_duration.
+
+        :return: int or None
+        """
+        # read the original value passed by the command
+        final_soak_duration = self.raw_param.get("final_soak_duration")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings_blue_green is not None and
+                self.agentpool.upgrade_settings_blue_green.final_soak_duration_in_minutes is not None
+            ):
+                final_soak_duration = self.agentpool.upgrade_settings_blue_green.final_soak_duration_in_minutes
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return final_soak_duration
+
     def get_max_unavailable(self) -> str:
         """Obtain the value of max_unavailable.
 
@@ -1447,8 +1546,26 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_virtual_machines_profile(agentpool)
         # set up local DNS profile
         agentpool = self.set_up_localdns_profile(agentpool)
+        # set up upgrade strategy
+        agentpool = self.set_up_upgrade_strategy(agentpool)
+        # set up blue green upgrade settings
+        agentpool = self.set_up_blue_green_upgrade_settings(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
+        return agentpool
+
+    def set_up_upgrade_strategy(self, agentpool: AgentPool) -> AgentPool:
+        """Set up upgrade strategy for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        # Set upgrade strategy (root-level agentpool property)
+        upgrade_strategy = self.context.get_upgrade_strategy()
+        if upgrade_strategy:
+            agentpool.upgrade_strategy = upgrade_strategy
+
         return agentpool
 
     def set_up_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
@@ -1484,6 +1601,37 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             upgrade_settings.max_blocked_nodes = max_blocked_nodes
 
         agentpool.upgrade_settings = upgrade_settings
+        return agentpool
+
+    def set_up_blue_green_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
+        """Set up blue-green upgrade settings for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        blue_green_upgrade_settings = self.models.AgentPoolBlueGreenUpgradeSettings()  # pylint: disable=no-member
+
+        # Set each field if provided in context
+        drain_batch_size = self.context.get_drain_batch_size()
+        if drain_batch_size is not None:
+            blue_green_upgrade_settings.drain_batch_size = drain_batch_size
+
+        drain_timeout_bg = self.context.get_drain_timeout_bg()
+        if drain_timeout_bg is not None:
+            blue_green_upgrade_settings.drain_timeout_in_minutes = drain_timeout_bg
+
+        batch_soak_duration = self.context.get_batch_soak_duration()
+        if batch_soak_duration is not None:
+            blue_green_upgrade_settings.batch_soak_duration_in_minutes = batch_soak_duration
+
+        final_soak_duration = self.context.get_final_soak_duration()
+        if final_soak_duration is not None:
+            blue_green_upgrade_settings.final_soak_duration_in_minutes = final_soak_duration
+
+        # Set the blue-green upgrade settings as a separate property on agentpool
+        agentpool.upgrade_settings_blue_green = blue_green_upgrade_settings
+
         return agentpool
 
 
@@ -1683,6 +1831,19 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             )
         return agentpool
 
+    def update_upgrade_strategy(self, agentpool: AgentPool) -> AgentPool:
+        """Update upgrade strategy for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        upgrade_strategy = self.context.get_upgrade_strategy()
+        if upgrade_strategy is not None:
+            agentpool.upgrade_strategy = upgrade_strategy
+
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -1732,6 +1893,12 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update auto scaler related properties for vms pool
         agentpool = self.update_auto_scaler_properties_vms(agentpool)
+
+        # update upgrade strategy
+        agentpool = self.update_upgrade_strategy(agentpool)
+
+        # update blue-green upgrade settings
+        agentpool = self.update_blue_green_upgrade_settings(agentpool)
 
         return agentpool
 
@@ -1867,6 +2034,47 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         max_unavailable = self.context.get_max_unavailable()
         if max_unavailable:
             upgrade_settings.max_unavailable = max_unavailable
+
+        return agentpool
+
+    def update_blue_green_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
+        """Update blue-green upgrade settings for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        # Get blue-green upgrade parameters from context
+        drain_timeout_bg = self.context.get_drain_timeout_bg()
+        batch_soak_duration = self.context.get_batch_soak_duration()
+        final_soak_duration = self.context.get_final_soak_duration()
+        drain_batch_size = self.context.get_drain_batch_size()
+
+        should_mutate = False
+        # Initialize blue-green upgrade settings with existing values as defaults
+        upgrade_settings_blue_green = agentpool.upgrade_settings_blue_green
+        if upgrade_settings_blue_green is None:
+            upgrade_settings_blue_green = self.models.AgentPoolBlueGreenUpgradeSettings()  # pylint: disable=no-member
+
+        if drain_batch_size is not None:
+            upgrade_settings_blue_green.drain_batch_size = drain_batch_size
+            should_mutate = True
+
+        if drain_timeout_bg is not None:
+            upgrade_settings_blue_green.drain_timeout_in_minutes = drain_timeout_bg
+            should_mutate = True
+
+        if batch_soak_duration is not None:
+            upgrade_settings_blue_green.batch_soak_duration_in_minutes = batch_soak_duration
+            should_mutate = True
+
+        if final_soak_duration is not None:
+            upgrade_settings_blue_green.final_soak_duration_in_minutes = final_soak_duration
+            should_mutate = True
+
+        # Set the blue-green upgrade settings as a separate property on agentpool
+        if should_mutate:
+            agentpool.upgrade_settings_blue_green = upgrade_settings_blue_green
 
         return agentpool
 
