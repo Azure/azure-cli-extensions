@@ -28,7 +28,7 @@ def aks_agent(
     show_tool_output=False,
     refresh_toolsets=False,
     status=False,
-    no_aks_mcp=False,
+    use_aks_mcp=False,
 ):
     # If only status is requested, display and return early
     if status:
@@ -47,7 +47,7 @@ def aks_agent(
         no_echo_request,
         show_tool_output,
         refresh_toolsets,
-        no_aks_mcp,
+        use_aks_mcp=use_aks_mcp,
     )
 
 
@@ -237,7 +237,7 @@ def _get_recommendations(status_info):
         if binary_info.get("available"):
             recommendations.append(
                 "Consider using MCP mode for enhanced capabilities by running 'az aks agent' "
-                "(remove --no-aks-mcp if used)"
+                "(run again with --aks-mcp to switch modes)"
             )
         else:
             recommendations.append("✅ AKS agent is ready in traditional mode")

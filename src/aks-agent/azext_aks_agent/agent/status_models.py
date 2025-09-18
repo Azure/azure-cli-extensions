@@ -242,7 +242,7 @@ class AgentStatus:
         # Traditional mode specific recommendations
         elif self.config.is_traditional_mode:
             if self.mcp_binary.ready:
-                recommendations.append("Consider using MCP mode for enhanced capabilities (remove --no-aks-mcp)")
+                recommendations.append("Consider using MCP mode for enhanced capabilities (run with --aks-mcp)")
 
         # General recommendations
         if not self.config.config_valid:

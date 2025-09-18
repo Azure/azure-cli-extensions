@@ -454,7 +454,7 @@ class AksMcpBinaryManager:
                     "PLATFORM_UNSUPPORTED",
                     [
                         "Check if your platform is supported by the aks-mcp project",
-                        "Try using --no-aks-mcp to disable MCP integration",
+                        "Run without --aks-mcp to stay in traditional mode",
                         f"Manually install the binary from {self.GITHUB_RELEASES_URL} if available"
                     ]
                 )

@@ -11,7 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+1.0.0b3
++++++++
+* Disable aks-mcp by default, offer --aks-mcp flag to enable it.
 * Don't print version check at bottom toolbar
+
 
 1.0.0b2
 +++++++
@@ -20,7 +25,7 @@ Pending
 * Introduce dual-mode operation: MCP mode (enhanced) and Traditional mode (built-in toolsets), with mode-specific system prompts.
 * Implement smart toolset refresh strategy with persisted mode state to avoid unnecessary refresh on repeated runs.
 * Add `--no-aks-mcp` flag to force Traditional mode when desired.
-* Add `az aks agent status` command to display MCP binary availability/version, server health, and overall mode/readiness.
+* Add `az aks agent --status` command to display MCP binary availability/version, server health, and overall mode/readiness.
 * Add structured error handling with user-friendly messages and actionable suggestions for MCP/binary/server/config errors.
 * Port and adapt comprehensive unit tests covering binary manager, MCP manager, configuration generation/validation, status models/collection, error handling, user feedback, parameters, smart refresh, MCP integration, and status command.
 

@@ -18,6 +18,7 @@ Key capabilities
 - Configurable via a JSON/YAML config file provided with --config-file.
 - Control echo and tool output visibility with --no-echo-request and --show-tool-output.
 - Refresh the available toolsets with --refresh-toolsets.
+- Stay in traditional toolset mode by default, or opt in to aks-mcp integration with ``--aks-mcp`` when you need the enhanced capabilities.
 
 Prerequisites
 -------------
@@ -62,6 +63,15 @@ Run in non-interactive batch mode
 .. code-block:: bash
 
     az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/my-gpt4.1-deployment
+
+Opt in to MCP mode
+------------------
+
+Traditional toolsets remain the default. Enable the aks-mcp integration when you want the enhanced toolsets by passing ``--aks-mcp``. You can return to traditional mode on a subsequent run with ``--no-aks-mcp``.
+
+.. code-block:: bash
+
+    az aks agent --aks-mcp "Check node health with MCP" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
 
 Using a configuration file
 --------------------------

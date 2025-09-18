@@ -126,7 +126,7 @@ def aks_agent(
     no_echo_request,
     show_tool_output,
     refresh_toolsets,
-    no_aks_mcp=False,
+    use_aks_mcp=False,
 ):
     """
     Interact with the AKS agent using a prompt or piped input.
@@ -147,8 +147,8 @@ def aks_agent(
     :type show_tool_output: bool
     :param refresh_toolsets: Refresh the toolsets status.
     :type refresh_toolsets: bool
-    :param no_aks_mcp: Disable AKS MCP integration and use traditional toolsets.
-    :type no_aks_mcp: bool
+    :param use_aks_mcp: Enable AKS MCP integration and use enhanced toolsets.
+    :type use_aks_mcp: bool
     """
 
     with CLITelemetryClient():
@@ -177,7 +177,7 @@ def aks_agent(
                 interactive = False
 
         # Determine MCP mode and smart refresh logic
-        use_aks_mcp = not no_aks_mcp
+        use_aks_mcp = bool(use_aks_mcp)
         current_mode = "mcp" if use_aks_mcp else "traditional"
         smart_refresh = _should_refresh_toolsets(current_mode, refresh_toolsets)
 
@@ -293,7 +293,7 @@ def _initialize_mcp_manager(verbose: bool = False):
             [
                 "Ensure all required dependencies are installed",
                 "Try reinstalling the aks-preview extension",
-                "Use --no-aks-mcp flag to disable MCP integration"
+                "Use --aks-mcp flag to enable MCP integration"
             ]
         )
 
