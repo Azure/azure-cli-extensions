@@ -16,13 +16,13 @@ Pending
   - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades. 
   - `az aks nodepool add/update/upgrade`: Add `--drain-batch-size`, `--drain-timeout-bg`, `--batch-soak-duration`, `--final-soak-duration` parameters to configure blue-green upgrade settings.
 
-18.0.0b38
+18.0.0b39
 +++++++
-* Add option `--acns-datapath-acceleration-mode <None|BpfVeth>` to `az aks create/update`
+* Add option `AzureLinuxOSGuard` and `AzureLinux3OSGuard` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
 18.0.0b38
 +++++++
-* Add option `AzureLinuxOSGuard` and `AzureLinux3OSGuard` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+* Add option `--acns-datapath-acceleration-mode <None|BpfVeth>` to `az aks create/update`
 
 18.0.0b37
 +++++++
