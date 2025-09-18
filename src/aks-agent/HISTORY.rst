@@ -11,12 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Don't print version check at bottom toolbar
 
 1.0.0b3
 +++++++
-
 * Disable aks-mcp by default, offer --aks-mcp flag to enable it.
+* Don't print version check at bottom toolbar
+
 
 1.0.0b2
 +++++++
