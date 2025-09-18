@@ -18,15 +18,14 @@ logger = get_logger(__name__)
 
 class CryptoCertificate(_CryptoCertificate):
     def _output(self, *args, **kwargs):
-        from azure.cli.core.aaz import AAZUndefined
-        from azure.cli.core.aaz import has_value
 
+        # for 2025-08-02 this was no longer needed, and caused cli errors
         # resolve flatten conflict
         # when the type field conflicts, the type in inner layer is ignored and the outer layer is applied
-        for item in self.ctx.vars.instance.value:
-            props = item.properties
-            if has_value(props.name):
-                props.name = AAZUndefined
+        # for item in self.ctx.vars.instance.value:
+        #     props = item.properties
+        #     if has_value(props.name):
+        #         props.name = AAZUndefined
 
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
@@ -36,15 +35,14 @@ class CryptoCertificate(_CryptoCertificate):
 
 class Cve(_Cve):
     def _output(self, *args, **kwargs):
-        from azure.cli.core.aaz import AAZUndefined
-        from azure.cli.core.aaz import has_value
 
+        # for 2025-08-02 this was no longer needed, and caused cli errors
         # resolve flatten conflict
         # when the type field conflicts, the type in inner layer is ignored and the outer layer is applied
-        for item in self.ctx.vars.instance.value:
-            props = item.properties
-            if has_value(props.name):
-                props.name = AAZUndefined
+        # for item in self.ctx.vars.instance.value:
+        #     props = item.properties
+        #     if has_value(props.name):
+        #         props.name = AAZUndefined
 
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
