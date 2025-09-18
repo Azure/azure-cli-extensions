@@ -587,9 +587,6 @@ helps['aks create'] = f"""
         - name: --enable-azure-monitor-app-monitoring
           type: bool
           short-summary: Enable Azure Monitor Application Monitoring
-        - name: --enable-azure-monitor-logs
-          type: bool
-          short-summary: Enable Azure Monitor logs collection (equivalent to enabling the monitoring addon)
         - name: --enable-opentelemetry-metrics
           type: bool
           short-summary: Enable OpenTelemetry metrics collection. Requires Azure Monitor metrics to be enabled.
@@ -1211,12 +1208,6 @@ helps['aks update'] = """
         - name: --disable-azure-monitor-app-monitoring
           type: bool
           short-summary: Disable Azure Monitor Application Monitoring
-        - name: --enable-azure-monitor-logs
-          type: bool
-          short-summary: Enable Azure Monitor logs collection (equivalent to enabling the monitoring addon)
-        - name: --disable-azure-monitor-logs
-          type: bool
-          short-summary: Disable Azure Monitor logs collection (equivalent to disabling the monitoring addon)
         - name: --enable-opentelemetry-metrics
           type: bool
           short-summary: Enable OpenTelemetry metrics collection. Requires Azure Monitor metrics to be enabled.

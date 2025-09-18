@@ -1038,8 +1038,6 @@ def validate_opentelemetry_logs_dependencies(namespace):
     """Validate OpenTelemetry logs dependencies for create operations."""
     enable_otlp_logs = getattr(namespace, 'enable_opentelemetry_logs', False)
     disable_otlp_logs = getattr(namespace, 'disable_opentelemetry_logs', False)
-    # Azure Monitor logs parameter may come from parent class or be set directly
-    enable_azure_monitor_logs = getattr(namespace, 'enable_azure_monitor_logs', False)
 
     # Check mutual exclusion
     if enable_otlp_logs and disable_otlp_logs:
@@ -1047,13 +1045,8 @@ def validate_opentelemetry_logs_dependencies(namespace):
             "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
         )
 
-    # Check if trying to enable OTLP logs without Azure Monitor logs
-    # For create operations, require explicit Azure Monitor enablement
-    if enable_otlp_logs and not enable_azure_monitor_logs:
-        raise ArgumentUsageError(
-            "OpenTelemetry logs requires Azure Monitor logs to be enabled. "
-            "Please add --enable-azure-monitor-logs to your command."
-        )
+    # Note: For create operations, OpenTelemetry logs dependencies are validated 
+    # at runtime by checking for monitoring addon enablement
 
 
 def validate_opentelemetry_logs_dependencies_for_update(namespace):

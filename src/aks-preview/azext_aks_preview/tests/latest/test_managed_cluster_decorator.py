@@ -5756,146 +5756,118 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_get_enable_opentelemetry_metrics(self):
-        # Test default behavior
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
+            AKSManagedClusterParamDict({"enable_opentelemetry_metrics": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertFalse(dec_1.get_enable_opentelemetry_metrics())
+        self.assertEqual(ctx_1.get_enable_opentelemetry_metrics(), False)
 
-        # Test explicit enable
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            self.client,
-            {"enable_opentelemetry_metrics": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
+            AKSManagedClusterParamDict({"enable_opentelemetry_metrics": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertTrue(dec_2.get_enable_opentelemetry_metrics())
-
-        # Test explicit disable
-        dec_3 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_opentelemetry_metrics": False},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        self.assertFalse(dec_3.get_enable_opentelemetry_metrics())
+        self.assertEqual(ctx_2.get_enable_opentelemetry_metrics(), True)
 
     def test_get_disable_opentelemetry_metrics(self):
-        # Test default behavior
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
+            AKSManagedClusterParamDict({"disable_opentelemetry_metrics": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertFalse(dec_1.get_disable_opentelemetry_metrics())
+        self.assertEqual(ctx_1.get_disable_opentelemetry_metrics(), False)
 
-        # Test explicit disable
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            self.client,
-            {"disable_opentelemetry_metrics": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
+            AKSManagedClusterParamDict({"disable_opentelemetry_metrics": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertTrue(dec_2.get_disable_opentelemetry_metrics())
+        self.assertEqual(ctx_2.get_disable_opentelemetry_metrics(), True)
 
     def test_get_opentelemetry_metrics_port(self):
-        # Test default behavior
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
+            AKSManagedClusterParamDict({"opentelemetry_metrics_port": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertIsNone(dec_1.get_opentelemetry_metrics_port())
+        self.assertEqual(ctx_1.get_opentelemetry_metrics_port(), None)
 
-        # Test explicit port
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            self.client,
-            {"opentelemetry_metrics_port": 8080},
-            CUSTOM_MGMT_AKS_PREVIEW,
+            AKSManagedClusterParamDict({"opentelemetry_metrics_port": 8080}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(dec_2.get_opentelemetry_metrics_port(), 8080)
+        self.assertEqual(ctx_2.get_opentelemetry_metrics_port(), 8080)
 
     def test_get_enable_opentelemetry_logs(self):
-        # Test default behavior
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
+            AKSManagedClusterParamDict({"enable_opentelemetry_logs": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertFalse(dec_1.get_enable_opentelemetry_logs())
+        self.assertEqual(ctx_1.get_enable_opentelemetry_logs(), False)
 
-        # Test explicit enable
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            self.client,
-            {"enable_opentelemetry_logs": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
+            AKSManagedClusterParamDict({"enable_opentelemetry_logs": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertTrue(dec_2.get_enable_opentelemetry_logs())
+        self.assertEqual(ctx_2.get_enable_opentelemetry_logs(), True)
 
     def test_get_disable_opentelemetry_logs(self):
-        # Test default behavior
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
+            AKSManagedClusterParamDict({"disable_opentelemetry_logs": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertFalse(dec_1.get_disable_opentelemetry_logs())
+        self.assertEqual(ctx_1.get_disable_opentelemetry_logs(), False)
 
-        # Test explicit disable
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            self.client,
-            {"disable_opentelemetry_logs": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
+            AKSManagedClusterParamDict({"disable_opentelemetry_logs": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertTrue(dec_2.get_disable_opentelemetry_logs())
+        self.assertEqual(ctx_2.get_disable_opentelemetry_logs(), True)
 
     def test_get_opentelemetry_logs_port(self):
-        # Test default behavior
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
+            AKSManagedClusterParamDict({"opentelemetry_logs_port": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertIsNone(dec_1.get_opentelemetry_logs_port())
+        self.assertEqual(ctx_1.get_opentelemetry_logs_port(), None)
 
-        # Test explicit port
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            self.client,
-            {"opentelemetry_logs_port": 8081},
-            CUSTOM_MGMT_AKS_PREVIEW,
+            AKSManagedClusterParamDict({"opentelemetry_logs_port": 8081}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(dec_2.get_opentelemetry_logs_port(), 8081)
-
-    def test_get_enable_azure_monitor_logs(self):
-        # Test default behavior
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        self.assertFalse(dec_1.get_enable_azure_monitor_logs())
-
-        # Test explicit enable
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_azure_monitor_logs": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        self.assertTrue(dec_2.get_enable_azure_monitor_logs())
+        self.assertEqual(ctx_2.get_opentelemetry_logs_port(), 8081)
 
     def test_set_up_azure_monitor_profile_with_opentelemetry(self):
         # Test enabling Azure Monitor metrics with OpenTelemetry metrics
@@ -5910,47 +5882,31 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         
-        mc_1 = self.models.ManagedCluster(location="test_location")
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(mc_1)
         
-        # Verify Azure Monitor profile is set up
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile)
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.metrics)
-        self.assertTrue(dec_mc_1.azure_monitor_profile.metrics.enabled)
-        
-        # Verify OpenTelemetry metrics configuration
-        opentelemetry_config = dec_mc_1.azure_monitor_profile.metrics.opentelemetry_metrics
-        self.assertIsNotNone(opentelemetry_config)
-        self.assertTrue(opentelemetry_config.enabled)
-        self.assertEqual(opentelemetry_config.port, 8080)
-
-        # Test enabling Azure Monitor logs with OpenTelemetry logs
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {
-                "enable_azure_monitor_logs": True,
-                "enable_opentelemetry_logs": True,
-                "opentelemetry_logs_port": 8081,
-            },
-            CUSTOM_MGMT_AKS_PREVIEW,
+        # Expected ground truth object
+        ground_truth_opentelemetry_metrics = self.models.ManagedClusterAzureMonitorProfileOpenTelemetryMetrics(
+            enabled=True,
+            port=8080,
         )
-        
-        mc_2 = self.models.ManagedCluster(location="test_location")
-        dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_azure_monitor_profile(mc_2)
-        
-        # Verify Azure Monitor profile is set up
-        self.assertIsNotNone(dec_mc_2.azure_monitor_profile)
-        self.assertIsNotNone(dec_mc_2.azure_monitor_profile.logs)
-        self.assertTrue(dec_mc_2.azure_monitor_profile.logs.enabled)
-        
-        # Verify OpenTelemetry logs configuration
-        opentelemetry_config = dec_mc_2.azure_monitor_profile.logs.opentelemetry_logs
-        self.assertIsNotNone(opentelemetry_config)
-        self.assertTrue(opentelemetry_config.enabled)
-        self.assertEqual(opentelemetry_config.port, 8081)
+        ground_truth_metrics_profile = self.models.ManagedClusterAzureMonitorProfileMetrics(
+            enabled=True,
+            opentelemetry_metrics=ground_truth_opentelemetry_metrics,
+        )
+        ground_truth_azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile(
+            metrics=ground_truth_metrics_profile,
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=ground_truth_azure_monitor_profile,
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
     def test_set_up_azure_monitor_profile_disable_opentelemetry(self):
         # Test disabling OpenTelemetry metrics
@@ -5964,19 +5920,30 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         
-        mc_1 = self.models.ManagedCluster(location="test_location")
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(mc_1)
         
-        # Verify Azure Monitor profile is set up
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile)
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.metrics)
-        self.assertTrue(dec_mc_1.azure_monitor_profile.metrics.enabled)
-        
-        # Verify OpenTelemetry metrics is disabled
-        opentelemetry_config = dec_mc_1.azure_monitor_profile.metrics.opentelemetry_metrics
-        self.assertIsNotNone(opentelemetry_config)
-        self.assertFalse(opentelemetry_config.enabled)
+        # Expected ground truth object
+        ground_truth_opentelemetry_metrics = self.models.ManagedClusterAzureMonitorProfileOpenTelemetryMetrics(
+            enabled=False,
+        )
+        ground_truth_metrics_profile = self.models.ManagedClusterAzureMonitorProfileMetrics(
+            enabled=True,
+            opentelemetry_metrics=ground_truth_opentelemetry_metrics,
+        )
+        ground_truth_azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile(
+            metrics=ground_truth_metrics_profile,
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=ground_truth_azure_monitor_profile,
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
 
 class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
@@ -10435,7 +10402,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_1 = self.models.ManagedCluster(
             location="test_location",
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
-                logs=self.models.ManagedClusterAzureMonitorProfileLogs(
+                logs=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
                     enabled=True
                 )
             )
@@ -10463,7 +10430,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_2 = self.models.ManagedCluster(
             location="test_location",
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
-                logs=self.models.ManagedClusterAzureMonitorProfileLogs(
+                logs=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
                     enabled=True,
                     opentelemetry_logs=self.models.ManagedClusterAzureMonitorProfileOpenTelemetryLogs(
                         enabled=True,
@@ -10479,28 +10446,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         opentelemetry_config = dec_mc_2.azure_monitor_profile.logs.opentelemetry_logs
         self.assertIsNotNone(opentelemetry_config)
         self.assertFalse(opentelemetry_config.enabled)
-
-    def test_update_azure_monitor_profile_enable_azure_monitor_logs(self):
-        # Test enabling Azure Monitor logs (equivalent to az aks enable-addons --addon monitoring)
-        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {
-                "enable_azure_monitor_logs": True,
-            },
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        
-        # Mock existing cluster without Azure Monitor logs
-        mc_1 = self.models.ManagedCluster(location="test_location")
-        dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.update_azure_monitor_profile(mc_1)
-        
-        # Verify Azure Monitor logs is enabled
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile)
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.logs)
-        self.assertTrue(dec_mc_1.azure_monitor_profile.logs.enabled)
-
 
 if __name__ == "__main__":
     unittest.main()

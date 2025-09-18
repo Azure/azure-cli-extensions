@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `--enable-opentelemetry-metrics`` and `--enable-opentelemetry-logs`` to monitoring addons and disable counterparts.
 
 18.0.0b36
 +++++++
