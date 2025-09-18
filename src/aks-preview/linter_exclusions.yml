@@ -99,6 +99,9 @@ aks create:
     acns_advanced_networkpolicies:
       rule_exclusions:
         - option_length_too_long
+    acns_datapath_acceleration_mode:
+      rule_exclusions:
+        - option_length_too_long
     acns_transit_encryption_type:
       rule_exclusions:
         - option_length_too_long
@@ -243,6 +246,9 @@ aks update:
       rule_exclusions:  
         - option_length_too_long
     acns_advanced_networkpolicies:
+      rule_exclusions:
+        - option_length_too_long
+    acns_datapath_acceleration_mode:
       rule_exclusions:
         - option_length_too_long
     acns_transit_encryption_type:
