@@ -17560,7 +17560,6 @@ spec:
             ],
         )
 
-    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_autoscaler_then_update_vms_pool(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
@@ -17774,6 +17773,7 @@ spec:
             ],
         )
 
+        
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
@@ -17866,3 +17866,102 @@ spec:
                 self.is_empty(),
             ],
         )
+    
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_jwtauthenticator_cmds(self, resource_group, resource_group_location):
+        # reset the count so that in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+        jwt_auth_name = self.create_random_name('jwt', 10)
+
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'jwt_auth_name': jwt_auth_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'jwt_config_file': _get_test_data_file('jwtauthenticator.json'),
+        })
+
+        # Create AKS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--enable-managed-identity --ssh-key-value={ssh_key_value} --node-count=1 "
+        )
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # Add JWT authenticator
+        # ideally we should poll the JWT authenticator resource until it is created instead of using sleep,
+        # but since feature is not registered in subscription and requests from polling don't use custom headers,
+        # we have to use --no-wait and then sleep to bypass registered feature validation
+        add_jwt_cmd = (
+            "aks jwtauthenticator add --resource-group={resource_group} --cluster-name={name} "
+            "--name={jwt_auth_name} --config-file={jwt_config_file} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
+            "--no-wait" 
+        )
+
+        time.sleep(60 * 2) # wait for 30s so JWT authenticator resource is created before show/list/update 
+
+        self.cmd(add_jwt_cmd)
+
+        # Show JWT authenticator
+        show_jwt_cmd = (
+            "aks jwtauthenticator show --resource-group={resource_group} --cluster-name={name} "
+            "--name={jwt_auth_name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
+        )
+        self.cmd(show_jwt_cmd, checks=[
+            self.check('properties.provisioningState', 'Succeeded'), # disable bc reconcile overlay is broken, wont succeed
+            self.check('name', '{jwt_auth_name}'),
+            self.check('properties.issuer.url', 'https://token.actions.githubusercontent.com'),
+            self.check('properties.issuer.audiences[0]', 'https://github.com/myorg'),
+            self.check('properties.claimMappings.username.expression', 'claims.sub'),
+            self.check('properties.claimMappings.groups.expression', 'claims.aud'),
+        ])
+
+        # List JWT authenticators
+        list_jwt_cmd = (
+            "aks jwtauthenticator list --resource-group={resource_group} --cluster-name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
+        )
+        jwt_list = self.cmd(list_jwt_cmd).get_output_in_json()
+        assert len(jwt_list) == 1
+        assert jwt_list[0]['name'] == jwt_auth_name
+
+        # Update JWT authenticator with same config file (should succeed)
+        update_jwt_cmd = (
+            "aks jwtauthenticator update --resource-group={resource_group} --cluster-name={name} "
+            "--name={jwt_auth_name} --config-file={jwt_config_file} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
+        )
+        self.cmd(update_jwt_cmd, checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('name', '{jwt_auth_name}'),
+        ])
+
+        # Delete JWT authenticator
+        delete_jwt_cmd = (
+            "aks jwtauthenticator delete --resource-group={resource_group} --cluster-name={name} "
+            "--name={jwt_auth_name} --yes "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
+        )
+        self.cmd(delete_jwt_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        # Verify JWT authenticator is deleted
+        list_after_delete_cmd = (
+            "aks jwtauthenticator list --resource-group={resource_group} --cluster-name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
+        )
+        jwt_list_after_delete = self.cmd(list_after_delete_cmd).get_output_in_json()
+        assert len(jwt_list_after_delete) == 0
+
+        

@@ -2907,6 +2907,27 @@ def load_arguments(self, _):
             action="store_true",
         )
 
+    # JWT Authenticator commands
+    with self.argument_context("aks jwtauthenticator") as c:
+        c.argument("cluster_name", help="The cluster name.")
+        c.argument(
+            "aks_custom_headers",
+            help="Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.",
+        )
+
+    for scope in ['aks jwtauthenticator add', 
+                  'aks jwtauthenticator update', 
+                  'aks jwtauthenticator delete', 
+                  'aks jwtauthenticator show']:
+        with self.argument_context(scope) as c:
+            c.argument('name', options_list=['--name', '-n'], required=True, help='Name of the JWT authenticator.')
+
+    for scope in ['aks jwtauthenticator add', 
+                  'aks jwtauthenticator update']:
+        with self.argument_context(scope) as c:
+            c.argument('config_file', options_list=['--config-file'], type=file_type, completer=FilesCompleter(), 
+                  help='Path to the JSON configuration file containing JWT authenticator properties.')
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
