@@ -987,6 +987,7 @@ def load_arguments(self, _):
                 hide=True,
             ),
         )
+        c.argument("enable_azure_monitor_metrics", action="store_true")
         c.argument(
             "azure_monitor_workspace_resource_id",
             validator=validate_azuremonitorworkspaceresourceid,
@@ -996,26 +997,22 @@ def load_arguments(self, _):
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
         c.argument("enable_azure_monitor_app_monitoring",
-                   options_list=["--enable-azure-monitor-app-monitoring"],
                    is_preview=True,
                    action="store_true"
                    )
         # OpenTelemetry parameters
         c.argument("enable_opentelemetry_metrics",
-                   options_list=["--enable-opentelemetry-metrics"],
                    is_preview=True,
                    action="store_true",
                    help="Enable OpenTelemetry metrics collection",
                    validator=validate_azure_monitor_and_opentelemetry_for_create
                    )
         c.argument("opentelemetry_metrics_port",
-                   options_list=["--opentelemetry-metrics-port"],
                    is_preview=True,
                    type=int,
                    help="Port for OpenTelemetry metrics collection"
                    )
         c.argument("disable_opentelemetry_metrics",
-                   options_list=["--disable-opentelemetry-metrics"],
                    is_preview=True,
                    action="store_true",
                    help="Disable OpenTelemetry metrics collection"
@@ -1027,13 +1024,11 @@ def load_arguments(self, _):
                    help="Enable OpenTelemetry logs collection"
                    )
         c.argument("opentelemetry_logs_port",
-                   options_list=["--opentelemetry-logs-port"],
                    is_preview=True,
                    type=int,
                    help="Port for OpenTelemetry logs collection"
                    )
         c.argument("disable_opentelemetry_logs",
-                   options_list=["--disable-opentelemetry-logs"],
                    is_preview=True,
                    action="store_true",
                    help="Disable OpenTelemetry logs collection"
@@ -1408,49 +1403,40 @@ def load_arguments(self, _):
             ),
         )
         c.argument("enable_azure_monitor_app_monitoring",
-                   options_list=["--enable-azure-monitor-app-monitoring"],
                    action="store_true",
                    is_preview=True
                    )
         c.argument("disable_azure_monitor_app_monitoring",
-                   options_list=["--disable-azure-monitor-app-monitoring"],
                    action="store_true",
                    is_preview=True
                    )
         # OpenTelemetry parameters
         c.argument("enable_opentelemetry_metrics",
-                   options_list=["--enable-opentelemetry-metrics"],
                    is_preview=True,
                    action="store_true",
                    help="Enable OpenTelemetry metrics collection",
-                   validator=validate_azure_monitor_and_opentelemetry_for_update
                    )
         c.argument("opentelemetry_metrics_port",
-                   options_list=["--opentelemetry-metrics-port"],
                    is_preview=True,
                    type=int,
                    help="Port for OpenTelemetry metrics collection"
                    )
         c.argument("disable_opentelemetry_metrics",
-                   options_list=["--disable-opentelemetry-metrics"],
                    is_preview=True,
                    action="store_true",
                    help="Disable OpenTelemetry metrics collection"
                    )
         c.argument("enable_opentelemetry_logs",
-                   options_list=["--enable-opentelemetry-logs"],
                    is_preview=True,
                    action="store_true",
                    help="Enable OpenTelemetry logs collection"
                    )
         c.argument("opentelemetry_logs_port",
-                   options_list=["--opentelemetry-logs-port"],
                    is_preview=True,
                    type=int,
                    help="Port for OpenTelemetry logs collection"
                    )
         c.argument("disable_opentelemetry_logs",
-                   options_list=["--disable-opentelemetry-logs"],
                    is_preview=True,
                    action="store_true",
                    help="Disable OpenTelemetry logs collection"

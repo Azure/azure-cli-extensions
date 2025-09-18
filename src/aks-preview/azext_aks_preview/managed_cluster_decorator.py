@@ -2062,14 +2062,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def _get_enable_azure_monitor_metrics(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_azure_monitor_metrics.
-        Delegates to parent class if method exists, otherwise uses legacy azuremonitormetrics parameter.
+        This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_metrics and
+        disable_azure_monitor_metrics are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
         """
-        if hasattr(super(), '_get_enable_azure_monitor_metrics'):
-            return super()._get_enable_azure_monitor_metrics(enable_validation)
-
-        # Fallback to legacy parameter for backward compatibility
-        enable_azure_monitor_metrics = self.raw_param.get("enable_azuremonitormetrics")
-
+        # Read the original value passed by the command.
+        # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
+        enable_azure_monitor_metrics = (
+            self.raw_param.get("enable_azure_monitor_metrics") or
+            self.raw_param.get("enable_azuremonitormetrics")
+        )
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -2096,22 +2098,24 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def get_enable_azure_monitor_metrics(self) -> bool:
         """Obtain the value of enable_azure_monitor_metrics.
-        Delegates to parent class if method exists.
+        This function will verify the parameter by default. If both enable_azure_monitor_metrics and
+        disable_azure_monitor_metrics are specified, raise a MutuallyExclusiveArgumentError.
         :return: bool
         """
-        if hasattr(super(), 'get_enable_azure_monitor_metrics'):
-            return super().get_enable_azure_monitor_metrics()
         return self._get_enable_azure_monitor_metrics(enable_validation=True)
 
     def _get_disable_azure_monitor_metrics(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of disable_azure_monitor_metrics.
-        Delegates to parent class if method exists, otherwise uses legacy azuremonitormetrics parameter.
+        This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_metrics and
+        disable_azure_monitor_metrics are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
         """
-        if hasattr(super(), '_get_disable_azure_monitor_metrics'):
-            return super()._get_disable_azure_monitor_metrics(enable_validation)
-
-        # Fallback to legacy parameter for backward compatibility
-        disable_azure_monitor_metrics = self.raw_param.get("disable_azuremonitormetrics")
+        # Read the original value passed by the command.
+        # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
+        disable_azure_monitor_metrics = (
+            self.raw_param.get("disable_azure_monitor_metrics") or
+            self.raw_param.get("disable_azuremonitormetrics")
+        )
         if disable_azure_monitor_metrics and self._get_enable_azure_monitor_metrics(False):
             raise MutuallyExclusiveArgumentError(
                 "Cannot specify --enable-azuremonitormetrics and --disable-azuremonitormetrics at the same time."
@@ -2120,11 +2124,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def get_disable_azure_monitor_metrics(self) -> bool:
         """Obtain the value of disable_azure_monitor_metrics.
-        Delegates to parent class if method exists.
+        This function will verify the parameter by default. If both enable_azure_monitor_metrics and
+        disable_azure_monitor_metrics are specified, raise a MutuallyExclusiveArgumentError.
         :return: bool
         """
-        if hasattr(super(), 'get_disable_azure_monitor_metrics'):
-            return super().get_disable_azure_monitor_metrics()
         return self._get_disable_azure_monitor_metrics(enable_validation=True)
 
     def _get_enable_azure_monitor_app_monitoring(self, enable_validation=True) -> bool:
