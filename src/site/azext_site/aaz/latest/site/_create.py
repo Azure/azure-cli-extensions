@@ -23,7 +23,7 @@ class Create(AAZCommand):
     --service-group: Scope the site to a service group.
 
     :example: Create a Site at service group scope
-        az site create --site-name TestSiteName --servicegroup-name TestSGName --display-name 'Test Site Display' --description "Test Site" --labels key1="value1" key2="value2" --street-address1="16 TOWNSEND ST" --street-address2="UNIT 1" --city="newyork" --state-or-province="CA" --country="US" --postal-code="94107"
+        az site create --site-name TestSiteName --service-group TestSGName --display-name 'Test Site Display' --description "Test Site" --labels key1="value1" key2="value2" --street-address1="16 TOWNSEND ST" --street-address2="UNIT 1" --city="newyork" --state-or-province="CA" --country="US" --postal-code="94107"
 
     :example: Create a Site at resource group scope
         az site create --site-name TestSiteName --resource-group TestRGName --subscription 000000000-0000-0000-0000-000000000000 --display-name 'Test Site Display'--description "Test Site" --street-address1="16 TOWNSEND ST" --street-address2="UNIT 1" --city="newyork" --state-or-province="CA" --country="US" --postal-code="94107"
