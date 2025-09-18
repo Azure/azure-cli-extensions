@@ -6,6 +6,8 @@ Install this extension using the below CLI command
 ```
 az extension add --name site
 ```
+## What is Azure Arc site manager?
+Azure Arc site manager allows you to manage and monitor your on-premises environments as Azure Arc sites. Arc sites are scoped to an Azure resource group, subscription or service group and enable you to track connectivity, alerts, and updates across your environment. The experience is tailored for on-premises scenarios where infrastructure is often managed within a common physical boundary, such as a store, restaurant, or factory.
 
 ### Included Features ###
 ##### Create a Site at service group scope #####
