@@ -486,3 +486,36 @@ def _get_extension_type_versions_table_row(result):
     return OrderedDict([
         ('versions', result['properties']['version'])
     ])
+
+
+def aks_jwtauthenticator_list_table_format(results):
+    """Format a list of JWT authenticators as summary results for display with "-o table". """
+    return [_get_jwtauthenticator_table_row(result) for result in results]
+
+
+def aks_jwtauthenticator_show_table_format(result):
+    """Format a JWT authenticator as summary results for display with "-o table". """
+    return _get_jwtauthenticator_table_row(result)
+
+
+def _get_jwtauthenticator_table_row(result):
+    """Extract the summary information from a JWT authenticator for table display."""
+    properties = result.get('properties', {})
+    issuer = properties.get('issuer', {})
+    
+    # Get issuer URL and audiences
+    issuer_url = issuer.get('url', '')
+    audiences = issuer.get('audiences', [])
+    audience_list = ', '.join(audiences) if audiences else ''
+    
+    # Get claim mappings
+    claim_mappings = properties.get('claimMappings', {})
+    username_expr = claim_mappings.get('username', {}).get('expression', '') if claim_mappings.get('username') else ''
+    
+    return OrderedDict([
+        ('name', result.get('name', '')),
+        ('provisioningState', properties.get('provisioningState', '')),
+        ('issuerUrl', issuer_url),
+        ('audiences', audience_list),
+        ('usernameMapping', username_expr),
+    ])
