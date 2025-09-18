@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+      "image": {
+          "value": "mcr.microsoft.com/azurelinux/distroless/base:3.0"
+      }
+  },
+  "resources": [
+    {
+      "name": "group1",
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "location": "westeurope",
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "OnFailure",
+        "confidentialComputeProperties": {
+          "ccePolicy": ""
+        },
+        "containers": [
+          {
+            "name": "container1",
+            "properties": {
+              "image": "[parameters('image')]",
+              "resources": {
+                "requests": {
+                  "cpu": "1",
+                  "memoryInGb": "2"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
