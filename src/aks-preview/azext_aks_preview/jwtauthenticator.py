@@ -96,7 +96,6 @@ def construct_jwt_authenticator(cmd, raw_parameters):
             f"Error reading configuration file: {str(e)}"
         )
 
-    # Basic validation - detailed validation is handled by the SDK models
     if not isinstance(config, dict):
         raise InvalidArgumentValueError(
             "Configuration file must contain a JSON object."
@@ -115,7 +114,6 @@ def construct_jwt_authenticator(cmd, raw_parameters):
     )
 
     # Create JWT authenticator properties from config
-    # The SDK models will handle detailed validation automatically
     try:
         properties = JWTAuthenticatorProperties.from_dict(config)
     except AttributeError as e:
@@ -131,7 +129,6 @@ def construct_jwt_authenticator(cmd, raw_parameters):
             f"Error creating JWT authenticator properties from configuration: {str(e)}"
         )
 
-    # Create the JWT authenticator object
     jwt_authenticator = JWTAuthenticator(properties=properties)
     
     return jwt_authenticator
