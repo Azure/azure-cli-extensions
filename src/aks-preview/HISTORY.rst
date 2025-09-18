@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Add machine command `az aks machine add` to add a machine to an existing machine pool.
+* Add option `Windows2025` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
 18.0.0b37
 +++++++

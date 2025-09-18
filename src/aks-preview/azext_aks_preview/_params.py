@@ -100,6 +100,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU2404,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWS2025,
     CONST_OS_SKU_WINDOWSANNUAL,
     CONST_PATCH_UPGRADE_CHANNEL,
     CONST_RAPID_UPGRADE_CHANNEL,
@@ -281,6 +282,7 @@ node_os_skus_create = [
 node_os_skus = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWS2025,
     CONST_OS_SKU_WINDOWSANNUAL,
 ]
 node_os_skus_update = [
