@@ -13,7 +13,7 @@ from unittest import mock
 from azure.cli.core.azclierror import ValidationError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckNotExists, JMESPathCheckExists)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckNotExists, JMESPathCheckExists, live_only, StorageAccountPreparer, LogAnalyticsWorkspacePreparer)
 from azure.mgmt.core.tools import parse_resource_id
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
@@ -3491,6 +3491,41 @@ class ContainerappOtherPropertyTests(ScenarioTest):
         ])
 
         self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.25 --memory 0.5Gi', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", "functionapp")
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    @LogAnalyticsWorkspacePreparer(location="eastus", get_shared_key=True)
+    def test_containerapp_up_kind_functionapp(self, resource_group, laworkspace_customer_id, laworkspace_shared_key):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        app = self.create_random_name(prefix='aca-up', length=24)
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+
+        # Pre-create environment to avoid issues with containerapp up creating it
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        # Test containerapp up without kind parameter - should have no kind set
+        self.cmd(f'containerapp up -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env}')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", None)
+        ])
+
+        self.cmd(f'containerapp delete -g {resource_group} -n {app} --yes')
+
+        # Test containerapp up with kind parameter - should have kind set to functionapp
+        self.cmd(f'containerapp up -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --kind functionapp --environment {env}')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", "functionapp")
+        ])
+
+        # Test containerapp up again (update scenario) - should preserve the kind
+        self.cmd(f'containerapp up -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env}')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("kind", "functionapp")
         ])

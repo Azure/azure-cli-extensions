@@ -142,3 +142,11 @@ Release History
 1.6.2
 ++++++
 * Updated help text for new supported member cluster type.
+
+1.6.3
+++++++
+* Mark gate commands as preview, fixing bug from version 1.6.0.
+
+1.6.4
+++++++
+* Fix help text for `fleet list` command.

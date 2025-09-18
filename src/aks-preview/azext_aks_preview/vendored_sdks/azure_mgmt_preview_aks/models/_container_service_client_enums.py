@@ -11,6 +11,19 @@ from enum import Enum
 from azure.core import CaseInsensitiveEnumMeta
 
 
+class AccelerationMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Enable advanced network acceleration options. This allows users to configure acceleration using
+    BPF host routing. This can be enabled only with Cilium dataplane. If not specified, the default
+    value is None (no acceleration). The acceleration mode can be changed on a pre-existing
+    cluster. See https://aka.ms/acnsperformance for a detailed explanation.
+    """
+
+    BPF_VETH = "BpfVeth"
+    """Enable eBPF host routing with veth device mode."""
+    NONE = "None"
+    """Disable acceleration options."""
+
+
 class AddonAutoscaling(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Whether VPA add-on is enabled and configured to scale AKS-managed add-ons."""
 
@@ -319,6 +332,23 @@ class IstioIngressGatewayMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The ingress gateway is assigned a public IP address and is publicly accessible."""
     INTERNAL = "Internal"
     """The ingress gateway is assigned an internal IP address and cannot is accessed publicly."""
+
+
+class JWTAuthenticatorProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The provisioning state of the last accepted operation."""
+
+    SUCCEEDED = "Succeeded"
+    """Resource has been created."""
+    FAILED = "Failed"
+    """Resource creation failed."""
+    CANCELED = "Canceled"
+    """Resource creation was canceled."""
+    CREATING = "Creating"
+    """The JWT authenticator is being created."""
+    UPDATING = "Updating"
+    """The JWT authenticator is being updated."""
+    DELETING = "Deleting"
+    """The JWT authenticator is being deleted."""
 
 
 class KeyVaultNetworkAccessTypes(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -722,6 +752,11 @@ class OSSKU(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     AZURE_LINUX = "AzureLinux"
     """Use AzureLinux as the OS for node images. Azure Linux is a container-optimized Linux distro
     built by Microsoft, visit https://aka.ms/azurelinux for more information."""
+    AZURE_LINUX3 = "AzureLinux3"
+    """Use AzureLinux3 as the OS for node images. Azure Linux is a container-optimized Linux distro
+    built by Microsoft, visit https://aka.ms/azurelinux for more information. For limitations,
+    visit https://aka.ms/aks/node-images. For OS migration guidance, see
+    https://aka.ms/aks/upgrade-os-version."""
     CBL_MARINER = "CBLMariner"
     """Deprecated OSSKU. Microsoft recommends that new deployments choose 'AzureLinux' instead."""
     WINDOWS2019 = "Windows2019"
@@ -1056,6 +1091,16 @@ class UpgradeChannel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     Kubernetes version patching"""
     NONE = "none"
     """Disables auto-upgrades and keeps the cluster at its current version of Kubernetes."""
+
+
+class UpgradeStrategy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Defines the upgrade strategy for the agent pool. The default is Rolling."""
+
+    ROLLING = "Rolling"
+    """Specifies that the agent pool will conduct rolling upgrade. This is the default upgrade
+    strategy."""
+    BLUE_GREEN = "BlueGreen"
+    """Specifies that the agent pool will conduct blue-green upgrade."""
 
 
 class VmState(str, Enum, metaclass=CaseInsensitiveEnumMeta):

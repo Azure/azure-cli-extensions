@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor get-metric-statu",
 )
 class GetMetricStatu(AAZCommand):
-    """Get metric status
+    """Retrieves the metric status that are configured in the New Relic monitor resource.
 
     :example: Get metric status.
         az new-relic monitor get-metric-statu --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --user-email UserEmail@123.com --azure-resource-ids MyAzureResourceIds

@@ -3,50 +3,45 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import copy
 import json
 import warnings
-import copy
-from typing import Any, List, Dict, Tuple, Union
 from enum import Enum, auto
+from typing import Any, Dict, List, Tuple, Union
+
 import deepdiff
+from azext_confcom import config, os_util
+from azext_confcom.container import ContainerImage, UserContainerImage
+from azext_confcom.errors import eprint
+from azext_confcom.fragment_util import sanitize_fragment_fields
+from azext_confcom.oras_proxy import create_list_of_standalone_imports
+from azext_confcom.rootfs_proxy import SecurityPolicyProxy
+from azext_confcom.template_util import (case_insensitive_dict_get,
+                                         compare_env_vars,
+                                         convert_config_v0_to_v1,
+                                         convert_to_pod_spec,
+                                         decompose_confidential_properties,
+                                         detect_old_format,
+                                         extract_confidential_properties,
+                                         extract_lifecycle_hook, extract_probe,
+                                         extract_standalone_fragments,
+                                         filter_non_pod_resources,
+                                         get_container_diff, get_diff_size,
+                                         get_image_info,
+                                         get_tar_location_from_mapping,
+                                         get_values_for_params,
+                                         get_volume_claim_templates,
+                                         is_sidecar, pretty_print_func,
+                                         print_func, process_configmap,
+                                         process_env_vars_from_config,
+                                         process_env_vars_from_template,
+                                         process_env_vars_from_yaml,
+                                         process_fragment_imports,
+                                         process_mounts,
+                                         process_mounts_from_config,
+                                         readable_diff)
 from knack.log import get_logger
 from tqdm import tqdm
-from azext_confcom import os_util
-from azext_confcom import config
-from azext_confcom.container import UserContainerImage, ContainerImage
-
-from azext_confcom.errors import eprint
-from azext_confcom.template_util import (
-    extract_confidential_properties,
-    is_sidecar,
-    pretty_print_func,
-    print_func,
-    readable_diff,
-    case_insensitive_dict_get,
-    compare_env_vars,
-    get_values_for_params,
-    process_mounts,
-    process_configmap,
-    extract_probe,
-    extract_lifecycle_hook,
-    process_env_vars_from_template,
-    get_image_info,
-    get_tar_location_from_mapping,
-    get_diff_size,
-    process_env_vars_from_yaml,
-    convert_to_pod_spec,
-    get_volume_claim_templates,
-    filter_non_pod_resources,
-    decompose_confidential_properties,
-    process_env_vars_from_config,
-    process_mounts_from_config,
-    process_fragment_imports,
-    get_container_diff,
-    convert_config_v0_to_v1,
-    detect_old_format,
-)
-from azext_confcom.rootfs_proxy import SecurityPolicyProxy
-
 
 logger = get_logger()
 
@@ -186,10 +181,12 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         return os_util.str_to_base64(policy_str)
 
     def generate_fragment(self, namespace: str, svn: str, output_type: int, omit_id: bool = False) -> str:
+        # get rid of fields that aren't strictly needed for the fragment import
+        sanitized_fragments = sanitize_fragment_fields(self.get_fragments())
         return config.CUSTOMER_REGO_FRAGMENT % (
             namespace,
             pretty_print_func(svn),
-            pretty_print_func(self.get_fragments()),
+            pretty_print_func(sanitized_fragments),
             self.get_serialized_output(output_type, rego_boilerplate=False, include_sidecars=False, omit_id=omit_id),
         )
 
@@ -200,9 +197,12 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 pretty_print_func(self._api_version),
                 output
             )
+
+        # get rid of fields that aren't strictly needed for the fragment import
+        sanitized_fragments = sanitize_fragment_fields(self.get_fragments())
         return config.CUSTOMER_REGO_POLICY % (
             pretty_print_func(self._api_version),
-            pretty_print_func(self._fragments),
+            pretty_print_func(sanitized_fragments),
             output,
             pretty_print_func(self._allow_properties_access),
             pretty_print_func(self._allow_dump_stacks),
@@ -582,10 +582,10 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 config.POLICY_FIELD_CONTAINERS_NAME
             )
             fragment_image_id = fragment_image.get(config.ACI_FIELD_CONTAINERS_ID)
-            if ":" not in fragment_image:
+            if isinstance(fragment_image_id, str) and ":" not in fragment_image_id:
                 fragment_image_id = f"{fragment_image_id}:latest"
             if (
-                fragment_image_id == image.base + image.tag or
+                fragment_image_id == f"{image.base}:{image.tag}" or
                 container_name == image.get_name()
             ):
                 image_policy = image.get_policy_json()
@@ -702,6 +702,16 @@ def load_policy_from_arm_template_str(
         # in the security policy
         if init_container_list:
             container_list.extend(init_container_list)
+
+        # these are standalone fragments coming from the ARM template itself
+        standalone_fragments = extract_standalone_fragments(container_group_properties)
+        if standalone_fragments:
+            standalone_fragment_imports = create_list_of_standalone_imports(standalone_fragments)
+            unique_imports = set(rego_imports)
+            for fragment in standalone_fragment_imports:
+                if fragment not in unique_imports:
+                    rego_imports.append(fragment)
+                    unique_imports.add(fragment)
 
         try:
             existing_containers, fragments = extract_confidential_properties(
@@ -895,6 +905,8 @@ def load_policy_from_json(
     output_containers = []
     # 1) Parse incoming string as JSON
     policy_input_json = os_util.load_json_from_str(data)
+    if not isinstance(policy_input_json, dict):
+        eprint("Input JSON is not a valid dictionary")
 
     is_old_format = detect_old_format(policy_input_json)
     if is_old_format:
@@ -910,6 +922,7 @@ def load_policy_from_json(
     )
 
     if not version:
+        version = "1.0"
         policy_input_json[config.ACI_FIELD_VERSION] = "1.0"
 
     rego_fragments = case_insensitive_dict_get(
@@ -921,8 +934,15 @@ def load_policy_from_json(
     ) or ""
 
     # 3) Process rego_fragments
+    standalone_rego_fragments = case_insensitive_dict_get(
+        policy_input_json, config.ACI_FIELD_TEMPLATE_STANDALONE_REGO_FRAGMENTS
+    )
+
     if rego_fragments:
         process_fragment_imports(rego_fragments)
+
+    if standalone_rego_fragments:
+        rego_fragments.extend(standalone_rego_fragments)
 
     if not input_containers and not rego_fragments:
         eprint(

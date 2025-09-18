@@ -11,6 +11,51 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add machine command `az aks machine add` to add a machine to an existing machine pool.
+* Add blue-green upgrade strategy support for AKS node pools:
+  - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades. 
+  - `az aks nodepool add/update/upgrade`: Add `--drain-batch-size`, `--drain-timeout-bg`, `--batch-soak-duration`, `--final-soak-duration` parameters to configure blue-green upgrade settings.
+
+18.0.0b38
++++++++
+* Add option `--acns-datapath-acceleration-mode <None|BpfVeth>` to `az aks create/update`
+
+18.0.0b37
++++++++
+* Enable autoscaler support for the VirtualMachines agent pool type.
+* Add `--node-vm-size` to `az aks update` to allow changing the VM size for VirtualMachines node pools.
+
+18.0.0b36
++++++++
+* Add option `AzureLinux3` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
+18.0.0b35
++++++++
+* Vendor new SDK and bump API version to 2025-07-02-preview.
+
+18.0.0b34
++++++++
+* Add machines agent pool support for `az aks nodepool add` command.
+
+18.0.0b33
++++++++
+* `az aks create`: Add new parameter `--kms-infrastructure-encryption` to enable KMS infrastructure encryption.
+
+18.0.0b32
++++++++
+* Remove the sku preview flag from help command for AKS automatic
+
+18.0.0b31
++++++++
+* Remove DATA_STORAGE references
+
+18.0.0b30
++++++++
+* Remove interactive AI-powered debugging tool `az aks agent`. To use the debugging tool, please enable it in the aks-agent extension by running `az extension add --name aks-agent`.
+
+18.0.0b29
++++++++
+* Refactor code to suppress ssh access warning message when creating an automatic cluster.
 
 18.0.0b28
 +++++++
