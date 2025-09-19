@@ -1,5 +1,9 @@
 Release History
 ===============
+1.28.5
+---
+* Update Application Insight SDK.
+
 1.28.4
 ---
 * Fix regression issue caused by the SDK change.
