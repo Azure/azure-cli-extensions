@@ -726,6 +726,13 @@ def aks_create(
     enable_windows_recording_rules=False,
     # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
+    # opentelemetry parameters
+    enable_opentelemetry_metrics=False,
+    opentelemetry_metrics_port=None,
+    disable_opentelemetry_metrics=False,
+    enable_opentelemetry_logs=False,
+    opentelemetry_logs_port=None,
+    disable_opentelemetry_logs=False,
     # metrics profile
     enable_cost_analysis=False,
     # AI toolchain operator
@@ -922,6 +929,13 @@ def aks_update(
     # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
     disable_azure_monitor_app_monitoring=False,
+    # opentelemetry parameters
+    enable_opentelemetry_metrics=False,
+    opentelemetry_metrics_port=None,
+    disable_opentelemetry_metrics=False,
+    enable_opentelemetry_logs=False,
+    opentelemetry_logs_port=None,
+    disable_opentelemetry_logs=False,
     enable_vpa=False,
     disable_vpa=False,
     enable_optimized_addon_scaling=False,
@@ -978,7 +992,9 @@ def aks_update(
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
+    # Import the DecoratorEarlyExitException from acs module
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    # Import the decorator from the preview extension package
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
 
     # decorator pattern
