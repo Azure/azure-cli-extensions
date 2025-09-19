@@ -14046,6 +14046,7 @@ spec:
                 self.check("networkProfile.advancedNetworking.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
                 self.check("networkProfile.advancedNetworking.security.enabled", True),
+                self.check("networkProfile.advancedNetworking.performance.accelerationMode", "None"),
             ],
         )
 
@@ -14160,6 +14161,7 @@ spec:
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.performance.accelerationMode", "None"),
                 self.check("networkProfile.advancedNetworking.security.enabled", True),
                 self.check("networkProfile.advancedNetworking.security.advancedNetworkPolicies", "L7"),
             ],
@@ -14406,6 +14408,57 @@ spec:
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="westcentralus",
+    )
+    def test_aks_create_with_acns_performance(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        _, latest_version = self._get_versions(resource_group_location)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+                "version": latest_version,
+            }
+        )
+        # Cilium Cluster with ACNS enabled and acceleration mode set to BpfVeth
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} -k {version} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay --enable-acns "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPerformancePreview "
+            "--os-sku AzureLinux "
+            "--enable-acns --acns-datapath-acceleration-mode BpfVeth"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.performance.accelerationMode", "BpfVeth"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+
+
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -17496,3 +17549,235 @@ spec:
 
         # delete
         self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+    
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_create_with_blue_green_upgrade_nodepool(self, resource_group, resource_group_location):
+        """Test creating an AKS cluster with a node pool configured for blue-green upgrades"""
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+        
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "nodepool_name": nodepool_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # Create AKS cluster with default system nodepool
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--vm-set-type VirtualMachineScaleSets --node-count=1 "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # Add a nodepool with blue-green upgrade strategy and settings
+        add_nodepool_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --node-count=2 "
+            "--upgrade-strategy BlueGreen "
+            "--drain-batch-size 3 "
+            "--drain-timeout-bg 15 "
+            "--batch-soak-duration 30 "
+            "--final-soak-duration 60"
+        )
+        self.cmd(
+            add_nodepool_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("upgradeStrategy", "BlueGreen"),
+                self.check("upgradeSettingsBlueGreen.drainBatchSize", "3"),
+                self.check("upgradeSettingsBlueGreen.drainTimeoutInMinutes", 15),
+                self.check("upgradeSettingsBlueGreen.batchSoakDurationInMinutes", 30),
+                self.check("upgradeSettingsBlueGreen.finalSoakDurationInMinutes", 60),
+            ],
+        )
+
+        # Show the nodepool to verify blue-green configuration
+        show_nodepool_cmd = (
+            "aks nodepool show --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name}"
+        )
+        self.cmd(
+            show_nodepool_cmd,
+            checks=[
+                self.check("name", "{nodepool_name}"),
+                self.check("upgradeStrategy", "BlueGreen"),
+                self.check("upgradeSettingsBlueGreen.drainBatchSize", "3"),
+                self.check("upgradeSettingsBlueGreen.drainTimeoutInMinutes", 15),
+                self.check("upgradeSettingsBlueGreen.batchSoakDurationInMinutes", 30),
+                self.check("upgradeSettingsBlueGreen.finalSoakDurationInMinutes", 60),
+            ],
+        )
+
+        # Update the nodepool's blue-green settings
+        update_nodepool_cmd = (
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} "
+            "--upgrade-strategy BlueGreen "
+            "--drain-batch-size 10% "
+            "--drain-timeout-bg 10 "
+            "--batch-soak-duration 10 "
+            "--final-soak-duration 5"
+        )
+        self.cmd(
+            update_nodepool_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("upgradeStrategy", "BlueGreen"),
+                self.check("upgradeSettingsBlueGreen.drainBatchSize", "10%"), # updated
+                self.check("upgradeSettingsBlueGreen.drainTimeoutInMinutes", 10),  # updated
+                self.check("upgradeSettingsBlueGreen.batchSoakDurationInMinutes", 10),  # updated
+                self.check("upgradeSettingsBlueGreen.finalSoakDurationInMinutes", 5),  # updated
+            ],
+        )
+
+        # Test partial update - only update some blue-green settings
+        partial_update_cmd = (
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} "
+            "--batch-soak-duration 5"
+        )
+        self.cmd(
+            partial_update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("upgradeStrategy", "BlueGreen"),
+                self.check("upgradeSettingsBlueGreen.drainBatchSize", "10%"),  # unchanged from previous update
+                self.check("upgradeSettingsBlueGreen.drainTimeoutInMinutes", 10),  # unchanged from previous update
+                self.check("upgradeSettingsBlueGreen.batchSoakDurationInMinutes", 5),  # updated
+                self.check("upgradeSettingsBlueGreen.finalSoakDurationInMinutes", 5),  # unchanged from previous update
+            ],
+        )
+
+        # Test creating a nodepool with minimal blue-green configuration
+        nodepool_name_2 = self.create_random_name("np", 6)
+        self.kwargs.update({"nodepool_name_2": nodepool_name_2})
+        
+        add_minimal_nodepool_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name_2} --node-count=1 "
+            "--upgrade-strategy BlueGreen"
+        )
+        self.cmd(
+            add_minimal_nodepool_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("upgradeStrategy", "BlueGreen"),
+                # Blue-green settings should have default values or be empty when not specified
+            ],
+        )
+
+        # Clean up - delete the cluster
+        delete_cmd = (
+            "aks delete --resource-group={resource_group} --name={name} "
+            "--yes --no-wait"
+        )
+        self.cmd(
+            delete_cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_run_blue_green_upgrade(self, resource_group, resource_group_location):
+        """Test running a blue-green upgrade on a nodepool with minimal timeouts for quick recording"""
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+
+        # Get available Kubernetes versions for testing
+        create_version, upgrade_version = self._get_versions(resource_group_location)
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "nodepool_name": nodepool_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "k8s_version": create_version,
+                "upgrade_version": upgrade_version,
+            }
+        )
+
+        # Create AKS cluster with specific Kubernetes version
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--vm-set-type VirtualMachineScaleSets --node-count=1 "
+            "--kubernetes-version={upgrade_version} "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("kubernetesVersion", "{upgrade_version}"),
+            ],
+        )
+
+        # Add a nodepool
+        add_nodepool_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --node-count=2 "
+            "--kubernetes-version={k8s_version}"
+        )
+        self.cmd(
+            add_nodepool_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("upgradeStrategy", "Rolling"),
+                self.check("currentOrchestratorVersion", "{k8s_version}"),
+            ],
+        )
+
+        # Perform a blue-green upgrade to a newer Kubernetes version
+    
+        # Upgrade to newer Kubernetes version with blue-green upgrade strategy and minimal timeouts for quick testing
+        upgrade_cmd = (
+            "aks nodepool upgrade --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --kubernetes-version={upgrade_version} --yes "
+            "--upgrade-strategy BlueGreen "
+            "--drain-batch-size 10% "  # Minimal batch size for quick upgrade
+            "--drain-timeout-bg 5 "  # 5 minute drain timeout
+            "--batch-soak-duration 2 "  # 2 minute soak between batches
+            "--final-soak-duration 2"  # 2 minute final soak
+        )
+
+        # Start the upgrade
+        self.cmd(
+            upgrade_cmd,
+            checks=[
+                self.check("name", "{nodepool_name}"),
+                self.check("upgradeStrategy", "BlueGreen"),
+                self.check("provisioningState", "Succeeded"),
+                self.check("currentOrchestratorVersion", "{upgrade_version}"),     
+                self.check("upgradeSettingsBlueGreen.drainBatchSize", "10%"),
+                self.check("upgradeSettingsBlueGreen.drainTimeoutInMinutes", 5),
+                self.check("upgradeSettingsBlueGreen.batchSoakDurationInMinutes", 2),
+                self.check("upgradeSettingsBlueGreen.finalSoakDurationInMinutes", 2),      
+            ],
+        )
+
+        # Clean up - delete the cluster
+        delete_cmd = (
+            "aks delete --resource-group={resource_group} --name={name} "
+            "--yes --no-wait"
+        )
+        self.cmd(
+            delete_cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
