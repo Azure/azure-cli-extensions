@@ -9,10 +9,10 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.testsdk import ScenarioTest
-from .utils import get_test_recipient_phonenumber, get_test_source_phonenumber
+from .utils import get_test_recipient_phonenumber, get_test_source_phonenumber, get_test_connection_string
 import os
 from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer, SMSResponseReplacerProcessor
-
+from .preparers import CommunicationResourcePreparer
 
 class CommunicationSmsScenarios(ScenarioTest):
 
@@ -24,6 +24,7 @@ class CommunicationSmsScenarios(ScenarioTest):
         ])
 
     def test_send_sms(self):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = get_test_connection_string(self.is_live, self.in_recording)
         sender = get_test_source_phonenumber(self.is_live, self.in_recording)
         recipient = get_test_recipient_phonenumber(self.is_live, self.in_recording)
 
@@ -42,6 +43,7 @@ class CommunicationSmsScenarios(ScenarioTest):
         ])
 
     def test_send_sms_n_recipients(self):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = get_test_connection_string(self.is_live, self.in_recording)
         sender = get_test_source_phonenumber(self.is_live, self.in_recording)
         recipient1 = get_test_recipient_phonenumber(self.is_live, self.in_recording)
         recipient2 = get_test_recipient_phonenumber(self.is_live, self.in_recording)
@@ -65,6 +67,7 @@ class CommunicationSmsScenarios(ScenarioTest):
         ])
 
     def test_sms_send_with_delivery_report(self):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = get_test_connection_string(self.is_live, self.in_recording)
         sender = get_test_source_phonenumber(self.is_live, self.in_recording)
         recipient = get_test_recipient_phonenumber(self.is_live, self.in_recording)
 
@@ -83,6 +86,7 @@ class CommunicationSmsScenarios(ScenarioTest):
         ])
 
     def test_sms_send_with_tag(self):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = get_test_connection_string(self.is_live, self.in_recording)
         sender = get_test_source_phonenumber(self.is_live, self.in_recording)
         recipient = get_test_recipient_phonenumber(self.is_live, self.in_recording)
 
@@ -101,6 +105,7 @@ class CommunicationSmsScenarios(ScenarioTest):
         ])
 
     def test_sms_send_with_delivery_report_and_tag(self):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = get_test_connection_string(self.is_live, self.in_recording)
         sender = get_test_source_phonenumber(self.is_live, self.in_recording)
         recipient = get_test_recipient_phonenumber(self.is_live, self.in_recording)
 
