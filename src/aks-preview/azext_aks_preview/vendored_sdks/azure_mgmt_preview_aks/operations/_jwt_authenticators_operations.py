@@ -605,6 +605,7 @@ class JWTAuthenticatorsOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            
             deserialized = self._deserialize("JWTAuthenticator", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, response_headers)  # type: ignore
