@@ -4106,8 +4106,8 @@ helps['aks jwtauthenticator add'] = """
           type: string
           short-summary: Path to JSON file containing the JWT authenticator configuration.
           long-summary: The JSON file should contain the properties schema for one JWT authenticator.
-                        For details on how to configure the properties of a JWT authenticator, please refer to the Kubernetes documentation: 
-                        https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration. 
+                        For details on how to configure the properties of a JWT authenticator, please refer to the Kubernetes documentation 
+                         at https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration. 
                         Please note that not all fields available in the Kubernetes documentation are supported by AKS. 
                         For troubleshooting, please see https://aka.ms/aks-external-issuers-docs."
         - name: --aks-custom-headers
@@ -4134,8 +4134,8 @@ helps['aks jwtauthenticator update'] = """
           type: string
           short-summary: Path to JSON file containing the updated JWT authenticator configuration.
           long-summary: The JSON file should contain the properties schema for one JWT authenticator.
-                        For details on how to configure the properties of a JWT authenticator, please refer to the Kubernetes documentation: 
-                        https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration. 
+                        For details on how to configure the properties of a JWT authenticator, please refer to the Kubernetes documentation 
+                        at https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration. 
                         Please note that not all fields available in the Kubernetes documentation are supported by AKS. 
                         For troubleshooting, please see https://aka.ms/aks-external-issuers-docs."
         - name: --aks-custom-headers
