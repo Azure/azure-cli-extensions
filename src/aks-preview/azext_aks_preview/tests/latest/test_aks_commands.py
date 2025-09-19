@@ -17407,6 +17407,7 @@ spec:
             ],
         )
 
+    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_autoscaler_then_update_vms_pool(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
@@ -17714,6 +17715,7 @@ spec:
             ],
         )
     
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
