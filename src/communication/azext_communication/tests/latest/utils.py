@@ -22,7 +22,7 @@ import os
 TEST_RESOURCE_IDENTIFIER = "sanitized"
 TEST_SOURCE_PHONENUMBER_DEFAULT = "sanitized"
 TEST_RECIPIENT_PHONENUMBER_DEFAULT = "sanitized"
-TEST_CONNECTION_STRING_DEFAULT = "sanitized"
+TEST_CONNECTION_STRING_DEFAULT = "endpoint=https://sanitized.communication.azure.com/;accesskey=fake==="
 
 def get_from_os_environment(env_name, default):
     import os
