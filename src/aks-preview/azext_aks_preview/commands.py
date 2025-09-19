@@ -518,6 +518,15 @@ def load_command_table(self, _):
             table_transformer=aks_extension_type_versions_list_table_format
         )
 
+# AKS identity binding commands
+    with self.command_group(
+        "aks identity-binding", managed_clusters_sdk, client_factory=cf_identity_bindings
+    ) as g:
+        g.custom_command("create", "aks_identity_binding_create")
+        g.custom_command("delete", "aks_identity_binding_delete")
+        g.custom_show_command("show", "aks_identity_binding_show")
+        g.custom_command("list", "aks_identity_binding_list")
+
     # AKS jwt authenticator commands
     with self.command_group(
         "aks jwtauthenticator", jwt_authenticators_sdk,client_factory=cf_jwt_authenticators,
@@ -527,12 +536,3 @@ def load_command_table(self, _):
         g.custom_command("delete", "aks_jwtauthenticator_delete", supports_no_wait=True, confirmation=True)
         g.custom_command("list", "aks_jwtauthenticator_list", table_transformer=aks_jwtauthenticator_list_table_format)
         g.custom_show_command("show", "aks_jwtauthenticator_show", table_transformer=aks_jwtauthenticator_show_table_format)
-
-# AKS identity binding commands
-    with self.command_group(
-        "aks identity-binding", managed_clusters_sdk, client_factory=cf_identity_bindings
-    ) as g:
-        g.custom_command("create", "aks_identity_binding_create")
-        g.custom_command("delete", "aks_identity_binding_delete")
-        g.custom_show_command("show", "aks_identity_binding_show")
-        g.custom_command("list", "aks_identity_binding_list")
