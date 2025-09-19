@@ -100,6 +100,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU2404,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWS2025,
     CONST_OS_SKU_WINDOWSANNUAL,
     CONST_PATCH_UPGRADE_CHANNEL,
     CONST_RAPID_UPGRADE_CHANNEL,
@@ -283,9 +284,10 @@ node_os_skus_create = [
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
 ]
-node_os_skus = node_os_skus_create + [
+node_os_skus_add = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWS2025,
     CONST_OS_SKU_WINDOWSANNUAL,
 ]
 node_os_skus_update = [
@@ -1669,7 +1671,7 @@ def load_arguments(self, _):
         )
         c.argument("os_type")
         c.argument(
-            "os_sku", arg_type=get_enum_type(node_os_skus), validator=validate_os_sku
+            "os_sku", arg_type=get_enum_type(node_os_skus_add), validator=validate_os_sku
         )
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument("vnet_subnet_id", validator=validate_vnet_subnet_id)
@@ -2020,7 +2022,7 @@ def load_arguments(self, _):
             "machine_name", help="The machine name."
         )
         c.argument(
-            "os_sku", arg_type=get_enum_type(node_os_skus), validator=validate_os_sku
+            "os_sku", arg_type=get_enum_type(node_os_skus_add), validator=validate_os_sku
         )
         c.argument(
             "zones",
