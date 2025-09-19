@@ -17888,7 +17888,6 @@ spec:
             'updated_jwt_config_file': _get_test_data_file('jwtauthenticator_update.json'),
         })
 
-        # Create AKS cluster
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--vm-set-type=VirtualMachines --node-count 1 "
@@ -17898,9 +17897,6 @@ spec:
             self.check('provisioningState', 'Succeeded'),
         ])
 
-        # Add JWT authenticator
-        # Since feature is not registered in subscription and requests from polling don't use custom headers,
-        # we have to use --no-wait and then use a custom polling function to wait until the JWT authenticator is ready.
         add_jwt_cmd = (
             "aks jwtauthenticator add --resource-group={resource_group} --cluster-name={name} "
             "--name={jwt_auth_name} --config-file={jwt_config_file} "
@@ -17911,7 +17907,6 @@ spec:
             self.check('name', '{jwt_auth_name}'),
         ])
 
-        # Show JWT authenticator
         show_jwt_cmd = (
             "aks jwtauthenticator show --resource-group={resource_group} --cluster-name={name} "
             "--name={jwt_auth_name} "
@@ -17928,7 +17923,6 @@ spec:
 
         time.sleep(60) # wait before updating to avoid "Another operation is in progress" error
 
-        # Update JWT authenticator with same config file (should succeed)
         update_jwt_cmd = (
             "aks jwtauthenticator update --resource-group={resource_group} --cluster-name={name} "
             "--name={jwt_auth_name} --config-file={updated_jwt_config_file} "
@@ -17936,7 +17930,6 @@ spec:
         )
         self.cmd(update_jwt_cmd)
 
-        # List JWT authenticators
         list_jwt_cmd = (
             "aks jwtauthenticator list --resource-group={resource_group} --cluster-name={name} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
@@ -17947,7 +17940,6 @@ spec:
         assert jwt_list[0]['properties']['provisioningState'] == 'Succeeded'
         assert jwt_list[0]['properties']['issuer']['url'] == 'https://accounts.google.com'
 
-        # Delete JWT authenticator
         delete_jwt_cmd = (
             "aks jwtauthenticator delete --resource-group={resource_group} --cluster-name={name} "
             "--name={jwt_auth_name} --yes "
@@ -17957,7 +17949,6 @@ spec:
             self.is_empty(),
         ])
 
-        # Verify JWT authenticator is deleted
         list_after_delete_cmd = (
             "aks jwtauthenticator list --resource-group={resource_group} --cluster-name={name} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
