@@ -161,7 +161,8 @@ def assign_network_contributor_role_to_subnet(cmd, object_id, subnet_id):
         logger.warning("Failed to create Network Contributor role assignment on the subnet %s.\n"
                        "This role assignment is required for the managed identity to access the subnet.\n"
                        "Please ensure you have sufficient permissions, or ask an administrator to run:\n"
-                       "az role assignment create --assignee %s --role 'Network Contributor' --scope %s",
+                       "az role assignment create --assignee-principal-type ServicePrincipal --assignee-object-id %s "
+                       "--role 'Network Contributor' --scope %s",
                        subnet_id, object_id, subnet_id)
 
 
