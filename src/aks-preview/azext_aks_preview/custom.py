@@ -4508,7 +4508,7 @@ aks_identity_binding_list = aks_ib_cmd_list
 # JWT Authenticator commands
 def aks_jwtauthenticator_add(cmd, client, resource_group_name, cluster_name, name, config_file, aks_custom_headers=None, no_wait=False):
     headers = get_aks_custom_headers(aks_custom_headers)
-
+    
     existingJWTAuthenticator = None
     try:
         existingJWTAuthenticator = client.get(resource_group_name, cluster_name, name, headers=headers)
@@ -4532,7 +4532,6 @@ def aks_jwtauthenticator_add(cmd, client, resource_group_name, cluster_name, nam
 
 def aks_jwtauthenticator_update(cmd, client, resource_group_name, cluster_name, name, config_file, aks_custom_headers=None, no_wait=False):
     headers = get_aks_custom_headers(aks_custom_headers)
-
     raw_parameters = locals()
     return aks_jwtauthenticator_update_internal(
         cmd,
