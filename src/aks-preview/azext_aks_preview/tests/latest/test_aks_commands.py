@@ -2919,7 +2919,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--dns-name-prefix={dns_name_prefix} --node-count=1 "
+            "--dns-name-prefix={dns_name_prefix} --node-count=1 --enable-fips-image "
             "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
             "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
             "--ssh-key-value={ssh_key_value} --kubernetes-version={k8s_version}"
@@ -2941,6 +2941,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--cluster-name={name} "
             "--name={windows_nodepool_name} "
             "--node-count=1 "
+            "--enable-fips-image "
             "--os-type Windows "
             "--os-sku Windows2025 "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKSWindows2025Preview",
