@@ -17621,7 +17621,6 @@ spec:
             ],
         )
 
-        
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
@@ -17714,7 +17713,6 @@ spec:
                 self.is_empty(),
             ],
         )
-    
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -17804,5 +17802,3 @@ spec:
         )
         jwt_list_after_delete = self.cmd(list_after_delete_cmd).get_output_in_json()
         assert len(jwt_list_after_delete) == 0
-
-        
