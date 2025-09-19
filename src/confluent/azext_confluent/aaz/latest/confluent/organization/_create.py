@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization create",
 )
 class Create(AAZCommand):
-    """Create Organization resource
+    """Create a new Confluent organization entity through Azure integration.
     """
 
     _aaz_info = {
@@ -48,8 +48,6 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource Group Name",
             required=True,
         )
 
@@ -176,7 +174,7 @@ class Create(AAZCommand):
             help="Email address",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^\S+@\S+\.\S+$",
+                pattern="^\\S+@\\S+\\.\\S+$",
             ),
         )
         user_detail.first_name = AAZStrArg(
@@ -401,6 +399,7 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.sso_url = AAZStrType(
                 serialized_name="ssoUrl",

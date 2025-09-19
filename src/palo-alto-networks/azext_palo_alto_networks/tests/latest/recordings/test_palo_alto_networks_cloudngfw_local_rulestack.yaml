@@ -22,44 +22,54 @@ interactions:
       - -g -n --identity --location --default-mode --description --min-app-id-version
         --scope --security-services
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-28T02:50:46.666445Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-28T02:50:46.666445Z"},"identity":{"type":"None"},"properties":{"scope":"LOCAL","description":"local
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-18T12:06:33.2097216Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-18T12:06:33.2097216Z"},"identity":{"type":"None"},"properties":{"scope":"LOCAL","description":"local
         rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Accepted","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice","outboundUnTrustCertificate":null,"outboundTrustCertificate":null},"defaultMode":"IPS"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/f955e068-38e3-4f56-a8a8-59d2097fea12*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/21b1c74f-a377-49f8-8ae0-2ebfe76a6f0b*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911155956628318&c=MIIIrzCCBpegAwIBAgITUQB_nY_WoSbNATDH2QABAH-djzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDQwHhcNMjUwNzE4MTE0ODEyWhcNMjYwMTE0MTE0ODEyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM4Yf2tzpQe96HmJYXWKDNIrKc9-o37fE5ZS4b0aA-QzeDYNU6SChIwqP2YcbSNanIvEZtyMLND05wziTsehor3TYDGdCUQTvHHMESwVZ_KfUoGcL_A8mkKSxKrnxatUado60utWQNKPx612AzyZrXK16o7OkYiqjeD3g74_notDIhNC7tO7x-bt73jOlCV4zusxXJgPHm3r_2uEhI7JEDW63UZZQLec3BGIMNQ6qeGsmha1hZKDOOJ0TvkFvcCep_8XOCH0cnbG3of4-EoQB7vPWTAYN1IAuf_75kUZFCq0BXRl5XdxWyWnPe9iEj5Zr_xqiVBExfmaRww6UeijHVUCAwEAAaOCBJwwggSYMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHkBggrBgEFBQcBAQSCAdYwggHSMGgGCCsGAQUFBzAChlxodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDEuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDIuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDMuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDQuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDAdBgNVHQ4EFgQUvMJ4Tm18Izes1FcZ2XAEMHzPZp4wDgYDVR0PAQH_BAQDAgWgMIIBNQYDVR0fBIIBLDCCASgwggEkoIIBIKCCARyGQmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwHwYDVR0jBBgwFoAUOXFdqRUQLcTffi9ZbkBNwN_vNpowHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4ICAQDaxLpctX4jhwHu-mzX41_6auhZiKzgsqu6dCEnzG4Zj0DzCBfri-_5qdITCoCAbwxf-slBI3HfVL_NLYzx9O7iO8s4bc6uW6cYI8sk3nUHO5xHWf1cEYoa-XxQ2eSRFBU5Caf-XAjAfjgM-fyhHratIk62VOaqHYQr0M5wtXbWN1g_NNpM3eAfGJgTeuJzIvl-73RuK8VVs71jCs4DP92f74Eiz4mDC1kvxeGGRNkZirdosmarZnOLVe68hDuJCE-4I3qqDZXOYzIghXqhYWcQtztazZ4X8p-vnvW2t-ESKoktRcYl6_nvzCjnePLpH_Vs-Qt1ukHZ23BuCJpjLbVj7HTiaIVXCkYmP-iVpYN8s2ROSp4gBcGadyvBY922M6pMOgB8TAwyCmlAs5glnz4GPHAj47lUO_svkSiLXSpwRReCPkSLOfNJOThuCO8S7IrLGDptqkMHyAIXUVTZTh3PW9UicNi44sC_WkzX9NiAbPuwW5IhT8IzzJr-VcqT8VDCxzblbRv6HQfFVTy1K67ZE119xwAvp6Dk32IQGAOHjeKH6kFABKe0DDu5gttcd_XDHBmtBZ4-IQV8vozB0ioBUqMdKqVOvmF1thxnLWLXfqxxBjc2CSkeixa8WKdvzGKkxSmDmGS91XZWAbmkze2zg8eKrhWm0pcYuxU-2SF0zw&s=BRrPMfujTkjnA5WCnLp_ioVoSGzAlNibUP7TNU9CT9gMeW2-9JZRxT7x1hf1h_JqLoYrNIfYObcmDai9uXHpB8zHjy5xs1TotvC5_FPrAQm9xRDgAMHALOdO0BHtMfVe0FF5KpdhqUH_2OuvavBjTL_GkCHAUE_OSUcJpPlg_SejrUgvGGFJdiQJUmhp-B75PfZnyjem6gIG0xIpXPWof1wn6ZnoSayDwhJkDS5OLpdCSc5TqNFgZimA9DUx_WjJdzwnEHmgsszrxe1e7dmjhB9r9uf9yjzt_jhyWDmN7iZoiNgSPNt7Gez2Q2o7GxW59z-trWLiQQ6eRqddmqIClA&h=xo6yM0LcX8Hpm5fnH58GDolQVs6SqjilzV2NaimrnjU
       cache-control:
       - no-cache
       content-length:
-      - '1025'
+      - '1009'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:50:49 GMT
+      - Mon, 18 Aug 2025 12:06:35 GMT
       etag:
-      - '"39003ca3-0000-0100-0000-64c32d080000"'
+      - '"6b006068-0000-0100-0000-68a3174b0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/f955e068-38e3-4f56-a8a8-59d2097fea12*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/21b1c74f-a377-49f8-8ae0-2ebfe76a6f0b*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911155956784582&c=MIIIrzCCBpegAwIBAgITUQB_nY_WoSbNATDH2QABAH-djzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDQwHhcNMjUwNzE4MTE0ODEyWhcNMjYwMTE0MTE0ODEyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM4Yf2tzpQe96HmJYXWKDNIrKc9-o37fE5ZS4b0aA-QzeDYNU6SChIwqP2YcbSNanIvEZtyMLND05wziTsehor3TYDGdCUQTvHHMESwVZ_KfUoGcL_A8mkKSxKrnxatUado60utWQNKPx612AzyZrXK16o7OkYiqjeD3g74_notDIhNC7tO7x-bt73jOlCV4zusxXJgPHm3r_2uEhI7JEDW63UZZQLec3BGIMNQ6qeGsmha1hZKDOOJ0TvkFvcCep_8XOCH0cnbG3of4-EoQB7vPWTAYN1IAuf_75kUZFCq0BXRl5XdxWyWnPe9iEj5Zr_xqiVBExfmaRww6UeijHVUCAwEAAaOCBJwwggSYMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHkBggrBgEFBQcBAQSCAdYwggHSMGgGCCsGAQUFBzAChlxodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDEuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDIuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDMuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDQuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDAdBgNVHQ4EFgQUvMJ4Tm18Izes1FcZ2XAEMHzPZp4wDgYDVR0PAQH_BAQDAgWgMIIBNQYDVR0fBIIBLDCCASgwggEkoIIBIKCCARyGQmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwHwYDVR0jBBgwFoAUOXFdqRUQLcTffi9ZbkBNwN_vNpowHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4ICAQDaxLpctX4jhwHu-mzX41_6auhZiKzgsqu6dCEnzG4Zj0DzCBfri-_5qdITCoCAbwxf-slBI3HfVL_NLYzx9O7iO8s4bc6uW6cYI8sk3nUHO5xHWf1cEYoa-XxQ2eSRFBU5Caf-XAjAfjgM-fyhHratIk62VOaqHYQr0M5wtXbWN1g_NNpM3eAfGJgTeuJzIvl-73RuK8VVs71jCs4DP92f74Eiz4mDC1kvxeGGRNkZirdosmarZnOLVe68hDuJCE-4I3qqDZXOYzIghXqhYWcQtztazZ4X8p-vnvW2t-ESKoktRcYl6_nvzCjnePLpH_Vs-Qt1ukHZ23BuCJpjLbVj7HTiaIVXCkYmP-iVpYN8s2ROSp4gBcGadyvBY922M6pMOgB8TAwyCmlAs5glnz4GPHAj47lUO_svkSiLXSpwRReCPkSLOfNJOThuCO8S7IrLGDptqkMHyAIXUVTZTh3PW9UicNi44sC_WkzX9NiAbPuwW5IhT8IzzJr-VcqT8VDCxzblbRv6HQfFVTy1K67ZE119xwAvp6Dk32IQGAOHjeKH6kFABKe0DDu5gttcd_XDHBmtBZ4-IQV8vozB0ioBUqMdKqVOvmF1thxnLWLXfqxxBjc2CSkeixa8WKdvzGKkxSmDmGS91XZWAbmkze2zg8eKrhWm0pcYuxU-2SF0zw&s=GwkuN9_2tL7rbIkAFDfWJDF0j7AmB7W78T7UfdlbJWu-6IEmx-CD-FQi2bNT6XiAACjMOo46OxoAZXzuaVt5SRLD6_FLTt3Oyx4OoHlqYzo5JKqyd2-5HuYvfdmMeXU7oe1NjSijXKZAkaiEjapVT17zLqcraNBbUwR8_bVmvWGT6U-L9zQrmngC82_7Ih3T3aHcrvgFWA7Y6C6-2m8XjdfnXDmjAKwkEqpDW9q9G33XLYchf8hcOSHNwsXsknjrW5MvGF4jXvBI3f0DD8EDbzk9S1f6uipHep6WWoM88trwD2tjSv9WN1DxUu9aKBa4FQR6u43YGm4TIV85YxWFKg&h=dnvh2vx06wfT1tHIZvgzl711BVBZkok9eTjGvlYq_kQ
       mise-correlation-id:
-      - 1312a78f-a8b4-4f9c-bf2c-7df3ad33163e
+      - a39e1c17-6b07-4ade-b558-23eddbf7f74b
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-async-operation-timeout:
+      - P6D
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/southindia/2a219a9d-b395-4a3d-80a8-c115d1293378
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '12000'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '800'
+      x-msedge-ref:
+      - 'Ref A: B6DC8068D4314F418A2AEBDADFD95D7F Ref B: PNQ231110908023 Ref C: 2025-08-18T12:06:27Z'
     status:
       code: 201
       message: Created
@@ -78,12 +88,12 @@ interactions:
       - -g -n --identity --location --default-mode --description --min-app-id-version
         --scope --security-services
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/f955e068-38e3-4f56-a8a8-59d2097fea12*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/21b1c74f-a377-49f8-8ae0-2ebfe76a6f0b*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911155956628318&c=MIIIrzCCBpegAwIBAgITUQB_nY_WoSbNATDH2QABAH-djzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDQwHhcNMjUwNzE4MTE0ODEyWhcNMjYwMTE0MTE0ODEyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM4Yf2tzpQe96HmJYXWKDNIrKc9-o37fE5ZS4b0aA-QzeDYNU6SChIwqP2YcbSNanIvEZtyMLND05wziTsehor3TYDGdCUQTvHHMESwVZ_KfUoGcL_A8mkKSxKrnxatUado60utWQNKPx612AzyZrXK16o7OkYiqjeD3g74_notDIhNC7tO7x-bt73jOlCV4zusxXJgPHm3r_2uEhI7JEDW63UZZQLec3BGIMNQ6qeGsmha1hZKDOOJ0TvkFvcCep_8XOCH0cnbG3of4-EoQB7vPWTAYN1IAuf_75kUZFCq0BXRl5XdxWyWnPe9iEj5Zr_xqiVBExfmaRww6UeijHVUCAwEAAaOCBJwwggSYMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHkBggrBgEFBQcBAQSCAdYwggHSMGgGCCsGAQUFBzAChlxodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDEuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDIuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDMuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDQuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDAdBgNVHQ4EFgQUvMJ4Tm18Izes1FcZ2XAEMHzPZp4wDgYDVR0PAQH_BAQDAgWgMIIBNQYDVR0fBIIBLDCCASgwggEkoIIBIKCCARyGQmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwHwYDVR0jBBgwFoAUOXFdqRUQLcTffi9ZbkBNwN_vNpowHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4ICAQDaxLpctX4jhwHu-mzX41_6auhZiKzgsqu6dCEnzG4Zj0DzCBfri-_5qdITCoCAbwxf-slBI3HfVL_NLYzx9O7iO8s4bc6uW6cYI8sk3nUHO5xHWf1cEYoa-XxQ2eSRFBU5Caf-XAjAfjgM-fyhHratIk62VOaqHYQr0M5wtXbWN1g_NNpM3eAfGJgTeuJzIvl-73RuK8VVs71jCs4DP92f74Eiz4mDC1kvxeGGRNkZirdosmarZnOLVe68hDuJCE-4I3qqDZXOYzIghXqhYWcQtztazZ4X8p-vnvW2t-ESKoktRcYl6_nvzCjnePLpH_Vs-Qt1ukHZ23BuCJpjLbVj7HTiaIVXCkYmP-iVpYN8s2ROSp4gBcGadyvBY922M6pMOgB8TAwyCmlAs5glnz4GPHAj47lUO_svkSiLXSpwRReCPkSLOfNJOThuCO8S7IrLGDptqkMHyAIXUVTZTh3PW9UicNi44sC_WkzX9NiAbPuwW5IhT8IzzJr-VcqT8VDCxzblbRv6HQfFVTy1K67ZE119xwAvp6Dk32IQGAOHjeKH6kFABKe0DDu5gttcd_XDHBmtBZ4-IQV8vozB0ioBUqMdKqVOvmF1thxnLWLXfqxxBjc2CSkeixa8WKdvzGKkxSmDmGS91XZWAbmkze2zg8eKrhWm0pcYuxU-2SF0zw&s=BRrPMfujTkjnA5WCnLp_ioVoSGzAlNibUP7TNU9CT9gMeW2-9JZRxT7x1hf1h_JqLoYrNIfYObcmDai9uXHpB8zHjy5xs1TotvC5_FPrAQm9xRDgAMHALOdO0BHtMfVe0FF5KpdhqUH_2OuvavBjTL_GkCHAUE_OSUcJpPlg_SejrUgvGGFJdiQJUmhp-B75PfZnyjem6gIG0xIpXPWof1wn6ZnoSayDwhJkDS5OLpdCSc5TqNFgZimA9DUx_WjJdzwnEHmgsszrxe1e7dmjhB9r9uf9yjzt_jhyWDmN7iZoiNgSPNt7Gez2Q2o7GxW59z-trWLiQQ6eRqddmqIClA&h=xo6yM0LcX8Hpm5fnH58GDolQVs6SqjilzV2NaimrnjU
   response:
     body:
-      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/f955e068-38e3-4f56-a8a8-59d2097fea12*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11","name":"f955e068-38e3-4f56-a8a8-59d2097fea12*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Accepted","startTime":"2023-07-28T02:50:47.9384083Z"}'
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/21b1c74f-a377-49f8-8ae0-2ebfe76a6f0b*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483","name":"21b1c74f-a377-49f8-8ae0-2ebfe76a6f0b*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Accepted","startTime":"2025-08-18T12:06:34.3310546Z"}'
     headers:
       cache-control:
       - no-cache
@@ -92,21 +102,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:50:53 GMT
+      - Mon, 18 Aug 2025 12:06:36 GMT
       etag:
-      - '"0400724a-0000-0100-0000-64c32d080000"'
+      - '"b30040c4-0000-0100-0000-68a3174a0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 0734A622124240C98D8580C9DB007178 Ref B: PNQ231110909054 Ref C: 2025-08-18T12:06:35Z'
     status:
       code: 200
       message: OK
@@ -125,12 +137,12 @@ interactions:
       - -g -n --identity --location --default-mode --description --min-app-id-version
         --scope --security-services
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/f955e068-38e3-4f56-a8a8-59d2097fea12*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/21b1c74f-a377-49f8-8ae0-2ebfe76a6f0b*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911155956628318&c=MIIIrzCCBpegAwIBAgITUQB_nY_WoSbNATDH2QABAH-djzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDQwHhcNMjUwNzE4MTE0ODEyWhcNMjYwMTE0MTE0ODEyWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM4Yf2tzpQe96HmJYXWKDNIrKc9-o37fE5ZS4b0aA-QzeDYNU6SChIwqP2YcbSNanIvEZtyMLND05wziTsehor3TYDGdCUQTvHHMESwVZ_KfUoGcL_A8mkKSxKrnxatUado60utWQNKPx612AzyZrXK16o7OkYiqjeD3g74_notDIhNC7tO7x-bt73jOlCV4zusxXJgPHm3r_2uEhI7JEDW63UZZQLec3BGIMNQ6qeGsmha1hZKDOOJ0TvkFvcCep_8XOCH0cnbG3of4-EoQB7vPWTAYN1IAuf_75kUZFCq0BXRl5XdxWyWnPe9iEj5Zr_xqiVBExfmaRww6UeijHVUCAwEAAaOCBJwwggSYMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHkBggrBgEFBQcBAQSCAdYwggHSMGgGCCsGAQUFBzAChlxodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDEuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDIuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDMuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDQuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDAdBgNVHQ4EFgQUvMJ4Tm18Izes1FcZ2XAEMHzPZp4wDgYDVR0PAQH_BAQDAgWgMIIBNQYDVR0fBIIBLDCCASgwggEkoIIBIKCCARyGQmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwHwYDVR0jBBgwFoAUOXFdqRUQLcTffi9ZbkBNwN_vNpowHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4ICAQDaxLpctX4jhwHu-mzX41_6auhZiKzgsqu6dCEnzG4Zj0DzCBfri-_5qdITCoCAbwxf-slBI3HfVL_NLYzx9O7iO8s4bc6uW6cYI8sk3nUHO5xHWf1cEYoa-XxQ2eSRFBU5Caf-XAjAfjgM-fyhHratIk62VOaqHYQr0M5wtXbWN1g_NNpM3eAfGJgTeuJzIvl-73RuK8VVs71jCs4DP92f74Eiz4mDC1kvxeGGRNkZirdosmarZnOLVe68hDuJCE-4I3qqDZXOYzIghXqhYWcQtztazZ4X8p-vnvW2t-ESKoktRcYl6_nvzCjnePLpH_Vs-Qt1ukHZ23BuCJpjLbVj7HTiaIVXCkYmP-iVpYN8s2ROSp4gBcGadyvBY922M6pMOgB8TAwyCmlAs5glnz4GPHAj47lUO_svkSiLXSpwRReCPkSLOfNJOThuCO8S7IrLGDptqkMHyAIXUVTZTh3PW9UicNi44sC_WkzX9NiAbPuwW5IhT8IzzJr-VcqT8VDCxzblbRv6HQfFVTy1K67ZE119xwAvp6Dk32IQGAOHjeKH6kFABKe0DDu5gttcd_XDHBmtBZ4-IQV8vozB0ioBUqMdKqVOvmF1thxnLWLXfqxxBjc2CSkeixa8WKdvzGKkxSmDmGS91XZWAbmkze2zg8eKrhWm0pcYuxU-2SF0zw&s=BRrPMfujTkjnA5WCnLp_ioVoSGzAlNibUP7TNU9CT9gMeW2-9JZRxT7x1hf1h_JqLoYrNIfYObcmDai9uXHpB8zHjy5xs1TotvC5_FPrAQm9xRDgAMHALOdO0BHtMfVe0FF5KpdhqUH_2OuvavBjTL_GkCHAUE_OSUcJpPlg_SejrUgvGGFJdiQJUmhp-B75PfZnyjem6gIG0xIpXPWof1wn6ZnoSayDwhJkDS5OLpdCSc5TqNFgZimA9DUx_WjJdzwnEHmgsszrxe1e7dmjhB9r9uf9yjzt_jhyWDmN7iZoiNgSPNt7Gez2Q2o7GxW59z-trWLiQQ6eRqddmqIClA&h=xo6yM0LcX8Hpm5fnH58GDolQVs6SqjilzV2NaimrnjU
   response:
     body:
-      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/f955e068-38e3-4f56-a8a8-59d2097fea12*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11","name":"f955e068-38e3-4f56-a8a8-59d2097fea12*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Succeeded","startTime":"2023-07-28T02:50:47.9384083Z","endTime":"2023-07-28T02:51:17.1695152Z","error":{},"properties":null}'
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/21b1c74f-a377-49f8-8ae0-2ebfe76a6f0b*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483","name":"21b1c74f-a377-49f8-8ae0-2ebfe76a6f0b*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Succeeded","startTime":"2025-08-18T12:06:34.3310546Z","endTime":"2025-08-18T12:07:00.3921286Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -139,21 +151,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:51:25 GMT
+      - Mon, 18 Aug 2025 12:07:06 GMT
       etag:
-      - '"0400b74a-0000-0100-0000-64c32d250000"'
+      - '"b30011cd-0000-0100-0000-68a317640000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: A0B980BBC09F48A3B3DA3EBA7D03FBCD Ref B: PNQ231110908031 Ref C: 2025-08-18T12:07:06Z'
     status:
       code: 200
       message: OK
@@ -172,38 +186,40 @@ interactions:
       - -g -n --identity --location --default-mode --description --min-app-id-version
         --scope --security-services
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-28T02:50:46.666445Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-28T02:50:46.666445Z"},"identity":{"type":"None"},"properties":{"scope":"LOCAL","description":"local
-        rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Succeeded","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice"},"defaultMode":"IPS","panEtag":"950f9152-2cf1-11ee-9458-6eecfc0ae1a7"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-18T12:06:33.2097216Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-18T12:06:33.2097216Z"},"identity":{"type":"None"},"properties":{"scope":"LOCAL","description":"local
+        rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Succeeded","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice"},"defaultMode":"IPS","panEtag":"ce7dc284-7c2b-11f0-9cef-aa8eeb7bc55e"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1009'
+      - '993'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:51:26 GMT
+      - Mon, 18 Aug 2025 12:07:07 GMT
       etag:
-      - '"39002ca5-0000-0100-0000-64c32d250000"'
+      - '"7c00d3ae-0000-0600-0000-68a317640000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0482785ACBB745C2978B893F47AE8FA2 Ref B: PNQ231110906029 Ref C: 2025-08-18T12:07:06Z'
     status:
       code: 200
       message: OK
@@ -221,45 +237,47 @@ interactions:
       ParameterSetName:
       - -g -n --tags
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-28T02:50:46.666445Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-28T02:50:46.666445Z"},"identity":{"type":"None"},"properties":{"scope":"LOCAL","description":"local
-        rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Succeeded","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice"},"defaultMode":"IPS","panEtag":"950f9152-2cf1-11ee-9458-6eecfc0ae1a7"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-18T12:06:33.2097216Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-18T12:06:33.2097216Z"},"identity":{"type":"None"},"properties":{"scope":"LOCAL","description":"local
+        rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Succeeded","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice"},"defaultMode":"IPS","panEtag":"ce7dc284-7c2b-11f0-9cef-aa8eeb7bc55e"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1009'
+      - '993'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:51:32 GMT
+      - Mon, 18 Aug 2025 12:07:08 GMT
       etag:
-      - '"39002ca5-0000-0100-0000-64c32d250000"'
+      - '"7c00d3ae-0000-0600-0000-68a317640000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 226060C58A5748F48E8FD48C79036CF5 Ref B: PNQ231110907062 Ref C: 2025-08-18T12:07:08Z'
     status:
       code: 200
       message: OK
 - request:
     body: '{"identity": {"type": "None"}, "location": "eastus", "properties": {"defaultMode":
       "IPS", "description": "local rulestacks", "minAppIdVersion": "8595-7473", "panEtag":
-      "950f9152-2cf1-11ee-9458-6eecfc0ae1a7", "provisioningState": "Succeeded", "scope":
+      "ce7dc284-7c2b-11f0-9cef-aa8eeb7bc55e", "provisioningState": "Succeeded", "scope":
       "LOCAL", "securityServices": {"antiSpywareProfile": "BestPractice", "antiVirusProfile":
       "BestPractice", "dnsSubscription": "BestPractice", "fileBlockingProfile": "BestPractice",
       "urlFilteringProfile": "BestPractice", "vulnerabilityProfile": "BestPractice"}},
@@ -280,44 +298,54 @@ interactions:
       ParameterSetName:
       - -g -n --tags
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","tags":{"tag-name":"value"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-28T02:50:46.666445Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-28T02:51:34.0592132Z"},"identity":{"type":"None"},"properties":{"panEtag":"950f9152-2cf1-11ee-9458-6eecfc0ae1a7","scope":"LOCAL","description":"local
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","tags":{"tag-name":"value"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-18T12:06:33.2097216Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-18T12:07:09.2387794Z"},"identity":{"type":"None"},"properties":{"panEtag":"ce7dc284-7c2b-11f0-9cef-aa8eeb7bc55e","scope":"LOCAL","description":"local
         rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Accepted","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice","outboundUnTrustCertificate":null,"outboundTrustCertificate":null},"defaultMode":"IPS"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/7715ddfe-d86b-43ba-a8bd-f2c1d5a480e0*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/aabc4010-c0fe-4814-b54b-0fb81ccf7ce0*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911156305981637&c=MIIIpTCCBo2gAwIBAgITFgGpymN7LTW4kGDY9AABAanKYzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNzE2MDY0NzU2WhcNMjYwMTEyMDY0NzU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKTm5YrLmfx9BQfyqn0KlKU5oAoMO71ploN13WymwudXY4jancWivKtgBQUtClbNOMf8GYtxePPkFtxCfON6ynaA50b2GFHRrjRAHMFB49frm55UXml1ym0Wz3JH6bXBwGJBhpQkMn2aLk58hRpzNpxEu8BK4avf0oZczbk_PMUH85rY1z-QQUNFQb_nIO7v3SIOCK3CKt4GdAKztacTI1NAnA_-1QYq5xcwep6CETOHLmlB_JNwscGCDdFNyGB72czos_xXG50Xhzs81LE3w3j92c_7ddvO9ojBuiNMBdFbP7GW31DrqzglZVWg5GHxjEcuVEIKM8kcIdQ2s7z8aGkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MB0GA1UdDgQWBBTviIwcnAMMwKNPI0scxiwQPceQFTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBRIo61gdWpv7GDzaVXRALEyV_xs5DAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggIBAB7FilN5Nb2BMo0idhK0QI7CLur1vEiQDTx3r1PyBucoZKAhxeeSGSgzuFXBjtOGdl6KlaAyTE6thgbXA5VqVyLYuRnuvUDMFTX51g7bJmFMAwi3IsYN5OQ5fQkuPX3Ao0gysXGrQmU3uH3rbGlVWXLp9xDSUfHh3jfeoU0Q4cgn2VZBiXWIGMiSW0OI1ZQtmEAvtUUja-Za7Q8TrERfxJg1nnqfjm8pH78RqklGECDK_m93WbGutB81jiRb598PoEFLqatWtUWEOagPl1wHToKm4tfgg5pN24otf99UUJQrf6A8kHQVZhuyARbhm-_Y9HSN43NooeVkaEzxST2gsLitbuz9EW6djyVhce8jc4d89cfOQaamQ7wOpiwXusaP-u5Vh-mmGXqkJVn4g_pDI4iv6NGaCosqQodrbEwWjkxiG_jX08qhEuGUhw-vo0jXacuguanQ0ap7Rns1PSLEOSmOB0LlsacAuoBAAQasSIYAX1woGPttqGnuqoCxw6jclcJayt0x4q1URe4WhXuTzySAt-1OtDyzZrXnwfkNB-J1J0iocdL_DCgWGQa2MlPP9EZiR9ox-VqkrOPQAMZBqtP9tQacMeO-V3JqiNzdu8ZzGnJrVT0fbgiS5E3emSyi_rYbuKDR06QJurZseja_toZCirAeHMjBVtn2wNuaY6Rr&s=duX_4iTCiu48hGa28V5e4ZDE0c08_T7aEKL39AaJ4A7UErXIhLuGzDBJNzHFDe-W_RMyt_QHY7M0FnsngyCgmSBi0qnwXMsTv2g7U1hEd3Y-ENK3tcj69-VFFf7ZJGhEryT4bf7bCYVWwCO_U6uiY5ewziUBD8voQg8J-f_RzoKcYCT9SWeaqUF0xPpZ1SgilDJfomIuuJuYCG85-iZWQSMoDuUyMtQPf-4ObUicWG8qp-7yWkgSfiawpwopHPhtAU_krmKKauYUF-bHZhMi9ZXHzYsHB2o621pxr-E1gOO8uSSzWfXYdrZ1trgaYOuaATJKXHmG57D1s4oHeh4vDw&h=kbA7TzJ9b7Xhcv0EUsz9rH4A_OZKqDsJq-hmGtN-WG8
       cache-control:
       - no-cache
       content-length:
-      - '1103'
+      - '1086'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:51:36 GMT
+      - Mon, 18 Aug 2025 12:07:10 GMT
       etag:
-      - '"390034a5-0000-0100-0000-64c32d360000"'
+      - '"6b00816a-0000-0100-0000-68a3176d0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/7715ddfe-d86b-43ba-a8bd-f2c1d5a480e0*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/aabc4010-c0fe-4814-b54b-0fb81ccf7ce0*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911156305981637&c=MIIIpTCCBo2gAwIBAgITFgGpymN7LTW4kGDY9AABAanKYzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNzE2MDY0NzU2WhcNMjYwMTEyMDY0NzU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKTm5YrLmfx9BQfyqn0KlKU5oAoMO71ploN13WymwudXY4jancWivKtgBQUtClbNOMf8GYtxePPkFtxCfON6ynaA50b2GFHRrjRAHMFB49frm55UXml1ym0Wz3JH6bXBwGJBhpQkMn2aLk58hRpzNpxEu8BK4avf0oZczbk_PMUH85rY1z-QQUNFQb_nIO7v3SIOCK3CKt4GdAKztacTI1NAnA_-1QYq5xcwep6CETOHLmlB_JNwscGCDdFNyGB72czos_xXG50Xhzs81LE3w3j92c_7ddvO9ojBuiNMBdFbP7GW31DrqzglZVWg5GHxjEcuVEIKM8kcIdQ2s7z8aGkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MB0GA1UdDgQWBBTviIwcnAMMwKNPI0scxiwQPceQFTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBRIo61gdWpv7GDzaVXRALEyV_xs5DAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggIBAB7FilN5Nb2BMo0idhK0QI7CLur1vEiQDTx3r1PyBucoZKAhxeeSGSgzuFXBjtOGdl6KlaAyTE6thgbXA5VqVyLYuRnuvUDMFTX51g7bJmFMAwi3IsYN5OQ5fQkuPX3Ao0gysXGrQmU3uH3rbGlVWXLp9xDSUfHh3jfeoU0Q4cgn2VZBiXWIGMiSW0OI1ZQtmEAvtUUja-Za7Q8TrERfxJg1nnqfjm8pH78RqklGECDK_m93WbGutB81jiRb598PoEFLqatWtUWEOagPl1wHToKm4tfgg5pN24otf99UUJQrf6A8kHQVZhuyARbhm-_Y9HSN43NooeVkaEzxST2gsLitbuz9EW6djyVhce8jc4d89cfOQaamQ7wOpiwXusaP-u5Vh-mmGXqkJVn4g_pDI4iv6NGaCosqQodrbEwWjkxiG_jX08qhEuGUhw-vo0jXacuguanQ0ap7Rns1PSLEOSmOB0LlsacAuoBAAQasSIYAX1woGPttqGnuqoCxw6jclcJayt0x4q1URe4WhXuTzySAt-1OtDyzZrXnwfkNB-J1J0iocdL_DCgWGQa2MlPP9EZiR9ox-VqkrOPQAMZBqtP9tQacMeO-V3JqiNzdu8ZzGnJrVT0fbgiS5E3emSyi_rYbuKDR06QJurZseja_toZCirAeHMjBVtn2wNuaY6Rr&s=duX_4iTCiu48hGa28V5e4ZDE0c08_T7aEKL39AaJ4A7UErXIhLuGzDBJNzHFDe-W_RMyt_QHY7M0FnsngyCgmSBi0qnwXMsTv2g7U1hEd3Y-ENK3tcj69-VFFf7ZJGhEryT4bf7bCYVWwCO_U6uiY5ewziUBD8voQg8J-f_RzoKcYCT9SWeaqUF0xPpZ1SgilDJfomIuuJuYCG85-iZWQSMoDuUyMtQPf-4ObUicWG8qp-7yWkgSfiawpwopHPhtAU_krmKKauYUF-bHZhMi9ZXHzYsHB2o621pxr-E1gOO8uSSzWfXYdrZ1trgaYOuaATJKXHmG57D1s4oHeh4vDw&h=kbA7TzJ9b7Xhcv0EUsz9rH4A_OZKqDsJq-hmGtN-WG8
       mise-correlation-id:
-      - 970b3feb-1312-41db-9be7-a93ec16bcee3
+      - 704712c6-d4b0-4ab7-acaa-90be79fc4e85
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-async-operation-timeout:
+      - P6D
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/70a1e7f4-0897-48d3-bffc-4e954003e23d
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: E86E319B67CA4D64B817874AE5158FAE Ref B: PNQ231110908062 Ref C: 2025-08-18T12:07:08Z'
     status:
       code: 201
       message: Created
@@ -335,12 +363,12 @@ interactions:
       ParameterSetName:
       - -g -n --tags
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/7715ddfe-d86b-43ba-a8bd-f2c1d5a480e0*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/aabc4010-c0fe-4814-b54b-0fb81ccf7ce0*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911156305981637&c=MIIIpTCCBo2gAwIBAgITFgGpymN7LTW4kGDY9AABAanKYzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNzE2MDY0NzU2WhcNMjYwMTEyMDY0NzU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKTm5YrLmfx9BQfyqn0KlKU5oAoMO71ploN13WymwudXY4jancWivKtgBQUtClbNOMf8GYtxePPkFtxCfON6ynaA50b2GFHRrjRAHMFB49frm55UXml1ym0Wz3JH6bXBwGJBhpQkMn2aLk58hRpzNpxEu8BK4avf0oZczbk_PMUH85rY1z-QQUNFQb_nIO7v3SIOCK3CKt4GdAKztacTI1NAnA_-1QYq5xcwep6CETOHLmlB_JNwscGCDdFNyGB72czos_xXG50Xhzs81LE3w3j92c_7ddvO9ojBuiNMBdFbP7GW31DrqzglZVWg5GHxjEcuVEIKM8kcIdQ2s7z8aGkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MB0GA1UdDgQWBBTviIwcnAMMwKNPI0scxiwQPceQFTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBRIo61gdWpv7GDzaVXRALEyV_xs5DAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggIBAB7FilN5Nb2BMo0idhK0QI7CLur1vEiQDTx3r1PyBucoZKAhxeeSGSgzuFXBjtOGdl6KlaAyTE6thgbXA5VqVyLYuRnuvUDMFTX51g7bJmFMAwi3IsYN5OQ5fQkuPX3Ao0gysXGrQmU3uH3rbGlVWXLp9xDSUfHh3jfeoU0Q4cgn2VZBiXWIGMiSW0OI1ZQtmEAvtUUja-Za7Q8TrERfxJg1nnqfjm8pH78RqklGECDK_m93WbGutB81jiRb598PoEFLqatWtUWEOagPl1wHToKm4tfgg5pN24otf99UUJQrf6A8kHQVZhuyARbhm-_Y9HSN43NooeVkaEzxST2gsLitbuz9EW6djyVhce8jc4d89cfOQaamQ7wOpiwXusaP-u5Vh-mmGXqkJVn4g_pDI4iv6NGaCosqQodrbEwWjkxiG_jX08qhEuGUhw-vo0jXacuguanQ0ap7Rns1PSLEOSmOB0LlsacAuoBAAQasSIYAX1woGPttqGnuqoCxw6jclcJayt0x4q1URe4WhXuTzySAt-1OtDyzZrXnwfkNB-J1J0iocdL_DCgWGQa2MlPP9EZiR9ox-VqkrOPQAMZBqtP9tQacMeO-V3JqiNzdu8ZzGnJrVT0fbgiS5E3emSyi_rYbuKDR06QJurZseja_toZCirAeHMjBVtn2wNuaY6Rr&s=duX_4iTCiu48hGa28V5e4ZDE0c08_T7aEKL39AaJ4A7UErXIhLuGzDBJNzHFDe-W_RMyt_QHY7M0FnsngyCgmSBi0qnwXMsTv2g7U1hEd3Y-ENK3tcj69-VFFf7ZJGhEryT4bf7bCYVWwCO_U6uiY5ewziUBD8voQg8J-f_RzoKcYCT9SWeaqUF0xPpZ1SgilDJfomIuuJuYCG85-iZWQSMoDuUyMtQPf-4ObUicWG8qp-7yWkgSfiawpwopHPhtAU_krmKKauYUF-bHZhMi9ZXHzYsHB2o621pxr-E1gOO8uSSzWfXYdrZ1trgaYOuaATJKXHmG57D1s4oHeh4vDw&h=kbA7TzJ9b7Xhcv0EUsz9rH4A_OZKqDsJq-hmGtN-WG8
   response:
     body:
-      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/7715ddfe-d86b-43ba-a8bd-f2c1d5a480e0*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11","name":"7715ddfe-d86b-43ba-a8bd-f2c1d5a480e0*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Accepted","startTime":"2023-07-28T02:51:34.3907825Z"}'
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/aabc4010-c0fe-4814-b54b-0fb81ccf7ce0*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483","name":"aabc4010-c0fe-4814-b54b-0fb81ccf7ce0*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Accepted","startTime":"2025-08-18T12:07:09.5581195Z"}'
     headers:
       cache-control:
       - no-cache
@@ -349,21 +377,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:51:37 GMT
+      - Mon, 18 Aug 2025 12:07:10 GMT
       etag:
-      - '"0400e14a-0000-0100-0000-64c32d360000"'
+      - '"b300becf-0000-0100-0000-68a3176d0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 653B267144E549159B7DD6AD0163B1C8 Ref B: PNQ231110906060 Ref C: 2025-08-18T12:07:10Z'
     status:
       code: 200
       message: OK
@@ -381,12 +411,12 @@ interactions:
       ParameterSetName:
       - -g -n --tags
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/7715ddfe-d86b-43ba-a8bd-f2c1d5a480e0*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/aabc4010-c0fe-4814-b54b-0fb81ccf7ce0*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911156305981637&c=MIIIpTCCBo2gAwIBAgITFgGpymN7LTW4kGDY9AABAanKYzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNzE2MDY0NzU2WhcNMjYwMTEyMDY0NzU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKTm5YrLmfx9BQfyqn0KlKU5oAoMO71ploN13WymwudXY4jancWivKtgBQUtClbNOMf8GYtxePPkFtxCfON6ynaA50b2GFHRrjRAHMFB49frm55UXml1ym0Wz3JH6bXBwGJBhpQkMn2aLk58hRpzNpxEu8BK4avf0oZczbk_PMUH85rY1z-QQUNFQb_nIO7v3SIOCK3CKt4GdAKztacTI1NAnA_-1QYq5xcwep6CETOHLmlB_JNwscGCDdFNyGB72czos_xXG50Xhzs81LE3w3j92c_7ddvO9ojBuiNMBdFbP7GW31DrqzglZVWg5GHxjEcuVEIKM8kcIdQ2s7z8aGkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MB0GA1UdDgQWBBTviIwcnAMMwKNPI0scxiwQPceQFTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBRIo61gdWpv7GDzaVXRALEyV_xs5DAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggIBAB7FilN5Nb2BMo0idhK0QI7CLur1vEiQDTx3r1PyBucoZKAhxeeSGSgzuFXBjtOGdl6KlaAyTE6thgbXA5VqVyLYuRnuvUDMFTX51g7bJmFMAwi3IsYN5OQ5fQkuPX3Ao0gysXGrQmU3uH3rbGlVWXLp9xDSUfHh3jfeoU0Q4cgn2VZBiXWIGMiSW0OI1ZQtmEAvtUUja-Za7Q8TrERfxJg1nnqfjm8pH78RqklGECDK_m93WbGutB81jiRb598PoEFLqatWtUWEOagPl1wHToKm4tfgg5pN24otf99UUJQrf6A8kHQVZhuyARbhm-_Y9HSN43NooeVkaEzxST2gsLitbuz9EW6djyVhce8jc4d89cfOQaamQ7wOpiwXusaP-u5Vh-mmGXqkJVn4g_pDI4iv6NGaCosqQodrbEwWjkxiG_jX08qhEuGUhw-vo0jXacuguanQ0ap7Rns1PSLEOSmOB0LlsacAuoBAAQasSIYAX1woGPttqGnuqoCxw6jclcJayt0x4q1URe4WhXuTzySAt-1OtDyzZrXnwfkNB-J1J0iocdL_DCgWGQa2MlPP9EZiR9ox-VqkrOPQAMZBqtP9tQacMeO-V3JqiNzdu8ZzGnJrVT0fbgiS5E3emSyi_rYbuKDR06QJurZseja_toZCirAeHMjBVtn2wNuaY6Rr&s=duX_4iTCiu48hGa28V5e4ZDE0c08_T7aEKL39AaJ4A7UErXIhLuGzDBJNzHFDe-W_RMyt_QHY7M0FnsngyCgmSBi0qnwXMsTv2g7U1hEd3Y-ENK3tcj69-VFFf7ZJGhEryT4bf7bCYVWwCO_U6uiY5ewziUBD8voQg8J-f_RzoKcYCT9SWeaqUF0xPpZ1SgilDJfomIuuJuYCG85-iZWQSMoDuUyMtQPf-4ObUicWG8qp-7yWkgSfiawpwopHPhtAU_krmKKauYUF-bHZhMi9ZXHzYsHB2o621pxr-E1gOO8uSSzWfXYdrZ1trgaYOuaATJKXHmG57D1s4oHeh4vDw&h=kbA7TzJ9b7Xhcv0EUsz9rH4A_OZKqDsJq-hmGtN-WG8
   response:
     body:
-      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/7715ddfe-d86b-43ba-a8bd-f2c1d5a480e0*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11","name":"7715ddfe-d86b-43ba-a8bd-f2c1d5a480e0*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Succeeded","startTime":"2023-07-28T02:51:34.3907825Z","endTime":"2023-07-28T02:51:39.0627279Z","error":{},"properties":null}'
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/aabc4010-c0fe-4814-b54b-0fb81ccf7ce0*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483","name":"aabc4010-c0fe-4814-b54b-0fb81ccf7ce0*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Succeeded","startTime":"2025-08-18T12:07:09.5581195Z","endTime":"2025-08-18T12:07:14.3237023Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -395,21 +425,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:52:11 GMT
+      - Mon, 18 Aug 2025 12:07:41 GMT
       etag:
-      - '"0400ed4a-0000-0100-0000-64c32d3b0000"'
+      - '"b3002bd1-0000-0100-0000-68a317720000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: AC2C19A36FB247DB904C3F570930D25C Ref B: PNQ231110907062 Ref C: 2025-08-18T12:07:41Z'
     status:
       code: 200
       message: OK
@@ -427,38 +459,40 @@ interactions:
       ParameterSetName:
       - -g -n --tags
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","tags":{"tag-name":"value"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-28T02:50:46.666445Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-28T02:51:34.0592132Z"},"identity":{"type":"None"},"properties":{"panEtag":"ab57e4c8-2cf1-11ee-a545-a655c221ae57","scope":"LOCAL","description":"local
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","tags":{"tag-name":"value"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-18T12:06:33.2097216Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-18T12:07:09.2387794Z"},"identity":{"type":"None"},"properties":{"panEtag":"dff6c808-7c2b-11f0-a5d0-b65f5f71f491","scope":"LOCAL","description":"local
         rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Succeeded","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice"},"defaultMode":"IPS"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1038'
+      - '1021'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:52:13 GMT
+      - Mon, 18 Aug 2025 12:07:42 GMT
       etag:
-      - '"390037a5-0000-0100-0000-64c32d3b0000"'
+      - '"7c0042af-0000-0600-0000-68a317720000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F5724E879F8246A78416E8263FC67F9B Ref B: PNQ231110908042 Ref C: 2025-08-18T12:07:41Z'
     status:
       code: 200
       message: OK
@@ -476,54 +510,40 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks?api-version=2022-08-29
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","tags":{"tag-name":"value"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-28T02:50:46.666445Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-28T02:51:34.0592132Z"},"identity":{"type":"None"},"properties":{"panEtag":"ab57e4c8-2cf1-11ee-a545-a655c221ae57","scope":"LOCAL","description":"local
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","tags":{"tag-name":"value"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-18T12:06:33.2097216Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-18T12:07:09.2387794Z"},"identity":{"type":"None"},"properties":{"panEtag":"dff6c808-7c2b-11f0-a5d0-b65f5f71f491","scope":"LOCAL","description":"local
         rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Succeeded","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice"},"defaultMode":"IPS"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1050'
+      - '1033'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:52:22 GMT
+      - Mon, 18 Aug 2025 12:07:43 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - e442af1f-ded4-47f3-a9ee-f5826e23d9e3
-      - b552b3f5-59fa-4fe8-a089-9e37c2f1b635
-      - aa293119-feb2-4f5d-abcc-3242de3b5163
-      - 5c9d449c-4f56-4d7c-ade9-fd4646dd812f
-      - 11532889-d378-4bef-a532-0e50cdec6147
-      - 9c19bda9-3d51-438e-9a2c-543882f8303a
-      - 524c27ce-fff3-48db-b83a-606c0bf766c6
-      - 440df2b8-1874-4bf4-8610-6b6b9cc31f5e
-      - 8ae73b74-0ea5-495a-baa0-fae3157f2f17
-      - 61eeac28-abdf-44f8-acdb-f9d19632ab3b
-      - 171a1fb8-b9b3-428f-b57c-6254459b7b35
-      - 9366c6d9-5723-4e0d-85f6-8d8d4973ba6b
-      - ef6d02a0-e27c-470a-869b-37f980feb70d
-      - 9b3d5e4d-4fed-4387-a57f-f446bc7e3f90
-      - 64bc4e24-37b0-4364-bb00-f0aa34c2ee5c
-      - 978ff5bf-c5eb-4812-8e45-25ca6879ee46
-      - 8464f527-1f01-46b8-8633-c282ce4ca4ea
-      - 4994f0f2-fa94-4908-958f-e29000563fd1
-      - 13baee54-7559-4ffe-b622-6f34280e37d6
-      - fe06a0b4-6d07-4968-89da-a2bc73295dd2
-      - b5f22ec0-e59f-492e-bcbb-156214285322
+      - b97f7657-763b-4aa5-841a-50dd295dc235
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3BBA14799D4F49CEA55FA44F96DB7920 Ref B: PNQ231110906062 Ref C: 2025-08-18T12:07:42Z'
     status:
       code: 200
       message: OK
@@ -541,38 +561,40 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","tags":{"tag-name":"value"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-28T02:50:46.666445Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-28T02:51:34.0592132Z"},"identity":{"type":"None"},"properties":{"panEtag":"ab57e4c8-2cf1-11ee-a545-a655c221ae57","scope":"LOCAL","description":"local
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","tags":{"tag-name":"value"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-18T12:06:33.2097216Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-18T12:07:09.2387794Z"},"identity":{"type":"None"},"properties":{"panEtag":"dff6c808-7c2b-11f0-a5d0-b65f5f71f491","scope":"LOCAL","description":"local
         rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Succeeded","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice"},"defaultMode":"IPS"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1038'
+      - '1021'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:52:30 GMT
+      - Mon, 18 Aug 2025 12:07:43 GMT
       etag:
-      - '"390037a5-0000-0100-0000-64c32d3b0000"'
+      - '"7c0042af-0000-0600-0000-68a317720000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 82A96C4FD5874EDA9C4D27E63FB404C0 Ref B: PNQ231110909060 Ref C: 2025-08-18T12:07:43Z'
     status:
       code: 200
       message: OK
@@ -592,12 +614,12 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/getChangeLog?api-version=2022-08-29
   response:
     body:
-      string: '{"changes":["Rulestack"],"lastCommitted":"2023-07-28T02:50:59.542518+00:00","lastModified":"2023-07-28T02:51:36.943337+00:00"}'
+      string: '{"changes":["Rulestack"],"lastCommitted":"2025-08-18T12:06:43.868534+00:00","lastModified":"2025-08-18T12:07:13.172243+00:00"}'
     headers:
       cache-control:
       - no-cache
@@ -606,27 +628,31 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:52:40 GMT
+      - Mon, 18 Aug 2025 12:07:45 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - de53b4f2-e9ba-4a36-aaf4-13f9e1cb2a35
+      - d8cf2fa2-c93b-42ba-9b5d-98de1ffbe006
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/southindia/56f8e8f2-8960-4c61-9784-fd6ef2895b24
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: E465394B1BBE4DB29AE6BB887DF80B52 Ref B: PNQ231110908023 Ref C: 2025-08-18T12:07:44Z'
     status:
       code: 200
       message: OK
@@ -646,41 +672,45 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/getSupportInfo?api-version=2022-08-29
   response:
     body:
-      string: '{"productSku":"PAN-CLOUD-NGFW-AZURE-PAYG","productSerial":null,"accountRegistered":"FALSE","accountId":null,"userDomainSupported":"TRUE","userRegistered":"FALSE","freeTrial":"TRUE","freeTrialDaysLeft":30,"freeTrialCreditLeft":0,"helpURL":"https://live.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG","supportURL":"https://support.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG&userEmail=v-taoxuzeng@microsoft.com","registerURL":"https://support.paloaltonetworks.com/Home/Register?tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7&productSku=PAN-CLOUD-NGFW-AZURE-PAYG&userEmail=v-taoxuzeng@microsoft.com"}'
+      string: '{"productSku":"PAN-CLOUD-NGFW-AZURE-PAYG","productSerial":null,"accountRegistered":"FALSE","accountId":null,"userDomainSupported":"TRUE","userRegistered":"FALSE","freeTrial":"FALSE","freeTrialDaysLeft":0,"freeTrialCreditLeft":0,"helpURL":"https://live.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG","supportURL":"https://support.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG&userEmail=test@example.com","registerURL":"https://support.paloaltonetworks.com/Home/Register?tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47&productSku=PAN-CLOUD-NGFW-AZURE-PAYG&userEmail=test@example.com"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '622'
+      - '604'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:52:53 GMT
+      - Mon, 18 Aug 2025 12:07:46 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 332a77c3-b26e-4cb2-ac08-96c6f52c4eca
+      - 36f84a32-ff33-4799-be71-9898cdbb0091
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/63816fe9-3f68-4e86-841a-17131c4d2186
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: D668382968C649FBB199E13FB45B0B52 Ref B: PNQ231110906040 Ref C: 2025-08-18T12:07:45Z'
     status:
       code: 200
       message: OK
@@ -700,41 +730,45 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listAppIds?api-version=2022-08-29
   response:
     body:
-      string: '{"value":["100bao","104apci-supervisory","104apci-unnumbered","104apci-unnumbered-startdt-act","104apci-unnumbered-startdt-con","104apci-unnumbered-stopdt-act","104apci-unnumbered-stopdt-con","104apci-unnumbered-test-act","104apci-unnumbered-test-con","104asdu-file-transfer","104asdu-file-transfer-type120","104asdu-file-transfer-type121","104asdu-file-transfer-type122","104asdu-file-transfer-type123","104asdu-file-transfer-type124","104asdu-file-transfer-type125","104asdu-file-transfer-type126","104asdu-file-transfer-type127","104asdu-param-control","104asdu-param-control-type110","104asdu-param-control-type111","104asdu-param-control-type112","104asdu-param-control-type113","104asdu-process-control","104asdu-process-control-type45","104asdu-process-control-type46","104asdu-process-control-type47","104asdu-process-control-type48","104asdu-process-control-type49","104asdu-process-control-type50","104asdu-process-control-type51","104asdu-process-control-type58","104asdu-process-control-type59","104asdu-process-control-type60","104asdu-process-control-type61","104asdu-process-control-type62","104asdu-process-control-type63","104asdu-process-control-type64","104asdu-process-monitor","104asdu-process-monitor-type1","104asdu-process-monitor-type10","104asdu-process-monitor-type11","104asdu-process-monitor-type12","104asdu-process-monitor-type13","104asdu-process-monitor-type14","104asdu-process-monitor-type15","104asdu-process-monitor-type16","104asdu-process-monitor-type17","104asdu-process-monitor-type18","104asdu-process-monitor-type19","104asdu-process-monitor-type2","104asdu-process-monitor-type20","104asdu-process-monitor-type21","104asdu-process-monitor-type3","104asdu-process-monitor-type30","104asdu-process-monitor-type31","104asdu-process-monitor-type32","104asdu-process-monitor-type33","104asdu-process-monitor-type34","104asdu-process-monitor-type35","104asdu-process-monitor-type36","104asdu-process-monitor-type37","104asdu-process-monitor-type38","104asdu-process-monitor-type39","104asdu-process-monitor-type4","104asdu-process-monitor-type40","104asdu-process-monitor-type5","104asdu-process-monitor-type6","104asdu-process-monitor-type7","104asdu-process-monitor-type8","104asdu-process-monitor-type9","104asdu-system-control","104asdu-system-control-type100","104asdu-system-control-type101","104asdu-system-control-type102","104asdu-system-control-type103","104asdu-system-control-type104","104asdu-system-control-type105","104asdu-system-control-type106","104asdu-system-control-type107","104asdu-system-monitor","104asdu-system-monitor-type70","1c-enterprise","1und1-mail","24sevenoffice","2ch-base","2ch-posting","360-safeguard-update","3pc","4shared","4sync","51.com-base","51.com-bbs","51.com-games","51.com-mail","51.com-music","51.com-posting","51.com-webdisk","7shifts","8x8"],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listAppIds?api-version=2022-08-29&$skipToken=Im5leHQtdG9rZW46ZXlKd2F5STZJQ0pCVUZCSlJGOU1TVk5VSXpnMU9UVXROelEzTXlJc0lDSnpheUk2SUNJNGVEZ2lmUT09XG4i"}'
+      string: '{"value":["100bao","104apci-supervisory","104apci-unnumbered","104apci-unnumbered-startdt-act","104apci-unnumbered-startdt-con","104apci-unnumbered-stopdt-act","104apci-unnumbered-stopdt-con","104apci-unnumbered-test-act","104apci-unnumbered-test-con","104asdu-file-transfer","104asdu-file-transfer-type120","104asdu-file-transfer-type121","104asdu-file-transfer-type122","104asdu-file-transfer-type123","104asdu-file-transfer-type124","104asdu-file-transfer-type125","104asdu-file-transfer-type126","104asdu-file-transfer-type127","104asdu-param-control","104asdu-param-control-type110","104asdu-param-control-type111","104asdu-param-control-type112","104asdu-param-control-type113","104asdu-process-control","104asdu-process-control-type45","104asdu-process-control-type46","104asdu-process-control-type47","104asdu-process-control-type48","104asdu-process-control-type49","104asdu-process-control-type50","104asdu-process-control-type51","104asdu-process-control-type58","104asdu-process-control-type59","104asdu-process-control-type60","104asdu-process-control-type61","104asdu-process-control-type62","104asdu-process-control-type63","104asdu-process-control-type64","104asdu-process-monitor","104asdu-process-monitor-type1","104asdu-process-monitor-type10","104asdu-process-monitor-type11","104asdu-process-monitor-type12","104asdu-process-monitor-type13","104asdu-process-monitor-type14","104asdu-process-monitor-type15","104asdu-process-monitor-type16","104asdu-process-monitor-type17","104asdu-process-monitor-type18","104asdu-process-monitor-type19","104asdu-process-monitor-type2","104asdu-process-monitor-type20","104asdu-process-monitor-type21","104asdu-process-monitor-type3","104asdu-process-monitor-type30","104asdu-process-monitor-type31","104asdu-process-monitor-type32","104asdu-process-monitor-type33","104asdu-process-monitor-type34","104asdu-process-monitor-type35","104asdu-process-monitor-type36","104asdu-process-monitor-type37","104asdu-process-monitor-type38","104asdu-process-monitor-type39","104asdu-process-monitor-type4","104asdu-process-monitor-type40","104asdu-process-monitor-type5","104asdu-process-monitor-type6","104asdu-process-monitor-type7","104asdu-process-monitor-type8","104asdu-process-monitor-type9","104asdu-system-control","104asdu-system-control-type100","104asdu-system-control-type101","104asdu-system-control-type102","104asdu-system-control-type103","104asdu-system-control-type104","104asdu-system-control-type105","104asdu-system-control-type106","104asdu-system-control-type107","104asdu-system-monitor","104asdu-system-monitor-type70","1c-enterprise","1und1-mail","24sevenoffice","2ch-base","2ch-posting","360-safeguard-update","3pc","4shared","4sync","51.com-base","51.com-bbs","51.com-games","51.com-mail","51.com-music","51.com-posting","51.com-webdisk","7shifts","8x8"],"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listAppIds?api-version=2022-08-29&$top=100&$skipToken=Im5leHQtdG9rZW46ZXlKd2F5STZJQ0pCVUZCSlJGOU1TVk5VSXpnMU9UVXROelEzTXlJc0lDSnpheUk2SUNJNGVEZ2lmUT09XG4i"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3218'
+      - '3231'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:53:05 GMT
+      - Mon, 18 Aug 2025 12:07:48 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 640b7d08-7cc9-46bf-9e56-1c9de64f166d
+      - d71504c5-7abd-43e1-942a-e4f2197ca596
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/f44662b7-bd13-4cc5-97e7-bd7027c7913c
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 2A4AC24B06614B7DA229EAF02CD37698 Ref B: PNQ231110906060 Ref C: 2025-08-18T12:07:47Z'
     status:
       code: 200
       message: OK
@@ -754,7 +788,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listCountries?api-version=2022-08-29
   response:
@@ -788,36 +822,40 @@ interactions:
         Kingdom"},{"code":"GD","description":"Grenada"},{"code":"GE","description":"Georgia"},{"code":"GF","description":"French
         Guiana"},{"code":"GG","description":"Guernsey"},{"code":"GH","description":"Ghana"},{"code":"GI","description":"Gibraltar"},{"code":"GL","description":"Greenland"},{"code":"GM","description":"Gambia"},{"code":"GN","description":"Guinea"},{"code":"GP","description":"Guadeloupe"},{"code":"GQ","description":"Equatorial
         Guinea"},{"code":"GR","description":"Greece"},{"code":"GS","description":"South
-        Georgia And The South Sandwich Islands"},{"code":"GT","description":"Guatemala"},{"code":"GU","description":"Guam"},{"code":"GW","description":"Guinea-Bissau"},{"code":"GY","description":"Guyana"}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listCountries?api-version=2022-08-29&$skipToken=Im5leHQtdG9rZW46ZXlKd2F5STZJQ0pIUlU5SlVGOURUMVZPVkZKWkl5SXNJQ0p6YXlJNklDSkhXU0o5XG4i"}'
+        Georgia And The South Sandwich Islands"},{"code":"GT","description":"Guatemala"},{"code":"GU","description":"Guam"},{"code":"GW","description":"Guinea-Bissau"},{"code":"GY","description":"Guyana"}],"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listCountries?api-version=2022-08-29&$top=100&$skipToken=Im5leHQtdG9rZW46ZXlKd2F5STZJQ0pIUlU5SlVGOURUMVZPVkZKWkl5SXNJQ0p6YXlJNklDSkhXU0o5XG4i"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4584'
+      - '4597'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:53:16 GMT
+      - Mon, 18 Aug 2025 12:07:49 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - c72a9ffc-df4f-488d-b95c-a49f889641e5
+      - 86afd8d1-bfe4-4c52-8991-79be2670180d
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/9b2227b4-31b3-4417-ba14-080edbb4ee4c
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: A52B2B951B084FD8B2D2C4D9ED53E40D Ref B: PNQ231110909023 Ref C: 2025-08-18T12:07:48Z'
     status:
       code: 200
       message: OK
@@ -837,7 +875,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listFirewalls?api-version=2022-08-29
   response:
@@ -851,27 +889,31 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:53:22 GMT
+      - Mon, 18 Aug 2025 12:07:50 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 98bd05fe-4f3c-49a6-9b32-bae4650447ff
+      - 25c02c43-ac9f-4343-8b01-535945e01d63
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/1ca37ee6-d3c7-4926-8fa6-3453f238e4e5
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: EE30667BDA4F42B3AB9638D558A99B88 Ref B: PNQ231110909034 Ref C: 2025-08-18T12:07:50Z'
     status:
       code: 200
       message: OK
@@ -891,41 +933,45 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listPredefinedUrlCategories?api-version=2022-08-29
   response:
     body:
-      string: '{"value":[{"action":"allow","name":"abortion"},{"action":"block","name":"abused-drugs"},{"action":"block","name":"adult"},{"action":"allow","name":"alcohol-and-tobacco"},{"action":"allow","name":"auctions"},{"action":"allow","name":"business-and-economy"},{"action":"block","name":"command-and-control"},{"action":"allow","name":"computer-and-internet-info"},{"action":"allow","name":"content-delivery-networks"},{"action":"allow","name":"copyright-infringement"},{"action":"alert","name":"cryptocurrency"},{"action":"allow","name":"dating"},{"action":"allow","name":"dynamic-dns"},{"action":"allow","name":"educational-institutions"},{"action":"allow","name":"entertainment-and-arts"},{"action":"allow","name":"extremism"},{"action":"allow","name":"financial-services"},{"action":"block","name":"gambling"},{"action":"allow","name":"games"},{"action":"allow","name":"government"},{"action":"block","name":"grayware"},{"action":"block","name":"hacking"},{"action":"allow","name":"health-and-medicine"},{"action":"alert","name":"high-risk"},{"action":"allow","name":"home-and-garden"},{"action":"allow","name":"hunting-and-fishing"},{"action":"allow","name":"insufficient-content"},{"action":"allow","name":"internet-communications-and-telephony"},{"action":"allow","name":"internet-portals"},{"action":"allow","name":"job-search"},{"action":"allow","name":"legal"},{"action":"allow","name":"low-risk"},{"action":"block","name":"malware"},{"action":"alert","name":"medium-risk"},{"action":"allow","name":"military"},{"action":"allow","name":"motor-vehicles"},{"action":"allow","name":"music"},{"action":"alert","name":"newly-registered-domain"},{"action":"allow","name":"news"},{"action":"allow","name":"not-resolved"},{"action":"allow","name":"nudity"},{"action":"allow","name":"online-storage-and-backup"},{"action":"allow","name":"parked"},{"action":"allow","name":"peer-to-peer"},{"action":"allow","name":"personal-sites-and-blogs"},{"action":"allow","name":"philosophy-and-political-advocacy"},{"action":"block","name":"phishing"},{"action":"allow","name":"private-ip-addresses"},{"action":"allow","name":"proxy-avoidance-and-anonymizers"},{"action":"block","name":"questionable"},{"action":"allow","name":"real-estate"},{"action":"alert","name":"real-time-detection"},{"action":"allow","name":"recreation-and-hobbies"},{"action":"allow","name":"reference-and-research"},{"action":"allow","name":"religion"},{"action":"allow","name":"search-engines"},{"action":"allow","name":"sex-education"},{"action":"allow","name":"shareware-and-freeware"},{"action":"allow","name":"shopping"},{"action":"allow","name":"social-networking"},{"action":"allow","name":"society"},{"action":"allow","name":"sports"},{"action":"allow","name":"stock-advice-and-tools"},{"action":"allow","name":"streaming-media"},{"action":"allow","name":"swimsuits-and-intimate-apparel"},{"action":"allow","name":"training-and-tools"},{"action":"allow","name":"translation"},{"action":"allow","name":"travel"},{"action":"allow","name":"unknown"},{"action":"block","name":"weapons"},{"action":"allow","name":"web-advertisements"},{"action":"allow","name":"web-based-email"},{"action":"allow","name":"web-hosting"}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listPredefinedUrlCategories?api-version=2022-08-29&$skipToken="}'
+      string: '{"value":[{"action":"allow","name":"abortion"},{"action":"block","name":"abused-drugs"},{"action":"block","name":"adult"},{"action":"allow","name":"alcohol-and-tobacco"},{"action":"allow","name":"auctions"},{"action":"allow","name":"business-and-economy"},{"action":"block","name":"command-and-control"},{"action":"allow","name":"computer-and-internet-info"},{"action":"allow","name":"content-delivery-networks"},{"action":"allow","name":"copyright-infringement"},{"action":"alert","name":"cryptocurrency"},{"action":"allow","name":"dating"},{"action":"allow","name":"dynamic-dns"},{"action":"allow","name":"educational-institutions"},{"action":"allow","name":"entertainment-and-arts"},{"action":"allow","name":"extremism"},{"action":"allow","name":"financial-services"},{"action":"block","name":"gambling"},{"action":"allow","name":"games"},{"action":"allow","name":"government"},{"action":"block","name":"grayware"},{"action":"block","name":"hacking"},{"action":"allow","name":"health-and-medicine"},{"action":"alert","name":"high-risk"},{"action":"allow","name":"home-and-garden"},{"action":"allow","name":"hunting-and-fishing"},{"action":"allow","name":"insufficient-content"},{"action":"allow","name":"internet-communications-and-telephony"},{"action":"allow","name":"internet-portals"},{"action":"allow","name":"job-search"},{"action":"allow","name":"legal"},{"action":"allow","name":"low-risk"},{"action":"block","name":"malware"},{"action":"alert","name":"medium-risk"},{"action":"allow","name":"military"},{"action":"allow","name":"motor-vehicles"},{"action":"allow","name":"music"},{"action":"alert","name":"newly-registered-domain"},{"action":"allow","name":"news"},{"action":"allow","name":"not-resolved"},{"action":"allow","name":"nudity"},{"action":"allow","name":"online-storage-and-backup"},{"action":"allow","name":"parked"},{"action":"allow","name":"peer-to-peer"},{"action":"allow","name":"personal-sites-and-blogs"},{"action":"allow","name":"philosophy-and-political-advocacy"},{"action":"block","name":"phishing"},{"action":"allow","name":"private-ip-addresses"},{"action":"allow","name":"proxy-avoidance-and-anonymizers"},{"action":"block","name":"questionable"},{"action":"allow","name":"real-estate"},{"action":"alert","name":"real-time-detection"},{"action":"allow","name":"recreation-and-hobbies"},{"action":"allow","name":"reference-and-research"},{"action":"allow","name":"religion"},{"action":"allow","name":"search-engines"},{"action":"allow","name":"sex-education"},{"action":"allow","name":"shareware-and-freeware"},{"action":"allow","name":"shopping"},{"action":"allow","name":"social-networking"},{"action":"allow","name":"society"},{"action":"allow","name":"sports"},{"action":"allow","name":"stock-advice-and-tools"},{"action":"allow","name":"streaming-media"},{"action":"allow","name":"swimsuits-and-intimate-apparel"},{"action":"allow","name":"training-and-tools"},{"action":"allow","name":"translation"},{"action":"allow","name":"travel"},{"action":"allow","name":"unknown"},{"action":"block","name":"weapons"},{"action":"allow","name":"web-advertisements"},{"action":"allow","name":"web-based-email"},{"action":"allow","name":"web-hosting"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3487'
+      - '3182'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:53:38 GMT
+      - Mon, 18 Aug 2025 12:07:52 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 4ec13c4e-ce10-4b62-bcd8-8a150da9c336
+      - 4e7b827e-357a-4fb7-9626-4030f09c723c
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/d9177451-cd42-493b-b630-c012151ef858
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 4D580027E84E447AAF702F8061D5FCD8 Ref B: PNQ231110909023 Ref C: 2025-08-18T12:07:51Z'
     status:
       code: 200
       message: OK
@@ -945,7 +991,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/revert?api-version=2022-08-29
   response:
@@ -957,23 +1003,31 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:53:48 GMT
+      - Mon, 18 Aug 2025 12:07:54 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 1f71aeab-8dc5-4611-8af5-f0b8d270f3b6
+      - 65f13e03-0188-4c58-b34e-7ad6013a39b4
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/southindia/abb60e3c-0436-4650-a649-86a705228bee
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: E0B9E00393D743739F0854F0B503DD44 Ref B: PNQ231110909052 Ref C: 2025-08-18T12:07:52Z'
     status:
       code: 204
       message: No Content
@@ -993,7 +1047,7 @@ interactions:
       ParameterSetName:
       - -g -n --type
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listAdvancedSecurityObjects?type=feeds&api-version=2022-08-29
   response:
@@ -1008,25 +1062,33 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jul 2023 02:53:55 GMT
+      - Mon, 18 Aug 2025 12:07:56 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 926a95c7-c8c2-4906-8f86-173c3aa8d8d9
+      - 66665089-a791-42f6-aefc-e1acc715fbb7
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-failure-cause:
       - service
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/southindia/24799014-bdbb-4690-ade6-9c5c6a61f19b
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 775B37780DB041A6A80A1124EB6061BD Ref B: PNQ231110909031 Ref C: 2025-08-18T12:07:55Z'
     status:
       code: 404
       message: Not Found
@@ -1046,7 +1108,7 @@ interactions:
       ParameterSetName:
       - -g -n --type
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listSecurityServices?type=antiSpyware&api-version=2022-08-29
   response:
@@ -1061,25 +1123,33 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jul 2023 02:54:00 GMT
+      - Mon, 18 Aug 2025 12:07:57 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 3eabc68d-45cb-4dc1-8db0-d95442cd9d2e
+      - 7c3a0eb9-eba2-4ab9-b158-1889c0f6c009
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-failure-cause:
       - service
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/centralindia/e7029db1-77aa-4b84-8b73-503c10464a45
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 27CF119A8F7B4E539504C58DCB96C105 Ref B: PNQ231110908029 Ref C: 2025-08-18T12:07:56Z'
     status:
       code: 404
       message: Not Found
@@ -1103,41 +1173,45 @@ interactions:
       - -g --local-rulestack-name --name --audit-comment --certificate-self-signed
         --description
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003","name":"certificate000003","type":"paloaltonetworks.cloudngfw/localrulestacks/certificates","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-28T02:54:07.1109974Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-28T02:54:07.1109974Z"},"properties":{"certificateSelfSigned":"TRUE","auditComment":"comment","description":"description","etag":"0607d608-2cf2-11ee-8c54-a655c221ae57","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003","name":"certificate000003","type":"paloaltonetworks.cloudngfw/localrulestacks/certificates","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-18T12:07:58.526648Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-18T12:07:58.526648Z"},"properties":{"certificateSelfSigned":"TRUE","auditComment":"comment","description":"description","etag":"fb7852b8-7c2b-11f0-8204-b65f5f71f491","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '751'
+      - '731'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:54:09 GMT
+      - Mon, 18 Aug 2025 12:08:00 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 4ce83a36-335e-4bc8-a956-32da39023ec7
+      - 37bf4f17-f92f-4d63-9443-624aa914554e
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/westus/a6035e11-679e-42e4-95f8-12388599b3b5
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 85D99026D86147158186217E1A4A161D Ref B: PNQ231110908040 Ref C: 2025-08-18T12:07:58Z'
     status:
       code: 200
       message: OK
@@ -1155,12 +1229,12 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates?api-version=2022-08-29
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003","name":"certificate000003","type":"localRulestacks/certificates","properties":{"certificateSelfSigned":"TRUE","auditComment":"comment","description":"description","etag":"0607d608-2cf2-11ee-8c54-a655c221ae57","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003","name":"certificate000003","type":"localRulestacks/certificates","properties":{"certificateSelfSigned":"TRUE","auditComment":"comment","description":"description","etag":"fb7852b8-7c2b-11f0-8204-b65f5f71f491","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -1169,25 +1243,29 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:54:14 GMT
+      - Mon, 18 Aug 2025 12:08:01 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 1d998c5b-77db-4b67-b11d-ceb90a51877c
+      - 91fec8c8-5df5-4b79-935f-9d08ccdbfc15
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/5a5cb645-dc4e-4c1d-b87a-b34e15b2e6e1
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CECBFD4F77B74A4487642C9786D00CCC Ref B: PNQ231110907054 Ref C: 2025-08-18T12:08:01Z'
     status:
       code: 200
       message: OK
@@ -1205,12 +1283,12 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --name
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003","name":"certificate000003","type":"localRulestacks/certificates","properties":{"certificateSelfSigned":"TRUE","auditComment":"comment","description":"description","etag":"0607d608-2cf2-11ee-8c54-a655c221ae57","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003","name":"certificate000003","type":"localRulestacks/certificates","properties":{"certificateSelfSigned":"TRUE","auditComment":"comment","description":"description","etag":"fb7852b8-7c2b-11f0-8204-b65f5f71f491","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -1219,25 +1297,29 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:54:22 GMT
+      - Mon, 18 Aug 2025 12:08:02 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - e6171150-dc9a-41fe-b27b-4efe269022d6
+      - 496ffa76-0c8d-4f2e-a83e-62fed758652d
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/westus/2c6073e9-c06e-4a8a-a07f-0cbde4799c77
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 716663ED107842AE9B6CFDDFE63B960A Ref B: PNQ231110909054 Ref C: 2025-08-18T12:08:02Z'
     status:
       code: 200
       message: OK
@@ -1257,7 +1339,7 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --name
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003?api-version=2022-08-29
   response:
@@ -1271,27 +1353,31 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:54:31 GMT
+      - Mon, 18 Aug 2025 12:08:04 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 7b2ebc80-4589-4e9d-a630-76adf390b730
+      - 50f38164-1e6d-4b94-9ae2-3aa1920c4bb8
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/b4369b24-387a-4e80-ac51-071aabc61436
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 76AAFBCDC33643D5AEB4D87604B042A7 Ref B: PNQ231110909042 Ref C: 2025-08-18T12:08:03Z'
     status:
       code: 200
       message: OK
@@ -1314,41 +1400,45 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --name --audit-comment --description --fqdn-list
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004","name":"fqdnlist000004","type":"paloaltonetworks.cloudngfw/localrulestacks/fqdnlists","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-28T02:54:38.2452036Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-28T02:54:38.2452036Z"},"properties":{"description":"description","fqdnList":["string1","string2"],"etag":"18715f30-2cf2-11ee-9f58-a655c221ae57","auditComment":"string","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004","name":"fqdnlist000004","type":"paloaltonetworks.cloudngfw/localrulestacks/fqdnlists","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-18T12:08:06.2138947Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-18T12:08:06.2138947Z"},"properties":{"description":"description","fqdnList":["string1","string2"],"etag":"0041669a-7c2c-11f0-bc9b-b65f5f71f491","auditComment":"string","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '740'
+      - '722'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:54:39 GMT
+      - Mon, 18 Aug 2025 12:08:08 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 986aeb85-947b-48bd-901f-710c1245ab6e
+      - 226244a7-75bc-41fd-86e1-c66a0db8c4a7
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/southindia/c19a3f04-a141-4b6b-a8d2-c45e118650de
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 7B66B729C2C64265B8C51AB5344674C3 Ref B: PNQ231110908060 Ref C: 2025-08-18T12:08:05Z'
     status:
       code: 200
       message: OK
@@ -1366,39 +1456,43 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists?api-version=2022-08-29
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004","name":"fqdnlist000004","type":"localRulestacks/prefixlists","properties":{"description":"description","fqdnList":["string1","string2"],"etag":"18715f30-2cf2-11ee-9f58-a655c221ae57","auditComment":"string","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004","name":"fqdnlist000004","type":"localRulestacks/fqdnlists","properties":{"description":"description","fqdnList":["string1","string2"],"etag":"0041669a-7c2c-11f0-bc9b-b65f5f71f491","auditComment":"string","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '485'
+      - '483'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:54:47 GMT
+      - Mon, 18 Aug 2025 12:08:10 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - ff6fc4c9-6a0d-4f09-a76e-fb6c151f9e04
+      - 35c867ba-2875-43dc-986f-58c9c49f5b03
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/1af9f8b0-22a7-46b8-bd06-a5653b388ca4
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 44C478FE7FBF4BE6A511D9392297A879 Ref B: PNQ231110906054 Ref C: 2025-08-18T12:08:09Z'
     status:
       code: 200
       message: OK
@@ -1416,39 +1510,43 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --name
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004","name":"fqdnlist000004","type":"localRulestacks/prefixlists","properties":{"description":"description","fqdnList":["string1","string2"],"etag":"18715f30-2cf2-11ee-9f58-a655c221ae57","auditComment":"string","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004","name":"fqdnlist000004","type":"localRulestacks/fqdnlists","properties":{"description":"description","fqdnList":["string1","string2"],"etag":"0041669a-7c2c-11f0-bc9b-b65f5f71f491","auditComment":"string","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '473'
+      - '471'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:54:55 GMT
+      - Mon, 18 Aug 2025 12:08:11 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - a3bcd695-d6ff-4615-b9e5-9cfd6a59df4e
+      - 334ec527-506a-48e5-88a0-9cd591ff1ca4
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/southindia/7cbef65a-a578-4f0a-adaf-cdabe2a458e9
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1CA1026E9C1C443CB205F069C8F4986B Ref B: PNQ231110908060 Ref C: 2025-08-18T12:08:10Z'
     status:
       code: 200
       message: OK
@@ -1468,7 +1566,7 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --name
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004?api-version=2022-08-29
   response:
@@ -1482,27 +1580,31 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:55:14 GMT
+      - Mon, 18 Aug 2025 12:08:12 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 4541a3ea-f4ad-488f-9676-4c48ef83d086
+      - 3be9e710-7a7a-4f89-a54f-8255474feea8
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/2def7634-976c-4989-8804-268752be5da9
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 84E64297D17C4CB496E123CC060CE0DA Ref B: PNQ231110907062 Ref C: 2025-08-18T12:08:12Z'
     status:
       code: 200
       message: OK
@@ -1525,41 +1627,45 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --name --audit-comment --description --prefix-list
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006","name":"prefixlist000006","type":"paloaltonetworks.cloudngfw/localrulestacks/prefixlists","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-28T02:55:24.3302216Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-28T02:55:24.3302216Z"},"properties":{"description":"string","prefixList":["1.0.0.0/24"],"etag":"33ea3714-2cf2-11ee-8979-a655c221ae57","auditComment":"comment","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006","name":"prefixlist000006","type":"paloaltonetworks.cloudngfw/localrulestacks/prefixlists","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-18T12:08:14.6042955Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-18T12:08:14.6042955Z"},"properties":{"description":"string","prefixList":["1.0.0.0/24"],"etag":"04e393a8-7c2c-11f0-9b27-b65f5f71f491","auditComment":"comment","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '739'
+      - '721'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:55:25 GMT
+      - Mon, 18 Aug 2025 12:08:15 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - c05bfd51-fe66-4f46-bd7c-754eba19a9c3
+      - 5e67da6a-f092-4ed5-b67b-5136d672afe8
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/b13e56b1-370a-41bd-b779-ed51c1a98519
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: C9585B882F47431E87FECCA90356F07F Ref B: PNQ231110906025 Ref C: 2025-08-18T12:08:14Z'
     status:
       code: 200
       message: OK
@@ -1577,12 +1683,12 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists?api-version=2022-08-29
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006","name":"prefixlist000006","type":"localRulestacks/prefixlists","properties":{"description":"string","prefixList":["1.0.0.0/24"],"etag":"33ea3714-2cf2-11ee-8979-a655c221ae57","auditComment":"comment","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006","name":"prefixlist000006","type":"localRulestacks/prefixlists","properties":{"description":"string","prefixList":["1.0.0.0/24"],"etag":"04e393a8-7c2c-11f0-9b27-b65f5f71f491","auditComment":"comment","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -1591,25 +1697,29 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:55:32 GMT
+      - Mon, 18 Aug 2025 12:08:16 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 1ea77415-a889-4243-b903-e65121d9a3ef
+      - 008a11cf-a4d9-45c2-a196-464c418486f3
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/195d861f-c1d3-48e6-abe6-575ff6438ea3
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 507BEE85FFC041FFA86D4765DAE82C59 Ref B: PNQ231110906025 Ref C: 2025-08-18T12:08:16Z'
     status:
       code: 200
       message: OK
@@ -1627,12 +1737,12 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --name
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006","name":"prefixlist000006","type":"localRulestacks/prefixlists","properties":{"description":"string","prefixList":["1.0.0.0/24"],"etag":"33ea3714-2cf2-11ee-8979-a655c221ae57","auditComment":"comment","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006","name":"prefixlist000006","type":"localRulestacks/prefixlists","properties":{"description":"string","prefixList":["1.0.0.0/24"],"etag":"04e393a8-7c2c-11f0-9b27-b65f5f71f491","auditComment":"comment","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -1641,25 +1751,29 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:55:47 GMT
+      - Mon, 18 Aug 2025 12:08:17 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - e6419faf-00d5-469b-afb7-7e58f26473cc
+      - b3510f35-0a08-4581-a77c-ab24c2a69306
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/ad1576d5-a1e8-4143-b65d-cd744c2e6d7b
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0DBBA6C500B648DFA093A9BAC26F1EC1 Ref B: PNQ231110909023 Ref C: 2025-08-18T12:08:17Z'
     status:
       code: 200
       message: OK
@@ -1679,7 +1793,7 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --name
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006?api-version=2022-08-29
   response:
@@ -1693,27 +1807,31 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:55:53 GMT
+      - Mon, 18 Aug 2025 12:08:19 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - e5675fab-9835-4a57-bbb0-ce8836d753e6
+      - 0f143db4-a38d-42dc-82d4-a5e81eff0b5e
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/southindia/3424d8b3-bdab-40da-9ba9-4b7f5bf2ad2b
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 3DA8BF1EA1CF4D63B9D6A26FED847B68 Ref B: PNQ231110909060 Ref C: 2025-08-18T12:08:18Z'
     status:
       code: 200
       message: OK
@@ -1737,41 +1855,45 @@ interactions:
       - -g --local-rulestack-name --rule-name --priority --action-type --enable-logging
         --rule-state
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1","name":"1","type":"paloaltonetworks.cloudngfw/localrulestacks/localrules","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-28T02:56:07.2047854Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-28T02:56:07.2047854Z"},"properties":{"ruleName":"local_rule000005","priority":1,"ruleState":"DISABLED","source":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null},"negateSource":"FALSE","destination":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null,"fqdnLists":null},"negateDestination":"FALSE","applications":["any"],"protocol":"application-default","actionType":"Allow","enableLogging":"DISABLED","decryptionRuleType":"None","etag":"4daa625a-2cf2-11ee-ab55-a655c221ae57","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1","name":"1","type":"paloaltonetworks.cloudngfw/localrulestacks/localrules","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-18T12:08:21.2562247Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-18T12:08:21.2562247Z"},"properties":{"ruleName":"local_rule000005","priority":1,"ruleState":"DISABLED","source":{"cidrs":["any"]},"negateSource":"FALSE","destination":{"cidrs":["any"]},"negateDestination":"FALSE","applications":["any"],"protocol":"application-default","actionType":"Allow","enableLogging":"DISABLED","decryptionRuleType":"None","etag":"0948562c-7c2c-11f0-baa6-b65f5f71f491","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1054'
+      - '921'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:56:09 GMT
+      - Mon, 18 Aug 2025 12:08:22 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 8aef9653-42b7-4828-b9f9-772621b65733
+      - 5fad562e-07ed-477e-8f90-ad09855fc94f
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/southindia/4901fbef-ac7a-4ef6-be88-c2b9825d8d8b
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: E9BFEF27474F4F0C93C9142E0F30A76D Ref B: PNQ231110909025 Ref C: 2025-08-18T12:08:20Z'
     status:
       code: 200
       message: OK
@@ -1789,39 +1911,43 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules?api-version=2022-08-29
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1","name":"1","type":"localRulestacks/localRules","properties":{"ruleName":"local_rule000005","priority":1,"ruleState":"DISABLED","source":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null},"negateSource":"FALSE","destination":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null,"fqdnLists":null},"negateDestination":"FALSE","applications":["any"],"protocol":"application-default","actionType":"Allow","enableLogging":"DISABLED","decryptionRuleType":"None","etag":"4daa625a-2cf2-11ee-ab55-a655c221ae57"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1000000","name":"1000000","type":"localRulestacks/localRules","properties":{"ruleName":"cloud-ngfw-default-rule","priority":1000000,"ruleState":"ENABLED","source":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null},"negateSource":"FALSE","destination":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null,"fqdnLists":null},"negateDestination":"FALSE","applications":["any"],"protocol":"any","actionType":"Allow","enableLogging":"ENABLED","decryptionRuleType":"None","etag":"94f3a60e-2cf1-11ee-9458-6eecfc0ae1a7"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1","name":"1","type":"localRulestacks/localRules","properties":{"ruleName":"local_rule000005","priority":1,"ruleState":"DISABLED","source":{"cidrs":["any"]},"negateSource":"FALSE","destination":{"cidrs":["any"]},"negateDestination":"FALSE","applications":["any"],"protocol":"application-default","actionType":"Allow","enableLogging":"DISABLED","decryptionRuleType":"None","etag":"0948562c-7c2c-11f0-baa6-b65f5f71f491"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1000000","name":"1000000","type":"localRulestacks/localRules","properties":{"ruleName":"cloud-ngfw-default-rule","priority":1000000,"ruleState":"ENABLED","source":{"cidrs":["any"]},"negateSource":"FALSE","destination":{"cidrs":["any"]},"negateDestination":"FALSE","applications":["any"],"protocol":"any","actionType":"Allow","enableLogging":"ENABLED","decryptionRuleType":"None","etag":"ce6e8030-7c2b-11f0-9cef-aa8eeb7bc55e"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1526'
+      - '1296'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:56:19 GMT
+      - Mon, 18 Aug 2025 12:08:24 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 6b98ff2f-e63b-4187-bb95-7e8488210cb0
+      - 1de366bb-15ea-4770-bf85-84648b5a3ba6
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/f3a146b2-d883-4e27-bd31-544b86e91e0c
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 4C1D649A21B04EE88B5F39A9F6602E4A Ref B: PNQ231110909036 Ref C: 2025-08-18T12:08:23Z'
     status:
       code: 200
       message: OK
@@ -1839,39 +1965,43 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --priority
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1?api-version=2022-08-29
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1","name":"1","type":"localRulestacks/localRules","properties":{"ruleName":"local_rule000005","priority":1,"ruleState":"DISABLED","source":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null},"negateSource":"FALSE","destination":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null,"fqdnLists":null},"negateDestination":"FALSE","applications":["any"],"protocol":"application-default","actionType":"Allow","enableLogging":"DISABLED","decryptionRuleType":"None","etag":"4daa625a-2cf2-11ee-ab55-a655c221ae57"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1","name":"1","type":"localRulestacks/localRules","properties":{"ruleName":"local_rule000005","priority":1,"ruleState":"DISABLED","source":{"cidrs":["any"]},"negateSource":"FALSE","destination":{"cidrs":["any"]},"negateDestination":"FALSE","applications":["any"],"protocol":"application-default","actionType":"Allow","enableLogging":"DISABLED","decryptionRuleType":"None","etag":"0948562c-7c2c-11f0-baa6-b65f5f71f491"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '753'
+      - '638'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:56:35 GMT
+      - Mon, 18 Aug 2025 12:08:24 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 27550e1e-246b-46e2-98eb-6e0f2e1c6e9a
+      - 2391e40f-282b-4990-a8de-707c233ebe26
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/3a6c3d1d-73b6-44a5-9a00-18bc0370f0c6
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 046E2E29C79C4BB4BE38515439921E3A Ref B: PNQ231110907052 Ref C: 2025-08-18T12:08:24Z'
     status:
       code: 200
       message: OK
@@ -1891,7 +2021,7 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --priority
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1?api-version=2022-08-29
   response:
@@ -1905,27 +2035,31 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:56:43 GMT
+      - Mon, 18 Aug 2025 12:08:26 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - d3b3bbc6-05c8-4eea-8dba-e01de2924440
+      - 94c36068-7061-411b-8c37-cdc724fd7986
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/460b5464-ebca-490d-bdf4-bfd71f1e5090
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 7DBD665426F14487A46C9C2A5C462C82 Ref B: PNQ231110906054 Ref C: 2025-08-18T12:08:25Z'
     status:
       code: 200
       message: OK
@@ -1945,7 +2079,7 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --priority
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1000000?api-version=2022-08-29
   response:
@@ -1959,27 +2093,31 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:56:49 GMT
+      - Mon, 18 Aug 2025 12:08:28 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - cc002a48-0e1b-4df8-8d35-e5db31086d73
+      - f0f30196-3f8d-45d9-a722-b5cdc8601805
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/southindia/b6ebf807-4f06-4402-83fc-106f42bb51af
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: CE79662B94AE4D41A050E2E1152F189D Ref B: PNQ231110909025 Ref C: 2025-08-18T12:08:27Z'
     status:
       code: 200
       message: OK
@@ -1999,7 +2137,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
   response:
@@ -2007,7 +2145,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/54ef4c78-9d34-420d-a1a8-ea208d2d9279*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/18d2a2af-79b7-4e75-a360-0465fae212c2*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911157111199559&c=MIIIpTCCBo2gAwIBAgITFgGpymN7LTW4kGDY9AABAanKYzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNzE2MDY0NzU2WhcNMjYwMTEyMDY0NzU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKTm5YrLmfx9BQfyqn0KlKU5oAoMO71ploN13WymwudXY4jancWivKtgBQUtClbNOMf8GYtxePPkFtxCfON6ynaA50b2GFHRrjRAHMFB49frm55UXml1ym0Wz3JH6bXBwGJBhpQkMn2aLk58hRpzNpxEu8BK4avf0oZczbk_PMUH85rY1z-QQUNFQb_nIO7v3SIOCK3CKt4GdAKztacTI1NAnA_-1QYq5xcwep6CETOHLmlB_JNwscGCDdFNyGB72czos_xXG50Xhzs81LE3w3j92c_7ddvO9ojBuiNMBdFbP7GW31DrqzglZVWg5GHxjEcuVEIKM8kcIdQ2s7z8aGkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MB0GA1UdDgQWBBTviIwcnAMMwKNPI0scxiwQPceQFTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBRIo61gdWpv7GDzaVXRALEyV_xs5DAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggIBAB7FilN5Nb2BMo0idhK0QI7CLur1vEiQDTx3r1PyBucoZKAhxeeSGSgzuFXBjtOGdl6KlaAyTE6thgbXA5VqVyLYuRnuvUDMFTX51g7bJmFMAwi3IsYN5OQ5fQkuPX3Ao0gysXGrQmU3uH3rbGlVWXLp9xDSUfHh3jfeoU0Q4cgn2VZBiXWIGMiSW0OI1ZQtmEAvtUUja-Za7Q8TrERfxJg1nnqfjm8pH78RqklGECDK_m93WbGutB81jiRb598PoEFLqatWtUWEOagPl1wHToKm4tfgg5pN24otf99UUJQrf6A8kHQVZhuyARbhm-_Y9HSN43NooeVkaEzxST2gsLitbuz9EW6djyVhce8jc4d89cfOQaamQ7wOpiwXusaP-u5Vh-mmGXqkJVn4g_pDI4iv6NGaCosqQodrbEwWjkxiG_jX08qhEuGUhw-vo0jXacuguanQ0ap7Rns1PSLEOSmOB0LlsacAuoBAAQasSIYAX1woGPttqGnuqoCxw6jclcJayt0x4q1URe4WhXuTzySAt-1OtDyzZrXnwfkNB-J1J0iocdL_DCgWGQa2MlPP9EZiR9ox-VqkrOPQAMZBqtP9tQacMeO-V3JqiNzdu8ZzGnJrVT0fbgiS5E3emSyi_rYbuKDR06QJurZseja_toZCirAeHMjBVtn2wNuaY6Rr&s=I6Eqg94jOQXuVbWR9FUEbGEteaTDJXGcRIsSC0PigsqUx6RAL0vNEIqs-BnsPDx8ZpgVgdikA97hk0WLZiwlRfOH2YvcdTLblbfPkG_pIqKs6nCeQBSM2REpXnu0XgDiWtASurHbhQs2cW6x38Vd6_CB1nXvGjaRF4eTvQg65KGSA4sZv56SKHgyfW3V0r3hqOJtJPAhbCt77-GANCwHYanvB72YN6Yl4Pfoff7JoWgW_f9QfjdtfxPfVRGjrD85omMsoPPE0_Xu7TVGqbZNI8qBJIaqNvc4h6ewvnX0rvUVZ20DiSMW9oxe9vbJR6AY70hvCWl13T6hoQQ4YuyJ-w&h=lzSsw12rb8QCfkUoUa_4UEZWFGbKlm0jF1zNMW-TiM0
       cache-control:
       - no-cache
       content-length:
@@ -2015,27 +2153,35 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:56:56 GMT
+      - Mon, 18 Aug 2025 12:08:31 GMT
       etag:
-      - '"390024be-0000-0100-0000-64c32e790000"'
+      - '"6b009074-0000-0100-0000-68a317bf0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/54ef4c78-9d34-420d-a1a8-ea208d2d9279*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/18d2a2af-79b7-4e75-a360-0465fae212c2*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911157111199559&c=MIIIpTCCBo2gAwIBAgITFgGpymN7LTW4kGDY9AABAanKYzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNzE2MDY0NzU2WhcNMjYwMTEyMDY0NzU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKTm5YrLmfx9BQfyqn0KlKU5oAoMO71ploN13WymwudXY4jancWivKtgBQUtClbNOMf8GYtxePPkFtxCfON6ynaA50b2GFHRrjRAHMFB49frm55UXml1ym0Wz3JH6bXBwGJBhpQkMn2aLk58hRpzNpxEu8BK4avf0oZczbk_PMUH85rY1z-QQUNFQb_nIO7v3SIOCK3CKt4GdAKztacTI1NAnA_-1QYq5xcwep6CETOHLmlB_JNwscGCDdFNyGB72czos_xXG50Xhzs81LE3w3j92c_7ddvO9ojBuiNMBdFbP7GW31DrqzglZVWg5GHxjEcuVEIKM8kcIdQ2s7z8aGkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MB0GA1UdDgQWBBTviIwcnAMMwKNPI0scxiwQPceQFTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBRIo61gdWpv7GDzaVXRALEyV_xs5DAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggIBAB7FilN5Nb2BMo0idhK0QI7CLur1vEiQDTx3r1PyBucoZKAhxeeSGSgzuFXBjtOGdl6KlaAyTE6thgbXA5VqVyLYuRnuvUDMFTX51g7bJmFMAwi3IsYN5OQ5fQkuPX3Ao0gysXGrQmU3uH3rbGlVWXLp9xDSUfHh3jfeoU0Q4cgn2VZBiXWIGMiSW0OI1ZQtmEAvtUUja-Za7Q8TrERfxJg1nnqfjm8pH78RqklGECDK_m93WbGutB81jiRb598PoEFLqatWtUWEOagPl1wHToKm4tfgg5pN24otf99UUJQrf6A8kHQVZhuyARbhm-_Y9HSN43NooeVkaEzxST2gsLitbuz9EW6djyVhce8jc4d89cfOQaamQ7wOpiwXusaP-u5Vh-mmGXqkJVn4g_pDI4iv6NGaCosqQodrbEwWjkxiG_jX08qhEuGUhw-vo0jXacuguanQ0ap7Rns1PSLEOSmOB0LlsacAuoBAAQasSIYAX1woGPttqGnuqoCxw6jclcJayt0x4q1URe4WhXuTzySAt-1OtDyzZrXnwfkNB-J1J0iocdL_DCgWGQa2MlPP9EZiR9ox-VqkrOPQAMZBqtP9tQacMeO-V3JqiNzdu8ZzGnJrVT0fbgiS5E3emSyi_rYbuKDR06QJurZseja_toZCirAeHMjBVtn2wNuaY6Rr&s=I6Eqg94jOQXuVbWR9FUEbGEteaTDJXGcRIsSC0PigsqUx6RAL0vNEIqs-BnsPDx8ZpgVgdikA97hk0WLZiwlRfOH2YvcdTLblbfPkG_pIqKs6nCeQBSM2REpXnu0XgDiWtASurHbhQs2cW6x38Vd6_CB1nXvGjaRF4eTvQg65KGSA4sZv56SKHgyfW3V0r3hqOJtJPAhbCt77-GANCwHYanvB72YN6Yl4Pfoff7JoWgW_f9QfjdtfxPfVRGjrD85omMsoPPE0_Xu7TVGqbZNI8qBJIaqNvc4h6ewvnX0rvUVZ20DiSMW9oxe9vbJR6AY70hvCWl13T6hoQQ4YuyJ-w&h=lzSsw12rb8QCfkUoUa_4UEZWFGbKlm0jF1zNMW-TiM0
       mise-correlation-id:
-      - 29e0ad0a-9426-4200-84e8-143669482afa
+      - 83e676b2-927c-4924-8b45-49bd7419a83b
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=3a94cd21-27e5-46f6-85ca-484422a00354/eastus/94cb3e10-c7eb-44aa-b22b-b7da9b03c64e
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: F51F4753414E4239AE1BB1A95337F0BE Ref B: PNQ231110908062 Ref C: 2025-08-18T12:08:29Z'
     status:
       code: 202
       message: Accepted
@@ -2053,15 +2199,15 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/54ef4c78-9d34-420d-a1a8-ea208d2d9279*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/18d2a2af-79b7-4e75-a360-0465fae212c2*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911157111199559&c=MIIIpTCCBo2gAwIBAgITFgGpymN7LTW4kGDY9AABAanKYzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNzE2MDY0NzU2WhcNMjYwMTEyMDY0NzU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKTm5YrLmfx9BQfyqn0KlKU5oAoMO71ploN13WymwudXY4jancWivKtgBQUtClbNOMf8GYtxePPkFtxCfON6ynaA50b2GFHRrjRAHMFB49frm55UXml1ym0Wz3JH6bXBwGJBhpQkMn2aLk58hRpzNpxEu8BK4avf0oZczbk_PMUH85rY1z-QQUNFQb_nIO7v3SIOCK3CKt4GdAKztacTI1NAnA_-1QYq5xcwep6CETOHLmlB_JNwscGCDdFNyGB72czos_xXG50Xhzs81LE3w3j92c_7ddvO9ojBuiNMBdFbP7GW31DrqzglZVWg5GHxjEcuVEIKM8kcIdQ2s7z8aGkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MB0GA1UdDgQWBBTviIwcnAMMwKNPI0scxiwQPceQFTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBRIo61gdWpv7GDzaVXRALEyV_xs5DAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggIBAB7FilN5Nb2BMo0idhK0QI7CLur1vEiQDTx3r1PyBucoZKAhxeeSGSgzuFXBjtOGdl6KlaAyTE6thgbXA5VqVyLYuRnuvUDMFTX51g7bJmFMAwi3IsYN5OQ5fQkuPX3Ao0gysXGrQmU3uH3rbGlVWXLp9xDSUfHh3jfeoU0Q4cgn2VZBiXWIGMiSW0OI1ZQtmEAvtUUja-Za7Q8TrERfxJg1nnqfjm8pH78RqklGECDK_m93WbGutB81jiRb598PoEFLqatWtUWEOagPl1wHToKm4tfgg5pN24otf99UUJQrf6A8kHQVZhuyARbhm-_Y9HSN43NooeVkaEzxST2gsLitbuz9EW6djyVhce8jc4d89cfOQaamQ7wOpiwXusaP-u5Vh-mmGXqkJVn4g_pDI4iv6NGaCosqQodrbEwWjkxiG_jX08qhEuGUhw-vo0jXacuguanQ0ap7Rns1PSLEOSmOB0LlsacAuoBAAQasSIYAX1woGPttqGnuqoCxw6jclcJayt0x4q1URe4WhXuTzySAt-1OtDyzZrXnwfkNB-J1J0iocdL_DCgWGQa2MlPP9EZiR9ox-VqkrOPQAMZBqtP9tQacMeO-V3JqiNzdu8ZzGnJrVT0fbgiS5E3emSyi_rYbuKDR06QJurZseja_toZCirAeHMjBVtn2wNuaY6Rr&s=I6Eqg94jOQXuVbWR9FUEbGEteaTDJXGcRIsSC0PigsqUx6RAL0vNEIqs-BnsPDx8ZpgVgdikA97hk0WLZiwlRfOH2YvcdTLblbfPkG_pIqKs6nCeQBSM2REpXnu0XgDiWtASurHbhQs2cW6x38Vd6_CB1nXvGjaRF4eTvQg65KGSA4sZv56SKHgyfW3V0r3hqOJtJPAhbCt77-GANCwHYanvB72YN6Yl4Pfoff7JoWgW_f9QfjdtfxPfVRGjrD85omMsoPPE0_Xu7TVGqbZNI8qBJIaqNvc4h6ewvnX0rvUVZ20DiSMW9oxe9vbJR6AY70hvCWl13T6hoQQ4YuyJ-w&h=lzSsw12rb8QCfkUoUa_4UEZWFGbKlm0jF1zNMW-TiM0
   response:
     body:
-      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/54ef4c78-9d34-420d-a1a8-ea208d2d9279*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11","name":"54ef4c78-9d34-420d-a1a8-ea208d2d9279*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Deleting","startTime":"2023-07-28T02:56:56.8730381Z"}'
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/18d2a2af-79b7-4e75-a360-0465fae212c2*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483","name":"18d2a2af-79b7-4e75-a360-0465fae212c2*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Deleting","startTime":"2025-08-18T12:08:30.6783788Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/eastus/operationStatuses/54ef4c78-9d34-420d-a1a8-ea208d2d9279*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/eastus/operationStatuses/18d2a2af-79b7-4e75-a360-0465fae212c2*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911157116992229&c=MIIIrzCCBpegAwIBAgITUQB9VQ7j8TP8msVbVQABAH1VDjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDQwHhcNMjUwNzE3MTAxMTQxWhcNMjYwMTEzMTAxMTQxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN9uFRCckwovJWtl1-Qq22Rnc8i5ftzF4eCW9m-t2gMd0gI4H3ggHFS8o7Lgo7NFrSHde_fOw5TG4ClBFPIvYtP-yRXA_gQTjDDxbdEKLTNE3lXVjb2lGS92EXrq2q8SW9iUszX4c5rv7wvK4PYYmWBgrA0pnZoN3Sb-PCkHdwTiQ6s-KaN9TaDX22q-VAiBKtuEV3lfxq84cdn8poLqbGH9aJs3mwzZSvSnDtSic6XB7Wn2B9rEtP4D_EPxNAlrtE-8p4QQxJKsU4kvH2HkbDTA3s-9XDYPgpo-bc_TuPA79C9cwY_yDUwxeCiVXq6u1ouDEDRV8y-SdlEtMwA_L3kCAwEAAaOCBJwwggSYMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHkBggrBgEFBQcBAQSCAdYwggHSMGgGCCsGAQUFBzAChlxodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDEuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDIuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDMuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDQuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDAdBgNVHQ4EFgQUb0zVsI6tU0Ya4PntQPSVi05azTgwDgYDVR0PAQH_BAQDAgWgMIIBNQYDVR0fBIIBLDCCASgwggEkoIIBIKCCARyGQmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwHwYDVR0jBBgwFoAUOXFdqRUQLcTffi9ZbkBNwN_vNpowHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4ICAQDNOTwuwpaNg6Wb6rlDJvYkgpjYBgD7v-G5oudCTfWxa38GVpr03GvcKMMKXsPqS9r4NAOXfLjlf7xqYiwUCShYUrJU3IDKm0amgY_xtVwywcT-VPGF7VZHrEHKa7b6ZR0_aUw_msh7FWtVxpZNW3Lq26ebDEtB-rbUQ_BDwH2K2tb_oKc8WzIVNBwAoAWWDHyVWJKRoEVp59P5KYLdqvg8VrchPaYU3B1ZYbSol1dPcoTFBbiR1xTC4gihNsdye7dgkDwJThyhtefnZZ1zeiWxnXwiLxuZk6pf7cEKEN0xfBtqSBq-ShHoa0RC1xAzAdGngTv75eYqs7hVFdEIZwytl9j_DVoh7vDwgUi0D3gu_ArliQZQbJaOgadOSsCvfyC4FDs0zFzh5gJEl4CTM9fYPZWGJPQPaH1nAoBwgqHZE1WF0uh4144LhpYs9GlduCWQ3jQeVjXsFsZdZPSYXdPojWuL34Voqf1gb07y4lB4vNsjgX0MCWgmfG4Jm7I_MwoL3FGM3SQN_84HB4tHG58f3-ztGcxleLHe1VBfPj-Efh6FPeHNFg7Lyc28aIJf6Lti8Bv9FjBGl_x8j5VVCMC3OI6aRMl9fqjNw4qBFbYmAY9f42CiaGsbnlC2k4FIKuYBkHw9mEe9pG9jKYsbU8WWhYfmRSvsH_TDoUW9GnH_HA&s=sOTnuqwDLklXGwDn-_uE4IotbY9ZXnmkzOMC1Hxh-B2eYMDaG3yBvoM9BhjJ7Di8HC0gHjnPIYmjX4KngjiMhrCqRLinQ7Dr9b5KFhJoM36G_PByDykt3oLrQjs6sTcacuJuvk9gzEPxQFCiotgjByE74Q4i8TYfMB-nOwbJ8MzLRhajhy7IuBi2kjdTs4u9yu2rj4lo_Ih4en9PfI0Rfi8vpErxn7VqLJ2JjxTIZldSTM2wAysQcJNBxPLmDNr8v7GyiWOrfscwEp8ZgNs9I_V-t3WC4B5gJ8azYiLAyZvp1IMMYNFhS8Mh8FY6tnrL3dEE-5XwRpdMgfTGtd4Yow&h=rAVZCjPSxEJOFJkZu4I7bs4ZcxGxsUtuWwmvHETrTyc
       cache-control:
       - no-cache
       content-length:
@@ -2069,19 +2215,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:56:58 GMT
+      - Mon, 18 Aug 2025 12:08:31 GMT
       etag:
-      - '"0400c850-0000-0100-0000-64c32e780000"'
+      - '"b3004eeb-0000-0100-0000-68a317be0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/eastus/operationStatuses/54ef4c78-9d34-420d-a1a8-ea208d2d9279*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/eastus/operationStatuses/18d2a2af-79b7-4e75-a360-0465fae212c2*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911157116992229&c=MIIIrzCCBpegAwIBAgITUQB9VQ7j8TP8msVbVQABAH1VDjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDQwHhcNMjUwNzE3MTAxMTQxWhcNMjYwMTEzMTAxMTQxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN9uFRCckwovJWtl1-Qq22Rnc8i5ftzF4eCW9m-t2gMd0gI4H3ggHFS8o7Lgo7NFrSHde_fOw5TG4ClBFPIvYtP-yRXA_gQTjDDxbdEKLTNE3lXVjb2lGS92EXrq2q8SW9iUszX4c5rv7wvK4PYYmWBgrA0pnZoN3Sb-PCkHdwTiQ6s-KaN9TaDX22q-VAiBKtuEV3lfxq84cdn8poLqbGH9aJs3mwzZSvSnDtSic6XB7Wn2B9rEtP4D_EPxNAlrtE-8p4QQxJKsU4kvH2HkbDTA3s-9XDYPgpo-bc_TuPA79C9cwY_yDUwxeCiVXq6u1ouDEDRV8y-SdlEtMwA_L3kCAwEAAaOCBJwwggSYMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHkBggrBgEFBQcBAQSCAdYwggHSMGgGCCsGAQUFBzAChlxodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDEuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDIuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDMuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDBYBggrBgEFBQcwAoZMaHR0cDovL2NybDQuYW1lLmdibC9haWEvbWVsMDFwa2lpbnRjYTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNydDAdBgNVHQ4EFgQUb0zVsI6tU0Ya4PntQPSVi05azTgwDgYDVR0PAQH_BAQDAgWgMIIBNQYDVR0fBIIBLDCCASgwggEkoIIBIKCCARyGQmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybIY0aHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA0KDEpLmNybDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwHwYDVR0jBBgwFoAUOXFdqRUQLcTffi9ZbkBNwN_vNpowHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4ICAQDNOTwuwpaNg6Wb6rlDJvYkgpjYBgD7v-G5oudCTfWxa38GVpr03GvcKMMKXsPqS9r4NAOXfLjlf7xqYiwUCShYUrJU3IDKm0amgY_xtVwywcT-VPGF7VZHrEHKa7b6ZR0_aUw_msh7FWtVxpZNW3Lq26ebDEtB-rbUQ_BDwH2K2tb_oKc8WzIVNBwAoAWWDHyVWJKRoEVp59P5KYLdqvg8VrchPaYU3B1ZYbSol1dPcoTFBbiR1xTC4gihNsdye7dgkDwJThyhtefnZZ1zeiWxnXwiLxuZk6pf7cEKEN0xfBtqSBq-ShHoa0RC1xAzAdGngTv75eYqs7hVFdEIZwytl9j_DVoh7vDwgUi0D3gu_ArliQZQbJaOgadOSsCvfyC4FDs0zFzh5gJEl4CTM9fYPZWGJPQPaH1nAoBwgqHZE1WF0uh4144LhpYs9GlduCWQ3jQeVjXsFsZdZPSYXdPojWuL34Voqf1gb07y4lB4vNsjgX0MCWgmfG4Jm7I_MwoL3FGM3SQN_84HB4tHG58f3-ztGcxleLHe1VBfPj-Efh6FPeHNFg7Lyc28aIJf6Lti8Bv9FjBGl_x8j5VVCMC3OI6aRMl9fqjNw4qBFbYmAY9f42CiaGsbnlC2k4FIKuYBkHw9mEe9pG9jKYsbU8WWhYfmRSvsH_TDoUW9GnH_HA&s=sOTnuqwDLklXGwDn-_uE4IotbY9ZXnmkzOMC1Hxh-B2eYMDaG3yBvoM9BhjJ7Di8HC0gHjnPIYmjX4KngjiMhrCqRLinQ7Dr9b5KFhJoM36G_PByDykt3oLrQjs6sTcacuJuvk9gzEPxQFCiotgjByE74Q4i8TYfMB-nOwbJ8MzLRhajhy7IuBi2kjdTs4u9yu2rj4lo_Ih4en9PfI0Rfi8vpErxn7VqLJ2JjxTIZldSTM2wAysQcJNBxPLmDNr8v7GyiWOrfscwEp8ZgNs9I_V-t3WC4B5gJ8azYiLAyZvp1IMMYNFhS8Mh8FY6tnrL3dEE-5XwRpdMgfTGtd4Yow&h=rAVZCjPSxEJOFJkZu4I7bs4ZcxGxsUtuWwmvHETrTyc
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 03CAFE9674BB455198E0F79F4F4ABFF4 Ref B: PNQ231110909040 Ref C: 2025-08-18T12:08:31Z'
     status:
       code: 202
       message: Accepted
@@ -2099,35 +2251,37 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.10.16 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/54ef4c78-9d34-420d-a1a8-ea208d2d9279*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11?api-version=2022-08-29
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/18d2a2af-79b7-4e75-a360-0465fae212c2*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483?api-version=2022-08-29&t=638911157111199559&c=MIIIpTCCBo2gAwIBAgITFgGpymN7LTW4kGDY9AABAanKYzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNzE2MDY0NzU2WhcNMjYwMTEyMDY0NzU2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKTm5YrLmfx9BQfyqn0KlKU5oAoMO71ploN13WymwudXY4jancWivKtgBQUtClbNOMf8GYtxePPkFtxCfON6ynaA50b2GFHRrjRAHMFB49frm55UXml1ym0Wz3JH6bXBwGJBhpQkMn2aLk58hRpzNpxEu8BK4avf0oZczbk_PMUH85rY1z-QQUNFQb_nIO7v3SIOCK3CKt4GdAKztacTI1NAnA_-1QYq5xcwep6CETOHLmlB_JNwscGCDdFNyGB72czos_xXG50Xhzs81LE3w3j92c_7ddvO9ojBuiNMBdFbP7GW31DrqzglZVWg5GHxjEcuVEIKM8kcIdQ2s7z8aGkCAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MB0GA1UdDgQWBBTviIwcnAMMwKNPI0scxiwQPceQFTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBRIo61gdWpv7GDzaVXRALEyV_xs5DAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggIBAB7FilN5Nb2BMo0idhK0QI7CLur1vEiQDTx3r1PyBucoZKAhxeeSGSgzuFXBjtOGdl6KlaAyTE6thgbXA5VqVyLYuRnuvUDMFTX51g7bJmFMAwi3IsYN5OQ5fQkuPX3Ao0gysXGrQmU3uH3rbGlVWXLp9xDSUfHh3jfeoU0Q4cgn2VZBiXWIGMiSW0OI1ZQtmEAvtUUja-Za7Q8TrERfxJg1nnqfjm8pH78RqklGECDK_m93WbGutB81jiRb598PoEFLqatWtUWEOagPl1wHToKm4tfgg5pN24otf99UUJQrf6A8kHQVZhuyARbhm-_Y9HSN43NooeVkaEzxST2gsLitbuz9EW6djyVhce8jc4d89cfOQaamQ7wOpiwXusaP-u5Vh-mmGXqkJVn4g_pDI4iv6NGaCosqQodrbEwWjkxiG_jX08qhEuGUhw-vo0jXacuguanQ0ap7Rns1PSLEOSmOB0LlsacAuoBAAQasSIYAX1woGPttqGnuqoCxw6jclcJayt0x4q1URe4WhXuTzySAt-1OtDyzZrXnwfkNB-J1J0iocdL_DCgWGQa2MlPP9EZiR9ox-VqkrOPQAMZBqtP9tQacMeO-V3JqiNzdu8ZzGnJrVT0fbgiS5E3emSyi_rYbuKDR06QJurZseja_toZCirAeHMjBVtn2wNuaY6Rr&s=I6Eqg94jOQXuVbWR9FUEbGEteaTDJXGcRIsSC0PigsqUx6RAL0vNEIqs-BnsPDx8ZpgVgdikA97hk0WLZiwlRfOH2YvcdTLblbfPkG_pIqKs6nCeQBSM2REpXnu0XgDiWtASurHbhQs2cW6x38Vd6_CB1nXvGjaRF4eTvQg65KGSA4sZv56SKHgyfW3V0r3hqOJtJPAhbCt77-GANCwHYanvB72YN6Yl4Pfoff7JoWgW_f9QfjdtfxPfVRGjrD85omMsoPPE0_Xu7TVGqbZNI8qBJIaqNvc4h6ewvnX0rvUVZ20DiSMW9oxe9vbJR6AY70hvCWl13T6hoQQ4YuyJ-w&h=lzSsw12rb8QCfkUoUa_4UEZWFGbKlm0jF1zNMW-TiM0
   response:
     body:
-      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/54ef4c78-9d34-420d-a1a8-ea208d2d9279*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11","name":"54ef4c78-9d34-420d-a1a8-ea208d2d9279*1366524D70C88C9A5858BF530AF1BC22332989B282A1963963335F4A8D75EE11","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Succeeded","startTime":"2023-07-28T02:56:56.8730381Z","endTime":"2023-07-28T02:57:03.8499206Z","error":{},"properties":null}'
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/18d2a2af-79b7-4e75-a360-0465fae212c2*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483","name":"18d2a2af-79b7-4e75-a360-0465fae212c2*BC19240C5E500379DF3E382711E0AE34B5D454A5026390D16AFD23431E966483","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Succeeded","startTime":"2025-08-18T12:08:30.6783788Z","endTime":"2025-08-18T12:08:32.917499Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '644'
+      - '643'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:57:31 GMT
+      - Mon, 18 Aug 2025 12:09:04 GMT
       etag:
-      - '"0400da50-0000-0100-0000-64c32e7f0000"'
+      - '"b30002ec-0000-0100-0000-68a317c00000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: FFAC568A90CB49C6B2B13A4C97DD4F31 Ref B: PNQ231110908040 Ref C: 2025-08-18T12:09:04Z'
     status:
       code: 200
       message: OK

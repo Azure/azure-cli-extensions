@@ -73,7 +73,13 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     CassandraRoleDefinitionResource,
     CassandraRoleAssignmentResource,
     MongoMIRoleDefinitionResource,
-    MongoMIRoleAssignmentResource
+    MongoMIRoleAssignmentResource,
+    FleetResource,
+    FleetspaceResource,
+    FleetspacePropertiesThroughputPoolConfiguration,
+    FleetspaceAccountResource,
+    FleetspaceAccountPropertiesGlobalDatabaseAccountProperties,
+    FleetAnalyticsResource
 )
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import (
@@ -2274,7 +2280,7 @@ def cli_begin_retrieve_sql_container_partition_throughput(client,
             resource_group_name, account_name, database_name, container_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(container_name, database_name))
 
     if len(physical_partition_ids) == 0 and all_partitions is False:
         raise CLIError(
@@ -2313,6 +2319,15 @@ def cli_cosmosdb_sql_container_throughput_update(client,
                                                  max_throughput=None,
                                                  throughput_buckets=None):
     """Update an Azure Cosmos DB SQL container throughput"""
+
+    # If throughput_buckets is None (not explicitly provided), preserve existing throughput buckets
+    if throughput_buckets is None:
+        logger.debug('reading SQL container throughput to preserve existing throughput buckets')
+        current_throughput = client.get_sql_container_throughput(resource_group_name, account_name, database_name, container_name)
+
+        if current_throughput.resource and current_throughput.resource.throughput_buckets is not None:
+            throughput_buckets = current_throughput.resource.throughput_buckets
+
     throughput_update_resource = _get_throughput_settings_update_parameters(throughput=throughput,
                                                                             max_throughput=max_throughput,
                                                                             throughput_buckets=throughput_buckets)
@@ -2366,7 +2381,7 @@ def cli_begin_redistribute_sql_container_partition_throughput(client,
             resource_group_name, account_name, database_name, container_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(container_name, database_name))
 
     if evenly_distribute:
         redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
@@ -2407,7 +2422,7 @@ def cli_begin_retrieve_mongo_container_partition_throughput(client,
             resource_group_name, account_name, database_name, collection_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(collection_name, database_name))
 
     if len(physical_partition_ids) == 0 and all_partitions is False:
         raise CLIError(
@@ -2452,7 +2467,7 @@ def cli_begin_redistribute_mongo_container_partition_throughput(client,
             resource_group_name, account_name, database_name, collection_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(collection_name, database_name))
 
     if evenly_distribute:
         redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
@@ -3228,3 +3243,137 @@ def cli_cosmosdb_mongomi_role_assignment_update(client,
         principal_id=principal_id)
 
     return client.begin_create_update_mongo_mi_role_assignment(resource_group_name, account_name, role_assignment_id, mongoMI_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_fleet_create(client,
+                              resource_group_name,
+                              fleet_name,
+                              location,
+                              tags=None):
+    """Creates an Azure Cosmos DB Fleet."""
+
+    if isinstance(tags, str):
+        try:
+            tags = dict(tag.split('=') for tag in tags.split())
+        except ValueError:
+            raise InvalidArgumentValueError('Tags must be in key=value format.')
+
+    fleet_parameters = FleetResource(location=location)
+
+    if tags:
+        fleet_parameters.tags = tags
+
+    return client.create(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        body=fleet_parameters)
+
+
+def cli_list_cosmosdb_fleets(client, resource_group_name=None):
+    """Lists Azure Cosmos DB Fleets."""
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list()
+
+
+def cli_cosmosdb_fleet_analytics_create(client,
+                                        resource_group_name,
+                                        fleet_name,
+                                        fleet_analytics_name,
+                                        fleet_analytics_body):
+
+    """Creates an Azure Cosmos DB Fleet Analytics."""
+
+    fleet_analytics_resource = FleetAnalyticsResource(
+        storage_location_type=fleet_analytics_body['properties']['storageLocationType'],
+        storage_location_uri=fleet_analytics_body['properties']['storageLocationUri']
+    )
+
+    return client.create(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        fleet_analytics_name=fleet_analytics_name,
+        body=fleet_analytics_resource
+    )
+
+
+def cli_cosmosdb_fleetspace_create(client,
+                                   resource_group_name,
+                                   fleet_name,
+                                   fleetspace_name,
+                                   fleetspace_body):
+
+    """Creates an Azure Cosmos DB Fleetspace."""
+
+    throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
+        min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],
+        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput'],
+        service_tier=fleetspace_body['properties']['throughputPoolConfiguration']['serviceTier'],
+        data_regions=fleetspace_body['properties']['throughputPoolConfiguration']['dataRegions']
+    )
+
+    fleetspace_body = FleetspaceResource(
+        fleetspace_api_kind="NoSQL",
+        throughput_pool_configuration=throughput_pool_config
+    )
+
+    return client.begin_create(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        fleetspace_name=fleetspace_name,
+        body=fleetspace_body
+    )
+
+
+def cli_cosmosdb_fleetspace_update(client,
+                                   resource_group_name,
+                                   fleet_name,
+                                   fleetspace_name,
+                                   fleetspace_body):
+
+    """Updates an existing Azure Cosmos DB Fleetspace."""
+
+    throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
+        min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],
+        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput'],
+        service_tier=fleetspace_body['properties']['throughputPoolConfiguration']['serviceTier']
+    )
+
+    fleetspace_body = FleetspaceResource(
+        fleetspace_api_kind="NoSQL",
+        throughput_pool_configuration=throughput_pool_config
+    )
+
+    return client.begin_update(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        fleetspace_name=fleetspace_name,
+        body=fleetspace_body
+    )
+
+
+def cli_cosmosdb_fleetspace_account_create(client,
+                                           resource_group_name,
+                                           fleet_name,
+                                           fleetspace_name,
+                                           fleetspace_account_name,
+                                           fleetspace_account_body):
+
+    """Creates an Azure Cosmos DB Fleetspace Account."""
+
+    fleetspaceAccountPropertiesGlobalDatabaseAccountProperties = FleetspaceAccountPropertiesGlobalDatabaseAccountProperties(
+        resource_id=fleetspace_account_body['properties']['globalDatabaseAccountProperties']['resourceId'],
+        arm_location=fleetspace_account_body['properties']['globalDatabaseAccountProperties']['armLocation'],
+    )
+
+    fleetspace_account_body = FleetspaceAccountResource(
+        global_database_account_properties=fleetspaceAccountPropertiesGlobalDatabaseAccountProperties
+    )
+
+    return client.begin_create(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        fleetspace_name=fleetspace_name,
+        fleetspace_account_name=fleetspace_account_name,
+        body=fleetspace_account_body
+    )

@@ -206,31 +206,42 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         test_workspace_temp = get_test_workspace_random_name()
-        test_provider_sku_list = "rigetti/azure-quantum-credits,ionq/aq-internal-testing"
+        test_provider_sku_list = "rigetti/azure-basic-qvm-only-unlimited,ionq/aq-internal-testing"
         test_storage = get_test_workspace_storage()
 
-        self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
+        self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
         self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
 
         # Submit a job to Rigetti and look for SAS tokens in URIs in the output
         results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
-        self.assertIn("?sv=", results["containerUri"])
-        self.assertIn("&st=", results["containerUri"])
-        self.assertIn("&se=", results["containerUri"])
-        self.assertIn("&sp=", results["containerUri"])
-        self.assertIn("&sig=", results["containerUri"])
+        self.assertNotIn("?sv=", results["containerUri"])
+        self.assertNotIn("&sig=", results["containerUri"])
 
-        self.assertIn("?sv=", results["inputDataUri"])
-        self.assertIn("&st=", results["inputDataUri"])
-        self.assertIn("&se=", results["inputDataUri"])
-        self.assertIn("&sp=", results["inputDataUri"])
-        self.assertIn("&sig=", results["inputDataUri"])
+        self.assertNotIn("?sv=", results["inputDataUri"])
+        self.assertNotIn("&sig=", results["inputDataUri"])
 
-        self.assertIn("?sv=", results["outputDataUri"])
-        self.assertIn("&st=", results["outputDataUri"])
-        self.assertIn("&se=", results["outputDataUri"])
-        self.assertIn("&sp=", results["outputDataUri"])
-        self.assertIn("&sig=", results["outputDataUri"])
+        self.assertNotIn("?sv=", results["outputDataUri"])
+        self.assertNotIn("&sig=", results["outputDataUri"])
+
+        job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
+
+        self.assertIn("?sv=", job["containerUri"])
+        self.assertIn("&st=", job["containerUri"])
+        self.assertIn("&se=", job["containerUri"])
+        self.assertIn("&sp=", job["containerUri"])
+        self.assertIn("&sig=", job["containerUri"])
+
+        self.assertIn("?sv=", job["inputDataUri"])
+        self.assertIn("&st=", job["inputDataUri"])
+        self.assertIn("&se=", job["inputDataUri"])
+        self.assertIn("&sp=", job["inputDataUri"])
+        self.assertIn("&sig=", job["inputDataUri"])
+
+        self.assertIn("?sv=", job["outputDataUri"])
+        self.assertIn("&st=", job["outputDataUri"])
+        self.assertIn("&se=", job["outputDataUri"])
+        self.assertIn("&sp=", job["outputDataUri"])
+        self.assertIn("&sig=", job["outputDataUri"])
 
         # Run a Quil pass-through job on Rigetti
         results = self.cmd("az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
@@ -276,7 +287,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_provider_sku_list = f"{elements_provider_name}/elements-internal-testing"
         test_storage = get_test_workspace_storage()
 
-        self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r \"{test_provider_sku_list}\" --skip-autoadd")
+        self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r \"{test_provider_sku_list}\" --skip-autoadd")
         self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
 
         # Run a "microsoft.dft" job to test that successful job returns proper output

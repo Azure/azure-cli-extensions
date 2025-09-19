@@ -30,8 +30,12 @@ class CustomActionProperties:
         op_response = parent_cmd.ctx.vars.instance.properties.to_serialized_data()
 
         new_properties = {}
-        new_properties["configurationState"] = op_response["configurationState"]
-        new_properties["outputUrl"] = op_response["outputUrl"]
+
+        if has_value(parent_cmd.ctx.vars.instance.properties.configuration_state):
+            new_properties["configurationState"] = op_response["configurationState"]
+
+        if has_value(parent_cmd.ctx.vars.instance.properties.output_url):
+            new_properties["outputUrl"] = op_response["outputUrl"]
 
         if has_value(
             parent_cmd.ctx.vars.instance.properties.device_configuration_preview
@@ -50,6 +54,6 @@ class CustomActionProperties:
                 logger.warning(json_string)
                 new_properties["deviceConfigurationPreview"] = json_string
         else:
-            new_properties["deviceConfigurationPreview"] = "{}"
+            new_properties["deviceConfigurationPreview"] = {}
 
         return new_properties

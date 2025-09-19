@@ -28,6 +28,7 @@ from azure.cli.command_modules.containerapp._utils import (parse_env_var_flags, 
                                                            safe_set, safe_get, _ensure_identity_resource_id)
 from azure.cli.command_modules.containerapp._clients import ManagedEnvironmentClient
 from azure.cli.command_modules.containerapp._client_factory import handle_non_404_status_code_exception
+from azure.cli.command_modules.containerapp._decorator_utils import load_yaml_file
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
 from azure.cli.core.commands.client_factory import get_subscription_id
 
@@ -44,6 +45,11 @@ class ContainerType(Enum):
     PythonLTS = 0
     CustomContainer = 2
     NodeLTS = 3
+
+
+class LifecycleType(Enum):
+    Timed = 0
+    OnContainerExit = 1
 
 
 class SessionPoolPreviewDecorator(BaseResource):
@@ -69,6 +75,18 @@ class SessionPoolPreviewDecorator(BaseResource):
 
     def set_argument_container_type(self, container_type):
         return self.set_param('container_type', container_type)
+
+    def get_argument_lifecycle_type(self):
+        return self.get_param('lifecycle_type')
+
+    def set_argument_lifecycle_type(self, lifecycle_type):
+        return self.set_param('lifecycle_type', lifecycle_type)
+
+    def get_argument_max_alive_period(self):
+        return self.get_param('max_alive_period')
+
+    def set_argument_max_alive_period(self, max_alive_period):
+        return self.set_param('max_alive_period', max_alive_period)
 
     def get_argument_cooldown_period_in_seconds(self):
         return self.get_param('cooldown_period')
@@ -139,9 +157,42 @@ class SessionPoolPreviewDecorator(BaseResource):
     def get_argument_user_assigned(self):
         return self.get_param("mi_user_assigned")
 
+    def get_argument_probe_yaml(self):
+        return self.get_param("probe_yaml")
+
     # pylint: disable=no-self-use
     def get_environment_client(self):
         return ManagedEnvironmentClient
+
+    def set_up_probes(self):
+        probes_def = load_yaml_file(self.get_argument_probe_yaml())
+        if not isinstance(probes_def, dict) or 'probes' not in probes_def:
+            raise ValidationError("The probe YAML file must be a dictionary containing a 'probes' key.")
+
+        probes_list = probes_def.get('probes')
+        if probes_list is None:
+            return []
+        if not isinstance(probes_list, list):
+            raise ValidationError("The 'probes' key in the probe YAML file must be a list of probes.")
+
+        return probes_list
+
+    def check_container_related_arguments(self):
+        container_related_args = {
+            '--args': self.get_argument_args(),
+            '--command': self.get_argument_startup_command(),
+            '--container-name': self.get_argument_container_name(),
+            '--cpu': self.get_argument_cpu(),
+            '--env-vars': self.get_argument_env_vars(),
+            '--image or -i': self.get_argument_image(),
+            '--memory': self.get_argument_memory(),
+            '--probe-yaml': self.get_argument_probe_yaml(),
+            '--target-port': self.get_argument_target_port(),
+        }
+
+        for arg_name, arg_value in container_related_args.items():
+            if arg_value is not None:
+                raise ValidationError(f"'{arg_name}' can not be set when container type is not 'CustomContainer'.")
 
 
 class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
@@ -160,6 +211,22 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         else:
             if environment_name is not None:
                 raise ValidationError(f"Do not pass environment name when using container type {container_type}")
+            if self.get_argument_lifecycle_type().lower() != LifecycleType.Timed.name.lower():
+                raise ValidationError(f"The container type {container_type} only supports lifecycle type '{LifecycleType.Timed.name}'.")
+            if self.get_argument_max_alive_period() is not None:
+                raise ValidationError(f"The container type {container_type} does not support --max-alive-period.")
+
+        if self.get_argument_max_alive_period() is not None and \
+                self.get_argument_cooldown_period_in_seconds() is not None:
+            raise ValidationError("--max-alive-period and --cooldown-period cannot be set at the same time.")
+
+        if self.get_argument_max_alive_period() is not None and \
+                self.get_argument_lifecycle_type().lower() != LifecycleType.OnContainerExit.name.lower():
+            raise ValidationError(f"--max-alive-period can only be set when --lifecycle-type is '{LifecycleType.OnContainerExit.name}'.")
+
+        if self.get_argument_cooldown_period_in_seconds() is not None and \
+                self.get_argument_lifecycle_type().lower() != LifecycleType.Timed.name.lower():
+            raise ValidationError(f"--cooldown-period can only be set when --lifecycle-type is '{LifecycleType.Timed.name}'.")
 
     def construct_payload(self):
         self.session_pool_def["location"] = self.get_argument_location()
@@ -219,44 +286,55 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
             safe_set(self.session_pool_def, "properties", "managedIdentitySettings", value=managed_identity_settings)
 
     def set_up_managed_identity(self):
-        identity_def = deepcopy(ManagedServiceIdentity)
-        identity_def["type"] = "None"
+        if self.get_argument_user_assigned() or self.get_argument_system_assigned() or self.get_argument_registry_identity():
+            identity_def = deepcopy(ManagedServiceIdentity)
+            identity_def["type"] = "None"
 
-        assign_system_identity = self.get_argument_system_assigned()
-        if self.get_argument_user_assigned():
-            assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
-        else:
-            assign_user_identities = []
-
-        identity = self.get_argument_registry_identity()
-        if identity:
-            if is_registry_msi_system(identity):
-                assign_system_identity = True
+            assign_system_identity = self.get_argument_system_assigned()
+            if self.get_argument_user_assigned():
+                assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
             else:
-                assign_user_identities.append(self.get_argument_registry_identity())
+                assign_user_identities = []
 
-        if assign_system_identity and assign_user_identities:
-            identity_def["type"] = "SystemAssigned, UserAssigned"
-        elif assign_system_identity:
-            identity_def["type"] = "SystemAssigned"
-        elif assign_user_identities:
-            identity_def["type"] = "UserAssigned"
+            identity = self.get_argument_registry_identity()
+            if identity:
+                if is_registry_msi_system(identity):
+                    assign_system_identity = True
+                else:
+                    assign_user_identities.append(self.get_argument_registry_identity())
 
-        if assign_user_identities:
-            identity_def["userAssignedIdentities"] = {}
-            subscription_id = get_subscription_id(self.cmd.cli_ctx)
+            if assign_system_identity and assign_user_identities:
+                identity_def["type"] = "SystemAssigned, UserAssigned"
+            elif assign_system_identity:
+                identity_def["type"] = "SystemAssigned"
+            elif assign_user_identities:
+                identity_def["type"] = "UserAssigned"
 
-            for r in assign_user_identities:
-                r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
-                identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
-        self.session_pool_def["identity"] = identity_def
+            if assign_user_identities:
+                identity_def["userAssignedIdentities"] = {}
+                subscription_id = get_subscription_id(self.cmd.cli_ctx)
+
+                for r in assign_user_identities:
+                    r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
+                    identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+            self.session_pool_def["identity"] = identity_def
 
     def set_up_dynamic_configuration(self):
-        dynamic_pool_def = {}
-        dynamic_pool_def["executionType"] = "Timed"
-        if self.get_argument_cooldown_period_in_seconds() is None:
+        if self.get_argument_lifecycle_type().lower() == LifecycleType.Timed.name.lower() and \
+                self.get_argument_cooldown_period_in_seconds() is None:
             self.set_argument_cooldown_period_in_seconds(300)
-        dynamic_pool_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+
+        if self.get_argument_lifecycle_type().lower() == LifecycleType.OnContainerExit.name.lower() and \
+                self.get_argument_max_alive_period() is None:
+            self.set_argument_max_alive_period(3600)
+
+        dynamic_pool_def = {}
+        lifecycle_config_def = {}
+        lifecycle_config_def["lifecycleType"] = self.get_argument_lifecycle_type()
+        lifecycle_config_def["maxAlivePeriodInSeconds"] = self.get_argument_max_alive_period()
+        lifecycle_config_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+        dynamic_pool_def["lifecycleConfiguration"] = lifecycle_config_def
+
         return dynamic_pool_def
 
     def set_up_network_configuration(self):
@@ -295,6 +373,8 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         if self.get_argument_args() is not None:
             container_def["args"] = self.get_argument_args()
         container_def["resources"] = self.set_up_resource()
+        if self.get_argument_probe_yaml() is not None:
+            container_def["probes"] = self.set_up_probes()
         return container_def
 
     def set_up_secrets(self):
@@ -396,6 +476,45 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
 
 
 class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
+    def validate_arguments(self):
+        self.existing_pool_def = self.client.show(cmd=self.cmd,
+                                                  resource_group_name=self.get_argument_resource_group_name(),
+                                                  name=self.get_argument_name())
+
+        if ((self.get_argument_container_type() is not None and safe_get(self.existing_pool_def, "properties", "containerType").lower() == self.get_argument_container_type().lower()) or
+                (self.get_argument_managed_env() is not None and safe_get(self.existing_pool_def, "properties", "environmentId").lower() == self.get_argument_managed_env().lower())):
+            raise ValidationError("containerType and environmentId cannot be updated.")
+
+        # Validate unsupported arguments with a certain lifecycle type
+        if self.get_argument_max_alive_period() is not None and \
+                self.get_argument_lifecycle_type() is not None and \
+                self.get_argument_lifecycle_type().lower() != LifecycleType.OnContainerExit.name.lower():
+            raise ValidationError(f"--max-alive-period can only be set when --lifecycle-type is '{LifecycleType.OnContainerExit.name}'.")
+        if self.get_argument_cooldown_period_in_seconds() is not None and \
+                self.get_argument_lifecycle_type() is not None and \
+                self.get_argument_lifecycle_type().lower() != LifecycleType.Timed.name.lower():
+            raise ValidationError(f"--cooldown-period can only be set when --lifecycle-type is '{LifecycleType.Timed.name}'.")
+
+        # Validate that max_alive_period and cooldown_period are not set at the same time
+        if self.get_argument_max_alive_period() is not None and \
+                self.get_argument_cooldown_period_in_seconds() is not None:
+            raise ValidationError("--max-alive-period and --cooldown-period cannot be set at the same time.")
+
+        # Validate unsupported arguments with existing lifecycle type
+        current_lifecycle_type = safe_get(self.existing_pool_def, "properties", "dynamicPoolConfiguration", "lifecycleConfiguration", "lifecycleType")
+        if self.get_argument_max_alive_period() is not None and \
+                self.get_argument_lifecycle_type() is None and \
+                current_lifecycle_type.lower() != LifecycleType.OnContainerExit.name.lower():
+            raise ValidationError(f"--max-alive-period is not supported for the current --lifecycle-type '{current_lifecycle_type}'.")
+        if self.get_argument_cooldown_period_in_seconds() is not None and \
+                self.get_argument_lifecycle_type() is None and \
+                current_lifecycle_type.lower() != LifecycleType.Timed.name.lower():
+            raise ValidationError(f"--cooldown-period is not supported for the current --lifecycle-type '{current_lifecycle_type}'.")
+
+        # Validate container related arguments
+        if safe_get(self.existing_pool_def, "properties", "containerType").lower() != ContainerType.CustomContainer.name.lower():
+            self.check_container_related_arguments()
+
     def update(self):
         try:
             return self.client.update(
@@ -407,24 +526,84 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
 
     def construct_payload(self):
         self.session_pool_def = {}
-        self.existing_pool_def = self.client.show(cmd=self.cmd,
-                                                  resource_group_name=self.get_argument_resource_group_name(),
-                                                  name=self.get_argument_name())
 
-        if ((self.get_argument_container_type() is not None and safe_get(self.existing_pool_def, "properties", "containerType").lower() == self.get_argument_container_type().lower()) or
-                (self.get_argument_managed_env() is not None and safe_get(self.existing_pool_def, "properties", "environmentId").lower() == self.get_argument_managed_env().lower())):
-            raise ValidationError("containerType and environmentId cannot be updated.")
-
+        self.set_up_managed_identity()
         self.set_up_dynamic_configuration()
         self.set_up_network_configuration()
         self.set_up_scale_configuration()
         self.set_up_secrets()
         self.set_up_custom_container_template(safe_get(self.session_pool_def, "properties", "secrets"))
+        self.set_up_managed_identity_settings()
+
+    def set_up_managed_identity(self):
+        if self.get_argument_system_assigned() is not None or self.get_argument_user_assigned() is not None:
+            identity_def = deepcopy(ManagedServiceIdentity)
+            identity_def["type"] = "None"
+
+            assign_system_identity = self.get_argument_system_assigned()
+            if self.get_argument_user_assigned():
+                assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
+            else:
+                assign_user_identities = []
+
+            identity = self.get_argument_registry_identity()
+            if identity:
+                if is_registry_msi_system(identity):
+                    assign_system_identity = True
+                else:
+                    assign_user_identities.append(self.get_argument_registry_identity())
+
+            if assign_system_identity and assign_user_identities:
+                identity_def["type"] = "SystemAssigned, UserAssigned"
+            elif assign_system_identity:
+                identity_def["type"] = "SystemAssigned"
+            elif assign_user_identities:
+                identity_def["type"] = "UserAssigned"
+
+            if assign_user_identities:
+                identity_def["userAssignedIdentities"] = {}
+                subscription_id = get_subscription_id(self.cmd.cli_ctx)
+
+                for r in assign_user_identities:
+                    r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
+                    identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+
+            safe_set(self.session_pool_def, "identity", value=identity_def)
+
+    def set_up_managed_identity_settings(self):
+        managed_identity_settings = []
+        if self.get_argument_system_assigned():
+            managed_identity_setting = {
+                "identity": "system",
+                "lifecycle": "Main"
+            }
+            managed_identity_settings.append(managed_identity_setting)
+
+        if self.get_argument_user_assigned():
+            for x in self.get_argument_user_assigned():
+                managed_identity_setting = {
+                    "identity": x.lower(),
+                    "lifecycle": "Main"
+                }
+                managed_identity_settings.append(managed_identity_setting)
+        if managed_identity_settings:
+            safe_set(self.session_pool_def, "properties", "managedIdentitySettings", value=managed_identity_settings)
 
     def set_up_dynamic_configuration(self):
+        lifecycle_config_def = {}
+
+        if self.get_argument_lifecycle_type() is not None:
+            lifecycle_config_def["lifecycleType"] = self.get_argument_lifecycle_type()
+
         if self.get_argument_cooldown_period_in_seconds() is not None:
+            lifecycle_config_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+
+        if self.get_argument_max_alive_period() is not None:
+            lifecycle_config_def["maxAlivePeriodInSeconds"] = self.get_argument_max_alive_period()
+
+        if lifecycle_config_def:
             dynamic_pool_def = {}
-            dynamic_pool_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
+            dynamic_pool_def["lifecycleConfiguration"] = lifecycle_config_def
             safe_set(self.session_pool_def, "properties", "dynamicPoolConfiguration", value=dynamic_pool_def)
 
     def set_up_network_configuration(self):
@@ -484,20 +663,23 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                 container_def["resources"]["cpu"] = self.get_argument_cpu()
             if self.get_argument_memory() is not None:
                 container_def["resources"]["memory"] = self.get_argument_memory()
+        if self.get_argument_probe_yaml() is not None:
+            container_def["probes"] = self.set_up_probes()
         return container_def
 
     def set_up_registry_auth_configuration(self, secrets_def, customer_container_template):
         if self.has_registry_change():
             if safe_get(customer_container_template, "registryCredentials") is None:
-                if self.get_argument_registry_server() is None or (self.get_argument_registry_user() is None or self.get_argument_registry_pass() is None):
+                if self.get_argument_registry_server() is None or (self.get_argument_registry_identity() is None and (self.get_argument_registry_user() is None or self.get_argument_registry_pass() is None)):
                     raise ValidationError("The existing registry credentials are empty. \n"
-                                          "Please provide --registry-server, --registry-username, and --registry-password to update the registry credentials. \n"
-                                          "If you want to use managed identity for registry, please use `az containerapp sessionpool create --registry-server myregistry.azurecr.io --registry-identity  MyUserIdentityResourceId`.\n")
+                                          "Please provide --registry-server, --registry-username, --registry-password or --registry-identity to update the registry credentials. \n")
                 safe_set(customer_container_template, "registryCredentials", value={})
         if self.get_argument_registry_server() is not None:
             safe_set(customer_container_template, "registryCredentials", "server", value=self.get_argument_registry_server())
         if self.get_argument_registry_user() is not None:
             safe_set(customer_container_template, "registryCredentials", "username", value=self.get_argument_registry_user())
+        if self.get_argument_registry_identity() is not None:
+            safe_set(customer_container_template, "registryCredentials", "identity", value=self.get_argument_registry_identity())
         if secrets_def is None:
             secrets_def = []
         if self.get_argument_registry_pass() is not None:
@@ -537,12 +719,14 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                 self.get_argument_memory() is not None or
                 self.get_argument_env_vars() is not None or
                 self.get_argument_args() is not None or
-                self.get_argument_startup_command() is not None)
+                self.get_argument_startup_command() is not None or
+                self.get_argument_probe_yaml() is not None)
 
     def has_registry_change(self):
         return (self.get_argument_registry_server() is not None or
                 self.get_argument_registry_user() is not None or
-                self.get_argument_registry_pass() is not None)
+                self.get_argument_registry_pass() is not None or
+                self.get_argument_registry_identity() is not None)
 
     def has_target_port_change(self):
         return self.get_argument_target_port() is not None

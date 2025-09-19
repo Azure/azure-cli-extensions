@@ -11,8 +11,8 @@ from azext_fleet._client_factory import (
     cf_update_runs,
     cf_fleet_update_strategies,
     cf_auto_upgrade_profiles,
-    cf_auto_upgrade_profile_operations
-
+    cf_auto_upgrade_profile_operations,
+    cf_gates
 )
 
 
@@ -52,6 +52,12 @@ def load_command_table(self, _):
         operations_tmpl="azext_fleet.vendored_sdks.operations._auto_upgrade_profile_operations_operations#AutoUpgradeProfileOperationsOperations.{}",
         operation_group="auto_upgrade_profile_operations",
         client_factory=cf_auto_upgrade_profile_operations
+    )
+
+    gates_sdk = CliCommandType(
+        operations_tmpl="azext_fleet.vendored_sdks.operations._gates_operations#GatesOperations.{}",
+        operation_group="gates",
+        client_factory=cf_gates
     )
 
     # fleets command group
@@ -105,3 +111,10 @@ def load_command_table(self, _):
     # auto upgrade profiles operation command group
     with self.command_group("fleet autoupgradeprofile", auto_upgrade_profile_operations_sdk, client_factory=cf_auto_upgrade_profile_operations) as g:
         g.custom_command("generate-update-run", "generate_update_run", supports_no_wait=True)
+
+    # fleet gates command group
+    with self.command_group("fleet gate", gates_sdk, client_factory=cf_gates, is_preview=True) as g:
+        g.custom_command("list", "list_gates_by_fleet")
+        g.custom_show_command("show", "show_gate")
+        g.custom_command("update", "update_gate")
+        g.custom_command("approve", "approve_gate")

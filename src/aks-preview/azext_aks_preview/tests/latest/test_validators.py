@@ -2,21 +2,22 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import os
+import shutil
+import tempfile
 import unittest
-from unittest.mock import patch
 from types import SimpleNamespace
+from unittest.mock import patch
 
 import azext_aks_preview._validators as validators
 import azext_aks_preview.azurecontainerstorage._consts as acstor_consts
 import azext_aks_preview.azurecontainerstorage._validators as acstor_validator
 from azext_aks_preview._consts import ADDONS
-from azure.cli.core.azclierror import (
-    ArgumentUsageError,
-    InvalidArgumentValueError,
-    MutuallyExclusiveArgumentError,
-    RequiredArgumentMissingError,
-    UnknownError,
-)
+from azure.cli.core.azclierror import (ArgumentUsageError,
+                                       InvalidArgumentValueError,
+                                       MutuallyExclusiveArgumentError,
+                                       RequiredArgumentMissingError,
+                                       UnknownError)
 from azure.cli.core.util import CLIError
 
 
@@ -108,9 +109,21 @@ class MaxSurgeNamespace:
     def __init__(self, max_surge):
         self.max_surge = max_surge
 
+
 class MaxUnavailableNamespace:
     def __init__(self, max_unavailable):
         self.max_unavailable = max_unavailable
+
+
+class MaxBlockedNodesNamespace:
+    def __init__(self, max_blocked_nodes):
+        self.max_blocked_nodes = max_blocked_nodes
+
+
+class DrainBatchSizeNamespace:
+    def __init__(self, drain_batch_size):
+        self.drain_batch_size = drain_batch_size
+
 
 class SpotMaxPriceNamespace:
     def __init__(self, spot_max_price):
@@ -158,6 +171,7 @@ class TestMaxSurge(unittest.TestCase):
             validators.validate_max_surge(MaxSurgeNamespace("-3"))
         self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
 
+
 class TestMaxUnavailable(unittest.TestCase):
     def test_valid_cases(self):
         valid = ["5", "33%", "1", "100%", "0"]
@@ -173,6 +187,77 @@ class TestMaxUnavailable(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_max_unavailable(MaxUnavailableNamespace("-3"))
         self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
+
+
+class TestMaxBlockedNodes(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["5", "33%", "1", "100%", "0"]
+        for v in valid:
+            validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace(v))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace("foobar"))
+        self.assertTrue("int or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace("-3"))
+        self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
+
+
+class TestDrainBatchSize(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["1", "5", "10", "33%", "50%", "100%"]
+        for v in valid:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace(v))
+
+    def test_none_value(self):
+        # None should be ignored without raising an exception
+        validators.validate_drain_batch_size(DrainBatchSizeNamespace(None))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("foobar"))
+        self.assertTrue("integer or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_invalid_percentage_format(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("50percent"))
+        self.assertTrue("integer or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_zero(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("0"))
+        self.assertTrue("non-zero value" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_zero_percentage(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("0%"))
+        self.assertTrue("non-zero value" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("-3"))
+        self.assertTrue("non-zero value" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative_percentage(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("-5%"))
+        self.assertTrue("non-zero value" in str(cm.exception), msg=str(cm.exception))
+
+    def test_edge_cases(self):
+        # Test edge cases that should be valid
+        valid_edge_cases = ["1", "1%", "999", "999%"]
+        for v in valid_edge_cases:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace(v))
+
+    def test_large_numbers(self):
+        # Test large numbers that should still be valid
+        large_valid = ["1000", "1000%", "9999"]
+        for v in large_valid:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace(v))
+
 
 class TestSpotMaxPrice(unittest.TestCase):
     def test_valid_cases(self):
@@ -715,6 +800,7 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
         validators.validate_application_security_groups(
             namespace
         )
+
     def test_multiple_application_security_groups(self):
         asg_ids = ",".join([
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
@@ -788,6 +874,60 @@ class TestValidateMaintenanceWindow(unittest.TestCase):
     def test_valid_start_time(self):
         namespace = MaintenanceWindowNameSpace(start_date="00:30")
         validators.validate_start_time(namespace)
+
+
+class ManagedNamespace:
+    def __init__(self, name=None, cpu_request=None, cpu_limit=None, memory_request=None, memory_limit=None):
+        self.name = name
+        self.cpu_request = cpu_request
+        self.cpu_limit = cpu_limit
+        self.memory_request = memory_request
+        self.memory_limit = memory_limit
+
+
+class TestValidateManagedNamespace(unittest.TestCase):
+    def test_invalid_namespace_name(self):
+        namespace = ManagedNamespace(name="Abc")
+        err = "Invalid namespace 'Abc'. Must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character."
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_namespace_name(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_namespace_name(self):
+        namespace = ManagedNamespace(name="abc")
+        validators.validate_namespace_name(namespace)
+
+    def test_invalid_cpu_request(self):
+        namespace = ManagedNamespace(cpu_request="2t")
+        err = "--cpu-request must be specified in millicores, like 200m"
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_resource_quota(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_cpu_limit(self):
+        namespace = ManagedNamespace(cpu_request="200m", cpu_limit="2t")
+        err = "--cpu-limit must be specified in millicores, like 200m"
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_resource_quota(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_memory_request(self):
+        namespace = ManagedNamespace(cpu_request="200m", cpu_limit="800m", memory_request="2t")
+        err = "--memory-request must be specified in the power-of-two equivalents form:Ei, Pi, Ti, Gi, Mi, Ki."
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_resource_quota(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_memory_limit(self):
+        namespace = ManagedNamespace(cpu_request="200m", cpu_limit="800m", memory_request="1Gi", memory_limit="2t")
+        err = "--memory-limit must be specified in the power-of-two equivalents form:Ei, Pi, Ti, Gi, Mi, Ki."
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_resource_quota(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_resource_quotas(self):
+        namespace = ManagedNamespace(cpu_request="500m", cpu_limit="800m", memory_request="1Gi", memory_limit="2Gi")
+        validators.validate_resource_quota(namespace)
 
 
 class TestValidateDisableAzureContainerStorage(unittest.TestCase):
@@ -1185,8 +1325,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         perf_tier = acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         err = (
-                "Azure Container Storage is already configured with --ephemeral-disk-nvme-perf-tier "
-                f"value set to {perf_tier}."
+            "Azure Container Storage is already configured with --ephemeral-disk-nvme-perf-tier "
+            f"value set to {perf_tier}."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_azure_container_storage_params(
@@ -1198,8 +1338,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         disk_vol_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         err = (
-                "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
-                f"value set to {disk_vol_type}."
+            "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
+            f"value set to {disk_vol_type}."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_azure_container_storage_params(
@@ -1212,9 +1352,9 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         disk_vol_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         err = (
-                "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
-                f"value set to {disk_vol_type} and --ephemeral-disk-nvme-perf-tier "
-                f"value set to {perf_tier}."
+            "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
+            f"value set to {disk_vol_type} and --ephemeral-disk-nvme-perf-tier "
+            f"value set to {perf_tier}."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_azure_container_storage_params(
@@ -1297,7 +1437,7 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_SSD
         nodepool_list = "pool1,pool2"
-        agentpools = {"nodepool1": {}, "nodepool2":{}}
+        agentpools = {"nodepool1": {}, "nodepool2": {}}
         err = (
             "Node pool: pool1 not found. Please provide a comma separated "
             "string of existing node pool names in --azure-container-storage-nodepools."
@@ -1316,7 +1456,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_SSD
         nodepool_list = "nodepool1"
-        agentpools = {"nodepool1": {"mode": "System", "node_taints": ["CriticalAddonsOnly=true:NoSchedule"]}, "nodepool2": {"count": 1}}
+        agentpools = {"nodepool1": {"mode": "System", "node_taints": [
+            "CriticalAddonsOnly=true:NoSchedule"]}, "nodepool2": {"count": 1}}
         err = (
             'Unable to install Azure Container Storage on system nodepool: nodepool1 '
             'since it has a taint CriticalAddonsOnly=true:NoSchedule. Remove the taint from the node pool '
@@ -1361,7 +1502,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
         nodepool_list = "nodepool1"
-        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "mode": "System", "count": 5}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
+        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "mode": "System",
+                                    "count": 5}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
         acstor_validator.validate_enable_azure_container_storage_params(
             storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
         )
@@ -1373,7 +1515,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
         nodepool_list = "nodepool1"
         ephemeral_disk_volume_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
-        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "mode": "System", "count": 3}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
+        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "mode": "System",
+                                    "count": 3}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
         acstor_validator.validate_enable_azure_container_storage_params(
             storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, False, False, False, ephemeral_disk_volume_type, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
         )
@@ -1393,7 +1536,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
         nodepool_list = "nodepool1"
         perf_tier = acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
-        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "count": 4}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
+        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "count": 4},
+                      "nodepool2": {"vm_size": "Standard_L8s_v3"}}
         acstor_validator.validate_enable_azure_container_storage_params(
             storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, False, False, False, None, perf_tier, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
         )
@@ -1426,7 +1570,7 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_size = "5Ti"
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
-        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"}, "count": 3}, "nodepool2" :{}}
+        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"}, "count": 3}, "nodepool2": {}}
         err = (
             "Invalid --enable-azure-container-storage value. "
             "Azure Container Storage is already enabled for storage pool type "
@@ -1443,15 +1587,18 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_size = "5Ti"
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
-        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"}, "mode": "User", "count": 3}, "nodepool2": {}}
+        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"},
+                                    "mode": "User", "count": 3}, "nodepool2": {}}
         acstor_validator.validate_enable_azure_container_storage_params(
             storage_pool_type, storage_pool_name, storage_pool_sku, None, storage_pool_size, None, agentpools, True, False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
         )
+
 
 class GatewayPrefixSizeSpace:
     def __init__(self, gateway_prefix_size=None, mode=None):
         self.gateway_prefix_size = gateway_prefix_size
         self.mode = mode
+
 
 class TestValidateGatewayPrefixSize(unittest.TestCase):
     def test_none_gateway_prefix_size(self):
@@ -1482,6 +1629,7 @@ class TestValidateGatewayPrefixSize(unittest.TestCase):
     def test_valid_gateway_prefix_size(self):
         namespace = GatewayPrefixSizeSpace(gateway_prefix_size=30, mode="Gateway")
         validators.validate_gateway_prefix_size(namespace)
+
 
 class TestValidateCustomEndpoints(unittest.TestCase):
     def test_empty_custom_endpoints(self):

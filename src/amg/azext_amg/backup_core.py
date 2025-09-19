@@ -158,10 +158,14 @@ def get_all_folders(grafana_url, http_headers, **kwargs):
     folders_to_exclude = kwargs.get('folders_to_exclude')
     if folders_to_include:
         folders_to_include = [f.lower() for f in folders_to_include]
-        folders = [f for f in folders if f.get('title', '').lower() in folders_to_include]
+        folders = [f for f in folders if
+                   f.get('title', '').lower() in folders_to_include or
+                   f.get('folderTitle', '').lower() in folders_to_include]
     if folders_to_exclude:
         folders_to_exclude = [f.lower() for f in folders_to_exclude]
-        folders = [f for f in folders if f.get('title', '').lower() not in folders_to_exclude]
+        folders = [f for f in folders if
+                   f.get('title', '').lower() not in folders_to_exclude and
+                   f.get('folderTitle', '').lower() not in folders_to_exclude]
 
     individual_folders = []
     for folder in folders:

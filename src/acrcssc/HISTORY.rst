@@ -3,6 +3,23 @@
 Release History
 ===============
 
+1.0.0b5
+++++++++
+* Update minCliCoreVersion
+
+1.0.0b4
++++++++
+* Fix resource SDK import error
+
+1.0.0b3
++++++++
+* Remove msrestazure dependency
+
+1.0.0b2
+++++++
+* Bug fix: Updated to allow for az login when the account doesn't have any active subscriptions
+
+
 1.0.0b1
 ++++++
 * Release for Public Preview

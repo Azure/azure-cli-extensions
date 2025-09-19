@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor get-metric-status",
 )
 class GetMetricStatus(AAZCommand):
-    """Get metric status
+    """Get status of metrics being sent to the Dynatrace resource.
 
     :example: Monitors_GetMetricStatus_MaximumSet_Gen
         az dynatrace monitor get-metric-status --resource-group rgDynatrace --monitor-name fhcjxnxumkdlgpwanewtkdnyuz

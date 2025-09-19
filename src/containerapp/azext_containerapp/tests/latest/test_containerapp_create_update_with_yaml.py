@@ -20,7 +20,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerappYamlTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
@@ -36,11 +36,11 @@ class ContainerappYamlTests(ScenarioTest):
 
         app = self.create_random_name(prefix='yaml1', length=24)
 
-        create_containerapp_env(self, env1, resource_group)
+        create_containerapp_env(self, env1, resource_group, location='eastus')
         containerapp_env1 = self.cmd(
             'containerapp env show -g {} -n {}'.format(resource_group, env1)).get_output_in_json()
 
-        create_containerapp_env(self, env2, resource_group)
+        create_containerapp_env(self, env2, resource_group, location='eastus')
         containerapp_env2 = self.cmd(
             'containerapp env show -g {} -n {}'.format(resource_group, env2)).get_output_in_json()
 

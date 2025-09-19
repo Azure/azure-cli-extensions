@@ -11,32 +11,27 @@ import re
 from ipaddress import ip_network
 from math import isclose, isnan
 
-from azure.cli.core import keys
-from azure.cli.core.azclierror import (
-    ArgumentUsageError,
-    InvalidArgumentValueError,
-    MutuallyExclusiveArgumentError,
-    RequiredArgumentMissingError,
-)
-from azure.cli.core.commands.validators import validate_tag
-from azure.cli.core.util import CLIError
-from azure.mgmt.core.tools import is_valid_resource_id
 from azext_aks_preview._consts import (
     ADDONS,
+    CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
-    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
-    CONST_OS_SKU_AZURELINUX,
-    CONST_OS_SKU_CBLMARINER,
-    CONST_OS_SKU_MARINER,
+    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
-    CONST_NODEPOOL_MODE_GATEWAY,
-    CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH,
-)
+    CONST_NODEPOOL_MODE_GATEWAY, CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_MARINER)
 from azext_aks_preview._helpers import _fuzzy_match
+from azure.cli.core import keys
+from azure.cli.core.azclierror import (ArgumentUsageError,
+                                       InvalidArgumentValueError,
+                                       MutuallyExclusiveArgumentError,
+                                       RequiredArgumentMissingError)
+from azure.cli.core.commands.validators import validate_tag
+from azure.cli.core.util import CLIError
+from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -164,6 +159,44 @@ def validate_ip_ranges(namespace):
                     "--api-server-authorized-ip-ranges cannot be IPv6 addresses")
         except ValueError:
             pass
+
+
+def validate_namespace_name(namespace):
+    _validate_namespace_name(namespace.name)
+
+
+def _validate_namespace_name(name):
+    """
+    Validates a Kubernetes namespace name.
+    Raises ValueError if the name is invalid.
+    """
+    if name != "":
+        if len(name) < 1 or len(name) > 63:
+            raise ValueError("Namespace name must be between 1 and 63 characters.")
+        pattern = r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+        if not re.match(pattern, name):
+            raise ValueError(
+                f"Invalid namespace '{name}'. Must consist of lower case alphanumeric characters or '-', "
+                "and must start and end with an alphanumeric character."
+            )
+
+
+def validate_resource_quota(namespace):
+    if namespace.cpu_request is not None:
+        if not namespace.cpu_request.endswith("m"):
+            raise ValueError("--cpu-request must be specified in millicores, like 200m")
+    if namespace.cpu_limit is not None:
+        if not namespace.cpu_limit.endswith("m"):
+            raise ValueError("--cpu-limit must be specified in millicores, like 200m")
+    pattern = r"^\d+(Ki|Mi|Gi|Ti|Pi|Ei)$"
+    if namespace.memory_request is not None:
+        if not re.match(pattern, namespace.memory_request):
+            raise ValueError("--memory-request must be specified in the power-of-two equivalents form:"
+                             "Ei, Pi, Ti, Gi, Mi, Ki.")
+    if namespace.memory_limit is not None:
+        if not re.match(pattern, namespace.memory_limit):
+            raise ValueError("--memory-limit must be specified in the power-of-two equivalents form:"
+                             "Ei, Pi, Ti, Gi, Mi, Ki.")
 
 
 def _validate_nodepool_name(nodepool_name):
@@ -479,6 +512,39 @@ def validate_max_unavailable(namespace):
     except ValueError:
         # pylint: disable=raise-missing-from
         raise CLIError("--max-unavailable should be an int or percentage")
+
+
+def validate_max_blocked_nodes(namespace):
+    """validates parameters max blocked nodes is positive integers or percents."""
+    if namespace.max_blocked_nodes is None:
+        return
+    int_or_percent = namespace.max_blocked_nodes
+    if int_or_percent.endswith('%'):
+        int_or_percent = int_or_percent.rstrip('%s')
+
+    try:
+        if int(int_or_percent) < 0:
+            raise InvalidArgumentValueError('--max-blocked-nodes must be be positive')
+    except ValueError:
+        # pylint: disable=raise-missing-from
+        raise InvalidArgumentValueError('--max-blocked-nodes should be an int or percentage')
+
+
+def validate_drain_batch_size(namespace):
+    """validates drain batch size parameter as non-zero integers or percentages."""
+    if namespace.drain_batch_size is None:
+        return
+    int_or_percent = namespace.drain_batch_size
+    if int_or_percent.endswith('%'):
+        int_or_percent = int_or_percent.rstrip('%')
+
+    try:
+        value = int(int_or_percent)
+        if value <= 0:
+            raise InvalidArgumentValueError('--drain-batch-size must be a non-zero value')
+    except ValueError:
+        # pylint: disable=raise-missing-from
+        raise InvalidArgumentValueError('--drain-batch-size should be an integer or percentage (e.g., "5" or "50%")')
 
 
 def validate_assign_identity(namespace):
@@ -897,19 +963,29 @@ def validate_gateway_prefix_size(namespace):
             raise CLIError("--gateway-prefix-size must be in the range [28, 31]")
 
 
-def validate_location_cluster_name_resource_group_mutually_exclusive(namespace):
-    """Validates that location, cluster name, and resource group name are not specified at the same time"""
-    location = namespace.location
-    resource_group_name = namespace.resource_group_name
-    cluster_name = namespace.cluster_name
-    if location and resource_group_name and cluster_name:
-        raise MutuallyExclusiveArgumentError(
-            "Cannot specify --location and --resource-group and --cluster at the same time."
-        )
-
-
 def validate_resource_group_parameter(namespace):
+    """Validates that if the user specified the cluster name, resource group name is also specified and vice versa"""
     if namespace.resource_group_name and not namespace.cluster_name:
         raise RequiredArgumentMissingError("Please specify --cluster")
     if not namespace.resource_group_name and namespace.cluster_name:
         raise RequiredArgumentMissingError("Please specify --resource-group")
+
+
+def validate_location_resource_group_cluster_parameters(namespace):
+    """Validates location or cluster details are specified and not mutually exclusive"""
+    location = namespace.location
+    resource_group_name = namespace.resource_group_name
+    cluster_name = namespace.cluster_name
+    if not namespace.location and not namespace.cluster_name and not namespace.resource_group_name:
+        raise RequiredArgumentMissingError(
+            "You must specify --location or --resource-group and --cluster."
+        )
+    if location and (resource_group_name or cluster_name):
+        raise RequiredArgumentMissingError(
+            "You must specify --location or --resource-group and --cluster."
+        )
+
+    if location and resource_group_name and cluster_name:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify --location and --resource-group and --cluster at the same time."
+        )

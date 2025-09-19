@@ -32,6 +32,17 @@ examples:
         --description endpointFileShareDesc
 """
 
+helps['storage-mover endpoint create-for-storage-nfs-file-share'] = """
+type: command
+short-summary: Creates an Endpoint resource for storage nfs file share.
+examples:
+    - name: endpoint create-for-storage-nfs-file-share
+      text: >
+        az storage-mover endpoint create-for-storage-nfs-file-share -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_nfs_file_share" --file-share-name "file_share_name" --storage-account-id "account_id"
+        --description endpointNfsFileShareDesc
+"""
+
 helps['storage-mover endpoint create-for-nfs'] = """
 type: command
 short-summary: Creates an Endpoint resource for nfs.
@@ -51,6 +62,17 @@ examples:
         az storage-mover endpoint create-for-smb -g "rg" --storage-mover-name "mover_name"
         -n "endpoint_smb" --description endpointSmbDesc --share-name "smb_share_name" --username-uri username
         --password-uri Password!23 --host "vm_ip"
+"""
+
+helps['storage-mover endpoint create-for-multi-cloud-connector'] = """
+type: command
+short-summary: Creates an Endpoint resource for multi cloud connector.
+examples:
+    - name: endpoint create-for-multi-cloud-connector
+      text: >
+        az storage-mover endpoint create-for-multi-cloud-connector -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_multi_cloud_connector" --multi-cloud-connector-id "connector_id" --aws-s3-bucket-id "bucket_id"
+        --description endpointMultiCloudConnectorDesc
 """
 
 helps['storage-mover endpoint update-for-storage-container'] = """
@@ -73,6 +95,16 @@ examples:
         -n "endpoint_file_share" --description endpointFileShareDescUpdate
 """
 
+helps['storage-mover endpoint update-for-storage-nfs-file-share'] = """
+type: command
+short-summary: Updates an Endpoint resource for storage nfs file share.
+examples:
+    - name: endpoint update-for-storage-nfs-file-share
+      text: >
+        az storage-mover endpoint update-for-storage-nfs-file-share -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_nfs_file_share" --description endpointNfsFileShareDescUpdate
+"""
+
 helps['storage-mover endpoint update-for-nfs'] = """
 type: command
 short-summary: Updates an Endpoint resource for nfs.
@@ -91,4 +123,24 @@ examples:
       text: >
         az storage-mover endpoint update-for-smb -g "rg" --storage-mover-name "mover_name" -n "endpoint_smb"
         --description endpointSmbDescUpdate
+"""
+
+helps['storage-mover endpoint update-for-multi-cloud-connector'] = """
+type: command
+short-summary: Updates an Endpoint resource for multi cloud connector.
+examples:
+    - name: endpoint update-for-multi-cloud-connector
+      text: >
+        az storage-mover endpoint update-for-multi-cloud-connector -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_multi_cloud_connector" --description endpointMultiCloudConnectorDescUpdate
+"""
+
+helps['storage-mover endpoint identity assign'] = """
+type: command
+short-summary: Assigns a managed identity to an Endpoint resource.
+examples:
+    - name: endpoint identity assign
+      text: >
+        az storage-mover endpoint identity assign -g "rg" --storage-mover-name "mover_name" -n "endpoint_nfs_file_share"
+        --mi-system-assigned
 """

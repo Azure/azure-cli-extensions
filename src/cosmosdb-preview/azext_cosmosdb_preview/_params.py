@@ -29,7 +29,10 @@ from azext_cosmosdb_preview._validators import (
     validate_cassandra_role_assignment_id,
     validate_mongoMI_role_definition_body,
     validate_mongoMI_role_definition_id,
-    validate_mongoMI_role_assignment_id)
+    validate_mongoMI_role_assignment_id,
+    validate_fleetspace_body,
+    validate_fleetspaceAccount_body,
+    validate_fleet_analytics_body)
 
 from azext_cosmosdb_preview.actions import (
     CreateGremlinDatabaseRestoreResource,
@@ -193,6 +196,37 @@ SQL_THROUGHPUT_BUCKETS_EXAMPLE = """--throughput-buckets "[
     { \\"id\\": 1, \\"maxThroughputPercentage\\" : 10 },
     { \\"id\\": 2, \\"maxThroughputPercentage\\" : 20 }
 ]"
+"""
+
+
+FLEETSPACE_PROPERTIES_EXAMPLE = """--body "{
+    \\"properties\\": {
+        \\"throughputPoolConfiguration\\": {
+            \\"minThroughput\\": 100000,
+            \\"maxThroughput\\": 300000,
+            \\"serviceTier\\": \\"GeneralPurpose\\",
+            \\"dataRegions\\": [\\"West US 2\\"]
+        },
+    }
+}"
+"""
+
+FLEETSPACE_ACCOUNT_PROPERTIES_EXAMPLE = """--body "{
+    \\"properties\\": {
+        \\"globalDatabaseAccountProperties\\": {
+            \\"resourceId\\": \\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.DocumentDB/databaseAccounts/example-account\\",
+            \\"armLocation\\": \\"East US\\"
+        }
+    }
+}"
+"""
+
+FLEET_ANALYTICS_PROPERTIES_EXAMPLE = """--body "{
+    \\"properties\\": {
+        \\"storageLocationType\\": \\"StorageAccount\\",
+        \\"storageLocationUri\\": \\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.Storage/storageAccounts/exampleaccount\\"
+    }
+}"
 """
 
 
@@ -794,3 +828,43 @@ def load_arguments(self, _):
         c.argument('role_definition_name', options_list=['--role-definition-name', '-n'], help="Unique Name of the Role Definition that this Role Assignment refers to. Eg. 'Contoso Reader Role'.")
         c.argument('scope', options_list=['--scope', '-s'], help="Data plane resource path at which this Role Assignment is being granted.")
         c.argument('principal_id', options_list=['--principal-id', '-p'], help="AAD Object ID of the principal to which this Role Assignment is being granted.")
+
+    # Cosmos DB Fleet
+    with self.argument_context('cosmosdb fleet') as c:
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of the resource group.', required=True)
+        c.argument('fleet_name', options_list=['--fleet-name', '-n'], help='Name of the Fleet resource.', required=True)
+
+    with self.argument_context('cosmosdb fleet create') as c:
+        c.argument('location', options_list=['--location', '-l'], help='Location of the Fleet.', required=True)
+        c.argument('tags', help="Tags in 'key=value key2=value2' format.")
+
+    # Cosmos DB Fleet Analytics
+    with self.argument_context('cosmosdb fleet analytics') as c:
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of the resource group.', required=True)
+        c.argument('fleet_name', options_list=['--fleet-name'], help='Name of the Cosmos DB Fleet.', required=True)
+        c.argument('fleet_analytics_name', options_list=['--fleet-analytics-name', '-n'], help='Name of the Fleet Analytics resource.', required=True)
+
+    with self.argument_context('cosmosdb fleet analytics create') as c:
+        c.argument('fleet_analytics_body', options_list=['--body', '-b'], validator=validate_fleet_analytics_body, completer=FilesCompleter(), help="Fleet Analytics body with properties (fields: storageLocationType, storageLocationUri). You can enter it as a string or as a file, e.g., --body @fleetAnalytics.json or " + FLEET_ANALYTICS_PROPERTIES_EXAMPLE)
+
+    # Cosmos DB Fleetspace
+    with self.argument_context('cosmosdb fleetspace') as c:
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of the resource group.', required=True)
+        c.argument('fleet_name', options_list=['--fleet-name'], help='Name of the Cosmos DB Fleet.', required=True)
+        c.argument('fleetspace_name', options_list=['--fleetspace-name', '-n'], help='Name of the Fleetspace resource.', required=True)
+
+    with self.argument_context('cosmosdb fleetspace create') as c:
+        c.argument('fleetspace_body', options_list=['--body', '-b'], validator=validate_fleetspace_body, completer=FilesCompleter(), help="Fleetspace body with properties.throughputPoolConfiguration (fields: minThroughput, maxThroughput, serviceTier, dataRegions). You can enter it as a string or as a file, e.g., --body @fleetspace.json or " + FLEETSPACE_PROPERTIES_EXAMPLE)
+
+    with self.argument_context('cosmosdb fleetspace update') as c:
+        c.argument('fleetspace_body', options_list=['--body', '-b'], validator=validate_fleetspace_body, completer=FilesCompleter(), help="Fleetspace body with properties.throughputPoolConfiguration (fields: minThroughput, maxThroughput, serviceTier, dataRegions). You can enter it as a string or as a file, e.g., --body @fleetspace.json or " + FLEETSPACE_PROPERTIES_EXAMPLE)
+
+    # Cosmos DB Fleetspace account
+    with self.argument_context('cosmosdb fleetspace account') as c:
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of the resource group.', required=True)
+        c.argument('fleet_name', options_list=['--fleet-name'], help='Name of the Cosmos DB Fleet.', required=True)
+        c.argument('fleetspace_name', options_list=['--fleetspace-name'], help='Name of the Fleetspace resource.', required=True)
+        c.argument('fleetspace_account_name', options_list=['--fleetspace-account-name', '-n'], help='Name of the Fleetspace Account resource.', required=True)
+
+    with self.argument_context('cosmosdb fleetspace account create') as c:
+        c.argument('fleetspace_account_body', options_list=['--body', '-b'], validator=validate_fleetspaceAccount_body, completer=FilesCompleter(), help="Fleetspace Account body with properties.globalDatabaseAccountProperties (fields: armLocation, resourceId). You can enter it as a string or as a file, e.g., --body @fleetspaceAccount.json or " + FLEETSPACE_ACCOUNT_PROPERTIES_EXAMPLE)

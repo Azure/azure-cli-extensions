@@ -53,11 +53,11 @@ helps['fleet show'] = """
 
 helps['fleet list'] = """
     type: command
-    short-summary: Lists all fleets within a resource group.
+    short-summary: Lists all fleets.
     examples:
-        - name: List all fleets with a specific subscription.
+        - name: List all fleets within your current subscription.
           text: az fleet list
-        - name: List all fleets that exist within a specific subscription and resource group.
+        - name: List all fleets that exist within your current subscription and the chosen resource group.
           text: az fleet list -g MyResourceGroup
 """
 
@@ -111,13 +111,15 @@ helps['fleet member create'] = """
     parameters:
         - name: --member-cluster-id
           type: string
-          short-summary: ID of the managed cluster.
+          short-summary: The ARM resource ID of the cluster.
         - name: --update-group
           type: string
           short-summary: Update group of the member.
     examples:
-        - name: Create a member and assign it to an update group.
-          text: az fleet member create -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group UpdateGroup1 --member-cluster-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyFleetResourceGroup/providers/Microsoft.ContainerService/managedClusters/MyManagedCluster"
+        - name: Create an AKS Cluster member and assign it to an update group.
+          text: az fleet member create -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group group1 --member-cluster-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ClusterResourceGroupName/providers/Microsoft.ContainerService/managedClusters/ClusterName"
+        - name: Create an Arc Cluster member and assign it to an update group.
+          text: az fleet member create -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group group1 --member-cluster-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ClusterResourceGroupName/providers/Microsoft.Kubernetes/connectedClusters/ClusterName"
 """
 
 helps['fleet member update'] = """
@@ -129,7 +131,7 @@ helps['fleet member update'] = """
           short-summary: Update group of the member.
     examples:
         - name: Update an existing member's update group.
-          text: az fleet member update -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group UpdateGroup2
+          text: az fleet member update -g MyFleetResourceGroup -f MyFleetName -n NameOfMember --update-group group2
 """
 
 helps['fleet member list'] = """
@@ -392,4 +394,43 @@ helps['fleet autoupgradeprofile wait'] = """
     type: command
     short-summary: Wait for an auto upgrade resource to reach a desired state.
     long-summary: If an operation on an auto upgrade profile was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
+"""
+
+helps['fleet gate'] = """
+    type: group
+    short-summary: Commands to manage gates.
+"""
+
+helps['fleet gate list'] = """
+    type: command
+    short-summary: Lists all gates under a fleet.
+    examples:
+        - name: Lists all gates under a fleet.
+          text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName
+        - name: List all gates, filtering on gate state. Valid values are ('Pending', 'Skipped', 'Completed').
+          text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --state Pending
+"""
+
+helps['fleet gate show'] = """
+    type: command
+    short-summary: Shows a specific gate.
+    examples:
+        - name: Shows a specific gate.
+          text: az fleet gate show -g MyFleetResourceGroup -f MyFleetName -n 3fa85f64-5717-4562-b3fc-2c963f66afa6
+"""
+
+helps['fleet gate update'] = """
+    type: command
+    short-summary: Updates a gate. Currently only the gate state can be updated. Valid values are ('Completed').
+    examples:
+        - name: Updates a gate.
+          text: az fleet gate update -g MyFleetResourceGroup --fleet-name MyFleetName --gate-name 3fa85f64-5717-4562-b3fc-2c963f66afa6 --state "Completed"
+"""
+
+helps['fleet gate approve'] = """
+    type: command
+    short-summary: Approves a gate, and sets the gate state to Completed. This modifies the gate state in the same way as the general-purpose update command, however it's simpler to use.
+    examples:
+        - name: Approves a gate.
+          text: az fleet gate approve -g MyFleetResourceGroup --fleet-name MyFleetName --gate-name 3fa85f64-5717-4562-b3fc-2c963f66afa6
 """

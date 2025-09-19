@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}/dnssecurityrules/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}/dnssecurityrules/{}", "2025-05-01"],
         ]
     }
 
@@ -136,7 +136,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2025-05-01",
                     required=True,
                 ),
             }
@@ -215,9 +215,6 @@ class Wait(AAZWaitCommand):
             action = cls._schema_on_200.properties.action
             action.action_type = AAZStrType(
                 serialized_name="actionType",
-            )
-            action.block_response_code = AAZStrType(
-                serialized_name="blockResponseCode",
             )
 
             dns_resolver_domain_lists = cls._schema_on_200.properties.dns_resolver_domain_lists

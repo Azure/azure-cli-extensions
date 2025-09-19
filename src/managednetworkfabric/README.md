@@ -1,5 +1,6 @@
-# Azure CLI Managednetworkfabric Extension #
-This is an extension to Azure CLI to manage Managednetworkfabric resources.
+# Microsoft Azure CLI 'managednetworkfabric' Extension #
+
+This is an extension to Azure CLI to manage Microsoft.ManagedNetworkFabric resources.
 
 ## How to use ##
 

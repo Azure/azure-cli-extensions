@@ -96,3 +96,13 @@ def validate_update_strategy_id(namespace):
     if not is_valid_resource_id(update_strategy_id):
         raise InvalidArgumentValueError(
             "--update-strategy-id is not a valid Azure resource ID.")
+
+
+def validate_labels(val):
+    result = {}
+    for item in val.split():
+        if '=' not in item:
+            raise ValueError("Expected key=value format")
+        k, v = item.split('=', 1)
+        result[k] = v
+    return result

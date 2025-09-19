@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "neon postgres neon-database",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Neon Database
+    """Manage Neon Postgres databases within Azure.
     """
     pass
 

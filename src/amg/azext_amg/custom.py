@@ -20,7 +20,7 @@ from .aaz.latest.grafana._delete import Delete as _GrafanaDelete
 from .aaz.latest.grafana._update import Update as _GrafanaUpdate
 
 from ._client_factory import cf_amg
-from .utils import get_yes_or_no_option
+from .utils import get_yes_or_no_option, search_folders
 
 logger = get_logger(__name__)
 
@@ -61,6 +61,13 @@ class GrafanaCreate(_GrafanaCreate):
 
         if not args.skip_system_assigned_identity:
             args.identity = {"type": "SystemAssigned"}
+
+        if args.sku_tier and str(args.sku_tier).lower() == "essential":
+            raise ArgumentUsageError(
+                "Creation of Grafana resources with the 'Essential' SKU tier is not supported. "
+                "Supported SKU tiers are: 'Standard'. "
+                "Please specify a supported SKU tier using the '--sku-tier' parameter."
+            )
 
     # override the output method to create role assignments after instance creation
     def _output(self, *args, **kwargs):
@@ -538,19 +545,33 @@ def test_notification_channel(cmd, grafana_name, notification_channel, resource_
     return json.loads(response.content)
 
 
-def create_folder(cmd, grafana_name, title, resource_group_name=None, api_key_or_token=None, subscription=None):
+def create_folder(cmd, grafana_name, title, parent_folder=None, resource_group_name=None, api_key_or_token=None,
+                  subscription=None):
     payload = {
-        "title": title
+        "title": title,
     }
+    if parent_folder:
+        data = _find_folder(cmd, resource_group_name, grafana_name, parent_folder, api_key_or_token=api_key_or_token)
+        payload["parentUid"] = data["uid"]
+
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/folders", payload,
                              api_key_or_token=api_key_or_token, subscription=subscription)
     return json.loads(response.content)
 
 
 def list_folders(cmd, grafana_name, resource_group_name=None, api_key_or_token=None, subscription=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders",
-                             api_key_or_token=api_key_or_token, subscription=subscription)
-    return json.loads(response.content)
+    endpoint, headers = _get_grafana_request_context(cmd, resource_group_name, grafana_name, subscription,
+                                                     api_key_or_token=api_key_or_token)
+
+    status, content = search_folders(
+        grafana_url=endpoint,
+        http_get_headers=headers
+    )
+
+    if status >= 400:
+        raise ArgumentUsageError(f"Failed to find folders. Error: {content}")
+
+    return content
 
 
 def update_folder(cmd, grafana_name, folder, title, resource_group_name=None, api_key_or_token=None):
@@ -575,22 +596,19 @@ def delete_folder(cmd, grafana_name, folder, resource_group_name=None, api_key_o
 
 
 def _find_folder(cmd, resource_group_name, grafana_name, folder, api_key_or_token=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/" + folder,
-                             raise_for_error_status=False, api_key_or_token=api_key_or_token)
-    if response.status_code >= 400:
-        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders",
-                                 api_key_or_token=api_key_or_token)
-        if response.status_code >= 400:
-            raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
-        result = json.loads(response.content)
-        result = [f for f in result if f["title"] == folder]
-        if len(result) == 0:
-            raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
-        if len(result) > 1:
-            raise ArgumentUsageError((f"More than one folder has the same title of '{folder}'. Please use other "
-                                     f"unique identifiers"))
-        return result[0]
-    return json.loads(response.content)
+    folders = list_folders(cmd, grafana_name, resource_group_name=resource_group_name,
+                           api_key_or_token=api_key_or_token)
+
+    # try uid first
+    match = next((f for f in folders if f['uid'] == folder), None)
+    if match:
+        return match
+
+    # If we get here, the folder is not found by uid, so we try by title
+    match = next((f for f in folders if f['title'] == folder), None)
+    if not match:
+        raise ArgumentUsageError(f"Couldn't find the folder '{folder}'.")
+    return match
 
 
 def list_api_keys(cmd, grafana_name, resource_group_name=None):
@@ -914,14 +932,8 @@ def _get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription):
 
 def _send_request(cmd, resource_group_name, grafana_name, http_method, path, body=None, raise_for_error_status=True,
                   api_key_or_token=None, subscription=None):
-    endpoint = _get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription)
-
-    creds = _get_data_plane_creds(cmd, api_key_or_token, subscription)
-
-    headers = {
-        "content-type": "application/json",
-        "authorization": "Bearer " + creds[1]
-    }
+    endpoint, headers = _get_grafana_request_context(cmd, resource_group_name, grafana_name, subscription,
+                                                     api_key_or_token=api_key_or_token)
 
     # TODO: handle re-try on 429
     response = requests.request(http_method, url=endpoint + path, headers=headers, json=body, timeout=60,
@@ -932,3 +944,14 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
             response.raise_for_status()
     # TODO: log headers, requests and response
     return response
+
+
+def _get_grafana_request_context(cmd, resource_group_name, grafana_name, subscription, api_key_or_token=None):
+    endpoint = _get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription)
+    creds = _get_data_plane_creds(cmd, api_key_or_token, subscription)
+    headers = {
+        "content-type": "application/json",
+        "authorization": "Bearer " + creds[1]
+    }
+
+    return endpoint, headers

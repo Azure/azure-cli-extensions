@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "neon postgres project",
 )
 class __CMDGroup(AAZCommandGroup):
-    """The projects command allows you to list, create, update, delete, and retrieve information about Neon projects.
+    """Manage Neon projects, including listing, creating, updating, deleting, and retrieving project information.
     """
     pass
 

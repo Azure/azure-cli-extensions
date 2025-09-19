@@ -1,0 +1,123 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/computes?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/computes/cpu-cluster",
+        "name": "cpu-cluster", "type": "Microsoft.MachineLearningServices/workspaces/computes",
+        "location": "eastus", "tags": {}, "properties": {"createdOn": "2022-03-19T21:51:51.8898375+00:00",
+        "modifiedOn": "2022-03-19T21:51:55.4747972+00:00", "disableLocalAuth": false,
+        "description": null, "resourceId": null, "computeType": "AmlCompute", "computeLocation":
+        "eastus", "provisioningState": "Succeeded", "provisioningErrors": null, "isAttachedCompute":
+        false, "properties": {"vmSize": "STANDARD_DS3_V2", "vmPriority": "Dedicated",
+        "scaleSettings": {"maxNodeCount": 1, "minNodeCount": 0, "nodeIdleTimeBeforeScaleDown":
+        "PT2M"}, "subnet": null, "currentNodeCount": 0, "targetNodeCount": 0, "nodeStateCounts":
+        {"preparingNodeCount": 0, "runningNodeCount": 0, "idleNodeCount": 0, "unusableNodeCount":
+        0, "leavingNodeCount": 0, "preemptedNodeCount": 0}, "allocationState": "Steady",
+        "allocationStateTransitionTime": "2022-03-19T21:51:55.449+00:00", "errors":
+        null, "remoteLoginPortPublicAccess": "Enabled", "osType": "Linux", "virtualMachineImage":
+        null, "isolatedNetwork": false}}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/computes/testcomp007ci3",
+        "name": "testcomp007ci3", "type": "Microsoft.MachineLearningServices/workspaces/computes",
+        "location": "eastus", "tags": {}, "properties": {"createdOn": "2022-03-19T22:11:34.281694+00:00",
+        "modifiedOn": "2022-03-19T22:16:15.8886631+00:00", "disableLocalAuth": false,
+        "description": null, "resourceId": null, "computeType": "ComputeInstance",
+        "computeLocation": "eastus", "provisioningState": "Succeeded", "provisioningErrors":
+        null, "isAttachedCompute": false, "properties": {"vmSize": "STANDARD_DS3_V2",
+        "subnet": null, "sshSettings": {"sshPublicAccess": "Disabled", "adminUserName":
+        "azureuser", "sshPort": 4000, "adminPublicKey": null}, "errors": [], "connectivityEndpoints":
+        {"publicIpAddress": "20.185.15.68", "privateIpAddress": "10.0.0.4"}, "applications":
+        [{"displayName": "Jupyter", "endpointUri": "https://testcomp007ci3.eastus.instances.azureml.ms/tree/"},
+        {"displayName": "Jupyter Lab", "endpointUri": "https://testcomp007ci3.eastus.instances.azureml.ms/lab"},
+        {"displayName": "RStudio", "endpointUri": "https://testcomp007ci3-8787.eastus.instances.azureml.ms"}],
+        "state": "Running", "lastOperation": {"operationName": "Create", "operationTime":
+        "2022-03-19T22:11:36.549+00:00", "operationStatus": "Succeeded", "operationTrigger":
+        "User"}, "createdBy": {"userOrgId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "userId": "766db172-79fa-406e-bb86-a8ab4473f08b"}, "applicationSharingPolicy":
+        "Shared", "computeInstanceAuthorizationType": "personal", "personalComputeInstanceSettings":
+        null, "setupScripts": null, "schedules": {"computeStartStop": []}, "dataMounts":
+        null, "dataDisks": null, "containers": null, "updateStatus": null, "versions":
+        {"runtime": "3.0.01894.0001"}}}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/computes/testcomp007ci4",
+        "name": "testcomp007ci4", "type": "Microsoft.MachineLearningServices/workspaces/computes",
+        "location": "eastus", "tags": {}, "properties": {"createdOn": "2022-03-19T22:12:08.2547974+00:00",
+        "modifiedOn": "2022-03-19T22:18:10.1740021+00:00", "disableLocalAuth": false,
+        "description": null, "resourceId": null, "computeType": "ComputeInstance",
+        "computeLocation": "eastus", "provisioningState": "Deleting", "provisioningErrors":
+        null, "isAttachedCompute": false, "properties": {"vmSize": "STANDARD_DS3_V2",
+        "subnet": null, "sshSettings": {"sshPublicAccess": "Disabled", "adminUserName":
+        "azureuser", "sshPort": 4000, "adminPublicKey": null}, "errors": [], "connectivityEndpoints":
+        {"publicIpAddress": "20.75.163.87", "privateIpAddress": "10.0.0.4"}, "applications":
+        [{"displayName": "Jupyter", "endpointUri": "https://testcomp007ci4.eastus.instances.azureml.ms/tree/"},
+        {"displayName": "Jupyter Lab", "endpointUri": "https://testcomp007ci4.eastus.instances.azureml.ms/lab"},
+        {"displayName": "RStudio", "endpointUri": "https://testcomp007ci4-8787.eastus.instances.azureml.ms"}],
+        "state": "Deleting", "lastOperation": {"operationName": "Delete", "operationTime":
+        "2022-03-19T22:12:10.71+00:00", "operationStatus": "InProgress", "operationTrigger":
+        "User"}, "createdBy": {"userOrgId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "userId": "766db172-79fa-406e-bb86-a8ab4473f08b"}, "applicationSharingPolicy":
+        "Shared", "computeInstanceAuthorizationType": "personal", "personalComputeInstanceSettings":
+        null, "setupScripts": null, "schedules": {"computeStartStop": [{"triggerType":
+        "Recurrence", "recurrence": {"frequency": "Week", "interval": 1, "startTime":
+        "2021-03-10T21:21:07", "timeZone": "Pacific Standard Time", "schedule": {"hours":
+        [0], "minutes": [15], "weekDays": ["Monday", "Tuesday"]}}, "cron": null, "action":
+        "Start", "id": "ec8bc17e-99e8-436d-9ec0-a0e967f0a294", "status": "Enabled",
+        "provisioningStatus": "Completed"}, {"triggerType": "Cron", "recurrence":
+        null, "cron": {"expression": "0 18 * * *", "startTime": "2021-03-10T21:21:07",
+        "timeZone": "Pacific Standard Time"}, "action": "Stop", "id": "1f71fda0-e524-4eba-b78c-e39b4905ebcb",
+        "status": "Enabled", "provisioningStatus": "Completed"}]}, "dataMounts": null,
+        "dataDisks": null, "containers": null, "updateStatus": null, "versions": {"runtime":
+        "3.0.01894.0001"}}}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/computes/testcomp007cc2",
+        "name": "testcomp007cc2", "type": "Microsoft.MachineLearningServices/workspaces/computes",
+        "location": "eastus", "tags": {}, "properties": {"createdOn": "2022-03-19T22:18:12.5981965+00:00",
+        "modifiedOn": "2022-03-19T22:18:16.3088832+00:00", "disableLocalAuth": false,
+        "description": null, "resourceId": null, "computeType": "AmlCompute", "computeLocation":
+        "eastus", "provisioningState": "Succeeded", "provisioningErrors": null, "isAttachedCompute":
+        false, "properties": {"vmSize": "STANDARD_DS3_V2", "vmPriority": "Dedicated",
+        "scaleSettings": {"maxNodeCount": 1, "minNodeCount": 0, "nodeIdleTimeBeforeScaleDown":
+        "PT2M"}, "subnet": null, "currentNodeCount": 0, "targetNodeCount": 0, "nodeStateCounts":
+        {"preparingNodeCount": 0, "runningNodeCount": 0, "idleNodeCount": 0, "unusableNodeCount":
+        0, "leavingNodeCount": 0, "preemptedNodeCount": 0}, "allocationState": "Resizing",
+        "allocationStateTransitionTime": "2022-03-19T22:18:13.056+00:00", "errors":
+        null, "remoteLoginPortPublicAccess": "Enabled", "osType": "Linux", "virtualMachineImage":
+        null, "isolatedNetwork": false, "enableNodePublicIp": true}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6999'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 19 Mar 2022 22:18:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.625'
+    status:
+      code: 200
+      message: OK
+version: 1

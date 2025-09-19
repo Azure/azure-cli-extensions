@@ -99,6 +99,18 @@ def test_source_wheels():
             check_output(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir], cwd=s)
         except CalledProcessError as err:
             raise("Unable to build extension {} : {}".format(s, err))
+    # Export built wheels so CI can publish them as artifacts
+    wheels_out_dir = os.environ.get('WHEELS_OUTPUT_DIR')
+    if wheels_out_dir:
+        try:
+            os.makedirs(wheels_out_dir, exist_ok=True)
+            for fname in os.listdir(built_whl_dir):
+                src_path = os.path.join(built_whl_dir, fname)
+                if os.path.isfile(src_path):
+                    shutil.copy2(src_path, os.path.join(wheels_out_dir, fname))
+            logger.warning(f'Exported wheels to: {wheels_out_dir}')
+        except Exception as ex:
+            logger.exception(f'Failed to export wheels to {wheels_out_dir}: {ex}')
     shutil.rmtree(built_whl_dir)
 
 

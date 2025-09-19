@@ -99,11 +99,11 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.polling_interval_in_seconds = AAZFloatArg(
+        _args_schema.polling_interval_in_seconds = AAZIntArg(
             options=["--polling-interval-in-seconds"],
             arg_group="Properties",
             help="Polling interval in seconds.",
-            default=30.0,
+            default=30,
             enum={"120": 120, "30": 30, "60": 60, "90": 90},
         )
         _args_schema.tap_rules_url = AAZStrArg(
@@ -534,7 +534,7 @@ class Create(AAZCommand):
                 properties.set_prop("dynamicMatchConfigurations", AAZListType, ".dynamic_match_configurations")
                 properties.set_prop("globalNetworkTapRuleActions", AAZObjectType, ".global_network_tap_rule_actions")
                 properties.set_prop("matchConfigurations", AAZListType, ".match_configurations")
-                properties.set_prop("pollingIntervalInSeconds", AAZFloatType, ".polling_interval_in_seconds")
+                properties.set_prop("pollingIntervalInSeconds", AAZIntType, ".polling_interval_in_seconds")
                 properties.set_prop("tapRulesUrl", AAZStrType, ".tap_rules_url")
 
             dynamic_match_configurations = _builder.get(".properties.dynamicMatchConfigurations")
@@ -760,7 +760,7 @@ class Create(AAZCommand):
                 serialized_name="networkTapId",
                 flags={"read_only": True},
             )
-            properties.polling_interval_in_seconds = AAZFloatType(
+            properties.polling_interval_in_seconds = AAZIntType(
                 serialized_name="pollingIntervalInSeconds",
             )
             properties.provisioning_state = AAZStrType(

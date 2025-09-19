@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic monitor get-billing-info",
 )
 class GetBillingInfo(AAZCommand):
-    """Get marketplace and organization info mapped to the given monitor.
+    """Retrieve marketplace and organization billing information mapped to the given Elastic monitor resource.
 
     :example: BillingInfo_Get
         az elastic monitor get-billing-info --resource-group myResourceGroup --monitor-name myMonitor
