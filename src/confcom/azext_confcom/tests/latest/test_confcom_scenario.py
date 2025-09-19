@@ -567,7 +567,7 @@ class CustomJsonParsing(unittest.TestCase):
             "containers": [
                 {
                     "name": "mcr.microsoft.com/azurelinux/base/python:3.12",
-                    "containerImage": "mcr.microsoft.com/azurelinux/base/python:3.12",
+                    "containerImage": "mcr.microsoft.com/azurelinux/base/python@sha256:ec2e8a66b7a5ad1da168bf13463e03ea79c3a18d7142818d52fbcc8772bbba8d",
                     "environmentVariables": [],
                     "command": ["echo", "hello"]
                 }
@@ -578,13 +578,13 @@ class CustomJsonParsing(unittest.TestCase):
             # pull actual image to local for next step
             with DockerClient() as client:
                 image_ref = aci_policy.get_images()[0]
-                image = client.images.pull(image_ref.base, tag=image_ref.tag)
+                image = client.images.pull(image_ref.containerImage)
             aci_policy.populate_policy_content_for_all_images()
             layers = aci_policy.get_images()[0]._layers
             expected_layers = [
-                "335710fca9480be919670dc57ef086019417ca61b4ab6e414ec6564dbf44aba8",
-                "dd0003aa8186970a6d1911288e0285c8b0f2b2f5624d7478d8fb1130344e3341",
-                "4a31b681abd27fd7a3a501e8a3e6f3b3d39767311b7f1b7dc17dd58aec6137b8"
+                "679545575069dd4dc31f4d991094d669ca346950c3bc3aa465a9343a7369a8c9",
+                "ff808293653ce6dc4aa63381a8ceaec73c15618bbc6ccb30a44441d638c07af7",
+                "1dd5fd89c3a5a58b669d14d9a693aff3f16d3a8ec643c9d7f2d24f25297cfbc7"
             ]
             self.assertEqual(len(layers), len(expected_layers))
             for i in range(len(expected_layers)):
