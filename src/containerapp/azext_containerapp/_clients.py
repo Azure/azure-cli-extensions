@@ -84,117 +84,6 @@ class LabelHistoryPreviewClient:
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
         return r.json()
 
-class FunctionAppPreviewClient:
-    api_version = PREVIEW_API_VERSION
-    APP_INSIGHTS_API_VERSION = "2018-04-20"
-
-    @classmethod
-    def get_function_invocation_summary(cls, cmd, resource_group_name, container_app_name, revision_name, function_name, timespan="30d"):      
-        # Fetch the app insights resource app id
-        app_id = cls._get_app_insights_id(cmd, resource_group_name, container_app_name, revision_name)
-
-        # Use application insights query to get function invocations
-        invocation_summary_query = (
-            f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
-            f"| where timestamp >= ago({timespan}) "
-            f"| where cloud_RoleName =~ '{container_app_name}' "
-            f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
-            f"| summarize count=count() by success"
-        )
-        
-        try:
-            # Execute Application Insights query directly using REST API
-            result = cls._execute_app_insights_query(cmd, app_id, invocation_summary_query, "getLast30DaySummary")
-            return result
-        except Exception as ex:
-            raise CLIError(f"Error executing Application Insights query: {str(ex)}")
-
-    @classmethod
-    def get_function_invocation_traces(cls, cmd, resource_group_name, container_app_name, revision_name, function_name, timespan="30d"):
-        # Fetch the app insights resource app id
-        app_id = cls._get_app_insights_id(cmd, resource_group_name, container_app_name, revision_name)
-
-        # Use application insights query to get function invocations
-        invocation_traces_query = (
-            f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
-            f"| project timestamp, id, operation_Name, success, resultCode, duration, operation_Id, functionNameFromCustomDimension, "
-            f"cloud_RoleName, invocationId=coalesce(tostring(customDimensions['InvocationId']), tostring(customDimensions['faas.invocation_id'])) "
-            f"| where timestamp > ago({timespan}) "
-            f"| where cloud_RoleName =~ '{container_app_name}' "
-            f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
-            f"| order by timestamp desc | take 20"
-        )
-
-        try:
-            # Execute Application Insights query directly using REST API
-            result = cls._execute_app_insights_query(cmd, app_id, invocation_traces_query, "getInvocationTraces")
-            return result
-        except Exception as ex:
-            raise CLIError(f"Error executing Application Insights query: {str(ex)}")
-
-    @classmethod
-    def _get_app_insights_id(cls, cmd, resource_group_name, container_app_name, revision_name):
-        # Fetch the revision details using the container app client
-        revision = ContainerAppPreviewClient.show_revision(cmd, resource_group_name, container_app_name, revision_name)
-        # Extract the list of environment variables from the revision's properties
-        env_vars = []
-        if revision and "properties" in revision and "template" in revision["properties"]:
-            containers = revision["properties"]["template"].get("containers", [])
-            for container in containers:
-                env_vars.extend(container.get("env", []))
-
-        # Check for APPLICATIONINSIGHTS_CONNECTION_STRING
-        ai_conn_str = None
-        for env in env_vars:
-            if env.get("name") == "APPLICATIONINSIGHTS_CONNECTION_STRING":
-                ai_conn_str = env.get("value")
-                break
-
-        if not ai_conn_str:
-            raise CLIError("Required application setting APPLICATIONINSIGHTS_CONNECTION_STRING not present.")
-
-        # Extract ApplicationId from the connection string
-        app_id = None
-        parts = ai_conn_str.split(";")
-        for part in parts:
-            if part.startswith("ApplicationId="):
-                app_id = part.split("=", 1)[1]
-                break
-
-        if not app_id:
-            raise CLIError("ApplicationId not found in APPLICATIONINSIGHTS_CONNECTION_STRING.")
-        return app_id
-
-    
-    @classmethod
-    def _execute_app_insights_query(cls, cmd, app_id, query, queryType, timespan="30D"):
-        """Execute a query against Application Insights using REST API"""
-        import json
-        
-        # Application Insights REST API endpoint
-        api_endpoint = "https://api.applicationinsights.io"
-        url = f"{api_endpoint}/v1/apps/{app_id}/query?api-version={cls.APP_INSIGHTS_API_VERSION}&&queryType={queryType}"
-        
-        # Prepare the request body
-        body = {
-            "query": query,
-            "timespan": f"P{timespan}"
-        }
-        
-        # Execute the query using Azure CLI's send_raw_request
-        response = send_raw_request(
-            cmd.cli_ctx, 
-            "POST", 
-            url, 
-            body=json.dumps(body),
-            headers={
-                "Content-Type": "application/json"
-            }
-        )
-        
-        return response.json()
-
-
 class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
     api_version = PREVIEW_API_VERSION
     LOG_STREAM_API_VERSION = "2023-11-02-preview"
@@ -415,6 +304,7 @@ class ContainerAppsResiliencyPreviewClient():
 
 class ContainerAppFunctionsPreviewClient():
     api_version = PREVIEW_API_VERSION
+    APP_INSIGHTS_API_VERSION = "2018-04-20"
 
     @classmethod
     def list_functions_by_revision(cls, cmd, resource_group_name, container_app_name, revision_name):
@@ -484,6 +374,184 @@ class ContainerAppFunctionsPreviewClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
 
+    @classmethod
+    def list_function_keys(cls, cmd, resource_group_name, name, function_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/functions/{}/listkeys?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            function_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        return r.json()
+
+    @classmethod
+    def update_function_keys(cls, cmd, resource_group_name, name, function_name, key_name, key_value=None):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/functions/{}/keys/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            function_name,
+            key_name,
+            cls.api_version)
+
+        body = {}
+        if key_value:
+            body["value"] = key_value
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(body))
+        return r.json()
+
+    @classmethod
+    def list_host_keys(cls, cmd, resource_group_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/host/default/listkeys?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        return r.json()
+
+    @classmethod
+    def update_host_keys(cls, cmd, resource_group_name, name, key_type, key_name, key_value=None):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/host/default/{}/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            key_type,
+            key_name,
+            cls.api_version)
+
+        body = {}
+        if key_value:
+            body["value"] = key_value
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(body))
+        return r.json()
+    
+    @classmethod
+    def get_function_invocation_summary(cls, cmd, resource_group_name, container_app_name, revision_name, function_name, timespan="30d"):      
+        # Fetch the app insights resource app id
+        app_id = cls._get_app_insights_id(cmd, resource_group_name, container_app_name, revision_name)
+
+        # Use application insights query to get function invocations
+        invocation_summary_query = (
+            f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
+            f"| where timestamp >= ago({timespan}) "
+            f"| where cloud_RoleName =~ '{container_app_name}' "
+            f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
+            f"| summarize count=count() by success"
+        )
+        
+        try:
+            # Execute Application Insights query directly using REST API
+            result = cls._execute_app_insights_query(cmd, app_id, invocation_summary_query, "getLast30DaySummary")
+            return result
+        except Exception as ex:
+            raise CLIError(f"Error executing Application Insights query: {str(ex)}")
+
+    @classmethod
+    def get_function_invocation_traces(cls, cmd, resource_group_name, container_app_name, revision_name, function_name, timespan="30d"):
+        # Fetch the app insights resource app id
+        app_id = cls._get_app_insights_id(cmd, resource_group_name, container_app_name, revision_name)
+
+        # Use application insights query to get function invocations
+        invocation_traces_query = (
+            f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
+            f"| project timestamp, id, operation_Name, success, resultCode, duration, operation_Id, functionNameFromCustomDimension, "
+            f"cloud_RoleName, invocationId=coalesce(tostring(customDimensions['InvocationId']), tostring(customDimensions['faas.invocation_id'])) "
+            f"| where timestamp > ago({timespan}) "
+            f"| where cloud_RoleName =~ '{container_app_name}' "
+            f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
+            f"| order by timestamp desc | take 20"
+        )
+
+        try:
+            # Execute Application Insights query directly using REST API
+            result = cls._execute_app_insights_query(cmd, app_id, invocation_traces_query, "getInvocationTraces")
+            return result
+        except Exception as ex:
+            raise CLIError(f"Error executing Application Insights query: {str(ex)}")
+
+    @classmethod
+    def _get_app_insights_id(cls, cmd, resource_group_name, container_app_name, revision_name):
+        # Fetch the revision details using the container app client
+        revision = ContainerAppPreviewClient.show_revision(cmd, resource_group_name, container_app_name, revision_name)
+        # Extract the list of environment variables from the revision's properties
+        env_vars = []
+        if revision and "properties" in revision and "template" in revision["properties"]:
+            containers = revision["properties"]["template"].get("containers", [])
+            for container in containers:
+                env_vars.extend(container.get("env", []))
+
+        # Check for APPLICATIONINSIGHTS_CONNECTION_STRING
+        ai_conn_str = None
+        for env in env_vars:
+            if env.get("name") == "APPLICATIONINSIGHTS_CONNECTION_STRING":
+                ai_conn_str = env.get("value")
+                break
+
+        if not ai_conn_str:
+            raise CLIError("Required application setting APPLICATIONINSIGHTS_CONNECTION_STRING not present.")
+
+        # Extract ApplicationId from the connection string
+        app_id = None
+        parts = ai_conn_str.split(";")
+        for part in parts:
+            if part.startswith("ApplicationId="):
+                app_id = part.split("=", 1)[1]
+                break
+
+        if not app_id:
+            raise CLIError("ApplicationId not found in APPLICATIONINSIGHTS_CONNECTION_STRING.")
+        return app_id
+
+    
+    @classmethod
+    def _execute_app_insights_query(cls, cmd, app_id, query, queryType, timespan="30D"):
+        """Execute a query against Application Insights using REST API"""
+        import json
+        
+        # Application Insights REST API endpoint
+        api_endpoint = "https://api.applicationinsights.io"
+        url = f"{api_endpoint}/v1/apps/{app_id}/query?api-version={cls.APP_INSIGHTS_API_VERSION}&&queryType={queryType}"
+        
+        # Prepare the request body
+        body = {
+            "query": query,
+            "timespan": f"P{timespan}"
+        }
+        
+        # Execute the query using Azure CLI's send_raw_request
+        response = send_raw_request(
+            cmd.cli_ctx, 
+            "POST", 
+            url, 
+            body=json.dumps(body),
+            headers={
+                "Content-Type": "application/json"
+            }
+        )
+        
+        return response.json()
 
 class DaprComponentResiliencyPreviewClient():
     api_version = PREVIEW_API_VERSION
@@ -1880,79 +1948,3 @@ class MaintenanceConfigPreviewClient():
             if r.status_code == 202:
                 operation_url = r.headers.get(HEADER_LOCATION)
                 poll_results(cmd, operation_url)
-
-    class ContainerAppFunctionsPreviewClient:
-    api_version = PREVIEW_API_VERSION
-
-    @classmethod
-    def list_function_keys(cls, cmd, resource_group_name, name, function_name):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/functions/{}/listkeys?api-version={}"
-        request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            name,
-            function_name,
-            cls.api_version)
-
-        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
-        return r.json()
-
-    @classmethod
-    def update_function_keys(cls, cmd, resource_group_name, name, function_name, key_name, key_value=None):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/functions/{}/keys/{}?api-version={}"
-        request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            name,
-            function_name,
-            key_name,
-            cls.api_version)
-
-        body = {}
-        if key_value:
-            body["value"] = key_value
-
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(body))
-        return r.json()
-
-    @classmethod
-    def list_host_keys(cls, cmd, resource_group_name, name):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/host/default/listkeys?api-version={}"
-        request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            name,
-            cls.api_version)
-
-        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
-        return r.json()
-
-    @classmethod
-    def update_host_keys(cls, cmd, resource_group_name, name, key_type, key_name, key_value=None):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerapps/{}/host/default/{}/{}?api-version={}"
-        request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            name,
-            key_type,
-            key_name,
-            cls.api_version)
-
-        body = {}
-        if key_value:
-            body["value"] = key_value
-
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(body))
-        return r.json()

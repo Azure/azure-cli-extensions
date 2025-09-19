@@ -35,6 +35,14 @@ def load_command_table(self, args):
     with self.command_group('containerapp function', is_preview=True) as g:
         g.custom_command('list', 'list_containerapp_functions')
         g.custom_show_command('show', 'show_containerapp_function')
+        g.custom_command('list-keys', 'list_containerapp_function_keys')
+        g.custom_command('update-keys', 'update_containerapp_function_keys')
+        g.custom_command('list-hostkeys', 'list_containerapp_function_hostkeys')
+        g.custom_command('update-hostkeys', 'update_containerapp_function_hostkeys')
+
+    with self.command_group('containerapp function invocations', is_preview=True) as g:
+        g.custom_show_command('summary', 'get_function_invocations_summary')
+        g.custom_show_command('traces', 'get_function_invocations_traces')
 
     with self.command_group('containerapp env') as g:
         g.custom_show_command('show', 'show_managed_environment')
@@ -266,10 +274,6 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_session_pool', supports_no_wait=True)
         g.custom_command('delete', 'delete_session_pool', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp function invocations', is_preview=True) as g:
-        g.custom_show_command('summary', 'show_function_invocation_summary')
-        g.custom_show_command('traces', 'show_function_invocation_traces')
-
     with self.command_group('containerapp session code-interpreter') as g:
         g.custom_command('execute', 'execute_session_code_interpreter', supports_no_wait=True)
         g.custom_command('upload-file', 'upload_session_code_interpreter', supports_no_wait=True)
@@ -305,9 +309,3 @@ def load_command_table(self, args):
         g.custom_command('add', 'add_environment_premium_ingress')
         g.custom_command('update', 'update_environment_premium_ingress')
         g.custom_command('remove', 'remove_environment_premium_ingress', confirmation=True)
-
-    with self.command_group('containerapp function') as g:
-        g.custom_command('list-keys', 'list_containerapp_function_keys')
-        g.custom_command('update-keys', 'update_containerapp_function_keys')
-        g.custom_command('list-hostkeys', 'list_containerapp_function_hostkeys')
-        g.custom_command('update-hostkeys', 'update_containerapp_function_hostkeys')
