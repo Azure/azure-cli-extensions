@@ -1478,12 +1478,16 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
             # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
             kube_overrides = localdns_profile.get("kubeDNSOverrides")
-            for key, value in kube_overrides.items():
-                kube_dns_overrides[key] = build_override(value)
+            if kube_overrides is not None:
+                for key, value in kube_overrides.items():
+                    if value is not None:
+                        kube_dns_overrides[key] = build_override(value)
 
             vnet_overrides = localdns_profile.get("vnetDNSOverrides")
-            for key, value in vnet_overrides.items():
-                vnet_dns_overrides[key] = build_override(value)
+            if vnet_overrides is not None:
+                for key, value in vnet_overrides.items():
+                    if value is not None:
+                        vnet_dns_overrides[key] = build_override(value)
 
             agentpool.local_dns_profile = self.models.LocalDNSProfile(
                 mode=localdns_profile.get("mode"),
@@ -1817,12 +1821,16 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
             # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
             kube_overrides = localdns_profile.get("kubeDNSOverrides")
-            for key, value in kube_overrides.items():
-                kube_dns_overrides[key] = build_override(value)
+            if kube_overrides is not None:
+                for key, value in kube_overrides.items():
+                    if value is not None:
+                        kube_dns_overrides[key] = build_override(value)
 
             vnet_overrides = localdns_profile.get("vnetDNSOverrides")
-            for key, value in vnet_overrides.items():
-                vnet_dns_overrides[key] = build_override(value)
+            if vnet_overrides is not None:
+                for key, value in vnet_overrides.items():
+                    if value is not None:
+                        vnet_dns_overrides[key] = build_override(value)
 
             agentpool.local_dns_profile = self.models.LocalDNSProfile(
                 mode=localdns_profile.get("mode"),
