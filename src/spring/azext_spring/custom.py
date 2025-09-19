@@ -30,7 +30,7 @@ from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.util import sdk_no_wait
-from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
+from .vendored_sdks.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
 from azure.mgmt.core.tools import resource_id
 from ._resource_quantity import validate_cpu, validate_memory
