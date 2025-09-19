@@ -55,8 +55,8 @@ def communication_identity_get_token_for_teams_user(client, aad_token, client_id
     return client.get_token_for_teams_user(aad_token, client_id, user_object_id)
 
 
-def communication_send_sms(client, sender, recipients, message):
-    return client.send(from_=sender, to=recipients, message=message)
+def communication_send_sms(client, sender, recipients, message, delivery_report=False, tag=None):
+    return client.send(from_=sender, to=recipients, message=message, enable_delivery_report=delivery_report, tag=tag)
 
 
 def communication_list_phonenumbers(client):

@@ -82,6 +82,11 @@ az communication identity token get-for-teams-user --aad-token "MyAzureADToken" 
 az communication sms send --sender "+1833xxxxxxx" \
     --recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
 ```
+##### Send-SMS with delivery report and custom tag #####
+```
+az communication sms send --sender "+1833xxxxxxx" --recipient "+1425xxxxxxx" 
+--message "Hello there!!" --deliveryReport --tag "custom-tag"
+```
 ##### List-Phonenumbers #####
 ```
 az communication phonenumber list

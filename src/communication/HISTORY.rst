@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.14.0
+++++++
+* Add Delivery Report option to SMS send command.
+
 1.13.0
 ++++++
 * Add SMTP Username CRUD operations.
