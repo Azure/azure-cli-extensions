@@ -20,6 +20,7 @@ Pending
 * Add blue-green upgrade strategy support for AKS node pools:
   - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades. 
   - `az aks nodepool add/update/upgrade`: Add `--drain-batch-size`, `--drain-timeout-bg`, `--batch-soak-duration`, `--final-soak-duration` parameters to configure blue-green upgrade settings.
+* Add jwtauthenticator commands `az aks jwtauthenticator add/update/show/list/delete` to manage JWT authenticators for a managed cluster.
 
 18.0.0b38
 +++++++
