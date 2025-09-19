@@ -13,7 +13,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 +++++++
 * Add option `Windows2025` to `--os-sku` for `az aks nodepool add`.
 
-18.0.0b38
+Pending
 +++++++
 * Add machine command `az aks machine add` to add a machine to an existing machine pool.
 * Add blue-green upgrade strategy support for AKS node pools:
