@@ -266,9 +266,9 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_session_pool', supports_no_wait=True)
         g.custom_command('delete', 'delete_session_pool', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp function', is_preview=True) as g:
-        g.custom_show_command('show-invocation-summary', 'show_function_invocation_summary')
-        g.custom_show_command('show-invocation-traces', 'show_function_invocation_traces')
+    with self.command_group('containerapp function invocations', is_preview=True) as g:
+        g.custom_show_command('summary', 'show_function_invocation_summary')
+        g.custom_show_command('traces', 'show_function_invocation_traces')
 
     with self.command_group('containerapp session code-interpreter') as g:
         g.custom_command('execute', 'execute_session_code_interpreter', supports_no_wait=True)
