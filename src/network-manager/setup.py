@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
 # Fixed post commit issue in routing
-VERSION = '2.0.1'
+VERSION = '2.1.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers

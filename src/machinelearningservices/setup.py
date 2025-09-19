@@ -10,7 +10,7 @@ from io import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '2.38.1'
+VERSION = '2.39.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers

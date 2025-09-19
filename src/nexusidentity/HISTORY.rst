@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b6
++++++++
+* Resolves installation issue caused by Graphs Python SDK package where a long path error occured. To fix this - SDK support was removed and replaced with httpclient.
+
 1.0.0b5
 +++++++
 * Adding support for older algorithm ssh keys

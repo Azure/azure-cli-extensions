@@ -92,6 +92,7 @@ from azext_aks_preview._consts import (
     CONST_OS_DISK_TYPE_EPHEMERAL,
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_AZURELINUX3,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_UBUNTU,
@@ -151,6 +152,10 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
+    CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
+    CONST_UPGRADE_STRATEGY_ROLLING,
+    CONST_UPGRADE_STRATEGY_BLUE_GREEN
 )
 
 from azext_aks_preview._validators import (
@@ -222,6 +227,7 @@ from azext_aks_preview._validators import (
     validate_gateway_prefix_size,
     validate_max_unavailable,
     validate_max_blocked_nodes,
+    validate_drain_batch_size,
     validate_resource_group_parameter,
     validate_location_resource_group_cluster_parameters,
 )
@@ -270,6 +276,7 @@ node_mode_types = [
 ]
 node_os_skus_create = [
     CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_AZURELINUX3,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
@@ -283,6 +290,7 @@ node_os_skus = node_os_skus_create + [
 ]
 node_os_skus_update = [
     CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_AZURELINUX3,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
@@ -335,6 +343,10 @@ advanced_networkpolicies = [
 transit_encryption_types = [
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+]
+acns_datapath_acceleration_modes = [
+    CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
+    CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
 ]
 network_dataplanes = [CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM]
 disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
@@ -502,6 +514,11 @@ app_routing_nginx_configs = [
 gpu_driver_types = [
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+]
+
+upgrade_strategies = [
+    CONST_UPGRADE_STRATEGY_ROLLING,
+    CONST_UPGRADE_STRATEGY_BLUE_GREEN,
 ]
 
 
@@ -910,6 +927,12 @@ def load_arguments(self, _):
             "acns_advanced_networkpolicies",
             is_preview=True,
             arg_type=get_enum_type(advanced_networkpolicies),
+        )
+        c.argument(
+            "acns_datapath_acceleration_mode",
+            is_preview=True,
+            arg_type=get_enum_type(acns_datapath_acceleration_modes),
+            help="Specify the performance acceleration mode for ACNS. Available values are 'None' and 'BpfVeth'.",
         )
         c.argument(
             "acns_transit_encryption_type",
@@ -1431,6 +1454,12 @@ def load_arguments(self, _):
             arg_type=get_enum_type(advanced_networkpolicies),
         )
         c.argument(
+            "acns_datapath_acceleration_mode",
+            is_preview=True,
+            arg_type=get_enum_type(acns_datapath_acceleration_modes),
+            help="Specify the performance acceleration mode for ACNS. Available values are 'None' and 'BpfVeth'.",
+        )
+        c.argument(
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
@@ -1675,12 +1704,20 @@ def load_arguments(self, _):
         c.argument("node_taints", validator=validate_nodepool_taints)
         c.argument("node_osdisk_type", arg_type=get_enum_type(node_os_disk_types))
         c.argument("node_osdisk_size", type=int)
+        # upgrade strategy
+        c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
+        # rolling upgrade params
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
+        # blue-green upgrade parameters
+        c.argument("drain_batch_size", validator=validate_drain_batch_size)
+        c.argument("drain_timeout_bg", type=int)
+        c.argument("batch_soak_duration", type=int)
+        c.argument("final_soak_duration", type=int)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -1813,12 +1850,20 @@ def load_arguments(self, _):
         c.argument("labels", nargs="*", validator=validate_nodepool_labels)
         c.argument("tags", tags_type)
         c.argument("node_taints", validator=validate_nodepool_taints)
+        # upgrade strategy
+        c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
+        # rolling upgrade parameters
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
+        # blue-green upgrade parameters
+        c.argument("drain_batch_size", validator=validate_drain_batch_size)
+        c.argument("drain_timeout_bg", type=int)
+        c.argument("batch_soak_duration", type=int)
+        c.argument("final_soak_duration", type=int)
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
@@ -1888,14 +1933,27 @@ def load_arguments(self, _):
             'localdns_config',
             help='Path to a JSON file to configure the local DNS profile for an existing nodepool.',
         )
+        c.argument(
+            "node_vm_size",
+            options_list=["--node-vm-size", "-s"],
+            completer=get_vm_size_completion_list,
+        )
 
     with self.argument_context("aks nodepool upgrade") as c:
+        # upgrade strategy
+        c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
+        # rolling upgrade parameters
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
         c.argument("undrainable_node_behavior")
         c.argument("max_unavailable", validator=validate_max_unavailable)
         c.argument("max_blocked_nodes", validator=validate_max_blocked_nodes)
+        # blue-green upgrade parameters
+        c.argument("drain_batch_size", validator=validate_drain_batch_size)
+        c.argument("drain_timeout_bg", type=int)
+        c.argument("batch_soak_duration", type=int)
+        c.argument("final_soak_duration", type=int)
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument(
             "yes",
@@ -1944,6 +2002,61 @@ def load_arguments(self, _):
     with self.argument_context("aks machine show") as c:
         c.argument(
             "machine_name", help="to display specific information for all machines."
+        )
+
+    with self.argument_context("aks machine add") as c:
+        c.argument("tags", tags_type, help="The tags to set to the machine")
+        c.argument(
+            "priority",
+            arg_type=get_enum_type(node_priorities),
+            validator=validate_priority,
+        )
+        c.argument(
+            "vm_size",
+            completer=get_vm_size_completion_list,
+        )
+        c.argument("os_type")
+        c.argument(
+            "machine_name", help="The machine name."
+        )
+        c.argument(
+            "os_sku", arg_type=get_enum_type(node_os_skus), validator=validate_os_sku
+        )
+        c.argument(
+            "zones",
+            zones_type,
+            options_list=["--zones", "-z"],
+            help="Space-separated list of availability zones where agent nodes will be placed.",
+        )
+        c.argument(
+            "enable_fips_image",
+            action="store_true"
+        )
+        c.argument(
+            "disable_fips_image",
+            action="store_true"
+        )
+        # network setting
+        c.argument("vnet_subnet_id", validator=validate_vnet_subnet_id)
+        c.argument("pod_subnet_id", validator=validate_pod_subnet_id)
+        c.argument("enable_node_public_ip", action="store_true")
+        c.argument(
+            "node_public_ip_prefix_id",
+            options_list=["--node-public-ip-prefix-id"],
+            help="The resource ID of the node public IP prefix to use for the node public IPs.",
+        )
+        c.argument(
+            "node_public_ip_tags",
+            arg_type=tags_type,
+            validator=validate_node_public_ip_tags,
+            help="space-separated tags: key[=value] [key[=value] ...].",
+        )
+        # kubernetes setting
+        c.argument(
+            "kubernetes_version",
+            options_list=["--kubernetes-version"],
+            validator=validate_k8s_version,
+            help="Version of Kubernetes to use for the machine.",
         )
 
     with self.argument_context("aks operation") as c:

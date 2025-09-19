@@ -115,6 +115,9 @@ from azext_aks_preview.managednamespace import (
     aks_managed_namespace_add,
     aks_managed_namespace_update,
 )
+from azext_aks_preview.machine import (
+    add_machine,
+)
 from azure.cli.command_modules.acs._helpers import (
     get_user_assigned_identity_by_resource_id
 )
@@ -697,6 +700,7 @@ def aks_create(
     acns_advanced_networkpolicies=None,
     acns_transit_encryption_type=None,
     enable_retina_flow_logs=None,
+    acns_datapath_acceleration_mode=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -939,6 +943,7 @@ def aks_update(
     acns_transit_encryption_type=None,
     enable_retina_flow_logs=None,
     disable_retina_flow_logs=None,
+    acns_datapath_acceleration_mode=None,
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
@@ -1400,6 +1405,12 @@ def aks_agentpool_add(
     drain_timeout=None,
     node_soak_duration=None,
     undrainable_node_behavior=None,
+    # blue-green upgrade parameters
+    upgrade_strategy=None,
+    drain_batch_size=None,
+    drain_timeout_bg=None,
+    batch_soak_duration=None,
+    final_soak_duration=None,
     max_unavailable=None,
     max_blocked_nodes=None,
     mode=CONST_NODEPOOL_MODE_USER,
@@ -1485,6 +1496,12 @@ def aks_agentpool_update(
     max_surge=None,
     drain_timeout=None,
     node_soak_duration=None,
+    # blue-green upgrade parameters
+    upgrade_strategy=None,
+    drain_batch_size=None,
+    drain_timeout_bg=None,
+    batch_soak_duration=None,
+    final_soak_duration=None,
     undrainable_node_behavior=None,
     max_unavailable=None,
     max_blocked_nodes=None,
@@ -1512,6 +1529,7 @@ def aks_agentpool_update(
     disable_fips_image=False,
     # local DNS
     localdns_config=None,
+    node_vm_size=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1580,6 +1598,11 @@ def aks_agentpool_upgrade(cmd,
                           max_surge=None,
                           drain_timeout=None,
                           node_soak_duration=None,
+                          upgrade_strategy=None,
+                          drain_batch_size=None,
+                          drain_timeout_bg=None,
+                          batch_soak_duration=None,
+                          final_soak_duration=None,
                           undrainable_node_behavior=None,
                           max_unavailable=None,
                           max_blocked_nodes=None,
@@ -1594,6 +1617,11 @@ def aks_agentpool_upgrade(cmd,
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="agent_pools",
     )
+    AgentPoolBlueGreenUpgradeSettings = cmd.get_models(
+        "AgentPoolBlueGreenUpgradeSettings",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
+    )
     if kubernetes_version != '' and node_image_only:
         raise MutuallyExclusiveArgumentError(
             'Conflicting flags. Upgrading the Kubernetes version will also '
@@ -1601,6 +1629,7 @@ def aks_agentpool_upgrade(cmd,
             'node version please use the "--node-image-only" option only.'
         )
 
+    # TODO: Confirm if this logic still holds up with blue green upgrades
     # Note: we exclude this option because node image upgrade can't accept nodepool put fields like max surge
     hasUpgradeSetting = (
         max_surge or
@@ -1608,18 +1637,28 @@ def aks_agentpool_upgrade(cmd,
         node_soak_duration or
         undrainable_node_behavior or
         max_unavailable or
-        max_blocked_nodes)
+        max_blocked_nodes or
+        upgrade_strategy or
+        drain_batch_size or
+        drain_timeout_bg or
+        batch_soak_duration or
+        final_soak_duration)
     if hasUpgradeSetting and node_image_only:
         raise MutuallyExclusiveArgumentError(
             "Conflicting flags. Unable to specify "
-            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes"
+            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes/"
+            "upgrade-strategy/drain-batch-size/drain-timeout-bg/batch-soak-duration/final-soak-duration"
             " with node-image-only.If you want to use "
-            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes"
+            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes/"
+            "upgrade-strategy/drain-batch-size/drain-timeout-bg/batch-soak-duration/final-soak-duration"
             " with a node image upgrade, please first update "
-            "max-surge/drain-timeout/node-soak-duration/undrainable-node-behavior/max-unavailable/max-blocked-nodes"
+            "max-surge/drain-timeout/node-soak-duration/"
+            "undrainable-node-behavior/max-unavailable/max-blocked-nodes/"
+            "upgrade-strategy/drain-batch-size/drain-timeout-bg/batch-soak-duration/final-soak-duration"
             " using 'az aks nodepool update "
             "--max-surge/--drain-timeout/--node-soak-duration/"
-            "--undrainable-node-behavior/--max-unavailable/--max-blocked-nodes'."
+            "--undrainable-node-behavior/--max-unavailable/--max-blocked-nodes/"
+            "--upgrade-strategy/--drain-batch-size/--drain-timeout-bg/--batch-soak-duration/--final-soak-duration'."
         )
 
     if node_image_only:
@@ -1668,6 +1707,10 @@ def aks_agentpool_upgrade(cmd,
     instance.orchestrator_version = kubernetes_version
     instance.creation_data = creationData
 
+    if upgrade_strategy:
+        instance.upgrade_strategy = upgrade_strategy
+
+    # Rolling upgrade settings
     if not instance.upgrade_settings:
         instance.upgrade_settings = AgentPoolUpgradeSettings()
 
@@ -1683,6 +1726,19 @@ def aks_agentpool_upgrade(cmd,
         instance.upgrade_settings.max_unavailable = max_unavailable
     if max_blocked_nodes:
         instance.upgrade_settings.max_blocked_nodes = max_blocked_nodes
+
+    # Blue-green upgrade settings
+    if not instance.upgrade_settings_blue_green:
+        instance.upgrade_settings_blue_green = AgentPoolBlueGreenUpgradeSettings()
+
+    if drain_batch_size:
+        instance.upgrade_settings_blue_green.drain_batch_size = drain_batch_size
+    if drain_timeout_bg:
+        instance.upgrade_settings_blue_green.drain_timeout_in_minutes = drain_timeout_bg
+    if batch_soak_duration:
+        instance.upgrade_settings_blue_green.batch_soak_duration_in_minutes = batch_soak_duration
+    if final_soak_duration:
+        instance.upgrade_settings_blue_green.final_soak_duration_in_minutes = final_soak_duration
 
     # custom headers
     aks_custom_headers = extract_comma_separated_string(
@@ -2069,6 +2125,46 @@ def aks_machine_list(cmd, client, resource_group_name, cluster_name, nodepool_na
 
 def aks_machine_show(cmd, client, resource_group_name, cluster_name, nodepool_name, machine_name):
     return client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+
+
+# pylint: disable=unused-argument
+def aks_machine_add(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    nodepool_name,
+    machine_name=None,
+    zones=None,
+    tags=None,
+    priority=None,
+    os_type=None,
+    os_sku=None,
+    enable_fips_image=False,
+    disable_fips_image=False,
+    vnet_subnet_id=None,
+    pod_subnet_id=None,
+    enable_node_public_ip=False,
+    node_public_ip_prefix_id=None,
+    node_public_ip_tags=None,
+    vm_size=None,
+    kubernetes_version=None,
+    no_wait=False,
+):
+    existedMachine = None
+    try:
+        existedMachine = client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+    except ResourceNotFoundError:
+        pass
+
+    if existedMachine:
+        raise ClientRequestError(
+            f"Machine '{machine_name}' already exists. Please use 'az aks machine update' to update it."
+        )
+
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    return add_machine(cmd, client, raw_parameters, no_wait)
 
 
 def aks_addon_list_available():
