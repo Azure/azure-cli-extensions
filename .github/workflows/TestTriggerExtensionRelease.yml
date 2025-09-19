@@ -13,7 +13,7 @@ permissions:
 
 jobs:
     build:
-        name: Trigger Extension Release Pipeline
+        name: Test Trigger Extension Release Pipeline
         runs-on: ubuntu-latest
         steps:
         - name: Harden Runner
@@ -26,7 +26,7 @@ jobs:
             client-id: ${{ secrets.ADO_SP_ClientID }}
             tenant-id: ${{ secrets.ADO_SP_TenantID }}
             allow-no-subscriptions: true
-        - name: Trigger ADO Pipeline and Wait for Completion
+        - name: Test Trigger ADO Pipeline and Wait for Completion
           uses: azure/cli@v2
           env:
             ado-org: ${{secrets.ADO_ORGANIZATION}}
@@ -89,7 +89,7 @@ jobs:
                   exit 1
                 fi
                 
-                # Wait 30 seconds before checking again
-                echo "Build still running... waiting 30 seconds"
-                sleep 30
+                # Wait 60 seconds before checking again
+                echo "Build still running... waiting 60 seconds"
+                sleep 60
               done
