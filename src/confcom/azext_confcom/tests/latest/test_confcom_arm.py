@@ -1618,8 +1618,8 @@ class PolicyDiff(unittest.TestCase):
                     "no_new_privileges": [{"tested_value": True, "policy_value": False}]
                 },
                 "env_rules": [
-                    "environment variable with rule 'TEST_REGEXP_ENV=test_regexp_en' does not match strings or regex in policy rules",
                     "environment variable with rule 'ENV_VALUE=input_value' does not match strings or regex in policy rules",
+                    "environment variable with rule 'TEST_REGEXP_ENV=test_regexp_en' does not match strings or regex in policy rules",
                 ],
             }
         }
@@ -3611,18 +3611,17 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
             )
         )
 
-        self.assertEqual(
-            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][1][
-                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY
-            ],
-            "re2",
+        test_env_var = next(
+            env_var
+            for env_var in normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS]
+            if env_var[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE] == "TEST_WILDCARD_ENV=.*"
         )
 
+        self.assertIsNotNone(test_env_var)
+
         self.assertEqual(
-            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][1][
-                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE
-            ],
-            "TEST_WILDCARD_ENV=.*",
+            test_env_var[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY],
+            "re2",
         )
 
         normalized_aci_arm_policy2 = json.loads(
@@ -3635,12 +3634,13 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
             any([item.get("name") == "WILDCARD2" for item in normalized_aci_arm_policy2[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS]])
         )
 
-        self.assertEqual(
-            normalized_aci_arm_policy2[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][1][
-                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE
-            ],
-            "TEST_WILDCARD_ENV=.*",
+        test_env_var = next(
+            env_var
+            for env_var in normalized_aci_arm_policy2[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS]
+            if env_var[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE] == "TEST_WILDCARD_ENV=.*"
         )
+
+        self.assertIsNotNone(test_env_var)
 
     def test_wildcard_env_var_invalid(self):
         with self.assertRaises(SystemExit) as wrapped_exit:
@@ -3800,10 +3800,15 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
             )
         )
 
-        env_var = regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]
+        env_var = next(
+            env_var[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]
+            for env_var in regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS]
+            if env_var[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE] == "PORT=parameters('abc')"
+        )
+
+        self.assertIsNotNone(env_var)
 
         # see if the remote image and the local one produce the same output
-        self.assertEqual(env_var, "PORT=parameters('abc')")
         self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "mcr.microsoft.com/azurelinux/distroless/base:3.0")
 
     def test_arm_template_config_map_sidecar(self):
