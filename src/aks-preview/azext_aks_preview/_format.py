@@ -499,23 +499,37 @@ def aks_jwtauthenticator_show_table_format(result):
 
 
 def _get_jwtauthenticator_table_row(result):
-    """Extract the summary information from a JWT authenticator for table display."""
+    """Extract information from a JWT authenticator for table display."""
     properties = result.get('properties', {})
+    provisioningState = properties.get('provisioningState', '')
     issuer = properties.get('issuer', {})
     
-    # Get issuer URL and audiences
-    issuer_url = issuer.get('url', '')
-    audiences = issuer.get('audiences', [])
+    issuer_url = issuer.get('url', '') if issuer else ''
+    audiences = issuer.get('audiences', []) if issuer else []
     audience_list = ', '.join(audiences) if audiences else ''
     
-    # Get claim mappings
     claim_mappings = properties.get('claimMappings', {})
-    username_expr = claim_mappings.get('username', {}).get('expression', '') if claim_mappings.get('username') else ''
+    has_claim_mappings = 'No'
+    if claim_mappings:
+        # Check if any claim mappings exist
+        if (claim_mappings.get('username') or 
+            claim_mappings.get('groups') or 
+            claim_mappings.get('uid') or 
+            (claim_mappings.get('extra') and isinstance(claim_mappings['extra'], list) and len(claim_mappings['extra']) > 0)):
+            has_claim_mappings = 'Yes'
+    
+    claim_rules = properties.get('claimValidationRules', [])
+    user_rules = properties.get('userValidationRules', [])
+    
+    has_claim_rules = 'Yes' if claim_rules else 'No'
+    has_user_rules = 'Yes' if user_rules else 'No'
     
     return OrderedDict([
         ('name', result.get('name', '')),
-        ('provisioningState', properties.get('provisioningState', '')),
+        ('provisioningState', provisioningState),
         ('issuerUrl', issuer_url),
         ('audiences', audience_list),
-        ('usernameMapping', username_expr),
+        ('hasClaimMappings', has_claim_mappings),
+        ('hasClaimRules', has_claim_rules),
+        ('hasUserRules', has_user_rules),
     ])
