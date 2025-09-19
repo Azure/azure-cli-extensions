@@ -34,12 +34,14 @@ class AciContainerPropertySecurityContextCapabilities:
 
 @dataclass
 class AciContainerPropertySecurityContext:
-    priviledged: bool
-    runAsUser: int
-    runAsGroup: int
-    runAsNonRoot: bool
-    readOnlyRootFilesystem: bool
-    capabilities: AciContainerPropertySecurityContextCapabilities
+    privileged: Optional[bool] = None
+    allowPrivilegeEscalation: Optional[bool] = None
+    runAsUser: Optional[int] = None
+    runAsGroup: Optional[int] = None
+    runAsNonRoot: Optional[bool] = None
+    readOnlyRootFilesystem: Optional[bool] = None
+    capabilities: Optional[AciContainerPropertySecurityContextCapabilities] = None
+    seccompProfile: Optional[str] = None
 
 
 @dataclass

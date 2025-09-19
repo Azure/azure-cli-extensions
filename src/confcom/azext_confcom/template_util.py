@@ -520,7 +520,7 @@ def process_env_vars_from_config(container) -> List[Dict[str, str]]:
             config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
             config.ACI_FIELD_CONTAINERS_ENVS_VALUE: value,
             config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY:
-                "re2" if case_insensitive_dict_get(env_var, "regex") else "string",
+                env_var.get("strategy", "re2" if (case_insensitive_dict_get(env_var, "regex")) else "string"),
         })
 
     return env_vars

@@ -8,7 +8,10 @@ import json
 import warnings
 from enum import Enum, auto
 from typing import Any, Dict, List, Tuple, Union
+from dataclasses import asdict
 
+from azext_confcom.lib.aci_policy_spec import AciFragmentSpec
+from azext_confcom.lib.arm_to_aci_policy_spec import arm_to_aci_policy_spec
 import deepdiff
 from azext_confcom import config, os_util
 from azext_confcom.container import ContainerImage, UserContainerImage
@@ -630,186 +633,46 @@ def load_policy_from_arm_template_str(
     fragment_contents: Any = None,
     exclude_default_fragments: bool = False,
 ) -> List[AciPolicy]:
-    """Function that converts ARM template string to an ACI Policy"""
-    input_arm_json = os_util.load_json_from_str(template_data)
 
-    input_parameter_json = {}
-    if parameter_data:
-        input_parameter_json = os_util.load_json_from_str(parameter_data)
+    aci_policies = []
 
-    # find the image names and extract them from the template
-    arm_resources = case_insensitive_dict_get(
-        input_arm_json, config.ACI_FIELD_RESOURCES
-    )
-
-    if not arm_resources:
-        eprint(f"Field [{config.ACI_FIELD_RESOURCES}] is empty or cannot be found")
-
-    aci_list = [
-        item
-        for item in arm_resources
-        if item["type"] in config.ACI_FIELD_SUPPORTED_RESOURCES
+    fragments = [
+        AciFragmentSpec(
+            feed=fragment["feed"],
+            issuer=fragment["issuer"],
+            includes=fragment["includes"],
+            minimum_svn=infrastructure_svn or fragment["minimum_svn"],
+        )
+        for fragment in config.DEFAULT_REGO_FRAGMENTS
     ]
 
-    if not aci_list:
+    try:
+        for policy_spec in arm_to_aci_policy_spec(
+            arm_template=json.loads(template_data),
+            arm_template_parameters=json.loads(parameter_data) if parameter_data else {},
+            fragments=fragments if not exclude_default_fragments else [],
+            debug_mode=debug_mode,
+            allow_stdio_access=not disable_stdio,
+            approve_wildcards=approve_wildcards,
+        ):
+            aci_policies.append(load_policy_from_json(
+                json.dumps(asdict(policy_spec)),
+                debug_mode,
+                disable_stdio,
+                infrastructure_svn,
+                # This statement covers both if fragments are excluded with
+                # the flag, and the per container group annotation
+                not all(fragment in policy_spec.fragments for fragment in fragments),
+            ))
+    except Exception as e:
+        eprint(f"Error processing ARM template: {e}")
+
+    if len(aci_policies) == 0:
         eprint(
             f'Field ["type"] must contain one of {config.ACI_FIELD_SUPPORTED_RESOURCES}'
         )
 
-    # extract variables and parameters in case we need to do substitutions
-    # while searching for image names
-    all_params = (
-        case_insensitive_dict_get(input_arm_json, config.ACI_FIELD_TEMPLATE_PARAMETERS)
-        or {}
-    )
-
-    get_values_for_params(input_parameter_json, all_params)
-
-    AciPolicy.all_params = all_params
-    AciPolicy.all_vars = case_insensitive_dict_get(input_arm_json, config.ACI_FIELD_TEMPLATE_VARIABLES) or {}
-
-    container_groups = []
-
-    for resource in aci_list:
-        # initialize the list of containers we need to generate policies for
-        containers = []
-        existing_containers = None
-        fragments = None
-        exclude_default_fragments = False
-
-        tags = case_insensitive_dict_get(resource, config.ACI_FIELD_TEMPLATE_TAGS)
-        if tags:
-            exclude_default_fragments = case_insensitive_dict_get(tags, config.ACI_FIELD_TEMPLATE_ZERO_SIDECAR)
-            if isinstance(exclude_default_fragments, str):
-                exclude_default_fragments = exclude_default_fragments.lower() == "true"
-
-        container_group_properties = case_insensitive_dict_get(
-            resource, config.ACI_FIELD_TEMPLATE_PROPERTIES
-        )
-        container_list = case_insensitive_dict_get(
-            container_group_properties, config.ACI_FIELD_TEMPLATE_CONTAINERS
-        )
-
-        if not container_list:
-            eprint(
-                f'Field ["{config.POLICY_FIELD_CONTAINERS}"] must be a list of {config.POLICY_FIELD_CONTAINERS}'
-            )
-
-        init_container_list = case_insensitive_dict_get(
-            container_group_properties, config.ACI_FIELD_TEMPLATE_INIT_CONTAINERS
-        )
-        # add init containers to the list of other containers since they aren't treated differently
-        # in the security policy
-        if init_container_list:
-            container_list.extend(init_container_list)
-
-        # these are standalone fragments coming from the ARM template itself
-        standalone_fragments = extract_standalone_fragments(container_group_properties)
-        if standalone_fragments:
-            standalone_fragment_imports = create_list_of_standalone_imports(standalone_fragments)
-            unique_imports = set(rego_imports)
-            for fragment in standalone_fragment_imports:
-                if fragment not in unique_imports:
-                    rego_imports.append(fragment)
-                    unique_imports.add(fragment)
-
-        try:
-            existing_containers, fragments = extract_confidential_properties(
-                container_group_properties
-            )
-        except ValueError as e:
-            if diff_mode:
-                # In diff mode, we raise an error if the base64 policy is malformed
-                eprint(f"Unable to decode existing policy. Please check the base64 encoding.\n{e}")
-            else:
-                # In non-diff mode, we ignore the error and proceed without the policy
-                existing_containers, fragments = ([], [])
-
-        rego_fragments = copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS) if not exclude_default_fragments else []
-        if infrastructure_svn:
-            # assumes the first DEFAULT_REGO_FRAGMENT is always the
-            # infrastructure fragment
-            rego_fragments[0][
-                config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN
-            ] = infrastructure_svn
-        if rego_imports:
-            # error check the rego imports for invalid data types
-            processed_imports = process_fragment_imports(rego_imports)
-            rego_fragments.extend(processed_imports)
-
-        volumes = (
-            case_insensitive_dict_get(
-                container_group_properties, config.ACI_FIELD_TEMPLATE_VOLUMES
-            )
-            or []
-        )
-        if volumes and not isinstance(volumes, list):
-            # parameter definition is in parameter file but not arm template
-            eprint(f'Parameter ["{config.ACI_FIELD_TEMPLATE_VOLUMES}"] must be a list')
-
-        for container in container_list:
-            image_properties = case_insensitive_dict_get(
-                container, config.ACI_FIELD_TEMPLATE_PROPERTIES
-            )
-            image_name = case_insensitive_dict_get(
-                image_properties, config.ACI_FIELD_TEMPLATE_IMAGE
-            )
-
-            # this is guaranteed unique for a valid ARM template
-            container_name = case_insensitive_dict_get(
-                container, config.ACI_FIELD_CONTAINERS_NAME
-            )
-
-            if not image_name:
-                eprint(
-                    f'Field ["{config.ACI_FIELD_TEMPLATE_IMAGE}"] is empty or cannot be found'
-                )
-
-            exec_processes = []
-            extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
-            extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE)
-
-            containers.append(
-                {
-                    config.ACI_FIELD_CONTAINERS_ID: image_name,
-                    config.ACI_FIELD_CONTAINERS_NAME: container_name,
-                    config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE: image_name,
-                    config.ACI_FIELD_CONTAINERS_ENVS: process_env_vars_from_template(
-                        AciPolicy.all_params, AciPolicy.all_vars, image_properties, approve_wildcards),
-                    config.ACI_FIELD_CONTAINERS_COMMAND: case_insensitive_dict_get(
-                        image_properties, config.ACI_FIELD_TEMPLATE_COMMAND
-                    )
-                    or [],
-                    config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts(image_properties, volumes)
-                    + process_configmap(image_properties),
-                    config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
-                    + config.DEBUG_MODE_SETTINGS.get(config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES)
-                    if debug_mode
-                    else exec_processes,
-                    config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
-                    config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
-                    config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
-                        image_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
-                    ),
-                }
-            )
-
-        container_groups.append(
-            AciPolicy(
-                {
-                    config.ACI_FIELD_VERSION: "1.0",
-                    config.ACI_FIELD_CONTAINERS: containers,
-                    config.ACI_FIELD_TEMPLATE_CCE_POLICY: existing_containers,
-                },
-                disable_stdio=disable_stdio,
-                rego_fragments=rego_fragments,
-                # fallback to default fragments if the policy is not present
-                existing_rego_fragments=fragments,
-                debug_mode=debug_mode,
-                fragment_contents=fragment_contents,
-            )
-        )
-    return container_groups
+    return aci_policies
 
 
 def load_policy_from_arm_template_file(
