@@ -4105,21 +4105,24 @@ helps['aks jwtauthenticator add'] = """
         - name: --config-file
           type: string
           short-summary: Path to JSON file containing the JWT authenticator configuration.
-          long-summary: The JSON file should contain the properties schema including issuer, claimMappings, 
-                        claimValidationRules, and userValidationRules.
+          long-summary: The JSON file should contain the properties schema for one JWT authenticator.
+                        For details on how to configure the properties of a JWT authenticator, please refer to the Kubernetes documentation: 
+                        https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration. 
+                        Please note that not all fields available in the Kubernetes documentation are supported by AKS. 
+                        For troubleshooting, please see https://aka.ms/aks-external-issuers-docs."
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
     examples:
         - name: Add a JWT authenticator from a configuration file
-          text: az aks jwtauthenticator add -g MyResourceGroup --cluster-name MyCluster --name githhhub --config-file config.json
+          text: az aks jwtauthenticator add -g MyResourceGroup --cluster-name MyCluster --name myjwt --config-file config.json
 """
 
 helps['aks jwtauthenticator update'] = """
     type: command
     short-summary: Update a JWT authenticator in a managed cluster.
     long-summary: Updates an existing JWT authenticator configuration. The entire configuration will be replaced
-                  with the new configuration from the provided file.
+                  with the configuration from the provided file.
     parameters:
         - name: --cluster-name
           type: string
@@ -4130,9 +4133,17 @@ helps['aks jwtauthenticator update'] = """
         - name: --config-file
           type: string
           short-summary: Path to JSON file containing the updated JWT authenticator configuration.
+          long-summary: The JSON file should contain the properties schema for one JWT authenticator.
+                        For details on how to configure the properties of a JWT authenticator, please refer to the Kubernetes documentation: 
+                        https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration. 
+                        Please note that not all fields available in the Kubernetes documentation are supported by AKS. 
+                        For troubleshooting, please see https://aka.ms/aks-external-issuers-docs."
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1
     examples:
         - name: Update a JWT authenticator configuration
-          text: az aks jwtauthenticator update -g MyResourceGroup --cluster-name MyCluster --name github --config-file updated-config.json
+          text: az aks jwtauthenticator update -g MyResourceGroup --cluster-name MyCluster --name myjwt --config-file updated-config.json
 """
 
 helps['aks jwtauthenticator delete'] = """
@@ -4148,13 +4159,12 @@ helps['aks jwtauthenticator delete'] = """
           short-summary: Name of the JWT authenticator to delete.
     examples:
         - name: Delete a JWT authenticator
-          text: az aks jwtauthenticator delete -g MyResourceGroup --cluster-name MyCluster --name github
+          text: az aks jwtauthenticator delete -g MyResourceGroup --cluster-name MyCluster --name myjwt
 """
 
 helps['aks jwtauthenticator list'] = """
     type: command
     short-summary: List all JWT authenticators in a managed cluster.
-    long-summary: Shows all JWT authenticator configurations currently applied to the managed cluster.
     parameters:
         - name: --cluster-name
           type: string
@@ -4167,7 +4177,6 @@ helps['aks jwtauthenticator list'] = """
 helps['aks jwtauthenticator show'] = """
     type: command
     short-summary: Show details of a JWT authenticator in a managed cluster.
-    long-summary: Displays the complete configuration of a specific JWT authenticator.
     parameters:
         - name: --cluster-name
           type: string
@@ -4177,5 +4186,5 @@ helps['aks jwtauthenticator show'] = """
           short-summary: Name of the JWT authenticator to show.
     examples:
         - name: Show a specific JWT authenticator configuration
-          text: az aks jwtauthenticator show -g MyResourceGroup --cluster-name MyCluster --name github
+          text: az aks jwtauthenticator show -g MyResourceGroup --cluster-name MyCluster --name myjwt
 """
