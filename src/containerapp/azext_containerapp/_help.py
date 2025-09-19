@@ -166,7 +166,6 @@ helps['containerapp up'] = """
             az containerapp up -n my-containerapp --image my-app:v1.0 --kind functionapp
 """
 
-
 helps['containerapp replica count'] = """
     type: command
     short-summary: Count of a container app's replica(s)
@@ -177,6 +176,83 @@ helps['containerapp replica count'] = """
     - name: Count replicas of the latest revision
       text: |
           az containerapp replica count -n my-containerapp -g MyResourceGroup
+"""
+
+helps['containerapp function'] = """
+    type: group
+    short-summary: Commands related to Azure Function on Azure Container Apps.
+"""
+
+helps['containerapp function list'] = """
+    type: command
+    short-summary: List all functions in a container app or a specific revision. (pass --revisionName parameter)
+    long-summary: |
+        revisionName is required only if Container App active Revision Mode is setup in Multiple Revision Mode. (Default: Single Revision Mode)
+        Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
+    examples:
+    - name: List all functions in a container app. (single active revision mode)
+      text: |
+          az containerapp function list -n my-containerapp -g MyResourceGroup
+    - name: List all functions for a specific revision
+      text: |
+          az containerapp function list -n my-containerapp -g MyResourceGroup --revision-name MyRevision
+"""
+
+helps['containerapp function show'] = """
+    type: command
+    short-summary: Show details of a specific function in a container app or a specific revision within app. (pass --revisionName parameter)
+    long-summary: |
+        revisionName is required only if Container App active Revision Mode is setup in Multiple Revision Mode. (Default: Single Revision Mode)
+        Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
+    examples:
+    - name: Show details of a function in a container app. (single active revision mode)
+      text: |
+          az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction
+    - name: Show details of a function for a specific revision
+      text: |
+          az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision-name MyRevision
+"""
+
+helps['containerapp function list-keys'] = """
+    type: command
+    short-summary: List function keys for a specific function in a container app.
+    examples:
+    - name: List function keys for a specific function
+      text: |
+          az containerapp function list-keys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --function-name MyFunctionName
+"""
+
+helps['containerapp function update-keys'] = """
+    type: command
+    short-summary: Update function keys for a specific function in a container app.
+    examples:
+    - name: Update a function key for a specific function
+      text: |
+          az containerapp function update-keys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --function-name MyFunctionName --key-name MyKeyName --key-value MyKeyValue
+"""
+
+helps['containerapp function list-hostkeys'] = """
+    type: command
+    short-summary: List host keys for a container app.
+    examples:
+    - name: List host keys for a container app
+      text: |
+          az containerapp function list-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision
+"""
+
+helps['containerapp function update-hostkeys'] = """
+    type: command
+    short-summary: Update host keys for a container app.
+    examples:
+    - name: Update a host key for a container app with function key type
+      text: |
+          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type functionKeys
+    - name: Update a host key for a container app with master key type
+      text: |
+          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type masterKey
+    - name: Update a host key for a container app with system key type
+      text: |
+          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type systemKeys
 """
 
 # Environment Commands
