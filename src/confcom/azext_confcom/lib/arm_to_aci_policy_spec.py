@@ -29,6 +29,7 @@ def get_parameters(
     return {
         parameter_key: (
             arm_template_parameters.get("parameters", {}).get(parameter_key, {}).get("value")
+            or arm_template.get("parameters", {}).get(parameter_key, {}).get("value")
             or arm_template.get("parameters", {}).get(parameter_key, {}).get("defaultValue")
         )
         for parameter_key in arm_template.get("parameters", {}).keys()
