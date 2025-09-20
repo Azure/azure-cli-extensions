@@ -791,12 +791,17 @@ class UserContainerImage(ContainerImage):
     ) -> "UserContainerImage":
         image = super().from_json(container_json)
         image.__class__ = UserContainerImage
+        mount_paths = {m["mountPath"] for m in image.get_mounts()}
         # inject default mounts for user container
-        if (image.base not in config.BASELINE_SIDECAR_CONTAINERS) and (not is_vn2):
-            image.get_mounts().extend(_DEFAULT_MOUNTS)
+        if image.base not in config.BASELINE_SIDECAR_CONTAINERS and not is_vn2:
+            for mount in _DEFAULT_MOUNTS:
+                if mount["mountPath"] not in mount_paths:
+                    image.get_mounts().append(mount)
 
         if (image.base not in config.BASELINE_SIDECAR_CONTAINERS) and (is_vn2):
-            image.get_mounts().extend(_DEFAULT_MOUNTS_VN2)
+            for mount in _DEFAULT_MOUNTS_VN2:
+                if mount["mountPath"] not in mount_paths:
+                    image.get_mounts().append(mount)
 
         # Start with the customer environment rules
         env_rules = copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES)
