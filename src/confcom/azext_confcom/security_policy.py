@@ -871,6 +871,11 @@ def load_policy_from_json(
 
         envs += process_env_vars_from_config(container_properties)
 
+        if debug_mode:
+            for exec_process in config.DEBUG_MODE_SETTINGS.get(config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES, []):
+                if exec_process not in exec_processes:
+                    exec_processes.append(exec_process)
+
         output_containers.append(
             {
                 config.ACI_FIELD_CONTAINERS_ID: image_name,
@@ -882,10 +887,7 @@ def load_policy_from_json(
                     container_properties, config.ACI_FIELD_TEMPLATE_COMMAND
                 ) or [],
                 config.ACI_FIELD_CONTAINERS_MOUNTS: mounts,
-                config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
-                + config.DEBUG_MODE_SETTINGS.get(config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES)
-                if debug_mode
-                else exec_processes,
+                config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes,
                 config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
                 config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
                 config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
