@@ -391,6 +391,12 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         is_sidecars = all(is_sidecar(image.containerImage) for image in regular_container_images)
         for image in regular_container_images:
             image_dict = image.get_policy_json(omit_id=omit_id)
+
+            # Ensure the env variables are sorted for consistent output
+            image_dict[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS].sort(
+                key=lambda env: env["pattern"],
+            )
+
             policy.append(image_dict)
         if (not is_sidecars or len(regular_container_images) == 0) and include_sidecars:
             # add in the default containers that have their hashes pre-computed
