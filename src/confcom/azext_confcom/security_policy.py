@@ -660,9 +660,8 @@ def load_policy_from_arm_template_str(
                 debug_mode,
                 disable_stdio,
                 infrastructure_svn,
-                # This statement covers both if fragments are excluded with
-                # the flag, and the per container group annotation
-                not all(fragment in policy_spec.fragments for fragment in fragments),
+                # Fragments are already parsed
+                True,
             ))
     except Exception as e:
         eprint(f"Error processing ARM template: {e}")
