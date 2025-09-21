@@ -185,32 +185,32 @@ helps['containerapp function'] = """
 
 helps['containerapp function list'] = """
     type: command
-    short-summary: List all functions in a container app or a specific revision. (pass --revisionName parameter)
+    short-summary: List all functions in an Azure Functions on Azure Container Apps.
     long-summary: |
-        revisionName is required only if Container App active Revision Mode is setup in Multiple Revision Mode. (Default: Single Revision Mode)
+        --revision is required only if the app is not in single revision mode.
         Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
     examples:
-    - name: List all functions in a container app. (single active revision mode)
+    - name: List all functions in an Azure Functions on Azure Container Apps. (single active revision mode)
       text: |
           az containerapp function list -n my-containerapp -g MyResourceGroup
-    - name: List all functions for a specific revision
+    - name: List all functions in an Azure Functions on Azure Container Apps for a specific revision.
       text: |
-          az containerapp function list -n my-containerapp -g MyResourceGroup --revision-name MyRevision
+          az containerapp function list -n my-containerapp -g MyResourceGroup --revision MyRevision
 """
 
 helps['containerapp function show'] = """
     type: command
-    short-summary: Show details of a specific function in a container app or a specific revision within app. (pass --revisionName parameter)
+    short-summary: Get details of a function in an Azure Functions on Azure Container Apps.
     long-summary: |
-        revisionName is required only if Container App active Revision Mode is setup in Multiple Revision Mode. (Default: Single Revision Mode)
+        --revision is required only if the app is not in single revision mode.
         Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
     examples:
-    - name: Show details of a function in a container app. (single active revision mode)
+    - name: Show details of a function in an Azure Functions on Azure Container Apps. (single active revision mode)
       text: |
           az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction
-    - name: Show details of a function for a specific revision
+    - name: Show details of a function in an Azure Functions on Azure Container Apps for a specific revision.
       text: |
-          az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision-name MyRevision
+          az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision MyRevision
 """
 
 helps['containerapp function list-keys'] = """
@@ -2134,12 +2134,22 @@ helps['containerapp sessionpool list'] = """
           az containerapp sessionpool list -g MyResourceGroup
 """
 
-# code interpreter commands
+# Session Commands
 helps['containerapp session'] = """
     type: group
     short-summary: Commands to manage sessions.To learn more about individual commands under each subgroup run containerapp session [subgroup name] --help.
 """
 
+helps['containerapp session stop'] = """
+    type: command
+    short-summary: Stop a custom container session.
+    examples:
+    - name: Stop a custom container session.
+      text: |
+          az containerapp session stop -n MySessionPool -g MyResourceGroup --identifier MySession
+"""
+
+# code interpreter commands
 helps['containerapp session code-interpreter'] = """
     type: group
     short-summary: Commands to interact with and manage code interpreter sessions.

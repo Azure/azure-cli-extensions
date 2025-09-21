@@ -22,9 +22,9 @@ class GenerateUploadUrl(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-10",
+        "version": "2025-08-02",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/generateuploadurl", "2024-01-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/generateuploadurl", "2025-08-02"],
         ]
     }
 
@@ -57,12 +57,12 @@ class GenerateUploadUrl(AAZCommand):
             ),
         )
 
-        # define Arg Group "GenerateUploadUrl"
+        # define Arg Group "Body"
 
         _args_schema = cls._args_schema
         _args_schema.firmware_id = AAZStrArg(
             options=["--firmware-id"],
-            arg_group="GenerateUploadUrl",
+            arg_group="Body",
             help="A unique ID for the firmware to be uploaded.",
         )
         return cls._args_schema
@@ -132,7 +132,7 @@ class GenerateUploadUrl(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-10",
+                    "api-version", "2025-08-02",
                     required=True,
                 ),
             }

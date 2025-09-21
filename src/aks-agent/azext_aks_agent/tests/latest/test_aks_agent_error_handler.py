@@ -38,7 +38,7 @@ class TestAksAgentErrorHandler:
         
         assert error.error_code == "MCP"
         assert len(error.suggestions) > 0
-        assert any("--no-aks-mcp" in suggestion for suggestion in error.suggestions)
+        assert any("--aks-mcp" in suggestion for suggestion in error.suggestions)
         assert any("internet connection" in suggestion.lower() for suggestion in error.suggestions)
 
     def test_binary_error_inheritance(self):
@@ -221,4 +221,3 @@ class TestAksAgentErrorHandler:
         
         assert binary_download.error_code == "BINARY_DOWNLOAD"
         assert binary_validation.error_code == "BINARY_VALIDATION"
-

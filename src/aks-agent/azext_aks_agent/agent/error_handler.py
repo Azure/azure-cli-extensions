@@ -34,7 +34,7 @@ class MCPError(AgentError):
 
     def __init__(self, message: str, error_code: str = None, suggestions: List[str] = None):
         default_suggestions = [
-            "Try running with --no-aks-mcp to use traditional mode",
+            "Try running without --aks-mcp to stay in traditional mode",
             "Check your internet connection for MCP binary download",
             "Verify that port 8003 is available for MCP server"
         ]

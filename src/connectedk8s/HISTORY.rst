@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.10.9
+++++++
+* Added support for associating and disassociating gateways in CLI and updated SDK version to '2025-08-01-preview'.
+* Updated cluster diagnostics image to 1.29.3
+
 1.10.8
 ++++++
 * Force delete parameter updated to `connectedk8s delete` command to allow force deletion of connectedk8s ARM resource.

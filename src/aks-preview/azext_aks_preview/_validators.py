@@ -530,6 +530,23 @@ def validate_max_blocked_nodes(namespace):
         raise InvalidArgumentValueError('--max-blocked-nodes should be an int or percentage')
 
 
+def validate_drain_batch_size(namespace):
+    """validates drain batch size parameter as non-zero integers or percentages."""
+    if namespace.drain_batch_size is None:
+        return
+    int_or_percent = namespace.drain_batch_size
+    if int_or_percent.endswith('%'):
+        int_or_percent = int_or_percent.rstrip('%')
+
+    try:
+        value = int(int_or_percent)
+        if value <= 0:
+            raise InvalidArgumentValueError('--drain-batch-size must be a non-zero value')
+    except ValueError:
+        # pylint: disable=raise-missing-from
+        raise InvalidArgumentValueError('--drain-batch-size should be an integer or percentage (e.g., "5" or "50%")')
+
+
 def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:
         if namespace.assign_identity == '':
