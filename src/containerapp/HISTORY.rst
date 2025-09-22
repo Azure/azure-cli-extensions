@@ -15,6 +15,7 @@ upcoming
 * 'az containerapp env premium-ingress': Deprecate `--min-replicas` and `--max-replicas` parameters, use workload profile scale instead.
 * 'az containerapp sessionpool create/update': Support `--probe-yaml`
 * 'az containerapp session stop': Support stop session for custom container sessions
+* 'az containerapp debug': Support `--command` to run a command inside the container and exit
 
 1.2.0b3
 ++++++
