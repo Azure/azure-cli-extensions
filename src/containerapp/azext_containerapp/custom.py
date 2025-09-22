@@ -3612,7 +3612,7 @@ def list_maintenance_config(cmd, resource_group_name, env_name):
     return r
 
 
-def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None):
+def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None, command=None):
     logger.warning("Connecting...")
     conn = DebugWebSocketConnection(
         cmd=cmd,
@@ -3620,7 +3620,8 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
         name=name,
         revision=revision,
         replica=replica,
-        container=container
+        container=container,
+        command=command
     )
 
     encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
