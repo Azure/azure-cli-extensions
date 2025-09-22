@@ -91,19 +91,14 @@ class ContainerAppFunctionKeysShowDecorator(ContainerAppFunctionKeysDecorator):
         try:
             resource_group_name, name, revision, key_type, key_name, function_name = self.validate_show_arguments()
 
-            if key_type == "functionKey":
-                return self.client.list_function_keys(
-                    cmd=self.cmd,
-                    resource_group_name=resource_group_name,
-                    name=name,
-                    function_name=function_name 
-                )
-            else:
-                return self.client.list_host_keys(
-                    cmd=self.cmd,
-                    resource_group_name=resource_group_name,
-                    name=name
-                )
+            return self.client.show_function_keys(
+                cmd=self.cmd,
+                resource_group_name=resource_group_name,
+                name=name,
+                key_type=key_type,
+                key_name=key_name,
+                function_name=function_name
+            )
         except Exception as e:
             handle_raw_exception(e)
 
@@ -126,19 +121,13 @@ class ContainerAppFunctionKeysListDecorator(ContainerAppFunctionKeysDecorator):
         try:
             resource_group_name, name, revision, key_type, function_name = self.validate_list_arguments()
 
-            if key_type == "functionKey":
-                return self.client.list_function_keys(
-                    cmd=self.cmd,
-                    resource_group_name=resource_group_name,
-                    name=name,
-                    function_name=function_name 
-                )
-            else:
-                return self.client.list_host_keys(
-                    cmd=self.cmd,
-                    resource_group_name=resource_group_name,
-                    name=name
-                )
+            return self.client.list_function_keys(
+                cmd=self.cmd,
+                resource_group_name=resource_group_name,
+                name=name,
+                key_type=key_type,
+                function_name=function_name
+            )
         except Exception as e:
             handle_raw_exception(e)
 
@@ -169,23 +158,14 @@ class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
         try:
             resource_group_name, name, revision, key_type, key_name, key_value, function_name = self.validate_set_arguments()
 
-            if key_type == "functionKey":
-                return self.client.update_function_keys(
-                    cmd=self.cmd,
-                    resource_group_name=resource_group_name,
-                    name=name,
-                    function_name=function_name,
-                    key_name=key_name,
-                    key_value=key_value
-                )
-            else:
-                return self.client.update_host_keys(
-                    cmd=self.cmd,
-                    resource_group_name=resource_group_name,
-                    name=name,
-                    key_type=key_type,
-                    key_name=key_name,
-                    key_value=key_value
-                )
+            return self.client.set_function_keys(
+                cmd=self.cmd,
+                resource_group_name=resource_group_name,
+                name=name,
+                key_type=key_type,
+                key_name=key_name,
+                key_value=key_value,
+                function_name=function_name
+            )
         except Exception as e:
             handle_raw_exception(e)
