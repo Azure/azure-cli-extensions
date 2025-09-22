@@ -2392,11 +2392,14 @@ helps['containerapp env maintenance-config remove'] = """
 
 helps['containerapp debug'] = """
     type: command
-    short-summary: Open an SSH-like interactive shell within a container app debug console.
+    short-summary: Open an SSH-like interactive shell within a container app debug console or execute a command inside the container and exit. 
     examples:
     - name: Debug by connecting to a container app's debug console by replica, revision and container
       text: |
           az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --container MyContainer
+    - name: Debug by executing a command inside a container app and exit
+      text: |
+          az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --container MyContainer --command "echo Hello World" 
 """
 
 helps['containerapp label-history'] = """
