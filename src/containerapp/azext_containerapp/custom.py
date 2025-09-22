@@ -96,7 +96,8 @@ from .containerapp_job_registry_decorator import ContainerAppJobRegistryPreviewS
 from .containerapp_env_maintenance_config_decorator import ContainerAppEnvMaintenanceConfigPreviewDecorator
 from .containerapp_functions_decorator import (
     ContainerAppFunctionsListDecorator,
-    ContainerAppFunctionsShowDecorator
+    ContainerAppFunctionsShowDecorator,
+    ContainerAppFunctionInvocationsDecorator
 )
 from .containerapp_function_keys_decorator import (
     ContainerAppFunctionKeysShowDecorator,
@@ -127,7 +128,7 @@ from ._clients import (
     HttpRouteConfigPreviewClient,
     LabelHistoryPreviewClient,
     ContainerAppFunctionsPreviewClient
-)
+    )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
     GitHubActionConfiguration,
@@ -4066,3 +4067,39 @@ def set_containerapp_function_keys(cmd, resource_group_name, name, key_type, key
 
     return containerapp_function_keys_set_decorator.set_keys()
 
+def get_function_invocations_summary(cmd,
+                                   resource_group_name,
+                                   container_app_name,
+                                   revision_name,
+                                   function_name,
+                                   timespan="30d"):
+    """Get function invocation summary from Application Insights."""
+    raw_parameters = locals()
+    function_app_decorator = ContainerAppFunctionInvocationsDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    function_app_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    result = function_app_decorator.get_summary()
+    return result
+
+
+def get_function_invocations_traces(cmd,
+                                  resource_group_name,
+                                  container_app_name,
+                                  revision_name,
+                                  function_name,
+                                  timespan="30d"):
+    """Get function invocation traces from Application Insights."""
+    raw_parameters = locals()
+    function_app_decorator = ContainerAppFunctionInvocationsDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    function_app_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    result = function_app_decorator.get_traces()
+    return result
