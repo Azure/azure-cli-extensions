@@ -74,7 +74,6 @@ def aks_jwtauthenticator_update_internal(cmd, client, raw_parameters, headers, n
 
 def construct_jwt_authenticator(cmd, raw_parameters):
     config_file = raw_parameters.get("config_file")
-    
     if not config_file:
         raise RequiredArgumentMissingError(
             "Please specify --config-file containing the JWT authenticator configuration."
