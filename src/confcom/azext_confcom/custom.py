@@ -63,7 +63,7 @@ def acipolicygen_confcom(
             "For additional information, see http://aka.ms/clisecrets. \n",
         )
 
-    stdio_enabled = True # Default value
+    stdio_enabled = True  # Default value
     if enable_stdio is None and disable_stdio is None:
         logger.warning(
             "WARNING: Using default stdio setting (Enabled)\n"
@@ -253,7 +253,7 @@ def acifragmentgen_confcom(
     fragments_json: str = "",
 ):
 
-    stdio_enabled = True # Default value
+    stdio_enabled = True  # Default value
     if enable_stdio is None and disable_stdio is None:
         logger.warning(
             "WARNING: Using default stdio setting (Enabled)\n"

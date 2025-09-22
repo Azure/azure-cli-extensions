@@ -132,6 +132,7 @@ def validate_fragment_json(namespace):
     if namespace.fragments_json and not namespace.generate_import:
         raise CLIError("Must provide --fragment-path to place a fragment import into a file")
 
+
 def validate_stdio(namespace):
     if namespace.enable_stdio and namespace.disable_stdio:
         raise CLIError('Use only one of --enable-stdio or --disable-stdio.')
