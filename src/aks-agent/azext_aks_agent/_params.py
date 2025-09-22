@@ -7,6 +7,7 @@
 import os.path
 
 from azure.cli.core.api import get_config_dir
+from azure.cli.core.commands.parameters import get_three_state_flag
 
 from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
 
@@ -17,7 +18,9 @@ def load_arguments(self, _):
     with self.argument_context("aks agent") as c:
         c.positional(
             "prompt",
+            nargs='?',
             help="Ask any question and answer using available tools.",
+            required=False,
         )
         c.argument(
             "resource_group_name",
@@ -47,12 +50,12 @@ def load_arguments(self, _):
         )
         c.argument(
             "model",
-            help="The model to use for the LLM.",
+            help=" Specify the LLM provider and model or deployment to use for the AI assistant.",
             required=False,
             type=str,
         )
         c.argument(
-            "api-key",
+            "api_key",
             help="API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY)",
             required=False,
             type=str,
@@ -76,4 +79,24 @@ def load_arguments(self, _):
             "refresh_toolsets",
             help="Refresh the toolsets status.",
             action="store_true",
+        )
+        c.argument(
+            "status",
+            options_list=["--status"],
+            action="store_true",
+            help="Show AKS agent configuration and status information.",
+        )
+        c.argument(
+            "use_aks_mcp",
+            options_list=["--aks-mcp"],
+            default=False,
+            arg_type=get_three_state_flag(
+                positive_label="Enable AKS MCP integration",
+                negative_label="Disable AKS MCP integration",
+            ),
+            help=(
+                "Enable AKS MCP integration for enhanced capabilities. "
+                "Traditional mode is the default. Use --aks-mcp to enable MCP mode, or "
+                "--no-aks-mcp to explicitly disable it."
+            ),
         )
