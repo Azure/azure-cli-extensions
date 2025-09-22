@@ -15,7 +15,7 @@ os.system(command)
 
 
 # HISTORY.rst entry.
-VERSION = '1.0.0b1'
+VERSION = '1.0.0b2'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -39,14 +39,14 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='carbon',
+    name='fortest',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Carbon Extension.',
+    description='Microsoft Azure Command-Line Tools fortest Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/carbon',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/fortest',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     package_data={'azext_carbon': ['azext_metadata.json']},
