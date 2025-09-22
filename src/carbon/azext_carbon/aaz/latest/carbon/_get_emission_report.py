@@ -12,31 +12,31 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "carbon get-emission-report",
+    "fortest get-emission-report",
 )
 class GetEmissionReport(AAZCommand):
-    """API for Carbon Emissions Reports
+    """API for fortest Emissions Reports
 
-    :example: QueryCarbonEmission Overall Summary Report
-        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2024-03-01,end:2025-03-01}" --overall-summary
+    :example: QueryfortestEmission Overall Summary Report
+        az fortest get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000]" --fortest-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2024-03-01,end:2025-03-01}" --overall-summary
 
-    :example: QueryCarbonEmission Monthly Summary Report
-        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2024-03-01,end:2025-03-01}" --monthly-summary
+    :example: QueryfortestEmission Monthly Summary Report
+        az fortest get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000]" --fortest-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2024-03-01,end:2025-03-01}" --monthly-summary
 
-    :example: QueryCarbonEmission Item Details Report
-        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2025-03-01,end:2025-03-01}" --item-details "{category-type:ResourceType,order-by:itemName,page-size:10,sort-direction:asc}"
+    :example: QueryfortestEmission Item Details Report
+        az fortest get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001]" --fortest-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2025-03-01,end:2025-03-01}" --item-details "{category-type:ResourceType,order-by:itemName,page-size:10,sort-direction:asc}"
 
-    :example: QueryCarbonEmission Top Items Summary Report
-        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2025-03-01,end:2025-03-01}" --top-items-summary "{category-type:ResourceType,top-items:5}"
+    :example: QueryfortestEmission Top Items Summary Report
+        az fortest get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001]" --fortest-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2025-03-01,end:2025-03-01}" --top-items-summary "{category-type:ResourceType,top-items:5}"
 
-    :example: QueryCarbonEmission Top Items Monthly Summary Report
-        az carbon get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000]" --carbon-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2024-03-01,end:2025-03-01}" --top-items-monthly "{category-type:ResourceType,top-items:5}
+    :example: QueryfortestEmission Top Items Monthly Summary Report
+        az fortest get-emission-report --subscription-list "[00000000-0000-0000-0000-000000000000]" --fortest-scope-list "[Scope1,Scope2,Scope3]" --date-range "{start:2024-03-01,end:2025-03-01}" --top-items-monthly "{category-type:ResourceType,top-items:5}
     """
 
     _aaz_info = {
         "version": "2025-04-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.carbon/carbonemissionreports", "2025-04-01"],
+            ["mgmt-plane", "/providers/microsoft.fortest/fortestemissionreports", "2025-04-01"],
         ]
     }
 
@@ -83,37 +83,37 @@ class GetEmissionReport(AAZCommand):
             arg_group="QueryParameters",
             help="Use this option to get Top Items Summary Report",
         )
-        _args_schema.carbon_scope_list = AAZListArg(
-            options=["--carbon-scope-list"],
+        _args_schema.fortest_scope_list = AAZListArg(
+            options=["--fortest-scope-list"],
             arg_group="QueryParameters",
-            help="List of carbon emission scopes. Required. Accepts one or more values from EmissionScopeEnum (e.g., Scope1, Scope2, Scope3) in list form. The output will include the total emissions for the specified scopes.",
+            help="List of fortest emission scopes. Required. Accepts one or more values from EmissionScopeEnum (e.g., Scope1, Scope2, Scope3) in list form. The output will include the total emissions for the specified scopes.",
             required=True,
         )
         _args_schema.date_range = AAZObjectArg(
             options=["--date-range"],
             arg_group="QueryParameters",
-            help="The start and end dates for carbon emissions data. Required. For ItemDetailsReport and TopItemsSummaryReport, only one month of data is supported at a time, so start and end dates should be equal within DateRange (e.g., start: 2024-06-01 and end: 2024-06-01).",
+            help="The start and end dates for fortest emissions data. Required. For ItemDetailsReport and TopItemsSummaryReport, only one month of data is supported at a time, so start and end dates should be equal within DateRange (e.g., start: 2024-06-01 and end: 2024-06-01).",
             required=True,
         )
         _args_schema.location_list = AAZListArg(
             options=["--location-list"],
             arg_group="QueryParameters",
-            help="List of locations(Azure Region Display Name) for carbon emissions data, with each location specified in lowercase (e.g., 'east us'). Optional. You can use the command 'az account list-locations -o table' to find Azure Region Display Names.",
+            help="List of locations(Azure Region Display Name) for fortest emissions data, with each location specified in lowercase (e.g., 'east us'). Optional. You can use the command 'az account list-locations -o table' to find Azure Region Display Names.",
         )
         _args_schema.resource_group_urls = AAZListArg(
             options=["--resource-group-urls"],
             arg_group="QueryParameters",
-            help="List of resource group URLs for carbon emissions data. Optional. Each URL must follow the format '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroup}', and should be in all lowercase.",
+            help="List of resource group URLs for fortest emissions data. Optional. Each URL must follow the format '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroup}', and should be in all lowercase.",
         )
         _args_schema.resource_type_list = AAZListArg(
             options=["--resource-type-list"],
             arg_group="QueryParameters",
-            help="List of resource types for carbon emissions data. Optional. Each resource type should be specified in lowercase, following the format 'microsoft.{service}/{resourceType}', e.g., 'microsoft.storage/storageaccounts'.",
+            help="List of resource types for fortest emissions data. Optional. Each resource type should be specified in lowercase, following the format 'microsoft.{service}/{resourceType}', e.g., 'microsoft.storage/storageaccounts'.",
         )
         _args_schema.subscription_list = AAZListArg(
             options=["--subscription-list"],
             arg_group="QueryParameters",
-            help="List of subscription IDs for which carbon emissions data is requested. Required. Each subscription ID should be in lowercase format. The max length of list is 100.",
+            help="List of subscription IDs for which fortest emissions data is requested. Required. Each subscription ID should be in lowercase format. The max length of list is 100.",
             required=True,
         )
 
@@ -184,8 +184,8 @@ class GetEmissionReport(AAZCommand):
             ),
         )
 
-        carbon_scope_list = cls._args_schema.carbon_scope_list
-        carbon_scope_list.Element = AAZStrArg(
+        fortest_scope_list = cls._args_schema.fortest_scope_list
+        fortest_scope_list.Element = AAZStrArg(
             enum={"Scope1": "Scope1", "Scope2": "Scope2", "Scope3": "Scope3"},
         )
 
@@ -216,7 +216,7 @@ class GetEmissionReport(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CarbonServiceQueryCarbonEmissionReports(ctx=self.ctx)()
+        self.fortestServiceQueryfortestEmissionReports(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -231,7 +231,7 @@ class GetEmissionReport(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class CarbonServiceQueryCarbonEmissionReports(AAZHttpOperation):
+    class fortestServiceQueryfortestEmissionReports(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -245,7 +245,7 @@ class GetEmissionReport(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/providers/Microsoft.Carbon/carbonEmissionReports",
+                "/providers/Microsoft.fortest/fortestEmissionReports",
                 **self.url_parameters
             )
 
@@ -286,7 +286,7 @@ class GetEmissionReport(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("carbonScopeList", AAZListType, ".carbon_scope_list", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("fortestScopeList", AAZListType, ".fortest_scope_list", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("dateRange", AAZObjectType, ".date_range", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("locationList", AAZListType, ".location_list")
             _builder.set_const("reportType", "ItemDetailsReport", AAZStrType, ".item_details", typ_kwargs={"flags": {"required": True}})
@@ -303,9 +303,9 @@ class GetEmissionReport(AAZCommand):
             _builder.discriminate_by("reportType", "TopItemsMonthlySummaryReport")
             _builder.discriminate_by("reportType", "TopItemsSummaryReport")
 
-            carbon_scope_list = _builder.get(".carbonScopeList")
-            if carbon_scope_list is not None:
-                carbon_scope_list.set_elements(AAZStrType, ".")
+            fortest_scope_list = _builder.get(".fortestScopeList")
+            if fortest_scope_list is not None:
+                fortest_scope_list.set_elements(AAZStrType, ".")
 
             date_range = _builder.get(".dateRange")
             if date_range is not None:
@@ -425,8 +425,8 @@ class GetEmissionReport(AAZCommand):
             )
 
             disc_monthly_summary_data = cls._schema_on_200.value.Element.discriminate_by("data_type", "MonthlySummaryData")
-            disc_monthly_summary_data.carbon_intensity = AAZFloatType(
-                serialized_name="carbonIntensity",
+            disc_monthly_summary_data.fortest_intensity = AAZFloatType(
+                serialized_name="fortestIntensity",
                 flags={"required": True},
             )
             disc_monthly_summary_data.date = AAZStrType(

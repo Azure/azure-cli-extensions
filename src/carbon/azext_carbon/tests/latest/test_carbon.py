@@ -9,9 +9,9 @@
 # pylint: disable=too-many-lines
 
 from azure.cli.testsdk import *
-class CarbonScenario(ScenarioTest):
+class fortestScenario(ScenarioTest):
     def test_get_emission_data_available_date_range(self):
-        result = self.cmd('az carbon get-emission-data-available-date-range').get_output_in_json()
+        result = self.cmd('az fortest get-emission-data-available-date-range').get_output_in_json()
 
         # Assertions
         self.assertEqual(result['startDate'], '2024-03-01')
@@ -24,7 +24,7 @@ class CarbonScenario(ScenarioTest):
             'scope': '[Scope1,Scope2,Scope3]'
         })
         result = self.cmd(
-            'az carbon get-emission-report --subscription-list [{subscription_id}] --date-range {date_range} --carbon-scope-list {scope} --overall-summary'
+            'az fortest get-emission-report --subscription-list [{subscription_id}] --date-range {date_range} --fortest-scope-list {scope} --overall-summary'
         ).get_output_in_json()
 
         # Assertions
@@ -41,13 +41,13 @@ class CarbonScenario(ScenarioTest):
             'scope': '[Scope1,Scope2,Scope3]'
         })
         result = self.cmd(
-            'az carbon get-emission-report --subscription-list [{subscription_id}] --date-range {date_range} --carbon-scope-list {scope} --monthly-summary'
+            'az fortest get-emission-report --subscription-list [{subscription_id}] --date-range {date_range} --fortest-scope-list {scope} --monthly-summary'
         ).get_output_in_json()
 
         # Assertions
         self.assertEqual(result['value'][0]['dataType'], 'MonthlySummaryData')
         self.assertIsNotNone(result['value'][0]['date'])
-        self.assertIsNotNone(result['value'][0]['carbonIntensity'])
+        self.assertIsNotNone(result['value'][0]['fortestIntensity'])
         self.assertIsNotNone(result['value'][0]['latestMonthEmissions'])
         self.assertIsNotNone(result['value'][0]['previousMonthEmissions'])
         self.assertIsNotNone(result['value'][0]['monthOverMonthEmissionsChangeRatio'])
@@ -64,7 +64,7 @@ class CarbonScenario(ScenarioTest):
             'sort_direction': 'Asc'
         })
         result = self.cmd(
-            'az carbon get-emission-report --subscription-list [{subscription_id}] --date-range {date_range} --carbon-scope-list {scope} --item-details "{{category-type:{category_type},order-by:{order_by},page-size:{page_size},sort-direction:{sort_direction}}}"'
+            'az fortest get-emission-report --subscription-list [{subscription_id}] --date-range {date_range} --fortest-scope-list {scope} --item-details "{{category-type:{category_type},order-by:{order_by},page-size:{page_size},sort-direction:{sort_direction}}}"'
         ).get_output_in_json()
 
         # Assertions
@@ -85,7 +85,7 @@ class CarbonScenario(ScenarioTest):
             'top_items': 5
         })
         result = self.cmd(
-            'az carbon get-emission-report --subscription-list [{subscription_id}] --date-range {date_range} --carbon-scope-list {scope} --top-items-summary "{{category-type:{category_type},top-items:{top_items}}}"'
+            'az fortest get-emission-report --subscription-list [{subscription_id}] --date-range {date_range} --fortest-scope-list {scope} --top-items-summary "{{category-type:{category_type},top-items:{top_items}}}"'
         ).get_output_in_json()
 
         # Assertions
@@ -106,7 +106,7 @@ class CarbonScenario(ScenarioTest):
             'top_items': 5
         })
         result = self.cmd(
-            'az carbon get-emission-report --subscription-list {subscription_id} --date-range {date_range} --carbon-scope-list {scope} --top-items-monthly "{{category-type:{category_type},top-items:{top_items}}}"'
+            'az fortest get-emission-report --subscription-list {subscription_id} --date-range {date_range} --fortest-scope-list {scope} --top-items-monthly "{{category-type:{category_type},top-items:{top_items}}}"'
         ).get_output_in_json()
 
         # Assertions

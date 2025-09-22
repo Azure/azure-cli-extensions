@@ -6,20 +6,20 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_carbon._help import helps  # pylint: disable=unused-import
+from azext_fortest._help import helps  # pylint: disable=unused-import
 
 
-class CarbonCommandsLoader(AzCommandsLoader):
+class fortestCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(
-            operations_tmpl='azext_carbon.custom#{}')
+            operations_tmpl='azext_fortest.custom#{}')
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=custom_command_type)
 
     def load_command_table(self, args):
-        from azext_carbon.commands import load_command_table
+        from azext_fortest.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -35,8 +35,8 @@ class CarbonCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_carbon._params import load_arguments
+        from azext_fortest._params import load_arguments
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = CarbonCommandsLoader
+COMMAND_LOADER_CLS = fortestCommandsLoader

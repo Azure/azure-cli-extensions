@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "carbon",
+    "fortest",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Carbon
+    """Manage fortest
     """
     pass
 

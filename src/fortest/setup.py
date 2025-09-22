@@ -49,6 +49,6 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/fortest',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_carbon': ['azext_metadata.json']},
+    package_data={'azext_fortest': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
