@@ -185,74 +185,86 @@ helps['containerapp function'] = """
 
 helps['containerapp function list'] = """
     type: command
-    short-summary: List all functions in a container app or a specific revision. (pass --revisionName parameter)
+    short-summary: List all functions in an Azure Functions on Azure Container Apps.
     long-summary: |
-        revisionName is required only if Container App active Revision Mode is setup in Multiple Revision Mode. (Default: Single Revision Mode)
+        --revision is required only if the app is not in single revision mode.
         Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
     examples:
-    - name: List all functions in a container app. (single active revision mode)
+    - name: List all functions in an Azure Functions on Azure Container Apps. (single active revision mode)
       text: |
           az containerapp function list -n my-containerapp -g MyResourceGroup
-    - name: List all functions for a specific revision
+    - name: List all functions in an Azure Functions on Azure Container Apps for a specific revision.
       text: |
-          az containerapp function list -n my-containerapp -g MyResourceGroup --revision-name MyRevision
+          az containerapp function list -n my-containerapp -g MyResourceGroup --revision MyRevision
 """
 
 helps['containerapp function show'] = """
     type: command
-    short-summary: Show details of a specific function in a container app or a specific revision within app. (pass --revisionName parameter)
+    short-summary: Get details of a function in an Azure Functions on Azure Container Apps.
     long-summary: |
-        revisionName is required only if Container App active Revision Mode is setup in Multiple Revision Mode. (Default: Single Revision Mode)
+        --revision is required only if the app is not in single revision mode.
         Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
     examples:
-    - name: Show details of a function in a container app. (single active revision mode)
+    - name: Show details of a function in an Azure Functions on Azure Container Apps. (single active revision mode)
       text: |
           az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction
-    - name: Show details of a function for a specific revision
+    - name: Show details of a function in an Azure Functions on Azure Container Apps for a specific revision.
       text: |
-          az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision-name MyRevision
+          az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision MyRevision
 """
 
-helps['containerapp function list-keys'] = """
+helps['containerapp function keys show'] = """
     type: command
-    short-summary: List function keys for a specific function in a container app.
+    short-summary: Show specific function key in a container app.
+    examples:
+    - name: Show a function key for a specific function
+      text: |
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name MyKeyName --function-name MyFunctionName
+    - name: Show a host key for a container app
+      text: |
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name MyKeyName
+    - name: Show a master key for a container app
+      text: |
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name MyKeyName
+    - name: Show a system key for a container app
+      text: |
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type systemKey --key-name MyKeyName
+"""
+
+helps['containerapp function keys list'] = """
+    type: command
+    short-summary: List function keys in a container app.
     examples:
     - name: List function keys for a specific function
       text: |
-          az containerapp function list-keys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --function-name MyFunctionName
-"""
-
-helps['containerapp function update-keys'] = """
-    type: command
-    short-summary: Update function keys for a specific function in a container app.
-    examples:
-    - name: Update a function key for a specific function
-      text: |
-          az containerapp function update-keys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --function-name MyFunctionName --key-name MyKeyName --key-value MyKeyValue
-"""
-
-helps['containerapp function list-hostkeys'] = """
-    type: command
-    short-summary: List host keys for a container app.
-    examples:
+          az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type functionKey --function-name MyFunctionName
     - name: List host keys for a container app
       text: |
-          az containerapp function list-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision
+          az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type hostKey
+    - name: List master keys for a container app
+      text: |
+          az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type masterKey
+    - name: List system keys for a container app
+      text: |
+          az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type systemKey
 """
 
-helps['containerapp function update-hostkeys'] = """
+helps['containerapp function keys set'] = """
     type: command
-    short-summary: Update host keys for a container app.
+    short-summary: Set/Update specific function key in a container app.
     examples:
-    - name: Update a host key for a container app with function key type
+    - name: Set/Update a function key for a specific function
       text: |
-          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type functionKeys
-    - name: Update a host key for a container app with master key type
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name MyKeyName --key-value MyKeyValue --function-name MyFunctionName
+    - name: Set/Update a host key for a container app
       text: |
-          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type masterKey
-    - name: Update a host key for a container app with system key type
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name MyKeyName --key-value MyKeyValue
+    - name: Set/Update a master key for a container app
       text: |
-          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type systemKeys
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name MyKeyName --key-value MyKeyValue
+    - name: Set/Update a system key for a container app
+      text: |
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type systemKey --key-name MyKeyName --key-value MyKeyValue
 """
 
 # Environment Commands
@@ -2134,12 +2146,22 @@ helps['containerapp sessionpool list'] = """
           az containerapp sessionpool list -g MyResourceGroup
 """
 
-# code interpreter commands
+# Session Commands
 helps['containerapp session'] = """
     type: group
     short-summary: Commands to manage sessions.To learn more about individual commands under each subgroup run containerapp session [subgroup name] --help.
 """
 
+helps['containerapp session stop'] = """
+    type: command
+    short-summary: Stop a custom container session.
+    examples:
+    - name: Stop a custom container session.
+      text: |
+          az containerapp session stop -n MySessionPool -g MyResourceGroup --identifier MySession
+"""
+
+# code interpreter commands
 helps['containerapp session code-interpreter'] = """
     type: group
     short-summary: Commands to interact with and manage code interpreter sessions.

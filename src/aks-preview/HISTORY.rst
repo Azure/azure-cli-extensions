@@ -12,6 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Add machine command `az aks machine add` to add a machine to an existing machine pool.
+* Add blue-green upgrade strategy support for AKS node pools:
+  - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades. 
+  - `az aks nodepool add/update/upgrade`: Add `--drain-batch-size`, `--drain-timeout-bg`, `--batch-soak-duration`, `--final-soak-duration` parameters to configure blue-green upgrade settings.
+
+18.0.0b38
++++++++
+* Add option `--acns-datapath-acceleration-mode <None|BpfVeth>` to `az aks create/update`
 
 18.0.0b37
 +++++++

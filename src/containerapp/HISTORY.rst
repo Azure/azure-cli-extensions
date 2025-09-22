@@ -4,17 +4,17 @@ Release History
 ===============
 upcoming
 ++++++
-* 'az containerapp function show/list': New command group to list and show functions in container apps.
-* 'az containerapp function list-keys': List function keys for a specific function in a container app
-* 'az containerapp function update-keys': Update specific function key for a specific function in a container app
-* 'az containerapp function list-hostkeys': List host keys for a container app
-* 'az containerapp function update-hostkeys': Update specific host key for a container app
+* 'az containerapp function show/list': New commands to list and show functions in container apps.
+* 'az containerapp function keys show': Show specific function key in a container app
+* 'az containerapp function keys list': List function keys in a container app
+* 'az containerapp function keys set': Set/Update specific function key in a container app
 * 'az containerapp update/up': Disallow changing `--revisions-mode` to Labels.
 * 'az containerapp session code-interpreter': Fix `--path` in examples
 * 'az containerapp sessionpool create/update': Support `--lifecycle-type` and `--max-alive-period`
 * 'az containerapp up': support for `--kind` parameter
 * 'az containerapp env premium-ingress': Deprecate `--min-replicas` and `--max-replicas` parameters, use workload profile scale instead.
 * 'az containerapp sessionpool create/update': Support `--probe-yaml`
+* 'az containerapp session stop': Support stop session for custom container sessions
 
 1.2.0b3
 ++++++

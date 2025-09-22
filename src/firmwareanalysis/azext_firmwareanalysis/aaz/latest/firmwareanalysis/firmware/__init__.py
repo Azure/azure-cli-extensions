@@ -15,9 +15,9 @@ from ._crypto_certificate import *
 from ._crypto_key import *
 from ._cve import *
 from ._delete import *
-from ._generate_filesystem_download_url import *
 from ._list import *
 from ._password_hash import *
 from ._sbom_component import *
 from ._show import *
 from ._summary import *
+from ._update import *

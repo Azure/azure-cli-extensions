@@ -109,7 +109,7 @@ class MCPManager:
                     "The MCP binary should be automatically downloaded",
                     "Check your internet connection for binary download",
                     "Try running the command again to retry download",
-                    "Use --no-aks-mcp to disable MCP integration"
+                    "Run without --aks-mcp to stay in traditional mode"
                 ]
             )
 

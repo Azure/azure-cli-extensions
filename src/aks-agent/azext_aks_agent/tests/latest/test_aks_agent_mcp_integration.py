@@ -197,7 +197,7 @@ class TestAksAgentMCPIntegration:
         formatted_message = AgentErrorHandler.format_error_message(mcp_error)
         assert "AKS Agent Error (MCP_SETUP)" in formatted_message
         assert "Suggestions:" in formatted_message
-        assert "Try running with --no-aks-mcp" in formatted_message
+        assert "Try running without --aks-mcp" in formatted_message
 
     def test_setup_traditional_mode_config_loading(self):
         """Test traditional mode setup with actual config loading."""
@@ -257,12 +257,22 @@ class TestAksAgentMCPIntegration:
         # Mock stdin to avoid pytest capture issues
         mock_stdin.isatty.return_value = True  # No piped input
         
-        # Call the function with no_aks_mcp=True to avoid MCP setup
+        # Call the function with use_aks_mcp=False to avoid MCP setup
         try:
             aks_agent(
-                self.mock_cmd, "rg", "cluster", "test prompt", self.test_model,
-                self.test_api_key, self.test_max_steps, self.test_config_file,
-                False, False, False, False, True  # no_aks_mcp=True
+                self.mock_cmd,
+                "rg",
+                "cluster",
+                "test prompt",
+                self.test_model,
+                self.test_api_key,
+                self.test_max_steps,
+                self.test_config_file,
+                False,
+                False,
+                False,
+                False,
+                use_aks_mcp=False,
             )
         except Exception as e:
             # Expected to fail due to missing Holmes dependencies in test environment
@@ -283,9 +293,19 @@ class TestAksAgentMCPIntegration:
             
             with pytest.raises(CLIError) as exc_info:
                 aks_agent(
-                    self.mock_cmd, "rg", "cluster", "test prompt", self.test_model,
-                    self.test_api_key, self.test_max_steps, self.test_config_file,
-                    False, False, False, False, True  # no_aks_mcp=True
+                    self.mock_cmd,
+                    "rg",
+                    "cluster",
+                    "test prompt",
+                    self.test_model,
+                    self.test_api_key,
+                    self.test_max_steps,
+                    self.test_config_file,
+                    False,
+                    False,
+                    False,
+                    False,
+                    use_aks_mcp=False,
                 )
             
             assert "upgrade the python version to 3.10" in str(exc_info.value)

@@ -479,10 +479,16 @@ def load_arguments(self, _):
         c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
         c.argument('registry_identity', validator=validate_registry_user, help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-assigned identity, use a resource ID for a user-assigned identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
 
-    # sessions code interpreter commands
-    with self.argument_context('containerapp session code-interpreter') as c:
+    # sessions commands
+    with self.argument_context('containerapp session') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp session stop') as c:
+        c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
+
+    # sessions code interpreter commands
+    with self.argument_context('containerapp session code-interpreter') as c:
         c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
         c.argument('session_pool_location', help="The location of the session pool")
 
@@ -530,33 +536,32 @@ def load_arguments(self, _):
         c.argument('termination_grace_period', options_list=['--termination-grace-period', '-t'], type=int, help="Time in seconds to drain requests during ingress shutdown. Default 500, minimum 0, maximum 3600.")
         c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 4, maximum 30.")
         c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")
-    
+
     with self.argument_context('containerapp function') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('name', options_list=['--name', '-n'], help="The name of the Container App.")
         
     with self.argument_context('containerapp function list') as c:
-        c.argument('revision_name', options_list=['--revision-name', '-r'], help="The name of the revision to list functions from. It is required if container app is running in multiple active revision mode.")
+        c.argument('revision_name', options_list=['--revision', '-r'], help="The name of the revision to list functions from. It is required if container app is running in multiple or labels revision mode.")
 
     with self.argument_context('containerapp function show') as c:
         c.argument('function_name', options_list=['--function-name', '-f'], help="The name of the function to show details for.")
-        c.argument('revision_name', options_list=['--revision-name', '-r'], help="The name of the revision to get the function from. It is required if container app is running in multiple active revision mode.")
+        c.argument('revision_name', options_list=['--revision', '-r'], help="The name of the revision to get the function from. It is required if container app is running in multiple or labels revision mode.")
+    
+    with self.argument_context('containerapp function keys show') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKey', 'hostKey', 'masterKey', 'systemKey']), help="The type of the key to show.", required=True)
+        c.argument('key_name', options_list=['--key-name'], help="The name of the key to show.", required=True)
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")
 
-    with self.argument_context('containerapp function list-keys') as c:
-        c.argument('revision', options_list=['--revision'], help="The name of the container app revision.")
-        c.argument('function_name', options_list=['--function-name'], help="The name of the function.")
+    with self.argument_context('containerapp function keys list') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKey', 'hostKey', 'masterKey', 'systemKey']), help="The type of the keys to list.", required=True)
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")
 
-    with self.argument_context('containerapp function update-keys') as c:
-        c.argument('revision', options_list=['--revision'], help="The name of the container app revision.")
-        c.argument('function_name', options_list=['--function-name'], help="The name of the function.")
-        c.argument('key_name', options_list=['--key-name'], help="The name of the key to update.")
-        c.argument('key_value', options_list=['--key-value'], help="The value of the key to update.")
-
-    with self.argument_context('containerapp function list-hostkeys') as c:
-        c.argument('revision', options_list=['--revision'], help="The name of the container app revision.")
-
-    with self.argument_context('containerapp function update-hostkeys') as c:
-        c.argument('revision', options_list=['--revision'], help="The name of the container app revision.")
-        c.argument('key_name', options_list=['--key-name'], help="The name of the host key to update.")
-        c.argument('key_value', options_list=['--key-value'], help="The value of the host key to update.")
-        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKeys', 'masterKey', 'systemKeys']), help="The type of the host key.")
+    with self.argument_context('containerapp function keys set') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKey', 'hostKey', 'masterKey', 'systemKey']), help="The type of the key to set/update.", required=True)
+        c.argument('key_name', options_list=['--key-name'], help="The name of the key to set/update.", required=True)
+        c.argument('key_value', options_list=['--key-value'], help="The value of the key to set/update.", required=True)
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")

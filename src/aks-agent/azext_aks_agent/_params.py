@@ -7,6 +7,7 @@
 import os.path
 
 from azure.cli.core.api import get_config_dir
+from azure.cli.core.commands.parameters import get_three_state_flag
 
 from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
 
@@ -86,8 +87,16 @@ def load_arguments(self, _):
             help="Show AKS agent configuration and status information.",
         )
         c.argument(
-            "no_aks_mcp",
-            options_list=["--no-aks-mcp"],
-            help="Disable AKS MCP integration and use traditional toolsets.",
-            action="store_true",
+            "use_aks_mcp",
+            options_list=["--aks-mcp"],
+            default=False,
+            arg_type=get_three_state_flag(
+                positive_label="Enable AKS MCP integration",
+                negative_label="Disable AKS MCP integration",
+            ),
+            help=(
+                "Enable AKS MCP integration for enhanced capabilities. "
+                "Traditional mode is the default. Use --aks-mcp to enable MCP mode, or "
+                "--no-aks-mcp to explicitly disable it."
+            ),
         )
