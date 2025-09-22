@@ -9,16 +9,16 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
-18.0.0b39
-+++++++
-* Add option `Windows2025` to `--os-sku` for `az aks nodepool add`.
-
 Pending
 +++++++
 * Add machine command `az aks machine add` to add a machine to an existing machine pool.
 * Add blue-green upgrade strategy support for AKS node pools:
   - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades. 
   - `az aks nodepool add/update/upgrade`: Add `--drain-batch-size`, `--drain-timeout-bg`, `--batch-soak-duration`, `--final-soak-duration` parameters to configure blue-green upgrade settings.
+
+18.0.0b39
++++++++
+* Add option `Windows2025` to `--os-sku` for `az aks nodepool add`.
 
 18.0.0b38
 +++++++
