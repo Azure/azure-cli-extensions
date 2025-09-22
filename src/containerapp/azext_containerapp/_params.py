@@ -547,22 +547,21 @@ def load_arguments(self, _):
     with self.argument_context('containerapp function show') as c:
         c.argument('function_name', options_list=['--function-name', '-f'], help="The name of the function to show details for.")
         c.argument('revision_name', options_list=['--revision', '-r'], help="The name of the revision to get the function from. It is required if container app is running in multiple or labels revision mode.")
+    
+    with self.argument_context('containerapp function keys show') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKey', 'hostKey', 'masterKey', 'systemKey']), help="The type of the key to show.", required=True)
+        c.argument('key_name', options_list=['--key-name'], help="The name of the key to show.", required=True)
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")
 
-    with self.argument_context('containerapp function list-keys') as c:
-        c.argument('revision', options_list=['--revision'], help="The name of the container app revision.")
-        c.argument('function_name', options_list=['--function-name'], help="The name of the function.")
+    with self.argument_context('containerapp function keys list') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKey', 'hostKey', 'masterKey', 'systemKey']), help="The type of the keys to list.", required=True)
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")
 
-    with self.argument_context('containerapp function update-keys') as c:
-        c.argument('revision', options_list=['--revision'], help="The name of the container app revision.")
-        c.argument('function_name', options_list=['--function-name'], help="The name of the function.")
-        c.argument('key_name', options_list=['--key-name'], help="The name of the key to update.")
-        c.argument('key_value', options_list=['--key-value'], help="The value of the key to update.")
-
-    with self.argument_context('containerapp function list-hostkeys') as c:
-        c.argument('revision', options_list=['--revision'], help="The name of the container app revision.")
-
-    with self.argument_context('containerapp function update-hostkeys') as c:
-        c.argument('revision', options_list=['--revision'], help="The name of the container app revision.")
-        c.argument('key_name', options_list=['--key-name'], help="The name of the host key to update.")
-        c.argument('key_value', options_list=['--key-value'], help="The value of the host key to update.")
-        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKeys', 'masterKey', 'systemKeys']), help="The type of the host key.")
+    with self.argument_context('containerapp function keys set') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKey', 'hostKey', 'masterKey', 'systemKey']), help="The type of the key to set/update.", required=True)
+        c.argument('key_name', options_list=['--key-name'], help="The name of the key to set/update.", required=True)
+        c.argument('key_value', options_list=['--key-value'], help="The value of the key to set/update.", required=True)
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")

@@ -213,46 +213,58 @@ helps['containerapp function show'] = """
           az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision MyRevision
 """
 
-helps['containerapp function list-keys'] = """
+helps['containerapp function keys show'] = """
     type: command
-    short-summary: List function keys for a specific function in a container app.
+    short-summary: Show specific function key in a container app.
+    examples:
+    - name: Show a function key for a specific function
+      text: |
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name MyKeyName --function-name MyFunctionName
+    - name: Show a host key for a container app
+      text: |
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name MyKeyName
+    - name: Show a master key for a container app
+      text: |
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name MyKeyName
+    - name: Show a system key for a container app
+      text: |
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type systemKey --key-name MyKeyName
+"""
+
+helps['containerapp function keys list'] = """
+    type: command
+    short-summary: List function keys in a container app.
     examples:
     - name: List function keys for a specific function
       text: |
-          az containerapp function list-keys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --function-name MyFunctionName
-"""
-
-helps['containerapp function update-keys'] = """
-    type: command
-    short-summary: Update function keys for a specific function in a container app.
-    examples:
-    - name: Update a function key for a specific function
-      text: |
-          az containerapp function update-keys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --function-name MyFunctionName --key-name MyKeyName --key-value MyKeyValue
-"""
-
-helps['containerapp function list-hostkeys'] = """
-    type: command
-    short-summary: List host keys for a container app.
-    examples:
+          az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type functionKey --function-name MyFunctionName
     - name: List host keys for a container app
       text: |
-          az containerapp function list-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision
+          az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type hostKey
+    - name: List master keys for a container app
+      text: |
+          az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type masterKey
+    - name: List system keys for a container app
+      text: |
+          az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type systemKey
 """
 
-helps['containerapp function update-hostkeys'] = """
+helps['containerapp function keys set'] = """
     type: command
-    short-summary: Update host keys for a container app.
+    short-summary: Set/Update specific function key in a container app.
     examples:
-    - name: Update a host key for a container app with function key type
+    - name: Set/Update a function key for a specific function
       text: |
-          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type functionKeys
-    - name: Update a host key for a container app with master key type
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name MyKeyName --key-value MyKeyValue --function-name MyFunctionName
+    - name: Set/Update a host key for a container app
       text: |
-          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type masterKey
-    - name: Update a host key for a container app with system key type
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name MyKeyName --key-value MyKeyValue
+    - name: Set/Update a master key for a container app
       text: |
-          az containerapp function update-hostkeys -n my-containerapp -g MyResourceGroup --revision MyContainerappRevision --key-name MyKeyName --key-value MyKeyValue --key-type systemKeys
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name MyKeyName --key-value MyKeyValue
+    - name: Set/Update a system key for a container app
+      text: |
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type systemKey --key-name MyKeyName --key-value MyKeyValue
 """
 
 # Environment Commands

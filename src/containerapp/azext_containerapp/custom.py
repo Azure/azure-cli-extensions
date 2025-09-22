@@ -99,10 +99,9 @@ from .containerapp_functions_decorator import (
     ContainerAppFunctionsShowDecorator
 )
 from .containerapp_function_keys_decorator import (
+    ContainerAppFunctionKeysShowDecorator,
     ContainerAppFunctionKeysListDecorator,
-    ContainerAppFunctionKeysUpdateDecorator,
-    ContainerAppFunctionHostKeysListDecorator,
-    ContainerAppFunctionHostKeysUpdateDecorator
+    ContainerAppFunctionKeysSetDecorator
 )
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
@@ -4007,51 +4006,63 @@ def show_containerapp_function(cmd, resource_group_name, name, function_name, re
 
     return containerapp_functions_show_decorator.show()
 
-# Container App Function Key Commands
-def list_containerapp_function_keys(cmd, name, resource_group_name, function_name, revision=None):
-    """List function keys for a specific function"""
-    raw_parameters = locals()
-    containerapp_function_decorator = ContainerAppFunctionKeysListDecorator(
+
+def show_containerapp_function_keys(cmd, resource_group_name, name, key_type, key_name, function_name=None, revision_name=None):
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'key_type': key_type,
+        'key_name': key_name,
+        'function_name': function_name,
+        'revision_name': revision
+    }
+
+    containerapp_function_keys_show_decorator = ContainerAppFunctionKeysShowDecorator(
         cmd=cmd,
         client=ContainerAppFunctionsPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    return containerapp_function_decorator.list_keys()
+
+    return containerapp_function_keys_show_decorator.show_keys()
 
 
-def update_containerapp_function_keys(cmd, name, resource_group_name, function_name, key_name, key_value=None, revision=None):
-    """Update function keys for a specific function"""
-    raw_parameters = locals()
-    containerapp_function_decorator = ContainerAppFunctionKeysUpdateDecorator(
+def list_containerapp_function_keys(cmd, resource_group_name, name, key_type, function_name=None, revision_name=None):
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'key_type': key_type,
+        'function_name': function_name,
+        'revision_name': revision_name
+    }
+
+    containerapp_function_keys_list_decorator = ContainerAppFunctionKeysListDecorator(
         cmd=cmd,
         client=ContainerAppFunctionsPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    return containerapp_function_decorator.update_keys()
+
+    return containerapp_function_keys_list_decorator.list_keys()
 
 
-def list_containerapp_function_hostkeys(cmd, name, resource_group_name, revision=None):
-    """List host keys for the container app function host"""
-    raw_parameters = locals()
-    containerapp_function_decorator = ContainerAppFunctionHostKeysListDecorator(
+def set_containerapp_function_keys(cmd, resource_group_name, name, key_type, key_name, key_value, function_name=None, revision_name=None):
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'key_type': key_type,
+        'key_name': key_name,
+        'key_value': key_value,
+        'function_name': function_name,
+        'revision_name': revision_name
+    }
+
+    containerapp_function_keys_set_decorator = ContainerAppFunctionKeysSetDecorator(
         cmd=cmd,
         client=ContainerAppFunctionsPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    return containerapp_function_decorator.list_host_keys()
 
-
-def update_containerapp_function_hostkeys(cmd, name, resource_group_name, key_type, key_name, key_value=None, revision=None):
-    """Update host keys for the container app function host"""
-    raw_parameters = locals()
-    containerapp_function_decorator = ContainerAppFunctionHostKeysUpdateDecorator(
-        cmd=cmd,
-        client=ContainerAppFunctionsPreviewClient,
-        raw_parameters=raw_parameters,
-        models=CONTAINER_APPS_SDK_MODELS
-    )
-    return containerapp_function_decorator.update_host_keys()
+    return containerapp_function_keys_set_decorator.set_keys()
 
