@@ -107,7 +107,7 @@ def construct_jwt_authenticator(cmd, raw_parameters):
     )
     
     JWTAuthenticatorProperties = cmd.get_models(
-        "JWTAuthenticatorProperties", 
+        "JWTAuthenticatorProperties",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="jwt_authenticators",
     )
