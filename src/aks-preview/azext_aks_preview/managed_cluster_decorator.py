@@ -2098,7 +2098,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """Internal function to obtain the value of enable_azure_monitor_metrics.
         This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_metrics and
         disable_azure_monitor_metrics are specified, raise a MutuallyExclusiveArgumentError.
-
         :return: bool
         """
         # Read the original value passed by the command.
@@ -2118,6 +2117,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             skuName = self.get_sku_name()
             if skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
                 enable_azure_monitor_metrics = True
+
         # This parameter does not need dynamic completion.
         if enable_validation:
             if enable_azure_monitor_metrics and self._get_disable_azure_monitor_metrics(False):
@@ -2214,6 +2214,173 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_disable_azure_monitor_app_monitoring(enable_validation=True)
+
+    # OpenTelemetry methods
+    def _get_enable_opentelemetry_metrics(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_opentelemetry_metrics.
+        This function supports the option of enable_validation. When enabled, if both
+        enable_opentelemetry_metrics and disable_opentelemetry_metrics are specified,
+        raise a MutuallyExclusiveArgumentError.
+        For update operations, also validates that Azure Monitor metrics is enabled
+        in the cluster's Azure Monitor profile.
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        enable_opentelemetry_metrics = self.raw_param.get("enable_opentelemetry_metrics")
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_opentelemetry_metrics and self._get_disable_opentelemetry_metrics(
+                    enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-opentelemetry-metrics and "
+                    "--disable-opentelemetry-metrics at the same time."
+                )
+
+            # For update operations, validate that Azure Monitor metrics is enabled
+            # in the cluster's Azure Monitor profile
+            if (enable_opentelemetry_metrics and
+                    self.decorator_mode == DecoratorMode.UPDATE and
+                    self.mc):
+                # Check if Azure Monitor metrics is enabled via command parameters
+                azure_monitor_enabled_via_params = (
+                    self._get_enable_azure_monitor_metrics(enable_validation=False) or
+                    self.raw_param.get("enable_azuremonitormetrics")
+                )
+
+                # Check if Azure Monitor metrics is already enabled in the cluster's Azure Monitor profile
+                azure_monitor_enabled_in_profile = (
+                    self.mc.azure_monitor_profile and
+                    self.mc.azure_monitor_profile.metrics and
+                    self.mc.azure_monitor_profile.metrics.enabled
+                )
+
+                if not azure_monitor_enabled_via_params and not azure_monitor_enabled_in_profile:
+                    raise ArgumentUsageError(
+                        "OpenTelemetry metrics requires Azure Monitor metrics to be enabled. "
+                        "Azure Monitor metrics is not currently enabled in the cluster. "
+                        "Please add --enable-azure-monitor-metrics to your command."
+                    )
+        return enable_opentelemetry_metrics
+
+    def get_enable_opentelemetry_metrics(self) -> bool:
+        """Obtain the value of enable_opentelemetry_metrics.
+        This function will verify the parameter by default. If both enable_opentelemetry_metrics and
+        disable_opentelemetry_metrics are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_enable_opentelemetry_metrics(enable_validation=True)
+
+    def _get_disable_opentelemetry_metrics(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_opentelemetry_metrics.
+        This function supports the option of enable_validation. When enabled, if both enable_opentelemetry_metrics and
+        disable_opentelemetry_metrics are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_opentelemetry_metrics = self.raw_param.get("disable_opentelemetry_metrics")
+
+        if enable_validation:
+            if disable_opentelemetry_metrics and self._get_enable_opentelemetry_metrics(
+                    enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-opentelemetry-metrics and "
+                    "--disable-opentelemetry-metrics at the same time."
+                )
+        return disable_opentelemetry_metrics
+
+    def get_disable_opentelemetry_metrics(self) -> bool:
+        """Obtain the value of disable_opentelemetry_metrics.
+        This function will verify the parameter by default. If both enable_opentelemetry_metrics and
+        disable_opentelemetry_metrics are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_disable_opentelemetry_metrics(enable_validation=True)
+
+    def get_opentelemetry_metrics_port(self) -> Union[int, None]:
+        """Obtain the value of opentelemetry_metrics_port.
+        :return: int or None
+        """
+        return self.raw_param.get("opentelemetry_metrics_port")
+
+    def _get_enable_opentelemetry_logs(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_opentelemetry_logs.
+        This function supports the option of enable_validation. When enabled, if both enable_opentelemetry_logs and
+        disable_opentelemetry_logs are specified, raise a MutuallyExclusiveArgumentError.
+        For update operations, also validates that Azure Monitor logs is enabled in the cluster's Azure Monitor profile.
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        enable_opentelemetry_logs = self.raw_param.get("enable_opentelemetry_logs")
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_opentelemetry_logs and self._get_disable_opentelemetry_logs(
+                    enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-opentelemetry-logs and "
+                    "--disable-opentelemetry-logs at the same time."
+                )
+
+            # For update operations, validate that Azure Monitor logs is enabled
+            # in the cluster's Azure Monitor profile
+            if (enable_opentelemetry_logs and
+                    self.decorator_mode == DecoratorMode.UPDATE and
+                    self.mc):
+                # Check if monitoring addon is enabled in the cluster
+                addon_consts = self.get_addon_consts()
+                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+                
+                monitoring_addon_enabled = (
+                    self.mc.addon_profiles and
+                    CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles and
+                    self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+                )
+
+                if not monitoring_addon_enabled:
+                    raise ArgumentUsageError(
+                        "OpenTelemetry logs requires Azure Monitor logs (monitoring addon) to be enabled. "
+                        "Please enable the monitoring addon first using 'az aks enable-addons --addon monitoring'."
+                    )
+        return enable_opentelemetry_logs
+
+    def get_enable_opentelemetry_logs(self) -> bool:
+        """Obtain the value of enable_opentelemetry_logs.
+        This function will verify the parameter by default. If both enable_opentelemetry_logs and
+        disable_opentelemetry_logs are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_enable_opentelemetry_logs(enable_validation=True)
+
+    def _get_disable_opentelemetry_logs(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_opentelemetry_logs.
+        This function supports the option of enable_validation. When enabled, if both enable_opentelemetry_logs and
+        disable_opentelemetry_logs are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_opentelemetry_logs = self.raw_param.get("disable_opentelemetry_logs")
+
+        if enable_validation:
+            if disable_opentelemetry_logs and self._get_enable_opentelemetry_logs(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+                )
+        return disable_opentelemetry_logs
+
+    def get_disable_opentelemetry_logs(self) -> bool:
+        """Obtain the value of disable_opentelemetry_logs.
+        This function will verify the parameter by default. If both enable_opentelemetry_logs and
+        disable_opentelemetry_logs are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_disable_opentelemetry_logs(enable_validation=True)
+
+    def get_opentelemetry_logs_port(self) -> Union[int, None]:
+        """Obtain the value of opentelemetry_logs_port.
+        :return: int or None
+        """
+        return self.raw_param.get("opentelemetry_logs_port")
 
     def _get_enable_vpa(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_vpa.
@@ -3491,45 +3658,172 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc.node_resource_group_profile = node_resource_group_profile
         return mc
 
+    def _ensure_azure_monitor_profile(self, mc: ManagedCluster) -> None:
+        """Ensure azure monitor profile exists on the managed cluster."""
+        if mc.azure_monitor_profile is None:
+            mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+
+    def _ensure_app_monitoring_profile(self, mc: ManagedCluster) -> None:
+        """Ensure app monitoring profile exists on the managed cluster."""
+        self._ensure_azure_monitor_profile(mc)
+        if mc.azure_monitor_profile.app_monitoring is None:
+            mc.azure_monitor_profile.app_monitoring = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
+            )
+
+    def _setup_azure_monitor_metrics(self, mc: ManagedCluster) -> None:
+        """Set up Azure Monitor metrics configuration."""
+        ksm_metric_labels_allow_list = self.context.raw_param.get("ksm_metric_labels_allow_list", "")
+        ksm_metric_annotations_allow_list = self.context.raw_param.get("ksm_metric_annotations_allow_list", "")
+
+        self._ensure_azure_monitor_profile(mc)
+        mc.azure_monitor_profile.metrics = (
+            self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)
+        )
+
+        kube_state_metrics = (
+            self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
+                metric_labels_allowlist=str(ksm_metric_labels_allow_list),
+                metric_annotations_allow_list=str(ksm_metric_annotations_allow_list)
+            ))
+        mc.azure_monitor_profile.metrics.kube_state_metrics = kube_state_metrics
+        self.context.set_intermediate("azuremonitormetrics_addon_enabled", True, overwrite_exists=True)
+
+    def _setup_azure_monitor_app_monitoring(self, mc: ManagedCluster) -> None:
+        """Set up Azure Monitor app monitoring configuration."""
+        self._ensure_azure_monitor_profile(mc)
+        mc.azure_monitor_profile.app_monitoring = (
+            self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
+        )
+        app_monitoring_auto_instrumentation = (
+            self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=True)
+        )
+        mc.azure_monitor_profile.app_monitoring.auto_instrumentation = app_monitoring_auto_instrumentation
+
+    def _setup_monitoring_addon_profile(self, mc: ManagedCluster, addon_consts: dict) -> None:
+        """Set up monitoring addon profile configuration."""
+        if mc.addon_profiles is None:
+            mc.addon_profiles = {}
+
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        addon_profile = mc.addon_profiles.get(
+            CONST_MONITORING_ADDON_NAME,
+            self.models.ManagedClusterAddonProfile(enabled=False))
+        addon_profile.enabled = True
+
+        # Get or create workspace resource ID
+        workspace_resource_id = self.context.raw_param.get("workspace_resource_id")
+        if not workspace_resource_id:
+            ensure_workspace_func = (
+                self.context.external_functions.ensure_default_log_analytics_workspace_for_monitoring)
+            workspace_resource_id = ensure_workspace_func(
+                self.cmd,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name()
+            )
+
+        # Sanitize and configure
+        sanitize_func = self.context.external_functions.sanitize_loganalytics_ws_resource_id
+        workspace_resource_id = sanitize_func(workspace_resource_id)
+
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+
+        addon_profile.config = {CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id}
+
+        enable_msi_auth = self.context.get_enable_msi_auth_for_monitoring()
+        msi_auth_value = "true" if enable_msi_auth else "false"
+        addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = msi_auth_value
+
+        mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
+
+    def _setup_container_insights(self, mc: ManagedCluster) -> None:
+        """Set up container insights configuration."""
+        self._ensure_azure_monitor_profile(mc)
+        if (not hasattr(mc.azure_monitor_profile, 'container_insights') or
+                mc.azure_monitor_profile.container_insights is None):
+            mc.azure_monitor_profile.container_insights = (
+                self.models.ManagedClusterAzureMonitorProfileContainerInsights(enabled=True)
+            )
+        else:
+            mc.azure_monitor_profile.container_insights.enabled = True
+
+    def _setup_azure_monitor_logs(self, mc: ManagedCluster) -> None:
+        """Set up Azure Monitor logs configuration."""
+        addon_consts = self.context.get_addon_consts()
+        self._setup_monitoring_addon_profile(mc, addon_consts)
+        self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
+        self._setup_container_insights(mc)
+
+    def _setup_opentelemetry_metrics(self, mc: ManagedCluster) -> None:
+        """Set up OpenTelemetry metrics configuration."""
+        self._ensure_app_monitoring_profile(mc)
+
+        otlp_metrics_config = (
+            self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True))
+        metrics_port = self.context.get_opentelemetry_metrics_port()
+        if metrics_port:
+            otlp_metrics_config.port = metrics_port
+
+        mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = otlp_metrics_config
+
+    def _disable_opentelemetry_metrics(self, mc: ManagedCluster) -> None:
+        """Disable OpenTelemetry metrics configuration."""
+        if (mc.azure_monitor_profile is not None and
+                mc.azure_monitor_profile.app_monitoring is not None):
+            if mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics is None:
+                otlp_metrics_disabled = (
+                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=False))
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = otlp_metrics_disabled
+            else:
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled = False
+
+    def _setup_opentelemetry_logs(self, mc: ManagedCluster) -> None:
+        """Set up OpenTelemetry logs configuration."""
+        self._ensure_app_monitoring_profile(mc)
+
+        otlp_logs_config = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
+        logs_port = self.context.get_opentelemetry_logs_port()
+        if logs_port:
+            otlp_logs_config.port = logs_port
+
+        mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = otlp_logs_config
+
+    def _disable_opentelemetry_logs(self, mc: ManagedCluster) -> None:
+        """Disable OpenTelemetry logs configuration."""
+        if (mc.azure_monitor_profile is not None and
+                mc.azure_monitor_profile.app_monitoring is not None):
+            if mc.azure_monitor_profile.app_monitoring.open_telemetry_logs is None:
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
+                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=False)
+                )
+            else:
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled = False
+
     def set_up_azure_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up azure monitor profile for the ManagedCluster object.
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
-        # read the original value passed by the command
-        ksm_metric_labels_allow_list = self.context.raw_param.get("ksm_metric_labels_allow_list")
-        ksm_metric_annotations_allow_list = self.context.raw_param.get("ksm_metric_annotations_allow_list")
-        if ksm_metric_labels_allow_list is None:
-            ksm_metric_labels_allow_list = ""
-        if ksm_metric_annotations_allow_list is None:
-            ksm_metric_annotations_allow_list = ""
+
         if self.context.get_enable_azure_monitor_metrics():
-            if mc.azure_monitor_profile is None:
-                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()  # pylint: disable=no-member
-            mc.azure_monitor_profile.metrics = (
-                self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)  # pylint: disable=no-member
-            )
-            # pylint: disable=line-too-long, no-member
-            mc.azure_monitor_profile.metrics.kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
-                metric_labels_allowlist=str(ksm_metric_labels_allow_list),
-                metric_annotations_allow_list=str(ksm_metric_annotations_allow_list))
-            self.context.set_intermediate("azuremonitormetrics_addon_enabled", True, overwrite_exists=True)
+            self._setup_azure_monitor_metrics(mc)
 
         if self.context.get_enable_azure_monitor_app_monitoring():
-            if mc.azure_monitor_profile is None:
-                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
-            mc.azure_monitor_profile.app_monitoring = (
-                self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
-            )
-            mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
-                self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=True)
-            )
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
-                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
-            )
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
-                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
-            )
+            self._setup_azure_monitor_app_monitoring(mc)
+
+        if self.context.get_enable_opentelemetry_metrics():
+            self._setup_opentelemetry_metrics(mc)
+
+        if self.context.get_disable_opentelemetry_metrics():
+            self._disable_opentelemetry_metrics(mc)
+
+        if self.context.get_enable_opentelemetry_logs():
+            self._setup_opentelemetry_logs(mc)
+
+        if self.context.get_disable_opentelemetry_logs():
+            self._disable_opentelemetry_logs(mc)
 
         return mc
 
@@ -5012,39 +5306,100 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if self.context.get_enable_azure_monitor_app_monitoring():
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
-            mc.azure_monitor_profile.app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
+            app_monitoring = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoring())
+            mc.azure_monitor_profile.app_monitoring = app_monitoring
+            app_monitoring_auto_instrumentation = (
+                self.models.
+                ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(
+                    enabled=True))
             mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
-                self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=True)
-            )
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
-                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
-            )
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
-                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
-            )
+                app_monitoring_auto_instrumentation)
 
         if self.context.get_disable_azure_monitor_app_monitoring():
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
-            mc.azure_monitor_profile.app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
+            app_monitoring = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoring())
+            mc.azure_monitor_profile.app_monitoring = app_monitoring
+            auto_instrumentation_disabled = (
+                self.models.
+                ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(
+                    enabled=False))
             mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
-                self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=False)
+                auto_instrumentation_disabled)
+
+        # Handle OpenTelemetry metrics updates - these work within the Azure Monitor App Monitoring context
+        if self.context.get_enable_opentelemetry_metrics():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            if mc.azure_monitor_profile.app_monitoring is None:
+                mc.azure_monitor_profile.app_monitoring = (
+                    self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
+                )
+
+            # Configure OpenTelemetry metrics with custom port if provided
+            otlp_metrics_config = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
             )
+            if self.context.get_opentelemetry_metrics_port():
+                otlp_metrics_config.port = self.context.get_opentelemetry_metrics_port()
+
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = otlp_metrics_config
+
+        # Handle OpenTelemetry logs updates - these work within the Azure Monitor App Monitoring context
+        if self.context.get_enable_opentelemetry_logs():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            if mc.azure_monitor_profile.app_monitoring is None:
+                mc.azure_monitor_profile.app_monitoring = (
+                    self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
+                )
+
+            # Configure OpenTelemetry logs with custom port if provided
+            otlp_logs_config = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
+            if self.context.get_opentelemetry_logs_port():
+                otlp_logs_config.port = self.context.get_opentelemetry_logs_port()
+
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = otlp_logs_config
+
+        # Handle disable OpenTelemetry metrics updates
+        if self.context.get_disable_opentelemetry_metrics():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            if mc.azure_monitor_profile.app_monitoring is None:
+                mc.azure_monitor_profile.app_monitoring = (
+                    self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
+                )
+
             mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
                 self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=False)
             )
+
+        # Handle disable OpenTelemetry logs updates
+        if self.context.get_disable_opentelemetry_logs():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            if mc.azure_monitor_profile.app_monitoring is None:
+                mc.azure_monitor_profile.app_monitoring = (
+                    self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
+                )
+
             mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
                 self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=False)
             )
 
         # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
         # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
-        if (
-            self.context.raw_param.get("enable_azure_monitor_metrics") or
-            self.context.raw_param.get("enable_azuremonitormetrics") or
-            self.context.raw_param.get("disable_azure_monitor_metrics") or
-            self.context.raw_param.get("disable_azuremonitormetrics")
-        ):
+        azure_monitor_metrics = (self.context.raw_param.get("enable_azuremonitormetrics") or
+                                 self.context.get_enable_azure_monitor_metrics() or
+                                 self.context.raw_param.get("disable_azuremonitormetrics") or
+                                 self.context.get_disable_azure_monitor_metrics())
+        opentelemetry = (self.context.raw_param.get("enable_opentelemetry_metrics") or
+                         self.context.raw_param.get("enable_opentelemetry_logs") or
+                         self.context.raw_param.get("disable_opentelemetry_metrics") or
+                         self.context.raw_param.get("disable_opentelemetry_logs"))
+        if azure_monitor_metrics or opentelemetry:
             ensure_azure_monitor_profile_prerequisites(
                 self.cmd,
                 self.context.get_subscription_id(),
