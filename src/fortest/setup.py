@@ -36,16 +36,16 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='fortest',
+    name='carbon',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools fortest Extension.',
+    description='Microsoft Azure Command-Line Tools carbon Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/fortest',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/carbon',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_fortest': ['azext_metadata.json']},
+    package_data={'azext_carbon': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )

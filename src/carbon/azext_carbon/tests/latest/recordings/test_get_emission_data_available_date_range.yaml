@@ -7,7 +7,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - fortest get-emission-data-available-date-range
+      - carbon get-emission-data-available-date-range
       Connection:
       - keep-alive
       Content-Length:
@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.fortest/queryfortestEmissionDataAvailableDateRange?api-version=2025-04-01
+    uri: https://management.azure.com/providers/Microsoft.carbon/querycarbonEmissionDataAvailableDateRange?api-version=2025-04-01
   response:
     body:
       string: '{"startDate":"2024-03-01","endDate":"2025-03-01"}'
@@ -37,8 +37,8 @@ interactions:
       request-context:
       - appId=cid-v1:1b30ee95-d108-4b28-8df6-b780a66c5364
       set-cookie:
-      - ARRAffinity=92cff1672181f3de1ff12b696639b5c8fe7f87b1484ca72975ce446af3251683;Path=/;HttpOnly;Secure;Domain=sustfortest-webapp-prod-wus.azurewebsites.net
-      - ARRAffinitySameSite=92cff1672181f3de1ff12b696639b5c8fe7f87b1484ca72975ce446af3251683;Path=/;HttpOnly;SameSite=None;Secure;Domain=sustfortest-webapp-prod-wus.azurewebsites.net
+      - ARRAffinity=92cff1672181f3de1ff12b696639b5c8fe7f87b1484ca72975ce446af3251683;Path=/;HttpOnly;Secure;Domain=sustcarbon-webapp-prod-wus.azurewebsites.net
+      - ARRAffinitySameSite=92cff1672181f3de1ff12b696639b5c8fe7f87b1484ca72975ce446af3251683;Path=/;HttpOnly;SameSite=None;Secure;Domain=sustcarbon-webapp-prod-wus.azurewebsites.net
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:

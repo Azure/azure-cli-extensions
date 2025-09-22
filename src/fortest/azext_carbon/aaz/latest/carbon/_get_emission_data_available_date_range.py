@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "fortest get-emission-data-available-date-range",
+    "carbon get-emission-data-available-date-range",
 )
 class GetEmissionDataAvailableDateRange(AAZCommand):
-    """API for query fortest emission data available date range
+    """API for query carbon emission data available date range
 
-    :example: Query fortest Emission Data Available Date Range
-        az fortest get-emission-data-available-date-range
+    :example: Query carbon Emission Data Available Date Range
+        az carbon get-emission-data-available-date-range
     """
 
     _aaz_info = {
         "version": "2025-04-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.fortest/queryfortestemissiondataavailabledaterange", "2025-04-01"],
+            ["mgmt-plane", "/providers/microsoft.carbon/querycarbonemissiondataavailabledaterange", "2025-04-01"],
         ]
     }
 
@@ -35,7 +35,7 @@ class GetEmissionDataAvailableDateRange(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.fortestServiceQueryfortestEmissionDataAvailableDateRange(ctx=self.ctx)()
+        self.carbonServiceQuerycarbonEmissionDataAvailableDateRange(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -50,7 +50,7 @@ class GetEmissionDataAvailableDateRange(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class fortestServiceQueryfortestEmissionDataAvailableDateRange(AAZHttpOperation):
+    class carbonServiceQuerycarbonEmissionDataAvailableDateRange(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -64,7 +64,7 @@ class GetEmissionDataAvailableDateRange(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/providers/Microsoft.fortest/queryfortestEmissionDataAvailableDateRange",
+                "/providers/Microsoft.carbon/querycarbonEmissionDataAvailableDateRange",
                 **self.url_parameters
             )
 

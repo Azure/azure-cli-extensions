@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"fortestScopeList": ["Scope1", "Scope2", "Scope3"], "dateRange": {"end":
+    body: '{"carbonScopeList": ["Scope1", "Scope2", "Scope3"], "dateRange": {"end":
       "2025-03-01", "start": "2024-03-01"}, "reportType": "OverallSummaryReport",
       "subscriptionList": ["1fcfa925-ad8b-443e-afc9-73038125cc86"]}'
     headers:
@@ -9,7 +9,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - fortest get-emission-report
+      - carbon get-emission-report
       Connection:
       - keep-alive
       Content-Length:
@@ -17,11 +17,11 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --subscription-list --date-range --fortest-scope-list --overall-summary
+      - --subscription-list --date-range --carbon-scope-list --overall-summary
       User-Agent:
       - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.fortest/fortestEmissionReports?api-version=2025-04-01
+    uri: https://management.azure.com/providers/Microsoft.carbon/carbonEmissionReports?api-version=2025-04-01
   response:
     body:
       string: '{"value":[{"dataType":"OverallSummaryData","latestMonthEmissions":3764.88845070415,"previousMonthEmissions":3662.81335934428,"monthOverMonthEmissionsChangeRatio":0.0278679477619186,"monthlyEmissionsChangeValue":102.075091359864}]}'
@@ -43,8 +43,8 @@ interactions:
       request-context:
       - appId=cid-v1:1b30ee95-d108-4b28-8df6-b780a66c5364
       set-cookie:
-      - ARRAffinity=1a1db42e64c24222c8d6c447e0028598d5fe62845b3b315c8b25f53a387e2abb;Path=/;HttpOnly;Secure;Domain=sustfortest-webapp-prod-wus.azurewebsites.net
-      - ARRAffinitySameSite=1a1db42e64c24222c8d6c447e0028598d5fe62845b3b315c8b25f53a387e2abb;Path=/;HttpOnly;SameSite=None;Secure;Domain=sustfortest-webapp-prod-wus.azurewebsites.net
+      - ARRAffinity=1a1db42e64c24222c8d6c447e0028598d5fe62845b3b315c8b25f53a387e2abb;Path=/;HttpOnly;Secure;Domain=sustcarbon-webapp-prod-wus.azurewebsites.net
+      - ARRAffinitySameSite=1a1db42e64c24222c8d6c447e0028598d5fe62845b3b315c8b25f53a387e2abb;Path=/;HttpOnly;SameSite=None;Secure;Domain=sustcarbon-webapp-prod-wus.azurewebsites.net
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:

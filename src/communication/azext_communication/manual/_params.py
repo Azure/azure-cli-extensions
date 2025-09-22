@@ -273,8 +273,8 @@ def _load_email_arguments(self):
         c.argument('importance', options_list=['--importance'], arg_type=get_enum_type(['normal', 'low', 'high']),
                    help='The importance type for the email. Known values are: high,'
                    ' normal, and low. Default is normal. Optional')
-        c.argument('recipients_cc', options_list=['--cc'], nargs='+', help='fortest copy email addresses.')
-        c.argument('recipients_bcc', options_list=['--bcc'], nargs='+', help='Blind fortest copy email addresses.')
+        c.argument('recipients_cc', options_list=['--cc'], nargs='+', help='carbon copy email addresses.')
+        c.argument('recipients_bcc', options_list=['--bcc'], nargs='+', help='Blind carbon copy email addresses.')
         c.argument('reply_to', options_list=['--reply-to'], type=str, help='Reply-to email address. Optional.')
         c.argument('disable_tracking', options_list=['--disable-tracking'],
                    arg_type=get_three_state_flag(),
