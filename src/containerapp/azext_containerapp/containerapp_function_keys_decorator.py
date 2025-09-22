@@ -4,15 +4,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, broad-except, logging-format-interpolation
+import random
 from knack.log import get_logger
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import ValidationError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
+from azure.cli.command_modules.containerapp._utils import safe_get
 
-from ._clients import ContainerAppFunctionsPreviewClient
+from ._clients import ContainerAppFunctionsPreviewClient, ContainerAppPreviewClient
 from ._client_factory import handle_raw_exception
+from azure.cli.command_modules.containerapp._clients import ContainerAppClient
 
 logger = get_logger(__name__)
 
@@ -42,7 +45,7 @@ class ContainerAppFunctionKeysDecorator(BaseResource):
         """Validate common arguments required for all function key operations"""
         resource_group_name = self.get_argument_resource_group_name()
         name = self.get_argument_name()
-        revision = self.get_argument_revision()
+        revision_name = self.get_argument_revision()
         key_type = self.get_argument_key_type()
 
         if not resource_group_name:
@@ -54,7 +57,52 @@ class ContainerAppFunctionKeysDecorator(BaseResource):
         if not key_type:
             raise ValidationError("Key type is required.")
 
-        return resource_group_name, name, revision, key_type
+        try:
+            containerapp_def = ContainerAppPreviewClient.show(
+                cmd=self.cmd, 
+                resource_group_name=resource_group_name, 
+                name=name
+            )
+        except Exception as e:
+            handle_raw_exception(e)
+
+        if not containerapp_def:
+            raise ValidationError(f"The containerapp '{name}' does not exist in resource group '{resource_group_name}'.")
+
+        # Check active revision mode (default to 'single' if not found)
+        active_revision_mode = safe_get(containerapp_def, "properties", "configuration", "activeRevisionsMode", default="single")
+        
+        if active_revision_mode.lower() != "single":
+            if not revision_name:
+                raise ValidationError("Revision name is required when active revision mode is not 'single'.")
+        else:
+            if not revision_name:
+                revision_name = safe_get(containerapp_def, "properties", "latestRevisionName")
+                if not revision_name:
+                    raise ValidationError("Could not determine the latest revision name. Please provide --revision.")
+
+        # Get replicas for the revision
+        try:
+            replicas = ContainerAppPreviewClient.list_replicas(
+                cmd=self.cmd,
+                resource_group_name=resource_group_name,
+                container_app_name=name,
+                revision_name=revision_name
+            )
+        except Exception as e:
+            handle_raw_exception(e)
+
+        if not replicas:
+            raise ValidationError(f"No replicas found for revision '{revision_name}' of container app '{name}'.")
+
+        # Select a random replica
+        replica = random.choice(replicas)
+        replica_name = replica.get("name")
+        
+        if not replica_name:
+            raise ValidationError("Could not determine replica name.")
+
+        return resource_group_name, name, revision_name, key_type, replica_name
 
     def validate_function_name_requirement(self, key_type):
         """Validate function name is provided when required for functionKey type"""
@@ -77,19 +125,19 @@ class ContainerAppFunctionKeysShowDecorator(ContainerAppFunctionKeysDecorator):
 
     def validate_show_arguments(self):
         """Validate arguments required for showing function keys"""
-        resource_group_name, name, revision, key_type = self.validate_common_arguments()
+        resource_group_name, name, revision_name, key_type, replica_name = self.validate_common_arguments()
         key_name = self.get_argument_key_name()
         function_name = self.validate_function_name_requirement(key_type)
 
         if not key_name:
             raise ValidationError("Key name is required.")
 
-        return resource_group_name, name, revision, key_type, key_name, function_name
+        return resource_group_name, name, revision_name, key_type, key_name, function_name, replica_name
 
     def show_keys(self):
         """Show specific key"""
         try:
-            resource_group_name, name, revision, key_type, key_name, function_name = self.validate_show_arguments()
+            resource_group_name, name, revision_name, key_type, key_name, function_name, replica_name = self.validate_show_arguments()
 
             return self.client.show_function_keys(
                 cmd=self.cmd,
@@ -111,15 +159,15 @@ class ContainerAppFunctionKeysListDecorator(ContainerAppFunctionKeysDecorator):
 
     def validate_list_arguments(self):
         """Validate arguments required for listing function keys"""
-        resource_group_name, name, revision, key_type = self.validate_common_arguments()
+        resource_group_name, name, revision_name, key_type, replica_name = self.validate_common_arguments()
         function_name = self.validate_function_name_requirement(key_type)
 
-        return resource_group_name, name, revision, key_type, function_name
+        return resource_group_name, name, revision_name, key_type, function_name, replica_name
 
     def list_keys(self):
         """List keys based on key type"""
         try:
-            resource_group_name, name, revision, key_type, function_name = self.validate_list_arguments()
+            resource_group_name, name, revision_name, key_type, function_name, replica_name = self.validate_list_arguments()
 
             return self.client.list_function_keys(
                 cmd=self.cmd,
@@ -140,7 +188,7 @@ class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
 
     def validate_set_arguments(self):
         """Validate arguments required for setting/updating function keys"""
-        resource_group_name, name, revision, key_type = self.validate_common_arguments()
+        resource_group_name, name, revision_name, key_type, replica_name = self.validate_common_arguments()
         key_name = self.get_argument_key_name()
         key_value = self.get_argument_key_value()
         function_name = self.validate_function_name_requirement(key_type)
@@ -151,12 +199,12 @@ class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
         if not key_value:
             raise ValidationError("Key value is required.")
 
-        return resource_group_name, name, revision, key_type, key_name, key_value, function_name
+        return resource_group_name, name, revision_name, key_type, key_name, key_value, function_name, replica_name
 
     def set_keys(self):
         """Set/Update keys based on key type"""
         try:
-            resource_group_name, name, revision, key_type, key_name, key_value, function_name = self.validate_set_arguments()
+            resource_group_name, name, revision_name, key_type, key_name, key_value, function_name, replica_name = self.validate_set_arguments()
 
             return self.client.set_function_keys(
                 cmd=self.cmd,

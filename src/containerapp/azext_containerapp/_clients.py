@@ -376,7 +376,7 @@ class ContainerAppFunctionsPreviewClient():
         return r.json()
 
     @classmethod
-    def show_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, function_name=None):
+    def show_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, function_name=None, revision=None, replica=None):
         """Show specific function key based on key type"""
 
         command_fmt = ""
@@ -392,13 +392,13 @@ class ContainerAppFunctionsPreviewClient():
             resource_group_name=resource_group_name,
             name=name,
             container=None,
-            revision=None,
-            replica=None,
+            revision=revision,
+            replica=replica,
             command=command
         )
 
     @classmethod
-    def list_function_keys(cls, cmd, resource_group_name, name, key_type, function_name=None):
+    def list_function_keys(cls, cmd, resource_group_name, name, key_type, function_name=None, revision=None, replica=None):
         """List function keys based on key type"""
         
         command_fmt = ""
@@ -414,13 +414,13 @@ class ContainerAppFunctionsPreviewClient():
             resource_group_name=resource_group_name,
             name=name,
             container=None,
-            revision=None,
-            replica=None,
+            revision=revision,
+            replica=replica,
             command=command
         )
 
     @classmethod
-    def set_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, key_value, function_name=None):
+    def set_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, key_value, function_name=None, revision=None, replica=None):
         """Set/Update function keys based on key type"""
         
         command_fmt = ""
@@ -436,8 +436,8 @@ class ContainerAppFunctionsPreviewClient():
             resource_group_name=resource_group_name,
             name=name,
             container=None,
-            revision=None,
-            replica=None,
+            revision=revision,
+            replica=replica,
             command=command
         )
 
