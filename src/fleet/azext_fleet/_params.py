@@ -24,7 +24,8 @@ from azext_fleet._validators import (
     validate_vm_size,
     validate_targets,
     validate_update_strategy_id,
-    validate_labels
+    validate_labels,
+    validate_enable_vnet_integration
 )
 
 labels_type = CLIArgumentType(
@@ -43,8 +44,8 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'], help='Prefix for host names that are created. If not specified, generate a host name using the managed cluster and resource group names.')
         c.argument('enable_private_cluster', action='store_true', help='Whether to create the Fleet hub as a private cluster or not.')
-        c.argument('enable_vnet_integration', action='store_true', is_preview=True, help='Whether to enable apiserver vnet integration for the Fleet hub or not.')
-        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True, help='The subnet to be used when apiserver vnet integration is enabled.')
+        c.argument('enable_vnet_integration', validator=validate_enable_vnet_integration, action='store_true', help='Whether to enable apiserver vnet integration for the Fleet hub or not.')
+        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, help='The subnet to be used when apiserver vnet integration is enabled.')
         c.argument('agent_subnet_id', validator=validate_agent_subnet_id, help='The ID of the subnet which the Fleet hub node will join on startup.')
         c.argument('enable_managed_identity', action='store_true', help='Enable system assigned managed identity (MSI) on the Fleet resource.')
         c.argument('assign_identity', validator=validate_assign_identity, help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource by specifying the user assigned identity\'s resource Id.')
