@@ -529,7 +529,7 @@ def load_command_table(self, _):
 
     # AKS jwt authenticator commands
     with self.command_group(
-        "aks jwtauthenticator", jwt_authenticators_sdk,client_factory=cf_jwt_authenticators,
+        "aks jwtauthenticator", jwt_authenticators_sdk, client_factory=cf_jwt_authenticators,
     ) as g:
         g.custom_command("add", "aks_jwtauthenticator_add", supports_no_wait=True)
         g.custom_command("update", "aks_jwtauthenticator_update", supports_no_wait=True)
