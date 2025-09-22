@@ -50,6 +50,7 @@ from azext_aks_preview._consts import (
 from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
     filter_hard_taints,
+    process_dns_overrides,
 )
 
 logger = get_logger(__name__)
@@ -1448,13 +1449,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         return agentpool
 
-    def _process_dns_overrides(self, overrides_dict, target_dict, build_override_func):
-        """Helper method to safely process DNS overrides with null checks."""
-        if overrides_dict is not None:
-            for key, value in overrides_dict.items():
-                if value is not None:
-                    target_dict[key] = build_override_func(value)
-
     def set_up_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Set up local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
@@ -1484,12 +1478,12 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
                 return self.models.LocalDNSOverride(**filtered)
 
             # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
-            self._process_dns_overrides(
+            process_dns_overrides(
                 localdns_profile.get("kubeDNSOverrides"),
                 kube_dns_overrides,
                 build_override
             )
-            self._process_dns_overrides(
+            process_dns_overrides(
                 localdns_profile.get("vnetDNSOverrides"),
                 vnet_dns_overrides,
                 build_override
@@ -1826,12 +1820,12 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
                 return self.models.LocalDNSOverride(**filtered)
 
             # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
-            self._process_dns_overrides(
+            process_dns_overrides(
                 localdns_profile.get("kubeDNSOverrides"),
                 kube_dns_overrides,
                 build_override
             )
-            self._process_dns_overrides(
+            process_dns_overrides(
                 localdns_profile.get("vnetDNSOverrides"),
                 vnet_dns_overrides,
                 build_override
