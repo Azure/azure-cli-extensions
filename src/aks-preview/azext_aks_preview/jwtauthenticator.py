@@ -130,7 +130,6 @@ def construct_jwt_authenticator(cmd, raw_parameters):
         )
 
     jwt_authenticator = JWTAuthenticator(properties=properties)
-    
     return jwt_authenticator
 
 
