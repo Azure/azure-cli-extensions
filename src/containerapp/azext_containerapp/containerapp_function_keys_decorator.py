@@ -4,18 +4,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, broad-except, logging-format-interpolation
-import random
+
 from knack.log import get_logger
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import ValidationError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
-from azure.cli.command_modules.containerapp._utils import safe_get
 
-from ._clients import ContainerAppFunctionsPreviewClient, ContainerAppPreviewClient
+from ._clients import ContainerAppFunctionsPreviewClient
 from ._client_factory import handle_raw_exception
-from azure.cli.command_modules.containerapp._clients import ContainerAppClient
+from ._validators import validate_basic_arguments, validate_revision_and_get_name
+from ._utils import get_random_replica
 
 logger = get_logger(__name__)
 
@@ -48,59 +48,28 @@ class ContainerAppFunctionKeysDecorator(BaseResource):
         revision_name = self.get_argument_revision()
         key_type = self.get_argument_key_type()
 
-        if not resource_group_name:
-            raise ValidationError("Resource group name is required.")
-        
-        if not name:
-            raise ValidationError("Container app name is required.")
-        
-        if not key_type:
-            raise ValidationError("Key type is required.")
+        # Validate basic arguments
+        validate_basic_arguments(
+            resource_group_name=resource_group_name,
+            container_app_name=name,
+            key_type=key_type
+        )
 
-        try:
-            containerapp_def = ContainerAppPreviewClient.show(
-                cmd=self.cmd, 
-                resource_group_name=resource_group_name, 
-                name=name
-            )
-        except Exception as e:
-            handle_raw_exception(e)
+        # Validate revision and get the appropriate revision name
+        revision_name = validate_revision_and_get_name(
+            cmd=self.cmd,
+            resource_group_name=resource_group_name,
+            container_app_name=name,
+            provided_revision_name=revision_name
+        )
 
-        if not containerapp_def:
-            raise ValidationError(f"The containerapp '{name}' does not exist in resource group '{resource_group_name}'.")
-
-        # Check active revision mode (default to 'single' if not found)
-        active_revision_mode = safe_get(containerapp_def, "properties", "configuration", "activeRevisionsMode", default="single")
-        
-        if active_revision_mode.lower() != "single":
-            if not revision_name:
-                raise ValidationError("Revision name is required when active revision mode is not 'single'.")
-        else:
-            if not revision_name:
-                revision_name = safe_get(containerapp_def, "properties", "latestRevisionName")
-                if not revision_name:
-                    raise ValidationError("Could not determine the latest revision name. Please provide --revision.")
-
-        # Get replicas for the revision
-        try:
-            replicas = ContainerAppPreviewClient.list_replicas(
-                cmd=self.cmd,
-                resource_group_name=resource_group_name,
-                container_app_name=name,
-                revision_name=revision_name
-            )
-        except Exception as e:
-            handle_raw_exception(e)
-
-        if not replicas:
-            raise ValidationError(f"No replicas found for revision '{revision_name}' of container app '{name}'.")
-
-        # Select a random replica
-        replica = random.choice(replicas)
-        replica_name = replica.get("name")
-        
-        if not replica_name:
-            raise ValidationError("Could not determine replica name.")
+        # Get a random replica for the revision
+        replica_name = get_random_replica(
+            cmd=self.cmd,
+            resource_group_name=resource_group_name,
+            container_app_name=name,
+            revision_name=revision_name
+        )
 
         return resource_group_name, name, revision_name, key_type, replica_name
 
@@ -139,6 +108,7 @@ class ContainerAppFunctionKeysShowDecorator(ContainerAppFunctionKeysDecorator):
         try:
             resource_group_name, name, revision_name, key_type, key_name, function_name, replica_name = self.validate_show_arguments()
 
+            # Note: Client methods need to be updated to accept revision and replica parameters
             return self.client.show_function_keys(
                 cmd=self.cmd,
                 resource_group_name=resource_group_name,
@@ -146,6 +116,7 @@ class ContainerAppFunctionKeysShowDecorator(ContainerAppFunctionKeysDecorator):
                 key_type=key_type,
                 key_name=key_name,
                 function_name=function_name
+                # TODO: Pass revision=revision_name, replica=replica_name when client is updated
             )
         except Exception as e:
             handle_raw_exception(e)
@@ -169,12 +140,14 @@ class ContainerAppFunctionKeysListDecorator(ContainerAppFunctionKeysDecorator):
         try:
             resource_group_name, name, revision_name, key_type, function_name, replica_name = self.validate_list_arguments()
 
+            # Note: Client methods need to be updated to accept revision and replica parameters
             return self.client.list_function_keys(
                 cmd=self.cmd,
                 resource_group_name=resource_group_name,
                 name=name,
                 key_type=key_type,
                 function_name=function_name
+                # TODO: Pass revision=revision_name, replica=replica_name when client is updated
             )
         except Exception as e:
             handle_raw_exception(e)
@@ -206,6 +179,7 @@ class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
         try:
             resource_group_name, name, revision_name, key_type, key_name, key_value, function_name, replica_name = self.validate_set_arguments()
 
+            # Note: Client methods need to be updated to accept revision and replica parameters
             return self.client.set_function_keys(
                 cmd=self.cmd,
                 resource_group_name=resource_group_name,
@@ -214,6 +188,7 @@ class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
                 key_name=key_name,
                 key_value=key_value,
                 function_name=function_name
+                # TODO: Pass revision=revision_name, replica=replica_name when client is updated
             )
         except Exception as e:
             handle_raw_exception(e)
