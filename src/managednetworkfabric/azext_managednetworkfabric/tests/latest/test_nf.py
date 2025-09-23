@@ -99,7 +99,7 @@ class GA_NFScenarioTest1(ScenarioTest):
                     "NETWORK_FABRIC", "managed_network_conf"
                 ),
                 "user_assigned_identity": CONFIG.get(
-                    "MANAGED_IDENTITY", "user_assigned_identity"
+                    "NETWORK_FABRIC", "user_assigned_identity"
                 ),
                 "control_plane_acls": CONFIG.get(
                     "NETWORK_FABRIC", "control_plane_acls"
