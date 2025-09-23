@@ -1,0 +1,944 @@
+interactions:
+- request:
+    body: '{"tags": {"key1": "value1", "key2": "value2"}, "location": "westus2", "properties":
+      {"startDelayMilliseconds": 5000, "measurementCount": 3}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint profile create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '140'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --measurement-count --start-delay-ms --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceCreationFailed","message":"ResourceCreationFailed:
+        Service Unavailable"}}'
+    headers:
+      cache-control:
+      - no-store
+      connection:
+      - close
+      content-length:
+      - '99'
+      content-type:
+      - application/json
+      date:
+      - Tue, 18 Aug 2020 22:22:43 GMT
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: C3793B9AE28B4430A11116AED83FBE03 Ref B: STBEDGE0114 Ref C: 2020-08-18T22:22:12Z'
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: '{"tags": {"key1": "value1", "key2": "value2"}, "location": "westus2", "properties":
+      {"startDelayMilliseconds": 5000, "measurementCount": 3}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint profile create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '140'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --measurement-count --start-delay-ms --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002","name":"fpPro000002","type":"Microsoft.FootprintMonitoring/profiles","location":"westus2","tags":{"key1":"value1","key2":"value2"},"properties":{"coldPathSamplingPercentageRate":100.0,"measurementCount":3,"profileId":"fpPro000002","provisioningState":"Succeeded","reportingEndpoints":["fpc.msedge.net/r.gif","odinvzc.azureedge.net/apc/trans.gif"],"scriptUri":"https://fpc.msedge.net/conf/v2/fpPro000002/fpconfig.min.json","startDelayMilliseconds":5000}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '661'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:22:55 GMT
+      etag:
+      - '"02004a6f-0000-0800-0000-5f3c54bf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint profile show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002","name":"fpPro000002","type":"Microsoft.FootprintMonitoring/profiles","location":"westus2","tags":{"key1":"value1","key2":"value2"},"properties":{"coldPathSamplingPercentageRate":100.0,"experiments":[],"measurementCount":3,"measurementEndpoints":[],"profileId":"fpPro000002","provisioningState":"Succeeded","reportingEndpoints":["fpc.msedge.net/r.gif","odinvzc.azureedge.net/apc/trans.gif"],"scriptUri":"https://fpc.msedge.net/conf/v2/fpPro000002/fpconfig.min.json","startDelayMilliseconds":5000}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '704'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:22:56 GMT
+      etag:
+      - '"02004a6f-0000-0800-0000-5f3c54bf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint profile list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002","name":"fpPro000002","type":"Microsoft.FootprintMonitoring/profiles","location":"westus2","tags":{"key1":"value1","key2":"value2"},"properties":{"coldPathSamplingPercentageRate":100.0,"experiments":[],"measurementCount":3,"measurementEndpoints":[],"profileId":"fpPro000002","provisioningState":"Succeeded","reportingEndpoints":["fpc.msedge.net/r.gif","odinvzc.azureedge.net/apc/trans.gif"],"scriptUri":"https://fpc.msedge.net/conf/v2/fpPro000002/fpconfig.min.json","startDelayMilliseconds":5000}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '716'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:22:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint profile list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FootprintMonitoring/profiles?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jonunezd-rg-1/providers/Microsoft.FootprintMonitoring/profiles/jonunezd-prodtest","name":"jonunezd-prodtest","type":"Microsoft.FootprintMonitoring/profiles","location":"westus2","tags":{"key1":"value1","key2":"value2"},"properties":{"coldPathSamplingPercentageRate":100.0,"experiments":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jonunezd-rg-1/providers/Microsoft.FootprintMonitoring/profiles/jonunezd-prodtest/experiments/exp-1"}],"measurementCount":5,"measurementEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jonunezd-rg-1/providers/Microsoft.FootprintMonitoring/profiles/jonunezd-prodtest/measurementEndpoints/endpoint-2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jonunezd-rg-1/providers/Microsoft.FootprintMonitoring/profiles/jonunezd-prodtest/measurementEndpoints/endpoint-1"}],"profileId":"jonunezd-prodtest","provisioningState":"Succeeded","reportingEndpoints":["fpc.msedge.net/r.gif","odinvzc.azureedge.net/apc/trans.gif"],"scriptUri":"https://fpc.msedge.net/conf/v2/jonunezd-prodtest/fpconfig.min.json","startDelayMilliseconds":999}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002","name":"fpPro000002","type":"Microsoft.FootprintMonitoring/profiles","location":"westus2","tags":{"key1":"value1","key2":"value2"},"properties":{"coldPathSamplingPercentageRate":100.0,"experiments":[],"measurementCount":3,"measurementEndpoints":[],"profileId":"fpPro000002","provisioningState":"Succeeded","reportingEndpoints":["fpc.msedge.net/r.gif","odinvzc.azureedge.net/apc/trans.gif"],"scriptUri":"https://fpc.msedge.net/conf/v2/fpPro000002/fpconfig.min.json","startDelayMilliseconds":5000}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1937'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:22:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"key1": "value1", "key2": "value2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint profile update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '46'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002","name":"fpPro000002","type":"Microsoft.FootprintMonitoring/profiles","location":"westus2","tags":{"key1":"value1","key2":"value2"},"properties":{"coldPathSamplingPercentageRate":100,"measurementCount":3,"profileId":"fpPro000002","provisioningState":"Succeeded","reportingEndpoints":["fpc.msedge.net/r.gif","odinvzc.azureedge.net/apc/trans.gif"],"scriptUri":"https://fpc.msedge.net/conf/v2/fpPro000002/fpconfig.min.json","startDelayMilliseconds":5000}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '659'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:23:00 GMT
+      etag:
+      - '"02004b6f-0000-0800-0000-5f3c54c30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "An experiment description."}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint experiment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '61'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --description --profile-name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/experiments/fp000004?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/experiments/fp000004","name":"fp000004","type":"Microsoft.FootprintMonitoring/profiles/experiments","properties":{"description":"An
+        experiment description.","experimentId":"fc0b63fba89db2f8d4150e1d95b9ea58","status":"Created"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '439'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:23:05 GMT
+      etag:
+      - '"360161d9-0000-0800-0000-5f3c54c90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint experiment show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --profile-name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/experiments/fp000004?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/experiments/fp000004","name":"fp000004","type":"Microsoft.FootprintMonitoring/profiles/experiments","properties":{"description":"An
+        experiment description.","experimentId":"fc0b63fba89db2f8d4150e1d95b9ea58","status":"Created"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '439'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:23:05 GMT
+      etag:
+      - '"360161d9-0000-0800-0000-5f3c54c90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint experiment list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --profile-name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/experiments?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/experiments/fp000004","name":"fp000004","type":"Microsoft.FootprintMonitoring/profiles/experiments","properties":{"description":"An
+        experiment description.","experimentId":"fc0b63fba89db2f8d4150e1d95b9ea58","status":"Created"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '451'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:23:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"endpoint": "www.contoso.com", "measurementType": 2, "weight":
+      10, "experimentId": "664cdec4f07d4e1083c9b3969ee2c49b", "objectPath": "/trans.gif"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint measurement-endpoint create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '163'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --endpoint --experiment-id --measurement-type --object-path --weight
+        --profile-name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003","name":"endp000003","type":"Microsoft.FootprintMonitoring/profiles/measurementEndpoints","properties":{"endpoint":"www.contoso.com","endpointId":"3f9db20029849b10e9e1c41f71c32b80","experimentId":"664cdec4f07d4e1083c9b3969ee2c49b","hotPathSamplingPercentageRate":0.0,"measurementType":2,"objectPath":"/trans.gif","warmPathSamplingPercentageRate":0.0,"weight":10}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '603'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:23:13 GMT
+      etag:
+      - '"98014158-0000-0800-0000-5f3c54d20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint measurement-endpoint show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --profile-name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003","name":"endp000003","type":"Microsoft.FootprintMonitoring/profiles/measurementEndpoints","properties":{"conditions":[],"endpoint":"www.contoso.com","endpointId":"3f9db20029849b10e9e1c41f71c32b80","experimentId":"664cdec4f07d4e1083c9b3969ee2c49b","hotPathSamplingPercentageRate":0.0,"measurementType":2,"objectPath":"/trans.gif","warmPathSamplingPercentageRate":0.0,"weight":10}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '619'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:23:15 GMT
+      etag:
+      - '"98014158-0000-0800-0000-5f3c54d20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint measurement-endpoint list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --profile-name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003","name":"endp000003","type":"Microsoft.FootprintMonitoring/profiles/measurementEndpoints","properties":{"conditions":[],"endpoint":"www.contoso.com","endpointId":"3f9db20029849b10e9e1c41f71c32b80","experimentId":"664cdec4f07d4e1083c9b3969ee2c49b","hotPathSamplingPercentageRate":0.0,"measurementType":2,"objectPath":"/trans.gif","warmPathSamplingPercentageRate":0.0,"weight":10}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '631'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:23:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"type": "RequestHeader", "variable": "X-FD-EdgeEnvironment",
+      "operator": "MatchValueIgnoreCasing", "constant": "Edge-Prod-WST"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint measurement-endpoint-condition create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '144'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --endpoint-name --constant --operator --variable --profile-name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003/conditions/condition0?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003/conditions/condition0","name":"condition0","type":"Microsoft.FootprintMonitoring/profiles/measurementEndpoints/conditions","properties":{"conditionId":"677f1a8667196d9513d36440893e8d4a","constant":"Edge-Prod-WST","operator":"MatchValueIgnoreCasing","type":"RequestHeader","variable":"X-FD-EdgeEnvironment"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '548'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:23:26 GMT
+      etag:
+      - '"7900e932-0000-0800-0000-5f3c54df0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint measurement-endpoint-condition show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --endpoint-name --profile-name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003/conditions/condition0?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003/conditions/condition0","name":"condition0","type":"Microsoft.FootprintMonitoring/profiles/measurementEndpoints/conditions","properties":{"conditionId":"677f1a8667196d9513d36440893e8d4a","constant":"Edge-Prod-WST","operator":"MatchValueIgnoreCasing","type":"RequestHeader","variable":"X-FD-EdgeEnvironment"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '548'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:23:28 GMT
+      etag:
+      - '"7900e932-0000-0800-0000-5f3c54df0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint measurement-endpoint-condition list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --endpoint-name --profile-name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003/conditions?api-version=2020-02-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003/conditions/condition0","name":"condition0","type":"Microsoft.FootprintMonitoring/profiles/measurementEndpoints/conditions","properties":{"conditionId":"677f1a8667196d9513d36440893e8d4a","constant":"Edge-Prod-WST","operator":"MatchValueIgnoreCasing","type":"RequestHeader","variable":"X-FD-EdgeEnvironment"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '560'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Aug 2020 22:23:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint measurement-endpoint-condition delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --endpoint-name --profile-name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003/conditions/condition0?api-version=2020-02-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 18 Aug 2020 22:23:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint experiment delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --profile-name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/experiments/fp000004?api-version=2020-02-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 18 Aug 2020 22:23:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint measurement-endpoint delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --profile-name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002/measurementEndpoints/endp000003?api-version=2020-02-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 18 Aug 2020 22:23:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - footprint profile delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.10.1 azsdk-python-footprintmonitoringmanagementclient/unknown Python/3.8.5
+        (Windows-10-10.0.18362-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.FootprintMonitoring/profiles/fpPro000002?api-version=2020-02-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 18 Aug 2020 22:23:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1
