@@ -303,7 +303,7 @@ class JWTAuthenticatorsOperations:
                 )
                 _next_request_params["api-version"] = self._config.api_version
                 _request = HttpRequest(
-                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params, headers=_headers
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 _request.url = self._client.format_url(_request.url)
                 _request.method = "GET"
@@ -596,16 +596,13 @@ class JWTAuthenticatorsOperations:
             raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
-        if "AKSHTTPCustomFeatures" in _headers:
-            kwargs["headers"] = {"AKSHTTPCustomFeatures": _headers["AKSHTTPCustomFeatures"]}
-
         def get_long_running_output(pipeline_response):
             response_headers = {}
             response = pipeline_response.http_response
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
-            
+
             deserialized = self._deserialize("JWTAuthenticator", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, response_headers)  # type: ignore
