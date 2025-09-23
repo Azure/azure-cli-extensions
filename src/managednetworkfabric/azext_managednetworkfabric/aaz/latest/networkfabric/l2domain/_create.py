@@ -87,11 +87,13 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="ARM Resource ID of the Network Fabric.",
             required=True,
+            nullable=True,
         )
         _args_schema.network_to_network_interconnect_id = AAZResourceIdArg(
             options=["--nni-id", "--network-to-network-interconnect-id"],
             arg_group="Properties",
             help="ARM Resource ID of the networkToNetworkInterconnectId of the L2 ISD resource.",
+            nullable=True,
         )
         _args_schema.vlan_id = AAZIntArg(
             options=["--vlan-id"],
@@ -240,8 +242,8 @@ class Create(AAZCommand):
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("extendedVlan", AAZStrType, ".extended_vlan")
                 properties.set_prop("mtu", AAZIntType, ".mtu")
-                properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("networkToNetworkInterconnectId", AAZStrType, ".network_to_network_interconnect_id")
+                properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}, "nullable": True})
+                properties.set_prop("networkToNetworkInterconnectId", AAZStrType, ".network_to_network_interconnect_id", typ_kwargs={"nullable": True})
                 properties.set_prop("vlanId", AAZIntType, ".vlan_id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
@@ -310,9 +312,11 @@ class Create(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.network_to_network_interconnect_id = AAZStrType(
                 serialized_name="networkToNetworkInterconnectId",
+                nullable=True,
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

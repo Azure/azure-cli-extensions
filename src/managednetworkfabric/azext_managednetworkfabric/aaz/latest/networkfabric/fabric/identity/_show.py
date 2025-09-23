@@ -16,9 +16,6 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Show the details of managed identities.
-
-    :example: Show identity on the Network Fabric
-        az networkfabric fabric identity show --resource-group example-rg --resource-name example-fabric
     """
 
     _aaz_info = {
@@ -46,7 +43,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_fabric_name = AAZStrArg(
-            options=["-n", "--name", "--resource-name", "--network-fabric-name"],
+            options=["-n", "--name", "--network-fabric-name"],
             help="Name of the Network Fabric.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -305,6 +302,7 @@ class _ShowHelper:
         properties.network_fabric_controller_id = AAZStrType(
             serialized_name="networkFabricControllerId",
             flags={"required": True},
+            nullable=True,
         )
         properties.network_fabric_sku = AAZStrType(
             serialized_name="networkFabricSku",
@@ -349,7 +347,9 @@ class _ShowHelper:
         active_commit_batches.Element = AAZStrType()
 
         control_plane_acls = _schema_network_fabric_read.properties.control_plane_acls
-        control_plane_acls.Element = AAZStrType()
+        control_plane_acls.Element = AAZStrType(
+            nullable=True,
+        )
 
         fabric_locks = _schema_network_fabric_read.properties.fabric_locks
         fabric_locks.Element = AAZObjectType()
@@ -405,6 +405,7 @@ class _ShowHelper:
         storage_account_configuration = _schema_network_fabric_read.properties.storage_account_configuration
         storage_account_configuration.storage_account_id = AAZStrType(
             serialized_name="storageAccountId",
+            nullable=True,
         )
         storage_account_configuration.storage_account_identity = AAZObjectType(
             serialized_name="storageAccountIdentity",
@@ -417,6 +418,7 @@ class _ShowHelper:
         )
         storage_account_identity.user_assigned_identity_resource_id = AAZStrType(
             serialized_name="userAssignedIdentityResourceId",
+            nullable=True,
         )
 
         terminal_server_configuration = _schema_network_fabric_read.properties.terminal_server_configuration
@@ -449,7 +451,9 @@ class _ShowHelper:
         )
 
         trusted_ip_prefixes = _schema_network_fabric_read.properties.trusted_ip_prefixes
-        trusted_ip_prefixes.Element = AAZStrType()
+        trusted_ip_prefixes.Element = AAZStrType(
+            nullable=True,
+        )
 
         unique_rd_configuration = _schema_network_fabric_read.properties.unique_rd_configuration
         unique_rd_configuration.nni_derived_unique_rd_configuration_state = AAZStrType(
@@ -519,6 +523,7 @@ class _ShowHelper:
         )
         vpn_configuration_properties_read.network_to_network_interconnect_id = AAZStrType(
             serialized_name="networkToNetworkInterconnectId",
+            nullable=True,
         )
         vpn_configuration_properties_read.option_a_properties = AAZObjectType(
             serialized_name="optionAProperties",

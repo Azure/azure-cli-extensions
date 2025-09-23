@@ -25,7 +25,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_update(test, checks=[])
     cleanup_scenario1(test)
@@ -67,7 +67,7 @@ class GA_NFUpdateScenarioTest1(ScenarioTest):
                 "managed_network_conf": CONFIG.get(
                     "NETWORK_FABRIC", "managed_network_conf"
                 ),
-                "user_assigned_identity": CONFIG.get(
+                "MANAGED_IDENTITY": CONFIG.get(
                     "NETWORK_FABRIC", "user_assigned_identity"
                 ),
                 "control_plane_acls": CONFIG.get(

@@ -25,7 +25,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
@@ -99,7 +99,7 @@ class GA_NFScenarioTest1(ScenarioTest):
                     "NETWORK_FABRIC", "managed_network_conf"
                 ),
                 "user_assigned_identity": CONFIG.get(
-                    "NETWORK_FABRIC", "user_assigned_identity"
+                    "MANAGED_IDENTITY", "user_assigned_identity"
                 ),
                 "control_plane_acls": CONFIG.get(
                     "NETWORK_FABRIC", "control_plane_acls"
