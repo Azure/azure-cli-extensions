@@ -6,9 +6,9 @@
 # pylint: disable=protected-access,duplicate-code
 
 """
- This code inherits the auto-generated code for BMM run read command, and adds retrieval of
- custom properties. It also processes the output directory if given and downloads the results
- of the command.
+This code inherits the auto-generated code for BMM run read command, and adds retrieval of
+custom properties. It also processes the output directory if given and downloads the results
+of the command.
 """
 from azext_networkcloud.aaz.latest.networkcloud.baremetalmachine import (
     RunReadCommand as _RunReadCommand,

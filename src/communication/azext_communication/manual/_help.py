@@ -256,6 +256,10 @@ helps['communication sms send'] = """
         text: |-
                az communication sms send --sender "+1833xxxxxxx" \
 --recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
+      - name: Send sms with delivery report and custom tag
+        text: |-
+               az communication sms send --sender "+1833xxxxxxx" --recipient "+1425xxxxxxx" \
+--message "Hello there!!" --deliveryReport --tag "custom-tag"
 """
 
 helps['communication sms send-sms'] = """
@@ -266,6 +270,10 @@ helps['communication sms send-sms'] = """
         text: |-
                az communication sms send-sms --sender "+1833xxxxxxx" \
 --recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
+      - name: Send sms with delivery report and custom tag
+        text: |-
+               az communication sms send-sms --sender "+1833xxxxxxx" --recipient "+1425xxxxxxx" \
+--message "Hello there!!" --deliveryReport --tag "custom-tag"
 """
 
 helps['communication phonenumbers'] = """
