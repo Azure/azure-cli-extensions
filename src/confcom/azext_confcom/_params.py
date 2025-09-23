@@ -113,7 +113,7 @@ def load_arguments(self, _):
         c.argument(
             "enable_stdio",
             action="store_true",
-            help="Disabling container stdio will disable the ability to see the output of the container in the terminal for Confidential ACI",
+            help="Enable the standard io streams to leave the container",
             validator=validate_stdio,
         )
         c.argument(
@@ -304,7 +304,7 @@ def load_arguments(self, _):
         c.argument(
             "enable_stdio",
             action="store_true",
-            help="Disabling container stdio will disable the ability to see the output of the container in the terminal for Confidential ACI",
+            help="Enable the standard io streams to leave the container",
             validator=validate_stdio,
         )
         c.argument(
