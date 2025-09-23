@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.0.2
++++++
+* Set `azext.minCliCoreVersion` to `2.75.0` since it is using DATA_STORAGE_TABLE
+
 1.0.1
 +++++
 * Remove DATA_COSMOS_TABLE and DATA_STORAGE references
