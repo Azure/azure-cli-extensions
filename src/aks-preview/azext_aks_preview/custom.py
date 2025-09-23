@@ -4506,7 +4506,16 @@ aks_identity_binding_list = aks_ib_cmd_list
 
 
 # JWT Authenticator commands
-def aks_jwtauthenticator_add(cmd, client, resource_group_name, cluster_name, name, config_file, aks_custom_headers=None, no_wait=False):
+def aks_jwtauthenticator_add(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        config_file,
+        aks_custom_headers=None,
+        no_wait=False
+):
     headers = get_aks_custom_headers(aks_custom_headers)
     existingJWTAuthenticator = None
     try:
@@ -4529,7 +4538,16 @@ def aks_jwtauthenticator_add(cmd, client, resource_group_name, cluster_name, nam
     )
 
 
-def aks_jwtauthenticator_update(cmd, client, resource_group_name, cluster_name, name, config_file, aks_custom_headers=None, no_wait=False):
+def aks_jwtauthenticator_update(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        config_file,
+        aks_custom_headers=None,
+        no_wait=False
+):
     headers = get_aks_custom_headers(aks_custom_headers)
     raw_parameters = locals()
     return aks_jwtauthenticator_update_internal(
@@ -4541,17 +4559,15 @@ def aks_jwtauthenticator_update(cmd, client, resource_group_name, cluster_name, 
     )
 
 
-def aks_jwtauthenticator_list(cmd, client, resource_group_name, cluster_name, aks_custom_headers=None):
-    headers = get_aks_custom_headers(aks_custom_headers)
-    return client.list_by_managed_cluster(resource_group_name, cluster_name, headers=headers)
-
-
-def aks_jwtauthenticator_show(cmd, client, resource_group_name, cluster_name, name, aks_custom_headers=None):
-    headers = get_aks_custom_headers(aks_custom_headers)
-    return client.get(resource_group_name, cluster_name, name, headers=headers)
-
-
-def aks_jwtauthenticator_delete(cmd, client, resource_group_name, cluster_name, name, aks_custom_headers=None, no_wait=False):
+def aks_jwtauthenticator_delete(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        aks_custom_headers=None,
+        no_wait=False
+):
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(
         no_wait,
@@ -4561,3 +4577,13 @@ def aks_jwtauthenticator_delete(cmd, client, resource_group_name, cluster_name, 
         name,
         headers=headers,
     )
+
+
+def aks_jwtauthenticator_list(cmd, client, resource_group_name, cluster_name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.list_by_managed_cluster(resource_group_name, cluster_name, headers=headers)
+
+
+def aks_jwtauthenticator_show(cmd, client, resource_group_name, cluster_name, name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.get(resource_group_name, cluster_name, name, headers=headers)

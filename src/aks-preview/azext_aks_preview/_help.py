@@ -4086,7 +4086,7 @@ helps['aks identity-binding delete'] = """
 helps['aks jwtauthenticator'] = """
     type: group
     short-summary: Commands to manage JWT authenticators in Azure Kubernetes Service.
-    long-summary: JWT authenticators enable external JWT token validation for Kubernetes authentication. 
+    long-summary: JWT authenticators enable external JWT token validation for Kubernetes authentication.
                   For more information, see https://aka.ms/aks-external-issuers-docs.
 """
 
@@ -4106,10 +4106,10 @@ helps['aks jwtauthenticator add'] = """
           type: string
           short-summary: Path to JSON file containing the JWT authenticator configuration.
           long-summary: The JSON file should contain the properties schema for one JWT authenticator.
-                        For details on how to configure the properties of a JWT authenticator, please refer to the Kubernetes documentation 
-                         at https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration. 
-                        Please note that not all fields available in the Kubernetes documentation are supported by AKS. 
-                        For troubleshooting, please see https://aka.ms/aks-external-issuers-docs."
+                        For details on how to configure the properties of a JWT authenticator, please refer to the Kubernetes documentation
+                        at https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration.
+                        Please note that not all fields available in the Kubernetes documentation are supported by AKS.
+                        For troubleshooting, please see https://aka.ms/aks-external-issuers-docs.
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -4134,10 +4134,10 @@ helps['aks jwtauthenticator update'] = """
           type: string
           short-summary: Path to JSON file containing the updated JWT authenticator configuration.
           long-summary: The JSON file should contain the properties schema for one JWT authenticator.
-                        For details on how to configure the properties of a JWT authenticator, please refer to the Kubernetes documentation 
-                        at https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration. 
-                        Please note that not all fields available in the Kubernetes documentation are supported by AKS. 
-                        For troubleshooting, please see https://aka.ms/aks-external-issuers-docs."
+                        For details on how to configure the properties of a JWT authenticator, please refer to the Kubernetes documentation
+                        at https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration.
+                        Please note that not all fields available in the Kubernetes documentation are supported by AKS.
+                        For troubleshooting, please see https://aka.ms/aks-external-issuers-docs.
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1

@@ -503,27 +503,29 @@ def _get_jwtauthenticator_table_row(result):
     properties = result.get('properties', {})
     provisioningState = properties.get('provisioningState', '')
     issuer = properties.get('issuer', {})
-    
+
     issuer_url = issuer.get('url', '') if issuer else ''
     audiences = issuer.get('audiences', []) if issuer else []
     audience_list = ', '.join(audiences) if audiences else ''
-    
+
     claim_mappings = properties.get('claimMappings', {})
     has_claim_mappings = 'No'
     if claim_mappings:
-        # Check if any claim mappings exist
-        if (claim_mappings.get('username') or 
-            claim_mappings.get('groups') or 
-            claim_mappings.get('uid') or 
-            (claim_mappings.get('extra') and isinstance(claim_mappings['extra'], list) and len(claim_mappings['extra']) > 0)):
+        has_username = bool(claim_mappings.get('username'))
+        has_groups = bool(claim_mappings.get('groups'))
+        has_uid = bool(claim_mappings.get('uid'))
+        has_extra = (claim_mappings.get('extra') and
+                     isinstance(claim_mappings['extra'], list) and
+                     len(claim_mappings['extra']) > 0)
+
+        if has_username or has_groups or has_uid or has_extra:
             has_claim_mappings = 'Yes'
-    
+
     claim_rules = properties.get('claimValidationRules', [])
     user_rules = properties.get('userValidationRules', [])
-    
     has_claim_rules = 'Yes' if claim_rules else 'No'
     has_user_rules = 'Yes' if user_rules else 'No'
-    
+
     return OrderedDict([
         ('name', result.get('name', '')),
         ('provisioningState', provisioningState),

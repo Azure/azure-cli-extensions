@@ -17920,9 +17920,7 @@ spec:
             self.check('properties.claimMappings.username.expression', 'claims.sub'),
             self.check('properties.claimMappings.groups.expression', 'claims.aud'),
         ])
-
-        time.sleep(60) # wait before updating to avoid "Another operation is in progress" error
-
+        
         update_jwt_cmd = (
             "aks jwtauthenticator update --resource-group={resource_group} --cluster-name={name} "
             "--name={jwt_auth_name} --config-file={updated_jwt_config_file} "

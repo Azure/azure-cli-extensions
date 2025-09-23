@@ -82,7 +82,7 @@ def construct_jwt_authenticator(cmd, raw_parameters):
         raise InvalidArgumentValueError(
             f"Configuration file not found: {config_file}"
         )
-    
+
     try:
         with open(config_file, 'r', encoding='utf-8') as f:
             config = json.load(f)
@@ -105,7 +105,7 @@ def construct_jwt_authenticator(cmd, raw_parameters):
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="jwt_authenticators",
     )
-    
+
     JWTAuthenticatorProperties = cmd.get_models(
         "JWTAuthenticatorProperties",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -117,7 +117,7 @@ def construct_jwt_authenticator(cmd, raw_parameters):
         properties = JWTAuthenticatorProperties.from_dict(config)
     except AttributeError as e:
         raise InvalidArgumentValueError(
-            f"JWT authenticator model does not support from_dict method: {str(e)}" # use this for testing
+            f"JWT authenticator model does not support from_dict method: {str(e)}"
         )
     except TypeError as e:
         raise InvalidArgumentValueError(
@@ -130,5 +130,3 @@ def construct_jwt_authenticator(cmd, raw_parameters):
 
     jwt_authenticator = JWTAuthenticator(properties=properties)
     return jwt_authenticator
-
-
