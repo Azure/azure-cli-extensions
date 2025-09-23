@@ -215,54 +215,54 @@ helps['containerapp function show'] = """
 
 helps['containerapp function keys show'] = """
     type: command
-    short-summary: Show specific function key in a container app.
+    short-summary: Show specific function key in an Azure Functions on Azure Container Apps.
     examples:
-    - name: Show a function key for a specific function
+    - name: Show a function key for a specific function in an Azure Functions on Azure Container Apps.
       text: |
-          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name MyKeyName --function-name MyFunctionName
-    - name: Show a host key for a container app
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name default --function-name MyFunctionName
+    - name: Show a host key for an Azure Functions on Azure Container Apps.
       text: |
-          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name MyKeyName
-    - name: Show a master key for a container app
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name default
+    - name: Show a master key for an Azure Functions on Azure Container Apps.
       text: |
-          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name MyKeyName
-    - name: Show a system key for a container app
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name _master
+    - name: Show a system key for an Azure Functions on Azure Container Apps.
       text: |
           az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type systemKey --key-name MyKeyName
 """
 
 helps['containerapp function keys list'] = """
     type: command
-    short-summary: List function keys in a container app.
+    short-summary: List function keys in an Azure Functions on Azure Container Apps.
     examples:
-    - name: List function keys for a specific function
+    - name: List function keys for a specific function in an Azure Functions on Azure Container Apps.
       text: |
           az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type functionKey --function-name MyFunctionName
-    - name: List host keys for a container app
+    - name: List host keys for an Azure Functions on Azure Container Apps.
       text: |
           az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type hostKey
-    - name: List master keys for a container app
+    - name: List master keys for an Azure Functions on Azure Container Apps.
       text: |
           az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type masterKey
-    - name: List system keys for a container app
+    - name: List system keys for an Azure Functions on Azure Container Apps.
       text: |
           az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type systemKey
 """
 
 helps['containerapp function keys set'] = """
     type: command
-    short-summary: Set/Update specific function key in a container app.
+    short-summary: Create or update specific function key in an Azure Functions on Azure Container Apps.
     examples:
-    - name: Set/Update a function key for a specific function
+    - name: Set/Update a function key for a specific function in an Azure Functions on Azure Container Apps.
       text: |
-          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name MyKeyName --key-value MyKeyValue --function-name MyFunctionName
-    - name: Set/Update a host key for a container app
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name default --key-value MyKeyValue --function-name MyFunctionName
+    - name: Set/Update a host key for an Azure Functions on Azure Container Apps.
       text: |
-          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name MyKeyName --key-value MyKeyValue
-    - name: Set/Update a master key for a container app
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name default --key-value MyKeyValue
+    - name: Set/Update the master key for an Azure Functions on Azure Container Apps.
       text: |
-          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name MyKeyName --key-value MyKeyValue
-    - name: Set/Update a system key for a container app
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name _master --key-value MyKeyValue
+    - name: Set/Update a system key for an Azure Functions on Azure Container Apps.
       text: |
           az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type systemKey --key-name MyKeyName --key-value MyKeyValue
 """
