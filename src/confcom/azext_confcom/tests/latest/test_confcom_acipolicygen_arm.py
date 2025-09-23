@@ -22,6 +22,10 @@ POLICYGEN_ARGS = {
     "policy_exclude_default_fragment.rego": {"exclude_default_fragments": True},
     "policy_infrastructure_svn.rego": {"infrastructure_svn": "99"},
     "policy_disable_stdio.rego": {"disable_stdio": True},
+    "policy_fragment.rego": {
+        "--include-fragments": True,
+        "--fragments-json": os.path.join(SAMPLES_ROOT, "fragments", "fragment.json"),
+    },
 }
 
 
