@@ -628,28 +628,33 @@ def load_policy_from_arm_template_str(
     debug_mode: bool = False,
     disable_stdio: bool = False,
     approve_wildcards: bool = False,
-    rego_imports: Any = None,
-    fragment_contents: Any = None,
+    included_fragments: list[dict[str, Any]] = None,
     exclude_default_fragments: bool = False,
 ) -> List[AciPolicy]:
 
     aci_policies = []
 
-    fragments = [
-        AciFragmentSpec(
-            feed=fragment["feed"],
-            issuer=fragment["issuer"],
-            includes=fragment["includes"],
-            minimum_svn=infrastructure_svn or fragment["minimum_svn"],
-        )
-        for fragment in config.DEFAULT_REGO_FRAGMENTS
-    ]
+    fragments = sorted([
+            AciFragmentSpec(
+                feed=fragment["feed"],
+                issuer=fragment["issuer"],
+                includes=fragment["includes"],
+                minimum_svn=infrastructure_svn or fragment["minimum_svn"],
+                path=fragment.get("path"),
+            )
+            for fragment in [
+                *included_fragments,
+                *(config.DEFAULT_REGO_FRAGMENTS if not exclude_default_fragments else []),
+            ]
+        ],
+        key=lambda fragment: fragment.feed,
+    )
 
     try:
         for policy_spec in arm_to_aci_policy_spec(
             arm_template=json.loads(template_data),
             arm_template_parameters=json.loads(parameter_data) if parameter_data else {},
-            fragments=fragments if not exclude_default_fragments else [],
+            fragments=fragments,
             debug_mode=debug_mode,
             allow_stdio_access=not disable_stdio,
             approve_wildcards=approve_wildcards,
@@ -680,8 +685,7 @@ def load_policy_from_arm_template_file(
     debug_mode: bool = False,
     disable_stdio: bool = False,
     approve_wildcards: bool = False,
-    rego_imports: list = None,
-    fragment_contents: list = None,
+    included_fragments: list[dict[str, Any]] = None,
     exclude_default_fragments: bool = False,
 ) -> List[AciPolicy]:
     """Utility function: generate policy object from given arm template and parameter file paths"""
@@ -696,8 +700,7 @@ def load_policy_from_arm_template_file(
         debug_mode=debug_mode,
         disable_stdio=disable_stdio,
         approve_wildcards=approve_wildcards,
-        rego_imports=rego_imports,
-        fragment_contents=fragment_contents,
+        included_fragments=included_fragments,
         exclude_default_fragments=exclude_default_fragments,
     )
 
