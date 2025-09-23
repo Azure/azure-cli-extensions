@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b5
+++++++
+* Pin `azext.minCliCoreVersion` to `2.72.0`
+
 1.0.0b4
 ++++++
 * Force resource group input to lowercase for comparison with ARG results
