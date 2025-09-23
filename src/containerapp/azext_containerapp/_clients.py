@@ -459,7 +459,7 @@ class ContainerAppFunctionsPreviewClient():
         
         # Application Insights REST API endpoint
         api_endpoint = "https://api.applicationinsights.io"
-        url = f"{api_endpoint}/v1/apps/{app_id}/query?api-version={cls.APP_INSIGHTS_API_VERSION}&&queryType={queryType}"
+        url = f"{api_endpoint}/v1/apps/{app_id}/query?api-version={cls.APP_INSIGHTS_API_VERSION}&queryType={queryType}"
         
         # Prepare the request body
         body = {
@@ -473,9 +473,7 @@ class ContainerAppFunctionsPreviewClient():
             "POST", 
             url, 
             body=json.dumps(body),
-            headers={
-                "Content-Type": "application/json"
-            }
+            headers=["Content-Type=application/json"]
         )
         
         return response.json()

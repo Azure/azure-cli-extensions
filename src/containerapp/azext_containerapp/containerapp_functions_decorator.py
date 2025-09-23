@@ -37,6 +37,9 @@ class ContainerAppFunctionsDecorator(BaseResource):
     def get_argument_function_name(self):
         return self.get_param('function_name')
 
+    def get_argument_timespan(self):
+        return self.get_param('timespan')
+
     def set_argument_resource_group_name(self, resource_group_name):
         self.set_param("resource_group_name", resource_group_name)
         
@@ -48,6 +51,9 @@ class ContainerAppFunctionsDecorator(BaseResource):
 
     def set_argument_function_name(self, function_name):
         self.set_param("function_name", function_name)
+
+    def set_argument_timespan(self, timespan):
+        self.set_param("timespan", timespan)
 
     def validate_common_arguments(self):
         """Validate common arguments required for all function operations"""
@@ -174,7 +180,16 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
             resource_group_name=self.get_argument_resource_group_name(),
             container_app_name=self.get_argument_container_app_name()
         )
-        self.validate_revision_name_requirement()
+        # self.validate_revision_name_requirement()
+        revision_name = self.get_argument_revision_name()
+        revision_name = validate_revision_and_get_name(
+            cmd=self.cmd,
+            resource_group_name=self.get_argument_resource_group_name(),
+            container_app_name=self.get_argument_container_app_name(),
+            provided_revision_name=revision_name
+        )
+        # Update the revision name with the validated value
+        self.set_argument_revision_name(revision_name)
         self.validate_function_name_requirement()
 
     def get_summary(self):

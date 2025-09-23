@@ -4072,12 +4072,18 @@ def set_containerapp_function_keys(cmd, resource_group_name, name, key_type, key
 
 def get_function_invocations_summary(cmd,
                                    resource_group_name,
-                                   container_app_name,
-                                   revision_name,
+                                   name,
                                    function_name,
+                                   revision_name=None,
                                    timespan="30d"):
     """Get function invocation summary from Application Insights."""
-    raw_parameters = locals()
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'revision_name': revision_name,
+        'function_name': function_name,
+        'timespan': timespan
+    }
     function_app_decorator = ContainerAppFunctionInvocationsDecorator(
         cmd=cmd,
         client=ContainerAppFunctionsPreviewClient,
@@ -4091,12 +4097,18 @@ def get_function_invocations_summary(cmd,
 
 def get_function_invocations_traces(cmd,
                                   resource_group_name,
-                                  container_app_name,
-                                  revision_name,
+                                  name,
                                   function_name,
+                                  revision_name=None,
                                   timespan="30d"):
     """Get function invocation traces from Application Insights."""
-    raw_parameters = locals()
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'revision_name': revision_name,
+        'function_name': function_name,
+        'timespan': timespan
+    }
     function_app_decorator = ContainerAppFunctionInvocationsDecorator(
         cmd=cmd,
         client=ContainerAppFunctionsPreviewClient,
