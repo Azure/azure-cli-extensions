@@ -2,6 +2,10 @@
 
 Release History
 ===============
+8.1.2
+++++++
+* All fields with swagger setting `format=arm-id` are now nullable via the CLI.
+
 8.1.1
 ++++++
 * Removing the `externalnetwork update-bfd-administrative-state` command as it is not supported by the API.
