@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cloudservicesnetwork create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new cloud services network or update the properties of the existing cloud services network.
@@ -22,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2025-07-01-preview"],
         ]
     }
 
@@ -107,16 +108,21 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.additional_egress_endpoints = AAZListArg(
-            options=["--additional-egress-endpoints"],
+            options=["--additional-endpoints", "--additional-egress-endpoints"],
             arg_group="Properties",
             help="The list of egress endpoints. This allows for connection from a Hybrid AKS cluster to the specified endpoint.",
         )
         _args_schema.enable_default_egress_endpoints = AAZStrArg(
-            options=["--enable-default-egress-endpoints"],
+            options=["--enable-endpoints", "--enable-default-egress-endpoints"],
             arg_group="Properties",
             help="The indicator of whether the platform default endpoints are allowed for the egress traffic.",
             default="True",
             enum={"False": "False", "True": "True"},
+        )
+        _args_schema.storage_options = AAZObjectArg(
+            options=["--storage-options"],
+            arg_group="Properties",
+            help="The storage options for the cloud services network.",
         )
 
         additional_egress_endpoints = cls._args_schema.additional_egress_endpoints
@@ -153,6 +159,25 @@ class Create(AAZCommand):
                 maximum=65535,
                 minimum=1,
             ),
+        )
+
+        storage_options = cls._args_schema.storage_options
+        storage_options.mode = AAZStrArg(
+            options=["mode"],
+            help="The indicator to enable shared storage on the cloud services network. If not specified, the allocation will align with the standard storage enablement.",
+            default="Standard",
+            enum={"None": "None", "Standard": "Standard"},
+        )
+        storage_options.size_mi_b = AAZIntArg(
+            options=["size-mi-b"],
+            help="The requested storage allocation for the volume in Mebibytes.",
+            fmt=AAZIntArgFormat(
+                minimum=1,
+            ),
+        )
+        storage_options.storage_appliance_id = AAZResourceIdArg(
+            options=["storage-appliance-id"],
+            help="The resource ID of the storage appliance that hosts the storage.",
         )
         return cls._args_schema
 
@@ -237,7 +262,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -282,6 +307,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("additionalEgressEndpoints", AAZListType, ".additional_egress_endpoints")
                 properties.set_prop("enableDefaultEgressEndpoints", AAZStrType, ".enable_default_egress_endpoints")
+                properties.set_prop("storageOptions", AAZObjectType, ".storage_options")
 
             additional_egress_endpoints = _builder.get(".properties.additionalEgressEndpoints")
             if additional_egress_endpoints is not None:
@@ -300,6 +326,12 @@ class Create(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("domainName", AAZStrType, ".domain_name", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("port", AAZIntType, ".port")
+
+            storage_options = _builder.get(".properties.storageOptions")
+            if storage_options is not None:
+                storage_options.set_prop("mode", AAZStrType, ".mode")
+                storage_options.set_prop("sizeMiB", AAZIntType, ".size_mi_b")
+                storage_options.set_prop("storageApplianceId", AAZStrType, ".storage_appliance_id")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -400,6 +432,13 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.storage_options = AAZObjectType(
+                serialized_name="storageOptions",
+            )
+            properties.storage_status = AAZObjectType(
+                serialized_name="storageStatus",
+                flags={"read_only": True},
+            )
             properties.virtual_machines_associated_ids = AAZListType(
                 serialized_name="virtualMachinesAssociatedIds",
                 flags={"read_only": True},
@@ -418,6 +457,35 @@ class Create(AAZCommand):
 
             hybrid_aks_clusters_associated_ids = cls._schema_on_200_201.properties.hybrid_aks_clusters_associated_ids
             hybrid_aks_clusters_associated_ids.Element = AAZStrType()
+
+            storage_options = cls._schema_on_200_201.properties.storage_options
+            storage_options.mode = AAZStrType()
+            storage_options.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+            )
+            storage_options.storage_appliance_id = AAZStrType(
+                serialized_name="storageApplianceId",
+            )
+
+            storage_status = cls._schema_on_200_201.properties.storage_status
+            storage_status.mode = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+                flags={"read_only": True},
+            )
+            storage_status.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.status_message = AAZStrType(
+                serialized_name="statusMessage",
+                flags={"read_only": True},
+            )
+            storage_status.volume_id = AAZStrType(
+                serialized_name="volumeId",
+                flags={"read_only": True},
+            )
 
             virtual_machines_associated_ids = cls._schema_on_200_201.properties.virtual_machines_associated_ids
             virtual_machines_associated_ids.Element = AAZStrType()

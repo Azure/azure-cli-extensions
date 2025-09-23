@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud volume update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update tags associated with the provided volume.
@@ -22,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/volumes/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/volumes/{}", "2025-07-01-preview"],
         ]
     }
 
@@ -143,7 +144,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -237,6 +238,10 @@ class Update(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.allocated_size_mi_b = AAZIntType(
+                serialized_name="allocatedSizeMiB",
+                flags={"read_only": True},
+            )
             properties.attached_to = AAZListType(
                 serialized_name="attachedTo",
                 flags={"read_only": True},
@@ -260,6 +265,9 @@ class Update(AAZCommand):
             properties.size_mi_b = AAZIntType(
                 serialized_name="sizeMiB",
                 flags={"required": True},
+            )
+            properties.storage_appliance_id = AAZStrType(
+                serialized_name="storageApplianceId",
             )
 
             attached_to = cls._schema_on_200.properties.attached_to

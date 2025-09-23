@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the properties of the provided Kubernetes cluster, or update the tags associated with the Kubernetes cluster. Properties and tag updates can be done independently.
@@ -28,9 +29,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2025-07-01-preview"],
         ]
     }
 
@@ -110,7 +111,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.control_plane_node_configuration = AAZObjectArg(
-            options=["--control-plane-node-configuration"],
+            options=["--cp-node-config", "--control-plane-node-configuration"],
             arg_group="Properties",
             help="The defining characteristics of the control plane that can be patched for this Kubernetes cluster.",
         )
@@ -228,7 +229,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }

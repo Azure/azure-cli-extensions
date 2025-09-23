@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cloudservicesnetwork show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get properties of the provided cloud services network.
@@ -22,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2025-07-01-preview"],
         ]
     }
 
@@ -123,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -231,6 +232,13 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.storage_options = AAZObjectType(
+                serialized_name="storageOptions",
+            )
+            properties.storage_status = AAZObjectType(
+                serialized_name="storageStatus",
+                flags={"read_only": True},
+            )
             properties.virtual_machines_associated_ids = AAZListType(
                 serialized_name="virtualMachinesAssociatedIds",
                 flags={"read_only": True},
@@ -249,6 +257,35 @@ class Show(AAZCommand):
 
             hybrid_aks_clusters_associated_ids = cls._schema_on_200.properties.hybrid_aks_clusters_associated_ids
             hybrid_aks_clusters_associated_ids.Element = AAZStrType()
+
+            storage_options = cls._schema_on_200.properties.storage_options
+            storage_options.mode = AAZStrType()
+            storage_options.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+            )
+            storage_options.storage_appliance_id = AAZStrType(
+                serialized_name="storageApplianceId",
+            )
+
+            storage_status = cls._schema_on_200.properties.storage_status
+            storage_status.mode = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+                flags={"read_only": True},
+            )
+            storage_status.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.status_message = AAZStrType(
+                serialized_name="statusMessage",
+                flags={"read_only": True},
+            )
+            storage_status.volume_id = AAZStrType(
+                serialized_name="volumeId",
+                flags={"read_only": True},
+            )
 
             virtual_machines_associated_ids = cls._schema_on_200.properties.virtual_machines_associated_ids
             virtual_machines_associated_ids.Element = AAZStrType()

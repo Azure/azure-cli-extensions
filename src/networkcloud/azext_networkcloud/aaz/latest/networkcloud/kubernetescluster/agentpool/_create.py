@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster agentpool create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new Kubernetes cluster agent pool or update the properties of the existing one.
@@ -22,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/agentpools/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/agentpools/{}", "2025-07-01-preview"],
         ]
     }
 
@@ -146,7 +147,7 @@ class Create(AAZCommand):
             help="The configurations that will be applied to each agent in this agent pool.",
         )
         _args_schema.attached_network_configuration = AAZObjectArg(
-            options=["--attached-network-configuration"],
+            options=["--attached-net-config", "--attached-network-configuration"],
             arg_group="Properties",
             help="The configuration of networks being attached to the agent pool for use by the workloads that run on this Kubernetes cluster. These networks are in addition to the networks connected in the Kubernetes cluster attached network configuration.",
         )
@@ -413,7 +414,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }

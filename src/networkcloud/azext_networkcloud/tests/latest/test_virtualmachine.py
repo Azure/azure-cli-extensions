@@ -25,6 +25,16 @@ def cleanup_scenario1(test):
     pass
 
 
+def setup_scenario(test):
+    """Env setup_scenario"""
+    pass
+
+
+def cleanup_scenario(test):
+    """Env cleanup_scenario"""
+    pass
+
+
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
@@ -49,6 +59,83 @@ def call_scenario1(test):
     step_restart(test, checks=[])
     step_power_off(test, checks=[])
     step_start(test, checks=[])
+    step_assign_relay(test, checks=[])
+    step_delete(test, checks=[])
+    cleanup_scenario1(test)
+
+
+def call_scenario2(test):
+    """# Testcase: scenario2"""
+    setup_scenario(test)
+    step_create_with_userassigned_identity(
+        test,
+        checks=[
+            test.check("name", "{name}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update_UA_to_SA_managedidentity(
+        test,
+        checks=[
+            test.check("tags", "{tagsUpdate}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("tags", "{tagsUpdate}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_show(test, checks=[])
+    step_list_resource_group(test, checks=[])
+    step_delete(test, checks=[])
+    cleanup_scenario(test)
+
+
+def call_scenario3(test):
+    """# Testcase: scenario3"""
+    setup_scenario(test)
+    step_create_systemassigned_managedidentity(
+        test,
+        checks=[
+            test.check("name", "{name}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("tags", "{tagsUpdate}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_show(test, checks=[])
+    step_list_resource_group(test, checks=[])
+    step_delete(test, checks=[])
+    cleanup_scenario(test)
+
+
+def call_scenario4(test):
+    """# Testcase: scenario4"""
+    setup_scenario1(test)
+    step_create_UA_SA_managedidentity(
+        test,
+        checks=[
+            test.check("name", "{name}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("tags", "{tagsUpdate}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_show(test, checks=[])
+    step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
@@ -64,12 +151,76 @@ def step_create(test, checks=None):
         "--cloud-services-network-attachment  attached-network-id={attachedNetworkID} "
         "--cpu-cores {cpuCores} "
         "--memory-size {memorySize} --network-attachments {networkAttachments} "
-        "--network-data {networkData} --placement-hints {placementHints} "
+        "--network-data-content {networkDataContent} --placement-hints {placementHints} "
         "--ssh-key-values {sshKeyValues} --storage-profile disk-size={diskSize} create-option={createOpt} "
         " delete-option={deleteOpt} --tags {tags} "
-        "--user-data {userData} --vm-device-model {vmDeviceModel} "
+        "--user-data-content {userDataContent} --vm-device-model {vmDeviceModel} "
         "--vm-image {vmName} --vm-image-repository-credentials password={password} "
         "registry-url={registryURL} username={userName} --resource-group {rg}",
+        checks=checks,
+    )
+
+
+def step_create_with_userassigned_identity(test, checks=None):
+    """VirtualMachine create operation with user assigned managed identity"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud virtualmachine create --name {name} --extended-location "
+        'name={extendedLocation} type="CustomLocation" --location {location} '
+        "--admin-username {adminUserName} --boot-method {bootMethod} "
+        "--cloud-services-network-attachment  attached-network-id={attachedNetworkID} "
+        "--cpu-cores {cpuCores} "
+        "--memory-size {memorySize} --network-attachments {networkAttachments} "
+        "--network-data-content {networkDataContent} --placement-hints {placementHints} "
+        "--ssh-key-values {sshKeyValues} --storage-profile disk-size={diskSize} create-option={createOpt} "
+        " delete-option={deleteOpt} --tags {tags} "
+        "--user-data-content {userDataContent} --vm-device-model {vmDeviceModel} "
+        "--vm-image {vmName} --vm-image-repository-credentials password={password} "
+        "registry-url={registryURL} username={userName} --resource-group {rg} --mi-user-assigned {miUserAssigned}",
+        checks=checks,
+    )
+
+
+def step_create_systemassigned_managedidentity(test, checks=None):
+    """VirtualMachine create operation with user assigned managed identity"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud virtualmachine create --name {name} --extended-location "
+        'name={extendedLocation} type="CustomLocation" --location {location} '
+        "--admin-username {adminUserName} --boot-method {bootMethod} "
+        "--cloud-services-network-attachment  attached-network-id={attachedNetworkID} "
+        "--cpu-cores {cpuCores} "
+        "--memory-size {memorySize} --network-attachments {networkAttachments} "
+        "--network-data-content {networkDataContent} --placement-hints {placementHints} "
+        "--ssh-key-values {sshKeyValues} --storage-profile disk-size={diskSize} create-option={createOpt} "
+        " delete-option={deleteOpt} --tags {tags} "
+        "--user-data-content {userDataContent} --vm-device-model {vmDeviceModel} "
+        "--vm-image {vmName} --vm-image-repository-credentials password={password} "
+        "registry-url={registryURL} username={userName} --resource-group {rg} --mi-system-assigned",
+        checks=checks,
+    )
+
+
+def step_create_UA_SA_managedidentity(test, checks=None):
+    """VirtualMachine create operation with system assigned and user assigned managed identity"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud virtualmachine create --name {name} --extended-location "
+        'name={extendedLocation} type="CustomLocation" --location {location} '
+        "--admin-username {adminUserName} --boot-method {bootMethod} "
+        "--cloud-services-network-attachment  attached-network-id={attachedNetworkID} "
+        "--cpu-cores {cpuCores} "
+        "--memory-size {memorySize} --network-attachments {networkAttachments} "
+        "--network-data-content {networkDataContent} --placement-hints {placementHints} "
+        "--ssh-key-values {sshKeyValues} --storage-profile disk-size={diskSize} create-option={createOpt} "
+        " delete-option={deleteOpt} --tags {tags} "
+        "--user-data-content {userDataContent} --vm-device-model {vmDeviceModel} "
+        "--vm-image {vmName} --vm-image-repository-credentials password={password} "
+        "registry-url={registryURL} username={userName} --resource-group {rg} "
+        "--mi-user-assigned {miUserAssigned} --mi-system-assigned",
         checks=checks,
     )
 
@@ -118,6 +269,15 @@ def step_start(test, checks=None):
     )
 
 
+def step_assign_relay(test, checks=None):
+    """VirtualMachine assign relay operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud virtualmachine assign-relay --name {name} --resource-group {rg}  --machine-id {machineID} --relay-type {relayType} "
+    )
+
+
 def step_delete(test, checks=None):
     """VirtualMachine delete operation"""
     if checks is None:
@@ -152,6 +312,18 @@ def step_update(test, checks=None):
     )
 
 
+def step_update_UA_to_SA_managedidentity(test, checks=None):
+    """VirtualMachine update operation UA to SA"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud VirtualMachine update --name {name} "
+        "--vm-image-repository-credentials password={password} registry-url={registryURL} username={userName} "
+        "--tags {tagsUpdate} --resource-group {rg} "
+        "--mi-system-assigned"
+    )
+
+
 class VirtualMachineScenarioTest(ScenarioTest):
     """VirtualMachine scenario test"""
 
@@ -172,7 +344,9 @@ class VirtualMachineScenarioTest(ScenarioTest):
                 "networkAttachments": CONFIG.get(
                     "VIRTUALMACHINE", "network_attachments"
                 ),
-                "networkData": CONFIG.get("VIRTUALMACHINE", "network_data"),
+                "networkDataContent": CONFIG.get(
+                    "VIRTUALMACHINE", "network_data_content"
+                ),
                 "placementHints": CONFIG.get("VIRTUALMACHINE", "placement_hints"),
                 "sshKeyValues": CONFIG.get("VIRTUALMACHINE", "ssh_key_values"),
                 "diskSize": CONFIG.get("VIRTUALMACHINE", "disk_size"),
@@ -180,12 +354,15 @@ class VirtualMachineScenarioTest(ScenarioTest):
                 "deleteOpt": CONFIG.get("VIRTUALMACHINE", "delete_opt"),
                 "tags": CONFIG.get("VIRTUALMACHINE", "tags"),
                 "tagsUpdate": CONFIG.get("VIRTUALMACHINE", "tags_update"),
-                "userData": CONFIG.get("VIRTUALMACHINE", "user_data"),
+                "userDataContent": CONFIG.get("VIRTUALMACHINE", "user_data_content"),
                 "vmDeviceModel": CONFIG.get("VIRTUALMACHINE", "vm_device_model"),
                 "vmName": CONFIG.get("VIRTUALMACHINE", "vm_name"),
                 "password": CONFIG.get("VIRTUALMACHINE", "password"),
                 "registryURL": CONFIG.get("VIRTUALMACHINE", "registry_url"),
                 "userName": CONFIG.get("VIRTUALMACHINE", "user_name"),
+                "miUserAssigned": CONFIG.get("VIRTUALMACHINE", "mi_user_assigned"),
+                "machineID": CONFIG.get("VIRTUALMACHINE", "machine_id"),
+                "relayType": CONFIG.get("VIRTUALMACHINE", "relay_type"),
             }
         )
 
@@ -194,3 +371,21 @@ class VirtualMachineScenarioTest(ScenarioTest):
     def test_virtualmachine_scenario1(self):
         """test scenario for VirtualMachine CRUD operations"""
         call_scenario1(self)
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
+    def test_virtualmachine_scenario2(self):
+        """test scenario for VirtualMachine operations with userassigned identity"""
+        call_scenario2(self)
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
+    def test_virtualmachine_scenario3(self):
+        """test scenario for VirtualMachine operations with system assigned identity"""
+        call_scenario3(self)
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
+    def test_virtualmachine_scenario4(self):
+        """test scenario for VirtualMachine operations with UA and system assigned identity"""
+        call_scenario4(self)

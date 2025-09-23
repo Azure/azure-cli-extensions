@@ -7,7 +7,7 @@
 # pylint: disable=too-many-lines,import-outside-toplevel
 # pylint: disable=too-many-statements
 
-""" Load Command model table importing custom commands"""
+"""Load Command model table importing custom commands"""
 
 from ._format import (
     transform_child_resource_table_output,
@@ -38,6 +38,9 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
 
         from .operations.baremetalmachine._run_command import RunCommand
         from .operations.baremetalmachine._run_data_extract import RunDataExtract
+        from .operations.baremetalmachine._run_data_extracts_restricted import (
+            RunDataExtractsRestricted,
+        )
         from .operations.baremetalmachine._run_read_command import RunReadCommand
 
         self.command_table["networkcloud baremetalmachine run-command"] = RunCommand(
@@ -49,6 +52,9 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table["networkcloud baremetalmachine run-data-extract"] = (
             RunDataExtract(loader=self)
         )
+        self.command_table[
+            "networkcloud baremetalmachine run-data-extracts-restricted"
+        ] = RunDataExtractsRestricted(loader=self)
 
     # cloudservicesnetwork
     with self.command_group("networkcloud cloudservicesnetwork"):
@@ -253,6 +259,11 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         )
         self.command_table["networkcloud storageappliance list"] = List(
             loader=self, table_transformer=transform_hydrated_resource_table_output
+        )
+        from .operations.storageappliance._run_read_command import RunReadCommand
+
+        self.command_table["networkcloud storageappliance run-read-command"] = (
+            RunReadCommand(loader=self)
         )
 
     # trunkednetwork

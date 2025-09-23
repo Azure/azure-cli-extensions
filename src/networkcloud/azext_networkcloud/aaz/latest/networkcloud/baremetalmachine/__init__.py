@@ -17,6 +17,7 @@ from ._replace import *
 from ._restart import *
 from ._run_command import *
 from ._run_data_extract import *
+from ._run_data_extracts_restricted import *
 from ._run_read_command import *
 from ._show import *
 from ._start import *

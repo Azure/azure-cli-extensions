@@ -215,6 +215,34 @@ def call_scenario9(test):
     cleanup_scenario9(test)
 
 
+def setup_scenario10(test):
+    """Env setup_scenario10"""
+    pass
+
+
+def cleanup_scenario10(test):
+    """Env cleanup_scenario10"""
+    pass
+
+
+def call_scenario10(test):
+    """# Testcase: scenario10 separation of cluster creation and update processes with user-assigned identity for compatibility with the new cluster simulator"""
+    setup_scenario10(test)
+    step_create_with_overrides(
+        test,
+        checks=[
+            test.check("name", "{name}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update_overrides(test, checks=[])
+    step_show(test, checks=[])
+    step_list_subscription(test, checks=[])
+    step_list_resource_group(test, checks=[])
+    step_delete(test, checks=[])
+    cleanup_scenario10(test)
+
+
 def step_create(test, checks=None):
     """cluster create operation"""
     if checks is None:
@@ -265,6 +293,26 @@ def step_create_with_uai(test, checks=None):
         "--analytics-output-settings analytics-workspace-id={analyticsWorkspaceId} "
         "--cluster-location {clusterLocation} --command-output-settings container-url={containerUrl} "
         " identity-resource-id={uaiResourceId} identity-type={identityType} "
+        "--cluster-service-principal application-id={applicationId} password={password} principal-id={principalId} "
+        "tenant-id={tenantId} --cluster-type {clusterType} --cluster-version {clusterVersion} "
+        "--compute-deployment-threshold type={thresholdType} grouping={thresholdGrouping} value={thresholdValue} "
+        "--network-fabric-id {networkFabricId} --aggregator-or-single-rack-definition {aggregatorOrSingleRackDefinitionDirectory} "
+        "--tags {tags} "
+        "--mi-user-assigned={miUserAssigned} ",
+        checks=checks,
+    )
+
+
+def step_create_with_overrides(test, checks=None):
+    """cluster create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster create --name {name} --resource-group {rg} --extended-location "
+        "name={extendedLocation} type={extendedLocationType} --location {location} "
+        "--analytics-output-settings analytics-workspace-id={analyticsWorkspaceId} "
+        "--cluster-location {clusterLocation} --command-output-settings container-url={containerUrl} "
+        " identity-resource-id={uaiResourceId} identity-type={identityType} overrides={storageOverrides} "
         "--cluster-service-principal application-id={applicationId} password={password} principal-id={principalId} "
         "tenant-id={tenantId} --cluster-type {clusterType} --cluster-version {clusterVersion} "
         "--compute-deployment-threshold type={thresholdType} grouping={thresholdGrouping} value={thresholdValue} "
@@ -414,6 +462,18 @@ def step_update_uai(test, checks=None):
     )
 
 
+def step_update_overrides(test, checks=None):
+    """cluster update user assigned identity with analytics and command output settings"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--mi-user-assigned={miUserAssigned} --analytics-output-settings analytics-workspace-id={analyticsWorkspaceId} "
+        "identity-resource-id={uaiResourceId} identity-type={identityType} "
+        "--command-output-settings container-url={containerUrl} identity-resource-id={uaiResourceId} identity-type={identityType} overrides={storageOverrides}"
+    )
+
+
 def step_scan_runtime(test, checks=None):
     """cluster scan-runtime operation"""
     if checks is None:
@@ -520,6 +580,7 @@ class ClusterScenarioTest(ScenarioTest):
                 "nameScanActivity": CONFIG.get("CLUSTER", "name_scan"),
                 "scanActivity": CONFIG.get("CLUSTER", "scan_activity"),
                 "rgScanActivity": CONFIG.get("CLUSTER", "rg_scan_activity"),
+                "storageOverrides": CONFIG.get("CLUSTER", "storage_overrides"),
             }
         )
 
@@ -587,3 +648,14 @@ class ClusterScenarioTest(ScenarioTest):
     def test_cluster_scenario9(self):
         """test scenario for Cluster vulnerablity setting update operation"""
         call_scenario9(self)
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(
+        name_prefix="clitest_rg"[:7],
+        key="rg",
+        parameter_name="rg",
+        random_name_length=24,
+    )
+    def test_cluster_scenario10(self):
+        """test scenario for Cluster create and update operations with storage overrides"""
+        call_scenario10(self)
