@@ -64,6 +64,7 @@ class AciFragmentSpec:
     issuer: str
     minimum_svn: str
     includes: list[Literal["containers", "fragments"]]
+    path: Optional[str] = None
 
 
 @dataclass
