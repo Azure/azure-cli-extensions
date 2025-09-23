@@ -14,6 +14,7 @@ Pending
 
 18.0.0b39
 +++++++
+* Add option `AzureLinuxOSGuard` and `AzureLinux3OSGuard` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 * Add machine command `az aks machine add` to add a machine to an existing machine pool.
 * Add blue-green upgrade strategy support for AKS node pools:
   - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades. 

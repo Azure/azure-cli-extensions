@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the properties of the provided cluster, or update the tags associated with the cluster. Properties and tag updates can be done independently.
@@ -47,17 +48,17 @@ class Update(AAZCommand):
     :example: Patch secret archive settings (cluster identity is set prior)
         az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --secret-archive-settings identity-type="UserAssignedIdentity" identity-resource-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI" vault_uri="https://keyvaultname.vault.azure.net/"
 
-    :example: Patch command output settings (cluster identity is set prior)
-        az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --command-output-settings identity-type="UserAssignedIdentity" identity-resource-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI" container-url="https://myaccount.blob.core.windows.net/mycontainer?restype=container"
+    :example: Patch command output settings with storage command override (cluster identity is set prior)
+        az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --command-output-settings identity-type="UserAssignedIdentity" identity-resource-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI" container-url="https://myaccount.blob.core.windows.net/mycontainer?restype=container" overrides="[{identityType:UserAssignedIdentity,identityResourceId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/userIdentity2',commandOutputType:StorageRunReadCommands,containerUrl:'https://myaccount.blob.core.windows.net/myContainer2?restype=container'}]"
 
     :example: Patch log analytics output settings (cluster identity is set prior)
         az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --analytics-output-settings analytics-workspace-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/microsoft.operationalInsights/workspaces/logAnalyticsWorkspaceName" identity-type="UserAssignedIdentity" identity-resource-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/userIdentity"
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2025-07-01-preview"],
         ]
     }
 
@@ -151,7 +152,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.aggregator_or_single_rack_definition = AAZObjectArg(
-            options=["--aggregator-or-single-rack-definition"],
+            options=["--aggregator-or-single", "--aggregator-or-single-rack-definition"],
             arg_group="Properties",
             help="The rack definition that is intended to reflect only a single rack in a single rack cluster, or an aggregator rack in a multi-rack cluster.",
         )
@@ -168,9 +169,9 @@ class Update(AAZCommand):
             help="The customer-provided location information to identify where the cluster resides.",
         )
         _args_schema.cluster_service_principal = AAZObjectArg(
-            options=["--cluster-service-principal"],
+            options=["--cluster-sp", "--cluster-service-principal"],
             arg_group="Properties",
-            help="The service principal to be used by the cluster during Arc Appliance installation.",
+            help="Field Deprecated: Use managed identity to provide cluster privileges. The service principal to be used by the cluster during Arc Appliance installation.",
             nullable=True,
         )
         _args_schema.command_output_settings = AAZObjectArg(
@@ -180,13 +181,13 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.compute_deployment_threshold = AAZObjectArg(
-            options=["--compute-deployment-threshold"],
+            options=["--compute-dt", "--compute-deployment-threshold"],
             arg_group="Properties",
             help="The validation threshold indicating the allowable failures of compute machines during environment validation and deployment.",
             nullable=True,
         )
         _args_schema.compute_rack_definitions = AAZListArg(
-            options=["--compute-rack-definitions"],
+            options=["--compute-rack-def", "--compute-rack-definitions"],
             arg_group="Properties",
             help="The list of rack definitions for the compute racks in a multi-rack cluster, or an empty list in a single-rack cluster.",
         )
@@ -265,6 +266,34 @@ class Update(AAZCommand):
             nullable=True,
         )
         command_output_settings.container_url = AAZStrArg(
+            options=["container-url"],
+            help="The URL of the storage account container that is to be used by the specified identities.",
+        )
+        command_output_settings.overrides = AAZListArg(
+            options=["overrides"],
+            help="The list of optional overrides allowing for association of storage containers and identities to specific types of command output. If a type is not overridden, the default identity and storage container will be utilized.",
+        )
+
+        overrides = cls._args_schema.command_output_settings.overrides
+        overrides.Element = AAZObjectArg()
+
+        _element = cls._args_schema.command_output_settings.overrides.Element
+        _element.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="Type of identity used as override.",
+            enum={"SystemAssignedIdentity": "SystemAssignedIdentity", "UserAssignedIdentity": "UserAssignedIdentity"},
+        )
+        _element.identity_resource_id = AAZResourceIdArg(
+            options=["identity-resource-id"],
+            help="User assigned identity resource ID used as override.",
+            nullable=True,
+        )
+        _element.command_output_type = AAZStrArg(
+            options=["command-output-type"],
+            help="The type of command output for the override.",
+            enum={"BareMetalMachineRunCommand": "BareMetalMachineRunCommand", "BareMetalMachineRunDataExtracts": "BareMetalMachineRunDataExtracts", "BareMetalMachineRunReadCommands": "BareMetalMachineRunReadCommands", "StorageRunReadCommands": "StorageRunReadCommands"},
+        )
+        _element.container_url = AAZStrArg(
             options=["container-url"],
             help="The URL of the storage account container that is to be used by the specified identities.",
         )
@@ -635,7 +664,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -720,8 +749,24 @@ class Update(AAZCommand):
             if command_output_settings is not None:
                 command_output_settings.set_prop("associatedIdentity", AAZObjectType)
                 command_output_settings.set_prop("containerUrl", AAZStrType, ".container_url")
+                command_output_settings.set_prop("overrides", AAZListType, ".overrides")
 
             associated_identity = _builder.get(".properties.commandOutputSettings.associatedIdentity")
+            if associated_identity is not None:
+                associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
+                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id", typ_kwargs={"nullable": True})
+
+            overrides = _builder.get(".properties.commandOutputSettings.overrides")
+            if overrides is not None:
+                overrides.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.commandOutputSettings.overrides[]")
+            if _elements is not None:
+                _elements.set_prop("associatedIdentity", AAZObjectType)
+                _elements.set_prop("commandOutputType", AAZStrType, ".command_output_type")
+                _elements.set_prop("containerUrl", AAZStrType, ".container_url")
+
+            associated_identity = _builder.get(".properties.commandOutputSettings.overrides[].associatedIdentity")
             if associated_identity is not None:
                 associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
                 associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id", typ_kwargs={"nullable": True})
@@ -940,6 +985,10 @@ class _UpdateHelper:
         )
 
         properties = _schema_cluster_read.properties
+        properties.action_states = AAZListType(
+            serialized_name="actionStates",
+            flags={"read_only": True},
+        )
         properties.aggregator_or_single_rack_definition = AAZObjectType(
             serialized_name="aggregatorOrSingleRackDefinition",
             flags={"required": True},
@@ -1051,6 +1100,60 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
+        action_states = _schema_cluster_read.properties.action_states
+        action_states.Element = AAZObjectType()
+
+        _element = _schema_cluster_read.properties.action_states.Element
+        _element.action_type = AAZStrType(
+            serialized_name="actionType",
+            flags={"read_only": True},
+        )
+        _element.correlation_id = AAZStrType(
+            serialized_name="correlationId",
+            flags={"read_only": True},
+        )
+        _element.end_time = AAZStrType(
+            serialized_name="endTime",
+            flags={"read_only": True},
+        )
+        _element.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.start_time = AAZStrType(
+            serialized_name="startTime",
+            flags={"read_only": True},
+        )
+        _element.status = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.step_states = AAZListType(
+            serialized_name="stepStates",
+            flags={"read_only": True},
+        )
+
+        step_states = _schema_cluster_read.properties.action_states.Element.step_states
+        step_states.Element = AAZObjectType()
+
+        _element = _schema_cluster_read.properties.action_states.Element.step_states.Element
+        _element.end_time = AAZStrType(
+            serialized_name="endTime",
+            flags={"read_only": True},
+        )
+        _element.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.start_time = AAZStrType(
+            serialized_name="startTime",
+            flags={"read_only": True},
+        )
+        _element.status = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.step_name = AAZStrType(
+            serialized_name="stepName",
+            flags={"read_only": True},
+        )
+
         analytics_output_settings = _schema_cluster_read.properties.analytics_output_settings
         analytics_output_settings.analytics_workspace_id = AAZStrType(
             serialized_name="analyticsWorkspaceId",
@@ -1138,6 +1241,22 @@ class _UpdateHelper:
         )
         cls._build_schema_identity_selector_read(command_output_settings.associated_identity)
         command_output_settings.container_url = AAZStrType(
+            serialized_name="containerUrl",
+        )
+        command_output_settings.overrides = AAZListType()
+
+        overrides = _schema_cluster_read.properties.command_output_settings.overrides
+        overrides.Element = AAZObjectType()
+
+        _element = _schema_cluster_read.properties.command_output_settings.overrides.Element
+        _element.associated_identity = AAZObjectType(
+            serialized_name="associatedIdentity",
+        )
+        cls._build_schema_identity_selector_read(_element.associated_identity)
+        _element.command_output_type = AAZStrType(
+            serialized_name="commandOutputType",
+        )
+        _element.container_url = AAZStrType(
             serialized_name="containerUrl",
         )
 

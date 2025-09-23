@@ -36,6 +36,12 @@ def call_scenario1(test):
         test,
         checks=[test.check("status", "Succeeded")],
     )
+    step_run_read_command(
+        test,
+        checks=[
+            test.check("status", "Succeeded"),
+        ],
+    )
     step_show(test, checks=[])
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
@@ -69,6 +75,15 @@ def step_disable_remote_vendor_management(test, checks=None):
     )
 
 
+def step_run_read_command(test, checks=None):
+    """StorageAppliance run read command operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud storageappliance run-read-command --name {name} --resource-group {resourceGroup} --limit-time-seconds {limitTimeSeconds} --commands {runReadCommands}",
+    )
+
+
 def step_show(test, checks=None):
     """StorageAppliance show operation"""
     if checks is None:
@@ -90,10 +105,6 @@ def step_list_subscription(test, checks=None):
     if checks is None:
         checks = []
     test.cmd("az networkcloud storageappliance list")
-
-
-# skip run-read-command as it's not implemented yet
-# def step_run_read_command(test, checks=None):
 
 
 def step_update(test, checks=None):
@@ -118,6 +129,10 @@ class StorageApplianceScenarioTest(ScenarioTest):
                 "resourceGroup": CONFIG.get("STORAGE_APPLIANCE", "resource_group"),
                 "tagsUpdate": CONFIG.get("STORAGE_APPLIANCE", "tags_update"),
                 "serialNumber": CONFIG.get("STORAGE_APPLIANCE", "serial_number"),
+                "runReadCommands": CONFIG.get("STORAGE_APPLIANCE", "run_read_commands"),
+                "limitTimeSeconds": CONFIG.get(
+                    "STORAGE_APPLIANCE", "limit_time_seconds"
+                ),
             }
         )
 

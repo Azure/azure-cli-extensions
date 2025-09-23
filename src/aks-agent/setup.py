@@ -43,7 +43,7 @@ setup(
     author_email="azpycli@microsoft.com",
     url="https://github.com/Azure/azure-cli-extensions/tree/main/src/aks-agent",
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(exclude=["*.tests", "*.tests.*"]),
     package_data={"azext_aks_agent": ["azext_metadata.json"]},
     install_requires=DEPENDENCIES,
 )
