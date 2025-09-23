@@ -8,6 +8,7 @@ import sys
 from typing import Optional
 
 from azext_confcom import oras_proxy, os_util, security_policy
+from azext_confcom._validators import resolve_stdio
 from azext_confcom.config import (
     DEFAULT_REGO_FRAGMENTS, POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS,
     REGO_IMPORT_FILE_STRUCTURE)
@@ -63,19 +64,7 @@ def acipolicygen_confcom(
             "For additional information, see http://aka.ms/clisecrets. \n",
         )
 
-    stdio_enabled = True  # Default value
-    if enable_stdio is None and disable_stdio is None:
-        logger.warning(
-            "WARNING: Using default stdio setting (Enabled)\n"
-            "For the most secure deployments, ensure stdio is disabled. "
-            "Default behaviour may change in the future, you can set stdio with:\n"
-            "    --disable-stdio\n"
-            "    --enable-stdio\n"
-        )
-    elif enable_stdio is not None:
-        stdio_enabled = enable_stdio
-    elif disable_stdio is not None:
-        stdio_enabled = not disable_stdio
+    stdio_enabled = resolve_stdio(enable_stdio, disable_stdio)
 
     if print_existing_policy and arm_template:
         print_existing_policy_from_arm_template(arm_template, arm_template_parameters)
@@ -253,19 +242,7 @@ def acifragmentgen_confcom(
     fragments_json: str = "",
 ):
 
-    stdio_enabled = True  # Default value
-    if enable_stdio is None and disable_stdio is None:
-        logger.warning(
-            "WARNING: Using default stdio setting (Enabled)\n"
-            "For the most secure deployments, ensure stdio is disabled. "
-            "Default behaviour may change in the future, you can set stdio with:\n"
-            "    --disable-stdio\n"
-            "    --enable-stdio\n"
-        )
-    elif enable_stdio is not None:
-        stdio_enabled = enable_stdio
-    elif disable_stdio is not None:
-        stdio_enabled = not disable_stdio
+    stdio_enabled = resolve_stdio(enable_stdio, disable_stdio)
 
     output_type = get_fragment_output_type(outraw)
 
