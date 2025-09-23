@@ -32,10 +32,6 @@ def load_command_table(self, args):
         g.custom_command('list', 'list_replicas')
         g.custom_command('count', 'count_replicas', is_preview=True)
 
-    with self.command_group('containerapp function invocations', is_preview=True) as g:
-        g.custom_show_command('summary', 'get_function_invocations_summary')
-        g.custom_show_command('traces', 'get_function_invocations_traces')
-
     with self.command_group('containerapp env') as g:
         g.custom_show_command('show', 'show_managed_environment')
         g.custom_command('list', 'list_managed_environments')
@@ -313,3 +309,7 @@ def load_command_table(self, args):
         g.custom_show_command('show', 'show_containerapp_function_keys')
         g.custom_command('list', 'list_containerapp_function_keys')
         g.custom_command('set', 'set_containerapp_function_keys')
+
+    with self.command_group('containerapp function invocations', is_preview=True) as g:
+        g.custom_command('summary', 'get_function_invocations_summary')
+        g.custom_command('traces', 'get_function_invocations_traces')

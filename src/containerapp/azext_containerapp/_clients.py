@@ -479,8 +479,8 @@ class ContainerAppFunctionsPreviewClient():
         )
         
         return response.json()
-    @classmethod
-    def show_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, function_name=None, revision=None, replica=None):
+
+    def show_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, function_name=None, revision_name=None, replica_name=None, container_name=None):
         """Show specific function key based on key type"""
         from .custom import containerapp_debug
 
@@ -496,14 +496,14 @@ class ContainerAppFunctionsPreviewClient():
             cmd=cmd,
             resource_group_name=resource_group_name,
             name=name,
-            container=None,
-            revision=revision,
-            replica=replica,
+            container=container_name,
+            revision=revision_name,
+            replica=replica_name,
             command=command
         )
 
     @classmethod
-    def list_function_keys(cls, cmd, resource_group_name, name, key_type, function_name=None, revision=None, replica=None):
+    def list_function_keys(cls, cmd, resource_group_name, name, key_type, function_name=None, revision_name=None, replica_name=None, container_name=None):
         """List function keys based on key type"""
         from .custom import containerapp_debug
         
@@ -519,14 +519,14 @@ class ContainerAppFunctionsPreviewClient():
             cmd=cmd,
             resource_group_name=resource_group_name,
             name=name,
-            container=None,
-            revision=revision,
-            replica=replica,
+            container=container_name,
+            revision=revision_name,
+            replica=replica_name,
             command=command
         )
 
     @classmethod
-    def set_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, key_value, function_name=None, revision=None, replica=None):
+    def set_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, key_value, function_name=None, revision_name=None, replica_name=None, container_name=None):
         """Set/Update function keys based on key type"""
         from .custom import containerapp_debug
         
@@ -542,9 +542,9 @@ class ContainerAppFunctionsPreviewClient():
             cmd=cmd,
             resource_group_name=resource_group_name,
             name=name,
-            container=None,
-            revision=revision,
-            replica=replica,
+            container=container_name,
+            revision=revision_name,
+            replica=replica_name,
             command=command
         )
 

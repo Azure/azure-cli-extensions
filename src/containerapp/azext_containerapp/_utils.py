@@ -852,8 +852,9 @@ def get_random_replica(cmd, resource_group_name, container_app_name, revision_na
     # Select a random replica
     replica = random.choice(replicas)
     replica_name = replica.get("name")
+    container_name = replica.get("properties", {}).get("containers", [{}])[0].get("name")
     
     if not replica_name:
         raise ValidationError("Could not determine replica name.")
     
-    return replica_name
+    return replica_name, container_name

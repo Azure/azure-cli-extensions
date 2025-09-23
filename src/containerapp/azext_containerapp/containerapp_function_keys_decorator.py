@@ -67,14 +67,14 @@ class ContainerAppFunctionKeysDecorator(BaseResource):
         )
 
         # Get a random replica for the revision
-        replica_name = get_random_replica(
+        replica_name, container_name = get_random_replica(
             cmd=self.cmd,
             resource_group_name=resource_group_name,
             container_app_name=name,
             revision_name=revision_name
         )
 
-        return resource_group_name, name, revision_name, key_type, replica_name
+        return resource_group_name, name, revision_name, key_type, replica_name, container_name
 
     def validate_function_name_requirement(self, key_type):
         """Validate function name is provided when required for functionKey type"""
@@ -97,19 +97,19 @@ class ContainerAppFunctionKeysShowDecorator(ContainerAppFunctionKeysDecorator):
 
     def validate_show_arguments(self):
         """Validate arguments required for showing function keys"""
-        resource_group_name, name, revision_name, key_type, replica_name = self.validate_common_arguments()
+        resource_group_name, name, revision_name, key_type, replica_name, container_name = self.validate_common_arguments()
         key_name = self.get_argument_key_name()
         function_name = self.validate_function_name_requirement(key_type)
 
         if not key_name:
             raise ValidationError("Key name is required.")
 
-        return resource_group_name, name, revision_name, key_type, key_name, function_name, replica_name
+        return resource_group_name, name, revision_name, key_type, key_name, function_name, replica_name, container_name
 
     def show_keys(self):
         """Show specific key"""
         try:
-            resource_group_name, name, revision_name, key_type, key_name, function_name, replica_name = self.validate_show_arguments()
+            resource_group_name, name, revision_name, key_type, key_name, function_name, replica_name, container_name = self.validate_show_arguments()
 
             return self.client.show_function_keys(
                 cmd=self.cmd,
@@ -118,8 +118,9 @@ class ContainerAppFunctionKeysShowDecorator(ContainerAppFunctionKeysDecorator):
                 key_type=key_type,
                 key_name=key_name,
                 function_name=function_name,
-                revision=revision_name,
-                replica=replica_name
+                revision_name=revision_name,
+                replica_name=replica_name,
+                container_name=container_name
             )
         except Exception as e:
             handle_raw_exception(e)
@@ -133,15 +134,15 @@ class ContainerAppFunctionKeysListDecorator(ContainerAppFunctionKeysDecorator):
 
     def validate_list_arguments(self):
         """Validate arguments required for listing function keys"""
-        resource_group_name, name, revision_name, key_type, replica_name = self.validate_common_arguments()
+        resource_group_name, name, revision_name, key_type, replica_name, container_name  = self.validate_common_arguments()
         function_name = self.validate_function_name_requirement(key_type)
 
-        return resource_group_name, name, revision_name, key_type, function_name, replica_name
+        return resource_group_name, name, revision_name, key_type, function_name, replica_name, container_name
 
     def list_keys(self):
         """List keys based on key type"""
         try:
-            resource_group_name, name, revision_name, key_type, function_name, replica_name = self.validate_list_arguments()
+            resource_group_name, name, revision_name, key_type, function_name, replica_name, container_name = self.validate_list_arguments()
 
             return self.client.list_function_keys(
                 cmd=self.cmd,
@@ -149,8 +150,9 @@ class ContainerAppFunctionKeysListDecorator(ContainerAppFunctionKeysDecorator):
                 name=name,
                 key_type=key_type,
                 function_name=function_name,
-                revision=revision_name,
-                replica=replica_name
+                revision_name=revision_name,
+                replica_name=replica_name,
+                container_name=container_name
             )
         except Exception as e:
             handle_raw_exception(e)
@@ -164,7 +166,7 @@ class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
 
     def validate_set_arguments(self):
         """Validate arguments required for setting/updating function keys"""
-        resource_group_name, name, revision_name, key_type, replica_name = self.validate_common_arguments()
+        resource_group_name, name, revision_name, key_type, replica_name, container_name  = self.validate_common_arguments()
         key_name = self.get_argument_key_name()
         key_value = self.get_argument_key_value()
         function_name = self.validate_function_name_requirement(key_type)
@@ -175,12 +177,12 @@ class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
         if not key_value:
             raise ValidationError("Key value is required.")
 
-        return resource_group_name, name, revision_name, key_type, key_name, key_value, function_name, replica_name
+        return resource_group_name, name, revision_name, key_type, key_name, key_value, function_name, replica_name, container_name
 
     def set_keys(self):
         """Set/Update keys based on key type"""
         try:
-            resource_group_name, name, revision_name, key_type, key_name, key_value, function_name, replica_name = self.validate_set_arguments()
+            resource_group_name, name, revision_name, key_type, key_name, key_value, function_name, replica_name, container_name = self.validate_set_arguments()
 
             return self.client.set_function_keys(
                 cmd=self.cmd,
@@ -190,8 +192,9 @@ class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
                 key_name=key_name,
                 key_value=key_value,
                 function_name=function_name,
-                revision=revision_name,
-                replica=replica_name
+                revision_name=revision_name,
+                replica_name=replica_name,
+                container_name=container_name
             )
         except Exception as e:
             handle_raw_exception(e)

@@ -267,6 +267,41 @@ helps['containerapp function keys set'] = """
           az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type systemKey --key-name MyKeyName --key-value MyKeyValue
 """
 
+helps['containerapp function invocations'] = """
+    type: group
+    short-summary: Commands to get function invocation data and traces from Application Insights.
+"""
+
+helps['containerapp function invocations summary'] = """
+    type: command
+    short-summary: Get function invocation summary from Application Insights.
+    examples:
+    - name: Get invocation summary for a function with default timespan (30 days)
+      text: |
+          az containerapp function invocations summary -n my-containerapp -g MyResourceGroup --function-name MyFunction
+    - name: Get invocation summary for a function with specific timespan
+      text: |
+          az containerapp function invocations summary -n my-containerapp -g MyResourceGroup --function-name MyFunction --timespan 7d
+    - name: Get invocation summary for a function in a specific revision
+      text: |
+          az containerapp function invocations summary -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision MyRevision
+"""
+
+helps['containerapp function invocations traces'] = """
+    type: command
+    short-summary: Get function invocation traces from Application Insights.
+    examples:
+    - name: Get invocation traces for a function with default timespan (30 days)
+      text: |
+          az containerapp function invocations traces -n my-containerapp -g MyResourceGroup --function-name MyFunction
+    - name: Get invocation traces for a function with specific timespan
+      text: |
+          az containerapp function invocations traces -n my-containerapp -g MyResourceGroup --function-name MyFunction --timespan 24h
+    - name: Get invocation traces for a function in a specific revision
+      text: |
+          az containerapp function invocations traces -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision MyRevision
+"""
+
 # Environment Commands
 helps['containerapp env'] = """
     type: group

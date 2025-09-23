@@ -567,3 +567,13 @@ def load_arguments(self, _):
         c.argument('key_name', options_list=['--key-name'], help="The name of the key to set/update.", required=True)
         c.argument('key_value', options_list=['--key-value'], help="The value of the key to set/update.", required=True)
         c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")
+
+    with self.argument_context('containerapp function invocations summary') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function.", required=True)
+        c.argument('timespan', options_list=['--timespan'], help="The timespan for which to query the invocation data (e.g., '30d', '7d', '24h', '1h'). Default is '30d'.")
+
+    with self.argument_context('containerapp function invocations traces') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function.", required=True)
+        c.argument('timespan', options_list=['--timespan'], help="The timespan for which to query the invocation traces (e.g., '30d', '7d', '24h', '1h'). Default is '30d'.")
