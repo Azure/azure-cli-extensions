@@ -15,6 +15,7 @@ from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from ._clients import ContainerAppFunctionsPreviewClient
 from ._client_factory import handle_raw_exception
 from ._validators import validate_basic_arguments, validate_revision_and_get_name
+from ._transformers import process_app_insights_response
 
 logger = get_logger(__name__)
 
@@ -197,7 +198,7 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
         try:
             self.validate_arguments()
             
-            return self.client.get_function_invocation_summary(
+            response = self.client.get_function_invocation_summary(
                 cmd=self.cmd,
                 resource_group_name=self.get_argument_resource_group_name(),
                 container_app_name=self.get_argument_container_app_name(),
@@ -205,6 +206,8 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
                 function_name=self.get_argument_function_name(),
                 timespan=self.get_argument_timespan() or "30d"
             )
+            
+            return process_app_insights_response(response)
         except Exception as e:
             handle_raw_exception(e)
 
@@ -213,7 +216,7 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
         try:
             self.validate_arguments()
             
-            return self.client.get_function_invocation_traces(
+            response = self.client.get_function_invocation_traces(
                 cmd=self.cmd,
                 resource_group_name=self.get_argument_resource_group_name(),
                 container_app_name=self.get_argument_container_app_name(),
@@ -221,5 +224,7 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
                 function_name=self.get_argument_function_name(),
                 timespan=self.get_argument_timespan() or "30d"
             )
+            
+            return process_app_insights_response(response)
         except Exception as e:
             handle_raw_exception(e)

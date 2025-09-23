@@ -153,3 +153,80 @@ def transform_telemetry_otlp_values_by_name_wrapper(args):
         raise ResourceNotFoundError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
 
     return transform_telemetry_otlp_values_by_name
+
+
+def transform_function_list(result):
+    """Transform function list data for table output."""
+    from collections import OrderedDict
+    
+    if not result:
+        return []
+    
+    # The result is typically {"value": [array of functions]}
+    functions = result.get('value', []) if isinstance(result, dict) else result
+    
+    table = []
+    for func in functions:
+        if isinstance(func, dict):
+            # Extract basic function information
+            name = func.get('name', '')
+            location = func.get('location', '')
+            properties = func.get('properties', {})
+            
+            # Get trigger type directly from properties
+            trigger_type = properties.get('triggerType', '').replace('Trigger', '')
+            
+            # Get disabled status
+            disabled = properties.get('isDisabled', False)
+            
+            table.append(OrderedDict([
+                ('Name', name),
+                ('Location', location),
+                ('TriggerType', trigger_type),
+                ('IsDisabled', str(disabled)),
+                ('Language', properties.get('language', ''))
+            ]))
+    
+    return table
+
+
+def transform_function_show(result):
+    """Transform function show data for table output."""
+    from collections import OrderedDict
+    
+    if not result:
+        return []
+    
+    # For show command, we display key-value pairs of the function details
+    properties = result.get('properties', {})
+    
+    table = []
+    
+    # Basic information from actual API response
+    table.append(OrderedDict([('Property', 'Name'), ('Value', result.get('name', ''))]))
+    table.append(OrderedDict([('Property', 'Location'), ('Value', result.get('location', ''))]))
+    table.append(OrderedDict([('Property', 'TriggerType'), ('Value', properties.get('triggerType', ''))]))
+    table.append(OrderedDict([('Property', 'IsDisabled'), ('Value', str(properties.get('isDisabled', False)))]))
+    table.append(OrderedDict([('Property', 'Language'), ('Value', properties.get('language', ''))]))
+    table.append(OrderedDict([('Property', 'InvokeUrl'), ('Value', properties.get('invokeUrlTemplate', ''))]))
+    
+    return table
+
+
+def process_app_insights_response(response):
+    """Process Application Insights response into a structured list"""
+    if not response or 'tables' not in response:
+        return []
+    
+    results = []
+    for table in response['tables']:
+        if 'columns' in table and 'rows' in table:
+            columns = [col['name'] for col in table['columns']]
+            for row in table['rows']:
+                if len(row) == len(columns):
+                    result_obj = {}
+                    for i, value in enumerate(row):
+                        result_obj[columns[i]] = value
+                    results.append(result_obj)
+    
+    return results
