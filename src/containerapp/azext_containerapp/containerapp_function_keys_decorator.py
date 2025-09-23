@@ -30,10 +30,13 @@ class ContainerAppFunctionKeysDecorator(BaseResource):
         return self.get_param("function_name")
 
     def get_argument_revision(self):
-        return self.get_param("revision")
+        return self.get_param("revision_name")
 
     def get_argument_key_type(self):
         return self.get_param("key_type")
+
+    def get_argument_name(self):
+        return self.get_param("container_app_name")
 
     def get_argument_key_name(self):
         return self.get_param("key_name")
@@ -108,15 +111,15 @@ class ContainerAppFunctionKeysShowDecorator(ContainerAppFunctionKeysDecorator):
         try:
             resource_group_name, name, revision_name, key_type, key_name, function_name, replica_name = self.validate_show_arguments()
 
-            # Note: Client methods need to be updated to accept revision and replica parameters
             return self.client.show_function_keys(
                 cmd=self.cmd,
                 resource_group_name=resource_group_name,
                 name=name,
                 key_type=key_type,
                 key_name=key_name,
-                function_name=function_name
-                # TODO: Pass revision=revision_name, replica=replica_name when client is updated
+                function_name=function_name,
+                revision=revision_name,
+                replica=replica_name
             )
         except Exception as e:
             handle_raw_exception(e)
@@ -140,14 +143,14 @@ class ContainerAppFunctionKeysListDecorator(ContainerAppFunctionKeysDecorator):
         try:
             resource_group_name, name, revision_name, key_type, function_name, replica_name = self.validate_list_arguments()
 
-            # Note: Client methods need to be updated to accept revision and replica parameters
             return self.client.list_function_keys(
                 cmd=self.cmd,
                 resource_group_name=resource_group_name,
                 name=name,
                 key_type=key_type,
-                function_name=function_name
-                # TODO: Pass revision=revision_name, replica=replica_name when client is updated
+                function_name=function_name,
+                revision=revision_name,
+                replica=replica_name
             )
         except Exception as e:
             handle_raw_exception(e)
@@ -179,7 +182,6 @@ class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
         try:
             resource_group_name, name, revision_name, key_type, key_name, key_value, function_name, replica_name = self.validate_set_arguments()
 
-            # Note: Client methods need to be updated to accept revision and replica parameters
             return self.client.set_function_keys(
                 cmd=self.cmd,
                 resource_group_name=resource_group_name,
@@ -187,8 +189,9 @@ class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
                 key_type=key_type,
                 key_name=key_name,
                 key_value=key_value,
-                function_name=function_name
-                # TODO: Pass revision=revision_name, replica=replica_name when client is updated
+                function_name=function_name,
+                revision=revision_name,
+                replica=replica_name
             )
         except Exception as e:
             handle_raw_exception(e)

@@ -4018,7 +4018,7 @@ def show_containerapp_function_keys(cmd, resource_group_name, name, key_type, ke
         'key_type': key_type,
         'key_name': key_name,
         'function_name': function_name,
-        'revision_name': revision
+        'revision_name': revision_name
     }
 
     containerapp_function_keys_show_decorator = ContainerAppFunctionKeysShowDecorator(

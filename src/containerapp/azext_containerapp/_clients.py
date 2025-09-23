@@ -23,7 +23,6 @@ from azure.cli.command_modules.containerapp._clients import (
     StorageClient)
 
 from knack.log import get_logger
-from .custom import containerapp_debug
 
 logger = get_logger(__name__)
 
@@ -304,7 +303,7 @@ class ContainerAppsResiliencyPreviewClient():
 
 
 class ContainerAppFunctionsPreviewClient():
-    api_version = PREVIEW_API_VERSION
+    api_version = "2025-10-02-preview"
     APP_INSIGHTS_API_VERSION = "2018-04-20"
 
     @classmethod
@@ -480,8 +479,10 @@ class ContainerAppFunctionsPreviewClient():
         )
         
         return response.json()
+    @classmethod
     def show_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, function_name=None, revision=None, replica=None):
         """Show specific function key based on key type"""
+        from .custom import containerapp_debug
 
         command_fmt = ""
         if key_type != "functionKey":
@@ -504,6 +505,7 @@ class ContainerAppFunctionsPreviewClient():
     @classmethod
     def list_function_keys(cls, cmd, resource_group_name, name, key_type, function_name=None, revision=None, replica=None):
         """List function keys based on key type"""
+        from .custom import containerapp_debug
         
         command_fmt = ""
         if key_type != "functionKey":
@@ -526,6 +528,7 @@ class ContainerAppFunctionsPreviewClient():
     @classmethod
     def set_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, key_value, function_name=None, revision=None, replica=None):
         """Set/Update function keys based on key type"""
+        from .custom import containerapp_debug
         
         command_fmt = ""
         if key_type != "functionKey":
