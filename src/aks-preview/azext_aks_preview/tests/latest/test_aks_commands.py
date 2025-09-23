@@ -17900,17 +17900,17 @@ spec:
         add_jwt_cmd = (
             "aks jwtauthenticator add --resource-group={resource_group} --cluster-name={name} "
             "--name={jwt_auth_name} --config-file={jwt_config_file} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
         )
         self.cmd(add_jwt_cmd, checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', '{jwt_auth_name}'),
         ])
 
+        time.sleep(60)
+
         show_jwt_cmd = (
             "aks jwtauthenticator show --resource-group={resource_group} --cluster-name={name} "
             "--name={jwt_auth_name} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
         )
         self.cmd(show_jwt_cmd, checks=[
             self.check('properties.provisioningState', 'Succeeded'),
@@ -17924,13 +17924,11 @@ spec:
         update_jwt_cmd = (
             "aks jwtauthenticator update --resource-group={resource_group} --cluster-name={name} "
             "--name={jwt_auth_name} --config-file={updated_jwt_config_file} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
         )
         self.cmd(update_jwt_cmd)
 
         list_jwt_cmd = (
             "aks jwtauthenticator list --resource-group={resource_group} --cluster-name={name} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
         )
         jwt_list = self.cmd(list_jwt_cmd).get_output_in_json()
         assert len(jwt_list) == 1
@@ -17941,7 +17939,6 @@ spec:
         delete_jwt_cmd = (
             "aks jwtauthenticator delete --resource-group={resource_group} --cluster-name={name} "
             "--name={jwt_auth_name} --yes "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
         )
         self.cmd(delete_jwt_cmd, checks=[
             self.is_empty(),
@@ -17949,7 +17946,6 @@ spec:
 
         list_after_delete_cmd = (
             "aks jwtauthenticator list --resource-group={resource_group} --cluster-name={name} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/JWTAuthenticatorPreview "
         )
         jwt_list_after_delete = self.cmd(list_after_delete_cmd).get_output_in_json()
         assert len(jwt_list_after_delete) == 0
