@@ -104,6 +104,8 @@ from .containerapp_function_keys_decorator import (
     ContainerAppFunctionKeysListDecorator,
     ContainerAppFunctionKeysSetDecorator
 )
+
+from .containerapp_debug_command_decorator import ContainerAppDebugCommandDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -3613,6 +3615,24 @@ def list_maintenance_config(cmd, resource_group_name, env_name):
 
 
 def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None, command=None):
+    if command is not None:
+        logger.warning("Running command: %s", command)
+        raw_parameters = {
+            'resource_group_name': resource_group_name,
+            'container_app_name': name,
+            'revision_name': revision,
+            'replica_name': replica,
+            'container_name': container,
+            'command': command
+        }
+        debug_command_decorator = ContainerAppDebugCommandDecorator(
+            cmd=cmd,
+            client=ContainerAppPreviewClient,
+            raw_parameters=raw_parameters,
+            models=CONTAINER_APPS_SDK_MODELS
+        )
+        debug_command_decorator.validate_arguments()
+        return debug_command_decorator.execute_Command(cmd=cmd)
     logger.warning("Connecting...")
     conn = DebugWebSocketConnection(
         cmd=cmd,
@@ -3622,10 +3642,6 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
         replica=replica,
         container=container
     )
-
-    # if command is specified, run the command and exit
-    if command is not None:
-        return conn.executeCommand(cmd, resource_group_name, name, revision, replica, container, command)
 
     encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
     reader = threading.Thread(target=read_debug_ssh, args=(conn, encodings))
