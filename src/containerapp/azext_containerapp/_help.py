@@ -253,16 +253,16 @@ helps['containerapp function keys set'] = """
     type: command
     short-summary: Create or update specific function key in an Azure Functions on Azure Container Apps.
     examples:
-    - name: Set/Update a function key for a specific function in an Azure Functions on Azure Container Apps.
+    - name: Create or update a function key for a specific function in an Azure Functions on Azure Container Apps.
       text: |
           az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name default --key-value MyKeyValue --function-name MyFunctionName
-    - name: Set/Update a host key for an Azure Functions on Azure Container Apps.
+    - name: Create or update a host key for an Azure Functions on Azure Container Apps.
       text: |
           az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name default --key-value MyKeyValue
-    - name: Set/Update the master key for an Azure Functions on Azure Container Apps.
+    - name: Create or update the master key for an Azure Functions on Azure Container Apps.
       text: |
           az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name _master --key-value MyKeyValue
-    - name: Set/Update a system key for an Azure Functions on Azure Container Apps.
+    - name: Create or update a system key for an Azure Functions on Azure Container Apps.
       text: |
           az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type systemKey --key-name MyKeyName --key-value MyKeyValue
 """
