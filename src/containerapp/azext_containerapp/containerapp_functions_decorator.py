@@ -32,7 +32,7 @@ class ContainerAppFunctionsDecorator(BaseResource):
         return self.get_param('container_app_name')
 
     def get_argument_revision_name(self):
-        return self.get_param("revision")
+        return self.get_param("revision_name")
 
     def get_argument_function_name(self):
         return self.get_param('function_name')
@@ -44,7 +44,7 @@ class ContainerAppFunctionsDecorator(BaseResource):
         self.set_param("container_app_name", container_app_name)
 
     def set_argument_revision_name(self, revision_name):
-        self.set_param("revision", revision_name)
+        self.set_param("revision_name", revision_name)
 
     def set_argument_function_name(self, function_name):
         self.set_param("function_name", function_name)
