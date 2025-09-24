@@ -643,7 +643,7 @@ def load_policy_from_arm_template_str(
                 path=fragment.get("path"),
             )
             for fragment in [
-                *included_fragments,
+                *(included_fragments or []),
                 *(config.DEFAULT_REGO_FRAGMENTS if not exclude_default_fragments else []),
             ]
         ],
