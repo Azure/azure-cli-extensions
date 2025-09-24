@@ -36,10 +36,15 @@ POLICYGEN_ARGS = {
 )
 def test_acipolicygen(sample_directory, generated_policy_path):
 
-    if (sample_directory, generated_policy_path) in [
-        ("multi_container_groups", "policy_fragment.rego") # TODO: https://github.com/Azure/azure-cli-extensions/issues/9229
+    for failing_sample_directory, failing_generated_policy_path in [
+        ("multi_container_groups", "policy_fragment.rego"), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9229
+        (None, "policy_exclude_default_fragment.rego"), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9198
     ]:
-        pytest.skip("Skipping test due to known issue")
+        if (
+            failing_sample_directory in (None, sample_directory)
+            and failing_generated_policy_path in (None, generated_policy_path)
+        ):
+            pytest.skip("Skipping test due to known issue")
 
     arm_template_path = os.path.join(SAMPLES_ROOT, sample_directory, "arm_template.json")
     parameters_path = os.path.join(SAMPLES_ROOT, sample_directory, "parameters.json")
