@@ -13,6 +13,7 @@ from azext_confcom.custom import acipolicygen_confcom
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
+CONFCOM_DIR = os.path.abspath(os.path.join(TEST_DIR, "..", "..", ".."))
 SAMPLES_ROOT = os.path.abspath(os.path.join(TEST_DIR, "..", "..", "..", "samples", "aci"))
 FRAGMENTS_DIR = os.path.abspath(os.path.join(TEST_DIR, "..", "..", "..", "samples", "fragments"))
 
@@ -35,6 +36,11 @@ POLICYGEN_ARGS = {
     product(os.listdir(SAMPLES_ROOT), POLICYGEN_ARGS.keys())
 )
 def test_acipolicygen(sample_directory, generated_policy_path):
+
+    # Ensure we're always in the same dir because fragments input json defines
+    # the path relative to the signed fragment to the current dir and cannot use
+    # absolute paths
+    os.chdir(CONFCOM_DIR)
 
     for failing_sample_directory, failing_generated_policy_path in [
         ("multi_container_groups", "policy_fragment.rego"), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9229
