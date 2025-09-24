@@ -32,9 +32,9 @@ def docker_image():
     registry_container.reload()
     registry_port = registry_container.attrs['NetworkSettings']['Ports']['5000/tcp'][0]['HostPort']
 
-    test_container_repo = f"localhost:{registry_port}/hello-world"
+    test_container_repo = f"127.0.0.1:{registry_port}/hello-world"
     test_container_tag = "latest"
-    test_container_ref = f"{test_container_repo}:{test_container_tag}"
+    test_container_ref = f"localhost:{registry_port}/hello-world:{test_container_tag}"
     client.images.pull("hello-world").tag(repository=test_container_repo, tag=test_container_tag)
     client.images.push(repository=test_container_repo, tag=test_container_tag)
 
