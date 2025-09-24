@@ -230,3 +230,31 @@ def process_app_insights_response(response):
                     results.append(result_obj)
     
     return results
+
+
+def transform_function_traces(result):
+    """Transform function traces data for table output."""
+    from collections import OrderedDict
+    
+    if not result:
+        return []
+    
+    # Result is already processed by process_app_insights_response in the decorator
+    # It should be a list of dictionaries
+    traces = result if isinstance(result, list) else []
+    
+    table = []
+    for trace in traces:
+        if isinstance(trace, dict):
+            table.append(OrderedDict([
+                ('Timestamp', trace.get('timestamp', '')),
+                ('Success', trace.get('success', '')),
+                ('ResultCode', trace.get('resultCode', '')),
+                ('DurationInMilliSeconds', trace.get('durationInMilliSeconds', '')),
+                ('InvocationId', trace.get('invocationId', '')),
+                ('OperationId', trace.get('operationId', '')),
+                ('OperationName', trace.get('operationName', '')),
+                ('FunctionNameFromCustomDimension', trace.get('functionNameFromCustomDimension', ''))
+            ]))
+    
+    return table

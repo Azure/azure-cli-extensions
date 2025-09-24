@@ -385,7 +385,7 @@ class ContainerAppFunctionsPreviewClient():
             f"| where timestamp >= ago({timespan}) "
             f"| where cloud_RoleName =~ '{container_app_name}' "
             f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
-            f"| summarize count=count() by success"
+            f"| summarize SuccessCount = coalesce(countif(success == true), 0), ErrorCount = coalesce(countif(success == false), 0)"
         )
         
         try:
@@ -396,7 +396,7 @@ class ContainerAppFunctionsPreviewClient():
             raise CLIError(f"Error executing Application Insights query: {str(ex)}")
 
     @classmethod
-    def get_function_invocation_traces(cls, cmd, resource_group_name, container_app_name, revision_name, function_name, timespan="30d"):
+    def get_function_invocation_traces(cls, cmd, resource_group_name, container_app_name, revision_name, function_name, timespan="30d", limit=20):
         # Fetch the app insights resource app id
         app_id = cls._get_app_insights_id(cmd, resource_group_name, container_app_name, revision_name)
 
@@ -408,7 +408,8 @@ class ContainerAppFunctionsPreviewClient():
             f"| where timestamp > ago({timespan}) "
             f"| where cloud_RoleName =~ '{container_app_name}' "
             f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
-            f"| order by timestamp desc | take 20"
+            f"| order by timestamp desc | take {limit} "
+            f"| project timestamp, success, resultCode, durationInMilliSeconds=duration, invocationId, operationId=operation_Id, operationName=operation_Name, functionNameFromCustomDimension "
         )
 
         try:
@@ -476,7 +477,10 @@ class ContainerAppFunctionsPreviewClient():
             headers=["Content-Type=application/json"]
         )
         
-        return response.json()
+        result = response.json()
+        if isinstance(result, dict) and 'error' in result:
+            raise CLIError(f"Application Insights query failed: {result['error']}")
+        return result
 
     def show_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, function_name=None, revision_name=None, replica_name=None, container_name=None):
         """Show specific function key based on key type"""

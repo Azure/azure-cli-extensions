@@ -577,3 +577,4 @@ def load_arguments(self, _):
         c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
         c.argument('function_name', options_list=['--function-name'], help="The name of the function.", required=True)
         c.argument('timespan', options_list=['--timespan'], help="The timespan for which to query the invocation traces (e.g., '30d', '7d', '24h', '1h'). Default is '30d'.")
+        c.argument('limit', options_list=['--limit'], help="The maximum number of traces to return. Default is 20", type=int, default=20)

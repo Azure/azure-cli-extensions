@@ -4116,14 +4116,16 @@ def get_function_invocations_traces(cmd,
                                   name,
                                   function_name,
                                   revision_name=None,
-                                  timespan="30d"):
+                                  timespan="30d",
+                                  limit=20):
     """Get function invocation traces from Application Insights."""
     raw_parameters = {
         'resource_group_name': resource_group_name,
         'container_app_name': name,
         'revision_name': revision_name,
         'function_name': function_name,
-        'timespan': timespan
+        'timespan': timespan,
+        'limit': limit
     }
     function_app_decorator = ContainerAppFunctionInvocationsDecorator(
         cmd=cmd,

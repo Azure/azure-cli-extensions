@@ -14,7 +14,8 @@ from ._transformers import (transform_sensitive_values,
                             transform_telemetry_otlp_values,
                             transform_telemetry_otlp_values_by_name_wrapper,
                             transform_function_list,
-                            transform_function_show)
+                            transform_function_show,
+                            transform_function_traces)
 from ._utils import is_cloud_supported_by_connected_env
 from ._validators import validate_debug
 
@@ -314,4 +315,4 @@ def load_command_table(self, args):
 
     with self.command_group('containerapp function invocations', is_preview=True) as g:
         g.custom_command('summary', 'get_function_invocations_summary')
-        g.custom_command('traces', 'get_function_invocations_traces')
+        g.custom_command('traces', 'get_function_invocations_traces', table_transformer=transform_function_traces)

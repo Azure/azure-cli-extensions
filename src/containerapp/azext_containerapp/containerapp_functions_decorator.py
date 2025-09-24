@@ -41,6 +41,9 @@ class ContainerAppFunctionsDecorator(BaseResource):
     def get_argument_timespan(self):
         return self.get_param('timespan')
 
+    def get_argument_limit(self):
+        return self.get_param('limit')
+
     def set_argument_resource_group_name(self, resource_group_name):
         self.set_param("resource_group_name", resource_group_name)
         
@@ -55,6 +58,9 @@ class ContainerAppFunctionsDecorator(BaseResource):
 
     def set_argument_timespan(self, timespan):
         self.set_param("timespan", timespan)
+    
+    def set_argument_limit(self, limit):
+        self.set_param("limit", limit)
 
     def validate_common_arguments(self):
         """Validate common arguments required for all function operations"""
@@ -216,13 +222,22 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
         try:
             self.validate_arguments()
             
+            # Get all arguments
+            resource_group = self.get_argument_resource_group_name()
+            container_app = self.get_argument_container_app_name()
+            revision = self.get_argument_revision_name()
+            function = self.get_argument_function_name()
+            timespan = self.get_argument_timespan()
+            limit = self.get_argument_limit()
+            
             response = self.client.get_function_invocation_traces(
                 cmd=self.cmd,
-                resource_group_name=self.get_argument_resource_group_name(),
-                container_app_name=self.get_argument_container_app_name(),
-                revision_name=self.get_argument_revision_name(),
-                function_name=self.get_argument_function_name(),
-                timespan=self.get_argument_timespan() or "30d"
+                resource_group_name=resource_group,
+                container_app_name=container_app,
+                revision_name=revision,
+                function_name=function,
+                timespan=timespan,
+                limit=limit
             )
             
             return process_app_insights_response(response)
