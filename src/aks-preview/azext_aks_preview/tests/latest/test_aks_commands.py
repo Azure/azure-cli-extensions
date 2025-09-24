@@ -17890,7 +17890,7 @@ spec:
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--vm-set-type=VirtualMachines --node-count 1 "
+            "--vm-set-type=VirtualMachines --node-count 1 --vm-size standard_dc16ads_cc_v5 "
             "--enable-managed-identity --ssh-key-value={ssh_key_value} "
         )
         self.cmd(create_cmd, checks=[
@@ -17906,8 +17906,6 @@ spec:
             self.check('name', '{jwt_auth_name}'),
         ])
 
-        time.sleep(60)
-
         show_jwt_cmd = (
             "aks jwtauthenticator show --resource-group={resource_group} --cluster-name={name} "
             "--name={jwt_auth_name} "
@@ -17920,6 +17918,8 @@ spec:
             self.check('properties.claimMappings.username.expression', 'claims.sub'),
             self.check('properties.claimMappings.groups.expression', 'claims.aud'),
         ])
+
+        time.sleep(2*60)  # wait for 2 mins to allow all operations to finish before updating JWT authenticator
         
         update_jwt_cmd = (
             "aks jwtauthenticator update --resource-group={resource_group} --cluster-name={name} "
