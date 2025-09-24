@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b40
+++++++
+* Fix `--localdns-config` parameter to handle null values in JSON configuration files gracefully, preventing crashes when DNS override sections are null.
+
 18.0.0b39
 +++++++
 * Add option `AzureLinuxOSGuard` and `AzureLinux3OSGuard` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
@@ -19,7 +23,6 @@ Pending
 * Add blue-green upgrade strategy support for AKS node pools:
   - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades. 
   - `az aks nodepool add/update/upgrade`: Add `--drain-batch-size`, `--drain-timeout-bg`, `--batch-soak-duration`, `--final-soak-duration` parameters to configure blue-green upgrade settings.
-* Fix `--localdns-config` parameter to handle null values in JSON configuration files gracefully, preventing crashes when DNS override sections are null.
 
 18.0.0b38
 +++++++
