@@ -1,0 +1,14 @@
+Found repeated "query failed" errors in logs of pod my-app-53-5bfddbd994-lbkw9 (namespace: ask-holmes-namespace-53):               
+
+ • SQL syntax error near 'SELCT' at line 1 (typo in 'SELECT')                                                                      
+ • Duplicate entry '12345' for key 'users.PRIMARY'                                                                                 
+
+Root causes:                                                                                                                       
+
+ 1 Application is issuing malformed SQL queries ("SELCT" instead of "SELECT").                                                     
+ 2 Application is trying to insert duplicate primary keys into the users table.                                                    
+
+Fix:                                                                                                                               
+
+ • Correct SQL query typos in application code.                                                                                    
+ • Ensure logic prevents duplicate primary key inserts.

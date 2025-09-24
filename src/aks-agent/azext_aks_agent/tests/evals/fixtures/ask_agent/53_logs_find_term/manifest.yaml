@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ask-holmes-namespace-53
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-53
+  namespace: ask-holmes-namespace-53
+  labels:
+    app: my-app-53
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app-53
+  template:
+    metadata:
+      labels:
+        app: my-app-53
+    spec:
+      containers:
+      - name: main-container
+        image: python:3.9-slim
+        command: ["python", "/scripts/generate_logs.py"]
+        volumeMounts:
+        - name: script-volume
+          mountPath: /scripts
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "10m"
+          limits:
+            memory: "64Mi"
+      volumes:
+      - name: script-volume
+        secret:
+          secretName: my-app-53-logs-script
+          defaultMode: 0755
+      restartPolicy: Always
