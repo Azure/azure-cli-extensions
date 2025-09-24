@@ -60,7 +60,7 @@ def docker_image():
 
 @pytest.fixture(scope="session")
 def cert_chain():
-    with tempfile.TemporaryDirectory(delete=True) as temp_dir:
+    with tempfile.TemporaryDirectory() as temp_dir:
         subprocess.run(
             [
                 os.path.join(SAMPLES_DIR, "certs", "create_certchain.sh"),
@@ -75,7 +75,7 @@ def test_acifragmentgen_fragment_gen(docker_image):
 
     image_ref, spec_file_path = docker_image
 
-    with tempfile.TemporaryDirectory(delete=True) as temp_dir: # Prevent test writing files to repo
+    with tempfile.TemporaryDirectory() as temp_dir: # Prevent test writing files to repo
         acifragmentgen_confcom(
             image_name=None,
             tar_mapping_location=None,
@@ -99,7 +99,7 @@ def test_acifragmentgen_fragment_sign(docker_image, cert_chain):
 
     image_ref, spec_file_path = docker_image
 
-    with tempfile.TemporaryDirectory(delete=True) as temp_dir: # Prevent test writing files to repo
+    with tempfile.TemporaryDirectory() as temp_dir: # Prevent test writing files to repo
         acifragmentgen_confcom(
             image_name=None,
             tar_mapping_location=None,
@@ -121,7 +121,7 @@ def test_acifragmentgen_fragment_upload_fragment(docker_image, cert_chain):
 
     image_ref, spec_file_path = docker_image
 
-    with tempfile.TemporaryDirectory(delete=True) as temp_dir: # Prevent test writing files to repo
+    with tempfile.TemporaryDirectory() as temp_dir: # Prevent test writing files to repo
         acifragmentgen_confcom(
             image_name=None,
             tar_mapping_location=None,
@@ -153,7 +153,7 @@ def test_acifragmentgen_fragment_push(docker_image, cert_chain):
     image_ref, spec_file_path = docker_image
     fragment_ref = image_ref.replace("hello-world", "fragment")
 
-    with tempfile.TemporaryDirectory(delete=True) as temp_dir: # Prevent test writing files to repo
+    with tempfile.TemporaryDirectory() as temp_dir: # Prevent test writing files to repo
         acifragmentgen_confcom(
             image_name=None,
             tar_mapping_location=None,
@@ -182,7 +182,7 @@ def test_acifragmentgen_fragment_attach(docker_image, cert_chain):
 
     image_ref, spec_file_path = docker_image
 
-    with tempfile.TemporaryDirectory(delete=True) as temp_dir: # Prevent test writing files to repo
+    with tempfile.TemporaryDirectory() as temp_dir: # Prevent test writing files to repo
         acifragmentgen_confcom(
             image_name=None,
             tar_mapping_location=None,
