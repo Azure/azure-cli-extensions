@@ -3615,6 +3615,9 @@ def list_maintenance_config(cmd, resource_group_name, env_name):
 
 
 def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None, command=None):
+    logger.warning("This command is in preview and under development. Breaking changes may occur.")
+    #log all arguments 
+    logger.warning("Arguments: resource_group_name=%s, name=%s, container=%s, revision=%s, replica=%s, command=%s", resource_group_name, name, container, revision, replica, command)
     if command is not None:
         logger.warning("Running command: %s", command)
         raw_parameters = {
@@ -3633,36 +3636,37 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
         )
         debug_command_decorator.validate_arguments()
         return debug_command_decorator.execute_Command(cmd=cmd)
-    logger.warning("Connecting...")
-    conn = DebugWebSocketConnection(
-        cmd=cmd,
-        resource_group_name=resource_group_name,
-        name=name,
-        revision=revision,
-        replica=replica,
-        container=container
-    )
+    else:
+        logger.warning("Connecting...")
+        conn = DebugWebSocketConnection(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            revision=revision,
+            replica=replica,
+            container=container
+        )
 
-    encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
-    reader = threading.Thread(target=read_debug_ssh, args=(conn, encodings))
-    reader.daemon = True
-    reader.start()
+        encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
+        reader = threading.Thread(target=read_debug_ssh, args=(conn, encodings))
+        reader.daemon = True
+        reader.start()
 
-    writer = get_stdin_writer(conn)
-    writer.daemon = True
-    writer.start()
+        writer = get_stdin_writer(conn)
+        writer.daemon = True
+        writer.start()
 
-    while conn.is_connected:
-        if not reader.is_alive() or not writer.is_alive():
-            logger.warning("Reader or Writer for WebSocket is not alive. Closing the connection.")
-            conn.disconnect()
+        while conn.is_connected:
+            if not reader.is_alive() or not writer.is_alive():
+                logger.warning("Reader or Writer for WebSocket is not alive. Closing the connection.")
+                conn.disconnect()
 
-        try:
-            time.sleep(0.1)
-        except KeyboardInterrupt:
-            if conn.is_connected:
-                logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
-                conn.send(SSH_CTRL_C_MSG)
+            try:
+                time.sleep(0.1)
+            except KeyboardInterrupt:
+                if conn.is_connected:
+                    logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
+                    conn.send(SSH_CTRL_C_MSG)
 
 
 def create_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):

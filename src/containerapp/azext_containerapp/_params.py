@@ -507,7 +507,7 @@ def load_arguments(self, _):
         c.argument('all', help="The flag to indicate all logger settings.", action="store_true")
 
     with self.argument_context('containerapp debug') as c:
-        c.argument('command',
+        c.argument('command',options_list=['--command'],
                    help="The command to run inside the debug container and exit. If specified, the command is run and the session ends. If not specified, an interactive bash shell is started.")
         c.argument('container',
                    help="The container name that the debug console will connect to. Default to the first container of first replica.")
