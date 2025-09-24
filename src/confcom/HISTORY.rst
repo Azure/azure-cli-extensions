@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.3.0
+++++++
+* restored the behaviour of --upload-fragment in acifragmentgen to attach to first image in input
+* added --push-fragment-to flag to acifragmentgen to allow explicit uploading of standalone fragments
+* added --attach-fragment-to flag to acifragmentgen to allow explicit uploading of image attached fragments
+
 1.2.7
 ++++++
 * bugfix making it so that oras discover function doesn't error when no fragments are found in the remote repository
