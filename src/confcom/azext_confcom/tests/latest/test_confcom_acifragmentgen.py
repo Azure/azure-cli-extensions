@@ -8,6 +8,7 @@ import json
 import os
 import subprocess
 import tempfile
+import time
 import pytest
 import docker
 
@@ -27,12 +28,15 @@ def docker_image():
         detach=True,
         ports={"5000/tcp": 0},
     )
+    time.sleep(10) # TODO: Replace with polling
     registry_container.reload()
     registry_port = registry_container.attrs['NetworkSettings']['Ports']['5000/tcp'][0]['HostPort']
 
-    test_container_ref = f"localhost:{registry_port}/hello-world:latest"
-    client.images.pull("hello-world").tag(test_container_ref)
-    client.images.push(test_container_ref)
+    test_container_repo = f"localhost:{registry_port}/hello-world"
+    test_container_tag = "latest"
+    test_container_ref = f"{test_container_repo}:{test_container_tag}"
+    client.images.pull("hello-world").tag(repository=test_container_repo, tag=test_container_tag)
+    client.images.push(repository=test_container_repo, tag=test_container_tag)
 
     with tempfile.NamedTemporaryFile(mode="w+", encoding="utf-8", delete=True) as temp_file:
         json.dump({
