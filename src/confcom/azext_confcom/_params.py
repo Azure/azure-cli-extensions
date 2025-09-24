@@ -342,6 +342,14 @@ def load_arguments(self, _):
             validator=validate_upload_fragment,
         )
         c.argument(
+            "push_fragment_to",
+            help="The reference to push the fragment to",
+        )
+        c.argument(
+            "attach_fragment_to",
+            help="The image reference to attach the fragment to",
+        )
+        c.argument(
             "no_print",
             options_list=("--no-print",),
             required=False,
