@@ -3,14 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from itertools import product
 import json
 import os
 import subprocess
 import tempfile
-import time
 import pytest
-import docker
 
 from azext_confcom.custom import acifragmentgen_confcom
 
@@ -21,22 +18,22 @@ SAMPLES_DIR = os.path.abspath(os.path.join(TEST_DIR, "..", "..", "..", "samples"
 @pytest.fixture()
 def docker_image():
 
-    client = docker.from_env()
+    registry_id = subprocess.run(
+        ["docker", "run", "-d", "-p", "0:5000", "registry:2"],
+        stdout=subprocess.PIPE,
+        text=True,
+    ).stdout
 
-    registry_container = client.containers.run(
-        image="registry:2",
-        detach=True,
-        ports={"5000/tcp": 0},
-    )
-    time.sleep(10) # TODO: Replace with polling
-    registry_container.reload()
-    registry_port = registry_container.attrs['NetworkSettings']['Ports']['5000/tcp'][0]['HostPort']
+    registry_port = subprocess.run(
+        ["docker", "port", registry_id],
+        stdout=subprocess.PIPE,
+        text=True,
+    ).stdout.split(":")[-1].strip()
 
-    test_container_repo = f"127.0.0.1:{registry_port}/hello-world"
-    test_container_tag = "latest"
-    test_container_ref = f"localhost:{registry_port}/hello-world:{test_container_tag}"
-    client.images.pull("hello-world").tag(repository=test_container_repo, tag=test_container_tag)
-    client.images.push(repository=test_container_repo, tag=test_container_tag)
+    test_container_ref = f"localhost:{registry_port}/hello-world:latest"
+    subprocess.run(["docker", "pull", "hello-world"])
+    subprocess.run(["docker", "tag", "hello-world", test_container_ref])
+    subprocess.run(["docker", "push", test_container_ref])
 
     with tempfile.NamedTemporaryFile(mode="w+", encoding="utf-8", delete=True) as temp_file:
         json.dump({
@@ -54,8 +51,7 @@ def docker_image():
 
         yield test_container_ref, temp_file.name
 
-    registry_container.stop()
-    registry_container.remove()
+    subprocess.run(["docker", "stop", registry_id])
 
 
 @pytest.fixture(scope="session")
