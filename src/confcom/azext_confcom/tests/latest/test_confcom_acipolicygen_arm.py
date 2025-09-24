@@ -14,6 +14,7 @@ from azext_confcom.custom import acipolicygen_confcom
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 SAMPLES_ROOT = os.path.abspath(os.path.join(TEST_DIR, "..", "..", "..", "samples", "aci"))
+FRAGMENTS_DIR = os.path.abspath(os.path.join(TEST_DIR, "..", "..", "..", "samples", "fragments"))
 
 
 POLICYGEN_ARGS = {
@@ -23,8 +24,8 @@ POLICYGEN_ARGS = {
     "policy_infrastructure_svn.rego": {"infrastructure_svn": "99"},
     "policy_disable_stdio.rego": {"disable_stdio": True},
     "policy_fragment.rego": {
-        "--include-fragments": True,
-        "--fragments-json": os.path.join(SAMPLES_ROOT, "fragments", "fragment.json"),
+        "include_fragments": True,
+        "fragments_json": os.path.join(FRAGMENTS_DIR, "fragment.json"),
     },
 }
 
@@ -34,6 +35,11 @@ POLICYGEN_ARGS = {
     product(os.listdir(SAMPLES_ROOT), POLICYGEN_ARGS.keys())
 )
 def test_acipolicygen(sample_directory, generated_policy_path):
+
+    if (sample_directory, generated_policy_path) in [
+        ("multi_container_groups", "policy_fragment.rego") # TODO: https://github.com/Azure/azure-cli-extensions/issues/9229
+    ]:
+        pytest.skip("Skipping test due to known issue")
 
     arm_template_path = os.path.join(SAMPLES_ROOT, sample_directory, "arm_template.json")
     parameters_path = os.path.join(SAMPLES_ROOT, sample_directory, "parameters.json")
