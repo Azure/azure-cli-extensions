@@ -21,6 +21,7 @@ from azext_confcom.lib.aci_policy_spec import (
     AciPolicySpec,
 )
 
+
 def get_parameters(
     arm_template: dict,
     arm_template_parameters: dict,
@@ -96,7 +97,8 @@ def arm_container_volumes_to_aci_policy_spec_volumes(
         )
     ]:
         yield AciContainerPropertyVolumeMounts(
-                **{k: v for k, v in vol_mount.items() if v is not None})
+            **{k: v for k, v in vol_mount.items() if v is not None}
+        )
 
 
 def arm_container_exec_procs_to_aci_policy_spec_exec_procs(

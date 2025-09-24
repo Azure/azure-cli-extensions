@@ -788,6 +788,7 @@ def extract_probe(exec_processes: List[dict], image_properties: dict, probe: str
                 config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
             })
 
+
 def get_probe_exec_processes(image_properties: dict) -> List[dict]:
     exec_processes: List[dict] = []
     extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)

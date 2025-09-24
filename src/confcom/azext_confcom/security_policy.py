@@ -6,18 +6,17 @@
 import copy
 import json
 import warnings
+import deepdiff
 from enum import Enum, auto
 from typing import Any, Dict, List, Tuple, Union
 from dataclasses import asdict
 
 from azext_confcom.lib.aci_policy_spec import AciFragmentSpec
 from azext_confcom.lib.arm_to_aci_policy_spec import arm_to_aci_policy_spec
-import deepdiff
-from azext_confcom import config, os_util
+from azext_confcom import (config, os_util)
 from azext_confcom.container import ContainerImage, UserContainerImage
 from azext_confcom.errors import eprint
 from azext_confcom.fragment_util import sanitize_fragment_fields
-from azext_confcom.oras_proxy import create_list_of_standalone_imports
 from azext_confcom.rootfs_proxy import SecurityPolicyProxy
 from azext_confcom.template_util import (case_insensitive_dict_get,
                                          compare_env_vars,
@@ -25,22 +24,17 @@ from azext_confcom.template_util import (case_insensitive_dict_get,
                                          convert_to_pod_spec,
                                          decompose_confidential_properties,
                                          detect_old_format,
-                                         extract_confidential_properties,
                                          extract_lifecycle_hook, extract_probe,
-                                         extract_standalone_fragments,
                                          filter_non_pod_resources,
                                          get_container_diff, get_diff_size,
                                          get_image_info,
                                          get_tar_location_from_mapping,
-                                         get_values_for_params,
                                          get_volume_claim_templates,
                                          is_sidecar, pretty_print_func,
                                          print_func, process_configmap,
                                          process_env_vars_from_config,
-                                         process_env_vars_from_template,
                                          process_env_vars_from_yaml,
                                          process_fragment_imports,
-                                         process_mounts,
                                          process_mounts_from_config,
                                          readable_diff)
 from knack.log import get_logger
@@ -634,7 +628,8 @@ def load_policy_from_arm_template_str(
 
     aci_policies = []
 
-    fragments = sorted([
+    fragments = sorted(
+        [
             AciFragmentSpec(
                 feed=fragment["feed"],
                 issuer=fragment["issuer"],
@@ -667,6 +662,7 @@ def load_policy_from_arm_template_str(
                 # Fragments are already parsed
                 True,
             ))
+    # Catch broad exception since we don't want to assume what errors might occur pylint: disable=W0718
     except Exception as e:
         eprint(f"Error processing ARM template: {e}")
 
