@@ -26,7 +26,7 @@ jobs:
             client-id: ${{ secrets.ADO_SP_ClientID }}
             tenant-id: ${{ secrets.ADO_SP_TenantID }}
             allow-no-subscriptions: true
-        - name: Azure CLI
+        - name: Trigger ADO Pipeline and Wait for Completion
           uses: azure/cli@v2
           env:
             ado-org: ${{secrets.ADO_ORGANIZATION}}
@@ -35,4 +35,61 @@ jobs:
             commit-id: ${{ github.sha }}
           with:
             inlineScript: |
-              az pipelines build queue --definition-id ${{ env.ado-pipeline-id }} --organization ${{ env.ado-org }}  --project ${{ env.ado-project }} --variables commit_id=${{ env.commit-id }}
+              # Trigger the pipeline and capture the build ID
+              echo "Triggering ADO pipeline..."
+              BUILD_RESULT=$(az pipelines build queue \
+                --definition-id ${{ env.ado-pipeline-id }} \
+                --organization ${{ env.ado-org }} \
+                --project ${{ env.ado-project }} \
+                --variables commit_id=${{ env.commit-id }} \
+                --output json)
+              
+              BUILD_ID=$(echo $BUILD_RESULT | jq -r '.id')
+              echo "Pipeline triggered with Build ID: $BUILD_ID"
+              
+              if [ "$BUILD_ID" = "null" ] || [ -z "$BUILD_ID" ]; then
+                echo "Failed to get build ID from pipeline trigger"
+                exit 1
+              fi
+              
+              # Wait for the build to complete
+              echo "Waiting for build $BUILD_ID to complete..."
+              while true; do
+                BUILD_JSON=$(az pipelines build show \
+                  --id $BUILD_ID \
+                  --organization ${{ env.ado-org }} \
+                  --project ${{ env.ado-project }} \
+                  --output json)
+                
+                BUILD_STATUS=$(echo "$BUILD_JSON" | jq -r '.status')
+                BUILD_RESULT_STATUS=$(echo "$BUILD_JSON" | jq -r '.result // "none"')
+                
+                echo "Current status: $BUILD_STATUS, Result: $BUILD_RESULT_STATUS"
+                
+                # Check if build is completed
+                if [ "$BUILD_STATUS" = "completed" ]; then
+                  echo "Build completed with result: $BUILD_RESULT_STATUS"
+                  
+                  # Check if the build was successful
+                  if [ "$BUILD_RESULT_STATUS" = "succeeded" ]; then
+                    echo "✅ ADO pipeline build succeeded!"
+                    exit 0
+                  elif [ "$BUILD_RESULT_STATUS" = "partiallySucceeded" ]; then
+                    echo "⚠️ ADO pipeline build partially succeeded"
+                    exit 1
+                  else
+                    echo "❌ ADO pipeline build failed with result: $BUILD_RESULT_STATUS"
+                    exit 1
+                  fi
+                fi
+                
+                # Check for other terminal states
+                if [ "$BUILD_STATUS" = "cancelling" ] || [ "$BUILD_STATUS" = "cancelled" ]; then
+                  echo "❌ ADO pipeline build was cancelled"
+                  exit 1
+                fi
+                
+                # Wait 60 seconds before checking again
+                echo "Build still running... waiting 60 seconds"
+                sleep 60
+              done
