@@ -139,11 +139,13 @@ def test_acifragmentgen_fragment_upload_fragment(docker_image, cert_chain):
         )
 
     # Confirm the fragment exists and is attached in the registry
-    fragment_ref = json.loads(subprocess.run(
+    oras_result = subprocess.run(
         ["oras", "discover", image_ref, "--format", "json"],
         stdout=subprocess.PIPE,
         check=True,
-    ).stdout)["referrers"][0]["reference"]
+    ).stdout
+    print(f"{oras_result.decode('utf-8')=}")
+    fragment_ref = json.loads(oras_result)["referrers"][0]["reference"]
 
     fragment_path = json.loads(subprocess.run(
         ["oras", "pull", fragment_ref, "--format", "json", "-o", "/tmp"],
