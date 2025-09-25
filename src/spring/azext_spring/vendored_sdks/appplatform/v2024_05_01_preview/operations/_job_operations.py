@@ -672,6 +672,9 @@ class JobOperations:
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        print(f'Mason try to reproduce issue in _start_initial, "pipeline_response": f{pipeline_response}, "cls": {cls}, '
+              f'"deserialized.job_snapshot.source.type": {deserialized.job_snapshot.source.type}, '
+              f'"deserialized.job_snapshot.trigger_config.trigger_type": {deserialized.job_snapshot.trigger_config.trigger_type}')
         if cls:
             return cls(pipeline_response, deserialized, response_headers)  # type: ignore
 
@@ -805,6 +808,10 @@ class JobOperations:
             deserialized = self._deserialize("JobExecution", pipeline_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
+            print(
+                f'Mason try to reproduce issue in get_long_running_output, "pipeline_response": f{pipeline_response}, "cls": {cls}, '
+                f'"deserialized.job_snapshot.source.type": {deserialized.job_snapshot.source.type}, '
+                f'"deserialized.job_snapshot.trigger_config.trigger_type": {deserialized.job_snapshot.trigger_config.trigger_type}')
             return deserialized
 
         if polling is True:
