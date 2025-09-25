@@ -482,6 +482,7 @@ class ContainerAppFunctionsPreviewClient():
             raise CLIError(f"Application Insights query failed: {result['error']}")
         return result
 
+    @classmethod
     def show_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, function_name=None, revision_name=None, replica_name=None, container_name=None):
         """Show specific function key based on key type"""
         from .custom import containerapp_debug
@@ -534,11 +535,14 @@ class ContainerAppFunctionsPreviewClient():
         
         command_fmt = ""
         if key_type != "functionKey":
-            command_fmt = "/bin/azure-functions-admin keys set --key-type {} --key-name {} --key-value {}"
-            command = command_fmt.format(key_type, key_name, key_value)
+            command_fmt = "/bin/azure-functions-admin keys set --key-type {} --key-name {}"
+            command = command_fmt.format(key_type, key_name)
         else:
-            command_fmt = "/bin/azure-functions-admin keys set --key-type {} --key-name {} --key-value {} --function-name {}"
-            command = command_fmt.format(key_type, key_name, key_value, function_name)
+            command_fmt = "/bin/azure-functions-admin keys set --key-type {} --key-name {} --function-name {}"
+            command = command_fmt.format(key_type, key_name, function_name)
+        
+        if key_value is not None:
+            command += " --key-value {}".format(key_value)
 
         return containerapp_debug(
             cmd=cmd,

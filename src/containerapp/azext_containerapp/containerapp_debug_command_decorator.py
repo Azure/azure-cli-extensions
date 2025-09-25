@@ -8,12 +8,14 @@
 from knack.log import get_logger
 from typing import Any, Dict
 import urllib
+import json
 
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
+from ._transformers import transform_debug_command_output
 
 from ._validators import validate_basic_arguments
 
@@ -89,6 +91,6 @@ class ContainerAppDebugCommandDecorator(BaseResource):
         command = self.get_argument_command()
         url = self._get_url(cmd, resource_group_name, container_app_name, revision_name, replica_name, container_name, command)
         token = self._get_auth_token(cmd, resource_group_name, container_app_name)
-        headers = [f"Authorization: Bearer {token}"]
+        headers = [f"Authorization=Bearer {token}"]
         r = send_raw_request(cmd.cli_ctx, "GET", url, headers=headers)
-        return r.json()
+        return transform_debug_command_output(r.json())

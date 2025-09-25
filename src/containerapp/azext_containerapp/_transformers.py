@@ -5,6 +5,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=bare-except, line-too-long
 
+import json
 from knack.log import get_logger
 
 from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
@@ -258,3 +259,32 @@ def transform_function_traces(result):
             ]))
     
     return table
+
+def transform_debug_command_output(raw_output):
+    """Format the debug command output by removing $id field and handling JSON or plain text output"""
+    try:
+        # Remove the $id field if it exists
+        if "$id" in raw_output:
+            del raw_output["$id"]
+        
+        # Extract and process the output field
+        if "output" in raw_output:
+            output_str = raw_output["output"]
+            
+            # First try to parse as JSON
+            try:
+                parsed_output = json.loads(output_str)
+                return parsed_output
+            except json.JSONDecodeError:
+                # If not valid JSON, treat as plain text and decode escape sequences
+                decoded_output = output_str.encode().decode('unicode_escape')
+                return decoded_output
+        else:
+            return raw_output
+            
+    except (KeyError, UnicodeDecodeError) as e:
+        logger.warning(f"Failed to process debug output: {e}")
+        # Fall back to returning the raw output without $id
+        if "$id" in raw_output:
+            del raw_output["$id"]
+        return raw_output

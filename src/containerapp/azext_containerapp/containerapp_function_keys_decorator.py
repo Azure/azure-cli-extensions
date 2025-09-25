@@ -173,9 +173,6 @@ class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
 
         if not key_name:
             raise ValidationError("Key name is required.")
-        
-        if not key_value:
-            raise ValidationError("Key value is required.")
 
         return resource_group_name, name, revision_name, key_type, key_name, key_value, function_name, replica_name, container_name
 
