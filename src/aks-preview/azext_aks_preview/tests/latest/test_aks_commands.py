@@ -27,6 +27,9 @@ from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
 from knack.util import CLIError
+from azext_aks_preview._roleassignments import add_role_assignment
+from azure.cli.command_modules.acs._consts import CONST_NETWORK_CONTRIBUTOR_ROLE_ID
+
 
 from .test_localdns_profile import assert_dns_overrides_equal, vnetDnsOverridesExpected, kubeDnsOverridesExpected
 
@@ -3920,6 +3923,145 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+    
+    @live_only()  # live only due to workspace is not mocked correctly and role assignment is not mocked
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2"
+    )
+    def test_aks_automatic_sku_byo_vnet(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        vnet_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "vnet_name": vnet_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create user-assigned identity
+        identity_id = self._get_user_assigned_identity(resource_group)
+        identity_object_id = self._get_principal_id_of_user_assigned_identity(identity_id)
+        assert identity_id is not None
+        assert identity_object_id is not None
+        self.kwargs.update(
+            {
+                "identity_id": identity_id,
+                "identity_object_id": identity_object_id,
+            }
+        )
+
+        # create virtual network
+        create_vnet = (
+            "network vnet create --resource-group={resource_group} --name={vnet_name} "
+            "--address-prefix 10.0.0.0/8 -o json"
+        )
+        vnet = self.cmd(
+            create_vnet, checks=[self.check("newVNet.provisioningState", "Succeeded")]
+        ).get_output_in_json()
+        vnet_id = vnet["newVNet"]["id"]
+        assert vnet_id is not None
+
+        # create node subnet
+        create_node_subnet = (
+            "network vnet subnet create -n nodeSubnet --resource-group={resource_group} --vnet-name {vnet_name} "
+            "--address-prefixes 10.240.0.0/16"
+        )
+        show_node_subnet_cmd = "network vnet subnet show \
+            --resource-group={resource_group} \
+            --vnet-name={vnet_name} \
+            --name nodeSubnet"
+        self.cmd(create_node_subnet, checks=[self.check("provisioningState", "Succeeded")])
+        node_subnet_output = self.cmd(show_node_subnet_cmd).get_output_in_json()
+        node_subnet_id = node_subnet_output["id"]
+        assert node_subnet_id is not None
+
+        # create apiserver subnet
+        create_apiserver_subnet = (
+            "network vnet subnet create -n apiServerSubnet --resource-group={resource_group} --vnet-name {vnet_name} "
+            "--address-prefixes 10.241.0.0/16"
+        )
+        show_apiserver_subnet_cmd = "network vnet subnet show \
+            --resource-group={resource_group} \
+            --vnet-name={vnet_name} \
+            --name apiServerSubnet"
+        self.cmd(create_apiserver_subnet, checks=[self.check("provisioningState", "Succeeded")])
+        apiserver_subnet_output = self.cmd(show_apiserver_subnet_cmd).get_output_in_json()
+        apiserver_subnet_id = apiserver_subnet_output["id"]
+        assert apiserver_subnet_id is not None
+        self.kwargs.update(
+            {
+                "vnet_id": vnet_id,
+                "node_subnet_id": node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,           
+            }
+        )
+
+        # add network contributor role to the user assigned identity that allow access to apiserver subnet
+        role_assignment_cmd = 'role assignment create --role "Network Contributor" --assignee {identity_object_id} --scope {apiserver_subnet_id}'
+        self.cmd(role_assignment_cmd)
+
+        # create an Automatic cluster with BYO Vnet
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--sku automatic "
+            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview "
+            "--assign-identity={identity_id} "
+            "--vnet-subnet-id={node_subnet_id} "
+            "--apiserver-subnet-id={apiserver_subnet_id} "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Automatic"),
+                self.check("sku.tier", "Standard"),
+                self.check("networkProfile.outboundType", "loadBalancer"),
+            ],
+        )
+
+        # azuremonitor metrics will be set to false after initial creation command as its in the
+        # postprocessing step that we do an update to enable it. Adding a wait for the second put request
+        # in addonput.py which enables the Azure Monitor Metrics addon as all the DC* resources
+        # have now been created.
+        wait_cmd = " ".join(
+            [
+                "aks",
+                "wait",
+                "--resource-group={resource_group}",
+                "--name={name}",
+                "--updated",
+                "--interval 60",
+                "--timeout 300",
+            ]
+        )
+        self.cmd(
+            wait_cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+        self.cmd(
+            "aks show -g {resource_group} -n {name} --output=json",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("azureMonitorProfile.metrics.enabled", True),
+                self.check("networkProfile.outboundType", "loadBalancer"),
+            ],
+        )
+
+        # delete the cluster
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
