@@ -13,6 +13,7 @@ Pending
 +++++++
 * Fix `--localdns-config` parameter to handle null values in JSON configuration files gracefully, preventing crashes when DNS override sections are null.
 * Add jwtauthenticator commands `az aks jwtauthenticator add/update/show/list/delete` to manage JWT authenticators for a managed cluster.
+* Add option `Flatcar` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
 18.0.0b40
 +++++++
