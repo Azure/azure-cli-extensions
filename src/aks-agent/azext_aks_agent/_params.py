@@ -90,10 +90,7 @@ def load_arguments(self, _):
             "use_aks_mcp",
             options_list=["--aks-mcp"],
             default=False,
-            arg_type=get_three_state_flag(
-                positive_label="Enable AKS MCP integration",
-                negative_label="Disable AKS MCP integration",
-            ),
+            arg_type=get_three_state_flag(),
             help=(
                 "Enable AKS MCP integration for enhanced capabilities. "
                 "Traditional mode is the default. Use --aks-mcp to enable MCP mode, or "
