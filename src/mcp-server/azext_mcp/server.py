@@ -1,0 +1,409 @@
+import contextlib
+from datetime import datetime
+import io
+from types import SimpleNamespace
+
+from mcp.types import ToolAnnotations
+from mcp.server.fastmcp import FastMCP, Context
+from mcp.server.fastmcp.tools import Tool
+from mcp.server.fastmcp.resources import FunctionResource
+from mcp.server.streamable_http import EventStore
+from azure.cli.core import AzCli
+from knack import log
+from pydantic import BaseModel, Field
+from typing_extensions import Annotated
+from typing import Any, Optional
+
+from .command_introspection import (
+    build_command_help_info,
+    build_command_group_help_info,
+    handle_arg_schema,
+    handle_help_schema,
+)
+from .azcli_script_insight_client import what_if_preview, analyze_azcli_script, FUNCTION_APP_URL
+
+logger = log.get_logger(__name__)
+
+
+class MCPConfirmation(BaseModel):
+    confirmation: Annotated[str, Field(
+        description="Whether to confirm the command execution. "
+                    "If Y/y/YES/yes, the command will be executed without confirmation.",
+        default="false"
+    )]
+
+
+class WhatIfPreviewResponse(BaseModel):
+    """Response model for what-if preview tool."""
+    success: Optional[bool] = Field(default=None, description="Whether the operation was successful")
+    error: Optional[str] = Field(default=None, description="Error message if operation failed")
+    details: Optional[str] = Field(default=None, description="Additional details about any error")
+    what_if_result: Optional[Any] = Field(default=None, description="The what-if preview results showing resource changes")
+
+
+class BestPracticesResponse(BaseModel):
+    """Response model for best practices analysis tool."""
+    status: Optional[str] = Field(default=None, description="Status of the analysis operation")
+    error: Optional[str] = Field(default=None, description="Error message if analysis failed")
+    analysis: Optional[Any] = Field(default=None, description="The best practices analysis results and recommendations")
+
+
+class AzCLIBridge:
+    """Bridge layer between AzCLI and AzMCP that provides command introspection and execution."""
+
+    def __init__(self, cli_ctx: AzCli):
+        self.cli_ctx = cli_ctx
+        self._ensure_commands_loaded()
+        self.command_table = self.cli_ctx.invocation.commands_loader.command_table
+        self.group_table = self.cli_ctx.invocation.commands_loader.command_group_table
+
+    def _ensure_commands_loaded(self):
+        """Ensure CLI commands are loaded."""
+        start_at = datetime.now()
+        self.cli_ctx.invocation.commands_loader.load_command_table(None)
+        try:
+            self.cli_ctx.invocation.commands_loader.load_arguments()
+        except ImportError:
+            logger.warning("Failed to load command arguments")
+        logger.debug("Commands loaded in %s seconds", (datetime.now() - start_at).total_seconds())
+
+    def get_command_help(self, command_name: str):
+        """Get help content for a specific command."""
+        # Check if it's a command
+        command = self.command_table.get(command_name)
+        if command:
+            return build_command_help_info(command_name, command)
+        
+        # Check if it's a command group
+        command_group = self.group_table.get(command_name)
+        if command_group is not None:
+            return build_command_group_help_info(command_name, command_group, self.command_table, self.group_table)
+
+        return 'Command or group not found'
+
+    def get_command_arguments_schema(self, command_name: str):
+        """Get argument help and schema for a specific command."""
+        # Implementation here
+        command = self.command_table.get(command_name)
+        if not command:
+            return None
+        if hasattr(command, '_args_schema'):
+            return handle_arg_schema(command._args_schema)
+        help_info = build_command_help_info(command_name, command)
+        if help_info and 'arguments' in help_info:
+            return handle_help_schema(help_info)
+        return None
+
+    def get_default_arguments(self, command_name: str):
+        """Get default arguments for a specific command."""
+        schema = self.get_command_arguments_schema(command_name)
+        if not schema:
+            return None
+        default_args = {}
+        for arg_name, arg_info in schema['properties'].items():
+            if 'default' in arg_info and arg_info['default'] is not None:
+                default_args[arg_name] = arg_info['default']
+        return default_args
+    
+    def validate_invocation(self, command, arguments: dict):
+        namespace = SimpleNamespace(**arguments)
+        for argument in command.arguments.values():
+            settings = argument.type.settings
+            # Skip ignore actions
+            if settings.get("action", None):
+                action = settings["action"]
+                if hasattr(action, "__name__") and action.__name__ == "IgnoreAction":
+                    continue
+            name = settings["dest"]
+            if not hasattr(namespace, name):
+                setattr(namespace, name, None)
+        for arg_name, argument in command.arguments.items():
+            if argument.type is None:
+                continue
+            settings = argument.type.settings
+            validator = settings.get('validator')
+            if not validator:
+                continue
+            import inspect
+            sig = inspect.signature(validator)
+            validator_parameters = sig.parameters
+            kwargs = {}
+            if 'cmd' in validator_parameters:
+                kwargs['cmd'] = command
+            if 'namespace' in validator_parameters:
+                kwargs['namespace'] = namespace
+            if 'ns' in validator_parameters:
+                kwargs['ns'] = namespace
+            validator(**kwargs)
+        if getattr(command, 'validator', None):
+            import inspect
+            sig = inspect.signature(command.validator)
+            validator_parameters = sig.parameters
+            kwargs = {}
+            if 'cmd' in validator_parameters:
+                kwargs['cmd'] = command
+            if 'namespace' in validator_parameters:
+                kwargs['namespace'] = namespace
+            if 'ns' in validator_parameters:
+                kwargs['ns'] = namespace
+            command.validator(**kwargs)
+        return {key: value
+                  for key, value in namespace.__dict__.items()
+                  if not key.startswith('_')}
+
+    def invoke_command_by_json(self, command_name: str, arguments: dict | None = None):
+        """Invoke a command with JSON-described arguments."""
+        from azure.cli.core.commands import LongRunningOperation, _is_poller, _is_paged, AzCliCommandInvoker
+
+        command = self.command_table.get(command_name)
+        if not command:
+            return None
+        if arguments is None:
+            arguments = {}
+        default_args = self.get_default_arguments(command_name)
+        if default_args:
+            arguments = {**default_args, **arguments}
+        arguments = self.validate_invocation(command, arguments)
+        arguments = {"cmd": command, **arguments}  # Ensure 'cmd' is passed to the command
+        logger.debug("Invoking command '%s' with arguments: %s", command_name, arguments)
+        try:
+            stderr_output = None
+            with contextlib.redirect_stderr(io.StringIO()) as stderr_capture:
+                result = command(arguments)
+            stderr_output = stderr_capture.getvalue()
+            transform_op = command.command_kwargs.get('transform', None)
+            if transform_op:
+                result = transform_op(result)
+
+            if _is_poller(result):
+                result = LongRunningOperation(command.cli_ctx, 'Starting {}'.format(command.name))(result)
+            elif _is_paged(result):
+                result = list(result)
+
+            from azure.cli.core.util import todict
+            result = todict(result, AzCliCommandInvoker.remove_additional_prop_layer)
+        except Exception as e:
+            logger.error("Error invoking command '%s': %s", command_name, e, exc_info=e)
+            return {'error': f"Exception: {e}\nCaptured stderr output: {stderr_output}"}
+        except SystemExit as e:
+            logger.error("SystemExit raised while invoking command '%s': %s", command_name, e, exc_info=e)
+            logger.error("Captured stderr output: %s", stderr_output)
+            return {'error': f"SystemExit: {e}\nCaptured stderr output: {stderr_output}"}
+        return {'result': result}
+    
+    def invoke_command_by_arguments(self, arguments: list[str]) -> dict | None:
+        """Invoke a command with a list of arguments."""
+        from azure.cli.core.commands import AzCliCommandInvoker
+        arguments = arguments or []
+        invocation = AzCliCommandInvoker(
+            cli_ctx=self.cli_ctx,
+            parser_cls=self.cli_ctx.parser_cls,
+            commands_loader_cls=self.cli_ctx.commands_loader_cls,
+            help_cls=self.cli_ctx.help_cls)
+        try:
+            stderr_output = None
+            with contextlib.redirect_stderr(io.StringIO()) as stderr_capture:
+                result = invocation.execute(arguments)
+            stderr_output = stderr_capture.getvalue()
+            return {'result': result}
+        except Exception as e:
+            logger.error("Error invoking command with arguments '%s': %s", arguments, e, exc_info=e)
+            return {'error': f"Exception: {e}\nCaptured stderr output: {stderr_output}"}
+        except SystemExit as e:
+            # Handle SystemExit raised by the CLI
+            logger.error("SystemExit raised while invoking command with arguments '%s': %s", arguments, e, exc_info=e)
+            logger.error("Captured stderr output: %s", stderr_output)
+            return {'error': f"SystemExit: {e}\nCaptured stderr output: {stderr_output}"}
+
+
+class AzMCP(FastMCP):
+    def __init__(
+            self,
+            cli_ctx: AzCli,
+            name: str | None = None,
+            instructions: str | None = None,
+            event_store: EventStore | None = None,
+            *,
+            tools: list[Tool] | None = None,
+            enable_elicit: bool = True,
+    ):
+        """
+        Initialize the AzMCP server with the given CLI context and optional parameters.
+        """
+        super().__init__(
+            name or "AZ MCP",
+            instructions,
+            event_store,
+            tools=tools)
+        self.cli_ctx = cli_ctx
+        self.enable_elicit = enable_elicit
+        self.az_cli_bridge = AzCLIBridge(self.cli_ctx)
+        self._register_primitives()
+        # self._register_resources()
+    
+    def _register_primitives(self):
+        super().tool(
+            "get_az_cli_command_schema",
+            title="Get Azure CLI Command Schema",
+            description="Retrieve the detailed argument schema and parameter specifications for any Azure CLI command. "
+                "Provides comprehensive information about required parameters, optional flags, data types, "
+                "validation rules, and parameter descriptions. Input should be the command name without the 'az' "
+                "prefix (e.g., 'vm create', 'storage account list', 'network vnet show').",
+            annotations=ToolAnnotations(
+                title="Get Azure CLI Command Schema",
+                readOnlyHint=True,
+            ),
+            structured_output=True,
+        )(self.get_command_schema)
+        super().tool(
+            "invoke_az_cli_command",
+            title="Invoke Azure CLI Command",
+            description="Execute an Azure CLI command with specified arguments in JSON format. "
+                "This tool allows you to run any Azure CLI command programmatically, passing arguments as a JSON object."
+                "The key in arguments should match the command's argument names, instead of the options. "
+                "This tool must be called after the command schema tool to ensure the command is valid.",
+            annotations=ToolAnnotations(
+                title="Invoke Azure CLI Command",
+                destructiveHint=True,
+            ),
+            structured_output=True,
+        )(self.invoke_command_by_json)
+        # super().tool(
+        #     "invoke_az_cli_command",
+        #     title="Invoke Azure CLI Command",
+        #     description="Execute an Azure CLI command with specified arguments in a list format. "
+        #         "The arguments should be provided as a list of strings, where each string is a separate argument part."
+        #         "For example, to run 'az vm create --name MyVM --resource-group MyGroup', you would provide the arguments as follows: "
+        #         "['vm', 'create', '--name', 'MyVM', '--resource-group', 'MyGroup']"
+        #         "This tool must be called after the command schema tool to ensure the command is valid."
+        #         "You should refer to the options in the command schema tool to ensure the parameters are correct.",
+        #     annotations=ToolAnnotations(
+        #         title="Invoke Azure CLI Command",
+        #         destructiveHint=True,
+        #     ),
+        #     structured_output=True,
+        # )(self.invoke_command_by_arguments)
+        
+        super().tool(
+            "what_if_preview_tool",
+            title="Azure What-If Preview",
+            description="Preview deployment changes for Azure CLI scripts using Azure what-if functionality. "
+                "This tool analyzes an Azure CLI script and shows what resources would be created, modified, or deleted without actually executing the commands. "
+                "Requires Azure CLI authentication (az login) to access your subscription. "
+                "And it is necessary to obtain the current subscription_id through some methods such as the `az account show --query id` command.",
+            annotations=ToolAnnotations(
+                title="Azure What-If Preview",
+                readOnlyHint=True,
+            ),
+            structured_output=True,
+        )(self.what_if_preview_tool)
+        
+        super().tool(
+            "best_practices_tool",
+            title="Azure CLI Best Practices Analyzer",
+            description="Analyze Azure CLI scripts for best practices, security recommendations, and optimization opportunities. "
+                "This tool examines your Azure CLI script and provides detailed feedback on naming conventions, "
+                "resource configurations, security practices, and performance optimizations.",
+            annotations=ToolAnnotations(
+                title="Azure CLI Best Practices Analyzer",
+                readOnlyHint=True,
+            ),
+            structured_output=True,
+        )(self.best_practices_tool)
+
+    def _register_resources(self):
+        for group_name in self.az_cli_bridge.group_table.keys():
+            async def resource_fn(captured_name=group_name) -> str:
+                return self.az_cli_bridge.get_command_help(captured_name)
+
+            self.add_resource(FunctionResource.from_function(
+                fn=resource_fn,
+                uri=f'az://{"/".join(group_name.split())}',
+                name=f'Azure CLI Group Help for `az {group_name}`',
+                description=f'Retrieve help documentation for the Azure CLI group `az {group_name}`.',
+                mime_type="application/json",
+            ))
+        for command_name in self.az_cli_bridge.command_table.keys():
+            async def resource_fn(captured_name=command_name) -> str:
+                return self.az_cli_bridge.get_command_help(captured_name)
+
+            self.add_resource(FunctionResource.from_function(
+                fn=resource_fn,
+                uri=f'az://{"/".join(command_name.split())}',
+                name=f'Azure CLI Command Help for `az {command_name}`',
+                description=f'Retrieve help documentation for the Azure CLI command `az {command_name}`.',
+                mime_type="application/json",
+            ))
+
+    def command_help_resource(self, command_name_path: str) -> str:
+        return self.az_cli_bridge.get_command_help(command_name_path.split('/'))
+    
+    def get_command_schema(self, command_name: str) -> dict | None:
+        """Get the argument schema for a specific command."""
+        if command_name.startswith('az '):
+            command_name = command_name[3:]  # Remove 'az ' prefix if present
+        return self.az_cli_bridge.get_command_arguments_schema(command_name)
+
+    async def invoke_command_by_json(self, command_name: str, arguments: dict, ctx: Context) -> dict | None:
+        """Invoke a command with JSON-described arguments."""
+        if command_name.startswith('az '):
+            command_name = command_name[3:]
+        verb = command_name.split()[-1]
+        if self.enable_elicit and verb not in ['list', 'show']:
+            result = await ctx.elicit("This is a destructive command. Do you want to continue? (y/N)", MCPConfirmation)
+            if not (result.action == "accept" and result.data.confirmation.lower() in ["y", "yes"]):
+                return None
+        # The prompt elicitation has unsolved bug due to async-sync-async call. Use it after solving this issue.
+        # with elicit_prompts(ctx):
+        return self.az_cli_bridge.invoke_command_by_json(command_name, arguments)
+    
+    async def invoke_command_by_arguments(self, arguments: list[str], ctx: Context) -> dict | None:
+        """Invoke a command with a list of arguments."""
+        if arguments and arguments[0] == "az":
+            arguments = arguments[1:]  # Remove 'az' prefix if present
+        if self.enable_elicit and "list" not in arguments and "show" not in arguments:
+            result = await ctx.elicit("This is a destructive command. Do you want to continue? (y/N)", MCPConfirmation)
+            if not (result.action == "accept" and result.data.confirmation.lower() in ["y", "yes"]):
+                return None
+        # The prompt elicitation has unsolved bug due to async-sync-async call. Use it after solving this issue.
+        # with elicit_prompts(ctx):
+        return self.az_cli_bridge.invoke_command_by_arguments(arguments)
+    
+    def what_if_preview_tool(self, azcli_script: str, subscription_id: str) -> WhatIfPreviewResponse:
+        """
+        Preview deployment changes using Azure what-if functionality.
+        
+        Args:
+            azcli_script: Azure CLI script to analyze for deployment changes
+            subscription_id: Subscription ID to scope the what-if preview
+
+        Returns:
+            WhatIfPreviewResponse containing what-if preview results showing what resources would be affected
+        """
+        try:
+            result = what_if_preview(self.cli_ctx, FUNCTION_APP_URL, azcli_script, subscription_id)
+            return WhatIfPreviewResponse(**result)
+        except Exception as e:
+            return WhatIfPreviewResponse(
+                error=f"Failed to execute what-if preview: {str(e)}",
+                success=False
+            )
+    
+    def best_practices_tool(self, azcli_script: str) -> BestPracticesResponse:
+        """
+        Analyze Azure CLI script for best practices and recommendations.
+        
+        Args:
+            azcli_script: Azure CLI script to analyze for best practices
+            
+        Returns:
+            BestPracticesResponse containing analysis results with recommendations and best practices
+        """
+        try:
+            result = analyze_azcli_script(FUNCTION_APP_URL, azcli_script)
+            return BestPracticesResponse(**result)
+        except Exception as e:
+            return BestPracticesResponse(
+                error=f"Failed to analyze script: {str(e)}",
+                status="error"
+            )
