@@ -2,10 +2,16 @@
 
 Release History
 ===============
+<<<<<<< HEAD
+2.0.2
++++++
+* Support Network group type Subnet for Routing configuration
+=======
 
 3.0.0
 +++++
 * Add new parameter connect-capabilities to cmd `az network manager connect-config`
+>>>>>>> b0179e3ab0dd11c78c6f7f85b6174bb98bf9d040
 
 2.0.1
 +++++

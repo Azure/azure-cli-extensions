@@ -10,8 +10,13 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
+<<<<<<< HEAD
+# Support Network Group type in routing
+VERSION = '2.0.2'
+=======
 # Fixed post commit issue in routing
 VERSION = '2.1.0'
+>>>>>>> b0179e3ab0dd11c78c6f7f85b6174bb98bf9d040
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
