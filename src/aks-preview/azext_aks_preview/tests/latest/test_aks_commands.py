@@ -5,7 +5,7 @@
 
 import os
 import pty
-import os
+import semver
 import subprocess
 import tempfile
 import time
