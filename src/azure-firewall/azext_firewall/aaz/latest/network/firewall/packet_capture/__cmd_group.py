@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "network firewall policy rule-collection-group",
+    "network firewall packet-capture",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage and configure Azure firewall policy rule-collection-group.
+    """Manage package capture feature of firewall.
     """
     pass
 
