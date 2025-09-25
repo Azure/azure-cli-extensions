@@ -3,13 +3,15 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import contextlib
+import io
 import json
 import os
 import subprocess
 import tempfile
 import pytest
 
-from azext_confcom.custom import acifragmentgen_confcom
+from azext_confcom.custom import acifragmentgen_confcom, fragment_push, fragment_attach
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 SAMPLES_DIR = os.path.abspath(os.path.join(TEST_DIR, "..", "..", "..", "samples"))
@@ -84,6 +86,7 @@ def test_acifragmentgen_fragment_gen(docker_image):
             feed="test-feed",
             outraw=True,
             output_filename=os.path.join(temp_dir, "fragment.rego"),
+            out_signed_fragment=False,
         )
 
     # TODO: Implement a proper validation for the fragment, this is hard
@@ -108,6 +111,7 @@ def test_acifragmentgen_fragment_sign(docker_image, cert_chain):
             feed="test-feed",
             outraw=True,
             output_filename=os.path.join(temp_dir, "fragment.rego"),
+            out_signed_fragment=False,
         )
 
     # TODO: Implement a proper validation for the cose document
@@ -131,75 +135,104 @@ def test_acifragmentgen_fragment_upload_fragment(docker_image, cert_chain):
             outraw=True,
             upload_fragment=True,
             output_filename=os.path.relpath(os.path.join(temp_dir, "fragment.rego"), os.getcwd()), # Must be relative for oras
+            out_signed_fragment=False,
         )
 
-        oras_referrers = subprocess.run(
-            ["oras", "discover", image_ref],
-            stdout=subprocess.PIPE,
-            text=True,
-            check=True
-        ).stdout
+    # Confirm the fragment exists and is attached in the registry
+    fragment_ref = json.loads(subprocess.run(
+        ["oras", "discover", image_ref, "--format", "json"],
+        stdout=subprocess.PIPE,
+        check=True,
+    ).stdout)["referrers"][0]["reference"]
 
-        # Confirm the fragment is attached to the image
-        assert "application/x-ms-ccepolicy-frag" in oras_referrers
+    fragment_path = json.loads(subprocess.run(
+        ["oras", "pull", fragment_ref, "--format", "json", "-o", "/tmp"],
+        check=True,
+        stdout=subprocess.PIPE,
+    ).stdout)["files"][0]["path"]
 
 
-def test_acifragmentgen_fragment_push(docker_image, cert_chain):
+    with open(fragment_path, "rb") as actual_fragment_file:
+        with open(os.path.join(temp_dir, "fragment.rego.cose"), "rb") as expected_fragment_file:
+            assert actual_fragment_file.read() == expected_fragment_file.read()
+
+
+def test_acifragmentgen_fragment_push(docker_image, cert_chain, capsysbinary):
 
     image_ref, spec_file_path = docker_image
     fragment_ref = image_ref.replace("hello-world", "fragment")
 
-    with tempfile.TemporaryDirectory() as temp_dir: # Prevent test writing files to repo
-        acifragmentgen_confcom(
-            image_name=None,
-            tar_mapping_location=None,
-            key=os.path.join(cert_chain, "intermediateCA", "private", "ec_p384_private.pem"),
-            chain=os.path.join(cert_chain, "intermediateCA", "certs", "www.contoso.com.chain.cert.pem"),
-            minimum_svn=None,
-            input_path=spec_file_path,
-            svn="1",
-            namespace="contoso",
-            feed="test-feed",
-            outraw=True,
-            push_fragment_to=fragment_ref,
-            output_filename=os.path.relpath(os.path.join(temp_dir, "fragment.rego"), os.getcwd()), # Must be relative for oras
-        )
+    acifragmentgen_confcom(
+        image_name=None,
+        tar_mapping_location=None,
+        key=os.path.join(cert_chain, "intermediateCA", "private", "ec_p384_private.pem"),
+        chain=os.path.join(cert_chain, "intermediateCA", "certs", "www.contoso.com.chain.cert.pem"),
+        minimum_svn=None,
+        input_path=spec_file_path,
+        svn="1",
+        namespace="contoso",
+        feed="test-feed",
+        out_signed_fragment=True,
+    )
+
+    signed_fragment = capsysbinary.readouterr()[0]
+    signed_fragment_io = io.BytesIO(signed_fragment)
+    signed_fragment_io.name = "<stdin>"
+
+    fragment_push(
+        signed_fragment=signed_fragment_io,
+        manifest_tag=fragment_ref,
+    )
 
     # Confirm the fragment exists in the registry
-    subprocess.run(
-        ["oras", "discover", fragment_ref],
-        stdout=subprocess.PIPE,
-        text=True,
+    fragment_path = json.loads(subprocess.run(
+        ["oras", "pull", fragment_ref, "--format", "json", "-o", "/tmp"],
         check=True,
-    ).stdout
+        stdout=subprocess.PIPE,
+    ).stdout)["files"][0]["path"]
+
+    with open(fragment_path, "rb") as f:
+        assert f.read() == signed_fragment
 
 
-def test_acifragmentgen_fragment_attach(docker_image, cert_chain):
+def test_acifragmentgen_fragment_attach(docker_image, cert_chain, capsysbinary):
 
     image_ref, spec_file_path = docker_image
 
-    with tempfile.TemporaryDirectory() as temp_dir: # Prevent test writing files to repo
-        acifragmentgen_confcom(
-            image_name=None,
-            tar_mapping_location=None,
-            key=os.path.join(cert_chain, "intermediateCA", "private", "ec_p384_private.pem"),
-            chain=os.path.join(cert_chain, "intermediateCA", "certs", "www.contoso.com.chain.cert.pem"),
-            minimum_svn=None,
-            input_path=spec_file_path,
-            svn="1",
-            namespace="contoso",
-            feed="test-feed",
-            outraw=True,
-            attach_fragment_to=image_ref,
-            output_filename=os.path.relpath(os.path.join(temp_dir, "fragment.rego"), os.getcwd()), # Must be relative for oras
-        )
+    acifragmentgen_confcom(
+        image_name=None,
+        tar_mapping_location=None,
+        key=os.path.join(cert_chain, "intermediateCA", "private", "ec_p384_private.pem"),
+        chain=os.path.join(cert_chain, "intermediateCA", "certs", "www.contoso.com.chain.cert.pem"),
+        minimum_svn=None,
+        input_path=spec_file_path,
+        svn="1",
+        namespace="contoso",
+        feed="test-feed",
+        out_signed_fragment=True,
+    )
 
-    oras_referrers = subprocess.run(
-        ["oras", "discover", image_ref],
+    signed_fragment = capsysbinary.readouterr()[0]
+    signed_fragment_io = io.BytesIO(signed_fragment)
+    signed_fragment_io.name = "<stdin>"
+
+    fragment_attach(
+        signed_fragment=signed_fragment_io,
+        manifest_tag=image_ref,
+    )
+
+    # Confirm the fragment exists and is attached in the registry
+    fragment_ref = json.loads(subprocess.run(
+        ["oras", "discover", image_ref, "--format", "json"],
         stdout=subprocess.PIPE,
-        text=True,
-        check=True
-    ).stdout
+        check=True,
+    ).stdout)["referrers"][0]["reference"]
 
-    # Confirm the fragment is attached to the image
-    assert "application/x-ms-ccepolicy-frag" in oras_referrers, oras_referrers
+    fragment_path = json.loads(subprocess.run(
+        ["oras", "pull", fragment_ref, "--format", "json", "-o", "/tmp"],
+        check=True,
+        stdout=subprocess.PIPE,
+    ).stdout)["files"][0]["path"]
+
+    with open(fragment_path, "rb") as f:
+        assert f.read() == signed_fragment
