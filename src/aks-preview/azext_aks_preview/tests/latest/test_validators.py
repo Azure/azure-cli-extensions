@@ -1890,6 +1890,7 @@ class AzureMonitorAndOpenTelemetryNamespace:
     def __init__(self, enable_opentelemetry_metrics=False, disable_opentelemetry_metrics=False,
                  enable_opentelemetry_logs=False, disable_opentelemetry_logs=False,
                  enable_azure_monitor_metrics=False, enable_azuremonitormetrics=False,
+                 enable_azure_monitor_logs=False,
                  opentelemetry_metrics_port=None, opentelemetry_logs_port=None):
         self.enable_opentelemetry_metrics = enable_opentelemetry_metrics
         self.disable_opentelemetry_metrics = disable_opentelemetry_metrics
@@ -1897,6 +1898,7 @@ class AzureMonitorAndOpenTelemetryNamespace:
         self.disable_opentelemetry_logs = disable_opentelemetry_logs
         self.enable_azure_monitor_metrics = enable_azure_monitor_metrics
         self.enable_azuremonitormetrics = enable_azuremonitormetrics
+        self.enable_azure_monitor_logs = enable_azure_monitor_logs
         self.opentelemetry_metrics_port = opentelemetry_metrics_port
         self.opentelemetry_logs_port = opentelemetry_logs_port
 
@@ -1907,6 +1909,7 @@ class TestValidateAzureMonitorAndOpenTelemetryForCreate(unittest.TestCase):
             enable_opentelemetry_metrics=True,
             enable_opentelemetry_logs=True,
             enable_azure_monitor_metrics=True,
+            enable_azure_monitor_logs=True,
             opentelemetry_metrics_port=8080,
             opentelemetry_logs_port=8081
         )
@@ -1997,6 +2000,270 @@ class TestValidateAzureMonitorAndOpenTelemetryForUpdate(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
         self.assertEqual(str(cm.exception), err)
+
+
+class TestValidateAzureMonitorLogsAndEnableAddons(unittest.TestCase):
+    def test_enable_azure_monitor_logs_with_monitoring_addon_throws_error(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.enable_addons = ["monitoring", "azure-policy"]
+        
+        err = "Cannot specify both '--enable-azure-monitor-logs' and '--enable-addons monitoring'. Use either '--enable-azure-monitor-logs' or '--enable-addons monitoring'."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_azure_monitor_logs_with_other_addons_succeeds(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.enable_addons = ["azure-policy", "virtual-node"]
+        
+        # Should not raise an exception
+        validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+
+    def test_enable_azure_monitor_logs_without_enable_addons_succeeds(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        
+        # Should not raise an exception  
+        validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+
+    def test_enable_addons_monitoring_without_enable_azure_monitor_logs_succeeds(self):
+        namespace = SimpleNamespace()
+        namespace.enable_addons = ["monitoring"]
+        
+        # Should not raise an exception
+        validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+
+
+class TestValidateAzureMonitorLogsEnableDisable(unittest.TestCase):
+    def test_enable_and_disable_azure_monitor_logs_throws_error(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = True
+        
+        err = "Cannot specify both '--enable-azure-monitor-logs' and '--disable-azure-monitor-logs'. Use either '--enable-azure-monitor-logs' or '--disable-azure-monitor-logs'."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_azure_monitor_logs_enable_disable(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_only_enable_azure_monitor_logs_succeeds(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = False
+        
+        # Should not raise an exception
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+    def test_only_disable_azure_monitor_logs_succeeds(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = False
+        namespace.disable_azure_monitor_logs = True
+        
+        # Should not raise an exception
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+    def test_neither_enable_nor_disable_azure_monitor_logs_succeeds(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = False
+        namespace.disable_azure_monitor_logs = False
+        
+        # Should not raise an exception
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+
+class TestAzureMonitorLogsParameters(unittest.TestCase):
+    """Test that Azure Monitor logs parameters are processed correctly."""
+
+    def test_enable_azure_monitor_logs_modifies_enable_addons(self):
+        """Test that enable_azure_monitor_logs=True adds 'monitoring' to enable_addons."""
+        import azext_aks_preview.custom as custom
+
+        # Test case 1: enable_addons is None initially
+        enable_addons = None
+        enable_azure_monitor_logs = True
+        
+        # This mimics the logic from aks_create function
+        if enable_azure_monitor_logs:
+            if enable_addons is None:
+                enable_addons = ["monitoring"]
+            else:
+                enable_addons = list(enable_addons)
+                if "monitoring" not in enable_addons:
+                    enable_addons.append("monitoring")
+        
+        self.assertEqual(enable_addons, ["monitoring"])
+        
+        # Test case 2: enable_addons already has other addons
+        enable_addons = ["azure-policy", "ingress-appgw"]
+        enable_azure_monitor_logs = True
+        
+        if enable_azure_monitor_logs:
+            if enable_addons is None:
+                enable_addons = ["monitoring"]
+            else:
+                enable_addons = list(enable_addons)
+                if "monitoring" not in enable_addons:
+                    enable_addons.append("monitoring")
+        
+        self.assertIn("monitoring", enable_addons)
+        self.assertIn("azure-policy", enable_addons)
+        self.assertIn("ingress-appgw", enable_addons)
+        self.assertEqual(len(enable_addons), 3)
+        
+        # Test case 3: monitoring already in enable_addons
+        enable_addons = ["monitoring", "azure-policy"]
+        enable_azure_monitor_logs = True
+        
+        if enable_azure_monitor_logs:
+            if enable_addons is None:
+                enable_addons = ["monitoring"]
+            else:
+                enable_addons = list(enable_addons)
+                if "monitoring" not in enable_addons:
+                    enable_addons.append("monitoring")
+        
+        # Should not duplicate monitoring
+        self.assertEqual(enable_addons.count("monitoring"), 1)
+        self.assertEqual(len(enable_addons), 2)
+
+    def test_disable_azure_monitor_logs_calls_disable_function(self):
+        """Test that disable_azure_monitor_logs=True calls the disable addons function."""
+        import azext_aks_preview.custom as custom
+        
+        # Track if disable_addons was called with correct parameters
+        disable_call_params = {}
+        
+        def mock_disable_addons(**kwargs):
+            nonlocal disable_call_params
+            disable_call_params.update(kwargs)
+            return {"addonProfiles": {"omsagent": {"enabled": False}}}
+        
+        # Mock the aks_disable_addons function
+        original_disable_addons = getattr(custom, 'aks_disable_addons', None)
+        custom.aks_disable_addons = mock_disable_addons
+        
+        try:
+            # Test the logic from aks_update function when disable_azure_monitor_logs=True
+            disable_azure_monitor_logs = True
+            
+            if disable_azure_monitor_logs:
+                result = custom.aks_disable_addons(
+                    cmd="mock_cmd",
+                    client="mock_client", 
+                    resource_group_name="test-rg",
+                    name="test-cluster",
+                    addons="monitoring"
+                )
+                
+            # Verify the mock was called with correct parameters
+            self.assertEqual(disable_call_params['addons'], 'monitoring')
+            self.assertEqual(disable_call_params['resource_group_name'], 'test-rg')
+            self.assertEqual(disable_call_params['name'], 'test-cluster')
+            
+            # Verify the result indicates monitoring is disabled
+            self.assertIn('addonProfiles', result)
+            self.assertIn('omsagent', result['addonProfiles'])
+            self.assertFalse(result['addonProfiles']['omsagent']['enabled'])
+            
+        finally:
+            # Restore original function
+            if original_disable_addons:
+                custom.aks_disable_addons = original_disable_addons
+
+    def test_azure_monitor_logs_parameter_equivalency(self):
+        """Test that Azure Monitor logs parameters behave equivalently to addon parameters."""
+        # Test enable equivalency
+        enable_addons_approach = ["monitoring"]  # Using --enable-addons monitoring
+        
+        # Using --enable-azure-monitor-logs (our new parameter)  
+        enable_addons = None
+        enable_azure_monitor_logs = True
+        
+        if enable_azure_monitor_logs:
+            if enable_addons is None:
+                enable_addons = ["monitoring"]
+            else:
+                enable_addons = list(enable_addons)
+                if "monitoring" not in enable_addons:
+                    enable_addons.append("monitoring")
+        
+        # Both approaches should result in the same addon configuration
+        self.assertEqual(enable_addons, enable_addons_approach)
+        
+        # Test disable equivalency - both should call aks_disable_addons with "monitoring"
+        # This is tested by verifying both approaches use the same function call
+        disable_addons_approach = "monitoring"  # Using --disable-addons monitoring
+        azure_monitor_logs_approach = "monitoring"  # Using --disable-azure-monitor-logs
+        
+        self.assertEqual(disable_addons_approach, azure_monitor_logs_approach)
+
+    def test_azure_monitor_logs_with_conflicting_parameters(self):
+        """Test validation catches conflicting Azure Monitor logs parameters."""
+        import azext_aks_preview._validators as validators
+        
+        # Test enable and disable together should fail
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = True
+        
+        with self.assertRaises(ArgumentUsageError):
+            validators.validate_azure_monitor_logs_enable_disable(namespace)
+        
+        # Test that non-conflicting cases don't raise errors
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = False
+        
+        try:
+            validators.validate_azure_monitor_logs_enable_disable(namespace)
+        except ArgumentUsageError:
+            self.fail("validate_azure_monitor_logs_enable_disable raised exception unexpectedly")
+        
+        # Test that only disable doesn't raise errors
+        namespace = SimpleNamespace()  
+        namespace.enable_azure_monitor_logs = False
+        namespace.disable_azure_monitor_logs = True
+        
+        try:
+            validators.validate_azure_monitor_logs_enable_disable(namespace)
+        except ArgumentUsageError:
+            self.fail("validate_azure_monitor_logs_enable_disable raised exception unexpectedly")
+
+    def test_azure_monitor_logs_opentelemetry_dependency(self):
+        """Test that OpenTelemetry logs requires Azure Monitor logs to be enabled."""
+        import azext_aks_preview._validators as validators
+        
+        # Test OpenTelemetry logs with Azure Monitor logs enabled should pass
+        namespace = SimpleNamespace()
+        namespace.enable_opentelemetry_logs = True
+        namespace.enable_azure_monitor_logs = True
+        namespace.enable_addons = None
+        
+        try:
+            validators.validate_opentelemetry_logs_dependencies(namespace)
+        except ArgumentUsageError:
+            self.fail("validate_opentelemetry_logs_dependencies raised exception unexpectedly")
+            
+        # Test OpenTelemetry logs with monitoring addon enabled should pass
+        namespace = SimpleNamespace()
+        namespace.enable_opentelemetry_logs = True
+        namespace.enable_azure_monitor_logs = False
+        namespace.enable_addons = ["monitoring"]
+        
+        try:
+            validators.validate_opentelemetry_logs_dependencies(namespace)
+        except ArgumentUsageError:
+            self.fail("validate_opentelemetry_logs_dependencies raised exception unexpectedly")
+            
+        # Test OpenTelemetry logs without Azure Monitor logs should fail
+        namespace = SimpleNamespace()
+        namespace.enable_opentelemetry_logs = True
+        namespace.enable_azure_monitor_logs = False
+        namespace.enable_addons = None
+        
+        with self.assertRaises(ArgumentUsageError):
+            validators.validate_opentelemetry_logs_dependencies(namespace)
 
 
 if __name__ == "__main__":

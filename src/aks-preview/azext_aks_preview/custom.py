@@ -618,6 +618,7 @@ def aks_create(
     bootstrap_container_registry_resource_id=None,
     # addons
     enable_addons=None,  # pylint: disable=redefined-outer-name
+    enable_azure_monitor_logs=False,
     workspace_resource_id=None,
     enable_msi_auth_for_monitoring=True,
     enable_syslog=False,
@@ -781,6 +782,15 @@ def aks_create(
             "or select a different cluster name to create a new cluster."
         )
 
+    # Handle enable_azure_monitor_logs parameter
+    if enable_azure_monitor_logs:
+        if enable_addons:
+            if "monitoring" not in enable_addons:
+                enable_addons.append("monitoring")
+        else:
+            enable_addons = ["monitoring"]
+        raw_parameters["enable_addons"] = enable_addons
+
     # decorator pattern
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterCreateDecorator
@@ -873,6 +883,8 @@ def aks_update(
     bootstrap_artifact_source=None,
     bootstrap_container_registry_resource_id=None,
     # addons
+    enable_azure_monitor_logs=False,
+    disable_azure_monitor_logs=False,
     enable_secret_rotation=False,
     disable_secret_rotation=False,
     rotation_poll_interval=None,
@@ -996,6 +1008,30 @@ def aks_update(
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     # Import the decorator from the preview extension package
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
+
+    # Handle enable_azure_monitor_logs parameter
+    if enable_azure_monitor_logs:
+        # Call the enable-addons functionality directly
+        return aks_enable_addons(
+            cmd=cmd,
+            client=client,
+            resource_group_name=resource_group_name,
+            name=name,
+            addons="monitoring",
+            no_wait=no_wait
+        )
+
+    # Handle disable_azure_monitor_logs parameter
+    if disable_azure_monitor_logs:
+        # Call the disable-addons functionality directly
+        return aks_disable_addons(
+            cmd=cmd,
+            client=client,
+            resource_group_name=resource_group_name,
+            name=name,
+            addons="monitoring",
+            no_wait=no_wait
+        )
 
     # decorator pattern
     aks_update_decorator = AKSPreviewManagedClusterUpdateDecorator(

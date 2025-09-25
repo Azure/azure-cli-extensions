@@ -174,6 +174,8 @@ from azext_aks_preview._validators import (
     validate_azure_keyvault_kms_key_vault_resource_id,
     validate_azure_monitor_and_opentelemetry_for_create,
     validate_azure_monitor_and_opentelemetry_for_update,
+    validate_azure_monitor_logs_and_enable_addons,
+    validate_azure_monitor_logs_enable_disable,
     validate_azuremonitorworkspaceresourceid,
     validate_cluster_id,
     validate_cluster_snapshot_id,
@@ -734,6 +736,12 @@ def load_arguments(self, _):
             "enable_addons",
             options_list=["--enable-addons", "-a"],
             validator=validate_addons,
+        )
+        c.argument(
+            "enable_azure_monitor_logs",
+            action="store_true",
+            validator=validate_azure_monitor_logs_and_enable_addons,
+            help="Enable Azure Monitor logs for the cluster. Equivalent to '--enable-addons monitoring'."
         )
         c.argument("workspace_resource_id")
         c.argument(
@@ -1296,6 +1304,17 @@ def load_arguments(self, _):
             is_preview=True,
         )
         # addons
+        c.argument(
+            "enable_azure_monitor_logs",
+            action="store_true",
+            validator=validate_azure_monitor_logs_enable_disable,
+            help="Enable Azure Monitor logs for the cluster. Equivalent to 'az aks enable-addons -a monitoring'."
+        )
+        c.argument(
+            "disable_azure_monitor_logs",
+            action="store_true",
+            help="Disable Azure Monitor logs for the cluster. Equivalent to 'az aks disable-addons -a monitoring'."
+        )
         c.argument("enable_secret_rotation", action="store_true")
         c.argument("disable_secret_rotation", action="store_true")
         c.argument("rotation_poll_interval")
