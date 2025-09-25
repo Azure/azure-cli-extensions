@@ -148,7 +148,7 @@ def test_acifragmentgen_fragment_upload_fragment(docker_image, cert_chain):
     if "referrers" in oras_result:
         fragment_ref = oras_result["referrers"][0]["reference"]
     elif oras_result.get("manifests")[0].get("artifactType") == "application/x-ms-ccepolicy-frag":
-        fragment_ref = oras_result["reference"]
+        fragment_ref = oras_result["manifests"][0]["reference"]
     else:
         raise AssertionError(f"{oras_result=}")
 
@@ -238,7 +238,7 @@ def test_acifragmentgen_fragment_attach(docker_image, cert_chain, capsysbinary):
     if "referrers" in oras_result:
         fragment_ref = oras_result["referrers"][0]["reference"]
     elif oras_result["manifests"][0].get("artifactType") == "application/x-ms-ccepolicy-frag":
-        fragment_ref = oras_result["reference"]
+        fragment_ref = oras_result["manifests"][0]["reference"]
     else:
         raise AssertionError(f"{oras_result=}")
 
