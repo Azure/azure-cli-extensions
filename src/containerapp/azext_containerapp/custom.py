@@ -3614,19 +3614,17 @@ def list_maintenance_config(cmd, resource_group_name, env_name):
     return r
 
 
-def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None, command=None):
+def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None, debug_command=None):
     logger.warning("This command is in preview and under development. Breaking changes may occur.")
-    #log all arguments 
-    logger.warning("Arguments: resource_group_name=%s, name=%s, container=%s, revision=%s, replica=%s, command=%s", resource_group_name, name, container, revision, replica, command)
-    if command is not None:
-        logger.warning("Running command: %s", command)
+    if debug_command is not None:
+        logger.warning("Running command: %s", debug_command)
         raw_parameters = {
             'resource_group_name': resource_group_name,
             'container_app_name': name,
             'revision_name': revision,
             'replica_name': replica,
             'container_name': container,
-            'command': command
+            'command': debug_command
         }
         debug_command_decorator = ContainerAppDebugCommandDecorator(
             cmd=cmd,

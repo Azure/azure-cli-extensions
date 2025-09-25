@@ -502,7 +502,7 @@ class ContainerAppFunctionsPreviewClient():
             container=container_name,
             revision=revision_name,
             replica=replica_name,
-            command=command
+            debug_command=command
         )
 
     @classmethod
@@ -525,7 +525,7 @@ class ContainerAppFunctionsPreviewClient():
             container=container_name,
             revision=revision_name,
             replica=replica_name,
-            command=command
+            debug_command=command
         )
 
     @classmethod
@@ -551,7 +551,7 @@ class ContainerAppFunctionsPreviewClient():
             container=container_name,
             revision=revision_name,
             replica=replica_name,
-            command=command
+            debug_command=command
         )
 
 
