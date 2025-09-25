@@ -762,14 +762,14 @@ class FragmentPolicySigning(unittest.TestCase):
     """
     @classmethod
     def setUpClass(cls):
-        cls.key_dir_parent = "/tmp/certs"
+        cls.key_dir_parent = os.path.join(SAMPLES_DIR, 'certs')
         cls.key = os.path.join(cls.key_dir_parent, 'intermediateCA', 'private', 'ec_p384_private.pem')
         cls.chain = os.path.join(cls.key_dir_parent, 'intermediateCA', 'certs', 'www.contoso.com.chain.cert.pem')
         if not os.path.exists(cls.key) or not os.path.exists(cls.chain):
             script_path = os.path.join(cls.key_dir_parent, 'create_certchain.sh')
 
             arg_list = [
-                script_path, cls.key_dir_parent
+                script_path,
             ]
             os.chmod(script_path, 0o755)
 
