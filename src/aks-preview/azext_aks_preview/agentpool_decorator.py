@@ -50,6 +50,7 @@ from azext_aks_preview._consts import (
 from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
     filter_hard_taints,
+    process_dns_overrides,
 )
 
 logger = get_logger(__name__)
@@ -1477,13 +1478,16 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
                 return self.models.LocalDNSOverride(**filtered)
 
             # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
-            kube_overrides = localdns_profile.get("kubeDNSOverrides")
-            for key, value in kube_overrides.items():
-                kube_dns_overrides[key] = build_override(value)
-
-            vnet_overrides = localdns_profile.get("vnetDNSOverrides")
-            for key, value in vnet_overrides.items():
-                vnet_dns_overrides[key] = build_override(value)
+            process_dns_overrides(
+                localdns_profile.get("kubeDNSOverrides"),
+                kube_dns_overrides,
+                build_override
+            )
+            process_dns_overrides(
+                localdns_profile.get("vnetDNSOverrides"),
+                vnet_dns_overrides,
+                build_override
+            )
 
             agentpool.local_dns_profile = self.models.LocalDNSProfile(
                 mode=localdns_profile.get("mode"),
@@ -1816,13 +1820,16 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
                 return self.models.LocalDNSOverride(**filtered)
 
             # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
-            kube_overrides = localdns_profile.get("kubeDNSOverrides")
-            for key, value in kube_overrides.items():
-                kube_dns_overrides[key] = build_override(value)
-
-            vnet_overrides = localdns_profile.get("vnetDNSOverrides")
-            for key, value in vnet_overrides.items():
-                vnet_dns_overrides[key] = build_override(value)
+            process_dns_overrides(
+                localdns_profile.get("kubeDNSOverrides"),
+                kube_dns_overrides,
+                build_override
+            )
+            process_dns_overrides(
+                localdns_profile.get("vnetDNSOverrides"),
+                vnet_dns_overrides,
+                build_override
+            )
 
             agentpool.local_dns_profile = self.models.LocalDNSProfile(
                 mode=localdns_profile.get("mode"),
