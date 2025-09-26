@@ -279,6 +279,30 @@ class StreamAnalyticsClientTest(ScenarioTest):
         # delete an output
         self.cmd("stream-analytics output delete -n {output_name} -g {rg} --job-name {job_name} --yes")
 
+        # test if supports Azure Function
+        self.kwargs["function"] = "functionteststreamanalytics"
+        self.cmd("functionapp create -n {function} -g {rg} -s {account} --consumption-plan-location westus")
+        self.kwargs["host_key"] = self.cmd("functionapp keys list -g {rg} --name {function}").get_output_in_json()["masterKey"]
+        datasource2 = {
+            "type": "Microsoft.AzureFunction",
+            "properties": {
+                "functionAppName": self.kwargs["function"],
+                "functionName": "HttpTriggerFunction",
+                "apiKey": self.kwargs["host_key"]
+            }
+        }
+        serialization2 = {
+            "type": "Json",
+            "properties": {
+                "encoding": "UTF8"
+            }
+        }
+        self.kwargs["datasource2"] = json.dumps(datasource2)
+        self.kwargs["serialization2"] = json.dumps(serialization2)
+        self.cmd("stream-analytics output create -n {output_name} -g {rg} --job-name {job_name} --datasource '{datasource2}' --serialization '{serialization2}'", checks=[
+            self.check("datasource.type", "Microsoft.AzureFunction")
+        ])
+
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix="cli_test_stream_analytics_", location="westus")
     @StorageAccountPreparer(parameter_name="storage_account")
