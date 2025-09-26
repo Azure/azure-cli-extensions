@@ -3346,7 +3346,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_nodepool_add_with_localdns_config(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
-        localdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_with_valid_dns_overrides.json")
+        localdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig.json")
         self.kwargs.update({
             "resource_group": resource_group,
             "name": aks_name,
@@ -3522,7 +3522,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_nodepool_update_with_localdns_config(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
-        localdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_with_valid_dns_overrides.json")
+        localdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig.json")
         self.kwargs.update({
             "resource_group": resource_group,
             "name": aks_name,
@@ -3575,7 +3575,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_nodepool_update_with_localdns_required_mode_one_valid_override_each(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
-        valid_dns_overrides_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_with_valid_dns_overrides.json")
+        valid_dns_overrides_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig.json")
         kubedns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_with_valid_kubedns.json")
         vnetdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_with_valid_vnetdns.json")
         self.kwargs.update({
@@ -3649,7 +3649,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_nodepool_update_localdns_required_to_disabled(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
-        required_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_with_valid_dns_overrides.json")
+        required_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig.json")
         disabled_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "disabled_mode_only.json")
         self.kwargs.update({
             "resource_group": resource_group,
