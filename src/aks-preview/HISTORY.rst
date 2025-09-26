@@ -11,7 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+18.0.0b40
++++++++
 * Add option `Windows2025` to `--os-sku` for `az aks nodepool add`.
+* Add option `Flatcar` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
 18.0.0b39
 +++++++
