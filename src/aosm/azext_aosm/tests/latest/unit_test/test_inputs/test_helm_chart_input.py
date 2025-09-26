@@ -12,6 +12,7 @@ from azext_aosm.common.exceptions import (
     TemplateValidationError
 )
 from azext_aosm.inputs.helm_chart_input import HelmChartInput
+from azure.cli.testsdk import live_only
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 code_directory = os.path.dirname(__file__)
@@ -31,6 +32,8 @@ class TestHelmChartInput(TestCase):
         # Prints out info logs in console if fails
         logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 
+
+    @live_only()  # to avoid 'CannotOverwriteExistingCassetteException' when run from recording
     def test_validate_template_valid_chart(self):
         """Test validating a valid Helm chart using helm template."""
 
@@ -48,6 +51,7 @@ class TestHelmChartInput(TestCase):
         # A valid template does not raise exceptions or return anything.
         helm_chart_input.validate_template()
 
+    @live_only()  # to avoid 'CannotOverwriteExistingCassetteException' when run from recording
     def test_validate_template_invalid_chart(self):
         """Test validating an invalid Helm chart using helm template."""
 
@@ -64,6 +68,7 @@ class TestHelmChartInput(TestCase):
 
         self.assertRaises(TemplateValidationError, helm_chart_input.validate_template)
 
+    @live_only()  # to avoid 'CannotOverwriteExistingCassetteException' when run from recording
     def test_validate_values(self):
         """Test validating whether values exist in a helm chart.
             The validation for checking values.yaml exists happens in the helm chat input init,
@@ -104,6 +109,7 @@ class TestHelmChartInput(TestCase):
             default_config_path=override_path
         )
 
+    @live_only()  # to avoid 'CannotOverwriteExistingCassetteException' when run from recording
     def test_create_helm_chart_input_with_invalid_values(self):
         """Test validating a helm chart with values.yaml missing.
             The validation for checking values.yaml exists happens in the helm chat input init,
