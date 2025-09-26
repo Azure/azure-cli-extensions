@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.3.0
+++++++
+* Add a new --enable-stdio flag, with a warning if neither this or --disable-stdio is set
+
 1.2.7
 ++++++
 * bugfix making it so that oras discover function doesn't error when no fragments are found in the remote repository
