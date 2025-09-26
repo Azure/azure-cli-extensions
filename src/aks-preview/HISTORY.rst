@@ -13,6 +13,10 @@ Pending
 +++++++
 * Add option `Windows2025` to `--os-sku` for `az aks nodepool add`.
 
+18.0.0b40
+++++++
+* Fix `--localdns-config` parameter to handle null values in JSON configuration files gracefully, preventing crashes when DNS override sections are null.
+
 18.0.0b39
 +++++++
 * Add option `AzureLinuxOSGuard` and `AzureLinux3OSGuard` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
