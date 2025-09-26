@@ -847,7 +847,7 @@ def get_random_replica(cmd, resource_group_name, container_app_name, revision_na
         handle_raw_exception(e)
 
     if not replicas:
-        raise ValidationError(f"No replicas found for revision '{revision_name}' of container app '{container_app_name}'.")
+        raise CLIError(f"No replicas found for revision '{revision_name}' of container app '{container_app_name}'.")
 
     # Select a random replica
     replica = random.choice(replicas)
@@ -855,6 +855,6 @@ def get_random_replica(cmd, resource_group_name, container_app_name, revision_na
     container_name = replica.get("properties", {}).get("containers", [{}])[0].get("name")
     
     if not replica_name:
-        raise ValidationError("Could not determine replica name.")
+        raise CLIError(f"Could not determine replica name for revision '{revision_name}' of container app '{container_app_name}'.")
     
     return replica_name, container_name

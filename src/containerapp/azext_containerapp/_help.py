@@ -213,6 +213,11 @@ helps['containerapp function show'] = """
           az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision MyRevision
 """
 
+helps['containerapp function keys'] = """
+    type: group
+    short-summary: Commands for keys management in an Azure Functions on Azure Container Apps.
+"""
+
 helps['containerapp function keys show'] = """
     type: command
     short-summary: Show specific function key in an Azure Functions on Azure Container Apps.

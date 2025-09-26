@@ -157,27 +157,19 @@ def transform_telemetry_otlp_values_by_name_wrapper(args):
 
 
 def transform_function_list(result):
-    """Transform function list data for table output."""
     from collections import OrderedDict
     
     if not result:
         return []
     
-    # The result is typically {"value": [array of functions]}
     functions = result.get('value', []) if isinstance(result, dict) else result
-    
     table = []
     for func in functions:
         if isinstance(func, dict):
-            # Extract basic function information
             name = func.get('name', '')
             location = func.get('location', '')
             properties = func.get('properties', {})
-            
-            # Get trigger type directly from properties
             trigger_type = properties.get('triggerType', '').replace('Trigger', '')
-            
-            # Get disabled status
             disabled = properties.get('isDisabled', False)
             
             table.append(OrderedDict([
@@ -187,23 +179,18 @@ def transform_function_list(result):
                 ('IsDisabled', str(disabled)),
                 ('Language', properties.get('language', ''))
             ]))
-    
+
     return table
 
 
 def transform_function_show(result):
-    """Transform function show data for table output."""
     from collections import OrderedDict
     
     if not result:
         return []
     
-    # For show command, we display key-value pairs of the function details
     properties = result.get('properties', {})
-    
     table = []
-    
-    # Basic information from actual API response
     table.append(OrderedDict([('Property', 'Name'), ('Value', result.get('name', ''))]))
     table.append(OrderedDict([('Property', 'Location'), ('Value', result.get('location', ''))]))
     table.append(OrderedDict([('Property', 'TriggerType'), ('Value', properties.get('triggerType', ''))]))
@@ -215,7 +202,6 @@ def transform_function_show(result):
 
 
 def process_app_insights_response(response):
-    """Process Application Insights response into a structured list"""
     if not response or 'tables' not in response:
         return []
     
@@ -234,14 +220,10 @@ def process_app_insights_response(response):
 
 
 def transform_function_traces(result):
-    """Transform function traces data for table output."""
     from collections import OrderedDict
-    
     if not result:
         return []
     
-    # Result is already processed by process_app_insights_response in the decorator
-    # It should be a list of dictionaries
     traces = result if isinstance(result, list) else []
     
     table = []
@@ -261,70 +243,52 @@ def transform_function_traces(result):
     return table
 
 def transform_debug_command_output(raw_output):
-    """Format the debug command output by removing $id field and handling JSON or plain text output"""
     try:
-        # Remove the $id field if it exists
         if "$id" in raw_output:
             del raw_output["$id"]
         
-        # Extract and process the output field
         if "output" in raw_output:
             output_str = raw_output["output"]
-            
-            # First try to parse as JSON
             try:
                 parsed_output = json.loads(output_str)
                 return parsed_output
             except json.JSONDecodeError:
-                # If not valid JSON, treat as plain text and decode escape sequences
                 decoded_output = output_str.encode().decode('unicode_escape')
                 return decoded_output
         else:
             return raw_output
             
     except (KeyError, UnicodeDecodeError) as e:
-        logger.warning(f"Failed to process debug output: {e}")
-        # Fall back to returning the raw output without $id
         if "$id" in raw_output:
             del raw_output["$id"]
         return raw_output
 
 
 def transform_function_keys_show_set(result):
-    """Transform function keys show/set data for table output."""
     from collections import OrderedDict
     
     if not result:
         return []
     
-    # For show/set commands, display key-value pairs of the key details
-    # Expected input: {"value": {"name": "key_name", "value": "key_value"}}
     if isinstance(result, dict) and "value" in result:
         key_data = result["value"]
-        
         table = []
         table.append(OrderedDict([('Property', 'Name'), ('Value', key_data.get('name', ''))]))
         table.append(OrderedDict([('Property', 'Value'), ('Value', key_data.get('value', ''))]))
-        
         return table
     
     return []
 
 
 def transform_function_keys_list(result):
-    """Transform function keys list data for table output."""
     from collections import OrderedDict
-    
     if not result:
         return []
     
-    # For list commands, extract the keys array and format as table rows
-    # Expected input: {"value": {"keys": [{"name": "key1", "value": "val1"}, ...]}}
     if isinstance(result, dict) and "value" in result:
         value_data = result["value"]
         if isinstance(value_data, dict) and "keys" in value_data:
             keys = value_data["keys"]
-            
             table = []
             for key in keys:
                 if isinstance(key, dict):
@@ -332,7 +296,6 @@ def transform_function_keys_list(result):
                         ('Name', key.get('name', '')),
                         ('Value', key.get('value', ''))
                     ]))
-            
             return table
     
     return []

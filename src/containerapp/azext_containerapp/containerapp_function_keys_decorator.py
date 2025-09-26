@@ -90,9 +90,6 @@ class ContainerAppFunctionKeysDecorator(BaseResource):
         if key_type == "functionKey" and not function_name:
             raise ValidationError("Function name is required when key-type is 'functionKey'.")
         
-        if key_type != "functionKey" and function_name:
-            logger.warning("Function name is ignored when key-type is not 'functionKey'.")
-        
         return function_name
 
 
@@ -166,7 +163,7 @@ class ContainerAppFunctionKeysListDecorator(ContainerAppFunctionKeysDecorator):
 
 
 class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
-    """Decorator for setting/updating function keys"""
+    """Decorator for creating/updating function keys"""
 
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
@@ -184,7 +181,7 @@ class ContainerAppFunctionKeysSetDecorator(ContainerAppFunctionKeysDecorator):
         return resource_group_name, name, revision_name, key_type, key_name, key_value, function_name, replica_name, container_name
 
     def set_keys(self):
-        """Set/Update keys based on key type"""
+        """Create/Update keys based on key type"""
         try:
             resource_group_name, name, revision_name, key_type, key_name, key_value, function_name, replica_name, container_name = self.validate_set_arguments()
 
