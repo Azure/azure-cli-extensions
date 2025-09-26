@@ -36,7 +36,7 @@ kubeDnsOverridesExpected = {
         }
     }
 
-kubeDnsOverridesExceptedDefault = {
+kubeDnsOverridesExpectedDefault = {
      ".": {
          "cacheDurationInSeconds": 3600,
          "forwardDestination": "ClusterCoreDNS",
