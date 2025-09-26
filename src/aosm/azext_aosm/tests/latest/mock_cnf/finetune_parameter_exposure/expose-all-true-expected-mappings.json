@@ -1,0 +1,26 @@
+{
+    "replicaCount": 1,
+    "image": {
+        "repository": "{deployParameters.test-generate-mappings-cnf.image_repository}",
+        "tag": "{deployParameters.test-generate-mappings-cnf.image_tag}",
+        "pullPolicy": "IfNotPresent"
+    },
+    "imagePullSecrets": [],
+    "nameOverride": "{deployParameters.test-generate-mappings-cnf.nameOverride}",
+    "serviceAccount": {
+        "create": "{deployParameters.test-generate-mappings-cnf.serviceAccount_create}",
+        "name": "{deployParameters.test-generate-mappings-cnf.serviceAccount_name}"
+    },
+    "podSecurityContext": "{deployParameters.test-generate-mappings-cnf.podSecurityContext}",
+    "service": {
+        "type": "{deployParameters.test-generate-mappings-cnf.service_type}",
+        "port": "{deployParameters.test-generate-mappings-cnf.service_port}"
+    },
+    "ingress": {
+        "enabled": "{deployParameters.test-generate-mappings-cnf.ingress_enabled}",
+        "annotations": "{deployParameters.test-generate-mappings-cnf.ingress_annotations}",
+        "hosts": "{deployParameters.test-generate-mappings-cnf.ingress_hosts}",
+        "tls": "{deployParameters.test-generate-mappings-cnf.ingress_tls}"
+    },
+    "hosts": "{deployParameters.test-generate-mappings-cnf.hosts}"
+}

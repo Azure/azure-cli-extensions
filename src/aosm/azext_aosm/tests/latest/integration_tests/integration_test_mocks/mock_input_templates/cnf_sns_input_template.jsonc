@@ -1,0 +1,23 @@
+{
+  // Azure location to use when creating resources e.g uksouth
+  "location": "uksouth",
+  // The resource group that the operator resources will be hosted in.
+  "operator_resource_group_name": "{{publisher_resource_group_name}}",
+  // Name of the site.
+  "site_name": "automated-cli-test-nginx-site",
+  // Information regarding NSDV to be used in SNS.
+  "nsd_reference": {
+      // Name of the Publisher resource where Network Service Design resource to be used in SNS exists
+      "publisher_name": "automated-scenario-test-nginx-publisher",
+      // The resource group that the publisher NSDV is hosted in.
+      "publisher_resource_group_name": "{{publisher_resource_group_name}}",
+      // Network Service Design(NSD) to be used from the publisher. This is the collection of Network Service Design Versions.
+      "nsd_name": "nginx",
+      // Version of the NSD to be used which is in the format A.B.C
+      "nsd_version": "1.0.0"
+  },
+  // Name of the site network service.
+  "sns_name": "automated-cli-test-nginx-sns",
+  // Resource Id of the User Managed Identity to be used for deployment.
+  "user_identity_resourceid": ""
+}

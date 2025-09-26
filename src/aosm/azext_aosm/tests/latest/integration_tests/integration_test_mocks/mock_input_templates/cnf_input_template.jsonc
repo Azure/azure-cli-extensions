@@ -3,17 +3,22 @@
   "location": "uksouth",
   // Name of the Publisher resource you want your definition published to.
   // Will be created if it does not exist.
-  "publisher_name": "automated-cli-test-nginx-publisher",
+  "publisher_name": "automated-scenario-test-nginx-publisher",
   // Optional. Resource group for the Publisher resource.
-  // Will be created if it does not exist (with a default name if none is supplied).
+  // CLI extension will attempt to create it if it does not exist.
   "publisher_resource_group_name": "{{publisher_resource_group_name}}",
   // Optional. Name of the ACR Artifact Store resource.
   // Will be created if it does not exist (with a default name if none is supplied).
   "acr_artifact_store_name": "nginx-acr",
+  "disable_public_network_access": false,
+  // List of Private End Points to access ACR that needs to be approved.
+  "vnet_private_end_points": [],
+  "network_fabric_controller_ids": [],  
   // Name of NF definition.
   "nf_name": "nginx",
   // Version of the NF definition in A.B.C format.
   "version": "1.0.0",
+  "expose_all_parameters": false,
   // List of registries from which to pull the image(s).
   // For example [sourceacr.azurecr.io/test, myacr2.azurecr.io].
   "image_sources": ["docker.io"],
