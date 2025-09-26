@@ -341,7 +341,7 @@ class LocalFileACRArtifact(BaseACRArtifact):
 class RemoteACRArtifact(BaseACRArtifact):
     """Class for ACR artifacts from a remote ACR image."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         artifact_name,
         artifact_type,
