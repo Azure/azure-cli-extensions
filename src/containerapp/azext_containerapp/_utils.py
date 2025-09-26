@@ -15,6 +15,7 @@ import re
 import requests
 import shutil
 import packaging.version as SemVer
+import random 
 
 from enum import Enum
 from urllib.request import urlopen
@@ -22,6 +23,7 @@ from urllib.request import urlopen
 from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.command_modules.containerapp._utils import safe_get, _ensure_location_allowed, \
     _generate_log_analytics_if_not_provided
+from azure.cli.command_modules.containerapp._clients import ContainerAppClient
 from azure.cli.command_modules.containerapp._client_factory import handle_raw_exception
 from azure.cli.core._profile import Profile
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, CLIError, InvalidArgumentValueError)
@@ -831,3 +833,28 @@ def create_acrpull_role_assignment_if_needed(cmd, registry_server, registry_iden
                         raise UnauthorizedError(message) from e
                 else:
                     time.sleep(5)
+
+
+def get_random_replica(cmd, resource_group_name, container_app_name, revision_name):
+    try:
+        replicas = ContainerAppClient.list_replicas(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            container_app_name=container_app_name,
+            revision_name=revision_name
+        )
+    except Exception as e:
+        handle_raw_exception(e)
+
+    if not replicas:
+        raise CLIError(f"No replicas found for revision '{revision_name}' of container app '{container_app_name}'.")
+
+    # Select a random replica
+    replica = random.choice(replicas)
+    replica_name = replica.get("name")
+    container_name = replica.get("properties", {}).get("containers", [{}])[0].get("name")
+    
+    if not replica_name:
+        raise CLIError(f"Could not determine replica name for revision '{revision_name}' of container app '{container_app_name}'.")
+    
+    return replica_name, container_name
