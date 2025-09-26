@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError, RequiredArgumentMissingError,
-                                       ResourceNotFoundError, ValidationError)
+                                       ResourceNotFoundError, ValidationError, CLIError)
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system, safe_get
 from azure.cli.command_modules.containerapp._validators import _validate_revision_exists, _validate_replica_exists, \
     _validate_container_exists
@@ -279,43 +279,6 @@ def _set_debug_defaults(cmd, namespace):
             namespace.container = revision_containers[0]["name"]
 
 
-def validate_revision_and_get_name(cmd, resource_group_name, container_app_name, provided_revision_name=None):
-    from ._client_factory import handle_raw_exception
-    from ._clients import ContainerAppPreviewClient
-    
-    try:
-        containerapp_def = ContainerAppPreviewClient.show(
-            cmd=cmd, 
-            resource_group_name=resource_group_name, 
-            name=container_app_name
-        )
-    except Exception as e:
-        handle_raw_exception(e)
-
-    if not containerapp_def:
-        raise ValidationError(f"The containerapp '{container_app_name}' does not exist in resource group '{resource_group_name}'.")
-
-    # Check active revision mode (default to 'single' if not found)
-    active_revision_mode = safe_get(containerapp_def, "properties", "configuration", "activeRevisionsMode", default="single")
-    
-    if active_revision_mode.lower() != "single":
-        if not provided_revision_name:
-            raise ValidationError("Revision name is required when active revision mode is not 'single'.")
-        return provided_revision_name
-    else:
-        if not provided_revision_name:
-            revision_name = safe_get(containerapp_def, "properties", "latestRevisionName")
-            
-            # If latestRevisionName is None, try latestReadyRevisionName as fallback
-            if not revision_name:
-                revision_name = safe_get(containerapp_def, "properties", "latestReadyRevisionName")
-            
-            if not revision_name or revision_name is None:
-                raise ValidationError("Could not determine the latest revision name. Please provide --revision.")
-            return revision_name
-        return provided_revision_name
-
-
 def validate_container_app_exists(cmd, resource_group_name, container_app_name):
     from ._client_factory import handle_raw_exception
     from ._clients import ContainerAppPreviewClient
@@ -330,39 +293,50 @@ def validate_container_app_exists(cmd, resource_group_name, container_app_name):
         handle_raw_exception(e)
 
     if not containerapp_def:
-        raise ValidationError(f"The containerapp '{container_app_name}' does not exist in resource group '{resource_group_name}'.")
+        raise CLIError(f"The containerapp '{container_app_name}' does not exist in resource group '{resource_group_name}'.")
     
     return containerapp_def
 
 
-def validate_functionapp_kind(cmd, resource_group_name, container_app_name):
-    """Validate that the Container App has kind 'functionapp' for function operations"""
-    from ._client_factory import handle_raw_exception
-    from ._clients import ContainerAppPreviewClient
-    from ._utils import safe_get
+def validate_revision_and_get_name(cmd, resource_group_name, container_app_name, provided_revision_name=None):
     
-    try:
-        containerapp_def = ContainerAppPreviewClient.show(
-            cmd=cmd, 
-            resource_group_name=resource_group_name, 
-            name=container_app_name
-        )
-    except Exception as e:
-        handle_raw_exception(e)
+    containerapp_def = validate_container_app_exists(
+        cmd=cmd,
+        resource_group_name=resource_group_name,
+        container_app_name=container_app_name)
 
-    if not containerapp_def:
-        raise ValidationError(f"The containerapp '{container_app_name}' does not exist in resource group '{resource_group_name}'.")
+    active_revision_mode = safe_get(containerapp_def, "properties", "configuration", "activeRevisionsMode", default="single")
+    
+    if active_revision_mode.lower() != "single":
+        if not provided_revision_name:
+            raise ValidationError("Revision name is required when active revision mode is not 'single'.")
+        return provided_revision_name
+    else:
+        if not provided_revision_name:
+            revision_name = safe_get(containerapp_def, "properties", "latestRevisionName")
+            
+            if not revision_name:
+                revision_name = safe_get(containerapp_def, "properties", "latestReadyRevisionName")
+            
+            if not revision_name or revision_name is None:
+                raise ValidationError("Could not determine the latest revision name. Please provide --revision.")
+            return revision_name
+        return provided_revision_name
+
+
+def validate_functionapp_kind(cmd, resource_group_name, container_app_name):
+    
+    containerapp_def = validate_container_app_exists(
+        cmd=cmd, 
+        resource_group_name=resource_group_name, 
+        container_app_name=container_app_name
+    )
     
     kind = safe_get(containerapp_def, "kind")
     managed_by = safe_get(containerapp_def, "managedBy")
 
-    if managed_by and "providers/Microsoft.Web/sites" in managed_by:
-        logger.warning("v1")
-        return containerapp_def
-    
-    if kind == "functionapp":
-        logger.warning("v2")
-        return containerapp_def
+    if (managed_by and "providers/Microsoft.Web/sites" in managed_by) or (kind and kind.lower() == "functionapp"):
+        return 
     
     raise ValidationError(
         f"The containerapp '{container_app_name}' is not an Azure Function on Azure Container App."

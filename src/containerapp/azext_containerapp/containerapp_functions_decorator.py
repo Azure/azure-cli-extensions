@@ -92,15 +92,6 @@ class ContainerAppFunctionsDecorator(BaseResource):
             raise ValidationError("Function name is required.")
         
         return function_name
-    
-    def validate_revision_name_requirement(self):
-        """Validate revision name is provided when required"""
-        revision_name = self.get_argument_revision_name()
-
-        if not revision_name:
-            raise ValidationError("Revision name is required.")
-
-        return revision_name
 
 
 class ContainerAppFunctionsListDecorator(ContainerAppFunctionsDecorator):
@@ -121,7 +112,7 @@ class ContainerAppFunctionsListDecorator(ContainerAppFunctionsDecorator):
                 container_app_name=name
             )
             
-            if revision_name:
+            if revision_name and revision_name is not None:
                 # List functions for a specific revision
                 return self.client.list_functions_by_revision(
                     cmd=self.cmd,
@@ -164,7 +155,7 @@ class ContainerAppFunctionsShowDecorator(ContainerAppFunctionsDecorator):
                 container_app_name=name
             )
 
-            if revision_name:
+            if revision_name and revision_name is not None:
                 # Get function for a specific revision
                 return self.client.get_function_by_revision(
                     cmd=self.cmd,
@@ -185,7 +176,7 @@ class ContainerAppFunctionsShowDecorator(ContainerAppFunctionsDecorator):
             handle_raw_exception(e)
 
 class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
-    """Decorator for showing a specific function"""
+    """Decorator for showing function invocation"""
     
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
@@ -204,7 +195,6 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
             container_app_name=self.get_argument_container_app_name()
         )
         
-        # self.validate_revision_name_requirement()
         revision_name = self.get_argument_revision_name()
         revision_name = validate_revision_and_get_name(
             cmd=self.cmd,

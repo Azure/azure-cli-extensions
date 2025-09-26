@@ -63,7 +63,7 @@ class ContainerAppDebugCommandDecorator(BaseResource):
                                             container_app_name, revision_name, replica_name)["properties"]["containers"]
         container_info = [c for c in containers if c["name"] == container_name]
         if not container_info:
-            raise ValidationError(f"No such container: {container_name}")
+            raise ValidationError(f"Error retrieving container in revision '{revision_name}' in the container app '{container_app_name}'.")
         return container_info[0]["logStreamEndpoint"]
     
     def _get_url(self, cmd, resource_group_name, container_app_name, revision_name, replica_name, container_name, command):
