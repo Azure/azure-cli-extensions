@@ -93,6 +93,7 @@ class Create(AAZCommand):
             options=["--nni-id", "--network-to-network-interconnect-id"],
             arg_group="Properties",
             help="ARM Resource ID of the networkToNetworkInterconnectId of the ExternalNetwork resource.",
+            nullable=True,
         )
         _args_schema.option_a_properties = AAZObjectArg(
             options=["--option-a-properties"],
@@ -121,20 +122,24 @@ class Create(AAZCommand):
         export_route_policy.export_ipv4_route_policy_id = AAZResourceIdArg(
             options=["export-ipv4-route-policy-id"],
             help="ARM resource ID of RoutePolicy.",
+            nullable=True,
         )
         export_route_policy.export_ipv6_route_policy_id = AAZResourceIdArg(
             options=["export-ipv6-route-policy-id"],
             help="ARM resource ID of RoutePolicy.",
+            nullable=True,
         )
 
         import_route_policy = cls._args_schema.import_route_policy
         import_route_policy.import_ipv4_route_policy_id = AAZResourceIdArg(
             options=["import-ipv4-route-policy-id"],
             help="ARM resource ID of RoutePolicy.",
+            nullable=True,
         )
         import_route_policy.import_ipv6_route_policy_id = AAZResourceIdArg(
             options=["import-ipv6-route-policy-id"],
             help="ARM resource ID of RoutePolicy.",
+            nullable=True,
         )
 
         option_a_properties = cls._args_schema.option_a_properties
@@ -149,10 +154,12 @@ class Create(AAZCommand):
         option_a_properties.egress_acl_id = AAZResourceIdArg(
             options=["egress-acl-id"],
             help="Egress Acl. ARM resource ID of Access Control Lists.",
+            nullable=True,
         )
         option_a_properties.ingress_acl_id = AAZResourceIdArg(
             options=["ingress-acl-id"],
             help="Ingress Acl. ARM resource ID of Access Control Lists.",
+            nullable=True,
         )
         option_a_properties.mtu = AAZIntArg(
             options=["mtu"],
@@ -547,7 +554,7 @@ class Create(AAZCommand):
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy")
                 properties.set_prop("importRoutePolicy", AAZObjectType, ".import_route_policy")
-                properties.set_prop("networkToNetworkInterconnectId", AAZStrType, ".network_to_network_interconnect_id")
+                properties.set_prop("networkToNetworkInterconnectId", AAZStrType, ".network_to_network_interconnect_id", typ_kwargs={"nullable": True})
                 properties.set_prop("optionAProperties", AAZObjectType, ".option_a_properties")
                 properties.set_prop("optionBProperties", AAZObjectType, ".option_b_properties")
                 properties.set_prop("peeringOption", AAZStrType, ".peering_option", typ_kwargs={"flags": {"required": True}})
@@ -555,20 +562,20 @@ class Create(AAZCommand):
 
             export_route_policy = _builder.get(".properties.exportRoutePolicy")
             if export_route_policy is not None:
-                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id")
-                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id")
+                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id", typ_kwargs={"nullable": True})
+                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id", typ_kwargs={"nullable": True})
 
             import_route_policy = _builder.get(".properties.importRoutePolicy")
             if import_route_policy is not None:
-                import_route_policy.set_prop("importIpv4RoutePolicyId", AAZStrType, ".import_ipv4_route_policy_id")
-                import_route_policy.set_prop("importIpv6RoutePolicyId", AAZStrType, ".import_ipv6_route_policy_id")
+                import_route_policy.set_prop("importIpv4RoutePolicyId", AAZStrType, ".import_ipv4_route_policy_id", typ_kwargs={"nullable": True})
+                import_route_policy.set_prop("importIpv6RoutePolicyId", AAZStrType, ".import_ipv6_route_policy_id", typ_kwargs={"nullable": True})
 
             option_a_properties = _builder.get(".properties.optionAProperties")
             if option_a_properties is not None:
                 option_a_properties.set_prop("bfdConfiguration", AAZObjectType, ".bfd_configuration")
                 option_a_properties.set_prop("bmpConfiguration", AAZObjectType, ".bmp_configuration")
-                option_a_properties.set_prop("egressAclId", AAZStrType, ".egress_acl_id")
-                option_a_properties.set_prop("ingressAclId", AAZStrType, ".ingress_acl_id")
+                option_a_properties.set_prop("egressAclId", AAZStrType, ".egress_acl_id", typ_kwargs={"nullable": True})
+                option_a_properties.set_prop("ingressAclId", AAZStrType, ".ingress_acl_id", typ_kwargs={"nullable": True})
                 option_a_properties.set_prop("mtu", AAZIntType, ".mtu")
                 option_a_properties.set_prop("nativeIpv4PrefixLimit", AAZObjectType, ".native_ipv4_prefix_limit")
                 option_a_properties.set_prop("nativeIpv6PrefixLimit", AAZObjectType, ".native_ipv6_prefix_limit")
@@ -716,6 +723,7 @@ class Create(AAZCommand):
             )
             properties.network_to_network_interconnect_id = AAZStrType(
                 serialized_name="networkToNetworkInterconnectId",
+                nullable=True,
             )
             properties.option_a_properties = AAZObjectType(
                 serialized_name="optionAProperties",
@@ -738,17 +746,21 @@ class Create(AAZCommand):
             export_route_policy = cls._schema_on_200_201.properties.export_route_policy
             export_route_policy.export_ipv4_route_policy_id = AAZStrType(
                 serialized_name="exportIpv4RoutePolicyId",
+                nullable=True,
             )
             export_route_policy.export_ipv6_route_policy_id = AAZStrType(
                 serialized_name="exportIpv6RoutePolicyId",
+                nullable=True,
             )
 
             import_route_policy = cls._schema_on_200_201.properties.import_route_policy
             import_route_policy.import_ipv4_route_policy_id = AAZStrType(
                 serialized_name="importIpv4RoutePolicyId",
+                nullable=True,
             )
             import_route_policy.import_ipv6_route_policy_id = AAZStrType(
                 serialized_name="importIpv6RoutePolicyId",
+                nullable=True,
             )
 
             last_operation = cls._schema_on_200_201.properties.last_operation
@@ -766,6 +778,7 @@ class Create(AAZCommand):
             )
             option_a_properties.egress_acl_id = AAZStrType(
                 serialized_name="egressAclId",
+                nullable=True,
             )
             option_a_properties.fabric_asn = AAZIntType(
                 serialized_name="fabricASN",
@@ -773,6 +786,7 @@ class Create(AAZCommand):
             )
             option_a_properties.ingress_acl_id = AAZStrType(
                 serialized_name="ingressAclId",
+                nullable=True,
             )
             option_a_properties.mtu = AAZIntType()
             option_a_properties.native_ipv4_prefix_limit = AAZObjectType(

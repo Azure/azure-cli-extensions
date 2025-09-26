@@ -310,6 +310,7 @@ class List(AAZCommand):
             _element = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element
             _element.destination_id = AAZStrType(
                 serialized_name="destinationId",
+                nullable=True,
             )
             _element.is_timestamp_enabled = AAZStrType(
                 serialized_name="isTimestampEnabled",
@@ -662,6 +663,7 @@ class List(AAZCommand):
             _element = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element
             _element.destination_id = AAZStrType(
                 serialized_name="destinationId",
+                nullable=True,
             )
             _element.is_timestamp_enabled = AAZStrType(
                 serialized_name="isTimestampEnabled",
