@@ -17919,7 +17919,7 @@ spec:
             self.check('properties.claimMappings.groups.expression', 'claims.aud'),
         ])
 
-        time.sleep(2*60)  # wait for 2 mins to allow all operations to finish before updating JWT authenticator
+        time.sleep(5*60)  # wait for 5 mins to allow all operations to finish before updating JWT authenticator
         
         update_jwt_cmd = (
             "aks jwtauthenticator update --resource-group={resource_group} --cluster-name={name} "
