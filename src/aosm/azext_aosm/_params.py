@@ -10,10 +10,10 @@ from .common.constants import (
     CNF,
     VNF,
     VNF_NEXUS,
-    # BICEP_PUBLISH,
-    # ARTIFACT_UPLOAD,
+    BICEP_PUBLISH,
+    ARTIFACT_UPLOAD,
     HELM_TEMPLATE,
-    # IMAGE_UPLOAD,
+    IMAGE_UPLOAD,
 )
 
 
@@ -25,20 +25,9 @@ def load_arguments(self: AzCommandsLoader, _):
     )
 
     definition_type = get_enum_type([VNF, CNF, VNF_NEXUS])
-    # We used to provide all these as possible skip steps. At least some are likely to be
-    # re-implemented, so leaving this here as a record of how to add them. However, note
-    # there is a conflation of build skip-steps and publish skip-steps that would need
-    # to be resolved on implementation (i.e., publish/upload steps are not relevant to build;
-    # `helm_template` is not relevant to publish). Don't forget to update the help text below
-    # and add the `skip` parameter in the relevant function in custom.py too.
-    # nf_skip_steps = get_enum_type(
-    #     [BICEP_PUBLISH, ARTIFACT_UPLOAD, IMAGE_UPLOAD, HELM_TEMPLATE]
-    # )
     nf_skip_steps = get_enum_type(
-        [HELM_TEMPLATE]
+        [BICEP_PUBLISH, ARTIFACT_UPLOAD, IMAGE_UPLOAD, HELM_TEMPLATE]
     )
-    # No NSD skip steps are currently implemented.
-    # ns_skip_steps = get_enum_type([BICEP_PUBLISH, ARTIFACT_UPLOAD])
 
     # Set the argument context so these options are only available when this specific command
     # is called.
