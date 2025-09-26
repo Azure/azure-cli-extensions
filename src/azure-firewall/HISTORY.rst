@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.4.0
+++++++
+* `az network firewall create`: Add parameters `--min-capacity` and `--max-capacity` to support autoscale configuration
+
 1.3.0
 ++++++
 * `az network firewall create`: Add parameter `--edge-zone` to support extended location
