@@ -3346,7 +3346,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_nodepool_add_with_localdns_config(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
-        localdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig.json")
+        localdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig.json")
         self.kwargs.update({
             "resource_group": resource_group,
             "name": aks_name,
