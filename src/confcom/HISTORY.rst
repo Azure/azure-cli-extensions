@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.2.8
+++++++
+* Made the default minimum SVN of the infrastructure fragment 4
+
 1.2.7
 ++++++
 * bugfix making it so that oras discover function doesn't error when no fragments are found in the remote repository
