@@ -12,16 +12,18 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-template bulk-publish",
+    "workload-orchestration solution-template bulk-review",
 )
-class BulkPublishSolution(AAZCommand):
-    """Post request for bulk publish
+class BulkReviewSolution(AAZCommand):
+    """Post request for bulk review
     """
 
     _aaz_info = {
         "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/solutiontemplates/{}/versions/{}/bulkpublishsolution", "2025-08-01"],
+            ["mgmt-plane",
+             "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/solutiontemplates/{}/versions/{}/bulkreviewsolution",
+             "2025-08-01"],
         ]
     }
 
@@ -50,7 +52,7 @@ class BulkPublishSolution(AAZCommand):
             required=True,
         )
         _args_schema.solution_template_name = AAZStrArg(
-            options=["-n", "--name", "--solution-template-name"],
+            options=["-n","--name","--solution-template-name"],
             help="The name of the SolutionTemplate",
             required=True,
             id_part="name",
@@ -61,7 +63,7 @@ class BulkPublishSolution(AAZCommand):
             ),
         )
         _args_schema.solution_template_version_name = AAZStrArg(
-            options=["-v", "--version", "--solution-template-version-name"],
+            options=["-v","--version","--solution-template-version"],
             help="The name of the SolutionTemplateVersion",
             required=True,
             id_part="child_name_1",
@@ -74,9 +76,9 @@ class BulkPublishSolution(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.solution_configuration = AAZStrArg(
-            options=["--configuration"],
+            options=["--solution-configuration"],
             arg_group="Body",
-            help="Configuration of solution for the target/s",
+            help="Configuration of solution",
         )
         _args_schema.solution_dependencies = AAZListArg(
             options=["--dependencies"],
@@ -84,7 +86,7 @@ class BulkPublishSolution(AAZCommand):
             help="Solution dependencies",
         )
         _args_schema.solution_instance_name = AAZStrArg(
-            options=["--instance-name"],
+            options=["--solution-instance-name"],
             arg_group="Body",
             help="Name of the solution instance",
             fmt=AAZStrArgFormat(
@@ -116,10 +118,6 @@ class BulkPublishSolution(AAZCommand):
             fmt=AAZStrArgFormat(
                 pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
             ),
-        )
-        _element.solution_version_id = AAZResourceIdArg(
-            options=["solution-version-id"],
-            help="ArmId of Target Solution Version",
         )
         _element.target_id = AAZResourceIdArg(
             options=["target-id"],
@@ -186,7 +184,7 @@ class BulkPublishSolution(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SolutionTemplateVersionsBulkPublishSolution(ctx=self.ctx)()
+        yield self.SolutionTemplateVersionsBulkReviewSolution(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -197,13 +195,13 @@ class BulkPublishSolution(AAZCommand):
     def post_operations(self):
         pass
 
-    class SolutionTemplateVersionsBulkPublishSolution(AAZHttpOperation):
+    class SolutionTemplateVersionsBulkReviewSolution(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202, 200]:
+            if session.http_response.status_code in [202, 201, 200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
@@ -261,46 +259,31 @@ class BulkPublishSolution(AAZCommand):
                 serialized_name="SolutionTemplateVersionId",
                 flags={"read_only": True},
             )
-            properties.published_targets = AAZListType(
-                serialized_name="publishedTargets",
+            properties.reviewed_targets = AAZListType(
+                serialized_name="reviewedTargets",
                 flags={"read_only": True},
             )
-            properties.external_validation_pending = AAZListType(
-                serialized_name="externalValidationPending",
-                flags={"read_only": True},
-            )
+            reviewed_targets = cls._schema_on_200.properties.reviewed_targets
+            reviewed_targets.Element = AAZObjectType()
 
-            published_targets = cls._schema_on_200.properties.published_targets
-            published_targets.Element = AAZObjectType()
-
-            published_target = published_targets.Element
-            published_target.solution_version_id = AAZStrType(
+            reviewed_target = reviewed_targets.Element
+            reviewed_target.solution_version_id = AAZStrType(
                 serialized_name="solutionVersionId",
                 flags={"read_only": True},
             )
-            published_target.target_id = AAZStrType(
+            reviewed_target.target_id = AAZStrType(
                 serialized_name="targetId",
                 flags={"read_only": True},
             )
 
-            external_validation_pending = cls._schema_on_200.properties.external_validation_pending
-            external_validation_pending.Element = AAZObjectType()
 
-            external_validation_item = external_validation_pending.Element
-            external_validation_item.solution_version_id = AAZStrType(
-                serialized_name="solutionVersionId",
-                flags={"read_only": True},
-            )
-            external_validation_item.target_id = AAZStrType(
-                serialized_name="targetId",
-                flags={"read_only": True},
-            )
 
             return cls._schema_on_200
+
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/solutionTemplates/{solutionTemplateName}/versions/{solutionTemplateVersionName}/bulkPublishSolution",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/solutionTemplates/{solutionTemplateName}/versions/{solutionTemplateVersionName}/bulkReviewSolution",
                 **self.url_parameters
             )
 
@@ -367,7 +350,8 @@ class BulkPublishSolution(AAZCommand):
 
             solution_dependencies = _builder.get(".solutionDependencies")
             if solution_dependencies is not None:
-                _BulkPublishSolutionHelper._build_schema_solution_dependency_parameter_create(solution_dependencies.set_elements(AAZObjectType, "."))
+                _BulkReviewSolutionHelper._build_schema_solution_dependency_parameter_create(
+                    solution_dependencies.set_elements(AAZObjectType, "."))
 
             targets = _builder.get(".targets")
             if targets is not None:
@@ -377,7 +361,6 @@ class BulkPublishSolution(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("solutionConfiguration", AAZStrType, ".solution_configuration")
                 _elements.set_prop("solutionInstanceName", AAZStrType, ".solution_instance_name")
-                _elements.set_prop("solutionVersionId", AAZStrType, ".solution_version_id")
                 _elements.set_prop("targetId", AAZStrType, ".target_id", typ_kwargs={"flags": {"required": True}})
             if _elements is not None:
                 for t in _content_value.targets:
@@ -389,11 +372,13 @@ class BulkPublishSolution(AAZCommand):
                                 t.solutionConfiguration = configuration
                     except Exception:
                         pass
+
+
             return self.serialize_content(_content_value)
 
 
-class _BulkPublishSolutionHelper:
-    """Helper class for BulkPublishSolution"""
+class _BulkReviewSolutionHelper:
+    """Helper class for BulkReviewSolution"""
 
     @classmethod
     def _build_schema_solution_dependency_parameter_create(cls, _builder):
@@ -411,4 +396,4 @@ class _BulkPublishSolutionHelper:
             cls._build_schema_solution_dependency_parameter_create(dependencies.set_elements(AAZObjectType, "."))
 
 
-__all__ = ["BulkPublishSolution"]
+__all__ = ["BulkReviewSolution"]

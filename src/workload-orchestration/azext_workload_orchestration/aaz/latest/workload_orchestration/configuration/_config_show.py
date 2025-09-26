@@ -332,7 +332,7 @@ class ShowConfig(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-08-01",
                     required=True,
                 ),
             }
