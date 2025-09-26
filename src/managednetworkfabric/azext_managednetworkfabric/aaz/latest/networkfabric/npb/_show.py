@@ -193,6 +193,7 @@ class Show(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.network_tap_ids = AAZListType(
                 serialized_name="networkTapIds",
@@ -213,16 +214,24 @@ class Show(AAZCommand):
             )
 
             neighbor_group_ids = cls._schema_on_200.properties.neighbor_group_ids
-            neighbor_group_ids.Element = AAZStrType()
+            neighbor_group_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             network_device_ids = cls._schema_on_200.properties.network_device_ids
-            network_device_ids.Element = AAZStrType()
+            network_device_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             network_tap_ids = cls._schema_on_200.properties.network_tap_ids
-            network_tap_ids.Element = AAZStrType()
+            network_tap_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             source_interface_ids = cls._schema_on_200.properties.source_interface_ids
-            source_interface_ids.Element = AAZStrType()
+            source_interface_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

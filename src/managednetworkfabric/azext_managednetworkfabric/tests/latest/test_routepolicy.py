@@ -35,7 +35,7 @@ def cleanup_scenario2(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_create_s1(test, checks=[])
     step_show(test, checks=[])
@@ -46,7 +46,7 @@ def call_scenario1(test):
 
 
 def call_scenario2(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario2(test)
     step_create_s2(test, checks=[])
     step_show(test, checks=[])

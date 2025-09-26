@@ -94,6 +94,7 @@ class Update(AAZCommand):
         bmp_configuration.scope_resource_id = AAZResourceIdArg(
             options=["scope-resource-id"],
             help="Scope resource ARM Identifier.",
+            nullable=True,
         )
         bmp_configuration.station_configuration_state = AAZStrArg(
             options=["station-configuration-state"],
@@ -120,6 +121,7 @@ class Update(AAZCommand):
         bmp_configuration.station_network = AAZResourceIdArg(
             options=["station-network"],
             help="Network of the station",
+            nullable=True,
         )
         bmp_configuration.station_port = AAZIntArg(
             options=["station-port"],
@@ -136,7 +138,9 @@ class Update(AAZCommand):
         )
 
         monitored_networks = cls._args_schema.bmp_configuration.monitored_networks
-        monitored_networks.Element = AAZResourceIdArg()
+        monitored_networks.Element = AAZResourceIdArg(
+            nullable=True,
+        )
 
         station_connection_properties = cls._args_schema.bmp_configuration.station_connection_properties
         station_connection_properties.keepalive_idle_time = AAZIntArg(
@@ -286,13 +290,13 @@ class Update(AAZCommand):
                 bmp_configuration.set_prop("exportPolicy", AAZStrType, ".export_policy")
                 bmp_configuration.set_prop("monitoredAddressFamilies", AAZListType, ".monitored_address_families")
                 bmp_configuration.set_prop("monitoredNetworks", AAZListType, ".monitored_networks")
-                bmp_configuration.set_prop("scopeResourceId", AAZStrType, ".scope_resource_id")
+                bmp_configuration.set_prop("scopeResourceId", AAZStrType, ".scope_resource_id", typ_kwargs={"nullable": True})
                 bmp_configuration.set_prop("stationConfigurationState", AAZStrType, ".station_configuration_state")
                 bmp_configuration.set_prop("stationConnectionMode", AAZStrType, ".station_connection_mode")
                 bmp_configuration.set_prop("stationConnectionProperties", AAZObjectType, ".station_connection_properties")
                 bmp_configuration.set_prop("stationIp", AAZStrType, ".station_ip")
                 bmp_configuration.set_prop("stationName", AAZStrType, ".station_name")
-                bmp_configuration.set_prop("stationNetwork", AAZStrType, ".station_network")
+                bmp_configuration.set_prop("stationNetwork", AAZStrType, ".station_network", typ_kwargs={"nullable": True})
                 bmp_configuration.set_prop("stationPort", AAZIntType, ".station_port")
 
             monitored_address_families = _builder.get(".properties.bmpConfiguration.monitoredAddressFamilies")
@@ -301,7 +305,7 @@ class Update(AAZCommand):
 
             monitored_networks = _builder.get(".properties.bmpConfiguration.monitoredNetworks")
             if monitored_networks is not None:
-                monitored_networks.set_elements(AAZStrType, ".")
+                monitored_networks.set_elements(AAZStrType, ".", typ_kwargs={"nullable": True})
 
             station_connection_properties = _builder.get(".properties.bmpConfiguration.stationConnectionProperties")
             if station_connection_properties is not None:
@@ -388,6 +392,7 @@ class Update(AAZCommand):
             )
             bmp_configuration.scope_resource_id = AAZStrType(
                 serialized_name="scopeResourceId",
+                nullable=True,
             )
             bmp_configuration.station_configuration_state = AAZStrType(
                 serialized_name="stationConfigurationState",
@@ -406,6 +411,7 @@ class Update(AAZCommand):
             )
             bmp_configuration.station_network = AAZStrType(
                 serialized_name="stationNetwork",
+                nullable=True,
             )
             bmp_configuration.station_port = AAZIntType(
                 serialized_name="stationPort",
@@ -415,7 +421,9 @@ class Update(AAZCommand):
             monitored_address_families.Element = AAZStrType()
 
             monitored_networks = cls._schema_on_200.properties.bmp_configuration.monitored_networks
-            monitored_networks.Element = AAZStrType()
+            monitored_networks.Element = AAZStrType(
+                nullable=True,
+            )
 
             station_connection_properties = cls._schema_on_200.properties.bmp_configuration.station_connection_properties
             station_connection_properties.keepalive_idle_time = AAZIntType(

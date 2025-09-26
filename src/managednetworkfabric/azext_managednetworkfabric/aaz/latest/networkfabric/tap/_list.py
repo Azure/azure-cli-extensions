@@ -200,6 +200,7 @@ class List(AAZCommand):
             properties.network_packet_broker_id = AAZStrType(
                 serialized_name="networkPacketBrokerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.polling_type = AAZStrType(
                 serialized_name="pollingType",
@@ -210,6 +211,7 @@ class List(AAZCommand):
             )
             properties.source_tap_rule_id = AAZStrType(
                 serialized_name="sourceTapRuleId",
+                nullable=True,
                 flags={"read_only": True},
             )
 
@@ -220,9 +222,11 @@ class List(AAZCommand):
             _element.destination_id = AAZStrType(
                 serialized_name="destinationId",
                 flags={"required": True},
+                nullable=True,
             )
             _element.destination_tap_rule_id = AAZStrType(
                 serialized_name="destinationTapRuleId",
+                nullable=True,
             )
             _element.destination_type = AAZStrType(
                 serialized_name="destinationType",
@@ -242,7 +246,9 @@ class List(AAZCommand):
             )
 
             neighbor_group_ids = cls._schema_on_200.value.Element.properties.destinations.Element.isolation_domain_properties.neighbor_group_ids
-            neighbor_group_ids.Element = AAZStrType()
+            neighbor_group_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             last_operation = cls._schema_on_200.value.Element.properties.last_operation
             last_operation.details = AAZStrType(
@@ -403,6 +409,7 @@ class List(AAZCommand):
             properties.network_packet_broker_id = AAZStrType(
                 serialized_name="networkPacketBrokerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.polling_type = AAZStrType(
                 serialized_name="pollingType",
@@ -413,6 +420,7 @@ class List(AAZCommand):
             )
             properties.source_tap_rule_id = AAZStrType(
                 serialized_name="sourceTapRuleId",
+                nullable=True,
                 flags={"read_only": True},
             )
 
@@ -423,9 +431,11 @@ class List(AAZCommand):
             _element.destination_id = AAZStrType(
                 serialized_name="destinationId",
                 flags={"required": True},
+                nullable=True,
             )
             _element.destination_tap_rule_id = AAZStrType(
                 serialized_name="destinationTapRuleId",
+                nullable=True,
             )
             _element.destination_type = AAZStrType(
                 serialized_name="destinationType",
@@ -445,7 +455,9 @@ class List(AAZCommand):
             )
 
             neighbor_group_ids = cls._schema_on_200.value.Element.properties.destinations.Element.isolation_domain_properties.neighbor_group_ids
-            neighbor_group_ids.Element = AAZStrType()
+            neighbor_group_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             last_operation = cls._schema_on_200.value.Element.properties.last_operation
             last_operation.details = AAZStrType(

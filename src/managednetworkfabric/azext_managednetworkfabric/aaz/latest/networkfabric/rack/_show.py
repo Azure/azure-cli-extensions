@@ -190,6 +190,7 @@ class Show(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.network_rack_type = AAZStrType(
                 serialized_name="networkRackType",
@@ -205,7 +206,9 @@ class Show(AAZCommand):
             )
 
             network_devices = cls._schema_on_200.properties.network_devices
-            network_devices.Element = AAZStrType()
+            network_devices.Element = AAZStrType(
+                nullable=True,
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

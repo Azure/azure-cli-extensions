@@ -96,10 +96,12 @@ class Update(AAZCommand):
         _element.destination_id = AAZResourceIdArg(
             options=["destination-id"],
             help="The destination Id. ARM Resource ID of either NNI or Internal Networks.",
+            nullable=True,
         )
         _element.destination_tap_rule_id = AAZResourceIdArg(
             options=["destination-tap-rule-id"],
             help="ARM Resource ID of destination Tap Rule that contains match configurations.",
+            nullable=True,
         )
         _element.destination_type = AAZStrArg(
             options=["destination-type"],
@@ -130,7 +132,9 @@ class Update(AAZCommand):
         )
 
         neighbor_group_ids = cls._args_schema.destinations.Element.isolation_domain_properties.neighbor_group_ids
-        neighbor_group_ids.Element = AAZResourceIdArg()
+        neighbor_group_ids.Element = AAZResourceIdArg(
+            nullable=True,
+        )
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
@@ -257,8 +261,8 @@ class Update(AAZCommand):
 
             _elements = _builder.get(".properties.destinations[]")
             if _elements is not None:
-                _elements.set_prop("destinationId", AAZStrType, ".destination_id")
-                _elements.set_prop("destinationTapRuleId", AAZStrType, ".destination_tap_rule_id")
+                _elements.set_prop("destinationId", AAZStrType, ".destination_id", typ_kwargs={"nullable": True})
+                _elements.set_prop("destinationTapRuleId", AAZStrType, ".destination_tap_rule_id", typ_kwargs={"nullable": True})
                 _elements.set_prop("destinationType", AAZStrType, ".destination_type")
                 _elements.set_prop("isolationDomainProperties", AAZObjectType, ".isolation_domain_properties")
                 _elements.set_prop("name", AAZStrType, ".name")
@@ -270,7 +274,7 @@ class Update(AAZCommand):
 
             neighbor_group_ids = _builder.get(".properties.destinations[].isolationDomainProperties.neighborGroupIds")
             if neighbor_group_ids is not None:
-                neighbor_group_ids.set_elements(AAZStrType, ".")
+                neighbor_group_ids.set_elements(AAZStrType, ".", typ_kwargs={"nullable": True})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -337,6 +341,7 @@ class Update(AAZCommand):
             properties.network_packet_broker_id = AAZStrType(
                 serialized_name="networkPacketBrokerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.polling_type = AAZStrType(
                 serialized_name="pollingType",
@@ -347,6 +352,7 @@ class Update(AAZCommand):
             )
             properties.source_tap_rule_id = AAZStrType(
                 serialized_name="sourceTapRuleId",
+                nullable=True,
                 flags={"read_only": True},
             )
 
@@ -357,9 +363,11 @@ class Update(AAZCommand):
             _element.destination_id = AAZStrType(
                 serialized_name="destinationId",
                 flags={"required": True},
+                nullable=True,
             )
             _element.destination_tap_rule_id = AAZStrType(
                 serialized_name="destinationTapRuleId",
+                nullable=True,
             )
             _element.destination_type = AAZStrType(
                 serialized_name="destinationType",
@@ -379,7 +387,9 @@ class Update(AAZCommand):
             )
 
             neighbor_group_ids = cls._schema_on_200.properties.destinations.Element.isolation_domain_properties.neighbor_group_ids
-            neighbor_group_ids.Element = AAZStrType()
+            neighbor_group_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             last_operation = cls._schema_on_200.properties.last_operation
             last_operation.details = AAZStrType(

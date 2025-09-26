@@ -83,6 +83,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="ARM Resource ID of the Network Fabric.",
             required=True,
+            nullable=True,
         )
         _args_schema.redistribute_connected_subnets = AAZStrArg(
             options=["--redistribute-connected-subnets"],
@@ -143,10 +144,12 @@ class Create(AAZCommand):
         export_route_policy.export_ipv4_route_policy_id = AAZResourceIdArg(
             options=["export-ipv4-route-policy-id"],
             help="ARM Resource ID of the RoutePolicy.",
+            nullable=True,
         )
         export_route_policy.export_ipv6_route_policy_id = AAZResourceIdArg(
             options=["export-ipv6-route-policy-id"],
             help="ARM Resource ID of the RoutePolicy.",
+            nullable=True,
         )
 
         route_prefix_limit = cls._args_schema.route_prefix_limit
@@ -224,10 +227,12 @@ class Create(AAZCommand):
         l3_export_route_policy_create.export_ipv4_route_policy_id = AAZResourceIdArg(
             options=["export-ipv4-route-policy-id"],
             help="ARM Resource ID of the RoutePolicy.",
+            nullable=True,
         )
         l3_export_route_policy_create.export_ipv6_route_policy_id = AAZResourceIdArg(
             options=["export-ipv6-route-policy-id"],
             help="ARM Resource ID of the RoutePolicy.",
+            nullable=True,
         )
 
         _schema.export_ipv4_route_policy_id = cls._args_l3_export_route_policy_create.export_ipv4_route_policy_id
@@ -348,7 +353,7 @@ class Create(AAZCommand):
                 properties.set_prop("aggregateRouteConfiguration", AAZObjectType, ".aggregate_route_configuration")
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("connectedSubnetRoutePolicy", AAZObjectType, ".connected_subnet_route_policy")
-                properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}, "nullable": True})
                 properties.set_prop("redistributeConnectedSubnets", AAZStrType, ".redistribute_connected_subnets")
                 properties.set_prop("redistributeStaticRoutes", AAZStrType, ".redistribute_static_routes")
                 properties.set_prop("routePrefixLimit", AAZObjectType, ".route_prefix_limit")
@@ -373,8 +378,8 @@ class Create(AAZCommand):
 
             export_route_policy = _builder.get(".properties.connectedSubnetRoutePolicy.exportRoutePolicy")
             if export_route_policy is not None:
-                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id")
-                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id")
+                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id", typ_kwargs={"nullable": True})
+                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id", typ_kwargs={"nullable": True})
 
             route_prefix_limit = _builder.get(".properties.routePrefixLimit")
             if route_prefix_limit is not None:
@@ -453,6 +458,7 @@ class Create(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -561,8 +567,8 @@ class _CreateHelper:
     def _build_schema_l3_export_route_policy_create(cls, _builder):
         if _builder is None:
             return
-        _builder.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id")
-        _builder.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id")
+        _builder.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id", typ_kwargs={"nullable": True})
+        _builder.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id", typ_kwargs={"nullable": True})
 
     _schema_aggregate_route_read = None
 
@@ -595,9 +601,11 @@ class _CreateHelper:
         l3_export_route_policy_read = _schema_l3_export_route_policy_read
         l3_export_route_policy_read.export_ipv4_route_policy_id = AAZStrType(
             serialized_name="exportIpv4RoutePolicyId",
+            nullable=True,
         )
         l3_export_route_policy_read.export_ipv6_route_policy_id = AAZStrType(
             serialized_name="exportIpv6RoutePolicyId",
+            nullable=True,
         )
 
         _schema.export_ipv4_route_policy_id = cls._schema_l3_export_route_policy_read.export_ipv4_route_policy_id

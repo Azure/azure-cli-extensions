@@ -184,6 +184,7 @@ class List(AAZCommand):
             properties.annotation = AAZStrType()
             properties.internet_gateway_rule_id = AAZStrType(
                 serialized_name="internetGatewayRuleId",
+                nullable=True,
             )
             properties.internet_gateway_type = AAZStrType(
                 serialized_name="internetGatewayType",
@@ -199,6 +200,7 @@ class List(AAZCommand):
             properties.network_fabric_controller_id = AAZStrType(
                 serialized_name="networkFabricControllerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.port = AAZIntType(
                 flags={"read_only": True},
@@ -352,6 +354,7 @@ class List(AAZCommand):
             properties.annotation = AAZStrType()
             properties.internet_gateway_rule_id = AAZStrType(
                 serialized_name="internetGatewayRuleId",
+                nullable=True,
             )
             properties.internet_gateway_type = AAZStrType(
                 serialized_name="internetGatewayType",
@@ -367,6 +370,7 @@ class List(AAZCommand):
             properties.network_fabric_controller_id = AAZStrType(
                 serialized_name="networkFabricControllerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.port = AAZIntType(
                 flags={"read_only": True},

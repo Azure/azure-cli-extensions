@@ -211,6 +211,7 @@ class RunRo(AAZCommand):
             _schema_on_200.properties = AAZObjectType()
             _schema_on_200.resource_id = AAZStrType(
                 serialized_name="resourceId",
+                nullable=True,
                 flags={"read_only": True},
             )
             _schema_on_200.start_time = AAZStrType(

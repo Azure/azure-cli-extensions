@@ -273,6 +273,7 @@ class List(AAZCommand):
             properties.network_fabric_controller_id = AAZStrType(
                 serialized_name="networkFabricControllerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.network_fabric_sku = AAZStrType(
                 serialized_name="networkFabricSku",
@@ -317,7 +318,9 @@ class List(AAZCommand):
             active_commit_batches.Element = AAZStrType()
 
             control_plane_acls = cls._schema_on_200.value.Element.properties.control_plane_acls
-            control_plane_acls.Element = AAZStrType()
+            control_plane_acls.Element = AAZStrType(
+                nullable=True,
+            )
 
             fabric_locks = cls._schema_on_200.value.Element.properties.fabric_locks
             fabric_locks.Element = AAZObjectType()
@@ -373,6 +376,7 @@ class List(AAZCommand):
             storage_account_configuration = cls._schema_on_200.value.Element.properties.storage_account_configuration
             storage_account_configuration.storage_account_id = AAZStrType(
                 serialized_name="storageAccountId",
+                nullable=True,
             )
             storage_account_configuration.storage_account_identity = AAZObjectType(
                 serialized_name="storageAccountIdentity",
@@ -385,6 +389,7 @@ class List(AAZCommand):
             )
             storage_account_identity.user_assigned_identity_resource_id = AAZStrType(
                 serialized_name="userAssignedIdentityResourceId",
+                nullable=True,
             )
 
             terminal_server_configuration = cls._schema_on_200.value.Element.properties.terminal_server_configuration
@@ -417,7 +422,9 @@ class List(AAZCommand):
             )
 
             trusted_ip_prefixes = cls._schema_on_200.value.Element.properties.trusted_ip_prefixes
-            trusted_ip_prefixes.Element = AAZStrType()
+            trusted_ip_prefixes.Element = AAZStrType(
+                nullable=True,
+            )
 
             unique_rd_configuration = cls._schema_on_200.value.Element.properties.unique_rd_configuration
             unique_rd_configuration.nni_derived_unique_rd_configuration_state = AAZStrType(
@@ -661,6 +668,7 @@ class List(AAZCommand):
             properties.network_fabric_controller_id = AAZStrType(
                 serialized_name="networkFabricControllerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.network_fabric_sku = AAZStrType(
                 serialized_name="networkFabricSku",
@@ -705,7 +713,9 @@ class List(AAZCommand):
             active_commit_batches.Element = AAZStrType()
 
             control_plane_acls = cls._schema_on_200.value.Element.properties.control_plane_acls
-            control_plane_acls.Element = AAZStrType()
+            control_plane_acls.Element = AAZStrType(
+                nullable=True,
+            )
 
             fabric_locks = cls._schema_on_200.value.Element.properties.fabric_locks
             fabric_locks.Element = AAZObjectType()
@@ -761,6 +771,7 @@ class List(AAZCommand):
             storage_account_configuration = cls._schema_on_200.value.Element.properties.storage_account_configuration
             storage_account_configuration.storage_account_id = AAZStrType(
                 serialized_name="storageAccountId",
+                nullable=True,
             )
             storage_account_configuration.storage_account_identity = AAZObjectType(
                 serialized_name="storageAccountIdentity",
@@ -773,6 +784,7 @@ class List(AAZCommand):
             )
             storage_account_identity.user_assigned_identity_resource_id = AAZStrType(
                 serialized_name="userAssignedIdentityResourceId",
+                nullable=True,
             )
 
             terminal_server_configuration = cls._schema_on_200.value.Element.properties.terminal_server_configuration
@@ -805,7 +817,9 @@ class List(AAZCommand):
             )
 
             trusted_ip_prefixes = cls._schema_on_200.value.Element.properties.trusted_ip_prefixes
-            trusted_ip_prefixes.Element = AAZStrType()
+            trusted_ip_prefixes.Element = AAZStrType(
+                nullable=True,
+            )
 
             unique_rd_configuration = cls._schema_on_200.value.Element.properties.unique_rd_configuration
             unique_rd_configuration.nni_derived_unique_rd_configuration_state = AAZStrType(
@@ -872,6 +886,7 @@ class _ListHelper:
         )
         vpn_configuration_properties_read.network_to_network_interconnect_id = AAZStrType(
             serialized_name="networkToNetworkInterconnectId",
+            nullable=True,
         )
         vpn_configuration_properties_read.option_a_properties = AAZObjectType(
             serialized_name="optionAProperties",
