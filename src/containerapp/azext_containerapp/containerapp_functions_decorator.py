@@ -14,7 +14,7 @@ from azure.cli.command_modules.containerapp.base_resource import BaseResource
 
 from ._clients import ContainerAppFunctionsPreviewClient
 from ._client_factory import handle_raw_exception
-from ._validators import validate_basic_arguments, validate_revision_and_get_name
+from ._validators import validate_basic_arguments, validate_revision_and_get_name, validate_functionapp_kind
 from ._transformers import process_app_insights_response
 
 logger = get_logger(__name__)
@@ -109,15 +109,17 @@ class ContainerAppFunctionsListDecorator(ContainerAppFunctionsDecorator):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
-    def validate_list_arguments(self):
-        """Validate arguments required for listing functions"""
-        resource_group_name, name, revision_name = self.validate_common_arguments()
-        return resource_group_name, name, revision_name
-
     def list(self):
         """List functions for a container app or revision"""
         try:
-            resource_group_name, name, revision_name = self.validate_list_arguments()
+            resource_group_name, name, revision_name = self.validate_common_arguments()
+
+            # Validate that the Container App has kind 'functionapp'
+            validate_functionapp_kind(
+                cmd=self.cmd,
+                resource_group_name=resource_group_name,
+                container_app_name=name
+            )
             
             if revision_name:
                 # List functions for a specific revision
@@ -128,7 +130,7 @@ class ContainerAppFunctionsListDecorator(ContainerAppFunctionsDecorator):
                     revision_name=revision_name
                 )
             else:
-                # List functions for the entire container app
+                # List functions for latest active revision
                 return self.client.list_functions(
                     cmd=self.cmd,
                     resource_group_name=resource_group_name,
@@ -154,6 +156,13 @@ class ContainerAppFunctionsShowDecorator(ContainerAppFunctionsDecorator):
         """Show details of a specific function"""
         try:
             resource_group_name, name, revision_name, function_name = self.validate_show_arguments()
+
+            # Validate that the Container App has kind 'functionapp'
+            validate_functionapp_kind(
+                cmd=self.cmd,
+                resource_group_name=resource_group_name,
+                container_app_name=name
+            )
 
             if revision_name:
                 # Get function for a specific revision
@@ -187,6 +196,14 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
             resource_group_name=self.get_argument_resource_group_name(),
             container_app_name=self.get_argument_container_app_name()
         )
+        
+        # Validate that the Container App has kind 'functionapp'
+        validate_functionapp_kind(
+            cmd=self.cmd,
+            resource_group_name=self.get_argument_resource_group_name(),
+            container_app_name=self.get_argument_container_app_name()
+        )
+        
         # self.validate_revision_name_requirement()
         revision_name = self.get_argument_revision_name()
         revision_name = validate_revision_and_get_name(

@@ -288,3 +288,51 @@ def transform_debug_command_output(raw_output):
         if "$id" in raw_output:
             del raw_output["$id"]
         return raw_output
+
+
+def transform_function_keys_show_set(result):
+    """Transform function keys show/set data for table output."""
+    from collections import OrderedDict
+    
+    if not result:
+        return []
+    
+    # For show/set commands, display key-value pairs of the key details
+    # Expected input: {"value": {"name": "key_name", "value": "key_value"}}
+    if isinstance(result, dict) and "value" in result:
+        key_data = result["value"]
+        
+        table = []
+        table.append(OrderedDict([('Property', 'Name'), ('Value', key_data.get('name', ''))]))
+        table.append(OrderedDict([('Property', 'Value'), ('Value', key_data.get('value', ''))]))
+        
+        return table
+    
+    return []
+
+
+def transform_function_keys_list(result):
+    """Transform function keys list data for table output."""
+    from collections import OrderedDict
+    
+    if not result:
+        return []
+    
+    # For list commands, extract the keys array and format as table rows
+    # Expected input: {"value": {"keys": [{"name": "key1", "value": "val1"}, ...]}}
+    if isinstance(result, dict) and "value" in result:
+        value_data = result["value"]
+        if isinstance(value_data, dict) and "keys" in value_data:
+            keys = value_data["keys"]
+            
+            table = []
+            for key in keys:
+                if isinstance(key, dict):
+                    table.append(OrderedDict([
+                        ('Name', key.get('name', '')),
+                        ('Value', key.get('value', ''))
+                    ]))
+            
+            return table
+    
+    return []

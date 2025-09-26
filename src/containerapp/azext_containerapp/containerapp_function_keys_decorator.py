@@ -14,7 +14,7 @@ from azure.cli.command_modules.containerapp.base_resource import BaseResource
 
 from ._clients import ContainerAppFunctionsPreviewClient
 from ._client_factory import handle_raw_exception
-from ._validators import validate_basic_arguments, validate_revision_and_get_name
+from ._validators import validate_basic_arguments, validate_revision_and_get_name, validate_functionapp_kind
 from ._utils import get_random_replica
 
 logger = get_logger(__name__)
@@ -56,6 +56,13 @@ class ContainerAppFunctionKeysDecorator(BaseResource):
             resource_group_name=resource_group_name,
             container_app_name=name,
             key_type=key_type
+        )
+
+        # Validate that the Container App has kind 'functionapp'
+        validate_functionapp_kind(
+            cmd=self.cmd,
+            resource_group_name=resource_group_name,
+            container_app_name=name
         )
 
         # Validate revision and get the appropriate revision name
