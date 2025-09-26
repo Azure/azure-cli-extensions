@@ -335,6 +335,40 @@ def validate_container_app_exists(cmd, resource_group_name, container_app_name):
     return containerapp_def
 
 
+def validate_functionapp_kind(cmd, resource_group_name, container_app_name):
+    """Validate that the Container App has kind 'functionapp' for function operations"""
+    from ._client_factory import handle_raw_exception
+    from ._clients import ContainerAppPreviewClient
+    from ._utils import safe_get
+    
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(
+            cmd=cmd, 
+            resource_group_name=resource_group_name, 
+            name=container_app_name
+        )
+    except Exception as e:
+        handle_raw_exception(e)
+
+    if not containerapp_def:
+        raise ValidationError(f"The containerapp '{container_app_name}' does not exist in resource group '{resource_group_name}'.")
+    
+    kind = safe_get(containerapp_def, "kind")
+    managed_by = safe_get(containerapp_def, "managedBy")
+
+    if managed_by and "providers/Microsoft.Web/sites" in managed_by:
+        logger.warning("v1")
+        return containerapp_def
+    
+    if kind == "functionapp":
+        logger.warning("v2")
+        return containerapp_def
+    
+    raise ValidationError(
+        f"The containerapp '{container_app_name}' is not an Azure Function on Azure Container App."
+    )
+
+
 def validate_basic_arguments(resource_group_name, container_app_name, **kwargs):
     if not resource_group_name:
         raise ValidationError("Resource group name is required.")
