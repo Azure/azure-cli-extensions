@@ -16,6 +16,7 @@ from azext_aks_preview._client_factory import (
     cf_operations,
     cf_load_balancers,
     cf_identity_bindings,
+    cf_jwt_authenticators,
 )
 
 from azext_aks_preview._format import (
@@ -46,6 +47,8 @@ from azext_aks_preview._format import (
     aks_extension_type_show_table_format,
     aks_extension_type_versions_list_table_format,
     aks_extension_type_version_show_table_format,
+    aks_jwtauthenticator_list_table_format,
+    aks_jwtauthenticator_show_table_format,
 )
 
 from knack.log import get_logger
@@ -139,6 +142,12 @@ def load_command_table(self, _):
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
         "operations._managed_clusters_snapshots_operations#ManagedClusterSnapshotsOperations.{}",
         client_factory=cf_mc_snapshots,
+    )
+
+    jwt_authenticators_sdk = CliCommandType(
+        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
+        "operations._jwt_authenticators_operations#JWTAuthenticatorsOperations.{}",
+        client_factory=cf_jwt_authenticators,
     )
 
     # AKS managed cluster commands
@@ -517,3 +526,33 @@ def load_command_table(self, _):
         g.custom_command("delete", "aks_identity_binding_delete")
         g.custom_show_command("show", "aks_identity_binding_show")
         g.custom_command("list", "aks_identity_binding_list")
+
+    # AKS jwt authenticator commands
+    with self.command_group(
+        "aks jwtauthenticator", jwt_authenticators_sdk, client_factory=cf_jwt_authenticators,
+    ) as g:
+        g.custom_command(
+            "add",
+            "aks_jwtauthenticator_add",
+            supports_no_wait=True
+        )
+        g.custom_command(
+            "update",
+            "aks_jwtauthenticator_update",
+            supports_no_wait=True
+        )
+        g.custom_command(
+            "delete",
+            "aks_jwtauthenticator_delete",
+            supports_no_wait=True, confirmation=True
+        )
+        g.custom_command(
+            "list",
+            "aks_jwtauthenticator_list",
+            table_transformer=aks_jwtauthenticator_list_table_format
+        )
+        g.custom_show_command(
+            "show",
+            "aks_jwtauthenticator_show",
+            table_transformer=aks_jwtauthenticator_show_table_format
+        )
