@@ -67,12 +67,15 @@ class TestCNF(unittest.TestCase):
 
                 expected_deploy_params = {
                     "location": "uksouth",
-                    "publisherName": "automated-cli-test-nginx-publisher",
+                    "publisherName": "automated-scenario-test-nginx-publisher",
                     "publisherResourceGroupName": "cli_test_cnf_nfd",
                     "acrArtifactStoreName": "nginx-acr",
                     "acrManifestName": "nginx-acr-manifest-1-0-0",
                     "nfDefinitionGroup": "nginx",
                     "nfDefinitionVersion": "1.0.0",
+                    "disablePublicNetworkAccess": False,
+                    "vnetPrivateEndPoints": [],
+                    "networkFabricControllerIds": []
                 }
                 with open(
                     "cnf-cli-output/all_deploy.parameters.json"
