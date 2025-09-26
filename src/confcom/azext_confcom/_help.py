@@ -278,3 +278,46 @@ helps[
         - name: Input a Kubernetes YAML file with a custom containerd socket path
           text: az confcom katapolicygen --yaml "./pod.json" --containerd-pull --containerd-socket-path "/my/custom/containerd.sock"
 """
+
+helps[
+    "confcom fragment"
+] = """
+    type: group
+    short-summary: Commands to handle Confidential Container Policy Fragments.
+"""
+
+helps[
+    "confcom fragment push"
+] = """
+    type: command
+    short-summary: Push a Confidential Container Policy Fragment to an ORAS registry
+
+    parameters:
+      - name: --manifest-tag
+        type: string
+        short-summary: 'The reference to push the signed fragment to'
+
+    examples:
+        - name: Push a signed fragment to a registry
+          text: az confcom fragment push ./fragment.reg.cose --manifest-tag myregistry.azurecr.io/fragment:latest
+        - name: Push the output of acifragmentgen to a registry
+          text: az confcom acifragmentgen --chain my.cert.pem --key my_key.pem --svn "1" --namespace contoso --feed "test-feed" --input ./fragment_spec.json | az confcom fragment push --manifest-tag myregistry.azurecr.io/fragment:latest
+"""
+
+helps[
+    "confcom fragment attach"
+] = """
+    type: command
+    short-summary: Attach a Confidential Container Policy Fragment to an image in an ORAS registry.
+
+    parameters:
+      - name: --manifest-tag
+        type: string
+        short-summary: 'The reference to attach the signed fragment to'
+
+    examples:
+        - name: Attach a signed fragment to a registry
+          text: az confcom fragment attach ./fragment.reg.cose --manifest-tag myregistry.azurecr.io/image:latest
+        - name: Attach the output of acifragmentgen to a registry
+          text: az confcom acifragmentgen --chain my.cert.pem --key my_key.pem --svn "1" --namespace contoso --feed "test-feed" --input ./fragment_spec.json | az confcom fragment attach --manifest-tag myregistry.azurecr.io/image:latest
+"""
