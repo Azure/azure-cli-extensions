@@ -1,0 +1,10 @@
+Last 6 logs with "ERROR" from payment-service in production-62:                                                                    
+
+ 1 Database connection failed: ETIMEDOUT                                                                                           
+ 2 Attempting reconnection (attempt 1/3)                                                                                           
+ 3 Connection retry failed (attempt 2/3)                                                                                           
+ 4 Maximum retry attempts exceeded                                                                                                 
+ 5 Backup connection failed: ECONNREFUSED                                                                                          
+ 6 Unable to establish database connection                                                                                         
+
+Root cause: payment-service cannot connect to its database. Check database availability, network, and credentials.

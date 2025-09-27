@@ -1,0 +1,6 @@
+payment-processing-worker-747ccfb9db-tl5gf is crashing due to missing DEPLOY_ENV environment variable.                             
+
+Crash reason: Container command checks if DEPLOY_ENV is set. If not, it prints "Environment variable DEPLOY_ENV is undefined" and  
+exits. No DEPLOY_ENV is defined, so the container exits immediately, causing CrashLoopBackOff.                                     
+
+Fix: Set DEPLOY_ENV environment variable in the deployment spec.

@@ -1,0 +1,13 @@
+Pods for deployment api-server in namespace-78a are pending because a resource quota named compute-quota requires limits.cpu to be 
+set for each container. The deployment only specifies limits.memory and omits limits.cpu.                                          
+
+To fix: Add a limits.cpu value to the container spec in the deployment. Example:                                                   
+
+                                                                                                                                   
+ resources:                                                                                                                        
+   limits:                                                                                                                         
+     cpu: 100m                                                                                                                     
+     memory: 64Mi                                                                                                                  
+                                                                                                                                   
+
+Then redeploy.

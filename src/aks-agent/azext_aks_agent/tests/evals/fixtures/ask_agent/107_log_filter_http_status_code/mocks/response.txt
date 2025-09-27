@@ -1,0 +1,22 @@
+503 errors in api-server (namespace app-107) are caused by timeouts on the /api/reports/generate endpoint. All other endpoints     
+respond quickly and successfully.                                                                                                  
+
+Key findings:                                                                                                                      
+
+ • Pod is healthy, no restarts, all readiness checks pass.                                                                         
+ • No Service or Ingress exists in the namespace.                                                                                  
+ • Logs show repeated 503 errors for /api/reports/generate, each after a 30s timeout, with messages like "Report service timeout"  
+   and "upstream service not responding".                                                                                          
+ • Other endpoints are fast and healthy.                                                                                           
+
+Root cause: The /api/reports/generate handler is timing out after 30s, likely due to an internal or upstream dependency being slow 
+or unavailable. No Kubernetes-level networking or deployment issues detected.                                                      
+
+How to fix:                                                                                                                        
+
+ 1 Investigate the report generation logic and any dependencies it calls (e.g., external APIs, databases, microservices).          
+ 2 Check for resource bottlenecks or errors in those dependencies.                                                                 
+ 3 Add a Service if you intend to expose this pod internally.                                                                      
+ 4 If /api/reports/generate depends on another service, ensure that service is running and reachable.                              
+
+No cluster or pod-level issues found; this is an application or dependency problem.

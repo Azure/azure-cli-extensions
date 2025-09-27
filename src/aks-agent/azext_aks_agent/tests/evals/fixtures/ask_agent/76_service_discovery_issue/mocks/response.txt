@@ -1,0 +1,6 @@
+Frontend pod can't connect to backend service because the backend-service has no endpoints. The service selector is                
+app=backend,version=v2, but the backend deployment pods are labeled app=backend,version=v1. No pods match the service selector, so 
+no traffic is routed.                                                                                                              
+
+Fix: Update backend-service selector to match backend pod labels (app=backend,version=v1) or update backend pod labels to          
+version=v2.
