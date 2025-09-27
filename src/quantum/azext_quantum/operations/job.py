@@ -44,8 +44,6 @@ PASS_THROUGH_JOB = 2
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
 
-_targets_with_allowed_failure_output = {"microsoft.dft"}
-
 
 def list(cmd, resource_group_name, workspace_name, location, job_type=None, item_type=None, provider_id=None,
          target_id=None, job_status=None, created_after=None, created_before=None, job_name=None,
