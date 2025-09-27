@@ -163,6 +163,14 @@ def _add_quantum_providers(cmd, workspace, providers, auto_accept, skip_autoadd)
                                            "\t-r \"Microsoft/Basic, Microsoft.FleetManagement/Basic\"\n"
                                            "To display a list of Provider IDs and their SKUs, use the following command:\n"
                                            "\taz quantum offerings list -l MyLocation -o table")
+    
+    # Check for duplicate provider ids
+    seen = set()
+    for provider in providers_selected:
+        identifier = provider['provider_id'].lower()
+        if identifier in seen:
+            raise InvalidArgumentValueError(f"Duplicate ProviderId specified: '{identifier}'. Each provider can only be specified once.")
+        seen.add(identifier)
 
     _show_tip(f"Workspace creation has been requested with the following providers:\n{providers_selected}")
     # Now that the providers have been requested, add each of them into the workspace

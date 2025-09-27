@@ -19,7 +19,7 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
 
 from ..vendored_sdks.azure_quantum_python.workspace import Workspace
 from ..vendored_sdks.azure_quantum_python.storage import upload_blob
-from ..vendored_sdks.azure_storage_blob import ContainerClient
+from ..vendored_sdks.azure_storage_blob import BlobClient, ContainerClient
 from .._client_factory import cf_jobs
 from .._list_helper import repack_response_json
 from .workspace import WorkspaceInfo
@@ -27,8 +27,7 @@ from .target import TargetInfo, get_provider
 
 
 MINIMUM_MAX_POLL_WAIT_SECS = 1
-DEFAULT_SHOTS = 500
-QIO_DEFAULT_TIMEOUT = 100
+DEFAULT_SHOTS = 100
 
 ERROR_MSG_MISSING_INPUT_FORMAT = "The following argument is required: --job-input-format"  # NOTE: The Azure CLI core generates a similar error message, but "the" is lowercase and "arguments" is always plural.
 ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-output-format"
@@ -39,9 +38,8 @@ ERROR_MSG_MISSING_ORDERBY_ARGUMENT = "The --order argument is not valid without 
 JOB_LIST_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-list"
 
 # Job types
-QIO_JOB = 1
-QIR_JOB = 2
-PASS_THROUGH_JOB = 3
+QIR_JOB = 1
+PASS_THROUGH_JOB = 2
 
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
@@ -176,7 +174,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
            job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
            job_output_format=None, entry_point=None):
     """
-    Submit QIR bitcode, QIO problem JSON, or a pass-through job to run on Azure Quantum.
+    Submit QIR or a pass-through job to run on Azure Quantum.
     """
     # Get workspace, target, and provider information
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
@@ -193,40 +191,15 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     lc_job_input_format = job_input_format.lower()
     if "qir.v" in lc_job_input_format:
         job_type = QIR_JOB
-    elif lc_job_input_format == "microsoft.qio.v2":
-        job_type = QIO_JOB
     else:
         job_type = PASS_THROUGH_JOB
 
-    # If output format is not specified, supply a default for QIR or QIO jobs
+    # If output format is not specified, supply a default for QIR jobs
     if job_output_format is None:
         if job_type == QIR_JOB:
             job_output_format = "microsoft.quantum-results.v1"
-        elif job_type == QIO_JOB:
-            job_output_format = "microsoft.qio-results.v2"
         else:
             raise RequiredArgumentMissingError(ERROR_MSG_MISSING_OUTPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
-
-    # An entry point is required on QIR jobs
-    if job_type == QIR_JOB:  # pylint: disable=too-many-nested-blocks
-        # An entry point is required for a QIR job, but there are four ways to specify it in a CLI command:
-        #   -  Use the --entry-point parameter
-        #   -  Include it in --job-params as entryPoint=MyEntryPoint
-        #   -  Include it as 'entryPoint':'MyEntryPoint' in a JSON --job-params string or file
-        #   -  Include it in an "items" list in a JSON --job-params string or file
-        found_entry_point_in_items = False
-        if job_params is not None and "items" in job_params:
-            items_list = job_params["items"]
-            if isinstance(items_list, type([])):    # "list" has been redefined as a function name
-                for item in items_list:
-                    if isinstance(item, dict):
-                        for item_dict in items_list:
-                            if "entryPoint" in item_dict:
-                                if item_dict["entryPoint"] is not None:
-                                    found_entry_point_in_items = True
-        if not found_entry_point_in_items:
-            if entry_point is None and ("entryPoint" not in job_params.keys() or job_params["entryPoint"] is None):
-                raise RequiredArgumentMissingError(ERROR_MSG_MISSING_ENTRY_POINT, JOB_SUBMIT_DOC_LINK_MSG)
 
     # Extract "metadata" and "tags" from job_params, then remove those parameters from job_params,
     # since they should not be included in the "inputParams" parameter of job_details. They are
@@ -279,42 +252,21 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
             del job_params["contentEncoding"]
 
     # Prepare for input file upload according to job type
-    if job_type == QIO_JOB:
+    if job_type == QIR_JOB:
         if content_type is None:
-            content_type = "application/json"
-        if content_encoding is None:
-            content_encoding = "gzip"
-        try:
-            with open(job_input_file, encoding="utf-8") as qio_file:
-                uncompressed_blob_data = qio_file.read()
-        except (IOError, OSError) as e:
-            raise FileOperationError(f"An error occurred opening the input file: {job_input_file}") from e
-
-        if ("content_type" in uncompressed_blob_data and "application/x-protobuf" in uncompressed_blob_data) or (content_type.lower() == "application/x-protobuf"):
-            raise InvalidArgumentValueError('Content type "application/x-protobuf" is not supported.')
-
-        # Compress the input data (This code is based on to_blob in qdk-python\azure-quantum\azure\quantum\optimization\problem.py)
-        data = io.BytesIO()
-        with gzip.GzipFile(fileobj=data, mode="w") as fo:
-            fo.write(uncompressed_blob_data.encode())
-        blob_data = data.getvalue()
-
-    else:
-        if job_type == QIR_JOB:
-            if content_type is None:
-                if provider_id.lower() == "rigetti":
-                    content_type = "application/octet-stream"
-                else:
-                    # MAINTENANCE NOTE: The following value is valid for QCI and Quantinuum.
-                    # Make sure it's correct for new providers when they are added. If not,
-                    # modify this logic.
-                    content_type = "application/x-qir.v1"
-            content_encoding = None
-        try:
-            with open(job_input_file, "rb") as input_file:
-                blob_data = input_file.read()
-        except (IOError, OSError) as e:
-            raise FileOperationError(f"An error occurred opening the input file: {job_input_file}") from e
+            if provider_id.lower() == "rigetti":
+                content_type = "application/octet-stream"
+            else:
+                # MAINTENANCE NOTE: The following value is valid for QCI and Quantinuum.
+                # Make sure it's correct for new providers when they are added. If not,
+                # modify this logic.
+                content_type = "application/x-qir.v1"
+        content_encoding = None
+    try:
+        with open(job_input_file, "rb") as input_file:
+            blob_data = input_file.read()
+    except (IOError, OSError) as e:
+        raise FileOperationError(f"An error occurred opening the input file: {job_input_file}") from e
 
     # Upload the input file to the workspace's storage account
     if storage is None:
@@ -339,7 +291,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
         logger.debug("  - blob uri: %s", blob_uri)
     except Exception as e:
         # Unexplained behavior:
-        #    QIR bitcode input and QIO (gzip) input data get UnicodeDecodeError on jobs run in tests using
+        #    QIR input input data get UnicodeDecodeError on jobs run in tests using
         #    "azdev test --live", but the same commands are successful when run interactively.
         #    See commented-out tests in test_submit in test_quantum_jobs.py
         error_msg = f"Input file upload failed.\nError type: {type(e)}"
@@ -379,15 +331,6 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
         if "shots" not in job_params:
             job_params["shots"] = DEFAULT_SHOTS
 
-    # For QIO jobs, start inputParams with a "params" key and supply a default timeout
-    if job_type == QIO_JOB:
-        if job_params is None:
-            job_params = {"params": {"timeout": QIO_DEFAULT_TIMEOUT}}
-        else:
-            if "timeout" not in job_params:
-                job_params["timeout"] = QIO_DEFAULT_TIMEOUT
-            job_params = {"params": job_params}
-
     # Submit the job
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.location)
     job_details = {'name': job_name,
@@ -404,43 +347,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     return client.create_or_replace(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details).as_dict()
 
 
-def _parse_blob_url(url):
-    from urllib.parse import urlparse
-    o = urlparse(url)
-
-    try:
-        account_name = o.netloc.split('.')[0]
-        container = o.path.split('/')[-2]
-        blob = o.path.split('/')[-1]
-        sas_token = o.query
-    except IndexError as e:
-        raise InvalidArgumentValueError(f"Failed to parse malformed blob URL: {url}") from e
-
-    return {
-        "account_name": account_name,
-        "container": container,
-        "blob": blob,
-        "sas_token": sas_token
-    }
-
-
-def _validate_item(provided_value, num_items):
-    valid_item = 0
-    error_message = f"--item parameter is not valid: {provided_value}"
-    error_recommendation = f"Must be a non-negative number less than {num_items}"
-
-    try:
-        valid_item = int(provided_value)
-    except ValueError as e:
-        raise InvalidArgumentValueError(error_message, error_recommendation) from e
-
-    if valid_item >= num_items:
-        raise InvalidArgumentValueError(error_message, error_recommendation)
-
-    return valid_item
-
-
-def output(cmd, job_id, resource_group_name, workspace_name, location, item=None):
+def output(cmd, job_id, resource_group_name, workspace_name, location):
     """
     Get the results of running a job.
     """
@@ -449,18 +356,12 @@ def output(cmd, job_id, resource_group_name, workspace_name, location, item=None
     job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
     if job.status != "Succeeded":
-        if job.status == "Failed" and job.target in _targets_with_allowed_failure_output:
-            logger.debug("Job submitted against target \"%s\" failed, but the job output can still be returned. Trying to produce the output.", job.target)
-            job_output = _get_job_output(cmd, job, item)
-            if job_output is not None:
-                return job_output
-
         return job  # If "-o table" is specified, this allows transform_output() in commands.py
         #             to format the output, so the error info is shown. If "-o json" or no "-o"
         #             parameter is specified, then the full JSON job output is displayed, being
         #             consistent with other commands.
 
-    return _get_job_output(cmd, job, item)
+    return _get_job_output(cmd, job)
 
 
 def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wait_secs=5):
@@ -539,7 +440,7 @@ def cancel(cmd, job_id, resource_group_name, workspace_name, location):
     return wait(cmd, job_id, info.resource_group, info.name, info.location)
 
 
-def _get_job_output(cmd, job, item=None):
+def _get_job_output(cmd, job):
 
     import tempfile
     path = os.path.join(tempfile.gettempdir(), job.id)
@@ -549,19 +450,15 @@ def _get_job_output(cmd, job, item=None):
     else:
         logger.debug("Downloading job results blob into %s", path)
 
-        from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
+        blob_client = BlobClient.from_blob_url(job.output_data_uri)
+        blobProperties = blob_client.get_blob_properties()
 
-        args = _parse_blob_url(job.output_data_uri)
-        blob_service = blob_data_service_factory(cmd.cli_ctx, args)
-
-        containerName = args['container']
-        blobName = args['blob']
-        blobProperties = blob_service.get_blob_properties(containerName, blobName)
-
-        if blobProperties.properties.content_length == 0:
+        if blobProperties.size == 0:
             return
-
-        blob_service.get_blob_to_path(containerName, blobName, path)
+        
+        with open(file=path, mode="wb") as stream:
+            download_stream = blob_client.download_blob()
+            stream.write(download_stream.readall())
 
     with open(path, encoding="utf-8") as json_file:
         lines = [line.strip() for line in json_file.readlines()]
@@ -570,33 +467,8 @@ def _get_job_output(cmd, job, item=None):
         if len(lines) == 0:
             return
 
-        if job.target.startswith("microsoft.simulator"):
-            result_start_line = len(lines) - 1
-            is_result_string = lines[-1].endswith('"')
-            if is_result_string:
-                while result_start_line >= 0 and not lines[result_start_line].startswith('"'):
-                    result_start_line -= 1
-            if result_start_line < 0:
-                raise AzureResponseError("Job output is malformed, mismatched quote characters.")
-
-            # Print the job output and then the result of the operation as a histogram.
-            # If the result is a string, trim the quotation marks.
-            print('\n'.join(lines[:result_start_line]))
-            raw_result = ' '.join(lines[result_start_line:])
-            result = raw_result[1:-1] if is_result_string else raw_result
-            print('_' * len(result) + '\n')
-
-            json_string = '{ "histogram" : { "' + result + '" : 1 } }'
-            data = json.loads(json_string)
-        else:
-            json_file.seek(0)  # Reset the file pointer before loading
-            data = json.load(json_file)
-
-        # Consider item if it's a batch job, otherwise ignore
-        import builtins  # list has been overriden as a function above
-        if item and isinstance(data, builtins.list):
-            item = _validate_item(item, len(data))
-            return data[item]
+        json_file.seek(0)  # Reset the file pointer before loading
+        data = json.load(json_file)
 
         return data
 
