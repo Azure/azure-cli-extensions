@@ -1971,6 +1971,10 @@ helps['containerapp sessionpool create'] = """
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --container-type Shell --location westus3
+    - name: Create or update a Session Pool with container type GpuBase default settings.
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --container-type GpuBase --location westus3
     - name: Create or update a Session Pool with container type PythonLTS, with max concurrent sessions is 30, ready session instances 20.
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
