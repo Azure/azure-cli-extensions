@@ -1967,10 +1967,6 @@ helps['containerapp sessionpool create'] = """
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --location eastasia
-    - name: Create or update a Session Pool with container type Shell default settings.
-      text: |
-          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
-              --container-type Shell --location westus3
     - name: Create or update a Session Pool with container type GpuBase default settings.
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
