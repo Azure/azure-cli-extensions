@@ -200,6 +200,7 @@ class List(AAZCommand):
             )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
@@ -391,6 +392,7 @@ class List(AAZCommand):
             )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(

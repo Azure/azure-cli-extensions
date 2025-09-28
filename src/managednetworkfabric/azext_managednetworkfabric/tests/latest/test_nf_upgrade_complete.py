@@ -25,7 +25,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     # step_upgrade(test)
     cleanup_scenario1(test)
@@ -36,7 +36,7 @@ def step_upgrade(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric upgrade  --resource-name {upgradeNFName} --resource-group {upgradeNFRGName} --action {upgradeActionComplete} --version {upgradeVersion}"
+        "az networkfabric fabric upgrade --resource-name {upgradeNFName} --resource-group {upgradeNFRGName} --action {upgradeActionComplete} --version {upgradeVersion}"
     )
 
 
