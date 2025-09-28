@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine extension image list",
 )
 class List(AAZCommand):
-    """List all Extension versions based on location, publisher, extensionType
+    """List all Extension versions based on location, publisher, extensionType.
 
     :example: GET a list of extension metadata
         az connectedmachine extension image list --location EastUS --publisher microsoft.azure.monitor --extension-type azuremonitorlinuxagent
