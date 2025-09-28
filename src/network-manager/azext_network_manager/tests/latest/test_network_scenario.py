@@ -256,7 +256,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-                 '--scope-accesses "Connectivity" '
+                 '--scope-accesses "Connectivity" "SecurityAdmin" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2 '
@@ -596,10 +596,12 @@ class NetworkScenarioTest(ScenarioTest):
         self.kwargs.update({
             'manager_name': 'TestNetworkManager',
             "group_name": 'TestNetworkManagerGroup',
+            "subnet_group_name": 'TestNetworkManagerSubnetGroup',
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
             "routing_config": self.create_random_name("routing-config-", 20),
             "rule_collection": self.create_random_name("rule-collection-", 20),
             "rule_name": self.create_random_name("rule-", 10),
+            "subnet_type": 'Subnet'
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
@@ -611,8 +613,11 @@ class NetworkScenarioTest(ScenarioTest):
 
         manager_group = self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()
 
+        manager_subnet_group = self.cmd('network manager group create --name {subnet_group_name} --network-manager-name {manager_name} -g {rg} --member-type {subnet_type}').get_output_in_json()
+
         self.kwargs.update({
             'manager_id': manager_group['id'],
+            'subnet_group_id': manager_subnet_group['id']
         })
 
         self.cmd('az network manager routing-config create --name {routing_config} --manager-name {manager_name} --resource-group {rg}',
@@ -624,7 +629,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az network manager routing-config update --name {routing_config} --manager-name {manager_name} --resource-group {rg} --description "test"',
                  self.check('description', 'test'))
 
-        self.cmd('az network manager routing-config rule-collection create --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --applies-to [{{"network_group_id":{manager_id}}}] --disable-bgp-route true',
+        self.cmd('az network manager routing-config rule-collection create --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --applies-to [{{"network_group_id":"{manager_id}"}},{{"network_group_id":"{subnet_group_id}"}}] --disable-bgp-route true',
                  self.check('name', '{rule_collection}'))
         self.cmd('az network manager routing-config rule-collection list --config-name {routing_config} --manager-name {manager_name} --resource-group {rg}',
                  self.check('length(@)', 1))
