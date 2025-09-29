@@ -102,6 +102,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU2404,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWS2025,
     CONST_OS_SKU_WINDOWSANNUAL,
     CONST_PATCH_UPGRADE_CHANNEL,
     CONST_RAPID_UPGRADE_CHANNEL,
@@ -287,9 +288,10 @@ node_os_skus_create = [
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
 ]
-node_os_skus = node_os_skus_create + [
+node_os_skus_add = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWS2025,
     CONST_OS_SKU_WINDOWSANNUAL,
 ]
 node_os_skus_update = [
@@ -439,6 +441,12 @@ ingress_gateway_types = [
 ]
 
 # azure container storage
+# azure container storage
+container_storage_versions = [
+    "1",
+    "2"
+]
+
 storage_pool_types = [
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
@@ -1026,8 +1034,14 @@ def load_arguments(self, _):
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
-            arg_type=get_enum_type(storage_pool_types),
-            help="enable azure container storage and define storage pool type",
+            arg_type=_get_enable_azure_container_storage_type(),
+            help="enable azure container storage. Can be used as a flag (defaults to True) or with a"
+            " storage pool type value: (azureDisk, ephemeralDisk, elasticSan)",
+        )
+        c.argument(
+            "container_storage_version",
+            arg_type=get_enum_type(container_storage_versions),
+            help="set azure container storage version, the latest version will be installed by default",
         )
         c.argument(
             "storage_pool_name",
@@ -1486,13 +1500,21 @@ def load_arguments(self, _):
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
-            arg_type=get_enum_type(storage_pool_types),
-            help="enable azure container storage and define storage pool type",
+            arg_type=_get_enable_azure_container_storage_type(),
+            help="enable azure container storage. Can be used as a flag (defaults to True) or with a"
+            " storage pool type value: (azureDisk, ephemeralDisk, elasticSan)",
         )
         c.argument(
             "disable_azure_container_storage",
-            arg_type=get_enum_type(disable_storage_pool_types),
-            help="disable azure container storage or any one of the storage pool types",
+            arg_type=_get_disable_azure_container_storage_type(),
+            help="disable azure container storage or any one of the storage pool types."
+            " Can be used as a flag (defaults to True) or with a storagepool type value:"
+            " azureDisk, ephemeralDisk, elasticSan, all (to disable all storage pools).",
+        )
+        c.argument(
+            "container_storage_version",
+            arg_type=get_enum_type(container_storage_versions),
+            help="set azure container storage version, the latest version will be installed by default",
         )
         c.argument(
             "storage_pool_name",
@@ -1675,7 +1697,7 @@ def load_arguments(self, _):
         )
         c.argument("os_type")
         c.argument(
-            "os_sku", arg_type=get_enum_type(node_os_skus), validator=validate_os_sku
+            "os_sku", arg_type=get_enum_type(node_os_skus_add), validator=validate_os_sku
         )
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument("vnet_subnet_id", validator=validate_vnet_subnet_id)
@@ -2026,7 +2048,7 @@ def load_arguments(self, _):
             "machine_name", help="The machine name."
         )
         c.argument(
-            "os_sku", arg_type=get_enum_type(node_os_skus), validator=validate_os_sku
+            "os_sku", arg_type=get_enum_type(node_os_skus_add), validator=validate_os_sku
         )
         c.argument(
             "zones",
@@ -2905,6 +2927,27 @@ def load_arguments(self, _):
             action="store_true",
         )
 
+    # JWT Authenticator commands
+    with self.argument_context("aks jwtauthenticator") as c:
+        c.argument("cluster_name", help="The cluster name.")
+        c.argument(
+            "aks_custom_headers",
+            help="Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.",
+        )
+
+    for scope in ['aks jwtauthenticator add',
+                  'aks jwtauthenticator update',
+                  'aks jwtauthenticator delete',
+                  'aks jwtauthenticator show']:
+        with self.argument_context(scope) as c:
+            c.argument('name', options_list=['--name', '-n'], required=True, help='Name of the JWT authenticator.')
+
+    for scope in ['aks jwtauthenticator add',
+                  'aks jwtauthenticator update']:
+        with self.argument_context(scope) as c:
+            c.argument('config_file', options_list=['--config-file'], type=file_type, completer=FilesCompleter(),
+                       help='Path to the JSON configuration file containing JWT authenticator properties.')
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
@@ -2920,3 +2963,65 @@ def _get_default_install_location(exe_name):
     else:
         install_location = None
     return install_location
+
+
+def _get_enable_azure_container_storage_type():
+    """Custom argument type that accepts both None and enum values"""
+    import argparse
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+
+    class AzureContainerStorageAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            if values is None:
+                # When used as a flag without value, set as True
+                setattr(namespace, self.dest, True)
+                return
+
+            if isinstance(values, str):
+                # Handle enum values (case insensitive)
+                for storage_type in storage_pool_types:
+                    if values.lower() == storage_type.lower():
+                        setattr(namespace, self.dest, storage_type)
+                        return
+
+            # Invalid value
+            valid_values = storage_pool_types
+            raise InvalidArgumentValueError(
+                f"Invalid value '{values}'. Valid values are: {', '.join(valid_values)}"
+            )
+
+    return CLIArgumentType(
+        nargs='?',  # Optional argument
+        action=AzureContainerStorageAction,
+    )
+
+
+def _get_disable_azure_container_storage_type():
+    """Custom argument type that accepts both None and enum values"""
+    import argparse
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+
+    class AzureContainerStorageAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            if values is None:
+                # When used as a flag without value, set as True
+                setattr(namespace, self.dest, True)
+                return
+
+            if isinstance(values, str):
+                # Handle enum values (case insensitive)
+                for storage_type in disable_storage_pool_types:
+                    if values.lower() == storage_type.lower():
+                        setattr(namespace, self.dest, storage_type)
+                        return
+
+            # Invalid value
+            valid_values = disable_storage_pool_types
+            raise InvalidArgumentValueError(
+                f"Invalid value '{values}'. Valid values are: {', '.join(valid_values)}"
+            )
+
+    return CLIArgumentType(
+        nargs='?',  # Optional argument
+        action=AzureContainerStorageAction,
+    )

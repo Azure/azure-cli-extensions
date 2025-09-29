@@ -43,7 +43,7 @@ output_folder = ((Path(__file__).parent) / "nsd_output").resolve()
 NSD_INPUT_FILE_NAME = "nsd_core_input.jsonc"
 
 CGV_DATA = {
-    "ubuntu": {
+    "ubuntu-vm": {
         "nfdv": "1.0.0",
         "deployParameters": [
             {
@@ -59,7 +59,7 @@ CGV_DATA = {
 
 
 MULTIPLE_INSTANCES_CGV_DATA = {
-    "ubuntu": {
+    "ubuntu-vm": {
         "nfdv": "1.0.0",
         "deployParameters": [
             {
@@ -84,11 +84,9 @@ MULTIPLE_NFs_CGV_DATA = {
     "multi-nf": {
         "nfdv": "1.0.0",
         "managedIdentityId": "exampleManagedIdentityId",
-        "deployParameters": [
-            {"service_port": 5222, "serviceAccount_create": False}
-        ],
+        "deployParameters": [{"service_port": 5222, "serviceAccount_create": False}],
     },
-    "ubuntu": {
+    "ubuntu-vm": {
         "nfdv": "1.0.0",
         "managedIdentity": "managed_identity",
         "deployParameters": {
@@ -136,6 +134,8 @@ class NetworkFunctionApplications:
     name: str
     depends_on_profile: list
     artifact_type: str
+
+
 @dataclass
 class NetworkFunctionTemplate:
     nfvi_type: str
@@ -157,15 +157,19 @@ class NFDV:
 
 class NFDVs:
     def get(self, network_function_definition_group_name, **_):
-        networkFunctionApplication = NetworkFunctionApplications(name="test", depends_on_profile=[],artifact_type="")
-        networkFunctionTemplate = NetworkFunctionTemplate(nfvi_type="AzureCore",
-                                                          network_function_applications=[networkFunctionApplication] )
+        networkFunctionApplication = NetworkFunctionApplications(
+            name="test", depends_on_profile=[], artifact_type=""
+        )
+        networkFunctionTemplate = NetworkFunctionTemplate(
+            nfvi_type="AzureCore",
+            network_function_applications=[networkFunctionApplication],
+        )
         if "nginx" in network_function_definition_group_name:
             return NFDV(
                 properties=NFDVProperties(
                     deploy_parameters=json.dumps(nginx_deploy_parameters),
                     network_function_template=networkFunctionTemplate,
-                    network_function_type=CNF_TYPE
+                    network_function_type=CNF_TYPE,
                 ),
                 id="/subscriptions/00000/resourceGroups/rg/providers/Microsoft.HybridNetwork/publishers/pub/networkFunctionDefinitionGroups/nginx/networkFunctionDefinitionVersions/1.0.0",
             )
@@ -174,7 +178,7 @@ class NFDVs:
                 properties=NFDVProperties(
                     deploy_parameters=json.dumps(ubuntu_deploy_parameters),
                     network_function_template=networkFunctionTemplate,
-                    network_function_type=VNF_TYPE
+                    network_function_type=VNF_TYPE,
                 ),
                 id="/subscriptions/00000/resourceGroups/rg/providers/Microsoft.HybridNetwork/publishers/pub/networkFunctionDefinitionGroups/ubuntu/networkFunctionDefinitionVersions/1.0.0",
             )

@@ -27,14 +27,14 @@ def cleanup_scenario(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario(test)
     step_update_bfd_admin_state_nf_name(test, checks=[])
     cleanup_scenario(test)
 
 
 def call_scenario2(test):
-    """# Testcase: scenario2"""
+    """Testcase: scenario2"""
     setup_scenario(test)
     step_update_bfd_admin_state_resource_name(test, checks=[])
     cleanup_scenario(test)
@@ -45,7 +45,7 @@ def step_update_bfd_admin_state_nf_name(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric nni update-bfd-administrative-state  --network-fabric-name {fabric} --nni-name {name}"
+        "az networkfabric nni update-bfd-administrative-state --network-fabric-name {fabric} --nni-name {name}"
         " --resource-group {rg} --administrative-state {administrativeState} --route-type {routeType}",
         checks=checks,
     )
@@ -56,7 +56,7 @@ def step_update_bfd_admin_state_resource_name(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric nni update-bfd-administrative-state  --network-fabric-name {fabric} --resource-name {name}"
+        "az networkfabric nni update-bfd-administrative-state --network-fabric-name {fabric} --resource-name {name}"
         " --resource-group {rg} --administrative-state {administrativeState} --route-type {routeType}",
         checks=checks,
     )

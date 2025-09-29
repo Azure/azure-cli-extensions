@@ -222,10 +222,14 @@ class List(AAZCommand):
             )
 
             network_tap_ids = cls._schema_on_200.value.Element.properties.network_tap_ids
-            network_tap_ids.Element = AAZStrType()
+            network_tap_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             network_tap_rule_ids = cls._schema_on_200.value.Element.properties.network_tap_rule_ids
-            network_tap_rule_ids.Element = AAZStrType()
+            network_tap_rule_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -403,10 +407,14 @@ class List(AAZCommand):
             )
 
             network_tap_ids = cls._schema_on_200.value.Element.properties.network_tap_ids
-            network_tap_ids.Element = AAZStrType()
+            network_tap_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             network_tap_rule_ids = cls._schema_on_200.value.Element.properties.network_tap_rule_ids
-            network_tap_rule_ids.Element = AAZStrType()
+            network_tap_rule_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

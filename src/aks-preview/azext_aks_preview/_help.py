@@ -1928,7 +1928,7 @@ helps['aks nodepool add'] = """
           short-summary: The OS Type. Linux or Windows. Windows not supported yet for "VirtualMachines" VM set type.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, or AzureLinux3OSGuard when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022 or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
+          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, CBLMariner, AzureLinux， AzureLinux3, AzureLinuxOSGuard, or AzureLinux3OSGuard when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -4081,4 +4081,110 @@ helps['aks identity-binding delete'] = """
         - name: --name -n
           type: string
           short-summary: Name of the identity binding to show.
+"""
+
+helps['aks jwtauthenticator'] = """
+    type: group
+    short-summary: Commands to manage JWT authenticators in Azure Kubernetes Service.
+    long-summary: JWT authenticators enable external JWT token validation for Kubernetes authentication.
+                  For more information, see https://aka.ms/aks-external-issuers-docs.
+"""
+
+helps['aks jwtauthenticator add'] = """
+    type: command
+    short-summary: Add a JWT authenticator to a managed cluster.
+    long-summary: Adds a new JWT authenticator configuration to the managed cluster for external JWT validation.
+                  The configuration will be applied to the kube-apiserver to enable JWT token authentication.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the JWT authenticator (must be unique within the cluster).
+        - name: --config-file
+          type: string
+          short-summary: Path to JSON file containing the JWT authenticator configuration.
+          long-summary: The JSON file should contain the properties schema for one JWT authenticator.
+                        For details on how to configure the properties of a JWT authenticator, please refer to the Kubernetes documentation
+                        at https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration.
+                        Please note that not all fields available in the Kubernetes documentation are supported by AKS.
+                        For troubleshooting, please see https://aka.ms/aks-external-issuers-docs.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Add a JWT authenticator from a configuration file
+          text: az aks jwtauthenticator add -g MyResourceGroup --cluster-name MyCluster --name myjwt --config-file config.json
+"""
+
+helps['aks jwtauthenticator update'] = """
+    type: command
+    short-summary: Update a JWT authenticator in a managed cluster.
+    long-summary: Updates an existing JWT authenticator configuration. The entire configuration will be replaced
+                  with the configuration from the provided file.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the JWT authenticator to update.
+        - name: --config-file
+          type: string
+          short-summary: Path to JSON file containing the updated JWT authenticator configuration.
+          long-summary: The JSON file should contain the properties schema for one JWT authenticator.
+                        For details on how to configure the properties of a JWT authenticator, please refer to the Kubernetes documentation
+                        at https://kubernetes.io/docs/reference/access-authn-authz/authentication/#using-authentication-configuration.
+                        Please note that not all fields available in the Kubernetes documentation are supported by AKS.
+                        For troubleshooting, please see https://aka.ms/aks-external-issuers-docs.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1
+    examples:
+        - name: Update a JWT authenticator configuration
+          text: az aks jwtauthenticator update -g MyResourceGroup --cluster-name MyCluster --name myjwt --config-file updated-config.json
+"""
+
+helps['aks jwtauthenticator delete'] = """
+    type: command
+    short-summary: Delete a JWT authenticator from a managed cluster.
+    long-summary: Removes the JWT authenticator configuration from the managed cluster and updates the kube-apiserver.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the JWT authenticator to delete.
+    examples:
+        - name: Delete a JWT authenticator
+          text: az aks jwtauthenticator delete -g MyResourceGroup --cluster-name MyCluster --name myjwt
+"""
+
+helps['aks jwtauthenticator list'] = """
+    type: command
+    short-summary: List all JWT authenticators in a managed cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+    examples:
+        - name: List all JWT authenticators in a cluster
+          text: az aks jwtauthenticator list -g MyResourceGroup --cluster-name MyCluster
+"""
+
+helps['aks jwtauthenticator show'] = """
+    type: command
+    short-summary: Show details of a JWT authenticator in a managed cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the JWT authenticator to show.
+    examples:
+        - name: Show a specific JWT authenticator configuration
+          text: az aks jwtauthenticator show -g MyResourceGroup --cluster-name MyCluster --name myjwt
 """

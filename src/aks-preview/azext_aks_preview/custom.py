@@ -118,6 +118,10 @@ from azext_aks_preview.managednamespace import (
 from azext_aks_preview.machine import (
     add_machine,
 )
+from azext_aks_preview.jwtauthenticator import (
+    aks_jwtauthenticator_add_internal,
+    aks_jwtauthenticator_update_internal,
+)
 from azure.cli.command_modules.acs._helpers import (
     get_user_assigned_identity_by_resource_id
 )
@@ -732,6 +736,7 @@ def aks_create(
     enable_ai_toolchain_operator=False,
     # azure container storage
     enable_azure_container_storage=None,
+    container_storage_version=None,
     storage_pool_name=None,
     storage_pool_size=None,
     storage_pool_sku=None,
@@ -953,6 +958,7 @@ def aks_update(
     # azure container storage
     enable_azure_container_storage=None,
     disable_azure_container_storage=None,
+    container_storage_version=None,
     storage_pool_name=None,
     storage_pool_size=None,
     storage_pool_sku=None,
@@ -4499,3 +4505,87 @@ aks_identity_binding_create = aks_ib_cmd_create
 aks_identity_binding_delete = aks_ib_cmd_delete
 aks_identity_binding_show = aks_ib_cmd_show
 aks_identity_binding_list = aks_ib_cmd_list
+
+
+# JWT Authenticator commands
+def aks_jwtauthenticator_add(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        config_file,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    existingJWTAuthenticator = None
+    try:
+        existingJWTAuthenticator = client.get(resource_group_name, cluster_name, name, headers=headers)
+    except ResourceNotFoundError:
+        pass
+
+    if existingJWTAuthenticator:
+        raise ClientRequestError(
+            f"JWT Authenticator '{name}' already exists. Please use 'az aks jwtauthenticator update' to update it."
+        )
+
+    raw_parameters = locals()
+    return aks_jwtauthenticator_add_internal(
+        cmd,
+        client,
+        raw_parameters,
+        headers,
+        no_wait,
+    )
+
+
+def aks_jwtauthenticator_update(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        config_file,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    raw_parameters = locals()
+    return aks_jwtauthenticator_update_internal(
+        cmd,
+        client,
+        raw_parameters,
+        headers,
+        no_wait,
+    )
+
+
+def aks_jwtauthenticator_delete(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        cluster_name,
+        name,
+        headers=headers,
+    )
+
+
+def aks_jwtauthenticator_list(cmd, client, resource_group_name, cluster_name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.list_by_managed_cluster(resource_group_name, cluster_name, headers=headers)
+
+
+def aks_jwtauthenticator_show(cmd, client, resource_group_name, cluster_name, name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.get(resource_group_name, cluster_name, name, headers=headers)
