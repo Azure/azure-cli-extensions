@@ -24,7 +24,7 @@ class BulkReviewSolution(AAZCommand):
         "version": "2025-08-01",
         "resources": [
             ["mgmt-plane",
-             "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/solutiontemplates/{}/versions/{}/bulkreviewsolution",
+             "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutiontemplates/{}/versions/{}/bulkreviewsolution",
              "2025-08-01"],
         ]
     }
@@ -285,7 +285,7 @@ class BulkReviewSolution(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/solutionTemplates/{solutionTemplateName}/versions/{solutionTemplateVersionName}/bulkReviewSolution",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/solutionTemplates/{solutionTemplateName}/versions/{solutionTemplateVersionName}/bulkReviewSolution",
                 **self.url_parameters
             )
 

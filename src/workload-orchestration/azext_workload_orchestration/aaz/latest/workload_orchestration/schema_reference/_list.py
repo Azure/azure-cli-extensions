@@ -21,7 +21,7 @@ class List(AAZCommand):
     _aaz_info = {
         "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.edge/schemareferences", "2025-08-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/Microsoft.Edge/schemareferences", "2025-08-01"],
         ]
     }
 

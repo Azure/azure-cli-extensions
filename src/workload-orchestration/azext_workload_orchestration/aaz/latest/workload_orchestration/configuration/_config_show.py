@@ -24,7 +24,7 @@ class ShowConfig(AAZCommand):
     _aaz_info = {
         "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/solutions/{}", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutions/{}", "2025-08-01"],
         ]
     }
 
@@ -137,7 +137,7 @@ class ShowConfig(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/configurations/{configName}/DynamicConfigurations/{solutionName}/versions/version1",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configurations/{configName}/DynamicConfigurations/{solutionName}/versions/version1",
                 **self.url_parameters
             )
 
@@ -290,7 +290,7 @@ class ShowConfig(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/targets/{targetName}/solutions/{solutionName}/versions/{version}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}/solutions/{solutionName}/versions/{version}",
                 **self.url_parameters
             )
 

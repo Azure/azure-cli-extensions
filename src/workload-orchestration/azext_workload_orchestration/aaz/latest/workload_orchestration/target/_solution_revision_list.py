@@ -24,7 +24,7 @@ class ListRevisions(AAZCommand):
     _aaz_info = {
         "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}/solutions/{}/versions", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/targets/{}/solutions/{}/versions", "2025-08-01"],
         ]
     }
 

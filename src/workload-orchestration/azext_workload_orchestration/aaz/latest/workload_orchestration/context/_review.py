@@ -21,7 +21,7 @@ class Review(AAZCommand):
     _aaz_info = {
         "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/contexts/{}/review", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/contexts/{}/review", "2025-08-01"],
         ]
     }
 

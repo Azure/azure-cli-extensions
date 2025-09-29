@@ -23,8 +23,8 @@ class List(AAZCommand):
     _aaz_info = {
         "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.edge/contexts", "2025-08-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/contexts", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/Microsoft.Edge/contexts", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/contexts", "2025-08-01"],
         ]
     }
 

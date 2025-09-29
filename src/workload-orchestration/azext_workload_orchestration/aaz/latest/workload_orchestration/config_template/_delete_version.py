@@ -21,7 +21,7 @@ class DeleteVersion(AAZCommand):
     _aaz_info = {
         "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/configtemplates/{}/deleteversion", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/configtemplates/{}/deleteversion", "2025-08-01"],
         ]
     }
 
@@ -109,7 +109,7 @@ class DeleteVersion(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.edge/configTemplates/{configTemplateName}/deleteVersion",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configTemplates/{configTemplateName}/deleteVersion",
                 **self.url_parameters
             )
 
