@@ -203,6 +203,7 @@ class Wait(AAZWaitCommand):
             )
             properties.egress_acl_id = AAZStrType(
                 serialized_name="egressAclId",
+                nullable=True,
             )
             properties.export_route_policy = AAZObjectType(
                 serialized_name="exportRoutePolicy",
@@ -213,6 +214,7 @@ class Wait(AAZWaitCommand):
             )
             properties.ingress_acl_id = AAZStrType(
                 serialized_name="ingressAclId",
+                nullable=True,
             )
             properties.is_monitoring_enabled = AAZStrType(
                 serialized_name="isMonitoringEnabled",
@@ -321,17 +323,21 @@ class Wait(AAZWaitCommand):
             export_route_policy = cls._schema_on_200.properties.export_route_policy
             export_route_policy.export_ipv4_route_policy_id = AAZStrType(
                 serialized_name="exportIpv4RoutePolicyId",
+                nullable=True,
             )
             export_route_policy.export_ipv6_route_policy_id = AAZStrType(
                 serialized_name="exportIpv6RoutePolicyId",
+                nullable=True,
             )
 
             import_route_policy = cls._schema_on_200.properties.import_route_policy
             import_route_policy.import_ipv4_route_policy_id = AAZStrType(
                 serialized_name="importIpv4RoutePolicyId",
+                nullable=True,
             )
             import_route_policy.import_ipv6_route_policy_id = AAZStrType(
                 serialized_name="importIpv6RoutePolicyId",
+                nullable=True,
             )
 
             last_operation = cls._schema_on_200.properties.last_operation

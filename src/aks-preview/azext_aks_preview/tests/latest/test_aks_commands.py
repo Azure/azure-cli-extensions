@@ -27,6 +27,7 @@ from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
 from knack.util import CLIError
+from azext_aks_preview.azurecontainerstorage._consts import (CONST_ACSTOR_EXT_INSTALLATION_NAME, CONST_ACSTOR_K8S_EXTENSION_NAME)
 
 from .test_localdns_profile import assert_dns_overrides_equal, vnetDnsOverridesExpected, kubeDnsOverridesExpected
 
@@ -2879,6 +2880,75 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("osSku", "Windows2022"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+        
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_nodepool_add_with_ossku_windows2025(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name("cliakstest", 16)
+        _, create_version = self._get_versions(resource_group_location)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "dns_name_prefix": self.create_random_name("cliaksdns", 16),
+                "location": resource_group_location,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "windows_admin_username": "azureuser1",
+                "windows_admin_password": "replace-Password1234$",
+                "windows_nodepool_name": "npwin",
+                "k8s_version": create_version,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--dns-name-prefix={dns_name_prefix} --node-count=1 --enable-fips-image "
+            "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
+            "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
+            "--ssh-key-value={ssh_key_value} --kubernetes-version={k8s_version}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.exists("fqdn"),
+                self.exists("nodeResourceGroup"),
+                self.check("provisioningState", "Succeeded"),
+                self.check("windowsProfile.adminUsername", "azureuser1"),
+            ],
+        )
+
+        # add Windows2025 nodepool
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={windows_nodepool_name} "
+            "--node-count=1 "
+            "--enable-fips-image "
+            "--os-type Windows "
+            "--os-sku Windows2025 "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKSWindows2025Preview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("osSku", "Windows2025"),
             ],
         )
 
@@ -11927,11 +11997,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     # live only due to downloading k8s-extension extension
     @live_only()
-    @AllowLargeResponse(99999)
+    @AllowLargeResponse(999999)
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
+        random_name_length=17, name_prefix="clitest", location="eastus"
     )
-    def test_aks_create_with_azurecontainerstorage(
+    def test_aks_create_with_azurecontainerstorage_v1(
         self, resource_group, resource_group_location
     ):
         # reset the count so in replay mode the random names will start with 0
@@ -11956,7 +12026,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} "
-            "--node-count 3 --enable-managed-identity --enable-azure-container-storage azureDisk --output=json"
+            "--node-count 3 --enable-managed-identity --container-storage-version 1 --enable-azure-container-storage azureDisk --output=json"
         )
 
         # enabling azurecontainerstorage will not affect any field in the cluster.
@@ -11981,11 +12051,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     # live only due to downloading k8s-extension extension
     @live_only()
-    @AllowLargeResponse(99999)
+    @AllowLargeResponse(999999)
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
+        random_name_length=17, name_prefix="clitest", location="australiaeast"
     )
-    def test_aks_create_with_azurecontainerstorage_with_ephemeral_disk_parameters(
+    def test_aks_create_with_azurecontainerstorage_v1_with_ephemeral_disk_parameters(
         self, resource_group, resource_group_location
     ):
         # reset the count so in replay mode the random names will start with 0
@@ -12010,7 +12080,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} "
-            "--node-count 3 --enable-managed-identity --enable-azure-container-storage ephemeralDisk --storage-pool-option NVMe "
+            "--node-count 3 --enable-managed-identity --container-storage-version 1 --enable-azure-container-storage ephemeralDisk --storage-pool-option NVMe "
             "--ephemeral-disk-volume-type EphemeralVolumeOnly --ephemeral-disk-nvme-perf-tier Premium --output=json"
         )
 
@@ -12036,11 +12106,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     # live only due to downloading k8s-extension extension
     @live_only()
-    @AllowLargeResponse(99999)
+    @AllowLargeResponse(999999)
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
+        random_name_length=17, name_prefix="clitest", location="swedencentral"
     )
-    def test_aks_create_with_azurecontainerstorage_with_nodepool_name(
+    def test_aks_create_with_azurecontainerstorage_v1_with_nodepool_name(
         self, resource_group, resource_group_location
     ):
         # reset the count so in replay mode the random names will start with 0
@@ -12067,7 +12137,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} "
-            "--node-count 3 --nodepool-name {nodepool_name} --enable-managed-identity --enable-azure-container-storage azureDisk --output=json"
+            "--node-count 3 --nodepool-name {nodepool_name} --enable-managed-identity --container-storage-version 1 --enable-azure-container-storage azureDisk  --output=json"
         )
 
         # enabling azurecontainerstorage will not affect any field in the cluster.
@@ -12090,6 +12160,153 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.is_empty(),
             ],
         )
+
+    # live only due to downloading k8s-extension extension
+    @live_only()
+    @AllowLargeResponse(99999)
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="uksouth"
+    )
+    def test_aks_create_with_azurecontainerstorage(self, resource_group, resource_group_location):
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name("cliakstest", 16)
+
+        node_vm_size = "Standard_L8s_v3"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_vm_size": node_vm_size,
+            }
+        )
+
+        # add k8s-extension extension for azurecontainerstorage operations.
+        self.cmd("extension add --name k8s-extension")
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} "
+            "--node-count 3 --enable-managed-identity --enable-azure-container-storage --output=json"
+        )
+
+        self.cmd(
+            create_cmd,
+            checks=[
+            self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # Verify that the azure-container-storage extension is installed
+        extension_list_cmd = "k8s-extension list --resource-group={resource_group} --cluster-name={name} --cluster-type managedClusters"
+        extensions = self.cmd(extension_list_cmd).get_output_in_json()
+
+        # Check if azure-container-storage extension exists
+        acs_extension_found = False
+        for extension in extensions:
+            if extension.get("name") == CONST_ACSTOR_EXT_INSTALLATION_NAME :
+                acs_extension_found = True
+                # Additional checks on the extension properties
+                assert extension.get("provisioningState") == "Succeeded", "Extension provisioning failed"
+                assert extension.get("extensionType") == CONST_ACSTOR_K8S_EXTENSION_NAME, "Wrong extension type"
+                break
+
+        assert acs_extension_found, "Azure Container Storage not found"
+
+        # delete
+        cmd = (
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
+        )
+        self.cmd(
+            cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+    @live_only()
+    @AllowLargeResponse(99999)
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='ukwest')
+    def test_aks_update_with_azurecontainerstorage(self, resource_group, resource_group_location):
+
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_vm_size = 'standard_l8s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        # add k8s-extension extension for azurecontainerstorage operations.
+        # self.cmd('extension add --name k8s-extension')
+
+        # create: without enable-azure-container-storage
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 --enable-managed-identity --output=json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # update: enable-azure-container-storage
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+                     '--enable-azure-container-storage'
+
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # Verify that the azure-container-storage extension is installed
+        extension_list_cmd = "k8s-extension list --resource-group={resource_group} --cluster-name={name} --cluster-type managedClusters"
+        extensions = self.cmd(extension_list_cmd).get_output_in_json()
+
+        # Check if azure-container-storage extension exists
+        acs_extension_found = False
+        for extension in extensions:
+            if extension.get("name") == CONST_ACSTOR_EXT_INSTALLATION_NAME :
+                acs_extension_found = True
+                # Additional checks on the extension properties
+                assert extension.get("provisioningState") == "Succeeded", "Extension provisioning failed"
+                assert extension.get("extensionType") == CONST_ACSTOR_K8S_EXTENSION_NAME, "Wrong extension type"
+                break
+
+        assert acs_extension_found, "Azure Container Storage not found"
+
+        # Sleep for 5 mins before next operation,
+        # since update operations take
+        # some time to finish.
+        time.sleep(10 * 60)
+
+        # update: disable-azure-container-storage
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+                     '--disable-azure-container-storage'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])        
+
+        # Verify that the azure-container-storage extension doesn't exist anymore
+        extension_list_cmd = "k8s-extension list --resource-group={resource_group} --cluster-name={name} --cluster-type managedClusters"
+        extensions = self.cmd(extension_list_cmd).get_output_in_json()
+
+        # Check if azure-container-storage extension sill exists
+        acs_extension_found = False
+        for extension in extensions:
+            if extension.get("name") == CONST_ACSTOR_EXT_INSTALLATION_NAME :
+                acs_extension_found = True
+                break
+
+        assert  not acs_extension_found, "Azure Container Storage v2 still exists after disable operation"
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
 
     @live_only()
     @AllowLargeResponse()
@@ -12213,9 +12430,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @live_only()
-    @AllowLargeResponse(99999)
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_update_with_azurecontainerstorage(self, resource_group, resource_group_location):
+    @AllowLargeResponse(999999)
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='swedencentral')
+    def test_aks_update_with_azurecontainerstorage_v1(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         node_vm_size = 'standard_d4s_v3'
         self.kwargs.update({
@@ -12240,12 +12457,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: enable-azure-container-storage
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-                     '--enable-azure-container-storage azureDisk'
+                     '--container-storage-version 1 --enable-azure-container-storage azureDisk'
 
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-        ])
-
+        ])        
         # Sleep for 10 mins before next operation,
         # since azure container storage operations take
         # some time to post process.
@@ -12265,9 +12481,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @live_only()
-    @AllowLargeResponse(99999)
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_update_with_azurecontainerstorage_with_ephemeral_disk_parameters(self, resource_group, resource_group_location):
+    @AllowLargeResponse(999999)
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westeurope')
+    def test_aks_update_with_azurecontainerstorage_v1_with_ephemeral_disk_parameters(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         node_vm_size = 'standard_l8s_v3'
         self.kwargs.update({
@@ -12294,12 +12510,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
                      '--enable-azure-container-storage ephemeralDisk --storage-pool-option NVMe ' \
                      '--ephemeral-disk-volume-type PersistentVolumeWithAnnotation ' \
-                     '--ephemeral-disk-nvme-perf-tier Standard'
+                     '--ephemeral-disk-nvme-perf-tier Standard --container-storage-version 1'
 
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-        ])
-
+        ])        
         # Sleep for 10 mins before next operation,
         # since azure container storage operations take
         # some time to post process.

@@ -1,0 +1,52 @@
+{
+    "test-generate-schema-cnf": {
+        "type": "object",
+        "properties": {
+            "image_tag": {
+                "type": "string",
+                "default": "stable"
+            },
+            "fullnameOverride": {
+                "type": "string",
+                "default": ""
+            },
+            "serviceAccount_name": {
+                "type": "null"
+            },
+            "ingress_hosts": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "host": {
+                            "type": "string"
+                        },
+                        "paths": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "required": [
+                        "host",
+                        "paths"
+                    ]
+                },
+                "default": [
+                    {
+                        "host": "chart-example.local",
+                        "paths": [
+                            1,
+                            2,
+                            3
+                        ]
+                    }
+                ]
+            }
+        },
+        "required": [
+            "serviceAccount_name"
+        ]
+    }
+}

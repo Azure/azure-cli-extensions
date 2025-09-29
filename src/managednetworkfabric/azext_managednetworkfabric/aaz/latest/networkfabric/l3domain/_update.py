@@ -148,10 +148,12 @@ class Update(AAZCommand):
         export_route_policy.export_ipv4_route_policy_id = AAZResourceIdArg(
             options=["export-ipv4-route-policy-id"],
             help="ARM Resource ID of the RoutePolicy.",
+            nullable=True,
         )
         export_route_policy.export_ipv6_route_policy_id = AAZResourceIdArg(
             options=["export-ipv6-route-policy-id"],
             help="ARM Resource ID of the RoutePolicy.",
+            nullable=True,
         )
 
         route_prefix_limit = cls._args_schema.route_prefix_limit
@@ -212,10 +214,12 @@ class Update(AAZCommand):
         l3_export_route_policy_patch_update.export_ipv4_route_policy_id = AAZResourceIdArg(
             options=["export-ipv4-route-policy-id"],
             help="ARM Resource ID of the RoutePolicy.",
+            nullable=True,
         )
         l3_export_route_policy_patch_update.export_ipv6_route_policy_id = AAZResourceIdArg(
             options=["export-ipv6-route-policy-id"],
             help="ARM Resource ID of the RoutePolicy.",
+            nullable=True,
         )
 
         _schema.export_ipv4_route_policy_id = cls._args_l3_export_route_policy_patch_update.export_ipv4_route_policy_id
@@ -359,8 +363,8 @@ class Update(AAZCommand):
 
             export_route_policy = _builder.get(".properties.connectedSubnetRoutePolicy.exportRoutePolicy")
             if export_route_policy is not None:
-                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id")
-                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id")
+                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id", typ_kwargs={"nullable": True})
+                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id", typ_kwargs={"nullable": True})
 
             route_prefix_limit = _builder.get(".properties.routePrefixLimit")
             if route_prefix_limit is not None:
@@ -439,6 +443,7 @@ class Update(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -547,8 +552,8 @@ class _UpdateHelper:
     def _build_schema_l3_export_route_policy_patch_update(cls, _builder):
         if _builder is None:
             return
-        _builder.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id")
-        _builder.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id")
+        _builder.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id", typ_kwargs={"nullable": True})
+        _builder.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id", typ_kwargs={"nullable": True})
 
     _schema_aggregate_route_read = None
 
@@ -581,9 +586,11 @@ class _UpdateHelper:
         l3_export_route_policy_read = _schema_l3_export_route_policy_read
         l3_export_route_policy_read.export_ipv4_route_policy_id = AAZStrType(
             serialized_name="exportIpv4RoutePolicyId",
+            nullable=True,
         )
         l3_export_route_policy_read.export_ipv6_route_policy_id = AAZStrType(
             serialized_name="exportIpv6RoutePolicyId",
+            nullable=True,
         )
 
         _schema.export_ipv4_route_policy_id = cls._schema_l3_export_route_policy_read.export_ipv4_route_policy_id
