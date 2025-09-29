@@ -237,10 +237,14 @@ class Wait(AAZWaitCommand):
             managed_resource_group_configuration.name = AAZStrType()
 
             network_fabric_ids = cls._schema_on_200.properties.network_fabric_ids
-            network_fabric_ids.Element = AAZStrType()
+            network_fabric_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             tenant_internet_gateway_ids = cls._schema_on_200.properties.tenant_internet_gateway_ids
-            tenant_internet_gateway_ids.Element = AAZStrType()
+            tenant_internet_gateway_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             workload_express_route_connections = cls._schema_on_200.properties.workload_express_route_connections
             workload_express_route_connections.Element = AAZObjectType()
@@ -324,6 +328,7 @@ class _WaitHelper:
         express_route_connection_information_read.express_route_circuit_id = AAZStrType(
             serialized_name="expressRouteCircuitId",
             flags={"required": True},
+            nullable=True,
         )
 
         _schema.express_route_authorization_key = cls._schema_express_route_connection_information_read.express_route_authorization_key

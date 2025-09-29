@@ -152,6 +152,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Azure resource ID for the NetworkFabricController the NetworkFabric belongs.",
             required=True,
+            nullable=True,
         )
         _args_schema.network_fabric_sku = AAZStrArg(
             options=["--nf-sku", "--network-fabric-sku"],
@@ -213,7 +214,9 @@ class Create(AAZCommand):
         )
 
         control_plane_acls = cls._args_schema.control_plane_acls
-        control_plane_acls.Element = AAZResourceIdArg()
+        control_plane_acls.Element = AAZResourceIdArg(
+            nullable=True,
+        )
 
         management_network_configuration = cls._args_schema.management_network_configuration
         management_network_configuration.infrastructure_vpn_configuration = AAZObjectArg(
@@ -233,6 +236,7 @@ class Create(AAZCommand):
         storage_account_configuration.storage_account_id = AAZResourceIdArg(
             options=["storage-account-id"],
             help="Network Fabric storage account resource identifier.",
+            nullable=True,
         )
         storage_account_configuration.storage_account_identity = AAZObjectArg(
             options=["storage-account-identity"],
@@ -249,6 +253,7 @@ class Create(AAZCommand):
         storage_account_identity.user_assigned_identity_resource_id = AAZResourceIdArg(
             options=["user-assigned-identity-resource-id"],
             help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
+            nullable=True,
         )
 
         terminal_server_configuration = cls._args_schema.terminal_server_configuration
@@ -298,7 +303,9 @@ class Create(AAZCommand):
         )
 
         trusted_ip_prefixes = cls._args_schema.trusted_ip_prefixes
-        trusted_ip_prefixes.Element = AAZResourceIdArg()
+        trusted_ip_prefixes.Element = AAZResourceIdArg(
+            nullable=True,
+        )
 
         unique_rd_configuration = cls._args_schema.unique_rd_configuration
         unique_rd_configuration.nni_derived_unique_rd_configuration_state = AAZStrArg(
@@ -352,6 +359,7 @@ class Create(AAZCommand):
         vpn_configuration_properties_create.network_to_network_interconnect_id = AAZResourceIdArg(
             options=["network-to-network-interconnect-id"],
             help="ARM Resource ID of the Network To Network Interconnect.",
+            nullable=True,
         )
         vpn_configuration_properties_create.option_a_properties = AAZObjectArg(
             options=["option-a-properties"],
@@ -614,7 +622,7 @@ class Create(AAZCommand):
                 properties.set_prop("ipv4Prefix", AAZStrType, ".ipv4_prefix", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("ipv6Prefix", AAZStrType, ".ipv6_prefix")
                 properties.set_prop("managementNetworkConfiguration", AAZObjectType, ".management_network_configuration", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("networkFabricControllerId", AAZStrType, ".network_fabric_controller_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("networkFabricControllerId", AAZStrType, ".network_fabric_controller_id", typ_kwargs={"flags": {"required": True}, "nullable": True})
                 properties.set_prop("networkFabricSku", AAZStrType, ".network_fabric_sku", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("rackCount", AAZIntType, ".rack_count")
                 properties.set_prop("serverCountPerRack", AAZIntType, ".server_count_per_rack", typ_kwargs={"flags": {"required": True}})
@@ -626,7 +634,7 @@ class Create(AAZCommand):
 
             control_plane_acls = _builder.get(".properties.controlPlaneAcls")
             if control_plane_acls is not None:
-                control_plane_acls.set_elements(AAZStrType, ".")
+                control_plane_acls.set_elements(AAZStrType, ".", typ_kwargs={"nullable": True})
 
             management_network_configuration = _builder.get(".properties.managementNetworkConfiguration")
             if management_network_configuration is not None:
@@ -635,13 +643,13 @@ class Create(AAZCommand):
 
             storage_account_configuration = _builder.get(".properties.storageAccountConfiguration")
             if storage_account_configuration is not None:
-                storage_account_configuration.set_prop("storageAccountId", AAZStrType, ".storage_account_id")
+                storage_account_configuration.set_prop("storageAccountId", AAZStrType, ".storage_account_id", typ_kwargs={"nullable": True})
                 storage_account_configuration.set_prop("storageAccountIdentity", AAZObjectType, ".storage_account_identity")
 
             storage_account_identity = _builder.get(".properties.storageAccountConfiguration.storageAccountIdentity")
             if storage_account_identity is not None:
                 storage_account_identity.set_prop("identityType", AAZStrType, ".identity_type", typ_kwargs={"flags": {"required": True}})
-                storage_account_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".user_assigned_identity_resource_id")
+                storage_account_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".user_assigned_identity_resource_id", typ_kwargs={"nullable": True})
 
             terminal_server_configuration = _builder.get(".properties.terminalServerConfiguration")
             if terminal_server_configuration is not None:
@@ -655,7 +663,7 @@ class Create(AAZCommand):
 
             trusted_ip_prefixes = _builder.get(".properties.trustedIpPrefixes")
             if trusted_ip_prefixes is not None:
-                trusted_ip_prefixes.set_elements(AAZStrType, ".")
+                trusted_ip_prefixes.set_elements(AAZStrType, ".", typ_kwargs={"nullable": True})
 
             unique_rd_configuration = _builder.get(".properties.uniqueRdConfiguration")
             if unique_rd_configuration is not None:
@@ -800,6 +808,7 @@ class Create(AAZCommand):
             properties.network_fabric_controller_id = AAZStrType(
                 serialized_name="networkFabricControllerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.network_fabric_sku = AAZStrType(
                 serialized_name="networkFabricSku",
@@ -844,7 +853,9 @@ class Create(AAZCommand):
             active_commit_batches.Element = AAZStrType()
 
             control_plane_acls = cls._schema_on_200_201.properties.control_plane_acls
-            control_plane_acls.Element = AAZStrType()
+            control_plane_acls.Element = AAZStrType(
+                nullable=True,
+            )
 
             fabric_locks = cls._schema_on_200_201.properties.fabric_locks
             fabric_locks.Element = AAZObjectType()
@@ -900,6 +911,7 @@ class Create(AAZCommand):
             storage_account_configuration = cls._schema_on_200_201.properties.storage_account_configuration
             storage_account_configuration.storage_account_id = AAZStrType(
                 serialized_name="storageAccountId",
+                nullable=True,
             )
             storage_account_configuration.storage_account_identity = AAZObjectType(
                 serialized_name="storageAccountIdentity",
@@ -912,6 +924,7 @@ class Create(AAZCommand):
             )
             storage_account_identity.user_assigned_identity_resource_id = AAZStrType(
                 serialized_name="userAssignedIdentityResourceId",
+                nullable=True,
             )
 
             terminal_server_configuration = cls._schema_on_200_201.properties.terminal_server_configuration
@@ -944,7 +957,9 @@ class Create(AAZCommand):
             )
 
             trusted_ip_prefixes = cls._schema_on_200_201.properties.trusted_ip_prefixes
-            trusted_ip_prefixes.Element = AAZStrType()
+            trusted_ip_prefixes.Element = AAZStrType(
+                nullable=True,
+            )
 
             unique_rd_configuration = cls._schema_on_200_201.properties.unique_rd_configuration
             unique_rd_configuration.nni_derived_unique_rd_configuration_state = AAZStrType(
@@ -994,7 +1009,7 @@ class _CreateHelper:
     def _build_schema_vpn_configuration_properties_create(cls, _builder):
         if _builder is None:
             return
-        _builder.set_prop("networkToNetworkInterconnectId", AAZStrType, ".network_to_network_interconnect_id")
+        _builder.set_prop("networkToNetworkInterconnectId", AAZStrType, ".network_to_network_interconnect_id", typ_kwargs={"nullable": True})
         _builder.set_prop("optionAProperties", AAZObjectType, ".option_a_properties")
         _builder.set_prop("optionBProperties", AAZObjectType, ".option_b_properties")
         _builder.set_prop("peeringOption", AAZStrType, ".peering_option", typ_kwargs={"flags": {"required": True}})
@@ -1073,6 +1088,7 @@ class _CreateHelper:
         )
         vpn_configuration_properties_read.network_to_network_interconnect_id = AAZStrType(
             serialized_name="networkToNetworkInterconnectId",
+            nullable=True,
         )
         vpn_configuration_properties_read.option_a_properties = AAZObjectType(
             serialized_name="optionAProperties",

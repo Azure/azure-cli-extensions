@@ -207,6 +207,7 @@ class Wait(AAZWaitCommand):
             )
             bmp_configuration.scope_resource_id = AAZStrType(
                 serialized_name="scopeResourceId",
+                nullable=True,
             )
             bmp_configuration.station_configuration_state = AAZStrType(
                 serialized_name="stationConfigurationState",
@@ -225,6 +226,7 @@ class Wait(AAZWaitCommand):
             )
             bmp_configuration.station_network = AAZStrType(
                 serialized_name="stationNetwork",
+                nullable=True,
             )
             bmp_configuration.station_port = AAZIntType(
                 serialized_name="stationPort",
@@ -234,7 +236,9 @@ class Wait(AAZWaitCommand):
             monitored_address_families.Element = AAZStrType()
 
             monitored_networks = cls._schema_on_200.properties.bmp_configuration.monitored_networks
-            monitored_networks.Element = AAZStrType()
+            monitored_networks.Element = AAZStrType(
+                nullable=True,
+            )
 
             station_connection_properties = cls._schema_on_200.properties.bmp_configuration.station_connection_properties
             station_connection_properties.keepalive_idle_time = AAZIntType(
