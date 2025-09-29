@@ -35,7 +35,7 @@ CLASSIFIERS = [
 
 DEPENDENCIES = [
     "oras==0.1.30",
-    "jinja2==3.1.4",
+    "jinja2==3.1.6",
     "genson==1.2.2",
     "ruamel.yaml==0.18.6",
 ]
