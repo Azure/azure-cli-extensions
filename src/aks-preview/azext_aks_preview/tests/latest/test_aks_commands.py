@@ -3424,9 +3424,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         result = self.cmd(show_cmd).get_output_in_json()
         assert result["localDnsProfile"]["mode"] == "Required"
-        # Check for default DNS configuration (should not have kubeDnsOverrides or vnetDnsOverrides)
-        assert "kubeDnsOverrides" not in result["localDnsProfile"] or result["localDnsProfile"]["kubeDnsOverrides"] is None
-        assert "vnetDnsOverrides" not in result["localDnsProfile"] or result["localDnsProfile"]["vnetDnsOverrides"] is None
+
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
         # Clean up
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
