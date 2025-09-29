@@ -16,7 +16,8 @@ from azure.cli.core.aaz import *
 )
 class BulkPublishSolution(AAZCommand):
     """Post request for bulk publish
-    :example: az workload-orchestration solution-template bulk-publish --resource-group myResourceGroup --solution-template-name myTemplate --solution-template-version 1.0.0 --targets "@targets.json" [--solution-configuration <solution-configuration>] [--dependencies <dependencies>] [--solution-instance-name <solution-instance-name>] [--no-wait]
+    :example: Bulk publish solution for multiple targets.
+        az workload-orchestration solution-template bulk-publish --resource-group myResourceGroup --solution-template-name myTemplate --solution-template-version 1.0.0 --targets "@targets.json" 
     """
 
     _aaz_info = {
