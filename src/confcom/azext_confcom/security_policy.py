@@ -628,22 +628,19 @@ def load_policy_from_arm_template_str(
 
     aci_policies = []
 
-    fragments = sorted(
-        [
-            AciFragmentSpec(
-                feed=fragment["feed"],
-                issuer=fragment["issuer"],
-                includes=fragment["includes"],
-                minimum_svn=infrastructure_svn or fragment["minimum_svn"],
-                path=fragment.get("path"),
-            )
-            for fragment in [
-                *(included_fragments or []),
-                *(config.DEFAULT_REGO_FRAGMENTS if not exclude_default_fragments else []),
-            ]
-        ],
-        key=lambda fragment: fragment.feed,
-    )
+    fragments = [
+        AciFragmentSpec(
+            feed=fragment["feed"],
+            issuer=fragment["issuer"],
+            includes=fragment["includes"],
+            minimum_svn=infrastructure_svn or fragment["minimum_svn"],
+            path=fragment.get("path"),
+        )
+        for fragment in [
+            *(config.DEFAULT_REGO_FRAGMENTS if not exclude_default_fragments else []),
+            *(included_fragments or []),
+        ]
+    ]
 
     try:
         for policy_spec in arm_to_aci_policy_spec(
