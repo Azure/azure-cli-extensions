@@ -30,6 +30,10 @@ stages:
       path: ./test/configurations/BasicOnboarding.Tests.ps1
   - template: ./templates/run-test.yml
     parameters:
+      jobName: EnableDisableFeaturesTest
+      path: ./test/configurations/EnableDisableFeatures.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
       jobName: AutoUpdateTest
       path: ./test/configurations/AutoUpdate.Tests.ps1
   - template: ./templates/run-test.yml
@@ -177,13 +181,12 @@ stages:
           pip install pytest
           cd /home/vsts/work/1/s/src/connectedk8s/azext_connectedk8s/tests/unittests
           pytest --junitxml=test-results.xml
-          
         displayName: 'Run UnitTests test'
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: '**/test-results.xml'
-          failTaskOnFailedTests: true        
+          failTaskOnFailedTests: true
   - job: SourceTests
     displayName: "Integration Tests, Build Tests"
     pool:

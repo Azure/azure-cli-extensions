@@ -10,7 +10,7 @@ Describe 'Basic Onboarding Scenario' {
 
         # Loop and retry until the configuration installs
         $n = 0
-        do 
+        do
         {
             $output = az connectedk8s show -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup
             $jsonOutput = [System.Text.Json.JsonDocument]::Parse($output)
@@ -34,7 +34,7 @@ Describe 'Basic Onboarding Scenario' {
 
         # Loop and retry until the configuration installs
         $n = 0
-        do 
+        do
         {
             $output = az connectedk8s show -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup
             $jsonOutput = [System.Text.Json.JsonDocument]::Parse($output)

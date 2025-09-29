@@ -12,7 +12,7 @@ Describe 'Onboarding with Gateway Scenario' {
 
         # Loop and retry until the configuration installs
         $n = 0
-        do 
+        do
         {
             $output = az connectedk8s show -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup
             $jsonOutput = [System.Text.Json.JsonDocument]::Parse($output)
@@ -36,12 +36,12 @@ Describe 'Onboarding with Gateway Scenario' {
 
         # Loop and retry until the configuration installs
         $n = 0
-        do 
+        do
         {
             $output = az connectedk8s show -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup
             $jsonOutput = [System.Text.Json.JsonDocument]::Parse($output)
             $provisioningState = ($output | ConvertFrom-Json).provisioningState
-            $gatewayStatus = $jsonOutput.RootElement.GetProperty("gateway").GetProperty("enabled").GetBoolean() 
+            $gatewayStatus = $jsonOutput.RootElement.GetProperty("gateway").GetProperty("enabled").GetBoolean()
             Write-Host "Provisioning State: $provisioningState"
             Write-Host "Gateway Status: $gatewayStatus"
             if ($provisioningState -eq $SUCCEEDED -and $gatewayStatus -eq $false) {
@@ -60,7 +60,7 @@ Describe 'Onboarding with Gateway Scenario' {
 
         # Loop and retry until the configuration installs
         $n = 0
-        do 
+        do
         {
             $output = az connectedk8s show -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup
             $jsonOutput = [System.Text.Json.JsonDocument]::Parse($output)
@@ -84,12 +84,12 @@ Describe 'Onboarding with Gateway Scenario' {
 
         # Loop and retry until the configuration installs
         $n = 0
-        do 
+        do
         {
             $output = az connectedk8s show -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup
             $jsonOutput = [System.Text.Json.JsonDocument]::Parse($output)
             $provisioningState = ($output | ConvertFrom-Json).provisioningState
-            $gatewayStatus = $jsonOutput.RootElement.GetProperty("gateway").GetProperty("enabled").GetBoolean() 
+            $gatewayStatus = $jsonOutput.RootElement.GetProperty("gateway").GetProperty("enabled").GetBoolean()
             Write-Host "Provisioning State: $provisioningState"
             Write-Host "Gateway Status: $gatewayStatus"
             if ($provisioningState -eq $SUCCEEDED -and $gatewayStatus -eq $false) {
