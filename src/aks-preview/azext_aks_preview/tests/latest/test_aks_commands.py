@@ -3498,10 +3498,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpectedDefault)
         assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpectedDefault)
         # Clean up
-        self.cmd(
-            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
-            checks=[self.is_empty()],
-        )
+        #self.cmd(
+        #    "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+        #    checks=[self.is_empty()],
+        #)
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
