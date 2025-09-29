@@ -2,23 +2,26 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+
 from __future__ import annotations
+import json
 
 from pathlib import Path
 from abc import abstractmethod
-
+from typing import Optional
 from .onboarding_nfd_base_handler import OnboardingNFDBaseCLIHandler
 from knack.log import get_logger
 from azext_aosm.build_processors.arm_processor import BaseArmBuildProcessor
 from azext_aosm.build_processors.vhd_processor import VHDProcessor
 from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
 from azext_aosm.configuration_models.onboarding_vnf_input_config import (
-    OnboardingCoreVNFInputConfig, OnboardingNexusVNFInputConfig
-)
+    OnboardingNFDBaseInputConfig)
+
 from azext_aosm.definition_folder.builder.bicep_builder import (
     BicepDefinitionElementBuilder,
 )
 from azext_aosm.definition_folder.builder.artifact_builder import ArtifactDefinitionElementBuilder
+from azext_aosm.definition_folder.builder.json_builder import JSONDefinitionElementBuilder
 
 from azext_aosm.common.constants import (
     ARTIFACT_LIST_FILENAME,
@@ -28,7 +31,8 @@ from azext_aosm.common.constants import (
     VNF_OUTPUT_FOLDER_FILENAME,
     VNF_TEMPLATE_FOLDER_NAME,
     MANIFEST_FOLDER_NAME,
-    VNF_MANIFEST_TEMPLATE_FILENAME
+    VNF_MANIFEST_TEMPLATE_FILENAME,
+    BASE_FOLDER_NAME
 )
 
 logger = get_logger(__name__)
@@ -37,7 +41,7 @@ logger = get_logger(__name__)
 class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
     """CLI handler for publishing NFDs."""
 
-    config: OnboardingCoreVNFInputConfig | OnboardingNexusVNFInputConfig
+    config: OnboardingNFDBaseInputConfig
     processors: list[BaseArmBuildProcessor | VHDProcessor]
 
     @property
@@ -49,6 +53,35 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
     def output_folder_file_name(self) -> str:
         """Get the output folder file name."""
         return VNF_OUTPUT_FOLDER_FILENAME
+
+    def _get_input_config(
+        self, input_config_dict: Optional[dict] = None
+    ) -> OnboardingNFDBaseInputConfig:
+        """Get the configuration for the command."""
+        if input_config_dict is None:
+            input_config_dict = {}
+        return self.input_config(**input_config_dict)
+
+    def _get_params_config(
+        self, config_file: Path
+    ) -> OnboardingNFDBaseInputConfig:
+        """Get the configuration for the command."""
+        with open(config_file, "r", encoding="utf-8") as _file:
+            params_dict = json.load(_file)
+        if params_dict is None:
+            params_dict = {}
+        return self.params_config(**params_dict)
+
+    def build_base_bicep(self) -> BicepDefinitionElementBuilder:
+        """Build the base bicep file."""
+        template_path = get_template_path(
+            VNF_TEMPLATE_FOLDER_NAME, self.base_template_filename
+        )
+        bicep_contents = render_bicep_contents_from_j2(template_path, {})
+        bicep_file = BicepDefinitionElementBuilder(
+            Path(VNF_OUTPUT_FOLDER_FILENAME, BASE_FOLDER_NAME), bicep_contents
+        )
+        return bicep_file
 
     def build_artifact_list(self) -> ArtifactDefinitionElementBuilder:
         """Build the artifact list.
@@ -167,6 +200,14 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
         logger.info("Created artifact manifest bicep element")
         return bicep_file
 
+    def build_all_parameters_json(self) -> JSONDefinitionElementBuilder:
+        """Build the all parameters json file."""
+        params_content = self.get_params_content()
+        base_file = JSONDefinitionElementBuilder(
+            Path(VNF_OUTPUT_FOLDER_FILENAME), json.dumps(params_content, indent=4)
+        )
+        return base_file
+
     @abstractmethod
     def _get_nfd_template_params(self, arm_nf_application_list, image_nf_application_list):
         return NotImplementedError
@@ -178,3 +219,29 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
     @abstractmethod
     def _generate_type_specific_artifact_manifest(self, processor):
         return NotImplementedError
+
+    def _validate_arm_template(self):
+        for processor in self.processors:
+            if isinstance(processor, BaseArmBuildProcessor):
+                processor.input_artifact.validate_resource_types()
+
+    def pre_validate_build(self):
+        """Run all validation functions required before building the vnf."""
+        logger.debug("Pre-validating build")
+
+        self._validate_arm_template()
+
+    @property
+    def input_config(self):
+        raise NotImplementedError
+
+    @property
+    def params_config(self):
+        raise NotImplementedError
+
+    @property
+    def base_template_filename(self):
+        raise NotImplementedError
+
+    def get_params_content(self):
+        raise NotImplementedError

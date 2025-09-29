@@ -8,12 +8,13 @@ from __future__ import annotations
 from abc import ABC
 from dataclasses import dataclass
 
-
 # Config is sometimes used as an argument to cached functions. These
 # arguments must be hashable, so we need to use frozen dataclasses.
 # This is fine because we shouldn't be changing this initial input anyway.
+
+
 @dataclass(frozen=True)
-class BaseCommonParametersConfig(ABC):
+class BaseCommonParametersConfig(ABC):  # pylint: disable=R0902
     """Base common parameters configuration."""
 
     location: str
@@ -21,6 +22,9 @@ class BaseCommonParametersConfig(ABC):
     publisherResourceGroupName: str
     acrArtifactStoreName: str
     acrManifestName: str
+    disablePublicNetworkAccess: bool
+    vnetPrivateEndPoints: list
+    networkFabricControllerIds: list
 
 
 @dataclass(frozen=True)
@@ -56,3 +60,13 @@ class NSDCommonParametersConfig(BaseCommonParametersConfig):
     nsDesignGroup: str
     nsDesignVersion: str
     nfviSiteName: str
+
+
+@dataclass(frozen=True)
+class SNSCommonParametersConfig():
+    """Common parameters configuration for SNS."""
+    location: str
+    operator_resource_group: str
+    site_name: str
+    sns_name: str
+    user_identity_resourceid: str

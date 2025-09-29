@@ -8,20 +8,21 @@ import sys
 from pathlib import Path
 from unittest import TestCase
 import tempfile
-import json
 from azext_aosm.common.exceptions import (
-    DefaultValuesNotFoundError,
-    TemplateValidationError,
-    SchemaGetOrGenerateError
+    TemplateValidationError
 )
 from azext_aosm.inputs.helm_chart_input import HelmChartInput
+from azure.cli.testsdk import live_only
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 code_directory = os.path.dirname(__file__)
 parent_directory = os.path.abspath(os.path.join(code_directory, "../.."))
 helm_charts_directory = os.path.join(parent_directory, "mock_cnf", "helm-charts")
+MOCK_NF_AGENT_HELM_CHART = os.path.join(helm_charts_directory, "nf-agent-cnf-0.1.0.tgz")
 
 VALID_CHART_NAME = "nf-agent-cnf"
-INVALID_CHART_NAME = "nf-agent-cnf-invalid"
+INVALID_VALUES_CHART_NAME = "nf-agent-cnf-invalid-values"
+INVALID_NO_VALUES_CHART_NAME = "nf-agent-cnf-no-values"
 
 
 class TestHelmChartInput(TestCase):
@@ -31,6 +32,8 @@ class TestHelmChartInput(TestCase):
         # Prints out info logs in console if fails
         logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 
+
+    @live_only()  # to avoid 'CannotOverwriteExistingCassetteException' when run from recording
     def test_validate_template_valid_chart(self):
         """Test validating a valid Helm chart using helm template."""
 
@@ -48,6 +51,7 @@ class TestHelmChartInput(TestCase):
         # A valid template does not raise exceptions or return anything.
         helm_chart_input.validate_template()
 
+    @live_only()  # to avoid 'CannotOverwriteExistingCassetteException' when run from recording
     def test_validate_template_invalid_chart(self):
         """Test validating an invalid Helm chart using helm template."""
 
@@ -57,17 +61,21 @@ class TestHelmChartInput(TestCase):
             chart_path=Path(
                 os.path.join(
                     helm_charts_directory,
-                    INVALID_CHART_NAME,
+                    INVALID_VALUES_CHART_NAME,
                 )
             ),
         )
 
         self.assertRaises(TemplateValidationError, helm_chart_input.validate_template)
 
+    @live_only()  # to avoid 'CannotOverwriteExistingCassetteException' when run from recording
     def test_validate_values(self):
-        """Test validating whether values exist in a helm chart."""
+        """Test validating whether values exist in a helm chart.
+            The validation for checking values.yaml exists happens in the helm chat input init,
+            so we just need to instantiate the helm chart to test that.
+        """
 
-        helm_chart_input = HelmChartInput(
+        HelmChartInput(
             artifact_name="test-invalid",
             artifact_version="1.0.0",
             chart_path=Path(
@@ -76,42 +84,52 @@ class TestHelmChartInput(TestCase):
                     VALID_CHART_NAME,
                 )
             ),
+            default_config={},
+            default_config_path={}
         )
 
-        helm_chart_input.validate_values()
-
         # Use an Invalid chart (because it does not have values.yaml in it),
-        # but provide a default config parameter which will override those values.
-        helm_chart_input_with_default_values = HelmChartInput(
+        # but provide a default config path which will override those values.
+
+        override_path = os.path.join(
+            helm_charts_directory,
+            INVALID_VALUES_CHART_NAME,
+            'values.yaml'
+        )
+        HelmChartInput(
             artifact_name="test-default-values",
             artifact_version="1.0.0",
             chart_path=Path(
                 os.path.join(
                     helm_charts_directory,
-                    INVALID_CHART_NAME,
+                    INVALID_VALUES_CHART_NAME,
                 )
             ),
-            default_config={"test": "test"},
+            default_config={},
+            default_config_path=override_path
         )
 
-        helm_chart_input_with_default_values.validate_values()
+    @live_only()  # to avoid 'CannotOverwriteExistingCassetteException' when run from recording
+    def test_create_helm_chart_input_with_invalid_values(self):
+        """Test validating a helm chart with values.yaml missing.
+            The validation for checking values.yaml exists happens in the helm chat input init,
+            so we just need to instantiate the helm chart to test that.
+        """
 
-    def test_validate_invalid_values(self):
-        """Test validating a helm chart with values.yaml missing."""
-        helm_chart_input = HelmChartInput(
-            artifact_name="test-invalid",
-            artifact_version="1.0.0",
-            chart_path=Path(
-                os.path.join(
-                    helm_charts_directory,
-                    INVALID_CHART_NAME,
-                )
-            ),
-        )
+        with self.assertRaises(InvalidArgumentValueError):
+            HelmChartInput(
+                artifact_name="test-invalid",
+                artifact_version="1.0.0",
+                chart_path=Path(
+                    os.path.join(
+                        helm_charts_directory,
+                        INVALID_NO_VALUES_CHART_NAME,
+                    )
+                ),
+                default_config={},
+                default_config_path=None
+            )
 
-        with self.assertRaises(DefaultValuesNotFoundError):
-            helm_chart_input.validate_values()
-            
     def test_get_schema(self):
         """Test retrieving the schema for the Helm chart."""
         self.temp_dir = tempfile.TemporaryDirectory()
@@ -119,6 +137,9 @@ class TestHelmChartInput(TestCase):
 
         with open(self.chart_path / "Chart.yaml", "w") as f:
             f.write("name: test-chart\nversion: 1.0.0")
+
+        with open(self.chart_path / "values.yaml", "w") as f:
+            f.write("key: value")
 
         helm_chart_input = HelmChartInput(
             artifact_name="test-schema",
@@ -134,8 +155,6 @@ class TestHelmChartInput(TestCase):
 
         # # Test case when values.schema.json does not exist in the chart.
         # os.remove(self.chart_path / "values.schema.json")
-        with open(self.chart_path / "values.yaml", "w") as f:
-            f.write("key: value")
         schema = helm_chart_input.get_schema()
         expected_schema = {
             "type": "object",
@@ -144,9 +163,5 @@ class TestHelmChartInput(TestCase):
         }
         self.assertEqual(schema, expected_schema)
 
-        # Test case when neither values.schema.json nor values.yaml exist in the chart.
-        os.remove(self.chart_path / "values.yaml")
-        with self.assertRaises(SchemaGetOrGenerateError):
-            helm_chart_input.get_schema()
-
         self.temp_dir.cleanup()
+

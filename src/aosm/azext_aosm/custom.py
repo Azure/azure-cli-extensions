@@ -14,6 +14,7 @@ from azext_aosm.cli_handlers.onboarding_cnf_handler import OnboardingCNFCLIHandl
 from azext_aosm.cli_handlers.onboarding_vnf_handler import OnboardingVNFCLIHandler
 from azext_aosm.cli_handlers.onboarding_core_vnf_handler import OnboardingCoreVNFCLIHandler
 from azext_aosm.cli_handlers.onboarding_nexus_vnf_handler import OnboardingNexusVNFCLIHandler
+from azext_aosm.cli_handlers.onboarding_sns_handler import OnboardingSNSCLIHandler
 from azext_aosm.cli_handlers.onboarding_nsd_handler import OnboardingNSDCLIHandler
 from azext_aosm.common.command_context import CommandContext
 from azext_aosm.common.constants import ALL_PARAMETERS_FILE_NAME, CNF, VNF, VNF_NEXUS
@@ -31,7 +32,7 @@ def onboard_nfd_generate_config(definition_type: str, output_file: str | None):
         handler = OnboardingNexusVNFCLIHandler()
     else:
         raise UnrecognizedArgumentError(
-            "Invalid definition type, valid values are 'cnf', 'vnf' or 'vnfnexus'")
+            "Invalid definition type, valid values are 'cnf', 'vnf' or 'vnf-nexus'")
     handler.generate_config(output_file)
 
 
@@ -49,7 +50,7 @@ def onboard_nfd_build(
         handler = OnboardingNexusVNFCLIHandler(config_file_path=Path(config_file))
     else:
         raise UnrecognizedArgumentError(
-            "Invalid definition type, valid values are 'cnf', 'vnf' or 'vnfnexus'")
+            "Invalid definition type, valid values are 'cnf', 'vnf' or 'vnf-nexus'")
     handler.build()
 
 
@@ -71,7 +72,8 @@ def onboard_nfd_publish(
     handler: OnboardingCNFCLIHandler | OnboardingVNFCLIHandler
     if definition_type == CNF:
         handler = OnboardingCNFCLIHandler(
-            all_deploy_params_file_path=Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
+            all_deploy_params_file_path=Path(build_output_folder, ALL_PARAMETERS_FILE_NAME),
+            aosm_client=command_context.aosm_client)
     elif definition_type == VNF:
         handler = OnboardingCoreVNFCLIHandler(
             all_deploy_params_file_path=Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
@@ -80,9 +82,8 @@ def onboard_nfd_publish(
             all_deploy_params_file_path=Path(build_output_folder, ALL_PARAMETERS_FILE_NAME))
     else:
         raise UnrecognizedArgumentError(
-            "Invalid definition type, valid values are 'cnf', 'vnf' or 'vnfnexus'")
+            "Invalid definition type, valid values are 'cnf', 'vnf' or 'vnf-nexus'")
     handler.publish(command_context=command_context)
-
 
 # def onboard_nfd_delete(cmd: AzCliCommand, definition_type: str, config_file: str):
 #     """Delete the NF definition."""
@@ -129,9 +130,43 @@ def onboard_nsd_publish(
     )
     handler.publish(command_context=command_context)
 
-
 # def onboard_nsd_delete(cmd: AzCliCommand, config_file: str):
 #     """Delete the NSD definition."""
 #     command_context = CommandContext(cmd.cli_ctx)
 #     handler = OnboardingNSDCLIHandler(config_file)
 #     handler.delete(command_context=command_context)
+
+
+def onboard_sns_generate_config(output_file: str | None):
+    """Generate config file for onboarding SNS."""
+    handler = OnboardingSNSCLIHandler()
+    handler.generate_config(output_file)
+
+
+def onboard_sns_build(config_file: Path, cmd: AzCliCommand):
+    """Build the Site Network Service."""
+    command_context = CommandContext(cli_ctx=cmd.cli_ctx)
+    handler = OnboardingSNSCLIHandler(
+        config_file_path=Path(config_file),
+        aosm_client=command_context.aosm_client
+    )
+    handler.build()
+
+
+def onboard_sns_deploy(
+    cmd: AzCliCommand,
+    build_output_folder: Path,
+    no_subscription_permissions: bool = False,
+):
+    """Deploy the SNS definition."""
+    command_context = CommandContext(
+        cli_ctx=cmd.cli_ctx,
+        cli_options={
+            "no_subscription_permissions": no_subscription_permissions,
+            "definition_folder": Path(build_output_folder),
+        },
+    )
+    handler = OnboardingSNSCLIHandler(
+        all_deploy_params_file_path=Path(build_output_folder, ALL_PARAMETERS_FILE_NAME)
+    )
+    handler.deploy(command_context=command_context)

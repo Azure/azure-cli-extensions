@@ -231,7 +231,7 @@ class AzureContainerRegistry(ContainerRegistry):
         """
 
         try:
-            print("Copying artifact from source registry")
+            logger.info("Copying artifact from source registry")
             # In order to use az acr import cross subscription, we need to use a token
             # to authenticate to the source registry. This is documented as the way to
             # us az acr import cross-tenant, not cross-sub, but it also works

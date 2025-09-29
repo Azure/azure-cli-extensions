@@ -2,9 +2,20 @@
 
 Release History
 ===============
+
+2.0.0b3
+++++++++
+* Fixing a zip-slip security bug for code that was using tar.extractall() on `nfd build` command.
+* This version requires a minimum of 2.70.0 Azure core CLI. See install instructions: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/Latest-version/install-azure-cli.md
+
 2.0.0b2
 ++++++++
-* Remove msrestazure dependency
+* Added sns generate-config, build and deploy commands.
+* Added a check to make sure resource type used in ARM template are in allowed list.
+* Fixed multi NF RETs issue in nsdvs.
+* Fixed: Better exception messages for Azure permissions problems.
+* Fixed: skip-steps help text to reflect current implementation.
+* Added finetuning of parameter exposure with yaml comments for CNF
 
 2.0.0b1
 ++++++++

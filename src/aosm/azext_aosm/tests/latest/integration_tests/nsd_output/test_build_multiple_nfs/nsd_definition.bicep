@@ -19,20 +19,20 @@ param nfviSiteName string = 'multinf_NFVI'
 
 // The publisher resource is the top level AOSM resource under which all other designer resources
 // are created.
-resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing = {
+resource publisher 'Microsoft.HybridNetwork/publishers@2024-04-15' existing = {
   name: publisherName
   scope: resourceGroup()
 }
 
 // The artifact store is the resource in which all the artifacts required to deploy the NF are stored.
 // The artifact store is created by the az aosm CLI before this template is deployed.
-resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2024-04-15' existing = {
   parent: publisher
   name: acrArtifactStoreName
 }
 
 // Created up-front, the NSD Group is the parent resource under which all NSD versions will be created.
-resource nsdGroup 'Microsoft.Hybridnetwork/publishers/networkservicedesigngroups@2023-09-01' existing = {
+resource nsdGroup 'Microsoft.Hybridnetwork/publishers/networkservicedesigngroups@2024-04-15' existing = {
   parent: publisher
   name: nsDesignGroup
 }
@@ -40,7 +40,7 @@ resource nsdGroup 'Microsoft.Hybridnetwork/publishers/networkservicedesigngroups
 // The configuration group schema defines the configuration required to deploy the NSD. The NSD references this object in the
 // `configurationgroupsSchemaReferences` and references the values in the schema in the `parameterValues`.
 // The operator will create a config group values object that will satisfy this schema.
-resource cgSchema 'Microsoft.Hybridnetwork/publishers/configurationGroupSchemas@2023-09-01' = {
+resource cgSchema 'Microsoft.Hybridnetwork/publishers/configurationGroupSchemas@2024-04-15' = {
   parent: publisher
   name: 'multinf_ConfigGroupSchema'
   location: location
@@ -50,7 +50,7 @@ resource cgSchema 'Microsoft.Hybridnetwork/publishers/configurationGroupSchemas@
 }
 
 // The NSD version
-resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngroups/networkservicedesignversions@2023-09-01' = {
+resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngroups/networkservicedesignversions@2024-04-15' = {
   parent: nsdGroup
   name: nsDesignVersion
   location: location

@@ -1,0 +1,118 @@
+{
+    "test-generate-schema-cnf": {
+        "type": "object",
+        "properties": {
+            "image_repository": {
+                "type": "string",
+                "default": "overwriteme"
+            },
+            "image_tag": {
+                "type": "string",
+                "default": "stable"
+            },
+            "nameOverride": {
+                "type": "string",
+                "default": ""
+            },
+            "serviceAccount_create": {
+                "type": "boolean",
+                "default": false
+            },
+            "serviceAccount_name": {
+                "type": "null"
+            },
+            "podSecurityContext": {
+                "type": "object",
+                "default": {}
+            },
+            "service_type": {
+                "type": "string",
+                "default": "ClusterIP"
+            },
+            "service_port": {
+                "type": "integer",
+                "default": 5222
+            },
+            "ingress_enabled": {
+                "type": "boolean",
+                "default": false
+            },
+            "ingress_annotations": {
+                "type": "object",
+                "default": {}
+            },
+            "ingress_hosts": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "host": {
+                            "type": "string"
+                        },
+                        "paths": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "required": [
+                        "host",
+                        "paths"
+                    ]
+                },
+                "default": [
+                    {
+                        "host": "chart-example.local",
+                        "paths": [
+                            1,
+                            2,
+                            3
+                        ]
+                    }
+                ]
+            },
+            "ingress_tls": {
+                "type": "array",
+                "default": []
+            },
+            "hosts": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "example": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "example"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "path"
+                    ]
+                },
+                "default": [
+                    {
+                        "path": [
+                            {
+                                "example": 1
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "required": [
+            "serviceAccount_name"
+        ]
+    }
+}

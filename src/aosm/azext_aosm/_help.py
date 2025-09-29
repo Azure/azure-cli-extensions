@@ -121,3 +121,26 @@ helps[
       - name: Publish a Network Service Design.
         text: az aosm nsd publish --build-output-folder my-nsd-output-folder
 """
+
+helps[
+    "aosm sns"
+] = """
+    type: group
+    short-summary: Manage AOSM Site Network Services.
+    long-summary: |
+      A Site Network Service (SNS) is a collection of network functions along with platform that come together to offer a service..
+"""
+
+helps[
+    "aosm sns generate-config"
+] = """
+    type: command
+    short-summary: Generate configuration file for building an AOSM SNS.
+    long-summary: |
+      Generates a configuration file that you can use to build an AOSM Site Network Service (SNS). The configuration file is a JSONC file that contains the required parameters for building the SNS. You must complete the configuration file with your specific values before building the SNS.
+    examples:
+      - name: Generate a configuration file for a Site Network Service.
+        text: az aosm sns generate-config
+      - name: Generate a configuration file for a Site Network Service and write to a specific file.
+        text: az aosm sns generate-config --output-file my-sns-input-config.jsonc
+"""

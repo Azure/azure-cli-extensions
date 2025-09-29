@@ -17,7 +17,7 @@ except ImportError:
 
 # Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = "2.0.0b2"
+VERSION = "2.0.0b3"
 
 
 # The full list of classifiers is available at
@@ -34,10 +34,10 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "oras~=0.1.19",
-    "jinja2>=3.1.4",
-    "genson>=1.2.2",
-    "ruamel.yaml>=0.17.4",
+    "oras==0.1.30",
+    "jinja2==3.1.4",
+    "genson==1.2.2",
+    "ruamel.yaml==0.18.6",
 ]
 
 with open("README.md", "r", encoding="utf-8") as f:
@@ -60,7 +60,8 @@ setup(
     package_data={
         "azext_aosm": [
             "azext_metadata.json",
-            "common/templates/**",
+            "common/templates/**/*",
         ]
     },
+    include_package_data=True,
 )

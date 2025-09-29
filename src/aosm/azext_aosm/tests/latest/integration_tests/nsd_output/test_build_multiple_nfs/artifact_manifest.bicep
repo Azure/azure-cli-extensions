@@ -13,17 +13,17 @@ param armTemplateNames array
 @description('The version that you want to name the NFM template artifact, in format A.B.C. e.g. 6.13.0. If testing for development, you can use any numbers you like.')
 param armTemplateVersion string
 
-resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing = {
+resource publisher 'Microsoft.HybridNetwork/publishers@2024-04-15' existing = {
   name: publisherName
   scope: resourceGroup()
 }
 
-resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2024-04-15' existing = {
   parent: publisher
   name: acrArtifactStoreName
 }
 
-resource acrArtifactManifests 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2023-09-01' = [for (values, i) in armTemplateNames: {
+resource acrArtifactManifests 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2024-04-15' = [for (values, i) in armTemplateNames: {
   parent: acrArtifactStore
   name: acrManifestNames[i]
   location: location

@@ -1,19 +1,56 @@
 {
-  "publisher_name": "automated-cli-test-nginx-publisher",
-  "publisher_resource_group_name": "{{publisher_resource_group_name}}",
-  "acr_artifact_store_name": "nginx-nsd-acr",
+  // Azure location to use when creating resources e.g uksouth
   "location": "uksouth",
-  "network_functions": [
-    {
-      "publisher": "automated-cli-test-nginx-publisher",
-      "publisher_resource_group": "{{publisher_resource_group_name}}",
-      "name": "nginx-nfdg",
-      "version": "1.0.0",
-      "publisher_offering_location": "uksouth",
-      "type": "cnf"
-    }
+  // Name of the Publisher resource you want your definition published to.
+  // Will be created if it does not exist.
+  "publisher_name": "automated-scenario-test-nginx-publisher",
+  // Resource group for the Publisher resource.
+  // CLI extension will attempt to create it if it does not exist.
+  "publisher_resource_group_name": "{{publisher_resource_group_name}}",
+  // Name of the ACR Artifact Store resource.
+  // Will be created if it does not exist.
+  // For the private link workflow,the private endpoint listed below should be connecting to this ACR.
+  "acr_artifact_store_name": "nginx-acr",
+  // Disable public network access on the ACR.
+  // Default is false. Set to true to disable.
+  "disable_public_network_access": false,
+  // List of Resource id of Private End Points to access ACR that needs to be approved.
+  "vnet_private_end_points": [
   ],
-  "nsd_name": "nginx-nsdg",
+  // List of Resource id of NNF to access ACR that needs to be approved.
+  "network_fabric_controller_ids": [
+  ],
+  // Network Service Design (NSD) name. This is the collection of Network Service Design Versions. Will be created if it does not exist.
+  "nsd_name": "nginx",
+  // Version of the NSD to be created. This should be in the format A.B.C
   "nsd_version": "1.0.0",
-  "nsdv_description": "Deploys a basic NGINX CNF"
-}
+  // Optional. Description of the Network Service Design Version (NSDV).
+  "nsdv_description": "nginx",
+  // List of Resource Element Templates (RETs).
+  // There must be at least one NF RET.
+  // ArmTemplate RETs are optional. Delete if not required.
+  "resource_element_templates": [
+      {
+          // Type of Resource Element. Either NF or ArmTemplate
+          "resource_element_type": "NF",
+          "properties": {
+              // The name of the existing publisher for the NSD.
+              "publisher": "automated-scenario-test-nginx-publisher",
+              // The resource group that the publisher is hosted in.
+              "publisher_resource_group": "{{publisher_resource_group_name}}",
+              // The name of the existing Network Function Definition Group to deploy using this NSD.
+              // This will be the same as the NF name if you published your NFDV using the CLI.
+              "name": "nginx",
+               // The version of the existing Network Function Definition to base this NSD on.
+                // This NSD will be able to deploy any NFDV with deployment parameters compatible with this version.
+                "version": "1.0.0",
+                // The region that the NFDV is published to.
+                "publisher_offering_location": "uksouth",
+                // Type of Network Function. Valid values are 'cnf' or 'vnf'.
+                "type": "cnf"
+            }
+          }       
+        ]
+  }
+
+

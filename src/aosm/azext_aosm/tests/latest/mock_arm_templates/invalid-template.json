@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.15.31.15270",
+      "templateHash": "1656082395923655778"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "uksouth"
+    }
+  },
+  "variables": {
+    "imageResourceGroup": "[resourceGroup().name]",
+    "subscriptionId": "[subscription().subscriptionId]",
+    "vmSizeSku": "Standard_D2s_v3"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2022-05-02-preview",
+      "name": "[parameters('clusterName')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-01-01",
+      "name": "string",
+      "location": "string",
+      "tags": {
+        "tagName1": "tagValue1",
+        "tagName2": "tagValue2"
+      },
+      "sku": {
+        "name": "string"
+      },
+      "kind": "string",
+      "extendedLocation": {
+        "name": "string",
+        "type": "EdgeZone"
+      },
+      "identity": {
+        "type": "string",
+        "userAssignedIdentities": {
+          "{customized property}": {}
+        }
+      }
+    }
+  ]
+}

@@ -34,6 +34,13 @@ class SkipSteps(Enum):
     HELM_TEMPLATE = HELM_TEMPLATE
 
 
+# Values.yaml Comment Options
+EXPOSE = "expose-cgs"
+HARDCODE = "hardcode-nfdv"
+
+COMMENT_POSITION = 2
+
+
 class ManifestsExist(str, Enum):
     ALL = "all"
     NONE = "none"
@@ -83,7 +90,27 @@ CNF_BASE_TEMPLATE_FILENAME = "cnfbase.bicep"
 CNF_VALUES_SCHEMA_FILENAME = "values.schema.json"
 CNF_TEMPLATE_FOLDER_NAME = "cnf"
 
+SNS_OUTPUT_FOLDER_FILENAME = "sns-cli-output"
+SNS_INPUT_FILENAME = "sns-input.jsonc"
+SNS_DEFINITION_TEMPLATE_FILENAME = "snsdefinition.bicep.j2"
+SNS_TEMPLATE_FOLDER_NAME = "sns"
+SNS_DEFINITION_FOLDER_NAME = "snsDefinition"
+SNS_DEPLOYMENT_INPUT_FILENAME = "deploy_input.jsonc"
+
 NEXUS_IMAGE_REGEX = r"^[\~]?(\d+)\.(\d+)\.(\d+)$"
+
+VALID_VNF_TEMPLATE_RESOURCE_TYPES = [
+    'Microsoft.Compute',
+    'Microsoft.Network',
+    'Microsoft.NetworkCloud',
+    'Microsoft.Storage',
+    'Microsoft.NetworkFabric',
+    'Microsoft.Authorization',
+    'Microsoft.ManagedIdentity'
+]
+
+SNS_OUTPUT_FOLDER_FILENAME = "sns-cli-output"
+SNS_INPUT_FILENAME = "sns-input.jsonc"
 
 #################
 # OLD CONSTANTS #
