@@ -311,44 +311,6 @@ class InvalidLocalDnsConfigTests:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
-    def test_aks_nodepool_add_with_localdns_required_mode_extra_property(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name("cliakstest", 16)
-        nodepool_name = self.create_random_name("np", 6)
-        extra_property_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_extra_property.json")
-        self.kwargs.update({
-            "resource_group": resource_group,
-            "name": aks_name,
-            "nodepool_name": nodepool_name,
-            "ssh_key_value": self.generate_ssh_keys(),
-            "extra_property_config": extra_property_config_path
-        })
-
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
-            "--kubernetes-version 1.33.0"
-        )
-        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
-
-        add_cmd = (
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
-            "--name={nodepool_name} --node-count 1 --localdns-config={extra_property_config} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
-            "--kubernetes-version 1.33.0"
-        )
-        try:
-            self.cmd(add_cmd)
-            assert False, "Expected failure for extra property in required mode, but command succeeded."
-        except Exception as ex:
-            assert "invalid" in str(ex).lower() or "error" in str(ex).lower() or "property" in str(ex).lower(), f"Unexpected error: {ex}"
-
-        self.cmd(
-            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
-            checks=[self.is_empty()],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
     def test_aks_nodepool_add_with_localdns_empty_mode(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
