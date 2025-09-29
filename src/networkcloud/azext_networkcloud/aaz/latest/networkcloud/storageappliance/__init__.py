@@ -12,6 +12,7 @@ from .__cmd_group import *
 from ._disable_remote_vendor_management import *
 from ._enable_remote_vendor_management import *
 from ._list import *
+from ._run_read_command import *
 from ._show import *
 from ._update import *
 from ._wait import *

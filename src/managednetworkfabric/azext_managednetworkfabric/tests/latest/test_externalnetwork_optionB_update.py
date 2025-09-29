@@ -25,7 +25,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_update_s1(test, checks=[])
     step_show(test, checks=[])

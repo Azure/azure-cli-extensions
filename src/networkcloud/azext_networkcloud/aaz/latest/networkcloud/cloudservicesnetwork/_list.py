@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cloudservicesnetwork list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List cloud services networks in the provided resource group or subscription.
@@ -25,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/cloudservicesnetworks", "2025-02-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/cloudservicesnetworks", "2025-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks", "2025-07-01-preview"],
         ]
     }
 
@@ -50,6 +51,14 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.skip_token = AAZStrArg(
+            options=["--skip-token"],
+            help="The opaque token that the server returns to indicate where to continue listing resources from. This is used for paging through large result sets.",
+        )
+        _args_schema.top = AAZIntArg(
+            options=["--top"],
+            help="The maximum number of resources to return from the operation. Example: '$top=10'.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -115,7 +124,13 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "$skipToken", self.ctx.args.skip_token,
+                ),
+                **self.serialize_query_param(
+                    "$top", self.ctx.args.top,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -232,6 +247,13 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.storage_options = AAZObjectType(
+                serialized_name="storageOptions",
+            )
+            properties.storage_status = AAZObjectType(
+                serialized_name="storageStatus",
+                flags={"read_only": True},
+            )
             properties.virtual_machines_associated_ids = AAZListType(
                 serialized_name="virtualMachinesAssociatedIds",
                 flags={"read_only": True},
@@ -250,6 +272,35 @@ class List(AAZCommand):
 
             hybrid_aks_clusters_associated_ids = cls._schema_on_200.value.Element.properties.hybrid_aks_clusters_associated_ids
             hybrid_aks_clusters_associated_ids.Element = AAZStrType()
+
+            storage_options = cls._schema_on_200.value.Element.properties.storage_options
+            storage_options.mode = AAZStrType()
+            storage_options.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+            )
+            storage_options.storage_appliance_id = AAZStrType(
+                serialized_name="storageApplianceId",
+            )
+
+            storage_status = cls._schema_on_200.value.Element.properties.storage_status
+            storage_status.mode = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+                flags={"read_only": True},
+            )
+            storage_status.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.status_message = AAZStrType(
+                serialized_name="statusMessage",
+                flags={"read_only": True},
+            )
+            storage_status.volume_id = AAZStrType(
+                serialized_name="volumeId",
+                flags={"read_only": True},
+            )
 
             virtual_machines_associated_ids = cls._schema_on_200.value.Element.properties.virtual_machines_associated_ids
             virtual_machines_associated_ids.Element = AAZStrType()
@@ -323,7 +374,13 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "$skipToken", self.ctx.args.skip_token,
+                ),
+                **self.serialize_query_param(
+                    "$top", self.ctx.args.top,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -440,6 +497,13 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.storage_options = AAZObjectType(
+                serialized_name="storageOptions",
+            )
+            properties.storage_status = AAZObjectType(
+                serialized_name="storageStatus",
+                flags={"read_only": True},
+            )
             properties.virtual_machines_associated_ids = AAZListType(
                 serialized_name="virtualMachinesAssociatedIds",
                 flags={"read_only": True},
@@ -458,6 +522,35 @@ class List(AAZCommand):
 
             hybrid_aks_clusters_associated_ids = cls._schema_on_200.value.Element.properties.hybrid_aks_clusters_associated_ids
             hybrid_aks_clusters_associated_ids.Element = AAZStrType()
+
+            storage_options = cls._schema_on_200.value.Element.properties.storage_options
+            storage_options.mode = AAZStrType()
+            storage_options.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+            )
+            storage_options.storage_appliance_id = AAZStrType(
+                serialized_name="storageApplianceId",
+            )
+
+            storage_status = cls._schema_on_200.value.Element.properties.storage_status
+            storage_status.mode = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+                flags={"read_only": True},
+            )
+            storage_status.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.status_message = AAZStrType(
+                serialized_name="statusMessage",
+                flags={"read_only": True},
+            )
+            storage_status.volume_id = AAZStrType(
+                serialized_name="volumeId",
+                flags={"read_only": True},
+            )
 
             virtual_machines_associated_ids = cls._schema_on_200.value.Element.properties.virtual_machines_associated_ids
             virtual_machines_associated_ids.Element = AAZStrType()
