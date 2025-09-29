@@ -115,6 +115,7 @@ class Update(AAZCommand):
             options=["express-route-circuit-id"],
             help="The express route circuit Azure resource ID, must be of type Microsoft.Network/expressRouteCircuits/circuitName. The ExpressRoute Circuit is a mandatory attribute.",
             required=True,
+            nullable=True,
         )
 
         _schema.express_route_authorization_key = cls._args_express_route_connection_information_update.express_route_authorization_key
@@ -351,10 +352,14 @@ class Update(AAZCommand):
             managed_resource_group_configuration.name = AAZStrType()
 
             network_fabric_ids = cls._schema_on_200.properties.network_fabric_ids
-            network_fabric_ids.Element = AAZStrType()
+            network_fabric_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             tenant_internet_gateway_ids = cls._schema_on_200.properties.tenant_internet_gateway_ids
-            tenant_internet_gateway_ids.Element = AAZStrType()
+            tenant_internet_gateway_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             workload_express_route_connections = cls._schema_on_200.properties.workload_express_route_connections
             workload_express_route_connections.Element = AAZObjectType()
@@ -394,7 +399,7 @@ class _UpdateHelper:
         if _builder is None:
             return
         _builder.set_prop("expressRouteAuthorizationKey", AAZStrType, ".express_route_authorization_key", typ_kwargs={"flags": {"secret": True}})
-        _builder.set_prop("expressRouteCircuitId", AAZStrType, ".express_route_circuit_id", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("expressRouteCircuitId", AAZStrType, ".express_route_circuit_id", typ_kwargs={"flags": {"required": True}, "nullable": True})
 
     _schema_controller_services_read = None
 
@@ -445,6 +450,7 @@ class _UpdateHelper:
         express_route_connection_information_read.express_route_circuit_id = AAZStrType(
             serialized_name="expressRouteCircuitId",
             flags={"required": True},
+            nullable=True,
         )
 
         _schema.express_route_authorization_key = cls._schema_express_route_connection_information_read.express_route_authorization_key

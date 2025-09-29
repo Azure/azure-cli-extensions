@@ -3,6 +3,14 @@
 Release History
 ===============
 
+4.0.0
+++++++
+* Added new bulk management commands:
+  * ``az workload-orchestration solution-template bulk-review`` - Review solutions across multiple targets and apply target-specific configurations in bulk
+* Added option in bulk publish to publish solution even without review
+* Updated context ID validation during target create for improved reliability
+* Upgraded API version from 2025-06-01 to 2025-08-01
+
 3.0.0
 ++++++
 * Added Context Management capabilities with new commands:

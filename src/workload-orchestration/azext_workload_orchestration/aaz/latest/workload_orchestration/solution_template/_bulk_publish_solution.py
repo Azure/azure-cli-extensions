@@ -15,16 +15,15 @@ from azure.cli.core.aaz import *
     "workload-orchestration solution-template bulk-publish",
 )
 class BulkPublishSolution(AAZCommand):
-    """Post request to bulk publish
-     :example: Publish bulk publish solution
-            az workload-orchestration solution-template bulk-publish --targets "@targets.json" --name <solution-template-name> --version "<solution-template-version>" -g <rg>
-
+    """Post request for bulk publish
+    :example: Bulk publish solution for multiple targets.
+        az workload-orchestration solution-template bulk-publish --resource-group myResourceGroup --solution-template-name myTemplate --solution-template-version 1.0.0 --targets "@targets.json" 
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutiontemplates/{}/versions/{}/bulkpublishsolution", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutiontemplates/{}/versions/{}/bulkpublishsolution", "2025-08-01"],
         ]
     }
 
@@ -33,7 +32,7 @@ class BulkPublishSolution(AAZCommand):
     def _handler(self, command_args):
         super()._handler(command_args)
         return self.build_lro_poller(self._execute_operations, self._output)
-        
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
@@ -58,11 +57,13 @@ class BulkPublishSolution(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9-]{3,24}$",
+                pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
+                max_length=61,
+                min_length=3,
             ),
         )
         _args_schema.solution_template_version_name = AAZStrArg(
-            options=["--solution-template-version","--version","-v"],
+            options=["-v", "--version", "--solution-template-version-name","--solution-template-version"],
             help="The name of the SolutionTemplateVersion",
             required=True,
             id_part="child_name_1",
@@ -74,15 +75,20 @@ class BulkPublishSolution(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
+        _args_schema.solution_configuration = AAZStrArg(
+            options=["--configuration"],
+            arg_group="Body",
+            help="Configuration of solution for the target/s",
+        )
         _args_schema.solution_dependencies = AAZListArg(
-            options=["--solution-dependencies"],
+            options=["--dependencies","--solution-dependencies"],
             arg_group="Body",
             help="Solution dependencies",
         )
         _args_schema.solution_instance_name = AAZStrArg(
-            options=["--solution-instance-name"],
+            options=["--instance-name","--solution-instance-name"],
             arg_group="Body",
-            help="Solution instance name",
+            help="Name of the solution instance",
             fmt=AAZStrArgFormat(
                 pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
             ),
@@ -90,7 +96,7 @@ class BulkPublishSolution(AAZCommand):
         _args_schema.targets = AAZListArg(
             options=["--targets"],
             arg_group="Body",
-            help="Targets",
+            help="Targets to which solution needs to be published",
             required=True,
         )
 
@@ -102,12 +108,20 @@ class BulkPublishSolution(AAZCommand):
         targets.Element = AAZObjectArg()
 
         _element = cls._args_schema.targets.Element
+        _element.solution_configuration = AAZStrArg(
+            options=["solution-configuration"],
+            help="Configuration of solution",
+        )
         _element.solution_instance_name = AAZStrArg(
             options=["solution-instance-name"],
-            help="Solution instance name",
+            help="Name of the solution instance",
             fmt=AAZStrArgFormat(
                 pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
             ),
+        )
+        _element.solution_version_id = AAZResourceIdArg(
+            options=["solution-version-id"],
+            help="ArmId of Target Solution Version",
         )
         _element.target_id = AAZResourceIdArg(
             options=["target-id"],
@@ -140,7 +154,7 @@ class BulkPublishSolution(AAZCommand):
             options=["solution-instance-name"],
             help="Solution Instance Name",
             fmt=AAZStrArgFormat(
-                pattern="^(?!v-)(?!.*-v-)[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+                pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
                 max_length=24,
             ),
         )
@@ -191,7 +205,7 @@ class BulkPublishSolution(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200,201,202]:
+            if session.http_response.status_code in [202, 200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
@@ -202,17 +216,17 @@ class BulkPublishSolution(AAZCommand):
                 )
 
             return self.on_error(session.http_response)
-        
+
         def on_200(self, session):
-                    data = self.deserialize_http_content(session)
-                    self.ctx.set_var(
-                        "instance",
-                        data,
-                        schema_builder=self._build_schema_on_200
-        )
-                    
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
 
         _schema_on_200 = None
+
         @classmethod
         def _build_schema_on_200(cls):
             if cls._schema_on_200 is not None:
@@ -285,7 +299,6 @@ class BulkPublishSolution(AAZCommand):
             )
 
             return cls._schema_on_200
-
         @property
         def url(self):
             return self.client.format_url(
@@ -327,7 +340,7 @@ class BulkPublishSolution(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-08-01",
                     required=True,
                 ),
             }
@@ -349,6 +362,7 @@ class BulkPublishSolution(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("solutionConfiguration", AAZStrType, ".solution_configuration")
             _builder.set_prop("solutionDependencies", AAZListType, ".solution_dependencies")
             _builder.set_prop("solutionInstanceName", AAZStrType, ".solution_instance_name")
             _builder.set_prop("targets", AAZListType, ".targets", typ_kwargs={"flags": {"required": True}})
@@ -363,9 +377,20 @@ class BulkPublishSolution(AAZCommand):
 
             _elements = _builder.get(".targets[]")
             if _elements is not None:
+                _elements.set_prop("solutionConfiguration", AAZStrType, ".solution_configuration")
                 _elements.set_prop("solutionInstanceName", AAZStrType, ".solution_instance_name")
+                _elements.set_prop("solutionVersionId", AAZStrType, ".solution_version_id")
                 _elements.set_prop("targetId", AAZStrType, ".target_id", typ_kwargs={"flags": {"required": True}})
-
+            if _elements is not None:
+                for t in _content_value.targets:
+                    try:
+                        if has_value(t.solutionConfiguration):
+                            file_name = str(t.solutionConfiguration)
+                            with open(file_name) as file:
+                                configuration = file.read()
+                                t.solutionConfiguration = configuration
+                    except Exception:
+                        pass
             return self.serialize_content(_content_value)
 
 
@@ -379,10 +404,10 @@ class _BulkPublishSolutionHelper:
         _builder.set_prop("dependencies", AAZListType, ".dependencies")
         _builder.set_prop("solutionInstanceName", AAZStrType, ".solution_instance_name")
         _builder.set_prop("solutionTemplateId", AAZStrType, ".solution_template_id")
+        _builder.set_prop("solutionTemplateVersion", AAZStrType, ".solution_template_version")
+        _builder.set_prop("solutionVersionId", AAZStrType, ".solution_version_id")
+        _builder.set_prop("targetId", AAZStrType, ".target_id")
 
-        _builder.set_prop("targetId", AAZStrType, ".target_id")        
-        _builder.set_prop("solutionVersionId", AAZStrType, ".solution_version_id")        
-        _builder.set_prop("solutionTemplateVersion", AAZStrType, ".solution_template_version")        
         dependencies = _builder.get(".dependencies")
         if dependencies is not None:
             cls._build_schema_solution_dependency_parameter_create(dependencies.set_elements(AAZObjectType, "."))

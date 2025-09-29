@@ -31,7 +31,7 @@ class VHDFileInput(BaseInput):
     :type blob_sas_uri: Optional[str]
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         artifact_name: str,
         artifact_version: str,

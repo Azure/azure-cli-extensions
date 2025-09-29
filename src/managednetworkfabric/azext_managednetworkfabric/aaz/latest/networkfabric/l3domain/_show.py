@@ -200,6 +200,7 @@ class Show(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -329,9 +330,11 @@ class _ShowHelper:
         l3_export_route_policy_read = _schema_l3_export_route_policy_read
         l3_export_route_policy_read.export_ipv4_route_policy_id = AAZStrType(
             serialized_name="exportIpv4RoutePolicyId",
+            nullable=True,
         )
         l3_export_route_policy_read.export_ipv6_route_policy_id = AAZStrType(
             serialized_name="exportIpv6RoutePolicyId",
+            nullable=True,
         )
 
         _schema.export_ipv4_route_policy_id = cls._schema_l3_export_route_policy_read.export_ipv4_route_policy_id

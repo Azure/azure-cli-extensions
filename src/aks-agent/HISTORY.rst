@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b4
++++++++
+* Fix the --aks-mcp flag to allow true/false values.
+* Bump aks-mcp version to v0.0.9
+
 1.0.0b3
 +++++++
 * Disable aks-mcp by default, offer --aks-mcp flag to enable it.

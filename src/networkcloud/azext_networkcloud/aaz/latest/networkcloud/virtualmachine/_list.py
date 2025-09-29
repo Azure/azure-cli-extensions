@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List virtual machines in the provided resource group or subscription.
@@ -25,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/virtualmachines", "2025-02-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/virtualmachines", "2025-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines", "2025-07-01-preview"],
         ]
     }
 
@@ -50,6 +51,14 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.skip_token = AAZStrArg(
+            options=["--skip-token"],
+            help="The opaque token that the server returns to indicate where to continue listing resources from. This is used for paging through large result sets.",
+        )
+        _args_schema.top = AAZIntArg(
+            options=["--top"],
+            help="The maximum number of resources to return from the operation. Example: '$top=10'.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -115,7 +124,13 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "$skipToken", self.ctx.args.skip_token,
+                ),
+                **self.serialize_query_param(
+                    "$top", self.ctx.args.top,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -168,6 +183,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -183,6 +199,37 @@ class List(AAZCommand):
             )
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
                 flags={"read_only": True},
             )
 
@@ -239,6 +286,10 @@ class List(AAZCommand):
             properties.network_data = AAZStrType(
                 serialized_name="networkData",
             )
+            properties.network_data_content = AAZStrType(
+                serialized_name="networkDataContent",
+                flags={"secret": True},
+            )
             properties.placement_hints = AAZListType(
                 serialized_name="placementHints",
             )
@@ -259,6 +310,10 @@ class List(AAZCommand):
             )
             properties.user_data = AAZStrType(
                 serialized_name="userData",
+            )
+            properties.user_data_content = AAZStrType(
+                serialized_name="userDataContent",
+                flags={"secret": True},
             )
             properties.virtio_interface = AAZStrType(
                 serialized_name="virtioInterface",
@@ -469,7 +524,13 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "$skipToken", self.ctx.args.skip_token,
+                ),
+                **self.serialize_query_param(
+                    "$top", self.ctx.args.top,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -522,6 +583,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -537,6 +599,37 @@ class List(AAZCommand):
             )
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
                 flags={"read_only": True},
             )
 
@@ -593,6 +686,10 @@ class List(AAZCommand):
             properties.network_data = AAZStrType(
                 serialized_name="networkData",
             )
+            properties.network_data_content = AAZStrType(
+                serialized_name="networkDataContent",
+                flags={"secret": True},
+            )
             properties.placement_hints = AAZListType(
                 serialized_name="placementHints",
             )
@@ -613,6 +710,10 @@ class List(AAZCommand):
             )
             properties.user_data = AAZStrType(
                 serialized_name="userData",
+            )
+            properties.user_data_content = AAZStrType(
+                serialized_name="userDataContent",
+                flags={"secret": True},
             )
             properties.virtio_interface = AAZStrType(
                 serialized_name="virtioInterface",

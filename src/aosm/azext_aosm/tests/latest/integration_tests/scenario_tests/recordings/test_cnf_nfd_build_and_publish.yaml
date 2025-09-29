@@ -13,9 +13,9 @@ interactions:
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: HEAD
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001?api-version=2022-09-01
   response:
     body:
       string: ''
@@ -25,7 +25,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 15 May 2024 15:45:27 GMT
+      - Fri, 09 Aug 2024 00:17:08 GMT
       expires:
       - '-1'
       pragma:
@@ -37,702 +37,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: C24736659FD5488D8582658A4872D54A Ref B: AMS231020512033 Ref C: 2024-05-15T15:45:27Z'
+      - 'Ref A: C756F9B31B5E4875A8DC05A33EE76BE9 Ref B: SJC211051204031 Ref C: 2024-08-09T00:17:09Z'
     status:
       code: 204
       message: No Content
 - request:
-    body: '{"properties": {"template": {"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-      "contentVersion": "1.0.0.0", "metadata": {"_generator": {"name": "bicep", "version":
-      "0.8.9.13224", "templateHash": "16280524387813352742"}}, "parameters": {"location":
-      {"type": "string"}, "publisherName": {"type": "string", "metadata": {"description":
-      "Name of a publisher, expected to be in the resource group where you deploy
-      the template"}}, "acrArtifactStoreName": {"type": "string", "metadata": {"description":
-      "Name of an ACR-backed Artifact Store, deployed under the publisher."}}, "nfDefinitionGroup":
-      {"type": "string", "metadata": {"description": "Name of a Network Function Definition
-      Group"}}}, "resources": [{"type": "Microsoft.HybridNetwork/publishers", "apiVersion":
-      "2023-09-01", "name": "[parameters(''publisherName'')]", "location": "[parameters(''location'')]",
-      "properties": {"scope": "Private"}}, {"type": "Microsoft.HybridNetwork/publishers/artifactStores",
-      "apiVersion": "2023-09-01", "name": "[format(''{0}/{1}'', parameters(''publisherName''),
-      parameters(''acrArtifactStoreName''))]", "location": "[parameters(''location'')]",
-      "properties": {"storeType": "AzureContainerRegistry"}, "dependsOn": ["[resourceId(''Microsoft.HybridNetwork/publishers'',
-      parameters(''publisherName''))]"]}, {"type": "Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups",
-      "apiVersion": "2023-09-01", "name": "[format(''{0}/{1}'', parameters(''publisherName''),
-      parameters(''nfDefinitionGroup''))]", "location": "[parameters(''location'')]",
-      "dependsOn": ["[resourceId(''Microsoft.HybridNetwork/publishers'', parameters(''publisherName''))]"]}]},
-      "parameters": {"location": {"value": "uksouth"}, "publisherName": {"value":
-      "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"value": "nginx-acr"},
-      "nfDefinitionGroup": {"value": "nginx"}}, "mode": "Incremental"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '1887'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/validate?api-version=2024-11-01
-  response:
-    body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1715787933",
-        "name": "AOSM_CLI_deployment_1715787933", "type": "Microsoft.Resources/deployments",
-        "properties": {"templateHash": "16280524387813352742", "parameters": {"location":
-        {"type": "String", "value": "uksouth"}, "publisherName": {"type": "String",
-        "value": "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"type":
-        "String", "value": "nginx-acr"}, "nfDefinitionGroup": {"type": "String", "value":
-        "nginx"}}, "mode": "Incremental", "provisioningState": "Succeeded", "timestamp":
-        "0001-01-01T00:00:00Z", "duration": "PT0S", "correlationId": "717adb6d-3ec1-4f3d-90e6-ec8b47939dca",
-        "providers": [{"namespace": "Microsoft.HybridNetwork", "resourceTypes": [{"resourceType":
-        "publishers", "locations": ["uksouth"]}, {"resourceType": "publishers/artifactStores",
-        "locations": ["uksouth"]}, {"resourceType": "publishers/networkfunctiondefinitiongroups",
-        "locations": ["uksouth"]}]}], "dependencies": [{"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher",
-        "resourceType": "Microsoft.HybridNetwork/publishers", "resourceName": "automated-cli-test-nginx-publisher"}],
-        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher/artifactStores/nginx-acr",
-        "resourceType": "Microsoft.HybridNetwork/publishers/artifactStores", "resourceName":
-        "automated-cli-test-nginx-publisher/nginx-acr"}, {"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher",
-        "resourceType": "Microsoft.HybridNetwork/publishers", "resourceName": "automated-cli-test-nginx-publisher"}],
-        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Hybridnetwork/publishers/automated-cli-test-nginx-publisher/networkfunctiondefinitiongroups/nginx",
-        "resourceType": "Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups",
-        "resourceName": "automated-cli-test-nginx-publisher/nginx"}], "validatedResources":
-        [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher"},
-        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher/artifactStores/nginx-acr"},
-        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Hybridnetwork/publishers/automated-cli-test-nginx-publisher/networkfunctiondefinitiongroups/nginx"}]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '3026'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:45:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-msedge-ref:
-      - 'Ref A: C1D84EF9D32E4E8689289F75A0C61C4F Ref B: AMS231020512033 Ref C: 2024-05-15T15:45:34Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"template": {"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-      "contentVersion": "1.0.0.0", "metadata": {"_generator": {"name": "bicep", "version":
-      "0.8.9.13224", "templateHash": "16280524387813352742"}}, "parameters": {"location":
-      {"type": "string"}, "publisherName": {"type": "string", "metadata": {"description":
-      "Name of a publisher, expected to be in the resource group where you deploy
-      the template"}}, "acrArtifactStoreName": {"type": "string", "metadata": {"description":
-      "Name of an ACR-backed Artifact Store, deployed under the publisher."}}, "nfDefinitionGroup":
-      {"type": "string", "metadata": {"description": "Name of a Network Function Definition
-      Group"}}}, "resources": [{"type": "Microsoft.HybridNetwork/publishers", "apiVersion":
-      "2023-09-01", "name": "[parameters(''publisherName'')]", "location": "[parameters(''location'')]",
-      "properties": {"scope": "Private"}}, {"type": "Microsoft.HybridNetwork/publishers/artifactStores",
-      "apiVersion": "2023-09-01", "name": "[format(''{0}/{1}'', parameters(''publisherName''),
-      parameters(''acrArtifactStoreName''))]", "location": "[parameters(''location'')]",
-      "properties": {"storeType": "AzureContainerRegistry"}, "dependsOn": ["[resourceId(''Microsoft.HybridNetwork/publishers'',
-      parameters(''publisherName''))]"]}, {"type": "Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups",
-      "apiVersion": "2023-09-01", "name": "[format(''{0}/{1}'', parameters(''publisherName''),
-      parameters(''nfDefinitionGroup''))]", "location": "[parameters(''location'')]",
-      "dependsOn": ["[resourceId(''Microsoft.HybridNetwork/publishers'', parameters(''publisherName''))]"]}]},
-      "parameters": {"location": {"value": "uksouth"}, "publisherName": {"value":
-      "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"value": "nginx-acr"},
-      "nfDefinitionGroup": {"value": "nginx"}}, "mode": "Incremental"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '1887'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
-  response:
-    body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1715787933",
-        "name": "AOSM_CLI_deployment_1715787933", "type": "Microsoft.Resources/deployments",
-        "properties": {"templateHash": "16280524387813352742", "parameters": {"location":
-        {"type": "String", "value": "uksouth"}, "publisherName": {"type": "String",
-        "value": "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"type":
-        "String", "value": "nginx-acr"}, "nfDefinitionGroup": {"type": "String", "value":
-        "nginx"}}, "mode": "Incremental", "provisioningState": "Accepted", "timestamp":
-        "2024-05-15T15:45:35.354406Z", "duration": "PT0.0005935S", "correlationId":
-        "f0403d49-cca1-4802-b52a-f238847e2ffb", "providers": [{"namespace": "Microsoft.HybridNetwork",
-        "resourceTypes": [{"resourceType": "publishers", "locations": ["uksouth"]},
-        {"resourceType": "publishers/artifactStores", "locations": ["uksouth"]}, {"resourceType":
-        "publishers/networkfunctiondefinitiongroups", "locations": ["uksouth"]}]}],
-        "dependencies": [{"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher",
-        "resourceType": "Microsoft.HybridNetwork/publishers", "resourceName": "automated-cli-test-nginx-publisher"}],
-        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher/artifactStores/nginx-acr",
-        "resourceType": "Microsoft.HybridNetwork/publishers/artifactStores", "resourceName":
-        "automated-cli-test-nginx-publisher/nginx-acr"}, {"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher",
-        "resourceType": "Microsoft.HybridNetwork/publishers", "resourceName": "automated-cli-test-nginx-publisher"}],
-        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Hybridnetwork/publishers/automated-cli-test-nginx-publisher/networkfunctiondefinitiongroups/nginx",
-        "resourceType": "Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups",
-        "resourceName": "automated-cli-test-nginx-publisher/nginx"}]}}'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1715787933/operationStatuses/08584858189504049589?api-version=2024-11-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '2407'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:45:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-msedge-ref:
-      - 'Ref A: 09CCBA4CDFD645DD9AC43C66793D5B5F Ref B: AMS231020512033 Ref C: 2024-05-15T15:45:34Z'
-    status:
-      code: 201
-      message: Created
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858189504049589?api-version=2024-11-01
-  response:
-    body:
-      string: '{"status": "Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '22'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:45:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: E364349D5422433EA2FE41289FF6C17C Ref B: AMS231020512033 Ref C: 2024-05-15T15:45:35Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858189504049589?api-version=2024-11-01
-  response:
-    body:
-      string: '{"status": "Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:46:04 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: C4C93C07060C4E62BF7A35EB8543E504 Ref B: AMS231020512033 Ref C: 2024-05-15T15:46:05Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858189504049589?api-version=2024-11-01
-  response:
-    body:
-      string: '{"status": "Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:46:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: F84BFB8127014A68B44079D21C15161E Ref B: AMS231020512033 Ref C: 2024-05-15T15:46:35Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858189504049589?api-version=2024-11-01
-  response:
-    body:
-      string: '{"status": "Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:47:04 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 2DFA308573F54A9AB3A5E1A2A03DB452 Ref B: AMS231020512033 Ref C: 2024-05-15T15:47:05Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858189504049589?api-version=2024-11-01
-  response:
-    body:
-      string: '{"status": "Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:47:35 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 7997DC90B599460FB234A944D6263A6B Ref B: AMS231020512033 Ref C: 2024-05-15T15:47:35Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858189504049589?api-version=2024-11-01
-  response:
-    body:
-      string: '{"status": "Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:48:06 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 54ED4E0B40D74B388BBFC6D46088E239 Ref B: AMS231020512033 Ref C: 2024-05-15T15:48:07Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858189504049589?api-version=2024-11-01
-  response:
-    body:
-      string: '{"status": "Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:48:36 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 074683E34C6849BBBB75505779220D34 Ref B: AMS231020512033 Ref C: 2024-05-15T15:48:37Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858189504049589?api-version=2024-11-01
-  response:
-    body:
-      string: '{"status": "Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:49:06 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 27076DE1E7CE4E96A96FAF19526AC4CA Ref B: AMS231020512033 Ref C: 2024-05-15T15:49:07Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858189504049589?api-version=2024-11-01
-  response:
-    body:
-      string: '{"status": "Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:49:36 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 16CC1F39AE6047E1B6904BAB85C4EB8F Ref B: AMS231020512033 Ref C: 2024-05-15T15:49:37Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858189504049589?api-version=2024-11-01
-  response:
-    body:
-      string: '{"status": "Succeeded"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '23'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:50:06 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 28A577FA6F494890ACE304DBB549F9E5 Ref B: AMS231020512033 Ref C: 2024-05-15T15:50:07Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
-  response:
-    body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1715787933",
-        "name": "AOSM_CLI_deployment_1715787933", "type": "Microsoft.Resources/deployments",
-        "properties": {"templateHash": "16280524387813352742", "parameters": {"location":
-        {"type": "String", "value": "uksouth"}, "publisherName": {"type": "String",
-        "value": "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"type":
-        "String", "value": "nginx-acr"}, "nfDefinitionGroup": {"type": "String", "value":
-        "nginx"}}, "mode": "Incremental", "provisioningState": "Succeeded", "timestamp":
-        "2024-05-15T15:49:40.0429444Z", "duration": "PT4M4.6891319S", "correlationId":
-        "f0403d49-cca1-4802-b52a-f238847e2ffb", "providers": [{"namespace": "Microsoft.HybridNetwork",
-        "resourceTypes": [{"resourceType": "publishers", "locations": ["uksouth"]},
-        {"resourceType": "publishers/artifactStores", "locations": ["uksouth"]}, {"resourceType":
-        "publishers/networkfunctiondefinitiongroups", "locations": ["uksouth"]}]}],
-        "dependencies": [{"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher",
-        "resourceType": "Microsoft.HybridNetwork/publishers", "resourceName": "automated-cli-test-nginx-publisher"}],
-        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher/artifactStores/nginx-acr",
-        "resourceType": "Microsoft.HybridNetwork/publishers/artifactStores", "resourceName":
-        "automated-cli-test-nginx-publisher/nginx-acr"}, {"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher",
-        "resourceType": "Microsoft.HybridNetwork/publishers", "resourceName": "automated-cli-test-nginx-publisher"}],
-        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Hybridnetwork/publishers/automated-cli-test-nginx-publisher/networkfunctiondefinitiongroups/nginx",
-        "resourceType": "Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups",
-        "resourceName": "automated-cli-test-nginx-publisher/nginx"}], "outputResources":
-        [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher"},
-        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher/artifactStores/nginx-acr"},
-        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Hybridnetwork/publishers/automated-cli-test-nginx-publisher/networkfunctiondefinitiongroups/nginx"}]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '3041'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:50:06 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 8AD05E5274FF40C08AAB8316AF00A8E7 Ref B: AMS231020512033 Ref C: 2024-05-15T15:50:07Z'
-    status:
-      code: 200
-      message: OK
-- request:
     body: null
     headers:
       Accept:
@@ -746,23 +55,23 @@ interactions:
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-hybridnetwork/unknown Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher/artifactStores/nginx-acr/artifactManifests/nginx-acr-manifest-1-0-0?api-version=2023-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new?api-version=2024-04-15
   response:
     body:
-      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher/artifactStores/nginx-acr/artifactManifests/nginx-acr-manifest-1-0-0''
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new''
         under resource group ''cli_test_cnf_nfd_000001'' was not found. For more details
         please go to https://aka.ms/ARMResourceNotFoundFix"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '336'
+      - '272'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:50:07 GMT
+      - Fri, 09 Aug 2024 00:17:09 GMT
       expires:
       - '-1'
       pragma:
@@ -776,29 +85,40 @@ interactions:
       x-ms-failure-cause:
       - gateway
       x-msedge-ref:
-      - 'Ref A: 047DD02C6AA44EBA98A783E68A1BB1D5 Ref B: AMS231022012027 Ref C: 2024-05-15T15:50:07Z'
+      - 'Ref A: 807831F44C0341468A5DD622C669D55B Ref B: SJC211051204037 Ref C: 2024-08-09T00:17:09Z'
     status:
       code: 404
       message: Not Found
 - request:
     body: '{"properties": {"template": {"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
       "contentVersion": "1.0.0.0", "metadata": {"_generator": {"name": "bicep", "version":
-      "0.8.9.13224", "templateHash": "8068031912378000682"}}, "parameters": {"location":
+      "0.26.54.24096", "templateHash": "1979882574704454526"}}, "parameters": {"location":
       {"type": "string"}, "publisherName": {"type": "string", "metadata": {"description":
-      "Name of an existing publisher, expected to be in the resource group where you
-      deploy the template"}}, "acrArtifactStoreName": {"type": "string", "metadata":
-      {"description": "Name of an existing ACR-backed Artifact Store, deployed under
-      the publisher."}}, "acrManifestName": {"type": "string", "metadata": {"description":
-      "Name of the manifest to deploy for the ACR-backed Artifact Store"}}}, "resources":
-      [{"type": "Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests",
-      "apiVersion": "2023-09-01", "name": "[format(''{0}/{1}/{2}'', parameters(''publisherName''),
-      parameters(''acrArtifactStoreName''), parameters(''acrManifestName''))]", "location":
-      "[parameters(''location'')]", "properties": {"artifacts": [{"artifactName":
-      "nginxdemo", "artifactType": "OCIArtifact", "artifactVersion": "0.1.0"}, {"artifactName":
-      "nginx", "artifactType": "OCIArtifact", "artifactVersion": "stable"}]}}]}, "parameters":
-      {"location": {"value": "uksouth"}, "publisherName": {"value": "automated-cli-test-nginx-publisher"},
-      "acrArtifactStoreName": {"value": "nginx-acr"}, "acrManifestName": {"value":
-      "nginx-acr-manifest-1-0-0"}}, "mode": "Incremental"}}'
+      "Name of a publisher, expected to be in the resource group where you deploy
+      the template"}}, "acrArtifactStoreName": {"type": "string", "metadata": {"description":
+      "Name of an ACR-backed Artifact Store, deployed under the publisher."}}, "nfDefinitionGroup":
+      {"type": "string", "metadata": {"description": "Name of a Network Function Definition
+      Group"}}, "disablePublicNetworkAccess": {"type": "bool"}}, "resources": [{"type":
+      "Microsoft.HybridNetwork/publishers", "apiVersion": "2024-04-15", "name": "[parameters(''publisherName'')]",
+      "identity": {"type": "SystemAssigned"}, "location": "[parameters(''location'')]",
+      "properties": {"scope": "Private"}}, {"condition": "[not(parameters(''disablePublicNetworkAccess''))]",
+      "type": "Microsoft.HybridNetwork/publishers/artifactStores", "apiVersion": "2024-04-15",
+      "name": "[format(''{0}/{1}'', parameters(''publisherName''), parameters(''acrArtifactStoreName''))]",
+      "location": "[parameters(''location'')]", "properties": {"storeType": "AzureContainerRegistry"},
+      "dependsOn": ["[resourceId(''Microsoft.HybridNetwork/publishers'', parameters(''publisherName''))]"]},
+      {"condition": "[parameters(''disablePublicNetworkAccess'')]", "type": "Microsoft.HybridNetwork/publishers/artifactStores",
+      "apiVersion": "2024-04-15", "name": "[format(''{0}/{1}'', parameters(''publisherName''),
+      parameters(''acrArtifactStoreName''))]", "location": "[parameters(''location'')]",
+      "properties": {"storeType": "AzureContainerRegistry", "backingResourcePublicNetworkAccess":
+      "Disabled"}, "dependsOn": ["[resourceId(''Microsoft.HybridNetwork/publishers'',
+      parameters(''publisherName''))]"]}, {"type": "Microsoft.HybridNetwork/publishers/networkFunctionDefinitionGroups",
+      "apiVersion": "2024-04-15", "name": "[format(''{0}/{1}'', parameters(''publisherName''),
+      parameters(''nfDefinitionGroup''))]", "location": "[parameters(''location'')]",
+      "dependsOn": ["[resourceId(''Microsoft.HybridNetwork/publishers'', parameters(''publisherName''))]"]}]},
+      "parameters": {"location": {"value": "uksouth"}, "publisherName": {"value":
+      "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName": {"value":
+      "nginx-acr"}, "disablePublicNetworkAccess": {"value": false}, "nfDefinitionGroup":
+      {"value": "nginx"}}, "mode": "Incremental"}}'
     headers:
       Accept:
       - application/json
@@ -809,38 +129,51 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1517'
+      - '2581'
       Content-Type:
       - application/json
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/validate?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/validate?api-version=2022-09-01
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1715788212",
-        "name": "AOSM_CLI_deployment_1715788212", "type": "Microsoft.Resources/deployments",
-        "properties": {"templateHash": "8068031912378000682", "parameters": {"location":
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1723162632",
+        "name": "AOSM_CLI_deployment_1723162632", "type": "Microsoft.Resources/deployments",
+        "properties": {"templateHash": "1979882574704454526", "parameters": {"location":
         {"type": "String", "value": "uksouth"}, "publisherName": {"type": "String",
-        "value": "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"type":
-        "String", "value": "nginx-acr"}, "acrManifestName": {"type": "String", "value":
-        "nginx-acr-manifest-1-0-0"}}, "mode": "Incremental", "provisioningState":
-        "Succeeded", "timestamp": "0001-01-01T00:00:00Z", "duration": "PT0S", "correlationId":
-        "0d4e3b2e-2dfb-498e-9356-42bf3bcee085", "providers": [{"namespace": "Microsoft.Hybridnetwork",
-        "resourceTypes": [{"resourceType": "publishers/artifactStores/artifactManifests",
-        "locations": ["uksouth"]}]}], "dependencies": [], "validatedResources": [{"id":
-        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Hybridnetwork/publishers/automated-cli-test-nginx-publisher/artifactStores/nginx-acr/artifactManifests/nginx-acr-manifest-1-0-0"}]}}'
+        "value": "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName":
+        {"type": "String", "value": "nginx-acr"}, "nfDefinitionGroup": {"type": "String",
+        "value": "nginx"}, "disablePublicNetworkAccess": {"type": "Bool", "value":
+        false}}, "mode": "Incremental", "provisioningState": "Succeeded", "timestamp":
+        "0001-01-01T00:00:00Z", "duration": "PT0S", "correlationId": "94833090-3fa8-411d-9993-54f020199ea9",
+        "providers": [{"namespace": "Microsoft.HybridNetwork", "resourceTypes": [{"resourceType":
+        "publishers", "locations": ["uksouth"]}, {"resourceType": "publishers/artifactStores",
+        "locations": ["uksouth"]}, {"resourceType": "publishers/networkFunctionDefinitionGroups",
+        "locations": ["uksouth"]}]}], "dependencies": [{"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new",
+        "resourceType": "Microsoft.HybridNetwork/publishers", "resourceName": "automated-cli-test-nginx-publisher-new"}],
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/artifactStores/nginx-acr",
+        "resourceType": "Microsoft.HybridNetwork/publishers/artifactStores", "resourceName":
+        "automated-cli-test-nginx-publisher-new/nginx-acr"}, {"dependsOn": [{"id":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new",
+        "resourceType": "Microsoft.HybridNetwork/publishers", "resourceName": "automated-cli-test-nginx-publisher-new"}],
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/networkFunctionDefinitionGroups/nginx",
+        "resourceType": "Microsoft.HybridNetwork/publishers/networkFunctionDefinitionGroups",
+        "resourceName": "automated-cli-test-nginx-publisher-new/nginx"}], "validatedResources":
+        [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/artifactStores/nginx-acr"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/networkFunctionDefinitionGroups/nginx"}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1239'
+      - '3137'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:50:12 GMT
+      - Fri, 09 Aug 2024 00:17:16 GMT
       expires:
       - '-1'
       pragma:
@@ -854,29 +187,40 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: 364B03708AE64FE0B3B168D60DF0AC79 Ref B: AMS231020512033 Ref C: 2024-05-15T15:50:12Z'
+      - 'Ref A: C38654B7811943779801CE2CF22B7824 Ref B: SJC211051205029 Ref C: 2024-08-09T00:17:12Z'
     status:
       code: 200
       message: OK
 - request:
     body: '{"properties": {"template": {"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
       "contentVersion": "1.0.0.0", "metadata": {"_generator": {"name": "bicep", "version":
-      "0.8.9.13224", "templateHash": "8068031912378000682"}}, "parameters": {"location":
+      "0.26.54.24096", "templateHash": "1979882574704454526"}}, "parameters": {"location":
       {"type": "string"}, "publisherName": {"type": "string", "metadata": {"description":
-      "Name of an existing publisher, expected to be in the resource group where you
-      deploy the template"}}, "acrArtifactStoreName": {"type": "string", "metadata":
-      {"description": "Name of an existing ACR-backed Artifact Store, deployed under
-      the publisher."}}, "acrManifestName": {"type": "string", "metadata": {"description":
-      "Name of the manifest to deploy for the ACR-backed Artifact Store"}}}, "resources":
-      [{"type": "Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests",
-      "apiVersion": "2023-09-01", "name": "[format(''{0}/{1}/{2}'', parameters(''publisherName''),
-      parameters(''acrArtifactStoreName''), parameters(''acrManifestName''))]", "location":
-      "[parameters(''location'')]", "properties": {"artifacts": [{"artifactName":
-      "nginxdemo", "artifactType": "OCIArtifact", "artifactVersion": "0.1.0"}, {"artifactName":
-      "nginx", "artifactType": "OCIArtifact", "artifactVersion": "stable"}]}}]}, "parameters":
-      {"location": {"value": "uksouth"}, "publisherName": {"value": "automated-cli-test-nginx-publisher"},
-      "acrArtifactStoreName": {"value": "nginx-acr"}, "acrManifestName": {"value":
-      "nginx-acr-manifest-1-0-0"}}, "mode": "Incremental"}}'
+      "Name of a publisher, expected to be in the resource group where you deploy
+      the template"}}, "acrArtifactStoreName": {"type": "string", "metadata": {"description":
+      "Name of an ACR-backed Artifact Store, deployed under the publisher."}}, "nfDefinitionGroup":
+      {"type": "string", "metadata": {"description": "Name of a Network Function Definition
+      Group"}}, "disablePublicNetworkAccess": {"type": "bool"}}, "resources": [{"type":
+      "Microsoft.HybridNetwork/publishers", "apiVersion": "2024-04-15", "name": "[parameters(''publisherName'')]",
+      "identity": {"type": "SystemAssigned"}, "location": "[parameters(''location'')]",
+      "properties": {"scope": "Private"}}, {"condition": "[not(parameters(''disablePublicNetworkAccess''))]",
+      "type": "Microsoft.HybridNetwork/publishers/artifactStores", "apiVersion": "2024-04-15",
+      "name": "[format(''{0}/{1}'', parameters(''publisherName''), parameters(''acrArtifactStoreName''))]",
+      "location": "[parameters(''location'')]", "properties": {"storeType": "AzureContainerRegistry"},
+      "dependsOn": ["[resourceId(''Microsoft.HybridNetwork/publishers'', parameters(''publisherName''))]"]},
+      {"condition": "[parameters(''disablePublicNetworkAccess'')]", "type": "Microsoft.HybridNetwork/publishers/artifactStores",
+      "apiVersion": "2024-04-15", "name": "[format(''{0}/{1}'', parameters(''publisherName''),
+      parameters(''acrArtifactStoreName''))]", "location": "[parameters(''location'')]",
+      "properties": {"storeType": "AzureContainerRegistry", "backingResourcePublicNetworkAccess":
+      "Disabled"}, "dependsOn": ["[resourceId(''Microsoft.HybridNetwork/publishers'',
+      parameters(''publisherName''))]"]}, {"type": "Microsoft.HybridNetwork/publishers/networkFunctionDefinitionGroups",
+      "apiVersion": "2024-04-15", "name": "[format(''{0}/{1}'', parameters(''publisherName''),
+      parameters(''nfDefinitionGroup''))]", "location": "[parameters(''location'')]",
+      "dependsOn": ["[resourceId(''Microsoft.HybridNetwork/publishers'', parameters(''publisherName''))]"]}]},
+      "parameters": {"location": {"value": "uksouth"}, "publisherName": {"value":
+      "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName": {"value":
+      "nginx-acr"}, "disablePublicNetworkAccess": {"value": false}, "nfDefinitionGroup":
+      {"value": "nginx"}}, "mode": "Incremental"}}'
     headers:
       Accept:
       - application/json
@@ -887,39 +231,51 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1517'
+      - '2581'
       Content-Type:
       - application/json
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1715788212",
-        "name": "AOSM_CLI_deployment_1715788212", "type": "Microsoft.Resources/deployments",
-        "properties": {"templateHash": "8068031912378000682", "parameters": {"location":
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1723162632",
+        "name": "AOSM_CLI_deployment_1723162632", "type": "Microsoft.Resources/deployments",
+        "properties": {"templateHash": "1979882574704454526", "parameters": {"location":
         {"type": "String", "value": "uksouth"}, "publisherName": {"type": "String",
-        "value": "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"type":
-        "String", "value": "nginx-acr"}, "acrManifestName": {"type": "String", "value":
-        "nginx-acr-manifest-1-0-0"}}, "mode": "Incremental", "provisioningState":
-        "Accepted", "timestamp": "2024-05-15T15:50:13.8230612Z", "duration": "PT0.0005394S",
-        "correlationId": "51454ea2-5690-41a5-80fd-270f98207b1f", "providers": [{"namespace":
-        "Microsoft.Hybridnetwork", "resourceTypes": [{"resourceType": "publishers/artifactStores/artifactManifests",
-        "locations": ["uksouth"]}]}], "dependencies": []}}'
+        "value": "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName":
+        {"type": "String", "value": "nginx-acr"}, "nfDefinitionGroup": {"type": "String",
+        "value": "nginx"}, "disablePublicNetworkAccess": {"type": "Bool", "value":
+        false}}, "mode": "Incremental", "provisioningState": "Accepted", "timestamp":
+        "2024-08-09T00:17:21.7638922Z", "duration": "PT0.0004652S", "correlationId":
+        "70f1da64-7073-4566-a438-d321e1717d2b", "providers": [{"namespace": "Microsoft.HybridNetwork",
+        "resourceTypes": [{"resourceType": "publishers", "locations": ["uksouth"]},
+        {"resourceType": "publishers/artifactStores", "locations": ["uksouth"]}, {"resourceType":
+        "publishers/networkFunctionDefinitionGroups", "locations": ["uksouth"]}]}],
+        "dependencies": [{"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new",
+        "resourceType": "Microsoft.HybridNetwork/publishers", "resourceName": "automated-cli-test-nginx-publisher-new"}],
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/artifactStores/nginx-acr",
+        "resourceType": "Microsoft.HybridNetwork/publishers/artifactStores", "resourceName":
+        "automated-cli-test-nginx-publisher-new/nginx-acr"}, {"dependsOn": [{"id":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new",
+        "resourceType": "Microsoft.HybridNetwork/publishers", "resourceName": "automated-cli-test-nginx-publisher-new"}],
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/networkFunctionDefinitionGroups/nginx",
+        "resourceType": "Microsoft.HybridNetwork/publishers/networkFunctionDefinitionGroups",
+        "resourceName": "automated-cli-test-nginx-publisher-new/nginx"}]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1715788212/operationStatuses/08584858186719967850?api-version=2024-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1723162632/operationStatuses/08584784442464724293?api-version=2022-09-01
       cache-control:
       - no-cache
       content-length:
-      - '980'
+      - '2507'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:50:13 GMT
+      - Fri, 09 Aug 2024 00:17:23 GMT
       expires:
       - '-1'
       pragma:
@@ -930,10 +286,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-deployment-engine-version:
+      - 1.38.2
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: A30C475B698A43A0AAC5A3C8379CE2B1 Ref B: AMS231020512033 Ref C: 2024-05-15T15:50:13Z'
+      - 'Ref A: B99DB538DDC64D80BDF5469602DDE3DF Ref B: SJC211051205047 Ref C: 2024-08-09T00:17:16Z'
     status:
       code: 201
       message: Created
@@ -951,53 +309,9 @@ interactions:
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858186719967850?api-version=2024-11-01
-  response:
-    body:
-      string: '{"status": "Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '22'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:50:13 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 22C508C2781249708F15B34C998DED89 Ref B: AMS231020512033 Ref C: 2024-05-15T15:50:13Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858186719967850?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784442464724293?api-version=2022-09-01
   response:
     body:
       string: '{"status": "Running"}'
@@ -1009,7 +323,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:50:43 GMT
+      - Fri, 09 Aug 2024 00:17:23 GMT
       expires:
       - '-1'
       pragma:
@@ -1021,7 +335,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 043B0B8A67E842CC96CC6B8726276AC0 Ref B: AMS231020512033 Ref C: 2024-05-15T15:50:43Z'
+      - 'Ref A: D71A64F7DFC14C0DABF8230484ED2278 Ref B: SJC211051203047 Ref C: 2024-08-09T00:17:23Z'
     status:
       code: 200
       message: OK
@@ -1039,9 +353,9 @@ interactions:
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858186719967850?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784442464724293?api-version=2022-09-01
   response:
     body:
       string: '{"status": "Running"}'
@@ -1053,7 +367,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:51:13 GMT
+      - Fri, 09 Aug 2024 00:17:55 GMT
       expires:
       - '-1'
       pragma:
@@ -1065,7 +379,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: B3D3F99E90644C16A94D2AE58B801455 Ref B: AMS231020512033 Ref C: 2024-05-15T15:51:14Z'
+      - 'Ref A: 187868A3F88447D1BDE132AE28BF172E Ref B: SJC211051205029 Ref C: 2024-08-09T00:17:54Z'
     status:
       code: 200
       message: OK
@@ -1083,9 +397,273 @@ interactions:
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858186719967850?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784442464724293?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:18:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 6BE8E1774EDF4B468FD1A26FC1E6969E Ref B: SJC211051201035 Ref C: 2024-08-09T00:18:25Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784442464724293?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:18:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 4FADA015831546F690476DAB0E439851 Ref B: SJC211051204053 Ref C: 2024-08-09T00:18:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784442464724293?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:19:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7A81428406A3466ABF674C0197494E64 Ref B: SJC211051203023 Ref C: 2024-08-09T00:19:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784442464724293?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:19:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: D2BB56B698F64066A6B2CD0E673B3287 Ref B: SJC211051201033 Ref C: 2024-08-09T00:19:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784442464724293?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:20:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 17CDA9B17E10493B8BA935D1F99D42F6 Ref B: SJC211051201051 Ref C: 2024-08-09T00:20:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784442464724293?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:20:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: F04C1AD3F12D4C50A39C69E780EF9184 Ref B: SJC211051203029 Ref C: 2024-08-09T00:20:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784442464724293?api-version=2022-09-01
   response:
     body:
       string: '{"status": "Succeeded"}'
@@ -1097,7 +675,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:51:44 GMT
+      - Fri, 09 Aug 2024 00:21:30 GMT
       expires:
       - '-1'
       pragma:
@@ -1109,7 +687,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 43891796A2A444E48413A82CD170D705 Ref B: AMS231020512033 Ref C: 2024-05-15T15:51:45Z'
+      - 'Ref A: 9BD1F449675D4BB6AE7EAB2CBCB0A528 Ref B: SJC211051205051 Ref C: 2024-08-09T00:21:30Z'
     status:
       code: 200
       message: OK
@@ -1127,32 +705,46 @@ interactions:
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1715788212",
-        "name": "AOSM_CLI_deployment_1715788212", "type": "Microsoft.Resources/deployments",
-        "properties": {"templateHash": "8068031912378000682", "parameters": {"location":
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1723162632",
+        "name": "AOSM_CLI_deployment_1723162632", "type": "Microsoft.Resources/deployments",
+        "properties": {"templateHash": "1979882574704454526", "parameters": {"location":
         {"type": "String", "value": "uksouth"}, "publisherName": {"type": "String",
-        "value": "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"type":
-        "String", "value": "nginx-acr"}, "acrManifestName": {"type": "String", "value":
-        "nginx-acr-manifest-1-0-0"}}, "mode": "Incremental", "provisioningState":
-        "Succeeded", "timestamp": "2024-05-15T15:51:39.5757505Z", "duration": "PT1M25.7532287S",
-        "correlationId": "51454ea2-5690-41a5-80fd-270f98207b1f", "providers": [{"namespace":
-        "Microsoft.Hybridnetwork", "resourceTypes": [{"resourceType": "publishers/artifactStores/artifactManifests",
-        "locations": ["uksouth"]}]}], "dependencies": [], "outputResources": [{"id":
-        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Hybridnetwork/publishers/automated-cli-test-nginx-publisher/artifactStores/nginx-acr/artifactManifests/nginx-acr-manifest-1-0-0"}]}}'
+        "value": "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName":
+        {"type": "String", "value": "nginx-acr"}, "nfDefinitionGroup": {"type": "String",
+        "value": "nginx"}, "disablePublicNetworkAccess": {"type": "Bool", "value":
+        false}}, "mode": "Incremental", "provisioningState": "Succeeded", "timestamp":
+        "2024-08-09T00:21:19.3864641Z", "duration": "PT3M57.6230371S", "correlationId":
+        "70f1da64-7073-4566-a438-d321e1717d2b", "providers": [{"namespace": "Microsoft.HybridNetwork",
+        "resourceTypes": [{"resourceType": "publishers", "locations": ["uksouth"]},
+        {"resourceType": "publishers/artifactStores", "locations": ["uksouth"]}, {"resourceType":
+        "publishers/networkFunctionDefinitionGroups", "locations": ["uksouth"]}]}],
+        "dependencies": [{"dependsOn": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new",
+        "resourceType": "Microsoft.HybridNetwork/publishers", "resourceName": "automated-cli-test-nginx-publisher-new"}],
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/artifactStores/nginx-acr",
+        "resourceType": "Microsoft.HybridNetwork/publishers/artifactStores", "resourceName":
+        "automated-cli-test-nginx-publisher-new/nginx-acr"}, {"dependsOn": [{"id":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new",
+        "resourceType": "Microsoft.HybridNetwork/publishers", "resourceName": "automated-cli-test-nginx-publisher-new"}],
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/networkFunctionDefinitionGroups/nginx",
+        "resourceType": "Microsoft.HybridNetwork/publishers/networkFunctionDefinitionGroups",
+        "resourceName": "automated-cli-test-nginx-publisher-new/nginx"}], "outputResources":
+        [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/artifactStores/nginx-acr"},
+        {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/networkFunctionDefinitionGroups/nginx"}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1255'
+      - '3153'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:51:44 GMT
+      - Fri, 09 Aug 2024 00:21:31 GMT
       expires:
       - '-1'
       pragma:
@@ -1164,7 +756,445 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 243BCB2313064E078ED1F884EC550A43 Ref B: AMS231020512033 Ref C: 2024-05-15T15:51:45Z'
+      - 'Ref A: F467724C563A4FC58C1A27FCB11E3FB9 Ref B: SJC211051205029 Ref C: 2024-08-09T00:21:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/artifactStores/nginx-acr/artifactManifests/nginx-acr-manifest-1-0-0?api-version=2024-04-15
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/artifactStores/nginx-acr/artifactManifests/nginx-acr-manifest-1-0-0''
+        under resource group ''cli_test_cnf_nfd_000001'' was not found. For more details
+        please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '340'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:21:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 528A809C7FE546AF8E9585F668A3D1A4 Ref B: SJC211051203027 Ref C: 2024-08-09T00:21:32Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"properties": {"template": {"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0", "metadata": {"_generator": {"name": "bicep", "version":
+      "0.26.54.24096", "templateHash": "14797403328055843136"}}, "parameters": {"location":
+      {"type": "string"}, "publisherName": {"type": "string", "metadata": {"description":
+      "Name of an existing publisher, expected to be in the resource group where you
+      deploy the template"}}, "acrArtifactStoreName": {"type": "string", "metadata":
+      {"description": "Name of an existing ACR-backed Artifact Store, deployed under
+      the publisher."}}, "acrManifestName": {"type": "string", "metadata": {"description":
+      "Name of the manifest to deploy for the ACR-backed Artifact Store"}}}, "resources":
+      [{"type": "Microsoft.HybridNetwork/publishers/artifactStores/artifactManifests",
+      "apiVersion": "2024-04-15", "name": "[format(''{0}/{1}/{2}'', parameters(''publisherName''),
+      parameters(''acrArtifactStoreName''), parameters(''acrManifestName''))]", "location":
+      "[parameters(''location'')]", "properties": {"artifacts": [{"artifactName":
+      "nginxdemo", "artifactType": "OCIArtifact", "artifactVersion": "0.1.0"}, {"artifactName":
+      "nginx", "artifactType": "OCIArtifact", "artifactVersion": "stable"}]}}]}, "parameters":
+      {"location": {"value": "uksouth"}, "publisherName": {"value": "automated-cli-test-nginx-publisher-new"},
+      "acrArtifactStoreName": {"value": "nginx-acr"}, "acrManifestName": {"value":
+      "nginx-acr-manifest-1-0-0"}}, "mode": "Incremental"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1524'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/validate?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1723162895",
+        "name": "AOSM_CLI_deployment_1723162895", "type": "Microsoft.Resources/deployments",
+        "properties": {"templateHash": "14797403328055843136", "parameters": {"location":
+        {"type": "String", "value": "uksouth"}, "publisherName": {"type": "String",
+        "value": "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName":
+        {"type": "String", "value": "nginx-acr"}, "acrManifestName": {"type": "String",
+        "value": "nginx-acr-manifest-1-0-0"}}, "mode": "Incremental", "provisioningState":
+        "Succeeded", "timestamp": "0001-01-01T00:00:00Z", "duration": "PT0S", "correlationId":
+        "d631324f-505a-405f-9ea3-7f34e8e3165b", "providers": [{"namespace": "Microsoft.HybridNetwork",
+        "resourceTypes": [{"resourceType": "publishers/artifactStores/artifactManifests",
+        "locations": ["uksouth"]}]}], "dependencies": [], "validatedResources": [{"id":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/artifactStores/nginx-acr/artifactManifests/nginx-acr-manifest-1-0-0"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1248'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:21:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: BBC112362D2A40C68B84624C3D835CCB Ref B: SJC211051204007 Ref C: 2024-08-09T00:21:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"template": {"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0", "metadata": {"_generator": {"name": "bicep", "version":
+      "0.26.54.24096", "templateHash": "14797403328055843136"}}, "parameters": {"location":
+      {"type": "string"}, "publisherName": {"type": "string", "metadata": {"description":
+      "Name of an existing publisher, expected to be in the resource group where you
+      deploy the template"}}, "acrArtifactStoreName": {"type": "string", "metadata":
+      {"description": "Name of an existing ACR-backed Artifact Store, deployed under
+      the publisher."}}, "acrManifestName": {"type": "string", "metadata": {"description":
+      "Name of the manifest to deploy for the ACR-backed Artifact Store"}}}, "resources":
+      [{"type": "Microsoft.HybridNetwork/publishers/artifactStores/artifactManifests",
+      "apiVersion": "2024-04-15", "name": "[format(''{0}/{1}/{2}'', parameters(''publisherName''),
+      parameters(''acrArtifactStoreName''), parameters(''acrManifestName''))]", "location":
+      "[parameters(''location'')]", "properties": {"artifacts": [{"artifactName":
+      "nginxdemo", "artifactType": "OCIArtifact", "artifactVersion": "0.1.0"}, {"artifactName":
+      "nginx", "artifactType": "OCIArtifact", "artifactVersion": "stable"}]}}]}, "parameters":
+      {"location": {"value": "uksouth"}, "publisherName": {"value": "automated-cli-test-nginx-publisher-new"},
+      "acrArtifactStoreName": {"value": "nginx-acr"}, "acrManifestName": {"value":
+      "nginx-acr-manifest-1-0-0"}}, "mode": "Incremental"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1524'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1723162895",
+        "name": "AOSM_CLI_deployment_1723162895", "type": "Microsoft.Resources/deployments",
+        "properties": {"templateHash": "14797403328055843136", "parameters": {"location":
+        {"type": "String", "value": "uksouth"}, "publisherName": {"type": "String",
+        "value": "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName":
+        {"type": "String", "value": "nginx-acr"}, "acrManifestName": {"type": "String",
+        "value": "nginx-acr-manifest-1-0-0"}}, "mode": "Incremental", "provisioningState":
+        "Accepted", "timestamp": "2024-08-09T00:21:44.5618235Z", "duration": "PT0.0008566S",
+        "correlationId": "514189c1-91b8-4a63-b6a0-d1fcb12211a0", "providers": [{"namespace":
+        "Microsoft.HybridNetwork", "resourceTypes": [{"resourceType": "publishers/artifactStores/artifactManifests",
+        "locations": ["uksouth"]}]}], "dependencies": []}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1723162895/operationStatuses/08584784439845771763?api-version=2022-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '985'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:21:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-deployment-engine-version:
+      - 1.38.2
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 9A034BD5DA044D0391A8160904E52B0A Ref B: SJC211051203021 Ref C: 2024-08-09T00:21:39Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784439845771763?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:21:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 42B99DD5D4F24F43981A45BCC01732A4 Ref B: SJC211051203027 Ref C: 2024-08-09T00:21:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784439845771763?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:22:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 222AE91E46AB41F59344FEB83CAF07EA Ref B: SJC211051205039 Ref C: 2024-08-09T00:22:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784439845771763?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:22:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 54A8CFC1C05340EF82BAEA337D1A23CE Ref B: SJC211051204037 Ref C: 2024-08-09T00:22:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784439845771763?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status": "Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '23'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:23:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: F61342434B7D464FA3360EC220ABEE97 Ref B: SJC211051204011 Ref C: 2024-08-09T00:23:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1723162895",
+        "name": "AOSM_CLI_deployment_1723162895", "type": "Microsoft.Resources/deployments",
+        "properties": {"templateHash": "14797403328055843136", "parameters": {"location":
+        {"type": "String", "value": "uksouth"}, "publisherName": {"type": "String",
+        "value": "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName":
+        {"type": "String", "value": "nginx-acr"}, "acrManifestName": {"type": "String",
+        "value": "nginx-acr-manifest-1-0-0"}}, "mode": "Incremental", "provisioningState":
+        "Succeeded", "timestamp": "2024-08-09T00:23:12.3617938Z", "duration": "PT1M27.8008269S",
+        "correlationId": "514189c1-91b8-4a63-b6a0-d1fcb12211a0", "providers": [{"namespace":
+        "Microsoft.HybridNetwork", "resourceTypes": [{"resourceType": "publishers/artifactStores/artifactManifests",
+        "locations": ["uksouth"]}]}], "dependencies": [], "outputResources": [{"id":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/artifactStores/nginx-acr/artifactManifests/nginx-acr-manifest-1-0-0"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1264'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:23:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7DEDF7FBBFCD44FFA468AB6ECF56D693 Ref B: SJC211051203053 Ref C: 2024-08-09T00:23:20Z'
     status:
       code: 200
       message: OK
@@ -1184,26 +1214,28 @@ interactions:
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-hybridnetwork/unknown Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher/artifactStores/nginx-acr/artifactManifests/nginx-acr-manifest-1-0-0/listCredential?api-version=2023-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/artifactStores/nginx-acr/artifactManifests/nginx-acr-manifest-1-0-0/listCredential?api-version=2024-04-15
   response:
     body:
       string: '{"username": "nginx-acr-manifest-1-0-0", "acrToken": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        "acrServerUrl": "https://automatedclitestnginxpublishernginxacr02f144b6e2.azurecr.io",
-        "repositories": ["nginxdemo", "nginx"], "expiry": "2024-05-16T15:51:49.7749+00:00",
+        "acrServerUrl": "https://automatedclitestnginxpublishernewnginxac70f1da6470.azurecr.io",
+        "repositories": ["nginxdemo", "nginx"], "expiry": "2024-08-10T00:23:25.8344129+00:00",
         "credentialType": "AzureContainerRegistryScopedToken"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '334'
+      - '339'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:51:49 GMT
+      - Fri, 09 Aug 2024 00:23:25 GMT
       expires:
       - '-1'
+      mise-correlation-id:
+      - adec3c31-b4a3-4027-a171-f2aaee701f53
       pragma:
       - no-cache
       strict-transport-security:
@@ -1213,20 +1245,20 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-build-version:
-      - 1.0.02682.2890
+      - 1.0.02774.230
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-msedge-ref:
-      - 'Ref A: EFBDFA66560545FEA6BCAE9E787EB932 Ref B: AMS231022012011 Ref C: 2024-05-15T15:51:45Z'
+      - 'Ref A: 8DE7FA3743E84180941613073B18F179 Ref B: SJC211051205053 Ref C: 2024-08-09T00:23:21Z'
     status:
       code: 200
       message: OK
 - request:
     body: '{"properties": {"template": {"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
       "contentVersion": "1.0.0.0", "metadata": {"_generator": {"name": "bicep", "version":
-      "0.8.9.13224", "templateHash": "16747776660806024409"}}, "parameters": {"location":
+      "0.26.54.24096", "templateHash": "2565238186186188150"}}, "parameters": {"location":
       {"type": "string"}, "publisherName": {"type": "string", "metadata": {"description":
       "Name of an existing publisher, expected to be in the resource group where you
       deploy the template"}}, "acrArtifactStoreName": {"type": "string", "metadata":
@@ -1235,15 +1267,17 @@ interactions:
       "Name of an existing Network Function Definition Group"}}, "nfDefinitionVersion":
       {"type": "string", "metadata": {"description": "The version of the NFDV you
       want to deploy, in format A.B.C"}}}, "variables": {"$fxv#0": {"$schema": "https://json-schema.org/draft-07/schema#",
-      "title": "DeployParametersSchema", "type": "object", "properties": {}}, "$fxv#1":
-      {"replicaCount": 1, "image": {"repository": "overwriteme", "tag": "stable",
-      "pullPolicy": "IfNotPresent"}, "imagePullSecrets": [], "nameOverride": "", "fullnameOverride":
-      "", "serviceAccount": {"create": false, "name": "[null()]"}, "podSecurityContext":
-      {}, "securityContext": {}, "service": {"type": "ClusterIP", "port": 80}, "ingress":
-      {"enabled": false, "annotations": {}, "hosts": [{"host": "chart-example.local",
-      "paths": []}], "tls": []}, "resources": {}, "nodeSelector": {}, "tolerations":
-      [], "affinity": {}}}, "resources": [{"type": "Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions",
-      "apiVersion": "2023-09-01", "name": "[format(''{0}/{1}/{2}'', parameters(''publisherName''),
+      "title": "DeployParametersSchema", "type": "object", "properties": {"nginxdemo":
+      {"type": "object", "properties": {"serviceAccount_name": {"type": "null"}},
+      "required": ["serviceAccount_name"]}}}, "$fxv#1": {"replicaCount": 1, "image":
+      {"repository": "overwriteme", "tag": "stable", "pullPolicy": "IfNotPresent"},
+      "imagePullSecrets": [], "nameOverride": "", "fullnameOverride": "", "serviceAccount":
+      {"create": false, "name": "{deployParameters.nginxdemo.serviceAccount_name}"},
+      "podSecurityContext": {}, "securityContext": {}, "service": {"type": "ClusterIP",
+      "port": 80}, "ingress": {"enabled": false, "annotations": {}, "hosts": [{"host":
+      "chart-example.local", "paths": []}], "tls": []}, "resources": {}, "nodeSelector":
+      {}, "tolerations": [], "affinity": {}}}, "resources": [{"type": "Microsoft.HybridNetwork/publishers/networkFunctionDefinitionGroups/networkFunctionDefinitionVersions",
+      "apiVersion": "2024-04-15", "name": "[format(''{0}/{1}/{2}'', parameters(''publisherName''),
       parameters(''nfDefinitionGroup''), parameters(''nfDefinitionVersion''))]", "location":
       "[parameters(''location'')]", "properties": {"deployParameters": "[string(variables(''$fxv#0''))]",
       "networkFunctionType": "ContainerizedNetworkFunction", "networkFunctionTemplate":
@@ -1257,9 +1291,9 @@ interactions:
       "Enabled", "helmMappingRuleProfile": {"releaseNamespace": "nginxdemo", "releaseName":
       "nginxdemo", "helmPackageVersion": "0.1.0", "values": "[string(variables(''$fxv#1''))]"}}}]}}}]},
       "parameters": {"location": {"value": "uksouth"}, "publisherName": {"value":
-      "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"value": "nginx-acr"},
-      "nfDefinitionGroup": {"value": "nginx"}, "nfDefinitionVersion": {"value": "1.0.0"}},
-      "mode": "Incremental"}}'
+      "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName": {"value":
+      "nginx-acr"}, "nfDefinitionGroup": {"value": "nginx"}, "nfDefinitionVersion":
+      {"value": "1.0.0"}}, "mode": "Incremental"}}'
     headers:
       Accept:
       - application/json
@@ -1270,39 +1304,39 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '3120'
+      - '3290'
       Content-Type:
       - application/json
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/validate?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/validate?api-version=2022-09-01
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1715788332",
-        "name": "AOSM_CLI_deployment_1715788332", "type": "Microsoft.Resources/deployments",
-        "properties": {"templateHash": "16747776660806024409", "parameters": {"location":
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1723163070",
+        "name": "AOSM_CLI_deployment_1723163070", "type": "Microsoft.Resources/deployments",
+        "properties": {"templateHash": "2565238186186188150", "parameters": {"location":
         {"type": "String", "value": "uksouth"}, "publisherName": {"type": "String",
-        "value": "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"type":
-        "String", "value": "nginx-acr"}, "nfDefinitionGroup": {"type": "String", "value":
-        "nginx"}, "nfDefinitionVersion": {"type": "String", "value": "1.0.0"}}, "mode":
-        "Incremental", "provisioningState": "Succeeded", "timestamp": "0001-01-01T00:00:00Z",
-        "duration": "PT0S", "correlationId": "ec9be03c-9634-44c6-9873-b81af4c77788",
-        "providers": [{"namespace": "Microsoft.Hybridnetwork", "resourceTypes": [{"resourceType":
-        "publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions",
+        "value": "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName":
+        {"type": "String", "value": "nginx-acr"}, "nfDefinitionGroup": {"type": "String",
+        "value": "nginx"}, "nfDefinitionVersion": {"type": "String", "value": "1.0.0"}},
+        "mode": "Incremental", "provisioningState": "Succeeded", "timestamp": "0001-01-01T00:00:00Z",
+        "duration": "PT0S", "correlationId": "be38e3e0-86dc-4160-8960-613b565cecbc",
+        "providers": [{"namespace": "Microsoft.HybridNetwork", "resourceTypes": [{"resourceType":
+        "publishers/networkFunctionDefinitionGroups/networkFunctionDefinitionVersions",
         "locations": ["uksouth"]}]}], "dependencies": [], "validatedResources": [{"id":
-        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Hybridnetwork/publishers/automated-cli-test-nginx-publisher/networkfunctiondefinitiongroups/nginx/networkfunctiondefinitionversions/1.0.0"}]}}'
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/networkFunctionDefinitionGroups/nginx/networkFunctionDefinitionVersions/1.0.0"}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1327'
+      - '1334'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:52:13 GMT
+      - Fri, 09 Aug 2024 00:24:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1316,14 +1350,14 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: 3EC9B196BB5E4A6B905E556B6F65F26C Ref B: AMS231020512033 Ref C: 2024-05-15T15:52:13Z'
+      - 'Ref A: CE2EC98CC2DE4526B2F8533CAFED52B2 Ref B: SJC211051204031 Ref C: 2024-08-09T00:24:30Z'
     status:
       code: 200
       message: OK
 - request:
     body: '{"properties": {"template": {"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
       "contentVersion": "1.0.0.0", "metadata": {"_generator": {"name": "bicep", "version":
-      "0.8.9.13224", "templateHash": "16747776660806024409"}}, "parameters": {"location":
+      "0.26.54.24096", "templateHash": "2565238186186188150"}}, "parameters": {"location":
       {"type": "string"}, "publisherName": {"type": "string", "metadata": {"description":
       "Name of an existing publisher, expected to be in the resource group where you
       deploy the template"}}, "acrArtifactStoreName": {"type": "string", "metadata":
@@ -1332,15 +1366,17 @@ interactions:
       "Name of an existing Network Function Definition Group"}}, "nfDefinitionVersion":
       {"type": "string", "metadata": {"description": "The version of the NFDV you
       want to deploy, in format A.B.C"}}}, "variables": {"$fxv#0": {"$schema": "https://json-schema.org/draft-07/schema#",
-      "title": "DeployParametersSchema", "type": "object", "properties": {}}, "$fxv#1":
-      {"replicaCount": 1, "image": {"repository": "overwriteme", "tag": "stable",
-      "pullPolicy": "IfNotPresent"}, "imagePullSecrets": [], "nameOverride": "", "fullnameOverride":
-      "", "serviceAccount": {"create": false, "name": "[null()]"}, "podSecurityContext":
-      {}, "securityContext": {}, "service": {"type": "ClusterIP", "port": 80}, "ingress":
-      {"enabled": false, "annotations": {}, "hosts": [{"host": "chart-example.local",
-      "paths": []}], "tls": []}, "resources": {}, "nodeSelector": {}, "tolerations":
-      [], "affinity": {}}}, "resources": [{"type": "Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions",
-      "apiVersion": "2023-09-01", "name": "[format(''{0}/{1}/{2}'', parameters(''publisherName''),
+      "title": "DeployParametersSchema", "type": "object", "properties": {"nginxdemo":
+      {"type": "object", "properties": {"serviceAccount_name": {"type": "null"}},
+      "required": ["serviceAccount_name"]}}}, "$fxv#1": {"replicaCount": 1, "image":
+      {"repository": "overwriteme", "tag": "stable", "pullPolicy": "IfNotPresent"},
+      "imagePullSecrets": [], "nameOverride": "", "fullnameOverride": "", "serviceAccount":
+      {"create": false, "name": "{deployParameters.nginxdemo.serviceAccount_name}"},
+      "podSecurityContext": {}, "securityContext": {}, "service": {"type": "ClusterIP",
+      "port": 80}, "ingress": {"enabled": false, "annotations": {}, "hosts": [{"host":
+      "chart-example.local", "paths": []}], "tls": []}, "resources": {}, "nodeSelector":
+      {}, "tolerations": [], "affinity": {}}}, "resources": [{"type": "Microsoft.HybridNetwork/publishers/networkFunctionDefinitionGroups/networkFunctionDefinitionVersions",
+      "apiVersion": "2024-04-15", "name": "[format(''{0}/{1}/{2}'', parameters(''publisherName''),
       parameters(''nfDefinitionGroup''), parameters(''nfDefinitionVersion''))]", "location":
       "[parameters(''location'')]", "properties": {"deployParameters": "[string(variables(''$fxv#0''))]",
       "networkFunctionType": "ContainerizedNetworkFunction", "networkFunctionTemplate":
@@ -1354,9 +1390,9 @@ interactions:
       "Enabled", "helmMappingRuleProfile": {"releaseNamespace": "nginxdemo", "releaseName":
       "nginxdemo", "helmPackageVersion": "0.1.0", "values": "[string(variables(''$fxv#1''))]"}}}]}}}]},
       "parameters": {"location": {"value": "uksouth"}, "publisherName": {"value":
-      "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"value": "nginx-acr"},
-      "nfDefinitionGroup": {"value": "nginx"}, "nfDefinitionVersion": {"value": "1.0.0"}},
-      "mode": "Incremental"}}'
+      "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName": {"value":
+      "nginx-acr"}, "nfDefinitionGroup": {"value": "nginx"}, "nfDefinitionVersion":
+      {"value": "1.0.0"}}, "mode": "Incremental"}}'
     headers:
       Accept:
       - application/json
@@ -1367,40 +1403,40 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '3120'
+      - '3290'
       Content-Type:
       - application/json
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1715788332",
-        "name": "AOSM_CLI_deployment_1715788332", "type": "Microsoft.Resources/deployments",
-        "properties": {"templateHash": "16747776660806024409", "parameters": {"location":
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1723163070",
+        "name": "AOSM_CLI_deployment_1723163070", "type": "Microsoft.Resources/deployments",
+        "properties": {"templateHash": "2565238186186188150", "parameters": {"location":
         {"type": "String", "value": "uksouth"}, "publisherName": {"type": "String",
-        "value": "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"type":
-        "String", "value": "nginx-acr"}, "nfDefinitionGroup": {"type": "String", "value":
-        "nginx"}, "nfDefinitionVersion": {"type": "String", "value": "1.0.0"}}, "mode":
-        "Incremental", "provisioningState": "Accepted", "timestamp": "2024-05-15T15:52:14.874135Z",
-        "duration": "PT0.0007292S", "correlationId": "faaf77d1-078d-4a78-a313-47abd2f765f9",
-        "providers": [{"namespace": "Microsoft.Hybridnetwork", "resourceTypes": [{"resourceType":
-        "publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions",
+        "value": "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName":
+        {"type": "String", "value": "nginx-acr"}, "nfDefinitionGroup": {"type": "String",
+        "value": "nginx"}, "nfDefinitionVersion": {"type": "String", "value": "1.0.0"}},
+        "mode": "Incremental", "provisioningState": "Accepted", "timestamp": "2024-08-09T00:24:39.5248409Z",
+        "duration": "PT0.0009773S", "correlationId": "e44c8b22-c5db-433f-a822-e7486821ae25",
+        "providers": [{"namespace": "Microsoft.HybridNetwork", "resourceTypes": [{"resourceType":
+        "publishers/networkFunctionDefinitionGroups/networkFunctionDefinitionVersions",
         "locations": ["uksouth"]}]}], "dependencies": []}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1715788332/operationStatuses/08584858185509487854?api-version=2024-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1723163070/operationStatuses/08584784438090218642?api-version=2022-09-01
       cache-control:
       - no-cache
       content-length:
-      - '1057'
+      - '1061'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:52:14 GMT
+      - Fri, 09 Aug 2024 00:24:40 GMT
       expires:
       - '-1'
       pragma:
@@ -1411,10 +1447,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-deployment-engine-version:
+      - 1.38.2
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: C2C23D8018664680B541F9612BDA90EE Ref B: AMS231020512033 Ref C: 2024-05-15T15:52:14Z'
+      - 'Ref A: 58FA5FE8D5554645B50AC4D2DF01C4E6 Ref B: SJC211051201025 Ref C: 2024-08-09T00:24:34Z'
     status:
       code: 201
       message: Created
@@ -1432,53 +1470,9 @@ interactions:
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858185509487854?api-version=2024-11-01
-  response:
-    body:
-      string: '{"status": "Accepted"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '22'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 15 May 2024 15:52:14 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: AA78064EBA6A4368AF9B289823E69032 Ref B: AMS231020512033 Ref C: 2024-05-15T15:52:14Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aosm nfd publish
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -b --definition-type
-      User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858185509487854?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784438090218642?api-version=2022-09-01
   response:
     body:
       string: '{"status": "Running"}'
@@ -1490,7 +1484,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:52:44 GMT
+      - Fri, 09 Aug 2024 00:24:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1502,7 +1496,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 0810E1BE50884958AB08A818F570C24B Ref B: AMS231020512033 Ref C: 2024-05-15T15:52:44Z'
+      - 'Ref A: E99AB8355AF94029A8D1F8CE08B8DC88 Ref B: SJC211051205045 Ref C: 2024-08-09T00:24:41Z'
     status:
       code: 200
       message: OK
@@ -1520,9 +1514,9 @@ interactions:
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858185509487854?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784438090218642?api-version=2022-09-01
   response:
     body:
       string: '{"status": "Running"}'
@@ -1534,7 +1528,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:53:14 GMT
+      - Fri, 09 Aug 2024 00:25:11 GMT
       expires:
       - '-1'
       pragma:
@@ -1546,7 +1540,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 590839FE19744A32B8CE081632D322BE Ref B: AMS231020512033 Ref C: 2024-05-15T15:53:14Z'
+      - 'Ref A: 42C3BAA754434E448E1F6EE8332E292D Ref B: SJC211051205031 Ref C: 2024-08-09T00:25:12Z'
     status:
       code: 200
       message: OK
@@ -1564,9 +1558,53 @@ interactions:
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584858185509487854?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784438090218642?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status": "Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 09 Aug 2024 00:25:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: F1BBFD02A23E43EABB44DD868EFD17FE Ref B: SJC211051205027 Ref C: 2024-08-09T00:25:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aosm nfd publish
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -b --definition-type
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584784438090218642?api-version=2022-09-01
   response:
     body:
       string: '{"status": "Succeeded"}'
@@ -1578,7 +1616,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:53:44 GMT
+      - Fri, 09 Aug 2024 00:26:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1590,7 +1628,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: A037827BBA3348D3B1F38CCEF4ADA38F Ref B: AMS231020512033 Ref C: 2024-05-15T15:53:45Z'
+      - 'Ref A: C9833EEC48DD4BBA8B4EF6CE956BC212 Ref B: SJC211051204011 Ref C: 2024-08-09T00:26:14Z'
     status:
       code: 200
       message: OK
@@ -1608,33 +1646,33 @@ interactions:
       ParameterSetName:
       - -b --definition-type
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1715788332",
-        "name": "AOSM_CLI_deployment_1715788332", "type": "Microsoft.Resources/deployments",
-        "properties": {"templateHash": "16747776660806024409", "parameters": {"location":
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Resources/deployments/AOSM_CLI_deployment_1723163070",
+        "name": "AOSM_CLI_deployment_1723163070", "type": "Microsoft.Resources/deployments",
+        "properties": {"templateHash": "2565238186186188150", "parameters": {"location":
         {"type": "String", "value": "uksouth"}, "publisherName": {"type": "String",
-        "value": "automated-cli-test-nginx-publisher"}, "acrArtifactStoreName": {"type":
-        "String", "value": "nginx-acr"}, "nfDefinitionGroup": {"type": "String", "value":
-        "nginx"}, "nfDefinitionVersion": {"type": "String", "value": "1.0.0"}}, "mode":
-        "Incremental", "provisioningState": "Succeeded", "timestamp": "2024-05-15T15:53:37.7822316Z",
-        "duration": "PT1M22.9088258S", "correlationId": "faaf77d1-078d-4a78-a313-47abd2f765f9",
-        "providers": [{"namespace": "Microsoft.Hybridnetwork", "resourceTypes": [{"resourceType":
-        "publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions",
+        "value": "automated-cli-test-nginx-publisher-new"}, "acrArtifactStoreName":
+        {"type": "String", "value": "nginx-acr"}, "nfDefinitionGroup": {"type": "String",
+        "value": "nginx"}, "nfDefinitionVersion": {"type": "String", "value": "1.0.0"}},
+        "mode": "Incremental", "provisioningState": "Succeeded", "timestamp": "2024-08-09T00:26:07.3812407Z",
+        "duration": "PT1M27.8573771S", "correlationId": "e44c8b22-c5db-433f-a822-e7486821ae25",
+        "providers": [{"namespace": "Microsoft.HybridNetwork", "resourceTypes": [{"resourceType":
+        "publishers/networkFunctionDefinitionGroups/networkFunctionDefinitionVersions",
         "locations": ["uksouth"]}]}], "dependencies": [], "outputResources": [{"id":
-        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.Hybridnetwork/publishers/automated-cli-test-nginx-publisher/networkfunctiondefinitiongroups/nginx/networkfunctiondefinitionversions/1.0.0"}]}}'
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cnf_nfd_000001/providers/Microsoft.HybridNetwork/publishers/automated-cli-test-nginx-publisher-new/networkFunctionDefinitionGroups/nginx/networkFunctionDefinitionVersions/1.0.0"}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1343'
+      - '1350'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 15 May 2024 15:53:44 GMT
+      - Fri, 09 Aug 2024 00:26:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1646,7 +1684,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 42322D5D4C7F4B1283E1E433EFEB591D Ref B: AMS231020512033 Ref C: 2024-05-15T15:53:45Z'
+      - 'Ref A: A0B9DB24185A4F1BB9C089B611B34098 Ref B: SJC211051203029 Ref C: 2024-08-09T00:26:14Z'
     status:
       code: 200
       message: OK

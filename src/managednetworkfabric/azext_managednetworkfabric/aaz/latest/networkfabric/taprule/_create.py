@@ -246,6 +246,7 @@ class Create(AAZCommand):
         _element.destination_id = AAZResourceIdArg(
             options=["destination-id"],
             help="Destination Id. The ARM resource Id may be either Network To Network Interconnect or NeighborGroup.",
+            nullable=True,
         )
         _element.is_timestamp_enabled = AAZStrArg(
             options=["is-timestamp-enabled"],
@@ -610,7 +611,7 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.matchConfigurations[].actions[]")
             if _elements is not None:
-                _elements.set_prop("destinationId", AAZStrType, ".destination_id")
+                _elements.set_prop("destinationId", AAZStrType, ".destination_id", typ_kwargs={"nullable": True})
                 _elements.set_prop("isTimestampEnabled", AAZStrType, ".is_timestamp_enabled")
                 _elements.set_prop("matchConfigurationName", AAZStrType, ".match_configuration_name")
                 _elements.set_prop("truncate", AAZStrType, ".truncate")
@@ -855,6 +856,7 @@ class Create(AAZCommand):
             _element = cls._schema_on_200_201.properties.match_configurations.Element.actions.Element
             _element.destination_id = AAZStrType(
                 serialized_name="destinationId",
+                nullable=True,
             )
             _element.is_timestamp_enabled = AAZStrType(
                 serialized_name="isTimestampEnabled",

@@ -211,6 +211,7 @@ class List(AAZCommand):
             )
             bmp_configuration.scope_resource_id = AAZStrType(
                 serialized_name="scopeResourceId",
+                nullable=True,
             )
             bmp_configuration.station_configuration_state = AAZStrType(
                 serialized_name="stationConfigurationState",
@@ -229,6 +230,7 @@ class List(AAZCommand):
             )
             bmp_configuration.station_network = AAZStrType(
                 serialized_name="stationNetwork",
+                nullable=True,
             )
             bmp_configuration.station_port = AAZIntType(
                 serialized_name="stationPort",
@@ -238,7 +240,9 @@ class List(AAZCommand):
             monitored_address_families.Element = AAZStrType()
 
             monitored_networks = cls._schema_on_200.value.Element.properties.bmp_configuration.monitored_networks
-            monitored_networks.Element = AAZStrType()
+            monitored_networks.Element = AAZStrType(
+                nullable=True,
+            )
 
             station_connection_properties = cls._schema_on_200.value.Element.properties.bmp_configuration.station_connection_properties
             station_connection_properties.keepalive_idle_time = AAZIntType(
@@ -424,6 +428,7 @@ class List(AAZCommand):
             )
             bmp_configuration.scope_resource_id = AAZStrType(
                 serialized_name="scopeResourceId",
+                nullable=True,
             )
             bmp_configuration.station_configuration_state = AAZStrType(
                 serialized_name="stationConfigurationState",
@@ -442,6 +447,7 @@ class List(AAZCommand):
             )
             bmp_configuration.station_network = AAZStrType(
                 serialized_name="stationNetwork",
+                nullable=True,
             )
             bmp_configuration.station_port = AAZIntType(
                 serialized_name="stationPort",
@@ -451,7 +457,9 @@ class List(AAZCommand):
             monitored_address_families.Element = AAZStrType()
 
             monitored_networks = cls._schema_on_200.value.Element.properties.bmp_configuration.monitored_networks
-            monitored_networks.Element = AAZStrType()
+            monitored_networks.Element = AAZStrType(
+                nullable=True,
+            )
 
             station_connection_properties = cls._schema_on_200.value.Element.properties.bmp_configuration.station_connection_properties
             station_connection_properties.keepalive_idle_time = AAZIntType(

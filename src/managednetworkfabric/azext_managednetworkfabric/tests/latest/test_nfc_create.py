@@ -25,7 +25,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_create(test, checks=[])
     cleanup_scenario1(test)
@@ -36,7 +36,7 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric controller create --resource-group {rg} --location {location}  --resource-name {name}"
+        "az networkfabric controller create --resource-group {rg} --location {location} --resource-name {name}"
         " --ipv4-address-space {ipv4AddressSpace} --ipv6-address-space {ipv6AddressSpace} --is-workload-management-network-enabled {isWorkloadManagementNetworkEnabled} --nfc-sku {nfcSku}"
         " --infra-er-connections {infraERConnections} --workload-er-connections {workloadERConnections} --mrg name={managedResourceGroupName} --mrg location={managedResourceGroupLocation}",
         checks=checks,

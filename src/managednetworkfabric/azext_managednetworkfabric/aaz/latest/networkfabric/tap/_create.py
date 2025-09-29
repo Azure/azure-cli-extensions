@@ -79,6 +79,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="ARM resource ID of the Network Packet Broker.",
             required=True,
+            nullable=True,
         )
         _args_schema.polling_type = AAZStrArg(
             options=["--polling-type"],
@@ -96,10 +97,12 @@ class Create(AAZCommand):
             options=["destination-id"],
             help="The destination Id. ARM Resource ID of either NNI or Internal Networks.",
             required=True,
+            nullable=True,
         )
         _element.destination_tap_rule_id = AAZResourceIdArg(
             options=["destination-tap-rule-id"],
             help="ARM Resource ID of destination Tap Rule that contains match configurations.",
+            nullable=True,
         )
         _element.destination_type = AAZStrArg(
             options=["destination-type"],
@@ -132,7 +135,9 @@ class Create(AAZCommand):
         )
 
         neighbor_group_ids = cls._args_schema.destinations.Element.isolation_domain_properties.neighbor_group_ids
-        neighbor_group_ids.Element = AAZResourceIdArg()
+        neighbor_group_ids.Element = AAZResourceIdArg(
+            nullable=True,
+        )
 
         # define Arg Group "Resource"
 
@@ -269,7 +274,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("destinations", AAZListType, ".destinations", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("networkPacketBrokerId", AAZStrType, ".network_packet_broker_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("networkPacketBrokerId", AAZStrType, ".network_packet_broker_id", typ_kwargs={"flags": {"required": True}, "nullable": True})
                 properties.set_prop("pollingType", AAZStrType, ".polling_type")
 
             destinations = _builder.get(".properties.destinations")
@@ -278,8 +283,8 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.destinations[]")
             if _elements is not None:
-                _elements.set_prop("destinationId", AAZStrType, ".destination_id", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("destinationTapRuleId", AAZStrType, ".destination_tap_rule_id")
+                _elements.set_prop("destinationId", AAZStrType, ".destination_id", typ_kwargs={"flags": {"required": True}, "nullable": True})
+                _elements.set_prop("destinationTapRuleId", AAZStrType, ".destination_tap_rule_id", typ_kwargs={"nullable": True})
                 _elements.set_prop("destinationType", AAZStrType, ".destination_type", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("isolationDomainProperties", AAZObjectType, ".isolation_domain_properties")
                 _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
@@ -291,7 +296,7 @@ class Create(AAZCommand):
 
             neighbor_group_ids = _builder.get(".properties.destinations[].isolationDomainProperties.neighborGroupIds")
             if neighbor_group_ids is not None:
-                neighbor_group_ids.set_elements(AAZStrType, ".")
+                neighbor_group_ids.set_elements(AAZStrType, ".", typ_kwargs={"nullable": True})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -358,6 +363,7 @@ class Create(AAZCommand):
             properties.network_packet_broker_id = AAZStrType(
                 serialized_name="networkPacketBrokerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.polling_type = AAZStrType(
                 serialized_name="pollingType",
@@ -368,6 +374,7 @@ class Create(AAZCommand):
             )
             properties.source_tap_rule_id = AAZStrType(
                 serialized_name="sourceTapRuleId",
+                nullable=True,
                 flags={"read_only": True},
             )
 
@@ -378,9 +385,11 @@ class Create(AAZCommand):
             _element.destination_id = AAZStrType(
                 serialized_name="destinationId",
                 flags={"required": True},
+                nullable=True,
             )
             _element.destination_tap_rule_id = AAZStrType(
                 serialized_name="destinationTapRuleId",
+                nullable=True,
             )
             _element.destination_type = AAZStrType(
                 serialized_name="destinationType",
@@ -400,7 +409,9 @@ class Create(AAZCommand):
             )
 
             neighbor_group_ids = cls._schema_on_200_201.properties.destinations.Element.isolation_domain_properties.neighbor_group_ids
-            neighbor_group_ids.Element = AAZStrType()
+            neighbor_group_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             last_operation = cls._schema_on_200_201.properties.last_operation
             last_operation.details = AAZStrType(

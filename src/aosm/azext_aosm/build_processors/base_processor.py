@@ -121,6 +121,10 @@ class BaseInputProcessor(ABC):
 
         return params_schema
 
+    # pylint:disable=unused-argument
+    def _set_expose_boolean(self, **kwargs) -> bool:
+        return self.expose_all_params
+
     def _generate_schema(
         self,
         deploy_params_schema: Dict[str, Any],
@@ -157,54 +161,44 @@ class BaseInputProcessor(ABC):
         """
         if "properties" not in source_schema.keys():
             return
+
         # Abbreviated 'prop' because 'property' is built in.
         for prop, details in source_schema["properties"].items():
+
+            # Abbreviated 'prop' because 'property' is built in.
             param_name = prop if not param_prefix else f"{param_prefix}_{prop}"
 
-            # Note: We don't recurse into arrays. For arrays we just dump all the `details` as is.
-            # This is because arrays are 'tricky'. This approach may need to be revisited at some point.
+            # Set EXPOSE conditions
+            expose_boolean = self._set_expose_boolean(prop=prop, defaults=default_values)
 
-            # We have three types of parameter to handle in the following if statements:
             # 1. Required parameters (in 'required' array and no default given).
+            # Add parameter to properties and required in schema
             if (
-                prop not in default_values
+                (prop not in default_values or default_values[prop] is None)
                 and "required" in source_schema
                 and prop in source_schema["required"]
             ):
-                # Note: we only recurse into objects, not arrays. For now, this is sufficient.
-                if "properties" in details:
-                    self._generate_schema(
-                        deploy_params_schema,
-                        details,
-                        default_values={},  # In this branch property_key is not in defaults, so pass empty dict.
-                        param_prefix=param_name,
-                    )
-                else:
-                    deploy_params_schema["required"].append(param_name)
-                    deploy_params_schema["properties"][param_name] = details
-            # 2. Optional parameters that have child properties. These aren't added to the schema here (default
-            # behaviour), but we check their children.
-            elif prop in default_values and "properties" in details:
+                deploy_params_schema["required"].append(param_name)
+                deploy_params_schema["properties"][param_name] = details
+
+            # 2. Parameters that have child properties, check their children
+            elif "properties" in details:
                 self._generate_schema(
-                    deploy_params_schema, details, default_values[prop], param_name
+                    deploy_params_schema,
+                    details,
+                    default_values=default_values[prop],
+                    param_prefix=param_name,
                 )
-            # 3. Other optional parameters. By default these are excluded from the schema to minimise the number of
-            # parameters the user needs to deal with in the schemas, but expose_all_params means we include them.
-            elif self.expose_all_params:
-                if "properties" in details:
-                    # default_values is an empty dict. If there were defaults, elif #2 would have caught them
-                    self._generate_schema(
-                        deploy_params_schema,
-                        details,
-                        default_values={},
-                        param_prefix=param_name,
-                    )
-                else:
+            # 3. All other parameters (including arrays)
+            # Note: We don't recurse into arrays for simplicity
+            # This means we don't get defaults for items and nested arrays don't have properties
+            else:
+                if expose_boolean:
+                    # AOSM RP wants null as a string, bug raised
+                    if prop in default_values and default_values[prop] is None:
+                        default_values[prop] = "null"
+                        # Add value to default in schema
                     if prop in default_values:
-                        # AOSM wants null as a string
-                        # TODO: Flag with RP that this is a bug?
-                        if default_values[prop] is None:
-                            default_values[prop] = "null"
                         details["default"] = default_values[prop]
                     # If there is a default of '[resourceGroup().location]'
                     # which is not allowed to be passed into CGVs
@@ -218,12 +212,12 @@ class BaseInputProcessor(ABC):
     def generate_values_mappings(
         self,
         schema: Dict[str, Any],
-        mapping: Dict[str, Any],
+        defaults: Dict[str, Any],
         is_ret: bool = False,
         param_prefix: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
-        Generates a mapping from user-provided values to the parameters of an ARM template.
+        Generates a mapping from user-provided values to the parameters of the input artifact.
 
         The mapping also allows for values to be "hardcoded", i.e., the value is provided in the dictionary, not as
         a reference to a deployParameter / CGV.
@@ -235,8 +229,8 @@ class BaseInputProcessor(ABC):
             - If a parameter is required and not present in the initial mappings, it adds a mapping for it.
               The user must provide this value.
             - If optional, the existing hardcoded value will be left in place (but see next point about
-              expose_all_params) and the user can't set this value.
-            - If expose_all_params is set, it generates mappings for all optional parameters. If the user doesn't
+              expose_boolean) and the user can't set this value.
+            - If expose_boolean is set, it generates mappings for all optional parameters. If the user doesn't
               provide this value, AOSM will use the default value from the corresponding deployParameters schema.
             - If the parameter has child properties, it recursively generates mappings (if necessary) for them.
 
@@ -249,9 +243,13 @@ class BaseInputProcessor(ABC):
                      not present in the mapping dictionary will be added (recursively) as a mapping to the user input.
             is_ret:  Whether the mapping is for a resource element template (RET).
         """
+        mappings: Dict[str, Any] = {}
+
         if "properties" not in schema.keys():
-            return mapping
+            return mappings
         for prop, prop_schema in schema["properties"].items():
+
+            # Error handling for oneOf, anyOf which AOSM doesn't allow
             if isinstance(prop_schema, dict) and "type" not in prop_schema:
                 if "oneOf" in prop_schema or "anyOf" in prop_schema:
                     raise InvalidArgumentValueError(
@@ -267,53 +265,53 @@ class BaseInputProcessor(ABC):
                 )
 
             param_name = prop if param_prefix is None else f"{param_prefix}_{prop}"
-            # We have three types of parameter to handle in the following if statements (analagous to
-            # generate_schema()):
-            # 1. Required parameters (in 'required' array and no default given).
-            if (
-                "required" in schema
-                and prop in schema["required"]
-                and prop not in mapping
-            ):
-                if "properties" in prop_schema:
-                    mapping[prop] = self.generate_values_mappings(
-                        prop_schema, {}, is_ret, param_name
-                    )
-                else:
-                    mapping[prop] = (
-                        f"{{configurationparameters('{CGS_NAME}').{self.name}.{param_name}}}"
-                        if is_ret
-                        else f"{{deployParameters.{self.name}.{param_name}}}"
-                    )
-            # 2. Optional parameters (i.e. they have a default in the mapping dict) that have child properties.
-            #    These aren't added to the mapping here, but we check their children.
-            elif prop in mapping and "properties" in prop_schema:
-                # Python evaluates {} as False, so we need to explicitly set to {}
-                prop_mapping = mapping[prop] or {}
-                mapping[prop] = self.generate_values_mappings(
-                    prop_schema, prop_mapping, is_ret, param_name
+
+            # Set EXPOSE conditions
+            expose_boolean = self._set_expose_boolean(prop=prop, defaults=defaults)
+
+            # 1. Parameters that have child properties, check their children
+            if "properties" in prop_schema:
+                mappings[prop] = self.generate_values_mappings(
+                    prop_schema, defaults[prop], is_ret, param_name
                 )
-            # 3. Other optional parameters. By default these are hardcoded in the mapping to minimise the number of
-            #    parameters the user needs to deal with, but expose_all_params means we map them from the user
-            #    provided values.
-            elif self.expose_all_params:
-                if "properties" in prop_schema:
-                    # Mapping is an empty dict.
-                    # If there were defaults in the mapping dict, the elif above would have caught them
-                    mapping[prop] = self.generate_values_mappings(
-                        prop_schema, {}, is_ret, param_name
-                    )
-                else:
-                    mapping[prop] = (
-                        f"{{configurationparameters('{CGS_NAME}').{self.name}.{param_name}}}"
-                        if is_ret
-                        else f"{{deployParameters.{self.name}.{param_name}}}"
-                    )
+            # 2. Required parameters (in 'required' array and no default given).
+            # These will have no values so must be exposed
+            # We ignore any comments about hard-coding because there are no values
+            elif (
+                (prop not in defaults or defaults[prop] is None)
+                and "required" in schema
+                and prop in schema["required"]
+            ):
+                mappings[prop] = self._generate_mapping_string(param_name, is_ret)
+            # 3. All other parameters (including arrays)
+            else:
+                if expose_boolean:
+                    mappings[prop] = self._generate_mapping_string(param_name, is_ret)
+                # Note: need this condition to ignore optional parameters that have no defaults
+                elif prop in defaults:
+                    mappings[prop] = defaults[prop]
 
         logger.debug(
             "Output of generate_values_mappings for %s:\n%s",
             self.name,
-            json.dumps(mapping, indent=4),
+            json.dumps(mappings, indent=4),
         )
 
-        return mapping
+        return mappings
+
+    def _generate_mapping_string(self, param_name: str, is_ret: bool) -> str:
+        """
+        Generate the mapping string based on the parameter name and the is_ret flag.
+
+        Args:
+            param_name (str): The name of the parameter.
+            is_ret (bool): A flag indicating whether to use the return format.
+
+        Returns:
+            str: The generated mapping string.
+        """
+        return (
+            f"{{configurationparameters('{CGS_NAME}').{self.name}.{param_name}}}"
+            if is_ret
+            else f"{{deployParameters.{self.name}.{param_name}}}"
+        )

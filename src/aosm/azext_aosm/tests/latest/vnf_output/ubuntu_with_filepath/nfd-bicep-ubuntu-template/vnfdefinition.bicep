@@ -20,30 +20,30 @@ param vhdVersion string
 param armTemplateVersion string
 
 // Created by the az aosm definition publish command before the template is deployed
-resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing = {
+resource publisher 'Microsoft.HybridNetwork/publishers@2024-04-15' existing = {
   name: publisherName
   scope: resourceGroup()
 }
 
 // Created by the az aosm definition publish command before the template is deployed
-resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2024-04-15' existing = {
   parent: publisher
   name: acrArtifactStoreName
 }
 
 // Created by the az aosm definition publish command before the template is deployed
-resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2024-04-15' existing = {
   parent: publisher
   name: saArtifactStoreName
 }
 
 // Created by the az aosm definition publish command before the template is deployed
-resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2023-09-01' existing = {
+resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2024-04-15' existing = {
   parent: publisher
   name: nfDefinitionGroup
 }
 
-resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2023-09-01' = {
+resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2024-04-15' = {
   parent: nfdg
   name: nfDefinitionVersion
   location: location

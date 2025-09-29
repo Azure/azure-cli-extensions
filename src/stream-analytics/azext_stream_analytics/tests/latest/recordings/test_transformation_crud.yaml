@@ -14,32 +14,35 @@ interactions:
       - -n -g --data-locale --output-error-policy --out-of-order-policy --order-max-delay
         --arrival-max-delay
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
-        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001","name":"cli_test_stream_analytics_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-03-28T12:07:51Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001","name":"cli_test_stream_analytics_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_transformation_crud","date":"2025-09-19T02:15:45Z","module":"stream-analytics"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '342'
+      - '404'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 28 Mar 2023 12:07:52 GMT
+      - Fri, 19 Sep 2025 02:15:51 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 2838E8639E6B46A39B4FA3C207307551 Ref B: MAA201060516051 Ref C: 2025-09-19T02:15:51Z'
     status:
       code: 200
       message: OK
@@ -64,8 +67,7 @@ interactions:
       - -n -g --data-locale --output-error-policy --out-of-order-policy --order-max-delay
         --arrival-max-delay
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
-        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job?api-version=2020-03-01
   response:
@@ -73,11 +75,11 @@ interactions:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job\",\r\n
         \ \"name\": \"job\",\r\n  \"type\": \"Microsoft.StreamAnalytics/streamingjobs\",\r\n
         \ \"location\": \"West US\",\r\n  \"properties\": {\r\n    \"sku\": {\r\n
-        \     \"name\": \"Standard\"\r\n    },\r\n    \"jobId\": \"98e84595-26e5-4e0a-bf5d-06afc1ece88f\",\r\n
+        \     \"name\": \"Standard\"\r\n    },\r\n    \"jobId\": \"8924835b-a2e5-4ff9-8b6d-08760ed67ef2\",\r\n
         \   \"provisioningState\": \"Succeeded\",\r\n    \"jobState\": \"Created\",\r\n
         \   \"eventsOutOfOrderPolicy\": \"Drop\",\r\n    \"outputErrorPolicy\": \"Drop\",\r\n
         \   \"eventsOutOfOrderMaxDelayInSeconds\": 0,\r\n    \"eventsLateArrivalMaxDelayInSeconds\":
-        5,\r\n    \"dataLocale\": \"en-US\",\r\n    \"createdDate\": \"2023-03-28T12:07:54.203Z\",\r\n
+        5,\r\n    \"dataLocale\": \"en-US\",\r\n    \"createdDate\": \"2025-09-19T02:15:54.88Z\",\r\n
         \   \"compatibilityLevel\": \"1.0\",\r\n    \"jobStorageAccount\": null,\r\n
         \   \"contentStoragePolicy\": \"SystemAccount\",\r\n    \"inputs\": [],\r\n
         \   \"functions\": [],\r\n    \"outputs\": [],\r\n    \"jobType\": \"Cloud\",\r\n
@@ -86,27 +88,29 @@ interactions:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '920'
+      - '919'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 28 Mar 2023 12:07:54 GMT
+      - Fri, 19 Sep 2025 02:15:54 GMT
       etag:
-      - 1cb67db4-da46-4afa-a63d-64709ecaf8b2
+      - 355118b5-5c65-452d-9909-f6c3d51ef2d2
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=213e87ed-8e08-4eb4-a63c-c073058f7b00,objectId=7a0f5cd2-707f-4fc7-89ac-bbf281651283/southeastasia/c8b114d7-108b-44f7-925d-10cee3763e95
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 4E487683087B41FCA2E931F8BC05A5CD Ref B: MAA201060514039 Ref C: 2025-09-19T02:15:53Z'
     status:
       code: 200
       message: OK
@@ -129,8 +133,7 @@ interactions:
       ParameterSetName:
       - -n -g --job-name --saql --streaming-units
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
-        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/transformations/transformation?api-version=2020-03-01
   response:
@@ -147,23 +150,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 28 Mar 2023 12:07:54 GMT
+      - Fri, 19 Sep 2025 02:15:55 GMT
       etag:
-      - 3a7e3128-1b22-499f-9ed0-9809932bc8ad
+      - 1c809596-bcab-4312-ae48-693d850e2e7b
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=213e87ed-8e08-4eb4-a63c-c073058f7b00,objectId=7a0f5cd2-707f-4fc7-89ac-bbf281651283/westus/6cfe9d4b-9aac-4f28-aa7e-97e406623060
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 94AFFA58EBD64F2EB55B09531B5E01EC Ref B: MAA201060514025 Ref C: 2025-09-19T02:15:55Z'
     status:
       code: 200
       message: OK
@@ -186,8 +191,7 @@ interactions:
       ParameterSetName:
       - -n -g --job-name --saql --streaming-units
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
-        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/transformations/transformation?api-version=2020-03-01
   response:
@@ -204,19 +208,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 28 Mar 2023 12:07:58 GMT
+      - Fri, 19 Sep 2025 02:15:56 GMT
       etag:
-      - 4bcfe7a4-8e42-4506-8fc0-86f8e242722a
+      - b4fdf460-5155-4490-b289-876a6a80e3a2
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=213e87ed-8e08-4eb4-a63c-c073058f7b00,objectId=7a0f5cd2-707f-4fc7-89ac-bbf281651283/westus/047e3ed6-06b7-4f1b-9706-8b6972ba7d65
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: D1886312ADD442A1B562AF1FF536DB70 Ref B: MAA201060516027 Ref C: 2025-09-19T02:15:57Z'
     status:
       code: 200
       message: OK
@@ -234,8 +244,7 @@ interactions:
       ParameterSetName:
       - -n -g --job-name
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
-        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/transformations/transformation?api-version=2020-03-01
   response:
@@ -252,21 +261,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 28 Mar 2023 12:07:58 GMT
+      - Fri, 19 Sep 2025 02:15:57 GMT
       etag:
-      - 4bcfe7a4-8e42-4506-8fc0-86f8e242722a
+      - b4fdf460-5155-4490-b289-876a6a80e3a2
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=213e87ed-8e08-4eb4-a63c-c073058f7b00,objectId=7a0f5cd2-707f-4fc7-89ac-bbf281651283/westus/981706a0-0eb4-4c0b-975c-85a66279634a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: CC69EA96B4D44388BF5FB807E22E0654 Ref B: MAA201060514049 Ref C: 2025-09-19T02:15:58Z'
     status:
       code: 200
       message: OK

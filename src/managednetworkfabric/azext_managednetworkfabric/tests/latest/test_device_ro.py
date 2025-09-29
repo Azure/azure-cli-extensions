@@ -28,21 +28,21 @@ def cleanup_scenario(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario(test)
     step_ro_valid_json(test, checks=[])
     cleanup_scenario(test)
 
 
 def call_scenario2(test):
-    """# Testcase: scenario2"""
+    """Testcase: scenario2"""
     setup_scenario(test)
     step_ro_invalid_json(test, checks=[])
     cleanup_scenario(test)
 
 
 def call_scenario3(test):
-    """# Testcase: scenario3"""
+    """Testcase: scenario3"""
     setup_scenario(test)
     step_ro_missing_keys(test, checks=[])
     cleanup_scenario(test)
