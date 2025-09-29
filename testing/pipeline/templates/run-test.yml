@@ -41,7 +41,7 @@ jobs:
       azdev extension build $(EXTENSION_NAME)
     workingDirectory: $(CLI_REPO_PATH)
     displayName: "Setup and Build Extension with azdev"
-      
+
   - bash: |
       K8S_CONFIG_VERSION=$(ls ${EXTENSION_FILE_NAME}* | cut -d "-" -f2)
       echo "##vso[task.setvariable variable=K8S_CONFIG_VERSION]$K8S_CONFIG_VERSION"
@@ -60,7 +60,7 @@ jobs:
                         --arg AKS_CLUSTER_NAME "$AKS_CLUSTER_NAME" \
                         --arg ARC_CLUSTER_NAME "$ARC_CLUSTER_NAME" \
                         --arg K8S_CONFIG_VERSION "$K8S_CONFIG_VERSION" \
-                        '{subscriptionId: $SUB_ID, resourceGroup: $RG, aksClusterName: $AKS_CLUSTER_NAME, arcClusterName: $ARC_CLUSTER_NAME, extensionVersion: {"connectedk8s": $K8S_CONFIG_VERSION}}')
+                        '{subscriptionId: $SUB_ID, resourceGroup: $RG, aksClusterName: $AKS_CLUSTER_NAME, arcClusterName: $ARC_CLUSTER_NAME, extensionVersion: {"connectedk8s": $K8S_CONFIG_VERSION}, customLocationsOid: "51dfe1e8-70c6-4de5-a08e-e18aff23d815"}')
         echo $JSON_STRING > settings.json
         cat settings.json
     workingDirectory: $(TEST_PATH)
@@ -74,7 +74,6 @@ jobs:
       chmod +x ./kind
       ./kind create cluster
     displayName: "Create and Start the Kind cluster"
-  
   - bash: |
       curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
     displayName: "Upgrade az to latest version"
@@ -94,7 +93,6 @@ jobs:
       inlineScript: |
         .\Bootstrap.ps1 -CI
       workingDirectory: $(TEST_PATH)
-            
   - task: AzureCLI@2
     displayName: Run the Test Suite for ${{ parameters.path }}
     inputs:
