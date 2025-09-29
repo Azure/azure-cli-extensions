@@ -3463,6 +3463,21 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
         required_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_only.json")
+        
+        print('=== LocalDNS Test Debug Info ===')
+        print('required_config_path:', required_config_path)
+        
+        # Read and print the config content for debugging
+        try:
+            with open(required_config_path, 'r') as f:
+                config_content = f.read()
+                print('LocalDNS config file content:', config_content)
+                import json
+                config_json = json.loads(config_content)
+                print('Parsed config JSON:', config_json)
+        except Exception as e:
+            print('Error reading config file:', str(e))
+        
         self.kwargs.update({
             "resource_group": resource_group,
             "name": aks_name,
@@ -3486,7 +3501,20 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
             "--kubernetes-version 1.33.0"
         )
-        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        print('add_cmd:', add_cmd)
+        print('About to execute nodepool add with LocalDNS...')
+        
+        try:
+            result = self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
+            print('Command executed successfully')
+        except Exception as e:
+            print('Command failed with error:', str(e))
+            print('Error type:', type(e).__name__)
+            if hasattr(e, 'response'):
+                print('Response status:', getattr(e.response, 'status_code', 'N/A'))
+                print('Response text:', getattr(e.response, 'text', 'N/A'))
+            raise
 
         # Show nodepool and check localDNSProfile
         show_cmd = (
