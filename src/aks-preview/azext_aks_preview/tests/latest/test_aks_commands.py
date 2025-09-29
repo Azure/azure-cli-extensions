@@ -3519,6 +3519,144 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_nodepool_add_with_localdns_required_mode_with_extra_property(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+        required_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_extra_property.json")
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "name": aks_name,
+            "nodepool_name": nodepool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+            "required_config": required_config_path
+        })
+
+        # Create AKS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
+            "--kubernetes-version 1.33.0"
+        )
+        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Add nodepool with required mode localdns config
+        add_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --node-count 1 --localdns-config={required_config} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+            "--kubernetes-version 1.33.0"
+        )
+        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Show nodepool and check localDNSProfile
+        show_cmd = (
+            "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
+        )
+        result = self.cmd(show_cmd).get_output_in_json()
+        assert result["localDnsProfile"]["mode"] == "Required"
+
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
+        # Clean up
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_nodepool_add_with_localdns_config_with_extra_property(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+        required_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig_with_extra_property.json")
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "name": aks_name,
+            "nodepool_name": nodepool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+            "required_config": required_config_path
+        })
+
+        # Create AKS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
+            "--kubernetes-version 1.33.0"
+        )
+        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Add nodepool with required mode localdns config
+        add_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --node-count 1 --localdns-config={required_config} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+            "--kubernetes-version 1.33.0"
+        )
+        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Show nodepool and check localDNSProfile
+        show_cmd = (
+            "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
+        )
+        result = self.cmd(show_cmd).get_output_in_json()
+        assert result["localDnsProfile"]["mode"] == "Required"
+
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
+        # Clean up
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_nodepool_add_with_localdns_config_with_extra_property_in_dnsOverrides(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+        required_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig_with_extra_property_in_dnsOverrides.json")
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "name": aks_name,
+            "nodepool_name": nodepool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+            "required_config": required_config_path
+        })
+
+        # Create AKS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
+            "--kubernetes-version 1.33.0"
+        )
+        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Add nodepool with required mode localdns config
+        add_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --node-count 1 --localdns-config={required_config} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+            "--kubernetes-version 1.33.0"
+        )
+        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Show nodepool and check localDNSProfile
+        show_cmd = (
+            "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
+        )
+        result = self.cmd(show_cmd).get_output_in_json()
+        assert result["localDnsProfile"]["mode"] == "Required"
+
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
+        # Clean up
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
     def test_aks_nodepool_update_with_localdns_config(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
@@ -3761,6 +3899,130 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert result["localDnsProfile"]["mode"] == "Required"
         assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpectedDefault)
         assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpectedDefault)
+
+        # Clean up
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_nodepool_update_localdns_required_to_localdnsconfig_with_extra_property(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+        required_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig.json")
+        extra_property_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig_with_extra_property.json")
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "name": aks_name,
+            "nodepool_name": nodepool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+            "required_config": required_config_path,
+            "extra_property_config": extra_property_config_path
+        })
+
+        # Create AKS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
+            "--kubernetes-version 1.33.0"  # k8s version > 1.33 to support localDNS
+        )
+        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Add nodepool with required mode localdns config
+        add_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --node-count 1 --localdns-config={required_config} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+            "--kubernetes-version 1.33.0"  # k8s version > 1.33 to support localDNS
+        )
+        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Verify nodepool has required mode and DNS overrides
+        show_cmd = (
+            "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
+        )
+        result = self.cmd(show_cmd).get_output_in_json()
+        assert result["localDnsProfile"]["mode"] == "Required"
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
+
+        # Update nodepool with extra property config
+        update_cmd = (
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --localdns-config={extra_property_config} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+        )
+        self.cmd(update_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Verify nodepool still has required mode and DNS overrides (extra property should be ignored)
+        result = self.cmd(show_cmd).get_output_in_json()
+        assert result["localDnsProfile"]["mode"] == "Required"
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
+
+        # Clean up
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_nodepool_update_localdns_required_to_localdnsconfig_with_extra_property_in_dnsOverrides(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+        required_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig.json")
+        extra_property_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig_with_extra_property_in_dnsOverrides.json")
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "name": aks_name,
+            "nodepool_name": nodepool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+            "required_config": required_config_path,
+            "extra_property_config": extra_property_config_path
+        })
+
+        # Create AKS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
+            "--kubernetes-version 1.33.0"  # k8s version > 1.33 to support localDNS
+        )
+        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Add nodepool with required mode localdns config
+        add_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --node-count 1 --localdns-config={required_config} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+            "--kubernetes-version 1.33.0"  # k8s version > 1.33 to support localDNS
+        )
+        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Verify nodepool has required mode and DNS overrides
+        show_cmd = (
+            "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
+        )
+        result = self.cmd(show_cmd).get_output_in_json()
+        assert result["localDnsProfile"]["mode"] == "Required"
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
+
+        # Update nodepool with extra property config
+        update_cmd = (
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --localdns-config={extra_property_config} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+        )
+        self.cmd(update_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Verify nodepool still has required mode and DNS overrides (extra property should be ignored)
+        result = self.cmd(show_cmd).get_output_in_json()
+        assert result["localDnsProfile"]["mode"] == "Required"
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
 
         # Clean up
         self.cmd(
