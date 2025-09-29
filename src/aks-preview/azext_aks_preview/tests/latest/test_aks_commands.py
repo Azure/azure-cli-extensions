@@ -18012,3 +18012,86 @@ spec:
                 self.is_empty(),
             ],
         )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_jwtauthenticator_cmds(self, resource_group, resource_group_location):
+        # reset the count so that in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+        jwt_auth_name = self.create_random_name('jwt', 10)
+
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'jwt_auth_name': jwt_auth_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'jwt_config_file': _get_test_data_file('jwtauthenticator.json'),
+            'updated_jwt_config_file': _get_test_data_file('jwtauthenticator_update.json'),
+        })
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--vm-set-type=VirtualMachines --node-count 1 --vm-size standard_dc16ads_cc_v5 "
+            "--enable-managed-identity --ssh-key-value={ssh_key_value} "
+        )
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        add_jwt_cmd = (
+            "aks jwtauthenticator add --resource-group={resource_group} --cluster-name={name} "
+            "--name={jwt_auth_name} --config-file={jwt_config_file} "
+        )
+        self.cmd(add_jwt_cmd, checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('name', '{jwt_auth_name}'),
+        ])
+
+        show_jwt_cmd = (
+            "aks jwtauthenticator show --resource-group={resource_group} --cluster-name={name} "
+            "--name={jwt_auth_name} "
+        )
+        self.cmd(show_jwt_cmd, checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('name', '{jwt_auth_name}'),
+            self.check('properties.issuer.url', 'https://token.actions.githubusercontent.com'),
+            self.check('properties.issuer.audiences[0]', 'https://github.com/myorg'),
+            self.check('properties.claimMappings.username.expression', 'claims.sub'),
+            self.check('properties.claimMappings.groups.expression', 'claims.aud'),
+        ])
+
+        time.sleep(5*60)  # wait for 5 mins to allow all operations to finish before updating JWT authenticator
+        
+        update_jwt_cmd = (
+            "aks jwtauthenticator update --resource-group={resource_group} --cluster-name={name} "
+            "--name={jwt_auth_name} --config-file={updated_jwt_config_file} "
+        )
+        self.cmd(update_jwt_cmd)
+
+        list_jwt_cmd = (
+            "aks jwtauthenticator list --resource-group={resource_group} --cluster-name={name} "
+        )
+        jwt_list = self.cmd(list_jwt_cmd).get_output_in_json()
+        assert len(jwt_list) == 1
+        assert jwt_list[0]['name'] == jwt_auth_name
+        assert jwt_list[0]['properties']['provisioningState'] == 'Succeeded'
+        assert jwt_list[0]['properties']['issuer']['url'] == 'https://accounts.google.com'
+
+        delete_jwt_cmd = (
+            "aks jwtauthenticator delete --resource-group={resource_group} --cluster-name={name} "
+            "--name={jwt_auth_name} --yes "
+        )
+        self.cmd(delete_jwt_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        list_after_delete_cmd = (
+            "aks jwtauthenticator list --resource-group={resource_group} --cluster-name={name} "
+        )
+        jwt_list_after_delete = self.cmd(list_after_delete_cmd).get_output_in_json()
+        assert len(jwt_list_after_delete) == 0
