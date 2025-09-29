@@ -63,7 +63,7 @@ class BulkPublishSolution(AAZCommand):
             ),
         )
         _args_schema.solution_template_version_name = AAZStrArg(
-            options=["-v", "--version", "--solution-template-version-name"],
+            options=["-v", "--version", "--solution-template-version-name","--solution-template-version"],
             help="The name of the SolutionTemplateVersion",
             required=True,
             id_part="child_name_1",
@@ -81,12 +81,12 @@ class BulkPublishSolution(AAZCommand):
             help="Configuration of solution for the target/s",
         )
         _args_schema.solution_dependencies = AAZListArg(
-            options=["--dependencies"],
+            options=["--dependencies","--solution-dependencies"],
             arg_group="Body",
             help="Solution dependencies",
         )
         _args_schema.solution_instance_name = AAZStrArg(
-            options=["--instance-name"],
+            options=["--instance-name","--solution-instance-name"],
             arg_group="Body",
             help="Name of the solution instance",
             fmt=AAZStrArgFormat(
