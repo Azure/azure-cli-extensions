@@ -940,6 +940,55 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             return profile
         return None
 
+    def _build_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Build local DNS profile for the AgentPool object if provided via --localdns-config."""
+        localdns_profile = self.get_localdns_profile()
+        kube_dns_overrides, vnet_dns_overrides = None, None
+        if localdns_profile is not None:
+
+            def build_override(override_dict):
+                camel_to_snake_case = {
+                    "queryLogging": "query_logging",
+                    "protocol": "protocol",
+                    "forwardDestination": "forward_destination",
+                    "forwardPolicy": "forward_policy",
+                    "maxConcurrent": "max_concurrent",
+                    "cacheDurationInSeconds": "cache_duration_in_seconds",
+                    "serveStaleDurationInSeconds": "serve_stale_duration_in_seconds",
+                    "serveStale": "serve_stale",
+                }
+                valid_keys = set(camel_to_snake_case.values())
+                filtered = {}
+                for k, v in override_dict.items():
+                    if k in camel_to_snake_case:
+                        filtered[camel_to_snake_case[k]] = v
+                    elif k in valid_keys:
+                        filtered[k] = v
+                return self.models.LocalDNSOverride(**filtered)
+
+            # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
+            if 'kubeDNSOverrides' in localdns_profile:
+                kube_dns_overrides = {}
+                process_dns_overrides(
+                    localdns_profile.get("kubeDNSOverrides"),
+                    kube_dns_overrides,
+                    build_override
+                )
+            if 'vnetDNSOverrides' in localdns_profile:
+                vnet_dns_overrides = {}
+                process_dns_overrides(
+                    localdns_profile.get("vnetDNSOverrides"),
+                    vnet_dns_overrides,
+                    build_override
+                )
+
+            agentpool.local_dns_profile = self.models.LocalDNSProfile(
+                mode=localdns_profile.get("mode"),
+                kube_dns_overrides=kube_dns_overrides,
+                vnet_dns_overrides=vnet_dns_overrides,
+            )
+        return agentpool
+
     def get_node_count_and_enable_cluster_autoscaler_min_max_count_vms(
         self,
     ) -> Tuple[int, bool, Union[int, None], Union[int, None]]:
@@ -1452,52 +1501,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def set_up_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Set up local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
-        localdns_profile = self.context.get_localdns_profile()
-        kube_dns_overrides, vnet_dns_overrides = None, None
-        if localdns_profile is not None:
-
-            def build_override(override_dict):
-                camel_to_snake_case = {
-                    "queryLogging": "query_logging",
-                    "protocol": "protocol",
-                    "forwardDestination": "forward_destination",
-                    "forwardPolicy": "forward_policy",
-                    "maxConcurrent": "max_concurrent",
-                    "cacheDurationInSeconds": "cache_duration_in_seconds",
-                    "serveStaleDurationInSeconds": "serve_stale_duration_in_seconds",
-                    "serveStale": "serve_stale",
-                }
-                valid_keys = set(camel_to_snake_case.values())
-                filtered = {}
-                for k, v in override_dict.items():
-                    if k in camel_to_snake_case:
-                        filtered[camel_to_snake_case[k]] = v
-                    elif k in valid_keys:
-                        filtered[k] = v
-                return self.models.LocalDNSOverride(**filtered)
-
-            # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
-            if 'kubeDNSOverrides' in localdns_profile:
-                kube_dns_overrides = {}
-                process_dns_overrides(
-                    localdns_profile.get("kubeDNSOverrides"),
-                    kube_dns_overrides,
-                    build_override
-                )
-            if 'vnetDNSOverrides' in localdns_profile:
-                vnet_dns_overrides = {}
-                process_dns_overrides(
-                    localdns_profile.get("vnetDNSOverrides"),
-                    vnet_dns_overrides,
-                    build_override
-                )
-
-            agentpool.local_dns_profile = self.models.LocalDNSProfile(
-                mode=localdns_profile.get("mode"),
-                kube_dns_overrides=kube_dns_overrides,
-                vnet_dns_overrides=vnet_dns_overrides,
-            )
-        return agentpool
+        return self.context._build_localdns_profile(agentpool)
 
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
@@ -1797,49 +1801,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
     def update_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Update local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
-        localdns_profile = self.context.get_localdns_profile()
-        if localdns_profile is not None:
-            kube_dns_overrides = {}
-            vnet_dns_overrides = {}
-
-            def build_override(override_dict):
-                camel_to_snake_case = {
-                    "queryLogging": "query_logging",
-                    "protocol": "protocol",
-                    "forwardDestination": "forward_destination",
-                    "forwardPolicy": "forward_policy",
-                    "maxConcurrent": "max_concurrent",
-                    "cacheDurationInSeconds": "cache_duration_in_seconds",
-                    "serveStaleDurationInSeconds": "serve_stale_duration_in_seconds",
-                    "serveStale": "serve_stale",
-                }
-                valid_keys = set(camel_to_snake_case.values())
-                filtered = {}
-                for k, v in override_dict.items():
-                    if k in camel_to_snake_case:
-                        filtered[camel_to_snake_case[k]] = v
-                    elif k in valid_keys:
-                        filtered[k] = v
-                return self.models.LocalDNSOverride(**filtered)
-
-            # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
-            process_dns_overrides(
-                localdns_profile.get("kubeDNSOverrides"),
-                kube_dns_overrides,
-                build_override
-            )
-            process_dns_overrides(
-                localdns_profile.get("vnetDNSOverrides"),
-                vnet_dns_overrides,
-                build_override
-            )
-
-            agentpool.local_dns_profile = self.models.LocalDNSProfile(
-                mode=localdns_profile.get("mode"),
-                kube_dns_overrides=kube_dns_overrides,
-                vnet_dns_overrides=vnet_dns_overrides,
-            )
-        return agentpool
+        return self.context._build_localdns_profile(agentpool)
 
     def update_upgrade_strategy(self, agentpool: AgentPool) -> AgentPool:
         """Update upgrade strategy for the AgentPool object.
