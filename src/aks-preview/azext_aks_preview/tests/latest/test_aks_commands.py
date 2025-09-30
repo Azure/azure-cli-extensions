@@ -14693,7 +14693,7 @@ spec:
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.performance.accelerationMode", "BpfVeth"),
+                self.check("networkProfile.advancedNetworking.performance.accelerationMode", "None"),
             ],
         )
 
