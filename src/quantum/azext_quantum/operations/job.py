@@ -5,8 +5,6 @@
 
 # pylint: disable=line-too-long,redefined-builtin,bare-except,inconsistent-return-statements,too-many-locals,too-many-branches,too-many-statements
 
-import gzip
-import io
 import json
 import logging
 import os
@@ -195,7 +193,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     # If output format is not specified, supply a default for QIR jobs
     if job_output_format is None:
         if job_type == QIR_JOB:
-            job_output_format = "microsoft.quantum-results.v1"
+            job_output_format = "microsoft.quantum-results.v2"
         else:
             raise RequiredArgumentMissingError(ERROR_MSG_MISSING_OUTPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
 
@@ -359,7 +357,7 @@ def output(cmd, job_id, resource_group_name, workspace_name, location):
         #             parameter is specified, then the full JSON job output is displayed, being
         #             consistent with other commands.
 
-    return _get_job_output(cmd, job)
+    return _get_job_output(job)
 
 
 def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wait_secs=5):
@@ -438,7 +436,7 @@ def cancel(cmd, job_id, resource_group_name, workspace_name, location):
     return wait(cmd, job_id, info.resource_group, info.name, info.location)
 
 
-def _get_job_output(cmd, job):
+def _get_job_output(job):
 
     import tempfile
     path = os.path.join(tempfile.gettempdir(), job.id)
@@ -453,7 +451,7 @@ def _get_job_output(cmd, job):
 
         if blobProperties.size == 0:
             return
-        
+
         with open(file=path, mode="wb") as stream:
             download_stream = blob_client.download_blob()
             stream.write(download_stream.readall())

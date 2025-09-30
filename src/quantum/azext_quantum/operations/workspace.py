@@ -8,7 +8,9 @@
 import os.path
 import json
 import sys
+
 import time
+from builtins import set as builtin_set
 
 from azure.cli.command_modules.storage.operations.account import list_storage_accounts
 
@@ -163,9 +165,9 @@ def _add_quantum_providers(cmd, workspace, providers, auto_accept, skip_autoadd)
                                            "\t-r \"Microsoft/Basic, Microsoft.FleetManagement/Basic\"\n"
                                            "To display a list of Provider IDs and their SKUs, use the following command:\n"
                                            "\taz quantum offerings list -l MyLocation -o table")
-    
+
     # Check for duplicate provider ids
-    seen = set()
+    seen = builtin_set()
     for provider in providers_selected:
         identifier = provider['provider_id'].lower()
         if identifier in seen:

@@ -12,13 +12,9 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, AzureInternalError
 
-from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name, get_test_capabilities
-from ..._client_factory import _get_data_credentials
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
 from ...commands import transform_output
-from ...operations.workspace import WorkspaceInfo, DEPLOYMENT_NAME_PREFIX
-from ...operations.target import TargetInfo
 from ...operations.job import (
-    _parse_blob_url,
     _validate_max_poll_wait_secs,
     _convert_numeric_params,
     _construct_filter_query,
@@ -50,16 +46,6 @@ class QuantumJobsScenarioTest(ScenarioTest):
         issue_cmd_with_param_missing(self, "az quantum job output", "az quantum job output -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table\nPrint the results of a successful Azure Quantum job.")
         issue_cmd_with_param_missing(self, "az quantum job show", "az quantum job show -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status\nGet the status of an Azure Quantum job.")
         issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
-
-    def test_parse_blob_url(self):
-        sas = "sv=2018-03-28&sr=c&sig=some-sig&sp=racwl"
-        url = f"https://accountname.blob.core.windows.net/containername/rawOutputData?{sas}"
-        args = _parse_blob_url(url)
-
-        self.assertEqual(args['account_name'], "accountname")
-        self.assertEqual(args['container'], "containername")
-        self.assertEqual(args['blob'], "rawOutputData")
-        self.assertEqual(args['sas_token'], sas)
 
     def test_transform_output(self):
         # Call with a good histogram

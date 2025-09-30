@@ -78,6 +78,12 @@ def transform_output(results):
             ('', f"\u007C{barra:<20}\u007C")
         ])
 
+    # Handle Quantum Results v2 format
+    if 'DataFormat' in results and results['DataFormat'] == 'microsoft.quantum-results.v2':
+        total_shots = sum([results['Results'][0]['Histogram'][i]['Count'] for i in range(len(results['Results'][0]['Histogram']))])
+        return [one(results['Results'][0]['Histogram'][i]['Display'], results['Results'][0]['Histogram'][i]['Count'] / total_shots) for i in range(len(results['Results'][0]['Histogram']))]
+
+    # Handle Quantum Results v1 format
     if 'Histogram' in results:
         histogram = results['Histogram']
         # The Histogram serialization is odd entries are key and even entries values
