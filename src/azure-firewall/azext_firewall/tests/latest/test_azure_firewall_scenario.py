@@ -944,7 +944,7 @@ class AzureFirewallScenario(ScenarioTest):
         from datetime import date, timedelta
         tomorrow = date.today() + timedelta(days=1)
         self.kwargs.update({
-            'storageaccountname': f"""azfwproxypactest{date.today().strftime("%d%m%y")}""",
+            'storageaccountname': f"azfwproxypactest",
             'expirystring': tomorrow.strftime("%Y-%m-%d"),
             'containername': 'explicitproxycontainer',
             'policy_name': 'testFirewallPolicy',
