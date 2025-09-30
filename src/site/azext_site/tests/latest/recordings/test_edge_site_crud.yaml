@@ -1,0 +1,632 @@
+interactions:
+- request:
+    body: '{"properties": {"description": "Test Site", "displayName": "Test Site Display",
+      "labels": {"key1": "value1", "key2": "value2"}, "siteAddress": {"city": "San
+      Francisco", "country": "US", "postalCode": "94107", "stateOrProvince": "CA",
+      "streetAddress1": "16 TOWNSEND ST", "streetAddress2": "UNIT 1"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '299'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --site-name --resource-group --display-name --description --labels --street-address1
+        --street-address2 --city --state-or-province --country --postal-code
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_000001/providers/Microsoft.Edge/sites/TestSiteName?api-version=2025-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_000001/providers/Microsoft.Edge/sites/TestSiteName","name":"TestSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-18T12:16:02.9227483Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-18T12:16:02.9227483Z"},"properties":{"description":"Test
+        Site","displayName":"Test Site Display","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94107","stateOrProvince":"CA","streetAddress1":"16
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '724'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Sep 2025 12:16:03 GMT
+      etag:
+      - '"7c009fa5-0000-0500-0000-68cbf8030000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=45f75482-df7a-47c1-9ff8-61b072ef97cb/eastus/98743580-06db-4a6f-8442-30eedef7f805
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: AAD3EEB7AE174E11B805FB7343949EC5 Ref B: PNQ231110906062 Ref C: 2025-09-18T12:16:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "Test Subs Site", "displayName": "Test Subs
+      Site Display", "labels": {"key1": "value1", "key2": "value2"}, "siteAddress":
+      {"city": "San Francisco", "country": "US", "postalCode": "94107", "stateOrProvince":
+      "CA", "streetAddress1": "16 TOWNSEND ST", "streetAddress2": "UNIT 1"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '309'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --site-name --display-name --description --labels --street-address1 --street-address2
+        --city --state-or-province --country --postal-code
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/TestSubsSiteName?api-version=2025-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/TestSubsSiteName","name":"TestSubsSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-18T12:16:04.6436888Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-18T12:16:04.6436888Z"},"properties":{"description":"Test
+        Subs Site","displayName":"Test Subs Site Display","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94107","stateOrProvince":"CA","streetAddress1":"16
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '706'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Sep 2025 12:16:04 GMT
+      etag:
+      - '"7c00cfa5-0000-0500-0000-68cbf8040000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=45f75482-df7a-47c1-9ff8-61b072ef97cb/eastus/d4212c4a-5870-4d67-b00c-ebf68d54f0df
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 29BE45F1605D4CD7AC0D145C9811DB97 Ref B: PNQ231110907023 Ref C: 2025-09-18T12:16:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --site-name --resource-group
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_000001/providers/Microsoft.Edge/sites/TestSiteName?api-version=2025-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_000001/providers/Microsoft.Edge/sites/TestSiteName","name":"TestSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-18T12:16:02.9227483Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-18T12:16:02.9227483Z"},"properties":{"description":"Test
+        Site","displayName":"Test Site Display","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94107","stateOrProvince":"CA","streetAddress1":"16
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '724'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Sep 2025 12:16:05 GMT
+      etag:
+      - '"7c009fa5-0000-0500-0000-68cbf8030000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=45f75482-df7a-47c1-9ff8-61b072ef97cb/eastus/48971acd-8ebb-45dd-8d14-1760191fd4ae
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3FE7A88F59F644D7BCD88CB2025D3E6C Ref B: PNQ231110909029 Ref C: 2025-09-18T12:16:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --site-name
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/TestSubsSiteName?api-version=2025-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/TestSubsSiteName","name":"TestSubsSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-18T12:16:04.6436888Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-18T12:16:04.6436888Z"},"properties":{"description":"Test
+        Subs Site","displayName":"Test Subs Site Display","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94107","stateOrProvince":"CA","streetAddress1":"16
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '706'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Sep 2025 12:16:05 GMT
+      etag:
+      - '"7c00cfa5-0000-0500-0000-68cbf8040000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=45f75482-df7a-47c1-9ff8-61b072ef97cb/eastus/9a61614d-5314-4755-9963-e92dd97a4fbb
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5EE021000AA54FEE9BC6CD9DF78819D8 Ref B: PNQ231110909040 Ref C: 2025-09-18T12:16:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "Test Site", "labels": {"key1": "value1",
+      "key2": "value2"}, "siteAddress": {"city": "San Francisco", "country": "US",
+      "postalCode": "94108", "stateOrProvince": "CA", "streetAddress1": "18 TOWNSEND
+      ST", "streetAddress2": "UNIT 1"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '263'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --site-name --resource-group --description --labels --street-address1 --street-address2
+        --city --state-or-province --country --postal-code
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_000001/providers/Microsoft.Edge/sites/TestSiteName?api-version=2025-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_000001/providers/Microsoft.Edge/sites/TestSiteName","name":"TestSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-18T12:16:02.9227483Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-18T12:16:07.4469719Z"},"properties":{"description":"Test
+        Site","displayName":"Test Site Display","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94108","stateOrProvince":"CA","streetAddress1":"18
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '724'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Sep 2025 12:16:13 GMT
+      etag:
+      - '"7c002ba7-0000-0500-0000-68cbf80d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=45f75482-df7a-47c1-9ff8-61b072ef97cb/centralindia/6f6a8972-0ddc-401e-b15f-94b0d7d6b4de
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '12000'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '800'
+      x-msedge-ref:
+      - 'Ref A: D8243E93A6064445BC697EAD49B516DA Ref B: PNQ231110909054 Ref C: 2025-09-18T12:16:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "Test Subs Site", "labels": {"key1": "value1",
+      "key2": "value2"}, "siteAddress": {"city": "San Francisco", "country": "US",
+      "postalCode": "94108", "stateOrProvince": "CA", "streetAddress1": "18 TOWNSEND
+      ST", "streetAddress2": "UNIT 1"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '268'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --site-name --description --labels --street-address1 --street-address2 --city
+        --state-or-province --country --postal-code
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/TestSubsSiteName?api-version=2025-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/TestSubsSiteName","name":"TestSubsSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-18T12:16:04.6436888Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-18T12:16:14.5112965Z"},"properties":{"description":"Test
+        Subs Site","displayName":"Test Subs Site Display","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94108","stateOrProvince":"CA","streetAddress1":"18
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '706'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Sep 2025 12:16:19 GMT
+      etag:
+      - '"7c001da8-0000-0500-0000-68cbf8130000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=45f75482-df7a-47c1-9ff8-61b072ef97cb/centralindia/ad47fecf-946a-4464-99e8-5d44dddb09d5
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '12000'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '800'
+      x-msedge-ref:
+      - 'Ref A: C22CE52DFAC34769A0462B212E7D4A5B Ref B: PNQ231110907062 Ref C: 2025-09-18T12:16:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_000001/providers/Microsoft.Edge/sites?api-version=2025-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_000001/providers/Microsoft.Edge/sites/TestSiteName","name":"TestSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-18T12:16:02.9227483Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-18T12:16:07.4469719Z"},"properties":{"description":"Test
+        Site","displayName":"Test Site Display","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94108","stateOrProvince":"CA","streetAddress1":"18
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '736'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Sep 2025 12:16:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=45f75482-df7a-47c1-9ff8-61b072ef97cb/eastus/523ca097-f0a5-4abe-a503-0c52a723f2f1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A74C1EFCA479412BBCA703969702FDD9 Ref B: PNQ231110909036 Ref C: 2025-09-18T12:16:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites?api-version=2025-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/abhimishra-site-test/providers/microsoft.edge/sites/AbhishekSite","name":"AbhishekSite","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-04-23T10:41:25.5885796Z","lastModifiedBy":"17962ed5-6318-422b-b607-83385030b63d","lastModifiedByType":"Application","lastModifiedAt":"2025-05-13T00:25:36.5258485Z"},"properties":{"displayName":"Abhishek''s
+        Site","provisioningState":"Succeeded","siteAddress":{"streetAddress1":"221B
+        Baker Street","streetAddress2":"","city":"London","stateOrProvince":"","country":"GB","postalCode":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edge-sites-common/providers/microsoft.edge/sites/AbhishekSite","name":"AbhishekSite","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-06-05T07:01:20.1611866Z","lastModifiedBy":"17962ed5-6318-422b-b607-83385030b63d","lastModifiedByType":"Application","lastModifiedAt":"2025-05-13T01:15:49.8128999Z"},"properties":{"displayName":"Abhishek
+        Site","provisioningState":"Succeeded","siteAddress":{"streetAddress1":"221B
+        Baker Street","streetAddress2":"","city":"London","stateOrProvince":"","country":"GB","postalCode":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/BasavarajSitesRG/providers/microsoft.edge/sites/BasavarajSite","name":"BasavarajSite","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-06-14T05:16:45.7330072Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-26T06:24:34.3482253Z"},"properties":{"displayName":"BasavarajSite","provisioningState":"Succeeded","labels":{"key1":"Value1"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/datalabs-test-rg/providers/microsoft.edge/sites/Testcmadala","name":"Testcmadala","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-06-25T05:56:02.6706749Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-25T05:56:02.6706749Z"},"properties":{"displayName":"TestCmadala","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nbtoclean/providers/Microsoft.Edge/sites/Rome","name":"Rome","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-07-01T05:39:19.9933702Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-01T05:39:19.9933702Z"},"properties":{"displayName":"Rome","description":"Demo
+        site, not any description.","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nbtoclean/providers/Microsoft.Edge/sites/Rome1","name":"Rome1","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-07-01T05:40:05.4076927Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-01T05:40:05.4076927Z"},"properties":{"displayName":"Rome","description":"Demo
+        site, not any description.","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amrawat-test/providers/microsoft.edge/sites/TestSite","name":"TestSite","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-09-03T09:24:19.8939686Z","lastModifiedBy":"17962ed5-6318-422b-b607-83385030b63d","lastModifiedByType":"Application","lastModifiedAt":"2025-05-13T02:41:17.0805884Z"},"properties":{"displayName":"TestSite","provisioningState":"Succeeded","siteAddress":{"streetAddress1":"AL1","streetAddress2":"","city":"","stateOrProvince":"","country":"AU","postalCode":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/akanksha-test/providers/Microsoft.Edge/Sites/akanksha-test2","name":"akanksha-test2","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-09-11T08:03:55.5654761Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-11T08:03:55.5654761Z"},"properties":{"displayName":"akanksha-test2","description":"Demo
+        site, not any description.","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/akanksha-test/providers/Microsoft.Edge/Sites/akanksha-test3","name":"akanksha-test3","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-09-11T08:07:38.3710599Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-11T08:07:38.3710599Z"},"properties":{"displayName":"akanksha-test3","description":"Demo
+        site, not any description.","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aupmanyu-test-rg/providers/microsoft.edge/sites/ayushi-test-site","name":"ayushi-test-site","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-09-12T09:13:23.4154951Z","lastModifiedBy":"17962ed5-6318-422b-b607-83385030b63d","lastModifiedByType":"Application","lastModifiedAt":"2025-05-13T02:48:20.0133766Z"},"properties":{"displayName":"ayushi-test-site","provisioningState":"Succeeded","siteAddress":{"streetAddress1":"AL1","streetAddress2":"","city":"","stateOrProvince":"","country":"AU","postalCode":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeSites_geneva_auto_create_rg/providers/microsoft.edge/sites/testrg1site","name":"testrg1site","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-09-13T09:24:28.1617093Z","lastModifiedBy":"17962ed5-6318-422b-b607-83385030b63d","lastModifiedByType":"Application","lastModifiedAt":"2025-05-13T02:50:33.8597178Z"},"properties":{"displayName":"testrg1site","provisioningState":"Succeeded","siteAddress":{"streetAddress1":"testrg1site","streetAddress2":"","city":"","stateOrProvince":"","country":"AR","postalCode":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/microsoft.edge/sites/testsubs1site","name":"testsubs1site","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-09-13T09:26:44.2418479Z","lastModifiedBy":"17962ed5-6318-422b-b607-83385030b63d","lastModifiedByType":"Application","lastModifiedAt":"2025-05-13T02:50:34.4672403Z"},"properties":{"displayName":"testsubs1site","provisioningState":"Succeeded","siteAddress":{"streetAddress1":"testsubs1site","streetAddress2":"","city":"","stateOrProvince":"","country":"AR","postalCode":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aupmanyu-test-rg2/providers/microsoft.edge/sites/ayushi-test-site","name":"ayushi-test-site","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-09-17T06:48:30.371194Z","lastModifiedBy":"17962ed5-6318-422b-b607-83385030b63d","lastModifiedByType":"Application","lastModifiedAt":"2025-05-13T02:52:44.6786823Z"},"properties":{"displayName":"ayushi-test-site","provisioningState":"Succeeded","siteAddress":{"streetAddress1":"AL1","streetAddress2":"","city":"","stateOrProvince":"","country":"AU","postalCode":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site717","name":"site717","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-05T08:54:15.7942514Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-05T08:54:15.7942514Z"},"properties":{"displayName":"site717","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site8765","name":"site8765","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-05T08:54:53.7578068Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-05T08:54:53.7578068Z"},"properties":{"displayName":"site8765","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site3792","name":"site3792","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-05T09:30:22.8801694Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-05T09:30:28.0391794Z"},"properties":{"displayName":"updatedSite5777","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site6658","name":"site6658","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-05T09:31:11.4165114Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-05T09:31:17.9496874Z"},"properties":{"displayName":"updatedSite8680","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site5039","name":"site5039","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-05T09:49:59.8090298Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-05T09:50:03.7664602Z"},"properties":{"displayName":"updatedSite4592","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site6436","name":"site6436","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-05T09:50:53.4345941Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-05T09:50:56.7949842Z"},"properties":{"displayName":"updatedSite6267","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site5554","name":"site5554","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-05T09:58:09.1575817Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-05T09:58:14.7659557Z"},"properties":{"displayName":"updatedSite487","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site4743","name":"site4743","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-05T09:58:59.9630708Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-05T09:59:09.9734395Z"},"properties":{"displayName":"updatedSite715","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site4400","name":"site4400","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-05T10:05:26.0761734Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-05T10:05:33.6596605Z"},"properties":{"displayName":"updatedSite6930","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site1073","name":"site1073","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-05T10:13:37.1870224Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-05T10:13:39.5217895Z"},"properties":{"displayName":"updatedSite7280","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg3861/providers/Microsoft.Edge/sites/site3904","name":"site3904","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-06T09:14:55.4444145Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-06T09:14:59.632989Z"},"properties":{"displayName":"updatedSite1777","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg4978/providers/Microsoft.Edge/sites/site5244","name":"site5244","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-06T09:15:15.169431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-06T09:15:17.8144135Z"},"properties":{"displayName":"updatedSite785","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg3917/providers/Microsoft.Edge/sites/site4261","name":"site4261","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-06T09:16:16.2357795Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-06T09:16:20.0178777Z"},"properties":{"displayName":"updatedSite8734","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg6198/providers/Microsoft.Edge/sites/site8484","name":"site8484","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-06T09:16:32.9316134Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-06T09:16:34.5913736Z"},"properties":{"displayName":"updatedSite6901","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg7271/providers/Microsoft.Edge/sites/site4937","name":"site4937","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2024-11-06T13:03:00.2136568Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-06T13:03:00.2136568Z"},"properties":{"displayName":"site4937","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/BasavarajRGTest/providers/microsoft.edge/sites/BasavarajSite","name":"BasavarajSite","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-02-24T07:40:27.8886096Z","lastModifiedBy":"17962ed5-6318-422b-b607-83385030b63d","lastModifiedByType":"Application","lastModifiedAt":"2025-05-13T05:25:14.5782642Z"},"properties":{"displayName":"Basavaraj''s
+        Site","labels":{"as":"asdad1"},"provisioningState":"Succeeded","siteAddress":{"streetAddress1":"221B
+        Baker Street","streetAddress2":"","city":"London","stateOrProvince":"","country":"GB","postalCode":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/basavarajNoAddressId","name":"basavarajNoAddressId","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-03-04T06:03:54.137328Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-01T12:41:32.4213114Z"},"properties":{"displayName":"Basavaraj''s
+        latest Site resource","provisioningState":"Succeeded","siteAddress":{"city":"","country":"au","postalCode":"","stateOrProvince":"","streetAddress1":"","streetAddress2":""},"labels":{"UpdatedBy":"darshana","type":"line"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/basavarajnewaddrprop","name":"basavarajnewaddrprop","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-03-07T05:25:10.8812825Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-03-07T05:30:05.1665133Z"},"properties":{"displayName":"SiteWithAddrProps","siteAddress":{"streetAddress1":"15
+        TOWNSEND ST","streetAddress2":"UNIT 1","city":"San Francisco","stateOrProvince":"CA","country":"US","postalCode":"94107"},"labels":{},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/sitecreatedwithv1","name":"sitecreatedwithv1","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-03-17T09:18:29.2551643Z","lastModifiedBy":"17962ed5-6318-422b-b607-83385030b63d","lastModifiedByType":"Application","lastModifiedAt":"2025-05-13T05:45:31.7828752Z"},"properties":{"displayName":"SiteWithAddrProps","provisioningState":"Succeeded","siteAddress":{"streetAddress1":"221B
+        Baker Street","streetAddress2":"","city":"London","country":"GB","postalCode":"","stateOrProvince":""},"labels":{"NewAPI":"2025-03-01-preview"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site1004","name":"site1004","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-10T08:01:00.867816Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-26T03:56:09.3311563Z"},"properties":{"displayName":"Basavaraj''s
+        Site resource","labels":{"type":"line","name":"Basavaraj S","UpdatedBy":"Kartik"},"provisioningState":"Succeeded","siteAddress":{"streetAddress1":"AL1","streetAddress2":"","city":"","stateOrProvince":"","country":"AU","postalCode":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site1404","name":"site1404","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-14T03:34:30.5274919Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-26T03:56:09.4059973Z"},"properties":{"displayName":"Basavaraj''s
+        Site resource","labels":{"type":"line","name":"Basavaraj S","UpdatedBy":"Kartik"},"provisioningState":"Succeeded","siteAddress":{"streetAddress1":"AL1","streetAddress2":"","city":"","stateOrProvince":"","country":"AU","postalCode":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Darshita-resource/providers/microsoft.edge/sites/new-site","name":"new-site","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-15T08:54:06.1146298Z","lastModifiedBy":"17962ed5-6318-422b-b607-83385030b63d","lastModifiedByType":"Application","lastModifiedAt":"2025-05-13T06:21:53.20199Z"},"properties":{"displayName":"new-site","provisioningState":"Succeeded","siteAddress":{"streetAddress1":"edjfn","streetAddress2":"fefjn","city":"jaipur","stateOrProvince":"","country":"IN","postalCode":""}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/abc-resource/providers/microsoft.edge/sites/test","name":"test","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-22T03:32:27.9523017Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-22T03:36:03.1189508Z"},"properties":{"displayName":"testsite","description":"","siteAddress":{"streetAddress1":"","country":"dz"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzSecPackAutoConfigRG/providers/microsoft.edge/sites/test2","name":"test2","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-22T03:37:46.7523779Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-22T03:37:46.7523779Z"},"properties":{"displayName":"testsite2","description":"","siteAddress":{"streetAddress1":"abc","city":"983","stateOrProvince":"2309","country":"AT","postalCode":"133"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/BvtCloudTestAccounts/providers/microsoft.edge/sites/test3","name":"test3","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-22T03:39:33.4816786Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-22T03:39:33.4816786Z"},"properties":{"displayName":"testsite3","description":"","siteAddress":{"country":"AR"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/abc-resource/providers/microsoft.edge/sites/Test_123","name":"Test_123","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-22T10:43:54.8417661Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-22T10:43:54.8417661Z"},"properties":{"displayName":"Test_123","description":"","siteAddress":{"streetAddress1":"pune","city":"pune","stateOrProvince":"Maharashtra","country":"IN","postalCode":"411021"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sites-rg9287/providers/Microsoft.Edge/sites/SeattleSite7153","name":"SeattleSite7153","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-08T09:18:02.5360451Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-08T09:18:02.5360451Z"},"properties":{"displayName":"Seattle
+        Site","description":"Seattle Site Description","siteAddress":{"streetAddress1":"
+        Apt 4B","streetAddress2":"123 Main St","city":"Seattle","stateOrProvince":"WA","country":"USA","postalCode":"98101"},"labels":{"city":"Seattle","country":"USA"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sites-rg530/providers/Microsoft.Edge/sites/SeattleSite6303","name":"SeattleSite6303","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-08T09:21:31.8430327Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-08T09:21:31.8430327Z"},"properties":{"displayName":"Seattle
+        Site","description":"Seattle Site Description","siteAddress":{"streetAddress1":"
+        Apt 4B","streetAddress2":"123 Main St","city":"Seattle","stateOrProvince":"WA","country":"USA","postalCode":"98101"},"labels":{"city":"Seattle","country":"USA"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sites-rg6366/providers/Microsoft.Edge/sites/SeattleSite4276","name":"SeattleSite4276","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-08T09:44:46.738625Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-08T09:44:54.1548089Z"},"properties":{"provisioningState":"Succeeded","displayName":"Seattle
+        Site","description":"Seattle Site Description","siteAddress":{"streetAddress1":"
+        Apt 4B","streetAddress2":"123 Main St","city":"Seattle","stateOrProvince":"WA","country":"USA","postalCode":"98101"},"labels":{"city":"Seattle","country":"USA"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sites-rg2939/providers/Microsoft.Edge/sites/SeattleSite3523","name":"SeattleSite3523","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-08T09:46:09.9542318Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-08T09:46:12.0789199Z"},"properties":{"provisioningState":"Succeeded","displayName":"New
+        York Site","description":"New York Site Description","siteAddress":{"city":"New
+        York","country":"USA"},"labels":{"city":"New York"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/site1405","name":"site1405","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-14T04:04:45.5570928Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-26T03:56:09.3459485Z"},"properties":{"displayName":"Basavaraj''s
+        Site resource","labels":{"type":"line","name":"Basavaraj S","UpdatedBy":"Kartik"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/siteclirg/providers/Microsoft.Edge/sites/clirgsite","name":"clirgsite","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-28T13:24:35.9140956Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-28T13:24:35.9140956Z"},"properties":{"description":"cli
+        based sites creation","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"newyork","country":"usa","postalCode":"56797","streetAddress1":"15
+        2nd street"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/clisubssite","name":"clisubssite","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-28T13:25:31.5018995Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-01T12:42:12.2844728Z"},"properties":{"description":"cli
+        based sites creation","labels":{"key1":"value1","key2":"value2","UpdatedBy":"darshana"},"siteAddress":{"city":"newyork","country":"usa","postalCode":"56797","streetAddress1":"15
+        2nd street"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/clisgsite","name":"clisgsite","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-28T13:27:14.9086592Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-26T03:56:09.4309122Z"},"properties":{"provisioningState":"Succeeded","description":"cli
+        based sites creation","labels":{"key1":"value1","key2":"value2","UpdatedBy":"Kartik"},"siteAddress":{"city":"newyork","country":"usa","postalCode":"56797","streetAddress1":"15
+        2nd street"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/clisgsite2","name":"clisgsite2","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-28T13:30:45.082122Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-26T03:56:09.3769911Z"},"properties":{"provisioningState":"Succeeded","description":"cli
+        based sites creation","labels":{"key1":"value1","key2":"value2","UpdatedBy":"Kartik"},"siteAddress":{"city":"newyork","country":"usa","postalCode":"56797","streetAddress1":"15
+        2nd street"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/clisgsite3","name":"clisgsite3","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-29T03:42:33.8265987Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-03T12:54:13.59982Z"},"properties":{"description":"cli
+        based sites creation","labels":{"key1":"value1","key2":"value2","UpdatedBy":"darshana"},"siteAddress":{"city":"newyork","country":"usa","postalCode":"56797","streetAddress1":"15
+        2nd street"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/abc-resource/providers/Microsoft.Edge/sites/pythonsdktesting","name":"pythonsdktesting","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-29T10:19:48.5431938Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-29T10:20:44.5601223Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgesite_uyro7ozv235ouflh3jfxeksnaznzhjh6ss6edcojwpssp5kjnxprqbsr2/providers/Microsoft.Edge/sites/TestSiteName","name":"TestSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-30T08:21:04.0845954Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-30T08:21:04.0845954Z"},"properties":{"description":"Test
+        Site","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94107","stateOrProvince":"CA","streetAddress1":"16
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgesite_za6ebtqlizxktj2g63tngf3qc745if7mxmrcyfsymcajwagvwe7ekgpan/providers/Microsoft.Edge/sites/TestSiteName","name":"TestSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-30T08:22:16.9670446Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-30T08:22:16.9670446Z"},"properties":{"description":"Test
+        Site","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94107","stateOrProvince":"CA","streetAddress1":"16
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgesite_ge72pyhszjmi5qzivk5d5umt5rwqxxunhb47ek4gahagwflacnn5glsfn/providers/Microsoft.Edge/sites/TestSiteName","name":"TestSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-30T08:55:24.1131229Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-30T08:55:29.4691428Z"},"properties":{"description":"Test
+        Site","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94108","stateOrProvince":"CA","streetAddress1":"18
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgesite_ltcjpfsvowok53hsw7aozvcxjxbbfgero5cefivdqipu4zosyj5ofntmi/providers/Microsoft.Edge/sites/TestSiteName","name":"TestSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-30T08:56:52.0192761Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-30T08:56:57.5687721Z"},"properties":{"description":"Test
+        Site","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94108","stateOrProvince":"CA","streetAddress1":"18
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgesite_rh3b4xjz2lftzg2uhlea3ywg62uaggkhh734pwwaqu6t346gl75j73lv3/providers/Microsoft.Edge/sites/TestSiteName","name":"TestSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-30T09:03:06.9832201Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-30T09:03:13.4891315Z"},"properties":{"description":"Test
+        Site","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94108","stateOrProvince":"CA","streetAddress1":"18
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cloud-shell-storage-southeastasia/providers/microsoft.edge/sites/test1234","name":"test1234","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-06-19T14:32:15.8483267Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-06-19T14:32:15.8483267Z"},"properties":{"displayName":"test1234","description":"","siteAddress":{"country":"US"},"labels":{},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkWatcherRG/providers/microsoft.edge/sites/test12345","name":"test12345","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-06-20T14:15:06.6084492Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-06-20T14:15:06.6084492Z"},"properties":{"displayName":"test12345","description":"","siteAddress":{"country":"US"},"labels":{},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeSitesRG/providers/microsoft.edge/sites/test123456","name":"test123456","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-06-24T04:19:25.3365309Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-06-24T04:19:25.3365309Z"},"properties":{"displayName":"test123456","description":"","siteAddress":{"country":"US"},"labels":{},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SitesRGBased/providers/microsoft.edge/sites/labels_test","name":"labels_test","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-26T05:00:07.4052942Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-26T06:12:47.2384237Z"},"properties":{"displayName":"labels_test","description":"","siteAddress":{"streetAddress1":"Bellandur","city":"Bengaluru","stateOrProvince":"KA","country":"IN","postalCode":"560016"},"labels":{"Env":"ProjectCostAllocationTrackingForEnterpriseResourcePlanningAndFinancialForecastingAcrossMultipleDepartmentsIncludingMarketingSalesOperationsHumanResourcesLegalComplianceAndInformationTechnologyWithAdditionalConsiderationsForCloudMigrationSecurityProtocolsDataGovernanceAndSustainabilityInitiativesInAlignmentWithGlobalExpansionStrategiesAndQuarterlyPerformanceMetricsReviewCycleIncludingStakeholderEngagementAndRegulatoryReportingRequirementsVersion2025Q3AlphaReleaseCandidateExtendedSupportPhaseOne","ProjectCostAllocationTrackingForEnterpriseResourcePlanningAndFinancialForecastingAcrossMultipleDepartmentsIncludingMarketingSalesOperationsHumanResourcesLegalComplianceAndInformationTechnologyWithAdditionalConsiderationsForCloudMigrationSecurityProtocolsDataGovernanceAndSustainabilityInitiativesInAlignmentWithGlobalExpansionStrategiesAndQuarterlyPerformanceMetricsReviewCycleIncludingStakeholderEngagementAndRegulatoryReportingRequirementsVersion2025Q3AlphaReleaseCandidateExtendedSupportPhaseOne":"Test"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_000001/providers/Microsoft.Edge/sites/TestSiteName","name":"TestSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-18T12:16:02.9227483Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-18T12:16:07.4469719Z"},"properties":{"description":"Test
+        Site","displayName":"Test Site Display","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94108","stateOrProvince":"CA","streetAddress1":"18
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/TestSubsSiteName","name":"TestSubsSiteName","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-18T12:16:04.6436888Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-18T12:16:14.5112965Z"},"properties":{"description":"Test
+        Subs Site","displayName":"Test Subs Site Display","labels":{"key1":"value1","key2":"value2"},"siteAddress":{"city":"San
+        Francisco","country":"US","postalCode":"94108","stateOrProvince":"CA","streetAddress1":"18
+        TOWNSEND ST","streetAddress2":"UNIT 1"},"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '36764'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Sep 2025 12:16:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=45f75482-df7a-47c1-9ff8-61b072ef97cb/eastus/8ed7498d-099a-41d5-a3d8-b523926d1830
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6BC605A11239400491306E902B24850A Ref B: PNQ231110909052 Ref C: 2025-09-18T12:16:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --site-name -g --yes
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_000001/providers/Microsoft.Edge/sites/TestSiteName?api-version=2025-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 18 Sep 2025 12:16:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=45f75482-df7a-47c1-9ff8-61b072ef97cb/westindia/2e5489f3-e828-48d0-bde7-faa2664efa73
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 82D3CAA7E18240A3B27BCCCB1229D485 Ref B: PNQ231110907062 Ref C: 2025-09-18T12:16:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --site-name --yes
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Edge/sites/TestSubsSiteName?api-version=2025-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 18 Sep 2025 12:16:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=45f75482-df7a-47c1-9ff8-61b072ef97cb/southindia/a0a8d44c-baf9-4a5b-b7b2-fc412261ff03
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: B200CC7F35374BE9BF3D611EAED77E7B Ref B: PNQ231110909025 Ref C: 2025-09-18T12:16:24Z'
+    status:
+      code: 200
+      message: OK
+version: 1
