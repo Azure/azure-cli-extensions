@@ -10855,6 +10855,46 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
         self.assertFalse(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
 
+        # Test standalone port update for OpenTelemetry metrics (without enable/disable flags)
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "opentelemetry_metrics_port": 9090,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        
+        # Mock existing cluster with OpenTelemetry metrics already enabled
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(
+                    enabled=True
+                ),
+                app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+                    open_telemetry_metrics=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
+                        enabled=True,
+                        port=8080  # Original port
+                    )
+                )
+            )
+        )
+        dec_3.context.attach_mc(mc_3)
+        
+        # Mock authentication-related functions for third test
+        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
+             patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription'), \
+             patch.object(dec_3.context, 'get_resource_group_name', return_value='test-rg'), \
+             patch.object(dec_3.context, 'get_name', return_value='test-cluster'), \
+             patch.object(dec_3.context, 'get_location', return_value='test-location'):
+            dec_mc_3 = dec_3.update_azure_monitor_profile(mc_3)
+        
+        # Verify OpenTelemetry metrics port is updated while remaining enabled
+        self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
+        self.assertTrue(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
+        self.assertEqual(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port, 9090)
+
     def test_update_azure_monitor_profile_with_opentelemetry_logs(self):
         # Test enabling OpenTelemetry logs on update
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -10940,6 +10980,137 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Verify OpenTelemetry logs is disabled
         self.assertIsNotNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs)
         self.assertFalse(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
+
+        # Test standalone port update for OpenTelemetry logs (without enable/disable flags)
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "opentelemetry_logs_port": 9091,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        
+        # Mock existing cluster with OpenTelemetry logs already enabled
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles=addon_profiles,
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True
+                ),
+                app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+                    open_telemetry_logs=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(
+                        enabled=True,
+                        port=8081  # Original port
+                    )
+                )
+            )
+        )
+        dec_3.context.attach_mc(mc_3)
+        
+        # Mock authentication-related functions for third test
+        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
+             patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription'), \
+             patch.object(dec_3.context, 'get_resource_group_name', return_value='test-rg'), \
+             patch.object(dec_3.context, 'get_name', return_value='test-cluster'), \
+             patch.object(dec_3.context, 'get_location', return_value='test-location'):
+            dec_mc_3 = dec_3.update_azure_monitor_profile(mc_3)
+        
+        # Verify OpenTelemetry logs port is updated while remaining enabled
+        self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs)
+        self.assertTrue(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
+        self.assertEqual(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 9091)
+
+    def test_disable_azure_monitor_app_monitoring_preserves_opentelemetry(self):
+        # Test that disabling Azure Monitor app monitoring preserves existing OpenTelemetry configuration
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_app_monitoring": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        
+        # Mock existing cluster with both Azure Monitor app monitoring and OpenTelemetry metrics enabled
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+                    auto_instrumentation=self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(
+                        enabled=True
+                    ),
+                    open_telemetry_metrics=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
+                        enabled=True,
+                        port=8080
+                    )
+                )
+            )
+        )
+        dec.context.attach_mc(mc)
+        
+        # Mock authentication-related functions
+        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
+             patch.object(dec.context, 'get_subscription_id', return_value='test-subscription'), \
+             patch.object(dec.context, 'get_resource_group_name', return_value='test-rg'), \
+             patch.object(dec.context, 'get_name', return_value='test-cluster'), \
+             patch.object(dec.context, 'get_location', return_value='test-location'):
+            dec_mc = dec.update_azure_monitor_profile(mc)
+        
+        # Verify Azure Monitor app monitoring auto instrumentation is disabled
+        self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation)
+        self.assertFalse(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation.enabled)
+        
+        # Verify OpenTelemetry metrics configuration is preserved
+        self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
+        self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
+        self.assertEqual(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port, 8080)
+
+    def test_enable_azure_monitor_app_monitoring_preserves_opentelemetry(self):
+        # Test that enabling Azure Monitor app monitoring preserves existing OpenTelemetry configuration
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_app_monitoring": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        
+        # Mock existing cluster with OpenTelemetry logs enabled but Azure Monitor app monitoring disabled
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+                    auto_instrumentation=self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(
+                        enabled=False
+                    ),
+                    open_telemetry_logs=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(
+                        enabled=True,
+                        port=8081
+                    )
+                )
+            )
+        )
+        dec.context.attach_mc(mc)
+        
+        # Mock authentication-related functions
+        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
+             patch.object(dec.context, 'get_subscription_id', return_value='test-subscription'), \
+             patch.object(dec.context, 'get_resource_group_name', return_value='test-rg'), \
+             patch.object(dec.context, 'get_name', return_value='test-cluster'), \
+             patch.object(dec.context, 'get_location', return_value='test-location'):
+            dec_mc = dec.update_azure_monitor_profile(mc)
+        
+        # Verify Azure Monitor app monitoring auto instrumentation is enabled
+        self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation)
+        self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation.enabled)
+        
+        # Verify OpenTelemetry logs configuration is preserved
+        self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs)
+        self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
+        self.assertEqual(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 8081)
 
 if __name__ == "__main__":
     unittest.main()

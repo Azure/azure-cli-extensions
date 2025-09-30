@@ -1009,30 +1009,6 @@ def aks_update(
     # Import the decorator from the preview extension package
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
 
-    # Handle enable_azure_monitor_logs parameter
-    if enable_azure_monitor_logs:
-        # Call the enable-addons functionality directly
-        return aks_enable_addons(
-            cmd=cmd,
-            client=client,
-            resource_group_name=resource_group_name,
-            name=name,
-            addons="monitoring",
-            no_wait=no_wait
-        )
-
-    # Handle disable_azure_monitor_logs parameter
-    if disable_azure_monitor_logs:
-        # Call the disable-addons functionality directly
-        return aks_disable_addons(
-            cmd=cmd,
-            client=client,
-            resource_group_name=resource_group_name,
-            name=name,
-            addons="monitoring",
-            no_wait=no_wait
-        )
-
     # decorator pattern
     aks_update_decorator = AKSPreviewManagedClusterUpdateDecorator(
         cmd=cmd,
@@ -1040,14 +1016,46 @@ def aks_update(
         raw_parameters=raw_parameters,
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
     )
+
     try:
-        # update mc profile
+        # update mc profile (this will handle Azure Monitor profile operations)
         mc = aks_update_decorator.update_mc_profile_preview()
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
-    # send request to update the real managed cluster
-    return aks_update_decorator.update_mc(mc)
+
+    # Handle traditional monitoring addon operations after profile updates
+    result_mc = None
+    if enable_azure_monitor_logs or disable_azure_monitor_logs:
+        # First apply the profile changes if any
+        if mc:
+            result_mc = aks_update_decorator.update_mc(mc)
+        
+        # Then handle the addon operation
+        if enable_azure_monitor_logs:
+            return aks_enable_addons(
+                cmd=cmd,
+                client=client,
+                resource_group_name=resource_group_name,
+                name=name,
+                addons="monitoring",
+                no_wait=no_wait
+            )
+        
+        if disable_azure_monitor_logs:
+            return aks_disable_addons(
+                cmd=cmd,
+                client=client,
+                resource_group_name=resource_group_name,
+                name=name,
+                addons="monitoring",
+                no_wait=no_wait
+            )
+        
+        return result_mc
+    else:
+        # No addon operations, just apply profile changes
+        return aks_update_decorator.update_mc(mc)
 
 
 # pylint: disable=unused-argument
