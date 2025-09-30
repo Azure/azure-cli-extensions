@@ -4,6 +4,14 @@ Release History
 ===============
 
 =======
+1.0.0
+++++++
+* Released the first stable version with three new commands.
+* [NEW COMMAND] `az data-migration sql-db retry` - Retry on going migration for the database.
+* [NEW COMMAND] `data-migration sql-managed-instance delete` -  Delete SQL MI Database Migration resource.
+* [NEW COMMAND] `data-migration sql-vm delete` -  Delete SQL VM Database Migration resource.
+
+=======
 1.0.0b6
 ++++++
 * Added support for stable version 2025-06-30 of the DMS services.
