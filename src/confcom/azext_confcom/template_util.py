@@ -1118,7 +1118,7 @@ def extract_containers_and_fragments_from_text(text: str) -> Tuple[List[Dict], L
             Loader=yaml.FullLoader,
         )
     except yaml.YAMLError as e:
-        logger.warning(f"Error parsing rego file: {e}")
+        logger.warning("Error parsing rego file: %s", e)
         # reading the rego file failed, so we'll just return the default outputs
         containers = []
         fragments = []
