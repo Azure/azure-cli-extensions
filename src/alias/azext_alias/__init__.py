@@ -87,3 +87,6 @@ def get_alias_completer(cmd, prefix, namespace, **kwargs):  # pylint: disable=un
 
 
 COMMAND_LOADER_CLS = AliasExtCommandLoader
+
+
+## code injected to force building of the wheel to include alias files.
