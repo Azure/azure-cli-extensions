@@ -14682,7 +14682,7 @@ spec:
             ],
         )
 
-        # Update transit encryption type to WireGuard and advanced network policies to L7
+        # Update acceleration mode to None
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPerformancePreview "
