@@ -713,17 +713,12 @@ def load_policy_from_arm_template_str(
                     rego_imports.append(fragment)
                     unique_imports.add(fragment)
 
-        try:
+        if diff_mode:
             existing_containers, fragments = extract_confidential_properties(
                 container_group_properties
             )
-        except ValueError as e:
-            if diff_mode:
-                # In diff mode, we raise an error if the base64 policy is malformed
-                eprint(f"Unable to decode existing policy. Please check the base64 encoding.\n{e}")
-            else:
-                # In non-diff mode, we ignore the error and proceed without the policy
-                existing_containers, fragments = ([], [])
+        else:
+            existing_containers, fragments = ([], [])
 
         rego_fragments = copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS) if not exclude_default_fragments else []
         if infrastructure_svn:
