@@ -9,8 +9,11 @@ import os
 import platform
 
 from applicationinsights import TelemetryClient
-from azure.cli.core.telemetry import (_get_azure_subscription_id,
-                                      _get_hash_mac_address, _get_user_agent)
+from azure.cli.core.telemetry import (
+    _get_azure_subscription_id,
+    _get_hash_mac_address,
+    _get_user_agent,
+)
 
 DEFAULT_INSTRUMENTATION_KEY = "c301e561-daea-42d9-b9d1-65fca4166704"
 APPLICATIONINSIGHTS_INSTRUMENTATION_KEY_ENV = "APPLICATIONINSIGHTS_INSTRUMENTATION_KEY"
@@ -75,3 +78,13 @@ class CLITelemetryClient:
         return os.getenv(
             APPLICATIONINSIGHTS_INSTRUMENTATION_KEY_ENV, DEFAULT_INSTRUMENTATION_KEY
         )
+
+    def track_agent_feedback(self, feedback):
+        # NOTE: we should try to avoid importing holmesgpt at the top level to prevent dependency issues
+        from holmesgpt.core.feedback import Feedback
+
+        # Type hint validation for development purposes
+        if not isinstance(feedback, Feedback):
+            raise TypeError(f"Expected Feedback object, got {type(feedback)}")
+
+        self.track("AgentCLIFeedback", properties=feedback.to_dict())
