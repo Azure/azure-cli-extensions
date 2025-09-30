@@ -1454,8 +1454,11 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         self._ensure_agentpool(agentpool)
         localdns_profile = self.context.get_localdns_profile()
         if localdns_profile is not None:
-            kube_dns_overrides = {}
-            vnet_dns_overrides = {}
+            if 'kubeDNSOverrides' in localdns_profile:
+                kube_dns_overrides = {}
+
+            if 'vnetDNSOverrides' in localdns_profile:
+                vnet_dns_overrides = {}
 
             def build_override(override_dict):
                 camel_to_snake_case = {
