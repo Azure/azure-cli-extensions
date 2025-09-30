@@ -1,0 +1,6 @@
+Pod search-engine-service in namespace app-111 is running but not ready. Container is failing its readiness probe (exec [sh -c exit
+1]). Status: Ready: False, ContainersReady: False. No deployment or service found for this name.                                   
+
+Root cause: readiness probe always fails (exit 1), so pod never becomes ready.                                                     
+
+Fix: Update readiness probe to a command that returns success (exit 0 or a valid health check).

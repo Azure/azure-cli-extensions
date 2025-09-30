@@ -1,0 +1,3 @@
+search-engine pod is not ready due to failing readiness probe. Container runs a loop printing "Running...", but readiness probe    
+always fails (exec [sh -c exit 1]). Pod status: Running, but not Ready. Fix: Update readiness probe to a command that returns      
+success (exit 0) when ready.

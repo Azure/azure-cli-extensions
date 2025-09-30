@@ -1,0 +1,5 @@
+Pod giant-narwhal-6958c5bdd8-69gtn (namespace app-02) is repeatedly crashing due to OOMKilled (out of memory). Container "main" is 
+set with a 50Mi memory limit and is running the command tail /dev/zero, which consumes unlimited memory and quickly exceeds the    
+limit. Pod is in a crash loop with Restart Count: 4 and frequent BackOff events.                                                   
+
+Fix: Increase the memory limit or change the container command to avoid unbounded memory usage.

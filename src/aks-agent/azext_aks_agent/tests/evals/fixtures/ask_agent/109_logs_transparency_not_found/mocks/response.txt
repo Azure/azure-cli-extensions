@@ -1,0 +1,5 @@
+No logs found for pod data-processor-84fdd68c4f-gdsjj in namespace app-109. Pod is crash looping with exit code 1. Container runs  
+python /app/app.py using image python:3.9-slim. Likely root cause: application fails immediately on start, possibly due to missing 
+or invalid /app/app.py or required secret data-processor-app not mounted or misconfigured.                                         
+
+Check that /app/app.py exists in the image or that the secret data-processor-app contains the correct code.

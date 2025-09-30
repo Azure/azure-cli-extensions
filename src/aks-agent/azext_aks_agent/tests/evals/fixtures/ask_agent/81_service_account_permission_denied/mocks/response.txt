@@ -1,0 +1,19 @@
+monitoring-agent in namespace-81 gets permission denied errors because its service account (monitoring-sa) only has "get"          
+permission on pods, not "list". The pod tries to "list" pods, but the Role (monitoring-role) does not grant "list" for pods—only   
+"get".                                                                                                                             
+
+To fix: Update monitoring-role to include "list" verb for pods. Example:                                                           
+
+                                                                                                                                   
+ apiVersion: rbac.authorization.k8s.io/v1                                                                                          
+ kind: Role                                                                                                                        
+ metadata:                                                                                                                         
+   name: monitoring-role                                                                                                           
+   namespace: namespace-81                                                                                                         
+ rules:                                                                                                                            
+ - apiGroups: [""]                                                                                                                 
+   resources: ["pods"]                                                                                                             
+   verbs: ["get", "list"]                                                                                                          
+                                                                                                                                   
+
+Apply the updated Role to resolve the permission denied error.

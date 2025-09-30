@@ -1,0 +1,6 @@
+Namespace namespace-54b on robusta-prod cluster has pod fast-fail-pod stuck in ImagePullBackOff.                                   
+
+Root cause: Pod is trying to pull image totallynonexistentregistry12345.io/doesnotexist/invalid:latest, which does not exist. DNS  
+lookup for registry fails: "no such host".                                                                                         
+
+Fix: Update pod spec to use a valid image from an accessible registry.

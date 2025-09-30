@@ -1,0 +1,5 @@
+Redis pod is stuck in Pending because its PersistentVolumeClaim redis-standard-pvc is also Pending. No storage has been provisioned
+for the PVC, so the pod cannot start.                                                                                              
+
+To fix: Check if a storage class named standard-v2 exists and is properly configured, and ensure your cluster has a storage        
+provider that can dynamically provision volumes.

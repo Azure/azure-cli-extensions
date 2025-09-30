@@ -1,0 +1,8 @@
+web-app-7849658779-57zxb in namespace-77 keeps restarting because the liveness probe is failing:                                   
+
+ • Liveness probe: http-get on :8080/healthz                                                                                       
+ • Container runs nginx:alpine, which does not listen on port 8080 by default                                                      
+ • Events: "Liveness probe failed: dial tcp 10.244.1.130:8080: connect: connection refused"                                        
+ • Pod is killed and restarted each time probe fails                                                                               
+
+Fix: Update liveness probe to use a port nginx actually listens on (likely 80), or configure nginx to serve health checks on 8080.

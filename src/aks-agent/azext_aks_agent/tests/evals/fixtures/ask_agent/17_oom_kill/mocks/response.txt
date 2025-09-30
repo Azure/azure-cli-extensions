@@ -1,0 +1,4 @@
+analytics-exporter-fast pod is repeatedly OOMKilled (out of memory). Container memory-eater requests and limits are set to 100Mi,  
+but it tries to allocate 80Mi and then 100Mi, causing it to exceed its memory limit and crash.                                     
+
+Fix: Increase memory limit above 100Mi in deployment spec.

@@ -1,0 +1,13 @@
+Errors in logs of pod my-app-51-74fb646bc4-rhsnv:                                                                                  
+
+ 1 Certificate validation failed: CN=idp.company.com expired on 2024-01-15                                                         
+ 2 Authentication failed: Redis connection timeout (5000ms exceeded)                                                               
+ 3 Insert failed: Duplicate key value violates unique constraint 'users_email_key'                                                 
+ 4 Query execution failed: Syntax error at position 23 - unexpected token 'SELCT'                                                  
+
+You should:                                                                                                                        
+
+ • Renew or replace expired certificate for idp.company.com                                                                        
+ • Check Redis connectivity and performance                                                                                        
+ • Fix duplicate email inserts in your database logic                                                                              
+ • Correct SQL syntax errors (typo: 'SELCT' should be 'SELECT')
