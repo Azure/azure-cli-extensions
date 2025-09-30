@@ -3180,7 +3180,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 if acns.security.transit_encryption is None:
                     acns.security.transit_encryption = self.models.AdvancedNetworkingSecurityTransitEncryption()
                 acns.security.transit_encryption.type = acns_transit_encryption_type
-            if acns_datapath_acceleration_mode == CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH:
+            if acns_datapath_acceleration_mode is not None:
                 if acns.performance is None:
                     acns.performance = self.models.AdvancedNetworkingPerformance()
                 acns.performance.acceleration_mode = acns_datapath_acceleration_mode
@@ -4434,7 +4434,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 if acns.security.transit_encryption is None:
                     acns.security.transit_encryption = self.models.AdvancedNetworkingSecurityTransitEncryption()
                 acns.security.transit_encryption.type = acns_transit_encryption_type
-            if acns_datapath_acceleration_mode == CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH:
+            if acns_datapath_acceleration_mode is not None:
                 if acns.performance is None:
                     acns.performance = self.models.AdvancedNetworkingPerformance()
                 acns.performance.acceleration_mode = acns_datapath_acceleration_mode
