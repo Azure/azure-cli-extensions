@@ -1,0 +1,8 @@
+All frontend pods in production are stuck in ContainerCreating due to missing secret frontend-api-keys. Events show repeated       
+FailedMount errors:                                                                                                                
+
+                                                                                                                                   
+ MountVolume.SetUp failed for volume "api-credentials" : secret "frontend-api-keys" not found                                      
+                                                                                                                                   
+
+No secret named frontend-api-keys exists in production. Create this secret with required keys to resolve.

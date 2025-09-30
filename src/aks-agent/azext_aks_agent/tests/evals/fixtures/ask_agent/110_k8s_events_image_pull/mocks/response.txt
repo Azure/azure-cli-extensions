@@ -1,0 +1,13 @@
+Deployment event:                                                                                                                  
+
+ • 16s ago: Scaled up replica set data-processor-57cf78bd58 to 1                                                                   
+
+Pod data-processor-57cf78bd58-wtmg9 events:                                                                                        
+
+ • Scheduled on node aks-nodepool1-25487020-vmss000002                                                                             
+ • Back-off pulling image "my-private-registry.io/data-processor:v2.5.0"                                                           
+ • Error: ImagePullBackOff                                                                                                         
+ • Failed to pull image: failed to resolve reference, DNS lookup for my-private-registry.io failed (no such host)                  
+ • Error: ErrImagePull                                                                                                             
+
+Root cause: Pod cannot pull image due to DNS resolution failure for my-private-registry.io.
