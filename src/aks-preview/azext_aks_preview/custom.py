@@ -885,6 +885,12 @@ def aks_update(
     # addons
     enable_azure_monitor_logs=False,
     disable_azure_monitor_logs=False,
+    workspace_resource_id=None,
+    enable_msi_auth_for_monitoring=True,
+    enable_syslog=False,
+    data_collection_settings=None,
+    enable_high_log_scale_mode=False,
+    ampls_resource_id=None,
     enable_secret_rotation=False,
     disable_secret_rotation=False,
     rotation_poll_interval=None,
@@ -1018,44 +1024,14 @@ def aks_update(
     )
 
     try:
-        # update mc profile (this will handle Azure Monitor profile operations)
+        # update mc profile (this will handle ALL operations including Azure Monitor logs)
         mc = aks_update_decorator.update_mc_profile_preview()
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
 
-    # Handle traditional monitoring addon operations after profile updates
-    result_mc = None
-    if enable_azure_monitor_logs or disable_azure_monitor_logs:
-        # First apply the profile changes if any
-        if mc:
-            result_mc = aks_update_decorator.update_mc(mc)
-        
-        # Then handle the addon operation
-        if enable_azure_monitor_logs:
-            return aks_enable_addons(
-                cmd=cmd,
-                client=client,
-                resource_group_name=resource_group_name,
-                name=name,
-                addons="monitoring",
-                no_wait=no_wait
-            )
-        
-        if disable_azure_monitor_logs:
-            return aks_disable_addons(
-                cmd=cmd,
-                client=client,
-                resource_group_name=resource_group_name,
-                name=name,
-                addons="monitoring",
-                no_wait=no_wait
-            )
-        
-        return result_mc
-    else:
-        # No addon operations, just apply profile changes
-        return aks_update_decorator.update_mc(mc)
+    # Single cluster update that includes all changes (monitoring addon + other profiles)
+    return aks_update_decorator.update_mc(mc)
 
 
 # pylint: disable=unused-argument

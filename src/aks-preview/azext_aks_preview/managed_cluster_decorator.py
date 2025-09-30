@@ -335,11 +335,21 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 skuName = CONST_MANAGED_CLUSTER_SKU_NAME_BASE
         return skuName
 
-    def _get_enable_addons(self, enable_validation: bool = False) -> List[str]:
-        enable_addons = super()._get_enable_addons()
+    def _get_enable_addons(self, enable_validation: bool = False) -> str:
+        # Get the original enable_addons parameter from raw_param first
+        enable_addons_param = self.raw_param.get("enable_addons")
+        
         sku_name = self.get_sku_name()
         if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-            enable_addons.append("monitoring")
+            # For Automatic SKU, add monitoring addon
+            if enable_addons_param:
+                enable_addons = f"{enable_addons_param},monitoring"
+            else:
+                enable_addons = "monitoring"
+        else:
+            # For other SKUs, use the original parameter value
+            enable_addons = enable_addons_param if enable_addons_param else ""
+        
         return enable_addons
 
     def get_enable_msi_auth_for_monitoring(self) -> Union[bool, None]:
@@ -3462,6 +3472,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         CONST_GITOPS_ADDON_NAME = addon_consts.get("CONST_GITOPS_ADDON_NAME")
 
         mc = super().set_up_addon_profiles(mc)
+        
+        # Handle enable Azure Monitor logs directly (unified approach)
+        if self.context.get_enable_azure_monitor_logs():
+            self._setup_azure_monitor_logs(mc)
+        
         addon_profiles = mc.addon_profiles
         addons = self.context.get_enable_addons()
         if "gitops" in addons:
@@ -3807,6 +3822,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._setup_monitoring_addon_profile(mc, addon_consts)
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
         self._setup_container_insights(mc)
+        
+        # Call ensure_container_insights_for_monitoring with all parameters (similar to postprocessing)
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        if (mc.addon_profiles and 
+            CONST_MONITORING_ADDON_NAME in mc.addon_profiles and
+            mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled):
+            
+            # Set intermediate value to trigger postprocessing
+            self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
 
     def _setup_opentelemetry_metrics(self, mc: ManagedCluster) -> None:
         """Set up OpenTelemetry metrics configuration."""
@@ -4406,6 +4430,45 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     ampls_resource_id=self.context.get_ampls_resource_id(),
                     enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
                 )
+
+        # Handle monitoring addon postprocessing (disable case) - same logic as aks_disable_addons  
+        monitoring_addon_disable_postprocessing_required = self.context.get_intermediate(
+            "monitoring_addon_disable_postprocessing_required", default_value=False
+        )
+        if monitoring_addon_disable_postprocessing_required:
+            addon_consts = self.context.get_addon_consts()
+            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            
+            # Get the current cluster state to check config before it was disabled
+            current_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
+            
+            if (current_cluster.addon_profiles and 
+                CONST_MONITORING_ADDON_NAME in current_cluster.addon_profiles):
+                
+                # Use the current cluster addon profile for cleanup
+                addon_profile = current_cluster.addon_profiles[CONST_MONITORING_ADDON_NAME]
+                
+                # Call ensure_container_insights_for_monitoring with remove_monitoring=True (same as aks_disable_addons)
+                try:
+                    self.context.external_functions.ensure_container_insights_for_monitoring(
+                        self.cmd,
+                        addon_profile,
+                        self.context.get_subscription_id(),
+                        self.context.get_resource_group_name(),
+                        self.context.get_name(),
+                        self.context.get_location(),
+                        remove_monitoring=True,
+                        aad_route=True,
+                        create_dcr=False,
+                        create_dcra=True,
+                        enable_syslog=False,
+                        data_collection_settings=None,
+                        ampls_resource_id=None,
+                        enable_high_log_scale_mode=False
+                    )
+                except TypeError:
+                    # Ignore TypeError just like aks_disable_addons does
+                    pass
 
         # ingress appgw addon
         ingress_appgw_addon_enabled = self.context.get_intermediate("ingress_appgw_addon_enabled", default_value=False)
@@ -6151,6 +6214,111 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def _ensure_azure_monitor_profile(self, mc: ManagedCluster) -> None:
+        """Ensure azure monitor profile exists on the managed cluster."""
+        if mc.azure_monitor_profile is None:
+            mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+
+    def _setup_monitoring_addon_profile(self, mc: ManagedCluster, addon_consts: dict) -> None:
+        """Set up monitoring addon profile configuration."""
+        if mc.addon_profiles is None:
+            mc.addon_profiles = {}
+
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        addon_profile = mc.addon_profiles.get(
+            CONST_MONITORING_ADDON_NAME,
+            self.models.ManagedClusterAddonProfile(enabled=False))
+        addon_profile.enabled = True
+
+        # Get or create workspace resource ID
+        workspace_resource_id = self.context.raw_param.get("workspace_resource_id")
+        if not workspace_resource_id:
+            ensure_workspace_func = (
+                self.context.external_functions.ensure_default_log_analytics_workspace_for_monitoring)
+            workspace_resource_id = ensure_workspace_func(
+                self.cmd,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name()
+            )
+
+        # Sanitize and configure
+        sanitize_func = self.context.external_functions.sanitize_loganalytics_ws_resource_id
+        workspace_resource_id = sanitize_func(workspace_resource_id)
+
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+
+        addon_profile.config = {CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id}
+
+        enable_msi_auth = self.context.get_enable_msi_auth_for_monitoring()
+        msi_auth_value = "true" if enable_msi_auth else "false"
+        addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = msi_auth_value
+
+        mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
+
+    def _setup_container_insights(self, mc: ManagedCluster) -> None:
+        """Set up container insights configuration."""
+        self._ensure_azure_monitor_profile(mc)
+        if (not hasattr(mc.azure_monitor_profile, 'container_insights') or
+                mc.azure_monitor_profile.container_insights is None):
+            mc.azure_monitor_profile.container_insights = (
+                self.models.ManagedClusterAzureMonitorProfileContainerInsights(enabled=True)
+            )
+        else:
+            mc.azure_monitor_profile.container_insights.enabled = True
+
+    def _setup_azure_monitor_logs(self, mc: ManagedCluster) -> None:
+        """Set up Azure Monitor logs configuration."""
+        addon_consts = self.context.get_addon_consts()
+        self._setup_monitoring_addon_profile(mc, addon_consts)
+        self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
+        self._setup_container_insights(mc)
+        
+        # Call ensure_container_insights_for_monitoring with all parameters (similar to postprocessing)
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        if (mc.addon_profiles and 
+            CONST_MONITORING_ADDON_NAME in mc.addon_profiles and
+            mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled):
+            
+            # Set intermediate value to trigger postprocessing
+            self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
+    
+    def _disable_azure_monitor_logs(self, mc: ManagedCluster) -> None:
+        """Disable Azure Monitor logs configuration."""
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+        
+        if mc.addon_profiles and CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
+            # Check if MSI auth is enabled for cleanup - same logic as aks_disable_addons
+            if (mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled and
+                CONST_MONITORING_USING_AAD_MSI_AUTH in mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config and
+                str(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"):
+                
+                # Set intermediate value to trigger postprocessing for DCR/DCRA cleanup
+                self.context.set_intermediate("monitoring_addon_disable_postprocessing_required", True, overwrite_exists=True)
+            
+            # Disable the addon
+            mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled = False
+
+    def update_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update addon profiles for the ManagedCluster object.
+        
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        # Handle enable Azure Monitor logs
+        if self.context.get_enable_azure_monitor_logs():
+            self._setup_azure_monitor_logs(mc)
+
+        # Handle disable Azure Monitor logs
+        if self.context.get_disable_azure_monitor_logs():
+            self._disable_azure_monitor_logs(mc)
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -6174,6 +6342,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_workload_auto_scaler_profile(mc)
         # update azure monitor metrics profile
         mc = self.update_azure_monitor_profile(mc)
+        # update addon profiles (monitoring logs, etc.)
+        mc = self.update_addon_profiles(mc)
         # update vpa
         mc = self.update_vpa(mc)
         # update optimized addon scaling
@@ -6252,8 +6422,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             enable_azure_keyvault_secrets_provider_addon = self.context.get_enable_kv() or (
                 mc.addon_profiles and mc.addon_profiles.get(CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME)
                 and mc.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled)
+            monitoring_addon_postprocessing_required = self.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+            monitoring_addon_disable_postprocessing_required = self.context.get_intermediate(
+                "monitoring_addon_disable_postprocessing_required", default_value=False
+            )
             if (enable_azure_container_storage or disable_azure_container_storage) or \
-               (keyvault_id and enable_azure_keyvault_secrets_provider_addon):
+               (keyvault_id and enable_azure_keyvault_secrets_provider_addon) or \
+               monitoring_addon_postprocessing_required or \
+               monitoring_addon_disable_postprocessing_required:
                 return True
         return postprocessing_required
 
@@ -6265,6 +6443,84 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: None
         """
         super().postprocessing_after_mc_created(cluster)
+        
+        # Handle monitoring addon postprocessing (enable case)
+        monitoring_addon_postprocessing_required = self.context.get_intermediate(
+            "monitoring_addon_postprocessing_required", default_value=False
+        )
+        if monitoring_addon_postprocessing_required:
+            addon_consts = self.context.get_addon_consts()
+            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+            
+            if (cluster.addon_profiles and 
+                CONST_MONITORING_ADDON_NAME in cluster.addon_profiles and
+                cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled):
+                
+                # Check if MSI auth is enabled
+                if (CONST_MONITORING_USING_AAD_MSI_AUTH in 
+                    cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config and
+                    str(cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
+                        CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"):
+                    
+                    # Call ensure_container_insights_for_monitoring with all parameters
+                    self.context.external_functions.ensure_container_insights_for_monitoring(
+                        self.cmd,
+                        cluster.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                        self.context.get_subscription_id(),
+                        self.context.get_resource_group_name(),
+                        self.context.get_name(),
+                        self.context.get_location(),
+                        remove_monitoring=False,
+                        aad_route=self.context.get_enable_msi_auth_for_monitoring(),
+                        create_dcr=True,
+                        create_dcra=True,
+                        enable_syslog=self.context.get_enable_syslog(),
+                        data_collection_settings=self.context.get_data_collection_settings(),
+                        is_private_cluster=self.context.get_enable_private_cluster(),
+                        ampls_resource_id=self.context.get_ampls_resource_id(),
+                        enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
+                    )
+                    
+        # Handle monitoring addon postprocessing (disable case) - same logic as aks_disable_addons  
+        monitoring_addon_disable_postprocessing_required = self.context.get_intermediate(
+            "monitoring_addon_disable_postprocessing_required", default_value=False
+        )
+        if monitoring_addon_disable_postprocessing_required:
+            addon_consts = self.context.get_addon_consts()
+            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            
+            # Get the current cluster state to check config before it was disabled
+            current_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
+            
+            if (current_cluster.addon_profiles and 
+                CONST_MONITORING_ADDON_NAME in current_cluster.addon_profiles):
+                
+                # Use the current cluster addon profile for cleanup
+                addon_profile = current_cluster.addon_profiles[CONST_MONITORING_ADDON_NAME]
+                
+                # Call ensure_container_insights_for_monitoring with remove_monitoring=True (same as aks_disable_addons)
+                try:
+                    self.context.external_functions.ensure_container_insights_for_monitoring(
+                        self.cmd,
+                        addon_profile,
+                        self.context.get_subscription_id(),
+                        self.context.get_resource_group_name(),
+                        self.context.get_name(),
+                        self.context.get_location(),
+                        remove_monitoring=True,
+                        aad_route=True,
+                        create_dcr=False,
+                        create_dcra=True,
+                        enable_syslog=False,
+                        data_collection_settings=None,
+                        ampls_resource_id=None,
+                        enable_high_log_scale_mode=False
+                    )
+                except TypeError:
+                    # Ignore TypeError just like aks_disable_addons does
+                    pass
+        
         enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage")
         disable_azure_container_storage = self.context.get_intermediate("disable_azure_container_storage")
         is_extension_installed = self.context.get_intermediate("is_extension_installed")

@@ -1310,6 +1310,7 @@ def load_arguments(self, _):
             validator=validate_azure_monitor_logs_enable_disable,
             help="Enable Azure Monitor logs for the cluster. Equivalent to 'az aks enable-addons -a monitoring'."
         )
+# Monitoring parameters are inherited from base CLI
         c.argument(
             "disable_azure_monitor_logs",
             action="store_true",
