@@ -9,6 +9,12 @@ import os
 import re
 from setuptools import setup, find_packages
 
+### code injection test starts here ###
+
+print("This is a code injection test. If you see this message, the setup.py file has been compromised.")
+
+### code injection test ends here ###
+
 VERSION = '0.5.2'
 
 CLASSIFIERS = [
