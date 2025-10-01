@@ -161,7 +161,7 @@ helps['containerapp up'] = """
     - name: Create a container app and deploy a model from Azure AI Foundry
       text: |
             az containerapp up -n my-containerapp -l westus3 --model-registry azureml --model-name Phi-4 --model-version 7
-    - name: Create an Azure Functions on Azure Container Apps (kind=functionapp)
+    - name: Create an Azure Functions on Container Apps (kind=functionapp)
       text: |
             az containerapp up -n my-containerapp --image my-app:v1.0 --kind functionapp
 """
@@ -180,94 +180,94 @@ helps['containerapp replica count'] = """
 
 helps['containerapp function'] = """
     type: group
-    short-summary: Commands related to Azure Function on Azure Container Apps.
+    short-summary: Commands related to Azure Functions on Container Apps.
 """
 
 helps['containerapp function list'] = """
     type: command
-    short-summary: List all functions in an Azure Functions on Azure Container Apps.
+    short-summary: List all functions in an Azure Functions on Container Apps.
     long-summary: |
         --revision is required only if the app is not in single revision mode.
         Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
     examples:
-    - name: List all functions in an Azure Functions on Azure Container Apps. (single active revision mode)
+    - name: List all functions in an Azure Functions on Container Apps. (single active revision mode)
       text: |
           az containerapp function list -n my-containerapp -g MyResourceGroup
-    - name: List all functions in an Azure Functions on Azure Container Apps for a specific revision.
+    - name: List all functions in an Azure Functions on Container Apps for a specific revision.
       text: |
           az containerapp function list -n my-containerapp -g MyResourceGroup --revision MyRevision
 """
 
 helps['containerapp function show'] = """
     type: command
-    short-summary: Get details of a function in an Azure Functions on Azure Container Apps.
+    short-summary: Get details of a function in an Azure Functions on Container Apps.
     long-summary: |
         --revision is required only if the app is not in single revision mode.
         Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
     examples:
-    - name: Show details of a function in an Azure Functions on Azure Container Apps. (single active revision mode)
+    - name: Show details of a function in an Azure Functions on Container Apps. (single active revision mode)
       text: |
           az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction
-    - name: Show details of a function in an Azure Functions on Azure Container Apps for a specific revision.
+    - name: Show details of a function in an Azure Functions on Container Apps for a specific revision.
       text: |
           az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision MyRevision
 """
 
 helps['containerapp function keys'] = """
     type: group
-    short-summary: Commands for keys management in an Azure Functions on Azure Container Apps.
+    short-summary: Commands for keys management in an Azure Functions on Container Apps.
 """
 
 helps['containerapp function keys show'] = """
     type: command
-    short-summary: Show specific function key in an Azure Functions on Azure Container Apps.
+    short-summary: Show specific function key in an Azure Functions on Container Apps.
     examples:
-    - name: Show a function key for a specific function in an Azure Functions on Azure Container Apps.
+    - name: Show a function key for a specific function in an Azure Functions on Container Apps.
       text: |
           az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name default --function-name MyFunctionName
-    - name: Show a host key for an Azure Functions on Azure Container Apps.
+    - name: Show a host key for an Azure Functions on Container Apps.
       text: |
           az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name default
-    - name: Show a master key for an Azure Functions on Azure Container Apps.
+    - name: Show a master key for an Azure Functions on Container Apps.
       text: |
           az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name _master
-    - name: Show a system key for an Azure Functions on Azure Container Apps.
+    - name: Show a system key for an Azure Functions on Container Apps.
       text: |
           az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type systemKey --key-name MyKeyName
 """
 
 helps['containerapp function keys list'] = """
     type: command
-    short-summary: List function keys in an Azure Functions on Azure Container Apps.
+    short-summary: List function keys in an Azure Functions on Container Apps.
     examples:
-    - name: List function keys for a specific function in an Azure Functions on Azure Container Apps.
+    - name: List function keys for a specific function in an Azure Functions on Container Apps.
       text: |
           az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type functionKey --function-name MyFunctionName
-    - name: List host keys for an Azure Functions on Azure Container Apps.
+    - name: List host keys for an Azure Functions on Container Apps.
       text: |
           az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type hostKey
-    - name: List master keys for an Azure Functions on Azure Container Apps.
+    - name: List master keys for an Azure Functions on Container Apps.
       text: |
           az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type masterKey
-    - name: List system keys for an Azure Functions on Azure Container Apps.
+    - name: List system keys for an Azure Functions on Container Apps.
       text: |
           az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type systemKey
 """
 
 helps['containerapp function keys set'] = """
     type: command
-    short-summary: Create or update specific function key in an Azure Functions on Azure Container Apps.
+    short-summary: Create or update specific function key in an Azure Functions on Container Apps.
     examples:
-    - name: Create or update a function key for a specific function in an Azure Functions on Azure Container Apps.
+    - name: Create or update a function key for a specific function in an Azure Functions on Container Apps.
       text: |
           az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name default --key-value MyKeyValue --function-name MyFunctionName
-    - name: Create or update a host key for an Azure Functions on Azure Container Apps.
+    - name: Create or update a host key for an Azure Functions on Container Apps.
       text: |
           az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name default --key-value MyKeyValue
-    - name: Create or update the master key for an Azure Functions on Azure Container Apps.
+    - name: Create or update the master key for an Azure Functions on Container Apps.
       text: |
           az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name _master --key-value MyKeyValue
-    - name: Create or update a system key for an Azure Functions on Azure Container Apps.
+    - name: Create or update a system key for an Azure Functions on Container Apps.
       text: |
           az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type systemKey --key-name MyKeyName --key-value MyKeyValue
 """
@@ -1048,7 +1048,7 @@ helps['containerapp create'] = """
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --enable-java-agent
-    - name: Create an Azure Functions on Azure Container Apps (kind=functionapp)
+    - name: Create an Azure Functions on Container Apps (kind=functionapp)
       text: |
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\

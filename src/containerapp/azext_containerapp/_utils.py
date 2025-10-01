@@ -836,6 +836,8 @@ def create_acrpull_role_assignment_if_needed(cmd, registry_server, registry_iden
 
 
 def get_random_replica(cmd, resource_group_name, container_app_name, revision_name):
+    logger.debug(f"Getting random replica for container app: name='{container_app_name}', resource_group='{resource_group_name}', revision='{revision_name}'")
+    
     try:
         replicas = ContainerAppClient.list_replicas(
             cmd=cmd,
@@ -844,9 +846,11 @@ def get_random_replica(cmd, resource_group_name, container_app_name, revision_na
             revision_name=revision_name
         )
     except Exception as e:
+        logger.debug(f"Failed to list replicas for revision '{revision_name}': {str(e)}")
         handle_raw_exception(e)
 
     if not replicas:
+        logger.debug(f"No replicas found for revision '{revision_name}' - unable to proceed")
         raise CLIError(f"No replicas found for revision '{revision_name}' of container app '{container_app_name}'.")
 
     # Select a random replica
@@ -854,7 +858,10 @@ def get_random_replica(cmd, resource_group_name, container_app_name, revision_na
     replica_name = replica.get("name")
     container_name = replica.get("properties", {}).get("containers", [{}])[0].get("name")
     
+    logger.debug(f"Selected random replica: '{replica_name}' with container: '{container_name}'")
+    
     if not replica_name:
+        logger.debug(f"Could not extract replica name from selected replica: {replica}")
         raise CLIError(f"Could not determine replica name for revision '{revision_name}' of container app '{container_app_name}'.")
     
     return replica_name, container_name
