@@ -5,6 +5,7 @@
 
 import logging
 import os
+import select
 import sys
 
 from azext_aks_agent._consts import (
@@ -112,7 +113,7 @@ def _should_refresh_toolsets(requested_mode: str, user_refresh_request: bool) ->
     return False
 
 
-# pylint: disable=too-many-locals
+# pylint: disable=too-many-locals,too-many-branches
 def aks_agent(
     cmd,
     resource_group_name,
@@ -168,13 +169,25 @@ def aks_agent(
 
         # Detect and read piped input
         piped_data = None
-        if not sys.stdin.isatty():
-            piped_data = sys.stdin.read().strip()
-            if interactive:
-                console.print(
-                    "[bold yellow]Interactive mode disabled when reading piped input[/bold yellow]"
-                )
-                interactive = False
+        # In non-interactive mode with a prompt, we shouldn't try to read stdin
+        # as it may hang in CI/CD environments. Only read stdin if:
+        # 1. Not a TTY (indicating piped input)
+        # 2. Interactive mode is enabled (allows stdin reading)
+        should_check_stdin = not sys.stdin.isatty() and interactive
+
+        if should_check_stdin:
+            try:
+                # Use select with timeout to avoid hanging
+                # Check if data is available with 100ms timeout
+                if select.select([sys.stdin], [], [], 0.1)[0]:
+                    piped_data = sys.stdin.read().strip()
+                    console.print(
+                        "[bold yellow]Interactive mode disabled when reading piped input[/bold yellow]"
+                    )
+                    interactive = False
+            except Exception:  # pylint: disable=broad-exception-caught
+                # Continue without piped data if stdin reading fails
+                pass
 
         # Determine MCP mode and smart refresh logic
         use_aks_mcp = bool(use_aks_mcp)
