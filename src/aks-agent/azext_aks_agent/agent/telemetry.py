@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import datetime
+import json
 import logging
 import os
 import platform
@@ -87,6 +88,6 @@ class CLITelemetryClient:
         if not isinstance(feedback, Feedback):
             raise TypeError(f"Expected Feedback object, got {type(feedback)}")
 
-        self.track("AgentCLIFeedback", properties={"feedback": str(feedback.to_dict())})
+        self.track("AgentCLIFeedback", properties={"feedback": json.dumps(feedback.to_dict())})
         # Flush the telemetry data immediately to avoid too much data being sent at once
         self.flush()
