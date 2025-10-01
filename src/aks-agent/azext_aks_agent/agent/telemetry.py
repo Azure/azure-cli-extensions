@@ -80,11 +80,13 @@ class CLITelemetryClient:
         )
 
     def track_agent_feedback(self, feedback):
-        # NOTE: we should try to avoid importing holmesgpt at the top level to prevent dependency issues
-        from holmesgpt.core.feedback import Feedback
+        # NOTE: We should try to avoid importing holmesgpt at the top level to prevent dependency issues
+        from holmes.core.feedback import Feedback
 
         # Type hint validation for development purposes
         if not isinstance(feedback, Feedback):
             raise TypeError(f"Expected Feedback object, got {type(feedback)}")
 
-        self.track("AgentCLIFeedback", properties=feedback.to_dict())
+        self.track("AgentCLIFeedback", properties={"feedback": str(feedback.to_dict())})
+        # Flush the telemetry data immediately to avoid too much data being sent at once
+        self.flush()
