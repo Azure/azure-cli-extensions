@@ -97,6 +97,9 @@ from azure.cli.command_modules.acs._helpers import (
     safe_lower,
 )
 from azure.cli.command_modules.acs._validators import extract_comma_separated_string
+from azure.cli.command_modules.acs.addonconfiguration import (
+    sanitize_loganalytics_ws_resource_id,
+)
 from azure.cli.command_modules.acs.managed_cluster_decorator import (
     AKSManagedClusterContext,
     AKSManagedClusterCreateDecorator,
@@ -209,6 +212,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # azure container storage functions
             external_functions["perform_enable_azure_container_storage"] = perform_enable_azure_container_storage
             external_functions["perform_disable_azure_container_storage"] = perform_disable_azure_container_storage
+            external_functions["sanitize_loganalytics_ws_resource_id"] = sanitize_loganalytics_ws_resource_id
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
@@ -354,9 +358,30 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def get_enable_msi_auth_for_monitoring(self) -> Union[bool, None]:
         enable_msi_auth_for_monitoring = super().get_enable_msi_auth_for_monitoring()
+        
         sku_name = self.get_sku_name()
         if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             return True
+        
+        # Check if disable-msi-auth-for-monitoring was explicitly set
+        disable_msi_auth = self.raw_param.get("disable_msi_auth_for_monitoring")
+        
+        # If explicitly disabled, return False
+        if disable_msi_auth:
+            return False
+            
+        # Check if enable-msi-auth-for-monitoring was explicitly set
+        enable_msi_auth = self.raw_param.get("enable_msi_auth_for_monitoring")
+        
+        # If explicitly enabled, return True
+        if enable_msi_auth:
+            return True
+            
+        # Default to True when neither is explicitly set (i.e., both are None/False)
+        if enable_msi_auth_for_monitoring is None or enable_msi_auth_for_monitoring is False:
+            if not disable_msi_auth and not enable_msi_auth:
+                return True
+        
         return enable_msi_auth_for_monitoring
 
     def _get_load_balancer_sku(self, enable_validation: bool = False) -> Union[str, None]:
@@ -2230,6 +2255,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         This function supports the option of enable_validation. When enabled, if both
         enable_azure_monitor_logs and disable_azure_monitor_logs are specified,
         raise a MutuallyExclusiveArgumentError.
+        For update operations, also validates that Azure Monitor logs (monitoring addon) is not already enabled.
         :return: bool
         """
         # Read the original value passed by the command.
@@ -2238,6 +2264,31 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             raise MutuallyExclusiveArgumentError(
                 "Cannot specify --enable-azure-monitor-logs and --disable-azure-monitor-logs at the same time."
             )
+        
+        # For update operations, check if Azure Monitor logs (monitoring addon) is already enabled
+        if (enable_validation and enable_azure_monitor_logs and 
+            self.decorator_mode == DecoratorMode.UPDATE and self.mc):
+            addon_consts = self.get_addon_consts()
+            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            
+            # Check if monitoring addon is currently enabled in the cluster
+            monitoring_addon_currently_enabled = False
+            if (self.mc.addon_profiles and 
+                CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles):
+                addon_profile = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME]
+                # Only consider it enabled if the addon profile exists AND enabled is explicitly True
+                monitoring_addon_currently_enabled = (
+                    addon_profile is not None and 
+                    hasattr(addon_profile, 'enabled') and 
+                    addon_profile.enabled is True
+                )
+            
+            if monitoring_addon_currently_enabled:
+                raise CLIError(
+                    "The Azure Monitor logs (monitoring addon) is already enabled for this managed cluster.\n"
+                    "To disable it, use --disable-azure-monitor-logs."
+                )
+        
         return enable_azure_monitor_logs
 
     def get_enable_azure_monitor_logs(self) -> bool:
@@ -3800,7 +3851,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         addon_profile.config = {CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id}
 
         enable_msi_auth = self.context.get_enable_msi_auth_for_monitoring()
-        msi_auth_value = "true" if enable_msi_auth else "false"
+        # Default to true when not explicitly set (None) or when explicitly enabled
+        msi_auth_value = "true" if enable_msi_auth is not False else "false"
         addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = msi_auth_value
 
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
@@ -6249,13 +6301,30 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
         CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-        addon_profile.config = {CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id}
-
+        # CRITICAL FIX: Always create a completely new config to avoid merge issues with corrupted existing config
+        # This ensures we don't inherit any empty or corrupted values from previous operations
         enable_msi_auth = self.context.get_enable_msi_auth_for_monitoring()
-        msi_auth_value = "true" if enable_msi_auth else "false"
-        addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = msi_auth_value
+        # Default to true when not explicitly set (None) or when explicitly enabled
+        msi_auth_value = "true" if enable_msi_auth is not False else "false"
+        
+        # Create completely new config - don't modify existing config to avoid merge issues
+        new_config = {
+            CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
+            CONST_MONITORING_USING_AAD_MSI_AUTH: msi_auth_value
+        }
+        
+        # Replace the entire config, not just individual keys
+        addon_profile.config = new_config
 
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
+
+        # QUICK FIX: Also sync all addon config to azureMonitorProfile.containerInsights
+        self._ensure_azure_monitor_profile(mc)
+        if not hasattr(mc.azure_monitor_profile, 'container_insights') or mc.azure_monitor_profile.container_insights is None:
+            mc.azure_monitor_profile.container_insights = self.models.ManagedClusterAzureMonitorProfileContainerInsights(enabled=True)
+        mc.azure_monitor_profile.container_insights.enabled = True
+        mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id = workspace_resource_id
+        
 
     def _setup_container_insights(self, mc: ManagedCluster) -> None:
         """Set up container insights configuration."""
@@ -6293,14 +6362,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if mc.addon_profiles and CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
             # Check if MSI auth is enabled for cleanup - same logic as aks_disable_addons
             if (mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled and
+                mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config and
                 CONST_MONITORING_USING_AAD_MSI_AUTH in mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config and
                 str(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"):
                 
                 # Set intermediate value to trigger postprocessing for DCR/DCRA cleanup
                 self.context.set_intermediate("monitoring_addon_disable_postprocessing_required", True, overwrite_exists=True)
             
-            # Disable the addon
+            # Disable the addon and clear configuration to ensure clean state
             mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled = False
+            # Clear the config to remove old workspace resource ID and other settings
+            mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = {}
 
     def update_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Update addon profiles for the ManagedCluster object.

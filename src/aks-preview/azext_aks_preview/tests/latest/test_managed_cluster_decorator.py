@@ -6399,6 +6399,91 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         if dec_mc_1.azure_monitor_profile and dec_mc_1.azure_monitor_profile.containerinsights:
             self.assertFalse(dec_mc_1.azure_monitor_profile.containerinsights.enabled)
 
+    def test_get_enable_azure_monitor_logs_already_enabled_error(self):
+        # Test that enabling Azure Monitor logs when already enabled raises a CLIError
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_monitor_logs": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        
+        # Create a managed cluster with monitoring addon already enabled
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            }
+        )
+        ctx_1.attach_mc(mc)
+        
+        # Should raise CLIError when trying to enable Azure Monitor logs that's already enabled
+        with self.assertRaises(CLIError) as cm:
+            ctx_1.get_enable_azure_monitor_logs()
+        
+        self.assertIn(
+            "The Azure Monitor logs (monitoring addon) is already enabled for this managed cluster",
+            str(cm.exception)
+        )
+
+    def test_get_enable_azure_monitor_logs_not_enabled_succeeds(self):
+        # Test that enabling Azure Monitor logs when not enabled succeeds
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_monitor_logs": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        
+        # Create a managed cluster without monitoring addon enabled
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={}
+        )
+        ctx_1.attach_mc(mc)
+        
+        # Should succeed when monitoring addon is not enabled
+        result = ctx_1.get_enable_azure_monitor_logs()
+        self.assertTrue(result)
+
+    def test_get_enable_azure_monitor_logs_create_mode_succeeds(self):
+        # Test that enabling Azure Monitor logs in create mode always succeeds (no validation)
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_monitor_logs": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        
+        # Create a managed cluster with monitoring addon already enabled (shouldn't matter in CREATE mode)
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            }
+        )
+        ctx_1.attach_mc(mc)
+        
+        # Should succeed in CREATE mode even if addon appears enabled
+        result = ctx_1.get_enable_azure_monitor_logs()
+        self.assertTrue(result)
+
 
 class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
