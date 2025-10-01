@@ -20,7 +20,7 @@ Pending
   * Fixed gpt-5 temperature bug by upgrading litellm and dropping non-1 values for temperature
   * Improved the installation time by removing unnecessary dependencies and move test dependencies to dev dependency group
 * Added Feedback slash command Feature to allow users to provide feedback on their experience with the agent performance
-
+* Disable prometheus toolset loading by default to workaround the libbz2-dev missing issue in Azure CLI python environment.
 
 1.0.0b4
 +++++++
