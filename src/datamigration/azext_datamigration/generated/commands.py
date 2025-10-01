@@ -90,6 +90,3 @@ def load_command_table(self, _):
         g.custom_command('cancel', 'datamigration_sql_vm_cancel', supports_no_wait=True)
         g.custom_command('cutover', 'datamigration_sql_vm_cutover', supports_no_wait=True)
         g.custom_wait_command('wait', 'datamigration_sql_vm_show')
-
-    with self.command_group('datamigration', is_experimental=True):
-        pass
