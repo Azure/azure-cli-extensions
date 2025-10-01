@@ -284,15 +284,19 @@ def validate_container_app_exists(cmd, resource_group_name, container_app_name):
     from ._clients import ContainerAppPreviewClient
     
     try:
+        logger.debug(f"Attempting to retrieve container app '{container_app_name}'")
         containerapp_def = ContainerAppPreviewClient.show(
             cmd=cmd, 
             resource_group_name=resource_group_name, 
             name=container_app_name
         )
+        logger.debug(f"Successfully retrieved container app definition for '{container_app_name}'")
     except Exception as e:
+        logger.debug(f"Failed to retrieve container app '{container_app_name}': {str(e)}")
         handle_raw_exception(e)
 
     if not containerapp_def:
+        logger.debug(f"Container app '{container_app_name}' not found in resource group '{resource_group_name}'")
         raise CLIError(f"The containerapp '{container_app_name}' does not exist in resource group '{resource_group_name}'.")
     
     return containerapp_def
@@ -300,27 +304,36 @@ def validate_container_app_exists(cmd, resource_group_name, container_app_name):
 
 def validate_revision_and_get_name(cmd, resource_group_name, container_app_name, provided_revision_name=None):
     
+    logger.debug(f"Validating revision for container app: name='{container_app_name}', resource_group='{resource_group_name}', provided_revision='{provided_revision_name}'")
+    
     containerapp_def = validate_container_app_exists(
         cmd=cmd,
         resource_group_name=resource_group_name,
         container_app_name=container_app_name)
 
     active_revision_mode = safe_get(containerapp_def, "properties", "configuration", "activeRevisionsMode", default="single")
+    logger.debug(f"Container app revision mode: '{active_revision_mode}'")
     
     if active_revision_mode.lower() != "single":
         if not provided_revision_name:
+            logger.debug("No revision name provided for multiple revision mode container app")
             raise ValidationError("Revision name is required when active revision mode is not 'single'.")
         return provided_revision_name
     else:
         if not provided_revision_name:
+            logger.debug("No revision name provided - attempting to determine latest revision")
             revision_name = safe_get(containerapp_def, "properties", "latestRevisionName")
+            logger.debug(f"Latest revision name from properties: '{revision_name}'")
             
             if not revision_name:
                 revision_name = safe_get(containerapp_def, "properties", "latestReadyRevisionName")
+                logger.debug(f"Latest ready revision name: '{revision_name}'")
             
             if not revision_name or revision_name is None:
+                logger.debug("Could not determine any revision name from container app properties")
                 raise ValidationError("Could not determine the latest revision name. Please provide --revision.")
             return revision_name
+        logger.debug(f"Using provided revision name: '{provided_revision_name}'")
         return provided_revision_name
 
 
@@ -335,22 +348,27 @@ def validate_functionapp_kind(cmd, resource_group_name, container_app_name):
     kind = safe_get(containerapp_def, "kind")
     managed_by = safe_get(containerapp_def, "managedBy")
 
-    if (managed_by and "providers/Microsoft.Web/sites" in managed_by) or (kind and kind.lower() == "functionapp"):
+    if (managed_by and "providers/microsoft.web/sites" in managed_by.lower()) or (kind and kind.lower() == "functionapp"):
+        logger.debug(f"Container app '{container_app_name}' validated as Azure Function App")
         return 
     
+    logger.debug(f"Container app '{container_app_name}' is not a function app - validation failed")
     raise ValidationError(
-        f"The containerapp '{container_app_name}' is not an Azure Function on Azure Container App."
+        f"The containerapp '{container_app_name}' is not an Azure Functions on Container App."
     )
 
 
 def validate_basic_arguments(resource_group_name, container_app_name, **kwargs):
     if not resource_group_name:
+        logger.debug("Resource group name validation failed - empty or None")
         raise ValidationError("Resource group name is required.")
     
     if not container_app_name:
+        logger.debug("Container app name validation failed - empty or None")
         raise ValidationError("Container app name is required.")
     
     # Validate additional arguments
     for arg_name, arg_value in kwargs.items():
         if not arg_value:
+            logger.debug(f"Additional argument validation failed: '{arg_name}' is empty or None")
             raise ValidationError(f"{arg_name.replace('_', ' ').title()} is required.")

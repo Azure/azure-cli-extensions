@@ -3631,6 +3631,7 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
             models=CONTAINER_APPS_SDK_MODELS
         )
         debug_command_decorator.validate_arguments()
+        logger.debug("Executing command: %s", debug_command)
         return debug_command_decorator.execute_Command(cmd=cmd)
     else:
         conn = DebugWebSocketConnection(
