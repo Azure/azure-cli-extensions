@@ -952,7 +952,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 """Find multiple keys case-insensitively and return a dict mapping target_key -> actual_key"""
                 result = {}
                 lowered_keys = {key.lower(): key for key in dictionary.keys()}
-                
                 for target_key in target_keys:
                     lowered_target = target_key.lower()
                     if lowered_target in lowered_keys:
@@ -963,9 +962,10 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
             def build_override(override_dict):
                 if not isinstance(override_dict, dict):
-                    logger.debug(f'Skipping non-dict override: {override_dict} (type: {type(override_dict).__name__})')
+                    logger.debug('Skipping non-dict override: %s (type: %s)',
+                                 override_dict,
+                                 type(override_dict).__name__)
                     return None
-                
                 camel_to_snake_case = {
                     "queryLogging": "query_logging",
                     "protocol": "protocol",
@@ -987,10 +987,9 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
             # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
             key_mappings = find_keys_case_insensitive(localdns_profile, ["kubeDNSOverrides", "vnetDNSOverrides"])
-            
             actual_kube_key = key_mappings["kubeDNSOverrides"]
             if actual_kube_key:
-                logger.debug(f"Found kubeDNSOverrides key as: '{actual_kube_key}'")
+                logger.debug("Found kubeDNSOverrides key as: %s", actual_kube_key)
                 kube_dns_overrides = {}
                 process_dns_overrides(
                     localdns_profile.get(actual_kube_key),
@@ -1000,7 +999,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
             actual_vnet_key = key_mappings["vnetDNSOverrides"]
             if actual_vnet_key:
-                logger.debug(f"Found vnetDNSOverrides key as: '{actual_vnet_key}'")
+                logger.debug("Found vnetDNSOverrides key as: %s", actual_vnet_key)
                 vnet_dns_overrides = {}
                 process_dns_overrides(
                     localdns_profile.get(actual_vnet_key),
