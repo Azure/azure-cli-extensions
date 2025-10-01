@@ -76,7 +76,13 @@ def arm_container_env_to_aci_policy_spec_env(
     for env_var in [
         *process_env_vars_from_template(parameters, {}, container_properties, approve_wildcards),
     ]:
-        yield AciContainerPropertyEnvVariable(**env_var)
+        yield AciContainerPropertyEnvVariable(
+            # At time of writing, we only get env vars from process_env_vars_from_template
+            # which never specifies "required", however futures sources might so
+            # we need to handle both in a way the type system can understand
+            required=bool(env_var.pop("required")) if "required" in env_var else None,
+            **env_var
+        )
 
 
 def arm_container_volumes_to_aci_policy_spec_volumes(
@@ -100,7 +106,7 @@ def arm_container_volumes_to_aci_policy_spec_volumes(
 def arm_container_exec_procs_to_aci_policy_spec_exec_procs(
     container_properties: dict,
     debug_mode: bool,
-) -> Iterator[AciContainerPropertyVolumeMounts]:
+) -> Iterator[AciContainerPropertyExecProcesses]:
 
     for exec_process in [
         *container_properties.get("execProcesses", []),

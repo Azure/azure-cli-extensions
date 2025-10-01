@@ -8,7 +8,7 @@ class AciContainerPropertyEnvVariable:
     name: str
     value: str
     strategy: str
-    required: bool = False
+    required: Optional[bool] = False
 
 
 @dataclass
