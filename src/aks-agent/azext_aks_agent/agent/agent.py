@@ -11,6 +11,7 @@ from azext_aks_agent._consts import (
     CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY,
     CONST_AGENT_NAME,
     CONST_AGENT_NAME_ENV_KEY,
+    CONST_DISABLE_PROMETHEUS_TOOLSET_ENV_KEY,
     CONST_PRIVACY_NOTICE_BANNER,
     CONST_PRIVACY_NOTICE_BANNER_ENV_KEY,
 )
@@ -21,6 +22,14 @@ from knack.util import CLIError
 from .error_handler import MCPError
 from .prompt import AKS_CONTEXT_PROMPT_MCP, AKS_CONTEXT_PROMPT_TRADITIONAL
 from .telemetry import CLITelemetryClient
+
+
+# NOTE(mainred): environment variables to disable prometheus toolset loading should be set before importing holmes.
+def customize_holmesgpt():
+    os.environ[CONST_DISABLE_PROMETHEUS_TOOLSET_ENV_KEY] = "true"
+    os.environ[CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY] = get_config_dir()
+    os.environ[CONST_AGENT_NAME_ENV_KEY] = CONST_AGENT_NAME
+    os.environ[CONST_PRIVACY_NOTICE_BANNER_ENV_KEY] = CONST_PRIVACY_NOTICE_BANNER
 
 
 # NOTE(mainred): holmes leverage the log handler RichHandler to provide colorful, readable and well-formatted logs
@@ -158,16 +167,13 @@ def aks_agent(
             raise CLIError(
                 "Please upgrade the python version to 3.10 or above to use aks agent."
             )
+        # customizing holmesgpt should called before importing holmes
+        customize_holmesgpt()
 
         # Initialize variables
         interactive = not no_interactive
         echo = not no_echo_request
         console = init_log()
-
-        # Set environment variables for Holmes
-        os.environ[CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY] = get_config_dir()
-        os.environ[CONST_AGENT_NAME_ENV_KEY] = CONST_AGENT_NAME
-        os.environ[CONST_PRIVACY_NOTICE_BANNER_ENV_KEY] = CONST_PRIVACY_NOTICE_BANNER
 
         # Detect and read piped input
         piped_data = None
@@ -746,4 +752,5 @@ def _setup_traditional_mode_sync(config_file: str, model: str, api_key: str,
         try:
             os.unlink(temp_config_path)
         except OSError:
+            pass
             pass
