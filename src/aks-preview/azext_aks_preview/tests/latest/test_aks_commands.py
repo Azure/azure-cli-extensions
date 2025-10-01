@@ -3601,16 +3601,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
             "--kubernetes-version 1.33.0"
         )
-        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
-
-        show_cmd = (
-            "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
-        )
-        result = self.cmd(show_cmd).get_output_in_json()
-        assert result["localDnsProfile"]["mode"] == "Required"
-        assert "vnetDnsOverrides" not in result["localDnsProfile"] or result["localDnsProfile"]["vnetDnsOverrides"] is None
-        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
-
+        
+        # This should fail because kubedns config without vnetdns should be rejected
+        with self.assertRaises(HttpResponseError) as context:
+            self.cmd(add_cmd)
+        
+        # Verify the error message contains the expected validation message
+        error_message = str(context.exception)
+        self.assertIn("VnetDNSOverrides must not be nil", error_message)
+        self.assertIn("InvalidParameter", error_message)
+        
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[self.is_empty()],
@@ -3809,12 +3809,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
-    def test_aks_nodepool_update_with_localdns_required_mode_one_valid_override_each(self, resource_group, resource_group_location):
+    def test_aks_nodepool_update_with_localdns_required_mode_to_dns_partial_puts(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
-        valid_dns_overrides_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig.json")
-        kubedns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig","required_mode_with_valid_kubedns.json")
+        valid_dns_overrides_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_only.json")
         vnetdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig","required_mode_with_valid_vnetdns.json")
+        kubedns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig","required_mode_with_valid_kubedns.json")
         self.kwargs.update({
             "resource_group": resource_group,
             "name": aks_name,
@@ -3846,9 +3846,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         result = self.cmd(show_cmd).get_output_in_json()
         assert result["localDnsProfile"]["mode"] == "Required"
-        # Should have both kubeDnsOverrides and vnetDnsOverrides
-        assert_dns_overrides_equal(result["localDnsProfile"].get("kubeDnsOverrides", {}), kubeDnsOverridesExpected)
-        assert_dns_overrides_equal(result["localDnsProfile"].get("vnetDnsOverrides", {}), vnetDnsOverridesExpected)
+
+        # Should have both defaulted kubeDnsOverrides and vnetDnsOverrides
+        assert_dns_overrides_equal(result["localDnsProfile"].get("kubeDnsOverrides", {}), kubeDnsOverridesExpectedDefault)
+        assert_dns_overrides_equal(result["localDnsProfile"].get("vnetDnsOverrides", {}), vnetDnsOverridesExpectedDefault)
 
         # Update with only kubeDnsOverrides
         update_kubedns_cmd = (
@@ -3857,25 +3858,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
         )
         self.cmd(update_kubedns_cmd, checks=[self.check("provisioningState", "Succeeded")])
-
-        result = self.cmd(show_cmd).get_output_in_json()
-        assert result["localDnsProfile"]["mode"] == "Required"
-        assert "vnetDnsOverrides" not in result["localDnsProfile"] or result["localDnsProfile"]["vnetDnsOverrides"] is None
-        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
-
-        # Update with only vnetDnsOverrides
         update_vnetdns_cmd = (
             "aks nodepool update --resource-group={resource_group} --cluster-name={name} "
             "--name={nodepool_name} --localdns-config={vnetdns_config} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
         )
-        self.cmd(update_vnetdns_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
+        self.cmd(update_vnetdns_cmd, checks=[self.check("provisioningState", "Succeeded")])
         result = self.cmd(show_cmd).get_output_in_json()
         assert result["localDnsProfile"]["mode"] == "Required"
-        assert "kubeDnsOverrides" not in result["localDnsProfile"] or result["localDnsProfile"]["kubeDnsOverrides"] is None
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
         assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
-
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[self.is_empty()],
@@ -3934,8 +3927,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # Verify nodepool has disabled mode and no DNS overrides
         result = self.cmd(show_cmd).get_output_in_json()
         assert result["localDnsProfile"]["mode"] == "Disabled"
-        assert "kubeDnsOverrides" not in result["localDnsProfile"] or result["localDnsProfile"]["kubeDnsOverrides"] is None
-        assert "vnetDnsOverrides" not in result["localDnsProfile"] or result["localDnsProfile"]["vnetDnsOverrides"] is None
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
+        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
 
         # Clean up
         self.cmd(

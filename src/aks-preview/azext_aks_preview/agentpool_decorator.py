@@ -940,7 +940,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             return profile
         return None
 
-    def _build_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
+    def build_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Build local DNS profile for the AgentPool object if provided via --localdns-config."""
         localdns_profile = self.get_localdns_profile()
         kube_dns_overrides, vnet_dns_overrides = None, None
@@ -1501,7 +1501,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def set_up_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Set up local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
-        return self.context._build_localdns_profile(agentpool)
+        return self.context.build_localdns_profile(agentpool)
 
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
@@ -1801,7 +1801,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
     def update_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Update local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
-        return self.context._build_localdns_profile(agentpool)
+        return self.context.build_localdns_profile(agentpool)
 
     def update_upgrade_strategy(self, agentpool: AgentPool) -> AgentPool:
         """Update upgrade strategy for the AgentPool object.
