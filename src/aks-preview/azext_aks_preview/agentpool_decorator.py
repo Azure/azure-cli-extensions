@@ -944,7 +944,22 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """Build local DNS profile for the AgentPool object if provided via --localdns-config."""
         localdns_profile = self.get_localdns_profile()
         kube_dns_overrides, vnet_dns_overrides = None, None
+
+        print(f'build_localdns_profile: localdnsprofile is {localdns_profile}')
         if localdns_profile is not None:
+
+            def find_keys_case_insensitive(dictionary, target_keys):
+                """Find multiple keys case-insensitively and return a dict mapping target_key -> actual_key"""
+                result = {}
+                lowered_keys = {key.lower(): key for key in dictionary.keys()}
+                
+                for target_key in target_keys:
+                    lowered_target = target_key.lower()
+                    if lowered_target in lowered_keys:
+                        result[target_key] = lowered_keys[lowered_target]
+                    else:
+                        result[target_key] = None
+                return result
 
             def build_override(override_dict):
                 camel_to_snake_case = {
@@ -967,17 +982,24 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 return self.models.LocalDNSOverride(**filtered)
 
             # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
-            if 'kubeDNSOverrides' in localdns_profile:
+            key_mappings = find_keys_case_insensitive(localdns_profile, ["kubeDNSOverrides", "vnetDNSOverrides"])
+            
+            actual_kube_key = key_mappings["kubeDNSOverrides"]
+            if actual_kube_key:
+                print(f"Found kubeDNSOverrides key as: '{actual_kube_key}'")
                 kube_dns_overrides = {}
                 process_dns_overrides(
-                    localdns_profile.get("kubeDNSOverrides"),
+                    localdns_profile.get(actual_kube_key),
                     kube_dns_overrides,
                     build_override
                 )
-            if 'vnetDNSOverrides' in localdns_profile:
+
+            actual_vnet_key = key_mappings["vnetDNSOverrides"]
+            if actual_vnet_key:
+                print(f"Found vnetDNSOverrides key as: '{actual_vnet_key}'")
                 vnet_dns_overrides = {}
                 process_dns_overrides(
-                    localdns_profile.get("vnetDNSOverrides"),
+                    localdns_profile.get(actual_vnet_key),
                     vnet_dns_overrides,
                     build_override
                 )
