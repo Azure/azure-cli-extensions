@@ -753,4 +753,3 @@ def _setup_traditional_mode_sync(config_file: str, model: str, api_key: str,
             os.unlink(temp_config_path)
         except OSError:
             pass
-            pass
