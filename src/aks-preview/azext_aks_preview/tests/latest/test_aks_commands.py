@@ -22,7 +22,7 @@ from azure.cli.command_modules.acs._helpers import (
     get_shared_kubelet_identity,
     use_shared_identity,
 )
-from azure.cli.core.azclierror import ClientRequestError
+from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
@@ -3620,7 +3620,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_nodepool_add_with_localdns_required_mode_with_extra_property(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
-        required_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_extra_property.json")
+        required_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_kubedns_extra_property.json")
         self.kwargs.update({
             "resource_group": resource_group,
             "name": aks_name,
@@ -3644,17 +3644,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
             "--kubernetes-version 1.33.0"
         )
-        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
-        # Show nodepool and check localDNSProfile
-        show_cmd = (
-            "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
-        )
-        result = self.cmd(show_cmd).get_output_in_json()
-        assert result["localDnsProfile"]["mode"] == "Required"
+        with self.assertRaises(HttpResponseError) as context:
+            self.cmd(add_cmd)
+        
+        # Verify the error message contains the expected validation message
+        error_message = str(context.exception)
+        self.assertIn("VnetDNSOverrides must not be nil", error_message)
+        self.assertIn("InvalidParameter", error_message)
 
-        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpected)
-        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
         # Clean up
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
@@ -4204,11 +4202,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--name={nodepool_name} --localdns-config={empty_config} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
         )
-        try:
+
+        with self.assertRaises(InvalidArgumentValueError) as context:
             self.cmd(update_cmd)
-            assert False, "Expected failure for empty config, but command succeeded."
-        except Exception as ex:
-            assert "invalid" in str(ex).lower() or "error" in str(ex).lower() or "config" in str(ex).lower(), f"Unexpected error: {ex}"
+  
+        # Verify the error message contains the expected validation message
+        self.assertIn("not a valid file, or not accessible.", str(context.exception))
 
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
@@ -4412,11 +4411,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
             "--kubernetes-version 1.33.0"
         )
-        try:
+
+        with self.assertRaises(HttpResponseError) as context:
             self.cmd(add_cmd)
-            assert False, "Expected failure for partial invalid config in required mode, but command succeeded."
-        except Exception as ex:
-            assert "invalid" in str(ex).lower() or "error" in str(ex).lower() or "config" in str(ex).lower(), f"Unexpected error: {ex}"
+
+        # Verify the error message contains the expected validation message
+        error_message = str(context.exception)
+        self.assertIn("VnetDNSOverrides must not be nil", error_message)
+        self.assertIn("InvalidParameter", error_message)
 
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
