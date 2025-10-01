@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
 import sys
 
@@ -17,7 +18,7 @@ from azext_confcom.init_checks import run_initial_docker_checks
 from azext_confcom.kata_proxy import KataPolicyGenProxy
 from azext_confcom.security_policy import OutputType
 from azext_confcom.template_util import (
-    get_image_name, inject_policy_into_template, inject_policy_into_yaml,
+    extract_confidential_properties, get_image_name, inject_policy_into_template, inject_policy_into_yaml,
     pretty_print_func, print_existing_policy_from_arm_template,
     print_existing_policy_from_yaml, print_func, str_to_sha256)
 from knack.log import get_logger
@@ -167,7 +168,22 @@ def acipolicygen_confcom(
         for policy in container_group_policies:
             policy.set_fragment_contents(fragment_policy_list)
 
-    for count, policy in enumerate(container_group_policies):
+    for idx, policy in enumerate(container_group_policies):
+
+        # We will deprecate diff mode in favour of a separate tool, so we want
+        # supporting code to be all in one place even if it makes it more nasty
+        if diff:
+            if arm_template:
+                with open(arm_template, 'r') as f:
+                    policy._existing_cce_policy = extract_confidential_properties(
+                        [r for r in json.load(f)["resources"] if r["type"] in {
+                            "Microsoft.ContainerInstance/containerGroups",
+                            "Microsoft.ContainerInstance/containerGroupProfiles",
+                        }][idx].get("properties", {}))[0]
+
+            elif virtual_node_yaml_path:
+                ... # diff mode is handled in the load function
+
         # this is where parameters and variables are populated
         policy.populate_policy_content_for_all_images(
             individual_image=bool(image_name), tar_mapping=tar_mapping, faster_hashing=faster_hashing
@@ -177,7 +193,7 @@ def acipolicygen_confcom(
             exit_code = validate_sidecar_in_policy(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif virtual_node_yaml_path and not (print_policy_to_terminal or outraw or outraw_pretty_print or diff):
             result = inject_policy_into_yaml(
-                virtual_node_yaml_path, policy.get_serialized_output(omit_id=omit_id), count
+                virtual_node_yaml_path, policy.get_serialized_output(omit_id=omit_id), idx
             )
             if result:
                 print(str_to_sha256(policy.get_serialized_output(OutputType.RAW, omit_id=omit_id)))
@@ -186,7 +202,7 @@ def acipolicygen_confcom(
             exit_code = get_diff_outputs(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
             result = inject_policy_into_template(arm_template, arm_template_parameters,
-                                                 policy.get_serialized_output(omit_id=omit_id), count)
+                                                 policy.get_serialized_output(omit_id=omit_id), idx)
             if result:
                 # this is always going to be the unencoded policy
                 print(str_to_sha256(policy.get_serialized_output(OutputType.RAW, omit_id=omit_id)))
