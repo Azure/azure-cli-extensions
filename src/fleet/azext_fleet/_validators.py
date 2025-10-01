@@ -17,11 +17,12 @@ def validate_member_cluster_id(namespace):
 
 
 def validate_member_cluster_names(namespace):
-    valid_subresource = re.compile(r'^[a-z0-9]$|^[a-z0-9][-a-z0-9]{0,48}[a-z0-9]$')
-    for name in namespace.member_cluster_names:
-        if not valid_subresource.match(name):
-            raise InvalidArgumentValueError(
-                f"--member-cluster-names {name} is not a valid member cluster name.")
+    if namespace.member_cluster_names:
+        valid_subresource = re.compile(r'^[a-z0-9]$|^[a-z0-9][-a-z0-9]{0,48}[a-z0-9]$')
+        for name in namespace.member_cluster_names:
+            if not valid_subresource.match(name):
+                raise InvalidArgumentValueError(
+                    f"--member-cluster-names {name} is not a valid member cluster name.")
 
 
 def validate_kubernetes_version(namespace):
