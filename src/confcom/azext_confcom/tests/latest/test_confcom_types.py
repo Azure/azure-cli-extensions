@@ -3,10 +3,16 @@ from pathlib import Path
 import pytest
 
 try:
-    mypy = pytest.importorskip("mypy")
-    from mypy import api as mypy_api  # pylint: disable=wrong-import-position
-except (ImportError, pytest.skip.Exception):
+    from mypy import api as mypy_api
+except ImportError:
     mypy_api = None
+
+
+@pytest.fixture(scope="module", autouse=True)
+def check_mypy():
+    if mypy_api is None:
+        pytest.skip("missing mypy import")
+
 
 AZEXT_ROOT = Path(__file__).resolve().parents[2]
 LIB_ROOT = AZEXT_ROOT / "lib"
