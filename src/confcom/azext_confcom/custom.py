@@ -175,6 +175,7 @@ def acipolicygen_confcom(
         if diff:
             if arm_template:
                 with open(arm_template, 'r') as f:
+                    # pylint: disable=protected-access
                     policy._existing_cce_policy = extract_confidential_properties(
                         [r for r in json.load(f)["resources"] if r["type"] in {
                             "Microsoft.ContainerInstance/containerGroups",
@@ -182,7 +183,7 @@ def acipolicygen_confcom(
                         }][idx].get("properties", {}))[0]
 
             elif virtual_node_yaml_path:
-                ... # diff mode is handled in the load function
+                ...  # diff mode is handled in the load function
 
         # this is where parameters and variables are populated
         policy.populate_policy_content_for_all_images(
