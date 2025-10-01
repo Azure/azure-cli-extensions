@@ -3527,10 +3527,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpectedDefault)
         assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpectedDefault)
         # Clean up
-        #self.cmd(
-        #    "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
-        #    checks=[self.is_empty()],
-        #)
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
@@ -3559,15 +3559,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
             "--kubernetes-version 1.33.0"
         )
-        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
-        show_cmd = (
-            "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool_name}"
-        )
-        result = self.cmd(show_cmd).get_output_in_json()
-        assert result["localDnsProfile"]["mode"] == "Required"
-        assert "kubeDnsOverrides" not in result["localDnsProfile"] or result["localDnsProfile"]["kubeDnsOverrides"] is None
-        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpected)
+        with self.assertRaises(HttpResponseError) as context:
+            self.cmd(add_cmd)
+        
+        # Verify the error message contains the expected validation message
+        error_message = str(context.exception)
+        self.assertIn("KubeDNSOverrides must not be nil", error_message)
+        self.assertIn("InvalidParameter", error_message)
 
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
