@@ -628,25 +628,20 @@ def load_policy_from_arm_template_str(
 
     aci_policies = []
 
-    fragments = [
-        AciFragmentSpec(
-            feed=fragment["feed"],
-            issuer=fragment["issuer"],
-            includes=fragment["includes"],
-            minimum_svn=infrastructure_svn or fragment["minimum_svn"],
-            path=fragment.get("path"),
-        )
-        for fragment in [
-            *(config.DEFAULT_REGO_FRAGMENTS if not exclude_default_fragments else []),
-            *(included_fragments or []),
-        ]
-    ]
+    if included_fragments is None:
+        included_fragments = []
+
+    if not exclude_default_fragments:
+        for idx, fragment in enumerate(config.DEFAULT_REGO_FRAGMENTS):
+            if infrastructure_svn:
+                fragment["minimum_svn"] = infrastructure_svn
+            included_fragments.insert(idx, fragment)
 
     try:
         for policy_spec in arm_to_aci_policy_spec(
             arm_template=json.loads(template_data),
             arm_template_parameters=json.loads(parameter_data) if parameter_data else {},
-            fragments=fragments,
+            fragments=[AciFragmentSpec(**fragment) for fragment in included_fragments],
             debug_mode=debug_mode,
             allow_stdio_access=not disable_stdio,
             approve_wildcards=approve_wildcards,
