@@ -660,7 +660,7 @@ def load_policy_from_arm_template_str(
 
     if len(aci_policies) == 0:
         eprint(
-            f'Field ["type"] must contain one of {config.ACI_FIELD_SUPPORTED_RESOURCES}'
+            f'At least one resource must have ["type"] equalling one of {config.ACI_FIELD_SUPPORTED_RESOURCES}'
         )
 
     return aci_policies
