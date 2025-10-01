@@ -12,6 +12,16 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b5
++++++++
+* Bump holmesgpt to 0.14.3 - Enhanced AI debugging experience and bug fixes
+  * Added TODO list feature to allows holmes to reliably answers questions it wasn’t able to answer before due to early-stopping
+  * Fixed mcp server http connection fails when using socks proxy by adding the missing socks dependency
+  * Fixed gpt-5 temperature bug by upgrading litellm and dropping non-1 values for temperature
+  * Improved the installation time by removing unnecessary dependencies and move test dependencies to dev dependency group
+* Added Feedback slash command Feature to allow users to provide feedback on their experience with the agent performance
+
+
 1.0.0b4
 +++++++
 * Fix the --aks-mcp flag to allow true/false values.
