@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b42
++++++++
+* Add comprehensive LocalDNS live tests for valid and invalid configuration scenarios to improve test coverage and error handling validation.
+
 18.0.0b41
 +++++++
 * Fix `--localdns-config` parameter to handle null values in JSON configuration files gracefully, preventing crashes when DNS override sections are null.
