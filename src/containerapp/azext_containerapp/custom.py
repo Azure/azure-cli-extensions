@@ -115,7 +115,6 @@ from ._clients import (
     SessionCustomContainerPreviewClient,
     DotNetComponentPreviewClient,
     MaintenanceConfigPreviewClient,
-    HttpRouteConfigPreviewClient,
     LabelHistoryPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
