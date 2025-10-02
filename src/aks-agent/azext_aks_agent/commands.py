@@ -14,3 +14,4 @@ def load_command_table(self, _):
         "aks",
     ) as g:
         g.custom_command("agent", "aks_agent")
+        g.custom_command("agent init", "aks_agent_init")

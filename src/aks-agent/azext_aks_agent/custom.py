@@ -5,12 +5,43 @@
 
 # pylint: disable=too-many-lines, disable=broad-except
 import os
+from typing import List, Dict, Optional
+from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
+from azure.cli.core.api import get_config_dir
 from azext_aks_agent.agent.agent import aks_agent as aks_agent_internal
+from azext_aks_agent.agent.llm_providers import prompt_provider_choice
+from azext_aks_agent.agent.llm_config_manager import LLMConfigManager
+from azext_aks_agent.agent.llm_providers import PROVIDER_REGISTRY
 
 from knack.log import get_logger
 
 
 logger = get_logger(__name__)
+
+
+# pylint: disable=unused-argument
+def aks_agent_init(cmd):
+    """Initialize AKS agent llm configuration."""
+    print("Welcome to AKS Agent LLM configuration setup.")
+
+    provider = prompt_provider_choice()
+    params = provider.prompt_params()
+
+    llm_config_manager = LLMConfigManager()
+    # If the connection to the model endpoint is valid, save the configuration
+    is_valid, message, action = provider.validate_connection(params)
+    if is_valid and action == "save":
+        logger.info(message)
+        llm_config_manager.save(provider.name, params)
+        logger.info("Configuration saved successfully.")
+        print("LLM configuration setup successfully.")
+    elif not is_valid and action == "retry_input":
+        logger.warning(f"{message} Please re-run `aks agent init` to correct the input parameters.")
+        raise ValueError(f"{message} Please re-run `aks agent init` to correct the input parameters.")
+    else:
+        logger.error(message)
+        raise ConnectionError(f"{message} Please check your deployed model and network connectivity.")
+
 
 
 # pylint: disable=unused-argument
@@ -33,6 +64,67 @@ def aks_agent(
     # If only status is requested, display and return early
     if status:
         return aks_agent_status(cmd)
+    
+    llm_config_manager = LLMConfigManager()
+    llm_config = None
+    default_llm_config_path = os.path.join(get_config_dir(), CONST_AGENT_CONFIG_FILE_NAME)
+
+    if config_file == default_llm_config_path:
+        if not model:
+            logger.info(f"Using default configuration file: {config_file}")
+            llm_config: Optional[Dict] = llm_config_manager.get_latest()
+            if not llm_config:
+                raise ValueError("No llm configurations found. Please run `az aks agent init` or provide a config file using --config-file.") 
+
+        else:
+            logger.info(f"Using specified model: {model}")
+            # parsing model into provider/model
+            if "/" in model:
+                provider_name, model_name = model.split("/", 1)
+            else:
+                provider_name = "openai"
+                model_name = model
+            llm_config = llm_config_manager.get_specific(provider_name, model_name)
+
+    else:
+        if config_file:
+            logger.info(f"Using user configuration file: {config_file}")
+            import yaml
+            try:
+                with open(config_file, "r") as f:
+                    llm_config = yaml.safe_load(f)["llms"][0]
+                    if not isinstance(llm_config, Dict):
+                        raise ValueError("Configuration file format is invalid. It should be a YAML mapping.")
+            except Exception as e:
+                raise ValueError(f"Failed to load configuration file: {e}")
+
+        else:
+            raise ValueError("No configuration found. Please run `az aks agent init` or provide a config file using --config-file, or specify a model using --model.")
+
+ 
+    # Check if the configuration is complete
+    provider_name = llm_config.get("provider")
+    provider_instance = PROVIDER_REGISTRY.get(provider_name)()
+    parameter_schema = provider_instance.parameter_schema
+    if _check_provider(provider_name, parameter_schema, llm_config, llm_config_manager):
+        # get model for holmesgpt/litellm: provider_name/model_name
+        model_name = llm_config.get("MODEL_NAME")
+        if provider_name == "openai":
+            model = model or model_name
+        elif provider_name == "openai_compatiable":
+            model = model or f"openai/{model_name}"
+        else:
+            model = model or f"{provider_name}/{model_name}"
+        # Set environment variables for the model provider
+        for k, v in llm_config.items():
+            if k not in ["provider", "MODEL_NAME"]:
+                os.environ[k] = v
+        logger.info(f"Using provider: {provider_name}, model: {model_name}, Env vars setup successfully.")
+                
+
+    import pdb
+    pdb.set_trace()
+    
 
     aks_agent_internal(
         cmd,
@@ -49,6 +141,19 @@ def aks_agent(
         refresh_toolsets,
         use_aks_mcp=use_aks_mcp,
     )
+
+
+def _check_provider(provider_name: str, parameter_schema: Dict, llm_config: Dict, llm_config_manager: LLMConfigManager) -> bool:
+    # Check if provider name is not empty
+    if not provider_name:
+        raise ValueError("No provider name.")   
+    # Check if provider is supported   
+    if provider_name not in PROVIDER_REGISTRY:
+        raise ValueError(f"Unsupported provider '{provider_name}'. Supported providers are: {', '.join(PROVIDER_REGISTRY.keys())}.")
+    # check if provider config is complete
+    if not llm_config_manager.is_config_complete(llm_config, parameter_schema):
+        raise ValueError("Incomplete configuration in user config, please run `az aks agent init` to initialize.")
+    return True
 
 
 def aks_agent_status(cmd):
