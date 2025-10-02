@@ -11,9 +11,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add option `Flatcar` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
+18.0.0b41
++++++++
 * Fix `--localdns-config` parameter to handle null values in JSON configuration files gracefully, preventing crashes when DNS override sections are null.
 * Add jwtauthenticator commands `az aks jwtauthenticator add/update/show/list/delete` to manage JWT authenticators for a managed cluster.
-* Add option `Flatcar` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+* Fix an issue in disabling ACNS performance (--acns-datapath-acceleration-mode None).
 
 18.0.0b40
 +++++++

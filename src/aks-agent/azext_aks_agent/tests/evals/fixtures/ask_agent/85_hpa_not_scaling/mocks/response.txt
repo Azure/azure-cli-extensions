@@ -1,0 +1,9 @@
+golden-eagle deployment isn't scaling because the HPA can't get CPU metrics. HPA status: "ScalingActive: False" with reason        
+"FailedGetResourceMetric" and message "did not receive metrics for targeted pods (pods might be unready)".                         
+
+Events show repeated errors: "failed to get cpu utilization: no metrics returned from resource metrics API".                       
+
+Root cause: metrics-server isn't providing CPU metrics for golden-eagle pod. HPA can't compute replica count without metrics.      
+
+Fix: Ensure metrics-server is running and healthy, and that golden-eagle pod requests/limits are set for CPU. Without metrics, HPA 
+won't scale.
