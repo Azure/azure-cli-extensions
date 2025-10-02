@@ -67,12 +67,11 @@ def prompt_provider_choice() -> LLMProvider:
         try:
             return _get_provider_by_index(int(sel_idx))
         except ValueError as e:
-            print(f"Invalid input: {e}. Please enter a valid number, or type /exit to quit.")
+            print(
+                f"Invalid input: {e}. Please enter a valid number, or type /exit to quit.")
 
 
 __all__ = [
     "PROVIDER_REGISTRY",
     "prompt_provider_choice",
 ]
-
-

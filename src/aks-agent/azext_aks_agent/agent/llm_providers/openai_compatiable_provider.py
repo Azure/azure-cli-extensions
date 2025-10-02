@@ -34,7 +34,6 @@ class OpenAICompatiableProvider(LLMProvider):
             },
         }
 
-
     def validate_connection(self, params: dict):
         api_key = params.get("API_KEY")
         api_base = params.get("API_BASE")
@@ -44,7 +43,8 @@ class OpenAICompatiableProvider(LLMProvider):
             return False, "Missing required parameters.", "retry_input"
 
         url = urljoin(api_base.rstrip('/') + '/', "chat/completions")
-        headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+        headers = {"Authorization": f"Bearer {api_key}",
+                   "Content-Type": "application/json"}
         payload = {
             "model": model_name,
             "messages": [{"role": "user", "content": "ping"}],
@@ -52,13 +52,13 @@ class OpenAICompatiableProvider(LLMProvider):
         }
 
         try:
-            resp = requests.post(url, headers=headers, json=payload, timeout=10)
+            resp = requests.post(url, headers=headers,
+                                 json=payload, timeout=10)
             resp.raise_for_status()
             return True, "Connection successful.", "save"
         except requests.exceptions.HTTPError as e:
             if 400 <= resp.status_code < 500:
                 return False, f"Client error: {e} - {resp.text}", "retry_input"
-            else:
-                return False, f"Server error: {e} - {resp.text}", "connection_error"
+            return False, f"Server error: {e} - {resp.text}", "connection_error"
         except requests.exceptions.RequestException as e:
             return False, f"Request error: {e}", "connection_error"

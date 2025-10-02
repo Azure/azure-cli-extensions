@@ -13,15 +13,18 @@ import re
 def non_empty(v: str) -> bool:
     return bool(v and v.strip())
 
+
 def is_url(v: str) -> bool:
     regex = re.compile(
         r'^(?:http|ftp)s?://'             # http:// or https://
-        r'(?:[\w.-]+|\d{1,3}(?:\.\d{1,3}){3}|localhost)'  # domain, IPv4 or localhost
+        # domain, IPv4 or localhost
+        r'(?:[\w.-]+|\d{1,3}(?:\.\d{1,3}){3}|localhost)'
         r'(?::\d+)?'                      # optional port
         r'(?:/?|[/?]\S+)?$',              # path
         re.IGNORECASE
     )
     return re.match(regex, v) is not None
+
 
 class LLMProvider(ABC):
     name = "base"
@@ -33,7 +36,7 @@ class LLMProvider(ABC):
         provider may return a schema mapping param -> metadata:
         {
             "PARAM_NAME": {
-                "prompt": "Prompt to show user", 
+                "prompt": "Prompt to show user",
                 "secret": True/False,
                 "default": "default value or None",
                 "hint": "Additional hint to show user",
@@ -41,8 +44,7 @@ class LLMProvider(ABC):
             }
         }
         """
-        pass
-    
+        raise NotImplementedError()
 
     def prompt_params(self):
         """Prompt user for parameters using parameter_schema when available."""
@@ -53,7 +55,8 @@ class LLMProvider(ABC):
             default = meta.get("default")
             hint = meta.get("hint")
             secret = meta.get("secret", False)
-            validator: Callable[[str], bool] = meta.get("validator", lambda x: True)
+            validator: Callable[[str], bool] = meta.get(
+                "validator", lambda x: True)
 
             if default:
                 prompt += f" (Default: {default}) "
@@ -65,33 +68,32 @@ class LLMProvider(ABC):
                     value = getpass(prompt)
                 else:
                     value = input(prompt)
-                
+
                 if not value and default is not None:
                     value = default
-                
+
                 value = value.strip()
                 if value == "/exit":
                     raise SystemExit(0)
                 if validator(value):
                     params[param] = value
                     break
-                else:
-                    print(f"Invalid value for {param}. Please try again, or type /exit to quit.")
+                print(
+                    f"Invalid value for {param}. Please try again, or type /exit to quit.")
 
         return params
 
-    
     def validate_params(self, params: dict):
         """Validate parameters from provided config file against schema."""
         schema = self.parameter_schema
         for param, meta in schema.items():
             if param not in params:
                 raise ValueError(f"Missing required parameter: {param}")
-            validator: Callable[[str], bool] = meta.get("validator", lambda x: True)
+            validator: Callable[[str], bool] = meta.get(
+                "validator", lambda x: True)
             if not validator(params[param]):
                 raise ValueError(f"Invalid value for parameter: {param}")
         return True
-
 
     # pylint: disable=unused-argument
     @abstractmethod
@@ -101,5 +103,4 @@ class LLMProvider(ABC):
         Returns a tuple of (is_valid: bool, message: str, action: str)
         where action can be "retry_input", "connection_error", or "save".
         """
-        pass
-
+        raise NotImplementedError()

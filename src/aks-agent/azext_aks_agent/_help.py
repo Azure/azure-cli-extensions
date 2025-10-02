@@ -148,6 +148,3 @@ helps[
         - name: Initialize configuration for OpenAI
           text: az aks agent init
 """
-
-
-
