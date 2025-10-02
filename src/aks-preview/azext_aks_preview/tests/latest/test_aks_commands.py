@@ -22,7 +22,7 @@ from azure.cli.command_modules.acs._helpers import (
     get_shared_kubelet_identity,
     use_shared_identity,
 )
-from azure.cli.core.azclierror import ClientRequestError
+from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError
 from azure.cli.testsdk.exceptions import CliExecutionError
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -4158,18 +4158,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--name={nodepool_name} --localdns-config={invalid_mode_config} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
         )
+
         with self.assertRaises(HttpResponseError) as context:
             self.cmd(update_cmd)
         
         # Verify the error message contains expected validation content
-        error_message = str(context.exception)
-        error_message_lower = error_message.lower()
-        self.assertTrue(
-            "invalid" in error_message_lower or "error" in error_message_lower or "mode" in error_message_lower,
-            f"Unexpected error message: {error_message}"
+        self.assertIn(
+            "The value of parameter localDNSProfile.mode is invalid. Error details: value Invalid is not allowed.",
+            str(context.exception),
         )
 
-        self.fail(error_message)
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[self.is_empty()],
@@ -4230,7 +4228,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
         valid_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig.json")
-        invalid_vnetdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "invalid_vnetdns.json")
+        invalid_vnetdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_invalid_vnetdns.json")
         self.kwargs.update({
             "resource_group": resource_group,
             "name": aks_name,
@@ -4264,14 +4262,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.cmd(update_cmd)
         
         # Verify the error message contains expected validation content
-        error_message = str(context.exception)
-        error_message_lower = error_message.lower()
-        self.assertTrue(
-            "invalid" in error_message_lower or "error" in error_message_lower or "vnetdns" in error_message_lower,
-            f"Unexpected error message: {error_message}"
+        self.assertIn(
+            "The value of parameter localDNSProfile.vnetDNSOverrides is invalid. Error details: zone '\"cluster.local\"' is required in VnetDNSOverrides.",
+            str(context.exception)
         )
 
-        self.fail(error_message)
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[self.is_empty()],
@@ -4316,16 +4311,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         with self.assertRaises(HttpResponseError) as context:
             self.cmd(update_cmd)
         
-        # Verify the error message contains expected validation content
         error_message = str(context.exception)
-        error_message_lower = error_message.lower()
-        self.assertTrue(
-            "invalid" in error_message_lower or "error" in error_message_lower or "kubedns" in error_message_lower,
-            f"Unexpected error message: {error_message}"
+        self.assertIn(
+            "The value of parameter localDNSProfile.kubeDNSOverrides is invalid. Error details: zone '\"cluster.local\"' is required in KubeDNSOverrides.",
+            error_message
         )
 
-        # temporary
-        self.fail(error_message)
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[self.is_empty()],
@@ -4362,15 +4353,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.cmd(add_cmd)
         
         # Verify the error message contains expected validation content
-        error_message = str(context.exception)
-        error_message_lower = error_message.lower()
-        self.assertTrue(
-            "invalid" in error_message_lower or "error" in error_message_lower or "mode" in error_message_lower,
-            f"Unexpected error message: {error_message}"
+        self.assertIn(
+            "The value of parameter localDNSProfile.mode is invalid. Error details: value Unspecified is not allowed.",
+            str(context.exception)
         )
 
-        # temporary
-        self.fail(error_message)
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[self.is_empty()],
@@ -4486,16 +4473,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         with self.assertRaises(HttpResponseError) as context:
             self.cmd(add_cmd)
         
-        # Verify the error message contains expected validation content
-        error_message = str(context.exception)
-        error_message_lower = error_message.lower()
-        self.assertTrue(
-            "invalid" in error_message_lower or "error" in error_message_lower or "mode" in error_message_lower,
-            f"Unexpected error message: {error_message}"
-        )
+        self.assertIn("The value of parameter localDNSProfile.mode is invalid. Error details: value Invalid is not allowed.",
+                      str(context.exception))
 
-        # temporary
-        self.fail(error_message)
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[self.is_empty()],
@@ -4530,17 +4510,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         with self.assertRaises(HttpResponseError) as context:
             self.cmd(add_cmd)
-        
+
         # Verify the error message contains expected validation content
         error_message = str(context.exception)
-        error_message_lower = error_message.lower()
-        self.assertTrue(
-            "invalid" in error_message_lower or "error" in error_message_lower or "mode" in error_message_lower,
-            f"Unexpected error message: {error_message}"
-        )
+        self.assertIn("The value of parameter localDNSProfile.mode is invalid. " \
+        "Error details: value Unspecified is not allowed. Only Preferred, Required and Disabled are allowed", error_message)
 
-        # temporary
-        self.fail(error_message)
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[self.is_empty()],
@@ -4578,15 +4553,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         
         # Verify the error message contains expected validation content
         error_message = str(context.exception)
-        error_message_lower = error_message.lower()
 
-        self.assertTrue(
-            "invalid" in error_message_lower or "error" in error_message_lower or "config" in error_message_lower,
-            f"Unexpected error message: {error_message}"
-        )
+        self.assertIn("The value of parameter localDNSProfile.mode is invalid. " \
+        "Error details: value Unspecified is not allowed", error_message)
 
-        # temporary
-        self.fail(error_message)
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[self.is_empty()],
@@ -4619,21 +4589,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
             "--kubernetes-version 1.33.0"
         )
-        with self.assertRaises(HttpResponseError) as context:
+        with self.assertRaises(InvalidArgumentValueError) as context:
             self.cmd(add_cmd)
         
         # Verify the error message contains expected validation content
-        error_message = str(context.exception)
-        error_message_lower = error_message.lower()
+        self.assertIn("Please provide a valid JSON file.", str(context.exception))
 
-        
-        self.assertTrue(
-            "invalid" in error_message_lower or "error" in error_message_lower or "config" in error_message_lower,
-            f"Unexpected error message: {error_message}"
-        )
-
-        #  temporary
-        self.fail(error_message)
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[self.is_empty()],
@@ -4680,68 +4641,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         
         # Verify the error message contains expected validation content
         error_message = str(context.exception)
-        error_message_lower = error_message.lower()
 
-        self.assertTrue(
-            "invalid" in error_message_lower or "error" in error_message_lower or "mode" in error_message_lower,
-            f"Unexpected error message: {error_message}"
-        )
-
-        # temporary
-        self.fail(error_message)
-        self.cmd(
-            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
-            checks=[self.is_empty()],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
-    def test_aks_nodepool_add_with_localdns_required_mode_invalid_vnetdns(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name("cliakstest", 16)
-        nodepool_name = self.create_random_name("np", 6)
-        valid_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig.json")
-        invalid_vnetdns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "invalid_vnetdns.json")
-        self.kwargs.update({
-            "resource_group": resource_group,
-            "name": aks_name,
-            "nodepool_name": nodepool_name,
-            "ssh_key_value": self.generate_ssh_keys(),
-            "valid_config": valid_config_path,
-            "invalid_vnetdns_config": invalid_vnetdns_config_path
-        })
-
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
-            "--kubernetes-version 1.33.0"
-        )
-        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
-
-        add_cmd = (
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
-            "--name={nodepool_name} --node-count 1 --localdns-config={valid_config} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
-            "--kubernetes-version 1.33.0"
-        )
-        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
-
-        update_cmd = (
-            "aks nodepool update --resource-group={resource_group} --cluster-name={name} "
-            "--name={nodepool_name} --localdns-config={invalid_vnetdns_config} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
-        )
-        with self.assertRaises(HttpResponseError) as context:
-            self.cmd(update_cmd)
-        
-        # Verify the error message contains expected validation content
-        error_message = str(context.exception)
-        error_message_lower = error_message.lower()
-
-        # temporary
-        self.fail(error_message)
-        self.assertTrue(
-            "invalid" in error_message_lower or "error" in error_message_lower or "vnetdns" in error_message_lower,
-            f"Unexpected error message: {error_message}"
+        self.assertIn(
+            "The value of parameter localDNSProfile.mode is invalid. Error details: value Invalid is not allowed.",
+            error_message
         )
 
         self.cmd(
@@ -4790,14 +4693,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         
         # Verify the error message contains expected validation content
         error_message = str(context.exception)
-        error_message_lower = error_message.lower()
-        self.assertTrue(
-            "invalid" in error_message_lower or "error" in error_message_lower or "kubedns" in error_message_lower,
-            f"Unexpected error message: {error_message}"
+        self.assertIn(
+            "The value of parameter localDNSProfile.kubeDNSOverrides is invalid. Error details: zone '\"cluster.local\"' is required in KubeDNSOverrides.",
+            error_message
         )
-
-        # temporary
-        self.fail(error_message)
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[self.is_empty()],
