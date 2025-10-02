@@ -31,6 +31,8 @@ def _discover_modules() -> list[tuple[str, Path]]:
         if not path.is_file():
             continue
         rel = path.relative_to(AZEXT_ROOT)
+        if rel.parts[0] == "tests":
+            continue
         module_name = f"{rel.with_suffix('').as_posix().replace('/', '.')}"
         modules.append((module_name, path))
     return modules
@@ -58,7 +60,6 @@ BAD_MODULES = {
     "rootfs_proxy",
     "security_policy",
     "template_util",
-    "tests"
 }
 
 
