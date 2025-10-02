@@ -28,6 +28,10 @@ class Create(AAZCommand):
 
     :example: Create a Basic SKU Firewall with Virtual Hub
         az network firewall create -g MyResourceGroup -n MyFirewall --sku AZFW_Hub --tier Basic --vhub MyVHub --public-ip-count 2
+
+    :example: Create Azure Firewall With AutoscaleConfiguration
+        az network firewall create -g MyResourceGroup -n MyFirewall --min-capacity 4
+        az network firewall create -g MyResourceGroup -n MyFirewall --min-capacity 10 --max-capacity 10
     """
 
     _aaz_info = {
@@ -65,10 +69,6 @@ class Create(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
-        )
-        _args_schema.extended_location = AAZObjectArg(
-            options=["--extended-location"],
-            help="The extended location of type local virtual network gateway.",
         )
         _args_schema.location = AAZResourceLocationArg(
             help="Resource location.",
@@ -109,22 +109,33 @@ class Create(AAZCommand):
             help="Space-separated list of availability zones into which to provision the resource. Allowed values: 1, 2, 3.",
         )
 
-        extended_location = cls._args_schema.extended_location
-        extended_location.name = AAZStrArg(
-            options=["name"],
-            help="The name of the extended location.",
-        )
-        extended_location.type = AAZStrArg(
-            options=["type"],
-            help="The type of the extended location.",
-            enum={"EdgeZone": "EdgeZone"},
-        )
-
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
 
         zones = cls._args_schema.zones
         zones.Element = AAZStrArg()
+
+        # define Arg Group "AutoscaleConfiguration"
+
+        _args_schema = cls._args_schema
+        _args_schema.max_capacity = AAZIntArg(
+            options=["--max-capacity"],
+            arg_group="AutoscaleConfiguration",
+            help="The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=2,
+            ),
+        )
+        _args_schema.min_capacity = AAZIntArg(
+            options=["--min-capacity"],
+            arg_group="AutoscaleConfiguration",
+            help="The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=2,
+            ),
+        )
 
         # define Arg Group "HubIpAddresses"
 
@@ -150,6 +161,24 @@ class Create(AAZCommand):
         # define Arg Group "ManagementIpConfiguration"
 
         # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.extended_location = AAZObjectArg(
+            options=["--extended-location"],
+            arg_group="Parameters",
+            help="The extended location of type local virtual network gateway.",
+        )
+
+        extended_location = cls._args_schema.extended_location
+        extended_location.name = AAZStrArg(
+            options=["name"],
+            help="The name of the extended location.",
+        )
+        extended_location.type = AAZStrArg(
+            options=["type"],
+            help="The type of the extended location.",
+            enum={"EdgeZone": "EdgeZone"},
+        )
 
         # define Arg Group "Properties"
 
@@ -351,6 +380,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("additionalProperties", AAZDictType, ".additional_properties")
+                properties.set_prop("autoscaleConfiguration", AAZObjectType)
                 properties.set_prop("firewallPolicy", AAZObjectType)
                 properties.set_prop("hubIPAddresses", AAZObjectType)
                 properties.set_prop("ipConfigurations", AAZListType, ".ip_configurations")
@@ -362,6 +392,11 @@ class Create(AAZCommand):
             additional_properties = _builder.get(".properties.additionalProperties")
             if additional_properties is not None:
                 additional_properties.set_elements(AAZStrType, ".")
+
+            autoscale_configuration = _builder.get(".properties.autoscaleConfiguration")
+            if autoscale_configuration is not None:
+                autoscale_configuration.set_prop("maxCapacity", AAZIntType, ".max_capacity", typ_kwargs={"nullable": True})
+                autoscale_configuration.set_prop("minCapacity", AAZIntType, ".min_capacity", typ_kwargs={"nullable": True})
 
             firewall_policy = _builder.get(".properties.firewallPolicy")
             if firewall_policy is not None:

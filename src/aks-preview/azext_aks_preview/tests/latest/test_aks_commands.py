@@ -15875,6 +15875,21 @@ spec:
             ],
         )
 
+        # Update acceleration mode to None
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPerformancePreview "
+            "--enable-acns --acns-datapath-acceleration-mode None"
+        )
+
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.performance.accelerationMode", "None"),
+            ],
+        )
+
         # delete
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
