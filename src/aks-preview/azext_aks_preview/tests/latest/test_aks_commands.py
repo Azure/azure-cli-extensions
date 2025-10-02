@@ -3973,6 +3973,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         result = self.cmd(show_cmd).get_output_in_json()
         assert result["localDnsProfile"]["mode"] == "Disabled"
+
+        # TODO: FIX
+        #  ('kubeDnsOverrides' not in {'kubeDnsOverrides': {'.': {'cacheDurationInSeconds': 3600, 'forwardDestination': 'ClusterCoreDNS', 'forwardPolicy': 'Sequential', 'maxConcurrent': 1000, ...}, 'cluster.local': {'cacheDurationInSeconds': 3600, 'forwardDestination': 'ClusterCoreDNS', 'forwardPolicy': 'Sequential', 'maxConcurrent': 1000, ...}}, 'mode': 'Disabled', 'state': 'Disabled', 'vnetDnsOverrides': {'.': {'cacheDurationInSeconds': 3600, 'forwardDestination': 'VnetDNS', 'forwardPolicy': 'Sequential', 'maxConcurrent': 1000, ...}, 'cluster.local': {'cacheDurationInSeconds': 3600, 'forwardDestination': 'ClusterCoreDNS', 'forwardPolicy': 'Sequential', 'maxConcurrent': 1000, ...}}} or {'.': {'cacheDurationInSeconds': 3600, 'forwardDestination': 'ClusterCoreDNS', 'forwardPolicy': 'Sequential', 'maxConcurrent': 1000, ...}, 'cluster.local': {'cacheDurationInSeconds': 3600, 'forwardDestination': 'ClusterCoreDNS', 'forwardPolicy': 'Sequential', 'maxConcurrent': 1000, ...}} is None)
         assert "kubeDnsOverrides" not in result["localDnsProfile"] or result["localDnsProfile"]["kubeDnsOverrides"] is None
         assert "vnetDnsOverrides" not in result["localDnsProfile"] or result["localDnsProfile"]["vnetDnsOverrides"] is None
 
@@ -4215,7 +4218,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.cmd(update_cmd)
   
         # Verify the error message contains the expected validation message
-        self.assertIn("The CLI throws exception InvalidArgumentValueError during execution and fails the command", str(context.exception))
+        self.assertIn("The value of parameter localDNSProfile.mode is invalid. Error details: value Unspecified is not allowed.", str(context.exception))
 
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
@@ -4278,7 +4281,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
         valid_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "localdnsconfig.json")
-        invalid_kubedns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "invalid_kubedns.json")
+        invalid_kubedns_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_invalid_kubedns.json")
         self.kwargs.update({
             "resource_group": resource_group,
             "name": aks_name,
