@@ -8,7 +8,7 @@ from azure.cli.core.util import user_confirmation
 from knack.util import CLIError
 from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
-from .vendored_sdks.containerregistry.v2025_07_01_preview.generated.container_registry_management_client.models._models import (
+from .vendored_sdks.containerregistry.v2025_09_01_preview.generated.container_registry_management_client.models._models import (
     CacheRule, CacheRuleProperties,
     CacheRuleUpdateParameters, CacheRuleUpdateProperties, ImportSource, ImportImageParameters,
     PlatformFilter, ArtifactTypeFilter, TagFilter
@@ -124,8 +124,8 @@ def acr_cache_create(cmd,
     if not rg:
         raise CLIError("Resource group could not be determined. Please provide a valid resource group name.")
 
-    sync_str = "Enable" if sync == 'enable' else "Disable"
-    sync_referrers_str = "Enable" if sync_referrers == 'enable' else "Disable"
+    sync_str = "Enabled" if sync == 'enabled' else "Disabled"
+    sync_referrers_str = "Enabled" if sync_referrers == 'enabled' else "Disabled"
 
     if sync_referrers and not sync:
         raise CLIError("The --sync-referrers parameter requires the --sync parameter to be enabled. Please enable sync to use this feature.")
@@ -145,7 +145,7 @@ def acr_cache_create(cmd,
     #create artifact sync filters object
     artifact_sync_filters = {}
 
-    if sync == 'enable':
+    if sync == 'enabled':
         if platforms:
             platform_list = platforms if isinstance(platforms, list) else platforms.split(',')
             artifact_sync_filters['platforms'] = PlatformFilter(
@@ -193,7 +193,7 @@ def acr_cache_create(cmd,
         credential_set_resource_id=cred_set_id,
         source_repository=source_repo,
         target_repository=target_repo,
-        artifact_sync_status=sync_str,
+        sync_mode=sync_str,
         sync_referrers=sync_referrers_str,
     )
 
@@ -254,7 +254,7 @@ def acr_cache_update_custom(cmd,
 
     #extract existing properties
     properties = cache_rule.properties
-    artifact_sync_status = properties.artifact_sync_status
+    sync_mode = properties.sync_mode
     sync_referrers_status = properties.sync_referrers
 
     #create updated artifact sync filters object
@@ -262,7 +262,7 @@ def acr_cache_update_custom(cmd,
 
     #preserve old artifact sync filters
     preserve_filters = (properties.artifact_sync_filters is not None and
-                        (sync == 'enable' or sync is None))
+                        (sync == 'enabled' or sync is None))
 
     if preserve_filters:
         # Copy tag filters If no new filters are provided
@@ -293,16 +293,16 @@ def acr_cache_update_custom(cmd,
 
     # Handle artifact sync status
     if sync is not None:
-        artifact_sync_status = "Enable" if sync == 'enable' else "Disable"
+        sync_mode = "Enabled" if sync == 'enabled' else "Disabled"
         # clear filters if sync is disabled
-        if sync == 'disable':
+        if sync == 'disabled':
             updated_artifact_sync_filters = {}
 
     if sync_referrers is not None:
-        sync_referrers_status = "Enable" if sync_referrers == 'enable' else "Disable"
+        sync_referrers_status = "Enabled" if sync_referrers == 'enabled' else "Disabled"
 
     #update artifact sync filters object
-    if sync == 'enable':
+    if sync == 'enabled':
         if starts_with or ends_with or contains:
             updated_artifact_sync_filters["tags"] = TagFilter(
                 type="KQL",
@@ -345,12 +345,12 @@ def acr_cache_update_custom(cmd,
     #create updated cache rule properties
     updated_properties = CacheRuleUpdateProperties(
         credential_set_resource_id= cred_set_id,
-        artifact_sync_status= artifact_sync_status,
+        sync_mode= sync_mode,
         sync_referrers=sync_referrers_status,
         artifact_sync_filters=updated_artifact_sync_filters
     )
 
-    if sync == 'enable':
+    if sync == 'enabled':
         user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Continue?", yes)
 
 

@@ -1,0 +1,52 @@
+{
+  "parameters": {
+    "api-version": "2025-09-01-preview",
+    "subscriptionId": "00000000-0000-0000-0000-000000000000",
+    "resourceGroupName": "myResourceGroup",
+    "registryName": "myRegistry",
+    "cacheRuleName": "myCacheRule",
+    "cacheRuleCreateParameters": {
+      "properties": {
+        "sourceRepository": "mcr.microsoft.com/azure-cli",
+        "targetRepository": "cached-mar/azure-cli",
+        "syncReferrers": "Enabled",
+        "syncMode": "ActiveSync"
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "type": "Microsoft.ContainerRegistry/registries/cacheRules",
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ContainerRegistry/registries/myRegistry/cacheRules/myCacheRule",
+        "name": "myCacheRule",
+        "properties": {
+          "sourceRepository": "mcr.microsoft.com/azure-cli",
+          "targetRepository": "cached-mar/azure-cli",
+          "syncReferrers": "Enabled",
+          "syncMode": "ActiveSync",
+          "creationDate": "2025-09-01T00:00:00.0000000+00:00",
+          "provisioningState": "Succeeded"
+        }
+      }
+    },
+    "201": {
+      "headers": {
+        "Azure-AsyncOperation": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ContainerRegistry/registries/myRegistry/cacheRules/myCacheRule/operationStatuses/cacherules-00000000-0000-0000-0000-000000000000?api-version=2025-09-01-preview"
+      },
+      "body": {
+        "type": "Microsoft.ContainerRegistry/registries/cacheRules",
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ContainerRegistry/registries/myRegistry/cacheRules/myCacheRule",
+        "name": "myCacheRule",
+        "properties": {
+          "sourceRepository": "mcr.microsoft.com/azure-cli",
+          "targetRepository": "cached-mar/azure-cli",
+          "syncReferrers": "Enabled",
+          "syncMode": "ActiveSync",
+          "creationDate": "2025-09-01T00:00:00.0000000+00:00",
+          "provisioningState": "Creating"
+        }
+      }
+    }
+  }
+}

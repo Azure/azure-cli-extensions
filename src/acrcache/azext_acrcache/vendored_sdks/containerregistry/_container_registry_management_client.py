@@ -350,7 +350,7 @@ class ContainerRegistryManagementClient(MultiApiClientMixin, _SDKClient):
         * 2023-07-01: :class:`CacheRulesOperations<azure.mgmt.containerregistry.v2023_07_01.operations.CacheRulesOperations>`
         * 2023-08-01-preview: :class:`CacheRulesOperations<azure.mgmt.containerregistry.v2023_08_01_preview.operations.CacheRulesOperations>`
         * 2023-11-01-preview: :class:`CacheRulesOperations<azure.mgmt.containerregistry.v2023_11_01_preview.operations.CacheRulesOperations>`
-        
+        * 2025-09-01-preview: :class:`CacheRulesOperations<azure.mgmt.containerregistry.v2025_09_01_preview.operations.CacheRulesOperations>`
         """
         api_version = self._get_api_version("cache_rules")
         if api_version == "2023-01-01-preview":
@@ -363,6 +363,8 @@ class ContainerRegistryManagementClient(MultiApiClientMixin, _SDKClient):
             from .v2023_08_01_preview.operations import CacheRulesOperations as OperationClass
         elif api_version == "2023-11-01-preview":
             from .v2023_11_01_preview.operations import CacheRulesOperations as OperationClass
+        elif api_version == "2025-09-01-preview":    
+            from .v2025_09_01_preview.operations import CacheRulesOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'cache_rules'".format(api_version))
         self._config.api_version = api_version

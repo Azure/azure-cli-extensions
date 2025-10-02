@@ -14,7 +14,7 @@ except ImportError:
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
 # HISTORY.rst entry.
-VERSION = '1.0.0c3' 
+VERSION = '1.0.0c4' 
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -50,8 +50,8 @@ setup(
     packages=find_packages(),
     install_requires=DEPENDENCIES,
     package_data={'azext_acrcache': ['azext_metadata.json',
-                                    'vendored_sdks/containerregistry/v2025_07_01_preview/**/*',
-                                    'vendored_sdks/containerregistry/v2025_07_01_preview/generated/**/*',
-                                    'vendored_sdks/containerregistry/v2025_07_01_preview/generated/container_registry_management_client/**/*',
-                                    'vendored_sdks/containerregistry/v2025_07_01_preview/generated/container_registry_management_client/models/**/*']},
+                                    'vendored_sdks/containerregistry/v2025_09_01_preview/**/*',
+                                    'vendored_sdks/containerregistry/v2025_09_01_preview/generated/**/*',
+                                    'vendored_sdks/containerregistry/v2025_09_01_preview/generated/container_registry_management_client/**/*',
+                                    'vendored_sdks/containerregistry/v2025_09_01_preview/generated/container_registry_management_client/models/**/*']},
 )
