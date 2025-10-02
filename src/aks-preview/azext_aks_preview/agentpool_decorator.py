@@ -945,9 +945,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         localdns_profile = self.get_localdns_profile()
         kube_dns_overrides, vnet_dns_overrides = None, None
 
-        logger.debug(f'build_localdns_profile: localdnsprofile is {localdns_profile}')
         if localdns_profile is not None:
-
             def find_keys_case_insensitive(dictionary, target_keys):
                 """Find multiple keys case-insensitively and return a dict mapping target_key -> actual_key"""
                 result = {}
