@@ -15,7 +15,6 @@ def check_mypy():
 
 
 AZEXT_ROOT = Path(__file__).resolve().parents[2]
-LIB_ROOT = AZEXT_ROOT / "lib"
 MYPY_ARGS = [
     "--explicit-package-bases",
 ]
@@ -63,7 +62,6 @@ BAD_MODULES = {
     [pytest.param(name, path, id=name) for name, path in MODULE_PATHS],
 )
 def test_mypy(module_name: str, target_path: Path):
-    assert MODULE_PATHS, f"No Python files discovered under {LIB_ROOT}"
 
     if any(module_name.startswith(bad_module) for bad_module in BAD_MODULES):
         pytest.skip(f"Skipping mypy test for {module_name} due to known issues")
