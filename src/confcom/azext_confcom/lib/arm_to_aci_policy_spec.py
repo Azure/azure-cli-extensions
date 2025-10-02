@@ -1,4 +1,9 @@
-from typing import Iterator, Optional
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+from typing import Iterator
 import json
 import re
 from azext_confcom import config
