@@ -835,9 +835,6 @@ class AgentPoolsOperations:
         )
         _request.url = self._client.format_url(_request.url)
 
-        print(f'=====debugging {_request.url}')
-        print(f'=====debugging JSON payload: {_json}')
-        print(f'=====debugging request method: {_request.method}')
         _decompress = kwargs.pop("decompress", True)
         _stream = True
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
@@ -846,18 +843,13 @@ class AgentPoolsOperations:
 
         response = pipeline_response.http_response
 
-        print(f'=====debugging response status: {response.status_code}')
         if response.status_code not in [200, 201]:
-            print(f'=====debugging API call failed with status {response.status_code}')
             try:
                 response.read()  # Load the body in memory and close the socket
-                print(f'=====debugging response body: {response.text}')
             except (StreamConsumedError, StreamClosedError):
-                print('=====debugging could not read response body')
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-            print(f'=====debugging deserialized error: {error}')
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
