@@ -3973,11 +3973,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         result = self.cmd(show_cmd).get_output_in_json()
         assert result["localDnsProfile"]["mode"] == "Disabled"
-
-        # TODO: FIX
-        #  ('kubeDnsOverrides' not in {'kubeDnsOverrides': {'.': {'cacheDurationInSeconds': 3600, 'forwardDestination': 'ClusterCoreDNS', 'forwardPolicy': 'Sequential', 'maxConcurrent': 1000, ...}, 'cluster.local': {'cacheDurationInSeconds': 3600, 'forwardDestination': 'ClusterCoreDNS', 'forwardPolicy': 'Sequential', 'maxConcurrent': 1000, ...}}, 'mode': 'Disabled', 'state': 'Disabled', 'vnetDnsOverrides': {'.': {'cacheDurationInSeconds': 3600, 'forwardDestination': 'VnetDNS', 'forwardPolicy': 'Sequential', 'maxConcurrent': 1000, ...}, 'cluster.local': {'cacheDurationInSeconds': 3600, 'forwardDestination': 'ClusterCoreDNS', 'forwardPolicy': 'Sequential', 'maxConcurrent': 1000, ...}}} or {'.': {'cacheDurationInSeconds': 3600, 'forwardDestination': 'ClusterCoreDNS', 'forwardPolicy': 'Sequential', 'maxConcurrent': 1000, ...}, 'cluster.local': {'cacheDurationInSeconds': 3600, 'forwardDestination': 'ClusterCoreDNS', 'forwardPolicy': 'Sequential', 'maxConcurrent': 1000, ...}} is None)
-        assert "kubeDnsOverrides" not in result["localDnsProfile"] or result["localDnsProfile"]["kubeDnsOverrides"] is None
-        assert "vnetDnsOverrides" not in result["localDnsProfile"] or result["localDnsProfile"]["vnetDnsOverrides"] is None
+        assert_dns_overrides_equal(result["localDnsProfile"]["kubeDnsOverrides"], kubeDnsOverridesExpectedDefault)
+        assert_dns_overrides_equal(result["localDnsProfile"]["vnetDnsOverrides"], vnetDnsOverridesExpectedDefault)
 
         # Update nodepool to required mode
         update_cmd = (
@@ -4214,7 +4211,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
         )
 
-        with self.assertRaises(CliExecutionError) as context:
+        with self.assertRaises(HttpResponseError) as context:
             self.cmd(update_cmd)
   
         # Verify the error message contains the expected validation message
