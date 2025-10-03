@@ -4710,6 +4710,188 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_nodepool_add_localdns_null_dnsOverrides(self, resource_group, resource_group_location):
+        """Test LocalDNS with null values for DNS overrides - should fail with InvalidArgumentValueError"""
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+        config_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_null_dnsOverrides.json")
+        
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "name": aks_name,
+            "nodepool_name": nodepool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+            "config_path": config_file_path
+        })
+
+        # Create AKS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
+            "--kubernetes-version 1.33.0"
+        )
+        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Attempt to add nodepool with null DNS overrides - should fail
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            self.cmd(
+                "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+                "--name={nodepool_name} --node-count 1 --localdns-config={config_path} "
+                "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+                "--kubernetes-version 1.33.0"
+            )
+
+        # Verify the error message
+        self.assertIn("Expected a dictionary for DNS override, but got NoneType", str(context.exception))
+
+        # Clean up
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_nodepool_add_localdns_number_dnsOverrides(self, resource_group, resource_group_location):
+        """Test LocalDNS with numeric values for DNS overrides - should fail with InvalidArgumentValueError"""
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+        config_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_number_dnsOverrides.json")
+
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "name": aks_name,
+            "nodepool_name": nodepool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+            "config_path": config_file_path
+        })
+
+        # Create AKS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
+            "--kubernetes-version 1.33.0"
+        )
+        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Attempt to add nodepool with numeric DNS overrides - should fail
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            self.cmd(
+                "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+                "--name={nodepool_name} --node-count 1 --localdns-config={config_path} "
+                "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+                "--kubernetes-version 1.33.0"
+            )
+        
+        # Verify the error message
+        self.assertIn("Expected a dictionary for DNS override, but got int", str(context.exception))
+
+        # Clean up
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_nodepool_update_localdns_null_dnsOverrides(self, resource_group, resource_group_location):
+        """Test LocalDNS update with null values for DNS overrides - should fail with InvalidArgumentValueError"""
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+        config_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_null_dnsOverrides.json")
+
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "name": aks_name,
+            "nodepool_name": nodepool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+            "config_path": config_file_path
+        })
+
+        # Create AKS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
+            "--kubernetes-version 1.33.0"
+        )
+        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # First add nodepool without LocalDNS
+        add_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --node-count 1 "
+            "--kubernetes-version 1.33.0"
+        )
+        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Attempt to update nodepool with null DNS overrides - should fail
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            self.cmd(
+                "aks nodepool update --resource-group={resource_group} --cluster-name={name} "
+                "--name={nodepool_name} --localdns-config={config_path} "
+                "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+            )
+        
+        # Verify the error message
+        self.assertIn("Expected a dictionary for DNS override, but got NoneType", str(context.exception))
+
+        # Clean up
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_nodepool_update_localdns_number_dnsOverrides(self, resource_group, resource_group_location):
+        """Test LocalDNS update with numeric values for DNS overrides - should fail with InvalidArgumentValueError"""
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("np", 6)
+        config_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_number_dnsOverrides.json")
+        
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "name": aks_name,
+            "nodepool_name": nodepool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+            "config_path": config_file_path
+        })
+
+        # Create AKS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count 1 --ssh-key-value={ssh_key_value} --generate-ssh-keys "
+            "--kubernetes-version 1.33.0"
+        )
+        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # First add nodepool without LocalDNS
+        add_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --node-count 1 "
+            "--kubernetes-version 1.33.0"
+        )
+        self.cmd(add_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # Attempt to update nodepool with numeric DNS overrides - should fail
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            self.cmd(
+                "aks nodepool update --resource-group={resource_group} --cluster-name={name} "
+                "--name={nodepool_name} --localdns-config={config_path} "
+                "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/LocalDNSPreview "
+            )
+        
+        # Verify the error message
+        self.assertIn("Expected a dictionary for DNS override, but got int", str(context.exception))
+
+        # Clean up
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
     # =========== end of invalid localdns cases ===========
 
     @AllowLargeResponse()
