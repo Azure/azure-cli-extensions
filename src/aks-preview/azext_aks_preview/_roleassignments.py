@@ -6,6 +6,8 @@
 import time
 import uuid
 
+from packaging.version import Version
+
 from azure.cli.command_modules.acs._client_factory import (
     get_auth_management_client,
 )
@@ -57,8 +59,8 @@ def _add_role_assignment_executor_new(cmd, role, assignee, resource_group_name=N
         operation_group="role_assignments",
     )
     from azure.cli.core import __version__ as core_version
-    if core_version >= "2.77.0":
-        # since 2.77.0, role assignment client swithched to single api version from multi api versions
+    if Version(core_version) >= Version("2.77.0"):
+        # since 2.77.0, role assignment client switched to single api version from multi api versions
         # ref: https://github.com/Azure/azure-cli/pull/31859
         parameters = RoleAssignmentCreateParameters(role_definition_id=role_id, principal_id=object_id,
                                                 principal_type=assignee_principal_type)
