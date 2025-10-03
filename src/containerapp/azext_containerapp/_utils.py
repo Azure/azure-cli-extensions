@@ -835,9 +835,8 @@ def create_acrpull_role_assignment_if_needed(cmd, registry_server, registry_iden
                     time.sleep(5)
 
 
-def get_random_replica(cmd, resource_group_name, container_app_name, revision_name):
-    logger.debug(f"Getting random replica for container app: name='{container_app_name}', resource_group='{resource_group_name}', revision='{revision_name}'")
-    
+def get_latest_running_replica(cmd, resource_group_name, container_app_name, revision_name):
+    logger.debug(f"Getting latest running replica for container app: name='{container_app_name}', resource_group='{resource_group_name}', revision='{revision_name}'")
     try:
         replicas = ContainerAppClient.list_replicas(
             cmd=cmd,
@@ -853,8 +852,18 @@ def get_random_replica(cmd, resource_group_name, container_app_name, revision_na
         logger.debug(f"No replicas found for revision '{revision_name}' - unable to proceed")
         raise CLIError(f"No replicas found for revision '{revision_name}' of container app '{container_app_name}'.")
 
-    # Select a random replica
-    replica = random.choice(replicas)
+    # Filter replicas by running state
+    running_replicas = [
+        replica for replica in replicas 
+        if replica.get("properties", {}).get("runningState") == "Running"
+    ]
+    
+    if not running_replicas:
+        raise ValidationError(f"No running replicas found for revision '{revision_name}' of container app '{container_app_name}'.")
+    
+    # Select the replica with the latest creation time
+    # createdTime is in ISO 8601 format (e.g., "2025-10-03T00:56:33Z") which is lexicographically sortable
+    replica = max(running_replicas, key=lambda r: r.get("properties", {}).get("createdTime", "1900-01-01T00:00:00Z"))
     replica_name = replica.get("name")
     container_name = replica.get("properties", {}).get("containers", [{}])[0].get("name")
     

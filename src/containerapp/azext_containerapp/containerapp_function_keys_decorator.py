@@ -15,7 +15,7 @@ from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from ._clients import ContainerAppFunctionsPreviewClient
 from ._client_factory import handle_raw_exception
 from ._validators import validate_basic_arguments, validate_revision_and_get_name, validate_functionapp_kind
-from ._utils import get_random_replica
+from ._utils import get_latest_running_replica
 
 logger = get_logger(__name__)
 
@@ -74,7 +74,7 @@ class ContainerAppFunctionKeysDecorator(BaseResource):
         )
 
         # Get a random replica for the revision
-        replica_name, container_name = get_random_replica(
+        replica_name, container_name = get_latest_running_replica(
             cmd=self.cmd,
             resource_group_name=resource_group_name,
             container_app_name=name,

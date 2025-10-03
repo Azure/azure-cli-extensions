@@ -388,6 +388,7 @@ class ContainerAppFunctionsPreviewClient():
             f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
             f"| where timestamp >= ago({timespan}) "
             f"| where cloud_RoleName =~ '{container_app_name}' "
+            f"| where cloud_RoleInstance contains '{revision_name}' "
             f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
             f"| summarize SuccessCount = coalesce(countif(success == true), 0), ErrorCount = coalesce(countif(success == false), 0)"
         )
@@ -410,6 +411,7 @@ class ContainerAppFunctionsPreviewClient():
             f"cloud_RoleName, invocationId=coalesce(tostring(customDimensions['InvocationId']), tostring(customDimensions['faas.invocation_id'])) "
             f"| where timestamp > ago({timespan}) "
             f"| where cloud_RoleName =~ '{container_app_name}' "
+            f"| where cloud_RoleInstance contains '{revision_name}' "
             f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
             f"| order by timestamp desc | take {limit} "
             f"| project timestamp, success, resultCode, durationInMilliSeconds=duration, invocationId, operationId=operation_Id, operationName=operation_Name, functionNameFromCustomDimension "
