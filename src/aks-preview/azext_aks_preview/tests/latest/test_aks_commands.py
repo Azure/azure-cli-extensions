@@ -4718,7 +4718,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("np", 6)
         config_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "localdnsconfig", "required_mode_null_dnsOverrides.json")
-        
+
         self.kwargs.update({
             "resource_group": resource_group,
             "name": aks_name,
@@ -4745,7 +4745,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             )
 
         # Verify the error message
-        self.assertIn("Expected a dictionary for DNS override, but got NoneType", str(context.exception))
+        self.assertIn("Expected a dictionary for DNS overrides, but got NoneType", str(context.exception))
 
         # Clean up
         self.cmd(
@@ -4787,7 +4787,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             )
         
         # Verify the error message
-        self.assertIn("Expected a dictionary for DNS override, but got int", str(context.exception))
+        self.assertIn("Expected a dictionary for DNS overrides, but got int", str(context.exception))
 
         # Clean up
         self.cmd(
@@ -4836,7 +4836,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             )
         
         # Verify the error message
-        self.assertIn("Expected a dictionary for DNS override, but got NoneType", str(context.exception))
+        self.assertIn("Expected a dictionary for DNS overrides, but got NoneType", str(context.exception))
 
         # Clean up
         self.cmd(
@@ -4885,7 +4885,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             )
         
         # Verify the error message
-        self.assertIn("Expected a dictionary for DNS override, but got int", str(context.exception))
+        self.assertIn("Expected a dictionary for DNS overrides, but got int", str(context.exception))
 
         # Clean up
         self.cmd(
