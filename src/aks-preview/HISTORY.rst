@@ -13,6 +13,10 @@ Pending
 +++++++
 * Add option `Flatcar` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
+18.0.0b42
++++++++
+* Fix role assignment failure when using azure-cli version >= `2.77.0`.
+
 18.0.0b41
 +++++++
 * Fix `--localdns-config` parameter to handle null values in JSON configuration files gracefully, preventing crashes when DNS override sections are null.
