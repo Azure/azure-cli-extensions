@@ -81,6 +81,9 @@ from azext_aks_preview.azurecontainerstorage.acstor_ops import (
 from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
     ensure_azure_monitor_profile_prerequisites,
 )
+from azext_aks_preview.custom import (
+    ensure_container_insights_for_monitoring_preview,
+)
 from azure.cli.command_modules.acs._client_factory import get_graph_client
 from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
@@ -213,6 +216,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             external_functions["perform_enable_azure_container_storage"] = perform_enable_azure_container_storage
             external_functions["perform_disable_azure_container_storage"] = perform_disable_azure_container_storage
             external_functions["sanitize_loganalytics_ws_resource_id"] = sanitize_loganalytics_ws_resource_id
+            # Override base module function with preview version that uses REST API to avoid "Request Header Fields Too Large" errors
+            external_functions["ensure_container_insights_for_monitoring"] = ensure_container_insights_for_monitoring_preview
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
@@ -358,60 +363,35 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     def get_enable_msi_auth_for_monitoring(self) -> Union[bool, None]:
         enable_msi_auth_for_monitoring = super().get_enable_msi_auth_for_monitoring()
         
-        # DEBUG: Print method entry and initial values with stack trace
-        import traceback
-        print(f"DEBUG get_enable_msi_auth_for_monitoring: ENTRY - enable_msi_auth_for_monitoring={enable_msi_auth_for_monitoring}")
-        print(f"DEBUG get_enable_msi_auth_for_monitoring: decorator_mode={getattr(self, 'decorator_mode', 'UNKNOWN')}")
-        print(f"DEBUG get_enable_msi_auth_for_monitoring: All raw_params keys: {list(self.raw_param.keys())}")
-        print("DEBUG get_enable_msi_auth_for_monitoring: CALL STACK:")
-        for line in traceback.format_stack()[-8:-1]:  # Show last 7 stack frames (increased from 4)
-            print(f"  {line.strip()}")
-        
         sku_name = self.get_sku_name()
-        print(f"DEBUG get_enable_msi_auth_for_monitoring: sku_name={sku_name}")
         if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-            print(f"DEBUG get_enable_msi_auth_for_monitoring: Automatic SKU detected, returning True")
             return True
         
         # Check if disable-msi-auth-for-monitoring was explicitly set
         disable_msi_auth = self.raw_param.get("disable_msi_auth_for_monitoring")
         
-        # DEBUG: Print disable flag
-        print(f"DEBUG get_enable_msi_auth_for_monitoring: disable_msi_auth={disable_msi_auth}")
-        
         # If explicitly disabled, return False
         if disable_msi_auth:
-            print(f"DEBUG get_enable_msi_auth_for_monitoring: Explicitly disabled, returning False")
             return False
             
         # Check if enable-msi-auth-for-monitoring was explicitly set
         enable_msi_auth = self.raw_param.get("enable_msi_auth_for_monitoring")
         
-        # DEBUG: Print enable flag
-        print(f"DEBUG get_enable_msi_auth_for_monitoring: enable_msi_auth={enable_msi_auth}")
-        
         # If explicitly enabled, return True
         if enable_msi_auth:
-            print(f"DEBUG get_enable_msi_auth_for_monitoring: Explicitly enabled, returning True")
             return True
         
         # Check if --enable-azure-monitor-logs is specified - enable MSI auth by default
         enable_azure_monitor_logs = self.raw_param.get("enable_azure_monitor_logs")
         
-        # DEBUG: Print azure monitor logs flag and all raw params for analysis
-        print(f"DEBUG get_enable_msi_auth_for_monitoring: enable_azure_monitor_logs={enable_azure_monitor_logs}")
-        
         if enable_azure_monitor_logs:
-            print(f"DEBUG get_enable_msi_auth_for_monitoring: Azure Monitor logs enabled, returning True")
             return True
             
         # Default to True when neither is explicitly set (i.e., both are None/False)
         if enable_msi_auth_for_monitoring is None or enable_msi_auth_for_monitoring is False:
             if not disable_msi_auth and not enable_msi_auth:
-                print(f"DEBUG get_enable_msi_auth_for_monitoring: Using default (True) - no explicit flags set")
                 return True
         
-        print(f"DEBUG get_enable_msi_auth_for_monitoring: Returning parent value: {enable_msi_auth_for_monitoring}")
         return enable_msi_auth_for_monitoring
 
     def _get_load_balancer_sku(self, enable_validation: bool = False) -> Union[str, None]:
@@ -3898,8 +3878,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
     def _setup_monitoring_addon_profile(self, mc: ManagedCluster, addon_consts: dict) -> None:
         """Set up monitoring addon profile configuration."""
-        # DEBUG: Track method entry for create decorator
-        print(f"DEBUG _setup_monitoring_addon_profile (CREATE): Called for addon profile setup")
         
         if mc.addon_profiles is None:
             mc.addon_profiles = {}
@@ -3930,7 +3908,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
         # Get MSI auth setting using the same logic as update decorator
-        print(f"DEBUG _setup_monitoring_addon_profile (CREATE): Getting MSI auth setting...")
         enable_msi_auth_bool = self.context.get_enable_msi_auth_for_monitoring()
 
         if enable_msi_auth_bool:
@@ -3938,11 +3915,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             enable_msi_auth = "false"
 
-        # DEBUG: Print addon profile configuration
-        print(f"DEBUG _setup_monitoring_addon_profile (CREATE): enable_msi_auth={enable_msi_auth}, workspace_resource_id={workspace_resource_id}")
-        print(f"DEBUG _setup_monitoring_addon_profile (CREATE): MSI auth constant: {CONST_MONITORING_USING_AAD_MSI_AUTH}")
-        print(f"DEBUG _setup_monitoring_addon_profile (CREATE): Workspace constant: {CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID}")
-        print(f"DEBUG _setup_monitoring_addon_profile (CREATE): Existing addon profile config before: {addon_profile.config}")
         
         # Create completely new config
         addon_profile.config = {
@@ -3950,61 +3922,21 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             CONST_MONITORING_USING_AAD_MSI_AUTH: enable_msi_auth
         }
         
-        # DEBUG: Print final config
-        print(f"DEBUG _setup_monitoring_addon_profile (CREATE): Final addon_profile.config={addon_profile.config}")
-        print(f"DEBUG _setup_monitoring_addon_profile (CREATE): Existing addon_profiles keys: {list(mc.addon_profiles.keys()) if mc.addon_profiles else 'None'}")
-
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
-        print(f"DEBUG _setup_monitoring_addon_profile (CREATE): Set addon profile in mc, keys now: {list(mc.addon_profiles.keys())}")
-        print(f"DEBUG _setup_monitoring_addon_profile (CREATE): Final mc addon config: {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
 
     def _setup_container_insights(self, mc: ManagedCluster) -> None:
-        """Set up container insights configuration."""
-        self._ensure_azure_monitor_profile(mc)
-        
-        # Get MSI auth setting and workspace resource ID
-        enable_msi_auth = self.context.get_enable_msi_auth_for_monitoring()
-        workspace_resource_id = self.context.get_workspace_resource_id()
-        
-        print(f"DEBUG _setup_container_insights (CREATE): enable_msi_auth={enable_msi_auth}, workspace_resource_id={workspace_resource_id}")
-        
-        if (not hasattr(mc.azure_monitor_profile, 'container_insights') or
-                mc.azure_monitor_profile.container_insights is None):
-            mc.azure_monitor_profile.container_insights = (
-                self.models.ManagedClusterAzureMonitorProfileContainerInsights(
-                    enabled=True,
-                    log_analytics_workspace_resource_id=workspace_resource_id,
-                    using_aad_msi_auth=enable_msi_auth
-                )
-            )
-            print(f"DEBUG _setup_container_insights (CREATE): Created new container insights with MSI auth: {enable_msi_auth}")
-        else:
-            mc.azure_monitor_profile.container_insights.enabled = True
-            mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id = workspace_resource_id
-            mc.azure_monitor_profile.container_insights.using_aad_msi_auth = enable_msi_auth
-            print(f"DEBUG _setup_container_insights (CREATE): Updated existing container insights with MSI auth: {enable_msi_auth}")
+        """Set up container insights configuration - DISABLED per user request."""
+        # Container insights profile setup has been removed
+        pass
 
     def _setup_azure_monitor_logs(self, mc: ManagedCluster) -> None:
         """Set up Azure Monitor logs configuration."""
-        # DEBUG: Track method entry
-        print(f"DEBUG _setup_azure_monitor_logs (CREATE): Called for cluster setup")
         
         addon_consts = self.context.get_addon_consts()
         self._setup_monitoring_addon_profile(mc, addon_consts)
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
         self._setup_container_insights(mc)
-        
-        # After setup is complete - debug final state
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-        if mc.addon_profiles and CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
-            print(f"DEBUG _setup_azure_monitor_logs (CREATE): AFTER - Final addon config: {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
-        if (mc.azure_monitor_profile and mc.azure_monitor_profile.container_insights):
-            print(f"DEBUG _setup_azure_monitor_logs (CREATE): container_insights enabled: {mc.azure_monitor_profile.container_insights.enabled}")
-            print(f"DEBUG _setup_azure_monitor_logs (CREATE): container_insights workspace: {mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id}")
-            print(f"DEBUG _setup_azure_monitor_logs (CREATE): container_insights msi_auth: {mc.azure_monitor_profile.container_insights.using_aad_msi_auth}")
-        else:
-            print(f"DEBUG _setup_azure_monitor_logs (CREATE): No container insights found in azure monitor profile")
-        
+
         # Call ensure_container_insights_for_monitoring with all parameters (similar to postprocessing)
         CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
         if (mc.addon_profiles and 
@@ -4610,12 +4542,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             elif self.context.raw_param.get("enable_addons") is not None or self.context.raw_param.get("enable-azure-monitor-logs") is not None:
                 # Create the DCR Association here
                 addon_consts = self.context.get_addon_consts()
-                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-                print(f"DEBUG postprocessing_after_mc_created: Monitoring addon enabled, proceeding with ensure_container_insights_for_monitoring")
-                print(f"DEBUG postprocessing_after_mc_created: BEFORE ensure_container_insights_for_monitoring")
-                print(f"DEBUG postprocessing_after_mc_created: Addon config before: {cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
-                print(f"DEBUG postprocessing_after_mc_created: aad_route parameter: {self.context.get_enable_msi_auth_for_monitoring()}")
-                
                 self.context.external_functions.ensure_container_insights_for_monitoring(
                     self.cmd,
                     cluster.addon_profiles[CONST_MONITORING_ADDON_NAME],
@@ -4635,7 +4561,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 )
                 
                 print(f"DEBUG postprocessing_after_mc_created: AFTER ensure_container_insights_for_monitoring")
-                print(f"DEBUG postprocessing_after_mc_created: Addon config after: {cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
 
         # Handle monitoring addon postprocessing (disable case) - same logic as aks_disable_addons  
         monitoring_addon_disable_postprocessing_required = self.context.get_intermediate(
@@ -5014,24 +4939,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         retina_flow_logs_enabled = self.context.get_retina_flow_logs(mc)
-        print(f'DEBUG update_retina_flow_logs: retina_flow_logs_enabled={retina_flow_logs_enabled}')
         if retina_flow_logs_enabled is not None:
             if mc.addon_profiles:
                 addon_consts = self.context.get_addon_consts()
                 CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
                 monitoring_addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
-                print(f'DEBUG update_retina_flow_logs: monitoring_addon_profile exists={monitoring_addon_profile is not None}')
                 if monitoring_addon_profile:
-                    print(f'DEBUG update_retina_flow_logs: BEFORE - monitoring_addon_profile.config={monitoring_addon_profile.config}')
                     # IMPORTANT: Create a proper copy of the existing config to preserve all settings
                     config = dict(monitoring_addon_profile.config) if monitoring_addon_profile.config else {}
-                    print(f'DEBUG update_retina_flow_logs: config after copy={dict(config)}')
                     config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
-                    print(f'DEBUG update_retina_flow_logs: config after adding retina={dict(config)}')
                     mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = config
-                    print(f'DEBUG update_retina_flow_logs: AFTER - monitoring_addon_profile.config={monitoring_addon_profile.config}')
-        else:
-            print('DEBUG update_retina_flow_logs: retina_flow_logs_enabled is None, skipping config modification')
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
@@ -6431,8 +6348,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
     def _setup_monitoring_addon_profile(self, mc: ManagedCluster, addon_consts: dict) -> None:
         """Set up monitoring addon profile configuration."""
-        # DEBUG: Track method entry for update decorator
-        print(f"DEBUG _setup_monitoring_addon_profile (UPDATE): Called for addon profile setup")
         
         if mc.addon_profiles is None:
             mc.addon_profiles = {}
@@ -6462,111 +6377,37 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
         CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-        # CRITICAL FIX: Always create a completely new config to avoid merge issues with corrupted existing config
-        # This ensures we don't inherit any empty or corrupted values from previous operations
-        print(f"DEBUG _setup_monitoring_addon_profile (UPDATE): Getting MSI auth setting...")
-        print(f"DEBUG _setup_monitoring_addon_profile (UPDATE): Existing addon_profile.config before: {addon_profile.config}")
         enable_msi_auth_bool = self.context.get_enable_msi_auth_for_monitoring()
         if enable_msi_auth_bool:
             enable_msi_auth = "true"
         else:
             enable_msi_auth = "false"
 
-        # DEBUG: Print update decorator addon profile configuration
-        print(f"DEBUG _setup_monitoring_addon_profile (UPDATE): enable_msi_auth={enable_msi_auth}, workspace_resource_id={workspace_resource_id}")
-        print(f"DEBUG _setup_monitoring_addon_profile (UPDATE): MSI auth constant: {CONST_MONITORING_USING_AAD_MSI_AUTH}")
-        print(f"DEBUG _setup_monitoring_addon_profile (UPDATE): Workspace constant: {CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID}")
+
  
         # Create completely new config - don't modify existing config to avoid merge issues
         new_config = {
             CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
             CONST_MONITORING_USING_AAD_MSI_AUTH: enable_msi_auth
         }
-        
-        # DEBUG: Print final config for update decorator
-        print(f"DEBUG _setup_monitoring_addon_profile (UPDATE): Final new_config={new_config}")
-        
+
         # Replace the entire config, not just individual keys
         addon_profile.config = new_config
-        print(f"DEBUG _setup_monitoring_addon_profile (UPDATE): Set config, addon_profile.config now: {addon_profile.config}")
 
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
-        print(f"DEBUG _setup_monitoring_addon_profile (UPDATE): Set addon profile in mc, final config: {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
-
-        # QUICK FIX: Also sync all addon config to azureMonitorProfile.containerInsights
-        print(f"DEBUG _setup_monitoring_addon_profile (UPDATE): Syncing to container insights - enable_msi_auth={enable_msi_auth}")
-        self._ensure_azure_monitor_profile(mc)
-        if not hasattr(mc.azure_monitor_profile, 'container_insights') or mc.azure_monitor_profile.container_insights is None:
-            mc.azure_monitor_profile.container_insights = self.models.ManagedClusterAzureMonitorProfileContainerInsights(
-                enabled=True,
-                log_analytics_workspace_resource_id=workspace_resource_id,
-                using_aad_msi_auth=enable_msi_auth
-            )
-            print(f"DEBUG _setup_monitoring_addon_profile (UPDATE): Created new container insights sync with MSI auth: {enable_msi_auth}")
-        else:
-            mc.azure_monitor_profile.container_insights.enabled = True
-            mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id = workspace_resource_id
-            mc.azure_monitor_profile.container_insights.using_aad_msi_auth = enable_msi_auth
-            print(f"DEBUG _setup_monitoring_addon_profile (UPDATE): Updated container insights sync with MSI auth: {enable_msi_auth}")
-        
 
     def _setup_container_insights(self, mc: ManagedCluster) -> None:
-        """Set up container insights configuration."""
-        self._ensure_azure_monitor_profile(mc)
-        
-        # Get MSI auth setting and workspace resource ID
-        enable_msi_auth = self.context.get_enable_msi_auth_for_monitoring()
-        workspace_resource_id = self.context.get_workspace_resource_id()
-        
-        print(f"DEBUG _setup_container_insights (UPDATE): enable_msi_auth={enable_msi_auth}, workspace_resource_id={workspace_resource_id}")
-        
-        if (not hasattr(mc.azure_monitor_profile, 'container_insights') or
-                mc.azure_monitor_profile.container_insights is None):
-            mc.azure_monitor_profile.container_insights = (
-                self.models.ManagedClusterAzureMonitorProfileContainerInsights(
-                    enabled=True,
-                    log_analytics_workspace_resource_id=workspace_resource_id,
-                    using_aad_msi_auth=enable_msi_auth
-                )
-            )
-            print(f"DEBUG _setup_container_insights (UPDATE): Created new container insights with MSI auth: {enable_msi_auth}")
-        else:
-            mc.azure_monitor_profile.container_insights.enabled = True
-            mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id = workspace_resource_id
-            mc.azure_monitor_profile.container_insights.using_aad_msi_auth = enable_msi_auth
-            print(f"DEBUG _setup_container_insights (UPDATE): Updated existing container insights with MSI auth: {enable_msi_auth}")
+        """Set up container insights configuration - DISABLED per user request."""
+        # Container insights profile setup has been removed
+        pass
 
     def _setup_azure_monitor_logs(self, mc: ManagedCluster) -> None:
         """Set up Azure Monitor logs configuration."""
-        # DEBUG: Track method entry for update decorator
-        print(f"DEBUG _setup_azure_monitor_logs (UPDATE): Called for cluster setup")
         
         addon_consts = self.context.get_addon_consts()
         self._setup_monitoring_addon_profile(mc, addon_consts)
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
         self._setup_container_insights(mc)
-
-        print(f"DEBUG _setup_azure_monitor_logs (UPDATE): Completed cluster setup")
-        # Debug statements to print addon configuration
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-        if mc.addon_profiles and CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
-            print(f"DEBUG _setup_azure_monitor_logs (UPDATE): BEFORE - addon_profile exists with config: {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
-        else:
-            print(f"DEBUG _setup_azure_monitor_logs (UPDATE): BEFORE - No monitoring addon profile found")
-
-        # After setup is complete
-        if mc.addon_profiles and CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
-            print(f"DEBUG _setup_azure_monitor_logs (UPDATE): AFTER - Final addon config: {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
-            # Also print container insights config if available
-            if (mc.azure_monitor_profile and mc.azure_monitor_profile.container_insights):
-                print(f"DEBUG _setup_azure_monitor_logs (UPDATE): container_insights enabled: {mc.azure_monitor_profile.container_insights.enabled}")
-                print(f"DEBUG _setup_azure_monitor_logs (UPDATE): container_insights workspace: {mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id}")
-                print(f"DEBUG _setup_azure_monitor_logs (UPDATE): container_insights msi_auth: {mc.azure_monitor_profile.container_insights.using_aad_msi_auth}")
-            else:
-                print(f"DEBUG _setup_azure_monitor_logs (UPDATE): No container insights found in azure monitor profile")
-        else:
-            print(f"DEBUG _setup_azure_monitor_logs (UPDATE): AFTER - No monitoring addon profile found")
-        
         # Call ensure_container_insights_for_monitoring with all parameters (similar to postprocessing)
         CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
         if (mc.addon_profiles and 
@@ -6837,10 +6678,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     str(cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
                         CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"):
                     
-                    # Call ensure_container_insights_for_monitoring with all parameters
-                    print(f"DEBUG postprocessing_after_mc_updated: BEFORE ensure_container_insights_for_monitoring")
-                    print(f"DEBUG postprocessing_after_mc_updated: Addon config before: {cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
-                    print(f"DEBUG postprocessing_after_mc_updated: aad_route parameter: {self.context.get_enable_msi_auth_for_monitoring()}")
+                    # Check parameter sizes to identify what might be causing large headers
+                    data_collection_settings = self.context.get_data_collection_settings()
+                    
+                    # Try to limit data_collection_settings size to avoid "Request Header Fields Too Large" error
+                    safe_data_collection_settings = None
+                    if data_collection_settings and len(str(data_collection_settings)) > 10000:
+                        safe_data_collection_settings = None
+                    else:
+                        safe_data_collection_settings = data_collection_settings
                     
                     self.context.external_functions.ensure_container_insights_for_monitoring(
                         self.cmd,
@@ -6854,14 +6700,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         create_dcr=True,
                         create_dcra=True,
                         enable_syslog=self.context.get_enable_syslog(),
-                        data_collection_settings=self.context.get_data_collection_settings(),
+                        data_collection_settings=safe_data_collection_settings,
                         is_private_cluster=self.context.get_enable_private_cluster(),
                         ampls_resource_id=self.context.get_ampls_resource_id(),
                         enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
                     )
-                    
-                    print(f"DEBUG postprocessing_after_mc_updated: AFTER ensure_container_insights_for_monitoring")
-                    print(f"DEBUG postprocessing_after_mc_updated: Addon config after: {cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
                     
         # Handle monitoring addon postprocessing (disable case) - same logic as aks_disable_addons  
         monitoring_addon_disable_postprocessing_required = self.context.get_intermediate(
