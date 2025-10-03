@@ -7,9 +7,9 @@ Introduction
 
 The AKS Agent extension provides the "az aks agent" command, an AI-powered assistant that helps analyze and troubleshoot Azure Kubernetes Service (AKS) clusters using Large Language Models (LLMs). The agent combines cluster context, configurable toolsets, and LLMs to answer natural-language questions about your cluster (for example, "Why are my pods not starting?") and can investigate issues in both interactive and non-interactive (batch) modes.
 
-New in this version: **az aks agent init** command for easy LLM model configuration!
+New in this version: **az aks agent-init** command for easy LLM model configuration!
 
-You can now use `az aks agent init` to interactively add and configure LLM models before asking questions. This command guides you through the setup process, allowing you to add multiple models as needed. When asking questions with `az aks agent`, you can:
+You can now use `az aks agent-init` to interactively add and configure LLM models before asking questions. This command guides you through the setup process, allowing you to add multiple models as needed. When asking questions with `az aks agent`, you can:
 
 - Use `--config-file` to specify your own model configuration file
 - Use `--model` to select a previously configured model
@@ -23,7 +23,7 @@ Key capabilities
 
 - Interactive and non-interactive modes (use --no-interactive for batch runs).
 - Support for multiple LLM providers (Azure OpenAI, OpenAI, etc.) via interactive configuration.
-- **Easy model setup with `az aks agent init`**: interactively add and configure LLM models, run multiple times to add more models.
+- **Easy model setup with `az aks agent-init`**: interactively add and configure LLM models, run multiple times to add more models.
 - Configurable via a JSON/YAML config file provided with --config-file, or select a model with --model.
 - If no config or model is specified, the last configured LLM is used automatically.
 - Control echo and tool output visibility with --no-echo-request and --show-tool-output.
@@ -32,7 +32,7 @@ Key capabilities
 
 Prerequisites
 -------------
-No need to manually set environment variables! All model and credential information can be configured interactively using `az aks agent init`.
+No need to manually set environment variables! All model and credential information can be configured interactively using `az aks agent-init`.
 For more details about supported model providers and required
 variables, see: https://docs.litellm.ai/docs/providers
 
@@ -52,7 +52,7 @@ Configure LLM models interactively
 
 .. code-block:: bash
 
-    az aks agent init
+    az aks agent-init
 
 This command will guide you through adding a new LLM model. You can run it multiple times to add more models or update existing models. All configured models are saved locally and can be selected when asking questions.
 

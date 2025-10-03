@@ -16,7 +16,7 @@ helps[
     short-summary: Run AI assistant to analyze and troubleshoot Kubernetes clusters.
     long-summary: |-
       This command allows you to ask questions about your Azure Kubernetes cluster and get answers using AI models.
-  No need to manually set environment variables! All model and credential information can be configured interactively using `az aks agent init` or via a config file.
+      No need to manually set environment variables! All model and credential information can be configured interactively using `az aks agent-init` or via a config file.
     parameters:
         - name: --name -n
           type: string
@@ -135,7 +135,7 @@ helps[
 """
 
 helps[
-    "aks agent init"
+    "aks agent-init"
 ] = """
     type: command
     short-summary: Initialize and validate LLM provider/model configuration for AKS agent.
@@ -143,8 +143,6 @@ helps[
       This command interactively guides you to select an LLM provider and model, validates the connection, and saves the configuration for later use.
       You can run this command multiple times to add or update different model configurations.
     examples:
-        - name: Initialize configuration for Azure OpenAI
-          text: az aks agent init
-        - name: Initialize configuration for OpenAI
-          text: az aks agent init
+        - name: Initialize configuration for Azure OpenAI, OpenAI or other llms
+          text: az aks agent-init
 """

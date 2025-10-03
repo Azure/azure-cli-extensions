@@ -62,7 +62,7 @@ class LLMConfigManager:
         if model_configs:
             return model_configs[-1]
         raise ValueError(
-            "No configurations found. Please run `az aks agent init`")
+            "No configurations found. Please run `az aks agent-init`")
 
     def get_specific(
             self,
@@ -78,7 +78,7 @@ class LLMConfigManager:
                 return cfg
         raise ValueError(
             f"No configuration found for provider '{provider_name}' with model '{model_name}'. "
-            f"Please run `az aks agent init`")
+            f"Please run `az aks agent-init`")
 
     def is_config_complete(self, config, provider_schema):
         """
