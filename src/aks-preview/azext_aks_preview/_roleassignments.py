@@ -56,21 +56,30 @@ def _add_role_assignment_executor_new(cmd, role, assignee, resource_group_name=N
         mod="models",
         operation_group="role_assignments",
     )
-    if cmd.supported_api_version(min_api="2018-01-01-preview", resource_type=ResourceType.MGMT_AUTHORIZATION):
+    from azure.cli.core import __version__ as core_version
+    if core_version >= "2.77.0":
+        # since 2.77.0, role assignment client swithched to single api version from multi api versions
+        # ref: https://github.com/Azure/azure-cli/pull/31859
         parameters = RoleAssignmentCreateParameters(role_definition_id=role_id, principal_id=object_id,
-                                                    principal_type=None)
+                                                principal_type=assignee_principal_type)
         return assignments_client.create(scope, assignment_name, parameters, headers=custom_headers)
+    else:
+        # before 2.77.0, role assignment client used multi api versions
+        if cmd.supported_api_version(min_api="2018-01-01-preview", resource_type=ResourceType.MGMT_AUTHORIZATION):
+            parameters = RoleAssignmentCreateParameters(role_definition_id=role_id, principal_id=object_id,
+                                                        principal_type=None)
+            return assignments_client.create(scope, assignment_name, parameters, headers=custom_headers)
 
-    # for backward compatibility
-    RoleAssignmentProperties = get_sdk(
-        cmd.cli_ctx,
-        ResourceType.MGMT_AUTHORIZATION,
-        "RoleAssignmentProperties",
-        mod="models",
-        operation_group="role_assignments",
-    )
-    properties = RoleAssignmentProperties(role_definition_id=role_id, principal_id=object_id)
-    return assignments_client.create(scope, assignment_name, properties, headers=custom_headers)
+        # for backward compatibility
+        RoleAssignmentProperties = get_sdk(
+            cmd.cli_ctx,
+            ResourceType.MGMT_AUTHORIZATION,
+            "RoleAssignmentProperties",
+            mod="models",
+            operation_group="role_assignments",
+        )
+        properties = RoleAssignmentProperties(role_definition_id=role_id, principal_id=object_id)
+        return assignments_client.create(scope, assignment_name, properties, headers=custom_headers)
 
 
 # TODO(fuming): remove and replaced by import from azure.cli.command_modules.acs once dependency bumped to 2.47.0
@@ -92,7 +101,7 @@ def _add_role_assignment_new(cmd, role, service_principal_msi_id, is_service_pri
             )
             break
         except HttpResponseError as ex:
-            if isinstance(ex, ResourceExistsError) or "The role assignment already exists." in ex.message:
+            if isinstance(ex, ResourceExistsError) or ex.error.code == 'RoleAssignmentExists':
                 break
             logger.info(ex.message)
         except Exception as ex:  # pylint: disable=broad-except
