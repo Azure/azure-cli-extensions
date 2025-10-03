@@ -959,11 +959,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 return result
 
             def build_override(override_dict):
-                if not isinstance(override_dict, dict):
-                    logger.debug('Skipping non-dict override: %s (type: %s)',
-                                 override_dict,
-                                 type(override_dict).__name__)
-                    return None
                 camel_to_snake_case = {
                     "queryLogging": "query_logging",
                     "protocol": "protocol",
