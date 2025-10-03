@@ -520,7 +520,7 @@ def process_env_vars_from_config(container) -> List[Dict[str, str]]:
             config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
             config.ACI_FIELD_CONTAINERS_ENVS_VALUE: value,
             config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY:
-                "re2" if case_insensitive_dict_get(env_var, "regex") else "string",
+                env_var.get("strategy", "re2" if (case_insensitive_dict_get(env_var, "regex")) else "string"),
         })
 
     return env_vars
@@ -787,6 +787,13 @@ def extract_probe(exec_processes: List[dict], image_properties: dict, probe: str
                 config.ACI_FIELD_CONTAINERS_PROBE_COMMAND: probe_command,
                 config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
             })
+
+
+def get_probe_exec_processes(image_properties: dict) -> List[dict]:
+    exec_processes: List[dict] = []
+    extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
+    extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE)
+    return exec_processes
 
 
 def extract_lifecycle_hook(exec_processes: List[dict], image_properties: dict, hook: str):

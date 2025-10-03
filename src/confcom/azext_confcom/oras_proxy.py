@@ -191,7 +191,7 @@ def pull_all_standalone_fragments(fragment_imports):
     proxy = CoseSignToolProxy()
 
     for fragment in fragment_imports:
-        if fragment in DEFAULT_REGO_FRAGMENTS:
+        if any(fragment["feed"] == default_fragment["feed"] for default_fragment in DEFAULT_REGO_FRAGMENTS):
             continue
         path = fragment.get("path")
         feed = fragment.get("feed")
