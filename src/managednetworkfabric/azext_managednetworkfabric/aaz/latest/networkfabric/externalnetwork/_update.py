@@ -28,9 +28,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/externalnetworks/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/externalnetworks/{}", "2025-07-15"],
         ]
     }
 
@@ -120,7 +120,7 @@ class Update(AAZCommand):
             enum={"OptionA": "OptionA", "OptionB": "OptionB"},
         )
         _args_schema.static_route_configuration = AAZObjectArg(
-            options=["--static-route-configuration"],
+            options=["--static-route-config", "--static-route-configuration"],
             arg_group="Properties",
             help="Static Route Configuration.",
             nullable=True,
@@ -249,9 +249,6 @@ class Update(AAZCommand):
         native_ipv4_prefix_limit.prefix_limits = AAZListArg(
             options=["prefix-limits"],
             help="Prefix limits",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
 
         prefix_limits = cls._args_schema.option_a_properties.native_ipv4_prefix_limit.prefix_limits
@@ -262,9 +259,6 @@ class Update(AAZCommand):
         native_ipv6_prefix_limit.prefix_limits = AAZListArg(
             options=["prefix-limits"],
             help="Prefix limits",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
 
         prefix_limits = cls._args_schema.option_a_properties.native_ipv6_prefix_limit.prefix_limits
@@ -519,7 +513,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -544,7 +538,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -716,6 +710,11 @@ class Update(AAZCommand):
             )
             properties.last_operation = AAZObjectType(
                 serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.network_to_network_interconnect_id = AAZStrType(
