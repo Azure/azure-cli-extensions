@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.2.9
+++++++
+* bugfix for --exclude-default-fragments flag not working as intended
+
 1.2.8
 ++++++
 * Made the default minimum SVN of the infrastructure fragment 4
