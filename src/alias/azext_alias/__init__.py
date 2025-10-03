@@ -33,8 +33,8 @@ from azext_alias.hooks import (
 cached_reserved_commands = []
 
 # small change to force build
-print('alias extension is loading... ')
-# remove me after testing
+print('alias extension is loading ... ')
+# remove me after testing .. again
 
 class AliasExtCommandLoader(AzCommandsLoader):
 
