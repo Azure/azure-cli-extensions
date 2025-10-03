@@ -11,21 +11,23 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.41)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces?api-version=2025-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces?api-version=2025-09-01
   response:
     body:
-      string: '{"value":[]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/shane_cli_test/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/clitest0724","name":"clitest0724","type":"microsoft.storagediscovery/storagediscoveryworkspaces","location":"francecentral","tags":{"team":"Discovery"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-08-05T05:28:48.0744158Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-08-05T05:28:48.0744158Z"},"properties":{"sku":"Standard","workspaceRoots":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/shanebugbash2"],"description":"123","scopes":[{"displayName":"test1","resourceTypes":["Microsoft.Storage/storageAccounts"],"tagKeysOnly":["e2etest1"],"tags":{"tag1":"value1","tag2":"value2"}}],"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/shane_cli_test/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/test0912","name":"test0912","type":"microsoft.storagediscovery/storagediscoveryworkspaces","location":"canadacentral","tags":{"team":"Discovery"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-12T23:02:03.011211Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-12T23:02:03.011211Z"},"properties":{"sku":"Free","workspaceRoots":["/subscriptions/00000000-0000-0000-0000-000000000000"],"description":"","scopes":[],"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest8623/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/acctest8623","name":"acctest8623","type":"microsoft.storagediscovery/storagediscoveryworkspaces","location":"westeurope","tags":{"tag1":"value1","tag2":"value2","team":"Discovery"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-09T17:07:58.8557752Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-09T17:07:58.8557752Z"},"properties":{"sku":"Standard","workspaceRoots":["/subscriptions/00000000-0000-0000-0000-000000000000"],"description":"Sample
+        Storage Discovery Workspace","scopes":[{"displayName":"Sample-Collection","resourceTypes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest8623/providers/Microsoft.Storage/storageAccounts/acctest8623"],"tagKeysOnly":["filterTag1","filterTag2"],"tags":{"filterTag3":"value3","filterTag4":"value4"}},{"displayName":"Sample-Collection-2","resourceTypes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest8623/providers/Microsoft.Storage/storageAccounts/acctest8623"],"tagKeysOnly":["filterTag5"],"tags":{"filterTag6":"value6"}}],"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest9861/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/acctest9861","name":"acctest9861","type":"microsoft.storagediscovery/storagediscoveryworkspaces","location":"westeurope","tags":{"tag1":"value1","tag2":"value2","team":"Discovery"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-09T17:13:19.9512779Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-09T20:14:19.0456913Z"},"properties":{"sku":"Standard","workspaceRoots":["/subscriptions/00000000-0000-0000-0000-000000000000"],"description":"Sample
+        Storage Discovery Workspace","scopes":[{"displayName":"Sample-Collection","resourceTypes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest9861/providers/Microsoft.Storage/storageAccounts/acctest9861"],"tagKeysOnly":["filterTag1","filterTag2"],"tags":{"filterTag3":"value3","filterTag4":"value4"}},{"displayName":"Sample-Collection-2","resourceTypes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest9861/providers/Microsoft.Storage/storageAccounts/acctest9861"],"tagKeysOnly":["filterTag5"],"tags":{"filterTag6":"value6"}}],"provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '12'
+      - '4156'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 04 Aug 2025 23:29:50 GMT
+      - Wed, 24 Sep 2025 21:50:53 GMT
       expires:
       - '-1'
       pragma:
@@ -36,10 +38,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-original-request-ids:
+      - be8a11cc-b032-4183-88c8-8b3661978051
+      - b3e56d12-57bd-46de-b6ae-f7a6ec29a5ee
+      - ab352624-d309-4ef8-8f2a-b83c7a3f2d98
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: F664E3FFDE704CD8A2323D2980414ED8 Ref B: MWH011020807023 Ref C: 2025-08-04T23:29:50Z'
+      - 'Ref A: 6E0FABC166744E49BA7BAA2FAB91707C Ref B: MWH011020808025 Ref C: 2025-09-24T21:50:53Z'
     status:
       code: 200
       message: OK
