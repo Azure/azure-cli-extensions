@@ -11,11 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Add option `Flatcar` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
 18.0.0b42
 +++++++
 * Fix role assignment failure when using azure-cli version >= `2.77.0`.
+* Add option `Flatcar` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
 18.0.0b41
 +++++++
