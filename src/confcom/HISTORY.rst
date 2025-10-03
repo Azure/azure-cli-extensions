@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.3.0
+++++++
+* restored the behaviour of --upload-fragment in acifragmentgen to attach to first image in input
+* added `fragment push` command to allow explicit uploading of standalone fragments
+* added `fragment attach` command to allow explicit uploading of image attached fragments
+
 1.2.8
 ++++++
 * Made the default minimum SVN of the infrastructure fragment 4
