@@ -961,7 +961,8 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             def build_override(override_dict):
                 if not isinstance(override_dict, dict):
                     raise InvalidArgumentValueError(
-                        f"Expected a dictionary for DNS override settings, but got {type(override_dict).__name__}: {override_dict}"
+                        f"Expected a dictionary for DNS override settings,"
+                        f" but got {type(override_dict).__name__}: {override_dict}"
                     )
                 camel_to_snake_case = {
                     "queryLogging": "query_logging",
