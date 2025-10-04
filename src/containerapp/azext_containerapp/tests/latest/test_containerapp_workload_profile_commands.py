@@ -12,7 +12,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION
 from .custom_preparers import SubnetPreparer
-from .utils import create_vent_subnet
+from .utils import create_vnet_subnet
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -148,7 +148,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
     def test_containerapp_create_enable_workload_profiles_three_state_flag(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         env = self.create_random_name(prefix='env', length=24)
-        subnet_id = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24), delegations=None)
+        subnet_id = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24), delegations=None)
 
         self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles false -s {}'.format(resource_group, env, subnet_id), expect_failure=False, checks=[
             JMESPathCheck("name", env),
@@ -158,7 +158,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env), expect_failure=False)
 
         env1 = self.create_random_name(prefix='env1', length=24)
-        subnet_id1 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        subnet_id1 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         self.cmd('containerapp env create -g {} -n {} --logs-destination none -s {}'.format(
             resource_group, env1, subnet_id1), expect_failure=False, checks=[
@@ -171,7 +171,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env1), expect_failure=False)
 
         env2 = self.create_random_name(prefix='env2', length=24)
-        subnet_id2 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        subnet_id2 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles -s {}'.format(
             resource_group, env2, subnet_id2), expect_failure=False, checks=[
@@ -182,7 +182,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         ])
 
         env3 = self.create_random_name(prefix='env3', length=24)
-        subnet_id3 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        subnet_id3 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles true -s {}'.format(
             resource_group, env3, subnet_id3), expect_failure=False, checks=[

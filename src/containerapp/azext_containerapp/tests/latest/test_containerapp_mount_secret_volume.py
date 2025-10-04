@@ -10,7 +10,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 from .common import TEST_LOCATION
-from .utils import create_containerapp_env, create_vent_subnet
+from .utils import create_containerapp_env, create_vnet_subnet
 
 
 class ContainerAppMountSecretTest(ScenarioTest):
@@ -54,7 +54,7 @@ class ContainerAppMountSecretTest(ScenarioTest):
         # test creating a container app that does not have a secret volume mount, then uses update to add a secret volume mount
         app = self.create_random_name(prefix='app2', length=24)
         env = self.create_random_name(prefix='env', length=24)
-        subnet_id = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        subnet_id = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         create_containerapp_env(self, env, resource_group, subnetId=subnet_id)
 
