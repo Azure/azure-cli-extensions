@@ -4445,7 +4445,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.cmd(add_cmd)
         
         # Verify the error message
-        self.assertIn("Expected a dictionary for DNS override settings, but got NoneType", str(context.exception))
+        self.assertIn("Expected a dictionary for DNS override settings, but got str: invalid", str(context.exception))
 
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
