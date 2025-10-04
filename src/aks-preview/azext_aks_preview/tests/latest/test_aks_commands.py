@@ -4440,12 +4440,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--kubernetes-version 1.33.0"
         )
 
-        with self.assertRaises(HttpResponseError) as context:
+        # Attempt to update nodepool with null DNS overrides - should fail
+        with self.assertRaises(InvalidArgumentValueError) as context:
             self.cmd(add_cmd)
-
-        # Verify the error message contains the expected validation message
-        error_message = str(context.exception)
-        self.assertIn("The value of parameter localDNSProfile.vnetDNSOverrides is invalid. Error details: zone '\"cluster.local\"' is required in VnetDNSOverrides", error_message)
+        
+        # Verify the error message
+        self.assertIn("Expected a dictionary for DNS override settings, but got NoneType", str(context.exception))
 
         self.cmd(
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
