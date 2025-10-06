@@ -6,4 +6,3 @@ from azure.cli.core.breaking_change import register_required_flag_breaking_chang
 
 register_required_flag_breaking_change('redisenterprise create', '--public-network-access')
 register_default_value_breaking_change('redisenterprise create', '--access-keys-auth', 'Enabled', 'Disabled')
-register_default_value_breaking_change('redisenterprise create', '--access-keys-authentication', 'Enabled', 'Disabled')
