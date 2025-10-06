@@ -92,7 +92,7 @@ class AzureFirewallScenario(ScenarioTest):
             checks=[
                 self.not_exists('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"'),
                 self.not_exists('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"'),
-                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableDnstapLogging"'),
+                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableDnstapLogging"')
             ]
         )
 
