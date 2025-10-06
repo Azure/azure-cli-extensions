@@ -6,6 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 
 
 class NspScenario(ScenarioTest):
@@ -127,7 +128,7 @@ class NspScenario(ScenarioTest):
             'nsp_name': 'TestNetworkSecurityPerimeter',
             'profile_name': 'TestNspProfile',
             'association_name': 'TestNspAssociation',
-            'resource_name': 'kvclinsp19-test',
+            'resource_name': 'kvclinsp20-test',
             'sub': self.get_subscription_id()
         })
 
@@ -231,4 +232,13 @@ class NspScenario(ScenarioTest):
 
         # Verify the logging configuration is deleted
         self.cmd('network perimeter logging-configuration show --perimeter-name {nsp_name} --resource-group {rg}', expect_failure=True)
+    
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='test_nsp_service_tags_crud', location='eastus2euap')
+    def test_nsp_service_tags_crud(self, resource_group):
+
+        # Show service tags
+        self.cmd('network perimeter service-tag list -l eastus2euap', checks=[
+            self.check("length([?contains(serviceTags, 'MicrosoftPublicIPSpace')])", 1)
+        ])
 
