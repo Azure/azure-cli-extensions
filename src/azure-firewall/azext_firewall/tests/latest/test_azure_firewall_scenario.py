@@ -19,25 +19,25 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('extension add -n ip-group')
         self.cmd('extension add -n virtual-wan')
 
-    # @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall')
-    # def test_azure_firewall(self, resource_group):
-    #     self.kwargs.update({
-    #         'af': 'af1',
-    #         'coll': 'rc1',
-    #         'rule1': 'rule1',
-    #         'rule2': 'rule2'
-    #     })
-    #     self.cmd('network firewall create -g {rg} -n {af} --threat-intel-mode Alert --allow-active-ftp', checks=[
-    #         self.check('threatIntelMode', 'Alert'),
-    #         self.check('additionalProperties."Network.FTP.AllowActiveFTP"', 'true')
-    #     ])
-    #     self.cmd('network firewall update -g {rg} -n {af} --threat-intel-mode Deny --allow-active-ftp false', checks=[
-    #         self.check('threatIntelMode', 'Deny'),
-    #         self.not_exists('additionalProperties."Network.FTP.AllowActiveFTP"')
-    #     ])
-    #     self.cmd('network firewall show -g {rg} -n {af}')
-    #     self.cmd('network firewall list -g {rg}')
-    #     self.cmd('network firewall delete -g {rg} -n {af}')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall')
+    def test_azure_firewall(self, resource_group):
+        self.kwargs.update({
+            'af': 'af1',
+            'coll': 'rc1',
+            'rule1': 'rule1',
+            'rule2': 'rule2'
+        })
+        self.cmd('network firewall create -g {rg} -n {af} --threat-intel-mode Alert --allow-active-ftp', checks=[
+            self.check('threatIntelMode', 'Alert'),
+            self.check('additionalProperties."Network.FTP.AllowActiveFTP"', 'true')
+        ])
+        self.cmd('network firewall update -g {rg} -n {af} --threat-intel-mode Deny --allow-active-ftp false', checks=[
+            self.check('threatIntelMode', 'Deny'),
+            self.not_exists('additionalProperties."Network.FTP.AllowActiveFTP"')
+        ])
+        self.cmd('network firewall show -g {rg} -n {af}')
+        self.cmd('network firewall list -g {rg}')
+        self.cmd('network firewall delete -g {rg} -n {af}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_az_firewall_autoscale_configuration')
     def test_azure_firewall_autoscale_configuration(self, resource_group):
