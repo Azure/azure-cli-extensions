@@ -1009,46 +1009,46 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall policy update -g {rg} -n {policy} --sql False',
                  checks=self.check('sql.allowSqlRedirect', False))
 
-    # @AllowLargeResponse(size_kb=10240)
-    # @ResourceGroupPreparer(name_prefix="cli_test_firewall_basic_sku_", location="westus")
-    # def test_firewall_basic_sku(self):
-    #     self.kwargs.update({
-    #         "firewall_name": self.create_random_name("firewall-", 16),
-    #         "vnet_name": self.create_random_name("vnet-", 12),
-    #         "conf_name": self.create_random_name("ipconfig-", 16),
-    #         "m_conf_name": self.create_random_name("ipconfig-", 16),
-    #         "m_public_ip_name": self.create_random_name("public-ip-", 16),
-    #         "vwan": self.create_random_name("vwan-", 12),
-    #         "vhub": self.create_random_name("vhub-", 12),
-    #     })
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix="cli_test_firewall_basic_sku_", location="westus")
+    def test_firewall_basic_sku(self):
+        self.kwargs.update({
+            "firewall_name": self.create_random_name("firewall-", 16),
+            "vnet_name": self.create_random_name("vnet-", 12),
+            "conf_name": self.create_random_name("ipconfig-", 16),
+            "m_conf_name": self.create_random_name("ipconfig-", 16),
+            "m_public_ip_name": self.create_random_name("public-ip-", 16),
+            "vwan": self.create_random_name("vwan-", 12),
+            "vhub": self.create_random_name("vhub-", 12),
+        })
 
-    #     with self.assertRaisesRegex(ValidationError, "When creating Basic SKU firewall, both --m-conf-name and --m-public-ip-address should be provided."):
-    #         self.cmd("network firewall create -n {firewall_name} -g {rg} --sku AZFW_VNet --tier Basic")
+        with self.assertRaisesRegex(ValidationError, "When creating Basic SKU firewall, both --m-conf-name and --m-public-ip-address should be provided."):
+            self.cmd("network firewall create -n {firewall_name} -g {rg} --sku AZFW_VNet --tier Basic")
 
-    #     self.cmd("network vnet create -n {vnet_name} -g {rg} --address-prefixes 10.0.0.0/16 --subnet-name AzureFirewallSubnet --subnet-prefixes 10.0.0.0/24")
-    #     self.cmd("network vnet subnet create -n AzureFirewallManagementSubnet -g {rg} --vnet-name {vnet_name} --address-prefixes 10.0.1.0/24")
-    #     self.cmd("network public-ip create -n {m_public_ip_name} -g {rg} --sku Standard")
+        self.cmd("network vnet create -n {vnet_name} -g {rg} --address-prefixes 10.0.0.0/16 --subnet-name AzureFirewallSubnet --subnet-prefixes 10.0.0.0/24")
+        self.cmd("network vnet subnet create -n AzureFirewallManagementSubnet -g {rg} --vnet-name {vnet_name} --address-prefixes 10.0.1.0/24")
+        self.cmd("network public-ip create -n {m_public_ip_name} -g {rg} --sku Standard")
 
-    #     self.cmd(
-    #         "network firewall create -n {firewall_name} -g {rg} --sku AZFW_VNet --tier Basic --vnet-name {vnet_name} "
-    #         "--conf-name {conf_name} --m-conf-name {m_conf_name} --m-public-ip {m_public_ip_name}",
-    #         checks=[
-    #             self.check("name", "{firewall_name}"),
-    #             self.check("sku.tier", "Basic")
-    #         ]
-    #     )
-    #     self.cmd("network firewall delete -n {firewall_name} -g {rg}")
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --sku AZFW_VNet --tier Basic --vnet-name {vnet_name} "
+            "--conf-name {conf_name} --m-conf-name {m_conf_name} --m-public-ip {m_public_ip_name}",
+            checks=[
+                self.check("name", "{firewall_name}"),
+                self.check("sku.tier", "Basic")
+            ]
+        )
+        self.cmd("network firewall delete -n {firewall_name} -g {rg}")
 
-    #     self.cmd("extension add -n virtual-wan")
-    #     self.cmd("network vwan create -n {vwan} -g {rg} --type Standard")
-    #     self.cmd('network vhub create -n {vhub} -g {rg} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l westus --sku Standard')
-    #     self.cmd(
-    #         "network firewall create -n {firewall_name} -g {rg} --vhub {vhub} --public-ip-count 2 --sku AZFW_Hub --tier Basic",
-    #         checks=[
-    #             self.check("name", "{firewall_name}"),
-    #             self.check("sku.name", "AZFW_Hub")
-    #         ]
-    #     )
+        self.cmd("extension add -n virtual-wan")
+        self.cmd("network vwan create -n {vwan} -g {rg} --type Standard")
+        self.cmd('network vhub create -n {vhub} -g {rg} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l westus --sku Standard')
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --vhub {vhub} --public-ip-count 2 --sku AZFW_Hub --tier Basic",
+            checks=[
+                self.check("name", "{firewall_name}"),
+                self.check("sku.name", "AZFW_Hub")
+            ]
+        )
 
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix="cli_test_firewall_vhub_create_with_public_ip", location="westus")
