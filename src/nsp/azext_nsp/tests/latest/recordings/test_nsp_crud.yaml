@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"location": "eastus2euap"}'
+    body: '{"location": "centraluseuap"}'
     headers:
       Accept:
       - application/json
@@ -11,7 +11,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '27'
+      - '29'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -19,19 +19,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: PUT
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"eastus2euap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"3362b641-b4b3-496d-9908-58112e0a177e","provisioningState":"Succeeded"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-06T04:49:23.4900936Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-06T04:49:23.4900936Z"}}'
+      string: '{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"centraluseuap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"0b769e8c-9ec7-4fc6-980c-33f58ca6dbb8","provisioningState":"Succeeded"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-07T09:14:57.3185835Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-07T09:14:57.3185835Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '640'
+      - '642'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:22 GMT
+      - Tue, 07 Oct 2025 09:14:56 GMT
       expires:
       - '-1'
       pragma:
@@ -43,13 +43,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/2670398b-a875-49f2-aa7d-52af6df10a9f
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/eastus/b19ffffa-4e2a-46eb-8ef6-2dce8f9b5a4a
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '798'
-      x-ms-throttling-version:
-      - v2
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 76C2A4AFFC27455BA0FD1C4FA171BEBF Ref B: PNQ231110909034 Ref C: 2025-10-06T04:49:22Z'
+      - 'Ref A: 88F81B8A409A40F291988F89BAB46E18 Ref B: PNQ231110906034 Ref C: 2025-10-07T09:14:55Z'
     status:
       code: 200
       message: OK
@@ -69,19 +69,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"eastus2euap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"3362b641-b4b3-496d-9908-58112e0a177e","provisioningState":"Succeeded"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-06T04:49:23.4900936Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-06T04:49:23.4900936Z"}}'
+      string: '{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"centraluseuap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"0b769e8c-9ec7-4fc6-980c-33f58ca6dbb8","provisioningState":"Succeeded"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-07T09:14:57.3185835Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-07T09:14:57.3185835Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '640'
+      - '642'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:24 GMT
+      - Tue, 07 Oct 2025 09:14:58 GMT
       expires:
       - '-1'
       pragma:
@@ -95,7 +95,7 @@ interactions:
       x-ms-throttling-version:
       - v2
       x-msedge-ref:
-      - 'Ref A: 998B4001C135434B8CC19406A7E85C00 Ref B: PNQ231110907031 Ref C: 2025-10-06T04:49:23Z'
+      - 'Ref A: 62DB37CE0ECF442CB82BFA3A87BEC42B Ref B: PNQ231110909042 Ref C: 2025-10-07T09:14:57Z'
     status:
       code: 200
       message: OK
@@ -115,19 +115,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters?api-version=2024-10-01
   response:
     body:
-      string: '{"value":[{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"eastus2euap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"3362b641-b4b3-496d-9908-58112e0a177e","provisioningState":"Succeeded"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-06T04:49:23.4900936Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-06T04:49:23.4900936Z"}}]}'
+      string: '{"value":[{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"centraluseuap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"0b769e8c-9ec7-4fc6-980c-33f58ca6dbb8","provisioningState":"Succeeded"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-07T09:14:57.3185835Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-07T09:14:57.3185835Z"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '652'
+      - '654'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:25 GMT
+      - Tue, 07 Oct 2025 09:14:58 GMT
       expires:
       - '-1'
       pragma:
@@ -140,10 +140,10 @@ interactions:
       - nosniff
       x-ms-original-request-ids:
       - ''
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 3092E498714A489A88581D4473580E0C Ref B: PNQ231110908060 Ref C: 2025-10-06T04:49:25Z'
+      - 'Ref A: 7A1F6401E0134B5AA14CADA1273756A4 Ref B: PNQ231110907054 Ref C: 2025-10-07T09:14:58Z'
     status:
       code: 200
       message: OK
@@ -165,23 +165,23 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: DELETE
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2024-10-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/3362b641-b4b3-496d-9908-58112e0a177e?api-version=2024-10-01&t=638953229678920075&c=MIIIpTCCBo2gAwIBAgITFgGu4p87zdtEnAmRzQABAa7inzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNzIwMTgxMjU5WhcNMjYwMTE2MTgxMjU5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALipUy-MCRvk21x0zPGPVnw-mYeAVZy3ITscIsIzi4wQqkqQqDh9mQJZL_vfOBBPUBeQFayU0YXpgvlUGCrkBCTaU5Qlw_w3XsGszqMRTAcqKJ1UIrgeb_p6_ZQL5qcXY8Dqs3KV6sbYO22tco5pQ5b9PrA2vMgzA9RaW4HkNYzyHxM1Ep3ZxHoqcMSkdWmz3sdrchqP_KVVLUdbCYxxO_WTYzWB1FXnSIJKKJiaJuYgmC56Xy6aSR24Lg8LLBYIreXRrIhkPMuEWZEFpOJdHgscSXv8RSqJo39at890NqqCatOxlFVew36K4fsaxnh4zSzTT_HOFb00h5R7Qs_K5LECAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MB0GA1UdDgQWBBQDieB7ud9Yef7tu3hgWczyVks17jAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBRIo61gdWpv7GDzaVXRALEyV_xs5DAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggIBABbye8_u-EAUvyU-7YOIrRx85PU83sSf4dwNCxZ6viiOmqMW3YBmRdWus4d9Ut7W-xAmhmj1jRT1_TJxho6xzolpgOYpwrwGWHmVDv31qayiz-imnAr2sRjY2-oFCIwA_6iBWQGOs3zWvXURsHZfWHDKbljlc-1h79HmMScP_IY55kHTCF0RMy8VUfOCphEuslyv1g12GRc4TVz69V_UHj3IUNph7Ukn5jcfCQUFOF20DC2I9WHJw0vYuNvBWr26O8v4EFVkQ1erMdxdlWuW98Dx5lxFJ0-R0iCD-dsCKD4ciSzYYSTj4p1L6k5wR8i8uEUwZK34HoXgeZSN8B5GWXCveFc5-uFKM_pVI5spVQIfXVgIuMD-34fVnNsnplKi-MZGDPAakYoerIUnN6PGQOWZETuo8QRIWB11KYjYqACIWtE0gMdacSO5c4jnzzby1XmMELUqBM1qPNxH27duiEWTtlVTMfLcb6rpghXpc-HOk1V8JHPNseHN45df-NnX83WeQpPF_h79gGeXwX6gW66vwd4hSVqnmnvKIp1DsPVnPU8D4UauwzzU34gfb2BKCf_XXG1IZfSNZLUYm2WjbpG3EdX1t7OHZPeDJ3wjUbaHykzwCP5-BbpiB4sb-oqMNI_Ext-cWSNkA4Fbc8C8BuL-sxKF_Mq0CqhtPfOovJns&s=laHExC4IQKty6PtDabl6J_pWI4zN72zjx3MhSJ3ctMNR1yIrkCnblg-fJMwxCPaa9vZebhuXUcp2L3CAMRU8P2nEEQIQCCLjATHP9ZDQmdGA4A68WRikIVXERyRP3jtAIDMSU7NASUihpIOnurj7aCKLxNJ-lh6fIOJrFdaLPgv28It-S6ERZCP2KlMla8xnzqcHONqha8qfU2l4JH6nKTFrou9977SUW5MSwzF0XhWI0nrdpwMajnHJccg0zbBvT428lQWH5O5FVUtmueBExYRLZDNzq0Tod0EJAoCvE7iDXheUDdSOJ80ZWCRgv7S3n5-YVsn90DNtSECaSMLB9A&h=lPZGfwYCM2QNOossjxZXHcsRIcLwHkMaK1V8oCA2-y8
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/networkSecurityPerimeterOperationStatuses/0b769e8c-9ec7-4fc6-980c-33f58ca6dbb8?api-version=2024-10-01&t=638954253009236274&c=MIIIpDCCBoygAwIBAgITFgHT86SvkPBZ0Kze1QABAdPzpDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwODIxMTMxNDA5WhcNMjUxMTE5MTMxNDA5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPIw97femZhQQikMmtIUbBz4ilfWKL1pBRGhqyE_yiaKdWFMkx-Lrs5PKpKf359LGLXEng68fNpRZlZdxKF59oRgHkQ1l6435cU2QDp5b3NZ6SPNKLsxAiNvxTVOQ_jbCxTUnBGcp1_gxsAyTjCGrl2fKSCdaRSw-Lhrxs0-ImtcYa5z9m8kXvRa0U_b3baiO5UZnNbvfqmE6RvjjrcMvv8i-nQevzcw3aZLnc9eEEKxBI5pNIVXIr7dKhsZfi-K61CRBxmlZxzpwzMWF6WZrHeA5_kxAo0RWq6aWHALI3qRh-WxWls5HXbZqbggvPYrb3F8C5FxjcSxz1dGBQa_p9UCAwEAAaOCBJEwggSNMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwHQYDVR0OBBYEFKgjTTCrzlnMX6LudHhi_0w04LAAMA4GA1UdDwEB_wQEAwIFoDCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMB8GA1UdIwQYMBaAFEijrWB1am_sYPNpVdEAsTJX_GzkMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAgEAfJTGVgnSjJYm9EVngrQ1HxxR608CwGhKUZwRJk2Yii2yCTrjUv4LqQHUR3Z_BH5h5IYMq_M2R8bOdxYAn3IdjZ3cX8lO6-R6_QKyQg4y2U-zrez_Y-T3uHiarKc5V-OdvL9MCJk9PnnYbOPiTY7dlIkvJLzj7BhBm9HZf9UYe9NHWVFQA9aOXsWu3MPWKpDbSO7f5odoxflcZRV_PRNiHy_h3uTfTaKE_7GJtxb6rEvGVH--wrf27TMteF0WJFbKM9NNaQO-26CBj5Oy2lSLl-z1cTN06_wOeDzZAYjesI2WxJPvHw81dJ8Y2xQ2uudFoZw4RkzVJ35mskIpb9bitTAc63ja9FWFwtM2USCnimBK-Y0JTmbdF3eN6-ptKAcm_NT9t9fDyKE32Ouzjrb3dlHRfNytVadvJIipr-3_pJ6rX1svQ8F-iLWUbPTZb6x-4v9Rb6DbhteupZ86jCL2D-DePB7Pu67d-jIRUO6LwIa5g02PRdVcKsreUDFnJaYynHZ0SPlQlVoGKIzjPsBkbXanceUdsq2ul4oeDPPgvIOpbU_c9ecWdjCiuIcf9yRvRqe49F2vzGTwDVeNHKsKeIrsqijbNgBdpmlJ5OEiL5KVCb1amvVlKVCHYNPTSxgYlcialh86hxmXacgDDvJQzNPfe-OH6-YkOImtv8AeHso&s=EBpGMxijNCE5CN7f1Q7reJGnRzA5U5QTnEPx70-TnNhBwxVjySXpSpzqcabMJJDpN4fNLqPBCrrHgt2bfkvaoo9MZ2tJ_VZrrgI8gPI5BvzCjcqcq0iwRYf6ydybObd6M3dTOnDKshvciSuoFbd2KSZVgIl-rb7OwbWU_Vpu3jGR_Y3dqKpR6NxZ5OsQr5R5Wh67EyX3Go58fWcNhvxArx8tDYr-9N6crJJuFNK31ngia8yTTqcQkZ5FY_6O2YY67ENrTLMCKEz-x9g34okw8wsXnsYCd1NB1kpdhcs0RSTunl0OElc2la3kvDHjJjzTKjwtHvIlOHnLIrqjLekMTA&h=nafKs5aKue6Zk5XkDhXGjg5uSxjOM8whfVFKl9oWrhI
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Mon, 06 Oct 2025 04:49:27 GMT
+      - Tue, 07 Oct 2025 09:15:00 GMT
       expires:
       - '-1'
       location:
-      - https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/3362b641-b4b3-496d-9908-58112e0a177e?api-version=2024-10-01&t=638953229678920075&c=MIIIpTCCBo2gAwIBAgITFgGu4p87zdtEnAmRzQABAa7inzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNzIwMTgxMjU5WhcNMjYwMTE2MTgxMjU5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALipUy-MCRvk21x0zPGPVnw-mYeAVZy3ITscIsIzi4wQqkqQqDh9mQJZL_vfOBBPUBeQFayU0YXpgvlUGCrkBCTaU5Qlw_w3XsGszqMRTAcqKJ1UIrgeb_p6_ZQL5qcXY8Dqs3KV6sbYO22tco5pQ5b9PrA2vMgzA9RaW4HkNYzyHxM1Ep3ZxHoqcMSkdWmz3sdrchqP_KVVLUdbCYxxO_WTYzWB1FXnSIJKKJiaJuYgmC56Xy6aSR24Lg8LLBYIreXRrIhkPMuEWZEFpOJdHgscSXv8RSqJo39at890NqqCatOxlFVew36K4fsaxnh4zSzTT_HOFb00h5R7Qs_K5LECAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MB0GA1UdDgQWBBQDieB7ud9Yef7tu3hgWczyVks17jAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBRIo61gdWpv7GDzaVXRALEyV_xs5DAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggIBABbye8_u-EAUvyU-7YOIrRx85PU83sSf4dwNCxZ6viiOmqMW3YBmRdWus4d9Ut7W-xAmhmj1jRT1_TJxho6xzolpgOYpwrwGWHmVDv31qayiz-imnAr2sRjY2-oFCIwA_6iBWQGOs3zWvXURsHZfWHDKbljlc-1h79HmMScP_IY55kHTCF0RMy8VUfOCphEuslyv1g12GRc4TVz69V_UHj3IUNph7Ukn5jcfCQUFOF20DC2I9WHJw0vYuNvBWr26O8v4EFVkQ1erMdxdlWuW98Dx5lxFJ0-R0iCD-dsCKD4ciSzYYSTj4p1L6k5wR8i8uEUwZK34HoXgeZSN8B5GWXCveFc5-uFKM_pVI5spVQIfXVgIuMD-34fVnNsnplKi-MZGDPAakYoerIUnN6PGQOWZETuo8QRIWB11KYjYqACIWtE0gMdacSO5c4jnzzby1XmMELUqBM1qPNxH27duiEWTtlVTMfLcb6rpghXpc-HOk1V8JHPNseHN45df-NnX83WeQpPF_h79gGeXwX6gW66vwd4hSVqnmnvKIp1DsPVnPU8D4UauwzzU34gfb2BKCf_XXG1IZfSNZLUYm2WjbpG3EdX1t7OHZPeDJ3wjUbaHykzwCP5-BbpiB4sb-oqMNI_Ext-cWSNkA4Fbc8C8BuL-sxKF_Mq0CqhtPfOovJns&s=laHExC4IQKty6PtDabl6J_pWI4zN72zjx3MhSJ3ctMNR1yIrkCnblg-fJMwxCPaa9vZebhuXUcp2L3CAMRU8P2nEEQIQCCLjATHP9ZDQmdGA4A68WRikIVXERyRP3jtAIDMSU7NASUihpIOnurj7aCKLxNJ-lh6fIOJrFdaLPgv28It-S6ERZCP2KlMla8xnzqcHONqha8qfU2l4JH6nKTFrou9977SUW5MSwzF0XhWI0nrdpwMajnHJccg0zbBvT428lQWH5O5FVUtmueBExYRLZDNzq0Tod0EJAoCvE7iDXheUDdSOJ80ZWCRgv7S3n5-YVsn90DNtSECaSMLB9A&h=lPZGfwYCM2QNOossjxZXHcsRIcLwHkMaK1V8oCA2-y8
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/networkSecurityPerimeterOperationStatuses/0b769e8c-9ec7-4fc6-980c-33f58ca6dbb8?api-version=2024-10-01&t=638954253009236274&c=MIIIpDCCBoygAwIBAgITFgHT86SvkPBZ0Kze1QABAdPzpDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwODIxMTMxNDA5WhcNMjUxMTE5MTMxNDA5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPIw97femZhQQikMmtIUbBz4ilfWKL1pBRGhqyE_yiaKdWFMkx-Lrs5PKpKf359LGLXEng68fNpRZlZdxKF59oRgHkQ1l6435cU2QDp5b3NZ6SPNKLsxAiNvxTVOQ_jbCxTUnBGcp1_gxsAyTjCGrl2fKSCdaRSw-Lhrxs0-ImtcYa5z9m8kXvRa0U_b3baiO5UZnNbvfqmE6RvjjrcMvv8i-nQevzcw3aZLnc9eEEKxBI5pNIVXIr7dKhsZfi-K61CRBxmlZxzpwzMWF6WZrHeA5_kxAo0RWq6aWHALI3qRh-WxWls5HXbZqbggvPYrb3F8C5FxjcSxz1dGBQa_p9UCAwEAAaOCBJEwggSNMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwHQYDVR0OBBYEFKgjTTCrzlnMX6LudHhi_0w04LAAMA4GA1UdDwEB_wQEAwIFoDCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMB8GA1UdIwQYMBaAFEijrWB1am_sYPNpVdEAsTJX_GzkMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAgEAfJTGVgnSjJYm9EVngrQ1HxxR608CwGhKUZwRJk2Yii2yCTrjUv4LqQHUR3Z_BH5h5IYMq_M2R8bOdxYAn3IdjZ3cX8lO6-R6_QKyQg4y2U-zrez_Y-T3uHiarKc5V-OdvL9MCJk9PnnYbOPiTY7dlIkvJLzj7BhBm9HZf9UYe9NHWVFQA9aOXsWu3MPWKpDbSO7f5odoxflcZRV_PRNiHy_h3uTfTaKE_7GJtxb6rEvGVH--wrf27TMteF0WJFbKM9NNaQO-26CBj5Oy2lSLl-z1cTN06_wOeDzZAYjesI2WxJPvHw81dJ8Y2xQ2uudFoZw4RkzVJ35mskIpb9bitTAc63ja9FWFwtM2USCnimBK-Y0JTmbdF3eN6-ptKAcm_NT9t9fDyKE32Ouzjrb3dlHRfNytVadvJIipr-3_pJ6rX1svQ8F-iLWUbPTZb6x-4v9Rb6DbhteupZ86jCL2D-DePB7Pu67d-jIRUO6LwIa5g02PRdVcKsreUDFnJaYynHZ0SPlQlVoGKIzjPsBkbXanceUdsq2ul4oeDPPgvIOpbU_c9ecWdjCiuIcf9yRvRqe49F2vzGTwDVeNHKsKeIrsqijbNgBdpmlJ5OEiL5KVCb1amvVlKVCHYNPTSxgYlcialh86hxmXacgDDvJQzNPfe-OH6-YkOImtv8AeHso&s=EBpGMxijNCE5CN7f1Q7reJGnRzA5U5QTnEPx70-TnNhBwxVjySXpSpzqcabMJJDpN4fNLqPBCrrHgt2bfkvaoo9MZ2tJ_VZrrgI8gPI5BvzCjcqcq0iwRYf6ydybObd6M3dTOnDKshvciSuoFbd2KSZVgIl-rb7OwbWU_Vpu3jGR_Y3dqKpR6NxZ5OsQr5R5Wh67EyX3Go58fWcNhvxArx8tDYr-9N6crJJuFNK31ngia8yTTqcQkZ5FY_6O2YY67ENrTLMCKEz-x9g34okw8wsXnsYCd1NB1kpdhcs0RSTunl0OElc2la3kvDHjJjzTKjwtHvIlOHnLIrqjLekMTA&h=nafKs5aKue6Zk5XkDhXGjg5uSxjOM8whfVFKl9oWrhI
       pragma:
       - no-cache
       strict-transport-security:
@@ -191,13 +191,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/99af479a-bc00-4485-8d89-7548e662105e
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/aa0b5657-7c1c-4ebb-bcb5-502945313e9a
       x-ms-ratelimit-remaining-subscription-deletes:
       - '799'
       x-ms-throttling-version:
       - v2
       x-msedge-ref:
-      - 'Ref A: C0BBD8E9D9DC4FBE9C68FD28A44E6EE7 Ref B: PNQ231110909029 Ref C: 2025-10-06T04:49:26Z'
+      - 'Ref A: E1981350507143C2891FDFF8984AB48E Ref B: PNQ231110906031 Ref C: 2025-10-07T09:14:59Z'
     status:
       code: 202
       message: Accepted
@@ -217,19 +217,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/3362b641-b4b3-496d-9908-58112e0a177e?api-version=2024-10-01&t=638953229678920075&c=MIIIpTCCBo2gAwIBAgITFgGu4p87zdtEnAmRzQABAa7inzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwNzIwMTgxMjU5WhcNMjYwMTE2MTgxMjU5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALipUy-MCRvk21x0zPGPVnw-mYeAVZy3ITscIsIzi4wQqkqQqDh9mQJZL_vfOBBPUBeQFayU0YXpgvlUGCrkBCTaU5Qlw_w3XsGszqMRTAcqKJ1UIrgeb_p6_ZQL5qcXY8Dqs3KV6sbYO22tco5pQ5b9PrA2vMgzA9RaW4HkNYzyHxM1Ep3ZxHoqcMSkdWmz3sdrchqP_KVVLUdbCYxxO_WTYzWB1FXnSIJKKJiaJuYgmC56Xy6aSR24Lg8LLBYIreXRrIhkPMuEWZEFpOJdHgscSXv8RSqJo39at890NqqCatOxlFVew36K4fsaxnh4zSzTT_HOFb00h5R7Qs_K5LECAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MB0GA1UdDgQWBBQDieB7ud9Yef7tu3hgWczyVks17jAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBRIo61gdWpv7GDzaVXRALEyV_xs5DAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggIBABbye8_u-EAUvyU-7YOIrRx85PU83sSf4dwNCxZ6viiOmqMW3YBmRdWus4d9Ut7W-xAmhmj1jRT1_TJxho6xzolpgOYpwrwGWHmVDv31qayiz-imnAr2sRjY2-oFCIwA_6iBWQGOs3zWvXURsHZfWHDKbljlc-1h79HmMScP_IY55kHTCF0RMy8VUfOCphEuslyv1g12GRc4TVz69V_UHj3IUNph7Ukn5jcfCQUFOF20DC2I9WHJw0vYuNvBWr26O8v4EFVkQ1erMdxdlWuW98Dx5lxFJ0-R0iCD-dsCKD4ciSzYYSTj4p1L6k5wR8i8uEUwZK34HoXgeZSN8B5GWXCveFc5-uFKM_pVI5spVQIfXVgIuMD-34fVnNsnplKi-MZGDPAakYoerIUnN6PGQOWZETuo8QRIWB11KYjYqACIWtE0gMdacSO5c4jnzzby1XmMELUqBM1qPNxH27duiEWTtlVTMfLcb6rpghXpc-HOk1V8JHPNseHN45df-NnX83WeQpPF_h79gGeXwX6gW66vwd4hSVqnmnvKIp1DsPVnPU8D4UauwzzU34gfb2BKCf_XXG1IZfSNZLUYm2WjbpG3EdX1t7OHZPeDJ3wjUbaHykzwCP5-BbpiB4sb-oqMNI_Ext-cWSNkA4Fbc8C8BuL-sxKF_Mq0CqhtPfOovJns&s=laHExC4IQKty6PtDabl6J_pWI4zN72zjx3MhSJ3ctMNR1yIrkCnblg-fJMwxCPaa9vZebhuXUcp2L3CAMRU8P2nEEQIQCCLjATHP9ZDQmdGA4A68WRikIVXERyRP3jtAIDMSU7NASUihpIOnurj7aCKLxNJ-lh6fIOJrFdaLPgv28It-S6ERZCP2KlMla8xnzqcHONqha8qfU2l4JH6nKTFrou9977SUW5MSwzF0XhWI0nrdpwMajnHJccg0zbBvT428lQWH5O5FVUtmueBExYRLZDNzq0Tod0EJAoCvE7iDXheUDdSOJ80ZWCRgv7S3n5-YVsn90DNtSECaSMLB9A&h=lPZGfwYCM2QNOossjxZXHcsRIcLwHkMaK1V8oCA2-y8
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/networkSecurityPerimeterOperationStatuses/0b769e8c-9ec7-4fc6-980c-33f58ca6dbb8?api-version=2024-10-01&t=638954253009236274&c=MIIIpDCCBoygAwIBAgITFgHT86SvkPBZ0Kze1QABAdPzpDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwODIxMTMxNDA5WhcNMjUxMTE5MTMxNDA5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPIw97femZhQQikMmtIUbBz4ilfWKL1pBRGhqyE_yiaKdWFMkx-Lrs5PKpKf359LGLXEng68fNpRZlZdxKF59oRgHkQ1l6435cU2QDp5b3NZ6SPNKLsxAiNvxTVOQ_jbCxTUnBGcp1_gxsAyTjCGrl2fKSCdaRSw-Lhrxs0-ImtcYa5z9m8kXvRa0U_b3baiO5UZnNbvfqmE6RvjjrcMvv8i-nQevzcw3aZLnc9eEEKxBI5pNIVXIr7dKhsZfi-K61CRBxmlZxzpwzMWF6WZrHeA5_kxAo0RWq6aWHALI3qRh-WxWls5HXbZqbggvPYrb3F8C5FxjcSxz1dGBQa_p9UCAwEAAaOCBJEwggSNMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwHQYDVR0OBBYEFKgjTTCrzlnMX6LudHhi_0w04LAAMA4GA1UdDwEB_wQEAwIFoDCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMB8GA1UdIwQYMBaAFEijrWB1am_sYPNpVdEAsTJX_GzkMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAgEAfJTGVgnSjJYm9EVngrQ1HxxR608CwGhKUZwRJk2Yii2yCTrjUv4LqQHUR3Z_BH5h5IYMq_M2R8bOdxYAn3IdjZ3cX8lO6-R6_QKyQg4y2U-zrez_Y-T3uHiarKc5V-OdvL9MCJk9PnnYbOPiTY7dlIkvJLzj7BhBm9HZf9UYe9NHWVFQA9aOXsWu3MPWKpDbSO7f5odoxflcZRV_PRNiHy_h3uTfTaKE_7GJtxb6rEvGVH--wrf27TMteF0WJFbKM9NNaQO-26CBj5Oy2lSLl-z1cTN06_wOeDzZAYjesI2WxJPvHw81dJ8Y2xQ2uudFoZw4RkzVJ35mskIpb9bitTAc63ja9FWFwtM2USCnimBK-Y0JTmbdF3eN6-ptKAcm_NT9t9fDyKE32Ouzjrb3dlHRfNytVadvJIipr-3_pJ6rX1svQ8F-iLWUbPTZb6x-4v9Rb6DbhteupZ86jCL2D-DePB7Pu67d-jIRUO6LwIa5g02PRdVcKsreUDFnJaYynHZ0SPlQlVoGKIzjPsBkbXanceUdsq2ul4oeDPPgvIOpbU_c9ecWdjCiuIcf9yRvRqe49F2vzGTwDVeNHKsKeIrsqijbNgBdpmlJ5OEiL5KVCb1amvVlKVCHYNPTSxgYlcialh86hxmXacgDDvJQzNPfe-OH6-YkOImtv8AeHso&s=EBpGMxijNCE5CN7f1Q7reJGnRzA5U5QTnEPx70-TnNhBwxVjySXpSpzqcabMJJDpN4fNLqPBCrrHgt2bfkvaoo9MZ2tJ_VZrrgI8gPI5BvzCjcqcq0iwRYf6ydybObd6M3dTOnDKshvciSuoFbd2KSZVgIl-rb7OwbWU_Vpu3jGR_Y3dqKpR6NxZ5OsQr5R5Wh67EyX3Go58fWcNhvxArx8tDYr-9N6crJJuFNK31ngia8yTTqcQkZ5FY_6O2YY67ENrTLMCKEz-x9g34okw8wsXnsYCd1NB1kpdhcs0RSTunl0OElc2la3kvDHjJjzTKjwtHvIlOHnLIrqjLekMTA&h=nafKs5aKue6Zk5XkDhXGjg5uSxjOM8whfVFKl9oWrhI
   response:
     body:
-      string: '{"name":"3362b641-b4b3-496d-9908-58112e0a177e","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/networkSecurityPerimeterOperationStatuses/3362b641-b4b3-496d-9908-58112e0a177e","status":"Succeeded","startTime":"2025-10-06T04:49:27.8217357Z","endTime":"2025-10-06T04:49:28.5941855Z","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter"}}'
+      string: '{"name":"0b769e8c-9ec7-4fc6-980c-33f58ca6dbb8","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/networkSecurityPerimeterOperationStatuses/0b769e8c-9ec7-4fc6-980c-33f58ca6dbb8","status":"Deleting","startTime":"2025-10-07T09:15:00.8725331Z","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '540'
+      - '500'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:29 GMT
+      - Tue, 07 Oct 2025 09:15:01 GMT
       expires:
       - '-1'
       pragma:
@@ -241,11 +241,59 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/4dcb23c0-0d41-4527-91ed-3733c801ec9b
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/c2467f76-9f76-4cb9-a789-170295737ee7
       x-ms-throttling-version:
       - v2
       x-msedge-ref:
-      - 'Ref A: 80E4C36F4D564C079114E4E0B0B71DD1 Ref B: PNQ231110906054 Ref C: 2025-10-06T04:49:28Z'
+      - 'Ref A: 42E1C50F6DE14F84AF4B89A35880AD58 Ref B: PNQ231110907054 Ref C: 2025-10-07T09:15:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name --yes
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/networkSecurityPerimeterOperationStatuses/0b769e8c-9ec7-4fc6-980c-33f58ca6dbb8?api-version=2024-10-01&t=638954253009236274&c=MIIIpDCCBoygAwIBAgITFgHT86SvkPBZ0Kze1QABAdPzpDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDMwHhcNMjUwODIxMTMxNDA5WhcNMjUxMTE5MTMxNDA5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPIw97femZhQQikMmtIUbBz4ilfWKL1pBRGhqyE_yiaKdWFMkx-Lrs5PKpKf359LGLXEng68fNpRZlZdxKF59oRgHkQ1l6435cU2QDp5b3NZ6SPNKLsxAiNvxTVOQ_jbCxTUnBGcp1_gxsAyTjCGrl2fKSCdaRSw-Lhrxs0-ImtcYa5z9m8kXvRa0U_b3baiO5UZnNbvfqmE6RvjjrcMvv8i-nQevzcw3aZLnc9eEEKxBI5pNIVXIr7dKhsZfi-K61CRBxmlZxzpwzMWF6WZrHeA5_kxAo0RWq6aWHALI3qRh-WxWls5HXbZqbggvPYrb3F8C5FxjcSxz1dGBQa_p9UCAwEAAaOCBJEwggSNMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwEwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFgh8fIENbYcQIBZAIBBjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0FNM1BLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDMoMSkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9BTTNQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAzKDEpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQU0zUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcnQwHQYDVR0OBBYEFKgjTTCrzlnMX6LudHhi_0w04LAAMA4GA1UdDwEB_wQEAwIFoDCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMygxKS5jcmwwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMB8GA1UdIwQYMBaAFEijrWB1am_sYPNpVdEAsTJX_GzkMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATANBgkqhkiG9w0BAQsFAAOCAgEAfJTGVgnSjJYm9EVngrQ1HxxR608CwGhKUZwRJk2Yii2yCTrjUv4LqQHUR3Z_BH5h5IYMq_M2R8bOdxYAn3IdjZ3cX8lO6-R6_QKyQg4y2U-zrez_Y-T3uHiarKc5V-OdvL9MCJk9PnnYbOPiTY7dlIkvJLzj7BhBm9HZf9UYe9NHWVFQA9aOXsWu3MPWKpDbSO7f5odoxflcZRV_PRNiHy_h3uTfTaKE_7GJtxb6rEvGVH--wrf27TMteF0WJFbKM9NNaQO-26CBj5Oy2lSLl-z1cTN06_wOeDzZAYjesI2WxJPvHw81dJ8Y2xQ2uudFoZw4RkzVJ35mskIpb9bitTAc63ja9FWFwtM2USCnimBK-Y0JTmbdF3eN6-ptKAcm_NT9t9fDyKE32Ouzjrb3dlHRfNytVadvJIipr-3_pJ6rX1svQ8F-iLWUbPTZb6x-4v9Rb6DbhteupZ86jCL2D-DePB7Pu67d-jIRUO6LwIa5g02PRdVcKsreUDFnJaYynHZ0SPlQlVoGKIzjPsBkbXanceUdsq2ul4oeDPPgvIOpbU_c9ecWdjCiuIcf9yRvRqe49F2vzGTwDVeNHKsKeIrsqijbNgBdpmlJ5OEiL5KVCb1amvVlKVCHYNPTSxgYlcialh86hxmXacgDDvJQzNPfe-OH6-YkOImtv8AeHso&s=EBpGMxijNCE5CN7f1Q7reJGnRzA5U5QTnEPx70-TnNhBwxVjySXpSpzqcabMJJDpN4fNLqPBCrrHgt2bfkvaoo9MZ2tJ_VZrrgI8gPI5BvzCjcqcq0iwRYf6ydybObd6M3dTOnDKshvciSuoFbd2KSZVgIl-rb7OwbWU_Vpu3jGR_Y3dqKpR6NxZ5OsQr5R5Wh67EyX3Go58fWcNhvxArx8tDYr-9N6crJJuFNK31ngia8yTTqcQkZ5FY_6O2YY67ENrTLMCKEz-x9g34okw8wsXnsYCd1NB1kpdhcs0RSTunl0OElc2la3kvDHjJjzTKjwtHvIlOHnLIrqjLekMTA&h=nafKs5aKue6Zk5XkDhXGjg5uSxjOM8whfVFKl9oWrhI
+  response:
+    body:
+      string: '{"name":"0b769e8c-9ec7-4fc6-980c-33f58ca6dbb8","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/networkSecurityPerimeterOperationStatuses/0b769e8c-9ec7-4fc6-980c-33f58ca6dbb8","status":"Succeeded","startTime":"2025-10-07T09:15:00.8725331Z","endTime":"2025-10-07T09:15:04.0031431Z","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '542'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 07 Oct 2025 09:15:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/2b9d3c65-46c5-4bb8-9b2e-9af5c2579838
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: E34DDFBC4C454BCD9F191151614289F0 Ref B: PNQ231110909034 Ref C: 2025-10-07T09:15:31Z'
     status:
       code: 200
       message: OK
@@ -265,19 +313,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/perimeterAssociableResourceTypes?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/perimeterAssociableResourceTypes?api-version=2024-10-01
   response:
     body:
-      string: '{"type":"","nextLink":"https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/perimeterAssociableResourceTypes?api-version=2024-10-01&firstIndex=10&pageSize=10","value":[{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Sql.servers","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Sql.servers","properties":{"providerNamespace":"Microsoft.Sql","resourceType":"servers","displayName":"Microsoft.Sql/servers","apiVersion":"2021-02-01-preview","publicDnsZones":["database.windows.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Storage.storageAccounts","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Storage.storageAccounts","properties":{"providerNamespace":"Microsoft.Storage","resourceType":"storageAccounts","displayName":"Microsoft.Storage/storageAccounts","apiVersion":"2021-09-01","publicDnsZones":["blob.core.windows.net","table.core.windows.net","queue.core.windows.net","file.core.windows.net","web.core.windows.net","dfs.core.windows.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.EventHub.namespaces","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.EventHub.namespaces","properties":{"providerNamespace":"Microsoft.EventHub","resourceType":"namespaces","displayName":"Microsoft.EventHub/namespaces","apiVersion":"2022-01-01-preview","publicDnsZones":["servicebus.windows.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.CognitiveServices.accounts","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.CognitiveServices.accounts","properties":{"providerNamespace":"Microsoft.CognitiveServices","resourceType":"accounts","displayName":"Microsoft.CognitiveServices/accounts","apiVersion":"2021-10-01","publicDnsZones":["cognitiveservices.azure.com","openai.azure.com"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Search.searchServices","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Search.searchServices","properties":{"providerNamespace":"Microsoft.Search","resourceType":"searchServices","displayName":"Microsoft.Search/searchServices","apiVersion":"2021-06-06-Preview","publicDnsZones":["search.windows.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Purview.accounts","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Purview.accounts","properties":{"providerNamespace":"Microsoft.Purview","resourceType":"accounts","displayName":"Microsoft.Purview/accounts","apiVersion":"2022-02-01-preview","publicDnsZones":["purview.azure.com"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.ContainerService.managedClusters","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.ContainerService.managedClusters","properties":{"providerNamespace":"Microsoft.ContainerService","resourceType":"managedClusters","displayName":"Microsoft.ContainerService/managedClusters","apiVersion":"2022-03-01","publicDnsZones":["azmk8s.io"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.KeyVault.vaults","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.KeyVault.vaults","properties":{"providerNamespace":"Microsoft.KeyVault","resourceType":"vaults","displayName":"Microsoft.KeyVault/vaults","apiVersion":"2022-02-01-preview","publicDnsZones":["vault.azure.net","vaultcore.azure.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.OperationalInsights.workspaces","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.OperationalInsights.workspaces","properties":{"providerNamespace":"Microsoft.OperationalInsights","resourceType":"workspaces","displayName":"Microsoft.OperationalInsights/workspaces","apiVersion":"2021-10-01","publicDnsZones":["monitor.azure.com","oms.opinsights.azure.com","ods.opinsights.azure.com","agentsvc.azure-automation.net","blob.core.windows.net"],"features":["query","ingestion"],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Insights.dataCollectionEndpoints","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Insights.dataCollectionEndpoints","properties":{"providerNamespace":"Microsoft.Insights","resourceType":"dataCollectionEndpoints","displayName":"Microsoft.Insights/dataCollectionEndpoints","apiVersion":"2021-10-01","publicDnsZones":["monitor.azure.com"],"features":[],"availableControls":[]}}]}'
+      string: '{"type":"","nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/perimeterAssociableResourceTypes?api-version=2024-10-01&firstIndex=10&pageSize=10","value":[{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Sql.servers","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Sql.servers","properties":{"providerNamespace":"Microsoft.Sql","resourceType":"servers","displayName":"Microsoft.Sql/servers","apiVersion":"2021-02-01-preview","publicDnsZones":["database.windows.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Storage.storageAccounts","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Storage.storageAccounts","properties":{"providerNamespace":"Microsoft.Storage","resourceType":"storageAccounts","displayName":"Microsoft.Storage/storageAccounts","apiVersion":"2021-09-01","publicDnsZones":["blob.core.windows.net","table.core.windows.net","queue.core.windows.net","file.core.windows.net","web.core.windows.net","dfs.core.windows.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.EventHub.namespaces","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.EventHub.namespaces","properties":{"providerNamespace":"Microsoft.EventHub","resourceType":"namespaces","displayName":"Microsoft.EventHub/namespaces","apiVersion":"2022-01-01-preview","publicDnsZones":["servicebus.windows.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.CognitiveServices.accounts","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.CognitiveServices.accounts","properties":{"providerNamespace":"Microsoft.CognitiveServices","resourceType":"accounts","displayName":"Microsoft.CognitiveServices/accounts","apiVersion":"2021-10-01","publicDnsZones":["cognitiveservices.azure.com","openai.azure.com"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Search.searchServices","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Search.searchServices","properties":{"providerNamespace":"Microsoft.Search","resourceType":"searchServices","displayName":"Microsoft.Search/searchServices","apiVersion":"2021-06-06-Preview","publicDnsZones":["search.windows.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Purview.accounts","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Purview.accounts","properties":{"providerNamespace":"Microsoft.Purview","resourceType":"accounts","displayName":"Microsoft.Purview/accounts","apiVersion":"2022-02-01-preview","publicDnsZones":["purview.azure.com"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.ContainerService.managedClusters","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.ContainerService.managedClusters","properties":{"providerNamespace":"Microsoft.ContainerService","resourceType":"managedClusters","displayName":"Microsoft.ContainerService/managedClusters","apiVersion":"2022-03-01","publicDnsZones":["azmk8s.io"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.KeyVault.vaults","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.KeyVault.vaults","properties":{"providerNamespace":"Microsoft.KeyVault","resourceType":"vaults","displayName":"Microsoft.KeyVault/vaults","apiVersion":"2022-02-01-preview","publicDnsZones":["vault.azure.net","vaultcore.azure.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.OperationalInsights.workspaces","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.OperationalInsights.workspaces","properties":{"providerNamespace":"Microsoft.OperationalInsights","resourceType":"workspaces","displayName":"Microsoft.OperationalInsights/workspaces","apiVersion":"2021-10-01","publicDnsZones":["monitor.azure.com","oms.opinsights.azure.com","ods.opinsights.azure.com","agentsvc.azure-automation.net","blob.core.windows.net"],"features":["query","ingestion"],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Insights.dataCollectionEndpoints","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Insights.dataCollectionEndpoints","properties":{"providerNamespace":"Microsoft.Insights","resourceType":"dataCollectionEndpoints","displayName":"Microsoft.Insights/dataCollectionEndpoints","apiVersion":"2021-10-01","publicDnsZones":["monitor.azure.com"],"features":[],"availableControls":[]}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5368'
+      - '5361'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:30 GMT
+      - Tue, 07 Oct 2025 09:15:32 GMT
       expires:
       - '-1'
       pragma:
@@ -289,11 +337,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/bd3016f0-f31c-4f3f-b099-6897bce78b7f
-      x-ms-throttling-version:
-      - v2
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/southindia/790a918b-6ab0-48a1-8bda-e787866f6b82
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: F09FE4487E234C4BAB7056F44BEFF6B8 Ref B: PNQ231110909036 Ref C: 2025-10-06T04:49:29Z'
+      - 'Ref A: 5CB158AD51664CF6B94606A4171B29A5 Ref B: PNQ231110909040 Ref C: 2025-10-07T09:15:32Z'
     status:
       code: 200
       message: OK
@@ -313,19 +361,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/perimeterAssociableResourceTypes?api-version=2024-10-01&firstIndex=10&pageSize=10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/perimeterAssociableResourceTypes?api-version=2024-10-01&firstIndex=10&pageSize=10
   response:
     body:
-      string: '{"type":"","nextLink":"https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/perimeterAssociableResourceTypes?api-version=2024-10-01&firstIndex=20&pageSize=10","value":[{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.ServiceBus.namespaces","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.ServiceBus.namespaces","properties":{"providerNamespace":"Microsoft.ServiceBus","resourceType":"namespaces","displayName":"Microsoft.ServiceBus/namespaces","apiVersion":"2025-05-01-preview","publicDnsZones":["servicebus.windows.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Insights.ScheduledQueryRules","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Insights.ScheduledQueryRules","properties":{"providerNamespace":"Microsoft.Insights","resourceType":"ScheduledQueryRules","displayName":"Microsoft.Insights/ScheduledQueryRules","apiVersion":"2021-10-01","publicDnsZones":[],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Insights.actionGroups","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Insights.actionGroups","properties":{"providerNamespace":"Microsoft.Insights","resourceType":"actionGroups","displayName":"Microsoft.Insights/actionGroups","apiVersion":"2021-10-01","publicDnsZones":["azns.azure.com","azns.azure.net","azns.azure.cn","azns.microsofticm.com","azurenotifications.msftcloudes.cn","azurenotifications.msftcloudes.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.DocumentDB.databaseAccounts","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.DocumentDB.databaseAccounts","properties":{"providerNamespace":"Microsoft.DocumentDB","resourceType":"databaseAccounts","displayName":"Microsoft.DocumentDB/databaseAccounts","apiVersion":"2024-05-15-preview","publicDnsZones":["documents.azure.com","mongo.cosmos.azure.com","cassandra.cosmos.azure.com","gremlin.cosmos.azure.com","table.cosmos.azure.com"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Devices.IotHubs","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Devices.IotHubs","properties":{"providerNamespace":"Microsoft.Devices","resourceType":"IotHubs","displayName":"Microsoft.Devices/IotHubs","apiVersion":"2023-07-15-preview","publicDnsZones":["servicebus.windows.net","azure-devices.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.DigitalTwins.digitalTwinsInstances","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.DigitalTwins.digitalTwinsInstances","properties":{"providerNamespace":"Microsoft.DigitalTwins","resourceType":"digitalTwinsInstances","displayName":"Microsoft.DigitalTwins/digitalTwinsInstances","apiVersion":"2023-06-30-preview","publicDnsZones":["digitaltwins.azure.net","digitaltwins.azure.cn","azuredigitaltwins-ppe.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Attestation.attestationProviders","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Attestation.attestationProviders","properties":{"providerNamespace":"Microsoft.Attestation","resourceType":"attestationProviders","displayName":"Microsoft.Attestation/attestationProviders","apiVersion":"2023-03-01-preview","publicDnsZones":["attest.azure.net","attest.azure.us"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.BotService.botServices","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.BotService.botServices","properties":{"providerNamespace":"Microsoft.BotService","resourceType":"botServices","displayName":"Microsoft.BotService/botServices","apiVersion":"2022-06-15-preview","publicDnsZones":["botframework.com"],"features":["bot","channelClient","tokenService"],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.ContainerRegistry.registries","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.ContainerRegistry.registries","properties":{"providerNamespace":"Microsoft.ContainerRegistry","resourceType":"registries","displayName":"Microsoft.ContainerRegistry/registries","apiVersion":"2023-05-31-preview","publicDnsZones":["azurecr.io"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.DeviceUpdate.accounts","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.DeviceUpdate.accounts","properties":{"providerNamespace":"Microsoft.DeviceUpdate","resourceType":"accounts","displayName":"Microsoft.DeviceUpdate/accounts","apiVersion":"2023-09-01-preview","publicDnsZones":["adu.microsoft.com"],"features":[],"availableControls":[]}}]}'
+      string: '{"type":"","nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/perimeterAssociableResourceTypes?api-version=2024-10-01&firstIndex=20&pageSize=10","value":[{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.ServiceBus.namespaces","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.ServiceBus.namespaces","properties":{"providerNamespace":"Microsoft.ServiceBus","resourceType":"namespaces","displayName":"Microsoft.ServiceBus/namespaces","apiVersion":"2025-05-01-preview","publicDnsZones":["servicebus.windows.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Insights.ScheduledQueryRules","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Insights.ScheduledQueryRules","properties":{"providerNamespace":"Microsoft.Insights","resourceType":"ScheduledQueryRules","displayName":"Microsoft.Insights/ScheduledQueryRules","apiVersion":"2021-10-01","publicDnsZones":[],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Insights.actionGroups","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Insights.actionGroups","properties":{"providerNamespace":"Microsoft.Insights","resourceType":"actionGroups","displayName":"Microsoft.Insights/actionGroups","apiVersion":"2021-10-01","publicDnsZones":["azns.azure.com","azns.azure.net","azns.azure.cn","azns.microsofticm.com","azurenotifications.msftcloudes.cn","azurenotifications.msftcloudes.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.DocumentDB.databaseAccounts","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.DocumentDB.databaseAccounts","properties":{"providerNamespace":"Microsoft.DocumentDB","resourceType":"databaseAccounts","displayName":"Microsoft.DocumentDB/databaseAccounts","apiVersion":"2024-05-15-preview","publicDnsZones":["documents.azure.com","mongo.cosmos.azure.com","cassandra.cosmos.azure.com","gremlin.cosmos.azure.com","table.cosmos.azure.com"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Devices.IotHubs","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Devices.IotHubs","properties":{"providerNamespace":"Microsoft.Devices","resourceType":"IotHubs","displayName":"Microsoft.Devices/IotHubs","apiVersion":"2023-07-15-preview","publicDnsZones":["servicebus.windows.net","azure-devices.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.DigitalTwins.digitalTwinsInstances","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.DigitalTwins.digitalTwinsInstances","properties":{"providerNamespace":"Microsoft.DigitalTwins","resourceType":"digitalTwinsInstances","displayName":"Microsoft.DigitalTwins/digitalTwinsInstances","apiVersion":"2023-06-30-preview","publicDnsZones":["digitaltwins.azure.net","digitaltwins.azure.cn","azuredigitaltwins-ppe.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Attestation.attestationProviders","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Attestation.attestationProviders","properties":{"providerNamespace":"Microsoft.Attestation","resourceType":"attestationProviders","displayName":"Microsoft.Attestation/attestationProviders","apiVersion":"2023-03-01-preview","publicDnsZones":["attest.azure.net","attest.azure.us"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.BotService.botServices","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.BotService.botServices","properties":{"providerNamespace":"Microsoft.BotService","resourceType":"botServices","displayName":"Microsoft.BotService/botServices","apiVersion":"2022-06-15-preview","publicDnsZones":["botframework.com"],"features":["bot","channelClient","tokenService"],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.ContainerRegistry.registries","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.ContainerRegistry.registries","properties":{"providerNamespace":"Microsoft.ContainerRegistry","resourceType":"registries","displayName":"Microsoft.ContainerRegistry/registries","apiVersion":"2023-05-31-preview","publicDnsZones":["azurecr.io"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.DeviceUpdate.accounts","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.DeviceUpdate.accounts","properties":{"providerNamespace":"Microsoft.DeviceUpdate","resourceType":"accounts","displayName":"Microsoft.DeviceUpdate/accounts","apiVersion":"2023-09-01-preview","publicDnsZones":["adu.microsoft.com"],"features":[],"availableControls":[]}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5533'
+      - '5526'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:31 GMT
+      - Tue, 07 Oct 2025 09:15:34 GMT
       expires:
       - '-1'
       pragma:
@@ -337,11 +385,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/dd19bb6b-f95a-4f31-a7d4-2a3dd7e01ec3
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/4e31d233-1c98-40f0-86f4-92a34667d693
       x-ms-throttling-version:
       - v2
       x-msedge-ref:
-      - 'Ref A: 54279F4643E34A01AE4D8BEC2A4E2A7A Ref B: PNQ231110908036 Ref C: 2025-10-06T04:49:31Z'
+      - 'Ref A: 48B49E21D0D34A6796671868841EEBE0 Ref B: PNQ231110908029 Ref C: 2025-10-07T09:15:33Z'
     status:
       code: 200
       message: OK
@@ -361,7 +409,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/perimeterAssociableResourceTypes?api-version=2024-10-01&firstIndex=20&pageSize=10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/perimeterAssociableResourceTypes?api-version=2024-10-01&firstIndex=20&pageSize=10
   response:
     body:
       string: '{"type":"","nextLink":"","value":[{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.EventGrid.topics","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.EventGrid.topics","properties":{"providerNamespace":"Microsoft.EventGrid","resourceType":"topics","displayName":"Microsoft.EventGrid/topics","apiVersion":"2023-06-01-preview","publicDnsZones":["eventgrid.azure.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.EventGrid.domains","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.EventGrid.domains","properties":{"providerNamespace":"Microsoft.EventGrid","resourceType":"domains","displayName":"Microsoft.EventGrid/domains","apiVersion":"2023-06-01-preview","publicDnsZones":["eventgrid.azure.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.AppConfiguration.configurationStores","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.AppConfiguration.configurationStores","properties":{"providerNamespace":"Microsoft.AppConfiguration","resourceType":"configurationStores","displayName":"Microsoft.AppConfiguration/configurationStores","apiVersion":"2025-08-01-preview","publicDnsZones":["azconfig.io","azconfig.azure.us","azconfig.azure.cn"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Batch.batchAccounts","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Batch.batchAccounts","properties":{"providerNamespace":"Microsoft.Batch","resourceType":"batchAccounts","displayName":"Microsoft.Batch/batchAccounts","apiVersion":"2024-03-01-privatepreview","publicDnsZones":["batch.azure.com","batch.chinacloudapi.cn","batch.eaglex.ic.gov","batch.microsoft.scloud","batch-test.windows-int.net","batch.usgovcloudapi.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Web.sites","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Web.sites","properties":{"providerNamespace":"Microsoft.Web","resourceType":"sites","displayName":"Microsoft.Web/sites","apiVersion":"2022-03-01","publicDnsZones":["azurewebsites.net"],"features":["mainSite","scmSite","mainSiteForSlots","scmSiteForSlots"],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.HybridCompute.privateLinkScopes","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.HybridCompute","properties":{"providerNamespace":"Microsoft.HybridCompute","resourceType":"privateLinkScopes","displayName":"Microsoft.HybridCompute.privateLinkScopes","apiVersion":"2023-10-03-preview","publicDnsZones":["his.arc.azure.com","guestconfiguration.azure.com","dp.kubernetesconfiguration.azure.com"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Communication.CommunicationServices","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Communication.CommunicationServices","properties":{"providerNamespace":"Microsoft.Communication","resourceType":"CommunicationServices","displayName":"Microsoft.Communication/CommunicationServices","apiVersion":"2023-12-25-preview","publicDnsZones":["communication.azure.com","communication.azure.net"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Network.networkWatchers","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Network.networkWatchers","properties":{"providerNamespace":"Microsoft.Network","resourceType":"networkWatchers","displayName":"Microsoft.Network/networkWatchers","apiVersion":"2024-01-01","publicDnsZones":["networkwatcher.azure.com"],"features":[],"availableControls":[]}},{"type":"Microsoft.Network/PerimeterAssociableResourceTypes","name":"Microsoft.Kusto.clusters","id":"/subscriptions/{subscriptionId}/providers/Microsoft.Network/PerimeterAssociableResourceTypes/Microsoft.Kusto.clusters","properties":{"providerNamespace":"Microsoft.Kusto","resourceType":"clusters","displayName":"Microsoft.Kusto/clusters","apiVersion":"2025-02-14","publicDnsZones":["kusto.windows.net"],"features":[],"availableControls":[]}}]}'
@@ -373,7 +421,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:32 GMT
+      - Tue, 07 Oct 2025 09:15:33 GMT
       expires:
       - '-1'
       pragma:
@@ -385,11 +433,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/e5652e0a-fb88-451d-83c0-fe1924b20f7a
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/f6ff0603-bc5b-406a-baf1-f35a7f5526ef
       x-ms-throttling-version:
       - v2
       x-msedge-ref:
-      - 'Ref A: D13F7516B878433C9FBB457EE6535232 Ref B: PNQ231110906034 Ref C: 2025-10-06T04:49:32Z'
+      - 'Ref A: D1F0A0EA82C8471DAA3ABB8C3BBEA30D Ref B: PNQ231110907031 Ref C: 2025-10-07T09:15:34Z'
     status:
       code: 200
       message: OK

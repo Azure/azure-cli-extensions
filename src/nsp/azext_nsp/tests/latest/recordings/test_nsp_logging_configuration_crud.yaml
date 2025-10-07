@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"location": "eastus2euap"}'
+    body: '{"location": "centraluseuap"}'
     headers:
       Accept:
       - application/json
@@ -11,7 +11,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '27'
+      - '29'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -19,19 +19,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: PUT
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"eastus2euap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"54bb71ab-0a0f-4276-be7a-949a34afd7aa","provisioningState":"Succeeded"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-06T04:49:23.6844336Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-06T04:49:23.6844336Z"}}'
+      string: '{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"centraluseuap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"889883a2-be5a-4748-8b48-322963f9f655","provisioningState":"Succeeded"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-07T09:15:01.3054397Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-07T09:15:01.3054397Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '662'
+      - '664'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:23 GMT
+      - Tue, 07 Oct 2025 09:15:01 GMT
       expires:
       - '-1'
       pragma:
@@ -43,13 +43,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/66ad4a2e-a9c1-4a44-9395-18b1e528ee44
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/f777dddf-622b-45cf-b2bc-ad4659ecc08e
       x-ms-ratelimit-remaining-subscription-writes:
-      - '797'
+      - '799'
       x-ms-throttling-version:
       - v2
       x-msedge-ref:
-      - 'Ref A: 9D49078E58BA4DED8570014094F774DE Ref B: PNQ231110907023 Ref C: 2025-10-06T04:49:22Z'
+      - 'Ref A: 4B285C32547C467BAD3B65EE39B35BB3 Ref B: PNQ231110909062 Ref C: 2025-10-07T09:14:59Z'
     status:
       code: 200
       message: OK
@@ -73,10 +73,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: PUT
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"1","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied"],"destinationType":[]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-06T04:49:25.0890656Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-06T04:49:25.0890656Z"}}'
+      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"1","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied"],"destinationType":[]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-07T09:15:05.1239140Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-07T09:15:05.1239140Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -85,7 +85,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:25 GMT
+      - Tue, 07 Oct 2025 09:15:07 GMT
       expires:
       - '-1'
       pragma:
@@ -97,13 +97,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/8abfbcbc-bc24-48f9-9018-b4bd576291f6
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/westindia/7573e472-0a13-4bc0-b397-89e2330b8da7
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '796'
-      x-ms-throttling-version:
-      - v2
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 4F2396C8A87B4AD290BFEE471AD8D178 Ref B: PNQ231110909031 Ref C: 2025-10-06T04:49:24Z'
+      - 'Ref A: 81F16338BD2A4527851AE79A546AF987 Ref B: PNQ231110906052 Ref C: 2025-10-07T09:15:01Z'
     status:
       code: 200
       message: OK
@@ -123,10 +123,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"1","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied"],"destinationType":[]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-06T04:49:25.0890656Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-06T04:49:25.0890656Z"}}'
+      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"1","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied"],"destinationType":[]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-07T09:15:05.1239140Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-07T09:15:05.1239140Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -135,7 +135,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:27 GMT
+      - Tue, 07 Oct 2025 09:15:08 GMT
       expires:
       - '-1'
       pragma:
@@ -147,11 +147,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/957aec24-e6ad-477f-a04c-016381c6d140
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/a0652231-e202-479c-b555-932c337842ad
       x-ms-throttling-version:
       - v2
       x-msedge-ref:
-      - 'Ref A: 420F96D076FB4B0294489B040C94628F Ref B: PNQ231110907040 Ref C: 2025-10-06T04:49:25Z'
+      - 'Ref A: 751D1135F03D440F99BB8E2A361C1DBD Ref B: PNQ231110907029 Ref C: 2025-10-07T09:15:07Z'
     status:
       code: 200
       message: OK
@@ -171,10 +171,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"1","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied"],"destinationType":[]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-06T04:49:25.0890656Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-06T04:49:25.0890656Z"}}'
+      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"1","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied"],"destinationType":[]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-07T09:15:05.1239140Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-07T09:15:05.1239140Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -183,7 +183,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:28 GMT
+      - Tue, 07 Oct 2025 09:15:08 GMT
       expires:
       - '-1'
       pragma:
@@ -195,11 +195,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/bba25a67-3e28-4584-a147-6cf9d7b0ddf3
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/fdfb5168-6270-4cbe-97d6-752e9576b4b3
       x-ms-throttling-version:
       - v2
       x-msedge-ref:
-      - 'Ref A: 9675DCD379DF4F918B3ACE19E81DA677 Ref B: PNQ231110909054 Ref C: 2025-10-06T04:49:27Z'
+      - 'Ref A: 3B68F4F207CF4EB6B0106716B9BA4330 Ref B: PNQ231110906060 Ref C: 2025-10-07T09:15:08Z'
     status:
       code: 200
       message: OK
@@ -224,10 +224,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: PUT
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"2","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied","NspPublicOutboundPerimeterRulesDenied"],"destinationType":[]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-06T04:49:25.0890656Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-06T04:49:29.2113809Z"}}'
+      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"2","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied","NspPublicOutboundPerimeterRulesDenied"],"destinationType":[]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-07T09:15:05.1239140Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-07T09:15:09.7458890Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -236,7 +236,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:29 GMT
+      - Tue, 07 Oct 2025 09:15:10 GMT
       expires:
       - '-1'
       pragma:
@@ -248,13 +248,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/f39bb33d-fb7e-4f31-8cee-8de83f4a41c6
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/048ec6e4-1177-479c-95a9-a9a95ff5a1b9
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-ms-throttling-version:
       - v2
       x-msedge-ref:
-      - 'Ref A: 618EE80AC62D404692652F88A5CDFA8C Ref B: PNQ231110906040 Ref C: 2025-10-06T04:49:28Z'
+      - 'Ref A: EDB3D6C8B4994D7883E06B8A56CABBC3 Ref B: PNQ231110908060 Ref C: 2025-10-07T09:15:09Z'
     status:
       code: 200
       message: OK
@@ -274,10 +274,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"2","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied","NspPublicOutboundPerimeterRulesDenied"],"destinationType":[]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-06T04:49:25.0890656Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-06T04:49:29.2113809Z"}}'
+      string: '{"name":"instance","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance","type":"Microsoft.Network/networkSecurityPerimeters/loggingConfigurations","properties":{"version":"2","enabledLogCategories":["NspPublicInboundPerimeterRulesDenied","NspPublicOutboundPerimeterRulesDenied"],"destinationType":[]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-07T09:15:05.1239140Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-07T09:15:09.7458890Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -286,7 +286,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:30 GMT
+      - Tue, 07 Oct 2025 09:15:10 GMT
       expires:
       - '-1'
       pragma:
@@ -298,11 +298,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/ef973a5d-c4eb-4e2b-820f-1141b7a1ffe6
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/3252415a-a2bc-4be9-ae74-130d09329da9
       x-ms-throttling-version:
       - v2
       x-msedge-ref:
-      - 'Ref A: CE6532DBCA7B4B2E9C2440BA962D6EB2 Ref B: PNQ231110906040 Ref C: 2025-10-06T04:49:29Z'
+      - 'Ref A: 83817CA194C048A59513E6DA1DEBF6B4 Ref B: PNQ231110906054 Ref C: 2025-10-07T09:15:10Z'
     status:
       code: 200
       message: OK
@@ -324,7 +324,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: DELETE
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
   response:
     body:
       string: ''
@@ -334,7 +334,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 06 Oct 2025 04:49:31 GMT
+      - Tue, 07 Oct 2025 09:15:10 GMT
       expires:
       - '-1'
       pragma:
@@ -346,13 +346,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/3a141b2c-08da-48ea-a894-a8586e93c364
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/6b9861c6-798f-4139-a64b-6fb721c7c072
       x-ms-ratelimit-remaining-subscription-deletes:
       - '799'
       x-ms-throttling-version:
       - v2
       x-msedge-ref:
-      - 'Ref A: 521654446179453DACB50C5E6C379FAC Ref B: PNQ231110906040 Ref C: 2025-10-06T04:49:30Z'
+      - 'Ref A: 0EF6605EDB774A16930C4F40ABB3A92F Ref B: PNQ231110907025 Ref C: 2025-10-07T09:15:10Z'
     status:
       code: 200
       message: OK
@@ -372,7 +372,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance?api-version=2024-10-01
   response:
     body:
       string: '{"error":{"message":"Resource [/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_logging_configuration_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/loggingConfigurations/instance]
@@ -385,7 +385,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 06 Oct 2025 04:49:32 GMT
+      - Tue, 07 Oct 2025 09:15:11 GMT
       expires:
       - '-1'
       pragma:
@@ -397,11 +397,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/brazilus/06993ef5-8eed-4a4f-9cc2-e62abfe5fe98
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/d76017d6-03ff-4584-a803-a53bcbda2562
       x-ms-throttling-version:
       - v2
       x-msedge-ref:
-      - 'Ref A: 6CC0FE1B8C2F48EA81A3F05EF75CDF73 Ref B: PNQ231110907036 Ref C: 2025-10-06T04:49:32Z'
+      - 'Ref A: 066ADEA78E44496CAAC7DF1B07B6EB67 Ref B: PNQ231110909042 Ref C: 2025-10-07T09:15:11Z'
     status:
       code: 404
       message: Not Found
