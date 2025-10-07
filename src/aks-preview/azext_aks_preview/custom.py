@@ -211,38 +211,40 @@ def _ssl_context():
 
     return ssl.create_default_context()
 
+
 def get_resource_without_auto_headers(cmd, resource_id, api_version):
     from azure.cli.command_modules.resource._client_factory import cf_resources
-    
+
     # Store original headers
     original_headers = cmd.cli_ctx.data.get('headers', {}).copy()
     original_safe_params = cmd.cli_ctx.data.get('safe_params')
     original_command = cmd.cli_ctx.data.get('command')
-    
+
     try:
         # Clear or modify the headers that get automatically added
         cmd.cli_ctx.data['headers'] = {
             'Accept': 'application/json'
             # Only include headers you actually want
         }
-        
+
         # Clear safe_params to prevent ParameterSetName header
         cmd.cli_ctx.data['safe_params'] = None
-        
+
         # Modify command to prevent CommandName header
         cmd.cli_ctx.data['command'] = 'custom-resource-get'
-        
+
         # Create client with modified context
         client = cf_resources(cmd.cli_ctx)
-        
+
         # Make the call
         return client.resources.get_by_id(resource_id, api_version)
-        
+
     finally:
         # Restore original context
         cmd.cli_ctx.data['headers'] = original_headers
         cmd.cli_ctx.data['safe_params'] = original_safe_params
         cmd.cli_ctx.data['command'] = original_command
+
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
 def ensure_container_insights_for_monitoring_preview(
@@ -296,14 +298,7 @@ def ensure_container_insights_for_monitoring_preview(
         workspace_resource_id
     )
 
-    # extract subscription ID and workspace name from workspace_resource_id
-    try:
-        subscription_id = workspace_resource_id.split("/")[2]
-    except IndexError:
-        raise AzCLIError(
-            "Could not locate resource group in workspace-resource-id."
-        )
-
+    # extract workspace name from workspace_resource_id
     try:
         workspace_name = workspace_resource_id.split("/")[8]
     except IndexError:
