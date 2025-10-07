@@ -1006,6 +1006,24 @@ helps['aks update'] = """
           type: bool
           short-summary: Disable Azure Monitor logs for the cluster.
           long-summary: This is equivalent to using "az aks disable-addons -a monitoring". Disables Log Analytics monitoring for the cluster.
+        - name: --workspace-resource-id
+          type: string
+          short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
+        - name: --enable-msi-auth-for-monitoring
+          type: bool
+          short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+        - name: --enable-syslog
+          type: bool
+          short-summary: Enable syslog data collection for Monitoring addon
+        - name: --data-collection-settings
+          type: string
+          short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+        - name: --enable-high-log-scale-mode
+          type: bool
+          short-summary: Enable High Log Scale Mode for Container Logs.
+        - name: --ampls-resource-id
+          type: string
+          short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.

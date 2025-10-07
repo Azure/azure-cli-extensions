@@ -1450,11 +1450,35 @@ def load_arguments(self, _):
                    action="store_true",
                    is_preview=True
                    )
+        # Azure Monitor logs additional parameters
+        c.argument("workspace_resource_id", 
+                   help="Resource ID of the Azure Log Analytics workspace to use for monitoring")
+        c.argument(
+            "enable_msi_auth_for_monitoring",
+            action="store_true",
+            is_preview=True,
+            help="Enable managed identity authentication for Azure Monitor logs"
+        )
+        c.argument("enable_syslog", 
+                   arg_type=get_three_state_flag(), 
+                   is_preview=True,
+                   help="Enable syslog collection for Azure Monitor logs")
+        c.argument("data_collection_settings", 
+                   is_preview=True,
+                   help="Data collection settings for Azure Monitor logs")
+        c.argument("enable_high_log_scale_mode", 
+                   arg_type=get_three_state_flag(), 
+                   is_preview=True,
+                   help="Enable high log scale mode for Azure Monitor logs")
+        c.argument("ampls_resource_id", 
+                   is_preview=True,
+                   help="Resource ID of the Azure Monitor Private Link Scope to associate with the cluster")
         # OpenTelemetry parameters
         c.argument("enable_opentelemetry_metrics",
                    is_preview=True,
                    action="store_true",
                    help="Enable OpenTelemetry metrics collection",
+                   validator=validate_azure_monitor_and_opentelemetry_for_update
                    )
         c.argument("opentelemetry_metrics_port",
                    is_preview=True,
@@ -2353,7 +2377,7 @@ def load_arguments(self, _):
         c.argument("workspace_resource_id")
         c.argument(
             "enable_msi_auth_for_monitoring",
-            arg_type=get_three_state_flag(),
+            action="store_true",
             is_preview=True,
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)

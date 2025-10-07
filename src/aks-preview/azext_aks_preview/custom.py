@@ -138,7 +138,6 @@ from azure.cli.command_modules.acs.addonconfiguration import (
     _get_data_collection_settings,
     _trim_suffix_if_needed,
     ContainerInsightsStreams,
-    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
 )
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.azclierror import (
@@ -277,7 +276,6 @@ def ensure_container_insights_for_monitoring_preview(
         )
 
     location = ""
-    import json
     # region of workspace can be different from region of RG so find the location of the workspace_resource_id
     if not remove_monitoring:
         try:
@@ -285,11 +283,11 @@ def ensure_container_insights_for_monitoring_preview(
             # Let's make a minimal direct HTTP request with only essential headers
             import requests
             from azure.cli.core._profile import Profile
-            
+
             # Get access token manually to avoid CLI headers
             profile = Profile(cli_ctx=cmd.cli_ctx)
-            creds, _, _ = profile.get_login_credentials()
-            
+            Fcreds, _, _ = profile.get_login_credentials()
+
             # Get the access token for Azure Resource Manager
             if hasattr(creds, 'get_token'):
                 # For newer Azure Identity credentials
@@ -297,28 +295,31 @@ def ensure_container_insights_for_monitoring_preview(
                 access_token = token_info.token
             else:
                 # For older credentials, try to get the token directly
+                # pylint: disable=protected-access
                 access_token = creds._token['access_token']
-            
+
             # Build minimal request
             url = f"https://management.azure.com{workspace_resource_id}?api-version=2015-11-01-preview&$select=location,id"
-            
+
             headers = {
                 'Authorization': f'Bearer {access_token}',
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             }
-            
+
             response = requests.get(url, headers=headers, timeout=30)
-            
+
             if response.status_code == 200:
                 resource_data = response.json()
-                
+
                 # Create a minimal resource object with just what we need
+                # pylint: disable=too-few-public-methods
                 class MinimalResource:
+                    # pylint: disable=redefined-builtin
                     def __init__(self, location, id):
                         self.location = location
                         self.id = id
-                        
+
                 resource = MinimalResource(
                     location=resource_data.get('location'),
                     id=resource_data.get('id')
@@ -327,11 +328,11 @@ def ensure_container_insights_for_monitoring_preview(
                 # Fallback to original approach
                 resources = get_resources_client(cmd.cli_ctx, subscription_id)
                 resource = resources.get_by_id(workspace_resource_id, "2015-11-01-preview")
-            
+
             location = resource.location
             # location can have spaces for example 'East US' hence remove the spaces
             location = location.replace(" ", "").lower()
-            
+
         except Exception as ex:
             # If all methods fail, fall back to a reasonable default or let the original function handle it
             raise ex

@@ -1056,9 +1056,6 @@ def validate_opentelemetry_logs_dependencies(namespace):
     enable_otlp_logs = getattr(namespace, 'enable_opentelemetry_logs', False)
     disable_otlp_logs = getattr(namespace, 'disable_opentelemetry_logs', False)
     enable_azure_monitor_logs = getattr(namespace, 'enable_azure_monitor_logs', False)
-    # Try both new and deprecated parameter names for Azure Monitor metrics (which includes logs)
-    enable_azure_monitor_metrics = getattr(namespace, 'enable_azure_monitor_metrics', False)
-    enable_azuremonitormetrics = getattr(namespace, 'enable_azuremonitormetrics', False)  # deprecated flag
     enable_addons = getattr(namespace, 'enable_addons', None)
 
     # Check mutual exclusion
@@ -1070,7 +1067,7 @@ def validate_opentelemetry_logs_dependencies(namespace):
     # Check if trying to enable OTLP logs without Azure Monitor
     # For create operations, require explicit Azure Monitor enablement via either:
     # 1. --enable-azure-monitor-logs
-    # 2. --enable-addons monitoring 
+    # 2. --enable-addons monitoring
     azure_monitor_logs_enabled = (enable_azure_monitor_logs or
                                    (enable_addons and 'monitoring' in enable_addons))
 
