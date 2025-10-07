@@ -197,18 +197,13 @@ class ValidateConfiguration(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.error = AAZObjectType()
-            _ValidateConfigurationHelper._build_schema_error_detail_read(_schema_on_200.error)
-            _schema_on_200.properties = AAZObjectType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.configuration_state = AAZStrType(
+            _schema_on_200.configuration_state = AAZStrType(
                 serialized_name="configurationState",
                 flags={"read_only": True},
             )
-            properties.url = AAZStrType()
+            _schema_on_200.error = AAZObjectType()
+            _ValidateConfigurationHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _schema_on_200.url = AAZStrType()
 
             return cls._schema_on_200
 

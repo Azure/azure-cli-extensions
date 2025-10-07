@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "firmwareanalysis workspace create",
 )
 class Create(AAZCommand):
-    """create or update a firmware analysis workspace.
+    """Create or update a firmware analysis workspace.
 
     :example: create or update a firmware analysis workspace.
         az firmwareanalysis workspace create --resource-group {resourceGroupName} --workspace-name {workspaceName} --location {location} --tags {<string>:<string>, <string>:<string>,..}
     """
 
     _aaz_info = {
-        "version": "2024-01-10",
+        "version": "2025-08-02",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}", "2024-01-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}", "2025-08-02"],
         ]
     }
 
@@ -56,21 +56,50 @@ class Create(AAZCommand):
             ),
         )
 
-        # define Arg Group "Workspace"
+        # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
-            arg_group="Workspace",
+            arg_group="Resource",
             help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
         )
+        _args_schema.sku = AAZObjectArg(
+            options=["--sku"],
+            arg_group="Resource",
+            help="The SKU (Stock Keeping Unit) assigned to this resource.",
+        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Workspace",
+            arg_group="Resource",
             help="Resource tags.",
+        )
+
+        sku = cls._args_schema.sku
+        sku.capacity = AAZIntArg(
+            options=["capacity"],
+            help="If the SKU supports scale out/in then the capacity integer should be included. If scale out/in is not possible for the resource this may be omitted.",
+        )
+        sku.family = AAZStrArg(
+            options=["family"],
+            help="If the service has different generations of hardware, for the same SKU, then that can be captured here.",
+        )
+        sku.name = AAZStrArg(
+            options=["name"],
+            help="The name of the SKU. E.g. P3. It is typically a letter+number code",
+            required=True,
+        )
+        sku.size = AAZStrArg(
+            options=["size"],
+            help="The SKU size. When the name field is the combination of tier and some other value, this would be the standalone code. ",
+        )
+        sku.tier = AAZStrArg(
+            options=["tier"],
+            help="This field is required to be implemented by the Resource Provider if the service has more than one tier, but is not required on a PUT.",
+            enum={"Basic": "Basic", "Free": "Free", "Premium": "Premium", "Standard": "Standard"},
         )
 
         tags = cls._args_schema.tags
@@ -142,7 +171,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-10",
+                    "api-version", "2025-08-02",
                     required=True,
                 ),
             }
@@ -168,7 +197,16 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("sku", AAZObjectType, ".sku")
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            sku = _builder.get(".sku")
+            if sku is not None:
+                sku.set_prop("capacity", AAZIntType, ".capacity")
+                sku.set_prop("family", AAZStrType, ".family")
+                sku.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                sku.set_prop("size", AAZStrType, ".size")
+                sku.set_prop("tier", AAZStrType, ".tier")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -203,9 +241,8 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.sku = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -220,6 +257,15 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            sku = cls._schema_on_200_201.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

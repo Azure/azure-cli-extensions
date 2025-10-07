@@ -1,0 +1,73 @@
+interactions:
+- request:
+    body: '{"identity": {"type": "SystemAssigned,UserAssigned", "userAssignedIdentities":
+      {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mathfoster-cm-cli-testing/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cm-test-uai":
+      {}}}, "location": "uksouth", "properties": {"analyticsWorkspaceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mathfoster-cm-cli-testing/providers/Microsoft.OperationalInsights/workspaces/cm-test-law",
+      "fabricControllerId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mathfoster-cm-cli-testing/providers/Microsoft.Network/virtualNetworks/cm-vnet/subnets/fabric-controller-subnet",
+      "managedResourceGroupConfiguration": {"name": "cli-test-cm-mrg-000002"}}, "tags":
+      {"DisableFabricIntegration": "true", "EnableManagedIdentity": "true"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '829'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --mi-system-assigned --mi-user-assigned --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2025-07-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"InvalidParameter","message":"Cluster Managers can
+        only have a single Managed Identity. Please choose either a system-assigned
+        or a single user-assigned identity. (Correlation ID: 7f42ea26-b9fc-4619-b00f-54bda901782c,
+        Trace ID: 2d23c4741b0e8e04b8124a88a90f8472)"}}'
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - no-cache
+      content-length:
+      - '281'
+      content-type:
+      - application/json
+      date:
+      - Thu, 17 Jul 2025 19:22:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250717T192229Z-r19f5dccfb8td2cfhC1DB1frew00000006rg000000000rxn
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=00030fb9-4ea2-48c4-a667-ffe266a7ed89/southcentralus/c1c1ec1b-4335-47e0-b7b5-c6af450d9635
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 351F145863094FF1A0CB9EEEAD7664DA Ref B: MWH011020809054 Ref C: 2025-07-17T19:22:26Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

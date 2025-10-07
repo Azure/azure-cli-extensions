@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.7.0
++++++++++++++++++++
+* Added the `az k8s-extension troubleshoot` command to simplify log collection and diagnostics for extensions.
+
+1.6.7
++++++++++++++++++++
+* microsoft.azuremonitor.containers: Extend ContainerInsights Extension for high log scale mode support.
+
 1.6.6
 ++++++++++++++++++
 * microsoft.entraworkloadiam: Remove code that is no longer in use.

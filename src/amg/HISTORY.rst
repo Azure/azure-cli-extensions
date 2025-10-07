@@ -145,3 +145,14 @@ Release History
 2.7.0
 ++++++
 * `az grafana api-key`: deprecate command group as Grafana Labs is sunsetting API keys
+
+2.8.0
+++++++
+* `az grafana folder create`: support parent folder argument for nested folder creation
+* `az grafana folder list`: support nested folders
+* `az grafana folder show`: support nested folders
+* `az grafana backup`: include corresponding nested folders when individual folders are specified
+
+2.8.1
+++++++
+* `az grafana create`: block creation for resources of Essential SKU tier

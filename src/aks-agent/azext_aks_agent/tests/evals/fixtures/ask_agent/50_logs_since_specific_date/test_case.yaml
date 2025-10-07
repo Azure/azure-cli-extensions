@@ -1,0 +1,16 @@
+user_prompt: "What are the errors in pod robusta-holmes since June 12?"
+tags:
+  - logs
+  - synthetic
+  - medium
+  - kubernetes
+expected_output: |
+  The following issues are mentioned either as direct quotes or in summarized form. It's ok if specific dates are not mentioned:
+  - 2025-06-12 The database at my.postgresql.com has become unavailable
+  - 2025-06-15 Syntax error for query fetch_user_logs
+  - 2025-06-19 SSL certificate expired
+
+evaluation:
+  correctness: loose
+
+# mock_policy: always_mock

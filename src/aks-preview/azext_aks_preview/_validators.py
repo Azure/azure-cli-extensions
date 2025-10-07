@@ -11,32 +11,27 @@ import re
 from ipaddress import ip_network
 from math import isclose, isnan
 
-from azure.cli.core import keys
-from azure.cli.core.azclierror import (
-    ArgumentUsageError,
-    InvalidArgumentValueError,
-    MutuallyExclusiveArgumentError,
-    RequiredArgumentMissingError,
-)
-from azure.cli.core.commands.validators import validate_tag
-from azure.cli.core.util import CLIError
-from azure.mgmt.core.tools import is_valid_resource_id
 from azext_aks_preview._consts import (
     ADDONS,
+    CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
-    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
-    CONST_OS_SKU_AZURELINUX,
-    CONST_OS_SKU_CBLMARINER,
-    CONST_OS_SKU_MARINER,
+    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
-    CONST_NODEPOOL_MODE_GATEWAY,
-    CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH,
-)
+    CONST_NODEPOOL_MODE_GATEWAY, CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_MARINER)
 from azext_aks_preview._helpers import _fuzzy_match
+from azure.cli.core import keys
+from azure.cli.core.azclierror import (ArgumentUsageError,
+                                       InvalidArgumentValueError,
+                                       MutuallyExclusiveArgumentError,
+                                       RequiredArgumentMissingError)
+from azure.cli.core.commands.validators import validate_tag
+from azure.cli.core.util import CLIError
+from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -533,6 +528,23 @@ def validate_max_blocked_nodes(namespace):
     except ValueError:
         # pylint: disable=raise-missing-from
         raise InvalidArgumentValueError('--max-blocked-nodes should be an int or percentage')
+
+
+def validate_drain_batch_size(namespace):
+    """validates drain batch size parameter as non-zero integers or percentages."""
+    if namespace.drain_batch_size is None:
+        return
+    int_or_percent = namespace.drain_batch_size
+    if int_or_percent.endswith('%'):
+        int_or_percent = int_or_percent.rstrip('%')
+
+    try:
+        value = int(int_or_percent)
+        if value <= 0:
+            raise InvalidArgumentValueError('--drain-batch-size must be a non-zero value')
+    except ValueError:
+        # pylint: disable=raise-missing-from
+        raise InvalidArgumentValueError('--drain-batch-size should be an integer or percentage (e.g., "5" or "50%")')
 
 
 def validate_assign_identity(namespace):

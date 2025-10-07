@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic plan",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage NewRelic Plan resource
+    """Manages the New Relic plans.
     """
     pass
 

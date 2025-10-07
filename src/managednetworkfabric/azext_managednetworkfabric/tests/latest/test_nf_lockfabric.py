@@ -25,7 +25,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_lock_fabric(test)
     cleanup_scenario1(test)
@@ -36,7 +36,7 @@ def step_lock_fabric(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric lock-fabric --network-fabric-name {commitNFName} --resource-group {commitNFRGName}"
+        "az networkfabric fabric lock-fabric --resource-name {commitNFName} --resource-group {commitNFRGName}"
     )
 
 

@@ -1,0 +1,28 @@
+{
+    "replicaCount": 1,
+    "image": {
+        "repository": "overwriteme",
+        "tag": "{deployParameters.test-generate-mappings-cnf.image_tag}",
+        "pullPolicy": "IfNotPresent"
+    },
+    "imagePullSecrets": [],
+    "nameOverride": "",
+    "fullnameOverride": "{deployParameters.test-generate-mappings-cnf.fullnameOverride}",
+    "serviceAccount": {
+        "create": false,
+        "name": "{deployParameters.test-generate-mappings-cnf.serviceAccount_name}"
+    },
+    "podSecurityContext": {},
+    "service": {
+        "type": "ClusterIP",
+        "port": 5222
+    },
+    "ingress": {
+        "enabled": false,
+        "annotations": {},
+        "hosts": "{deployParameters.test-generate-mappings-cnf.ingress_hosts}",
+        "tls": []
+    },
+    "resources": {},
+    "tolerations": []
+}

@@ -13,7 +13,7 @@ from unittest import mock
 from azure.cli.core.azclierror import ValidationError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckNotExists, JMESPathCheckExists)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckNotExists, JMESPathCheckExists, live_only, StorageAccountPreparer, LogAnalyticsWorkspacePreparer)
 from azure.mgmt.core.tools import parse_resource_id
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
@@ -673,10 +673,8 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('message', 'No premium ingress configuration found for this environment, using default values.'),
         ])
 
-        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress --min-replicas 3 --max-replicas 5', checks=[
+        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
-            JMESPathCheck('scale.minReplicas', 3),
-            JMESPathCheck('scale.maxReplicas', 5),
             JMESPathCheck('terminationGracePeriodSeconds', None),
             JMESPathCheck('requestIdleTimeout', None),
             JMESPathCheck('headerCountLimit', None),
@@ -684,27 +682,21 @@ class ContainerappIngressTests(ScenarioTest):
         
         self.cmd(f'containerapp env premium-ingress show -g {resource_group} -n {env_name}', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
-            JMESPathCheck('scale.minReplicas', 3),
-            JMESPathCheck('scale.maxReplicas', 5),
             JMESPathCheck('terminationGracePeriodSeconds', None),
             JMESPathCheck('requestIdleTimeout', None),
             JMESPathCheck('headerCountLimit', None),
         ])
         
-        self.cmd(f'containerapp env premium-ingress update -g {resource_group} -n {env_name} --min-replicas 4 --max-replicas 20 --termination-grace-period 45 --request-idle-timeout 180 --header-count-limit 40', checks=[
+        self.cmd(f'containerapp env premium-ingress update -g {resource_group} -n {env_name} --termination-grace-period 45 --request-idle-timeout 180 --header-count-limit 40', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
-            JMESPathCheck('scale.minReplicas', 4),
-            JMESPathCheck('scale.maxReplicas', 20),
             JMESPathCheck('terminationGracePeriodSeconds', 45),
             JMESPathCheck('requestIdleTimeout', 180),
             JMESPathCheck('headerCountLimit', 40),
         ])
 
         # set removes unspecified optional parameters
-        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress --min-replicas 2 --max-replicas 3 --request-idle-timeout 90', checks=[
+        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress --request-idle-timeout 90', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
-            JMESPathCheck('scale.minReplicas', 2),
-            JMESPathCheck('scale.maxReplicas', 3),
             JMESPathCheck('requestIdleTimeout', 90),
             JMESPathCheck('terminationGracePeriodSeconds', None),
             JMESPathCheck('headerCountLimit', None),
@@ -1685,6 +1677,35 @@ class ContainerappRevisionTests(ScenarioTest):
         self.assertEqual(traffic_weight[0]["revisionName"], revision_names[0])
         self.assertEqual(traffic_weight[0]["weight"], 100)
         self.assertEqual(len(traffic_weight), 1)
+
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_update_mode_e2e(self, resource_group):
+        self.cmd(f"configure --defaults location={TEST_LOCATION}")
+
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        self.cmd(f"containerapp create -g {resource_group} -n {ca_name} --environment {env} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80",
+                 checks=[
+                    JMESPathCheck('properties.configuration.activeRevisionsMode', "Single"),                     
+                 ])
+
+        try:
+            # Switch to Labels mode
+            self.cmd(f"containerapp update -g {resource_group} -n {ca_name} --revisions-mode labels --target-label label0")
+            self.fail("Expected an error when trying to update to labels mode with `containerapp update` command.")
+        except Exception as e:
+            self.assertIn("is not in labels mode", str(e))
+
+        try:
+            # Switch to Labels mode
+            self.cmd(f"containerapp up -g {resource_group} -n {ca_name} --revisions-mode labels --target-label label0 --image mcr.microsoft.com/k8se/quickstart:latest")
+            self.fail("Expected an error when trying to update to labels mode with `containerapp up` command.")
+        except Exception as e:
+            self.assertIn("is not in labels mode", str(e))
 
 class ContainerappAnonymousRegistryTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
@@ -3470,6 +3491,41 @@ class ContainerappOtherPropertyTests(ScenarioTest):
         ])
 
         self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.25 --memory 0.5Gi', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", "functionapp")
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    @LogAnalyticsWorkspacePreparer(location="eastus", get_shared_key=True)
+    def test_containerapp_up_kind_functionapp(self, resource_group, laworkspace_customer_id, laworkspace_shared_key):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        app = self.create_random_name(prefix='aca-up', length=24)
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+
+        # Pre-create environment to avoid issues with containerapp up creating it
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        # Test containerapp up without kind parameter - should have no kind set
+        self.cmd(f'containerapp up -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env}')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", None)
+        ])
+
+        self.cmd(f'containerapp delete -g {resource_group} -n {app} --yes')
+
+        # Test containerapp up with kind parameter - should have kind set to functionapp
+        self.cmd(f'containerapp up -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --kind functionapp --environment {env}')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", "functionapp")
+        ])
+
+        # Test containerapp up again (update scenario) - should preserve the kind
+        self.cmd(f'containerapp up -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env}')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("kind", "functionapp")
         ])

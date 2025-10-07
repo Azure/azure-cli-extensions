@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor monitored-resource",
 )
 class MonitoredResource(AAZCommand):
-    """List the resources currently being monitored by the NewRelic monitor resource.
+    """Lists all Azure resources that are currently being monitored by the specified New Relic monitor resource, providing insight into the coverage of your observability setup.
 
     :example: List the resources currently being monitored by the NewRelic monitor resource.
         az new-relic monitor monitored-resource --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup

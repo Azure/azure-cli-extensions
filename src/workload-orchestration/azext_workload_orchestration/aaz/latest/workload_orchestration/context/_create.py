@@ -21,9 +21,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/contexts/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/contexts/{}", "2025-08-01"],
         ]
     }
 
@@ -65,11 +65,13 @@ class Create(AAZCommand):
             options=["--capabilities"],
             arg_group="Properties",
             help="List of Capabilities",
+            required=True
         )
         _args_schema.hierarchies = AAZListArg(
             options=["--hierarchies"],
             arg_group="Properties",
             help="List of Hierarchies",
+            required=True
         )
 
         capabilities = cls._args_schema.capabilities
@@ -209,7 +211,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-08-01",
                     required=True,
                 ),
             }
