@@ -393,10 +393,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             result = False
         elif enable_msi_auth:
             result = True
-        elif enable_msi_auth_for_monitoring is False:
-            result = False
         elif enable_azure_monitor_logs:
             result = True
+        elif enable_msi_auth_for_monitoring is False:
+            result = False
         elif enable_msi_auth_for_monitoring is None and not disable_msi_auth and not enable_msi_auth:
             result = True
         else:
