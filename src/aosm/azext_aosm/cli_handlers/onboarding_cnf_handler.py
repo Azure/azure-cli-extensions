@@ -99,22 +99,16 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
 
         # for each helm package, instantiate helm processor
         for helm_package in self.config.helm_packages:
+
             if helm_package.default_values:
-                if Path(helm_package.default_values).exists():
-                    user_override_default_config = yaml_processor.load(
-                        open(helm_package.default_values)
-                    )
-                else:
-                    raise FileNotFoundError(
-                        f"ERROR: The default values file '{helm_package.default_values}' does not exist"
-                    )
+                default_config_path = helm_package.default_values
             else:
-                user_override_default_config = None
+                default_config_path = None
 
             helm_input = HelmChartInput.from_chart_path(
                 chart_path=Path(helm_package.path_to_chart).absolute(),
-                default_config=user_override_default_config,
-                default_config_path=helm_package.default_values,
+                default_config={},
+                default_config_path=default_config_path,
             )
             helm_processor = HelmChartProcessor(
                 name=helm_package.name,
@@ -158,21 +152,14 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
 
             error_message = (
                 "Could not validate all the provided Helm charts. "
-                "Please run the CLI command again with the --verbose flag "
-                "to see the validation errors."
+                "Use the --verbose flag to see the validation errors."
             )
 
             raise ValidationError(error_message)
 
-    def _validate_helm_values(self):
-        for helm_processor in self.processors:
-            helm_processor.input_artifact.validate_values()
-
     def pre_validate_build(self):
         """Run all validation functions required before building the cnf."""
         logger.debug("Pre-validating build")
-
-        self._validate_helm_values()
 
         if self.skip != HELM_TEMPLATE:
             self._validate_helm_template()
@@ -183,7 +170,8 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
         template_path = get_template_path(
             CNF_TEMPLATE_FOLDER_NAME, CNF_BASE_TEMPLATE_FILENAME
         )
-        bicep_contents = render_bicep_contents_from_j2(template_path, {})
+        params = {"disablePublicNetworkAccess": self.config.disable_public_network_access}
+        bicep_contents = render_bicep_contents_from_j2(template_path, params)
         # Create Bicep element with base contents
         bicep_file = BicepDefinitionElementBuilder(
             Path(CNF_OUTPUT_FOLDER_FILENAME, BASE_FOLDER_NAME), bicep_contents
@@ -309,6 +297,9 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
             "acrManifestName": self.config.acr_manifest_name,
             "nfDefinitionGroup": self.config.nf_name,
             "nfDefinitionVersion": self.config.version,
+            "disablePublicNetworkAccess": self.config.disable_public_network_access,
+            "vnetPrivateEndPoints": self.config.vnet_private_end_points,
+            "networkFabricControllerIds": self.config.network_fabric_controller_ids
         }
 
         base_file = JSONDefinitionElementBuilder(

@@ -25,7 +25,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_create(test, checks=[])
     step_update(test, checks=[])
@@ -54,8 +54,8 @@ def step_update(test, checks=None):
         checks = []
     test.cmd(
         "az networkfabric internalnetwork update --resource-group {rg} --resource-name {name} --l3domain {l3Domain} "
-        " --connected-ipv4-subnets {updatedConnectedIpv4Subnets}  --static-route-configuration {updatedStaticRouteConf}"
-        " --bgp-configuration {updatedBgpConf}  --native-ipv4-prefix-limit {updatedNativeIpv4PrefixLimit}"
+        " --connected-ipv4-subnets {updatedConnectedIpv4Subnets} --static-route-configuration {updatedStaticRouteConf}"
+        " --bgp-configuration {updatedBgpConf} --native-ipv4-prefix-limit {updatedNativeIpv4PrefixLimit}"
         " --native-ipv6-prefix-limit {updatedNativeIpv6PrefixLimit}",
         checks=checks,
     )

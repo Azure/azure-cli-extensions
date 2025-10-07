@@ -266,6 +266,7 @@ class Wait(AAZWaitCommand):
             properties.network_fabric_controller_id = AAZStrType(
                 serialized_name="networkFabricControllerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.network_fabric_sku = AAZStrType(
                 serialized_name="networkFabricSku",
@@ -310,7 +311,9 @@ class Wait(AAZWaitCommand):
             active_commit_batches.Element = AAZStrType()
 
             control_plane_acls = cls._schema_on_200.properties.control_plane_acls
-            control_plane_acls.Element = AAZStrType()
+            control_plane_acls.Element = AAZStrType(
+                nullable=True,
+            )
 
             fabric_locks = cls._schema_on_200.properties.fabric_locks
             fabric_locks.Element = AAZObjectType()
@@ -366,6 +369,7 @@ class Wait(AAZWaitCommand):
             storage_account_configuration = cls._schema_on_200.properties.storage_account_configuration
             storage_account_configuration.storage_account_id = AAZStrType(
                 serialized_name="storageAccountId",
+                nullable=True,
             )
             storage_account_configuration.storage_account_identity = AAZObjectType(
                 serialized_name="storageAccountIdentity",
@@ -378,6 +382,7 @@ class Wait(AAZWaitCommand):
             )
             storage_account_identity.user_assigned_identity_resource_id = AAZStrType(
                 serialized_name="userAssignedIdentityResourceId",
+                nullable=True,
             )
 
             terminal_server_configuration = cls._schema_on_200.properties.terminal_server_configuration
@@ -410,7 +415,9 @@ class Wait(AAZWaitCommand):
             )
 
             trusted_ip_prefixes = cls._schema_on_200.properties.trusted_ip_prefixes
-            trusted_ip_prefixes.Element = AAZStrType()
+            trusted_ip_prefixes.Element = AAZStrType(
+                nullable=True,
+            )
 
             unique_rd_configuration = cls._schema_on_200.properties.unique_rd_configuration
             unique_rd_configuration.nni_derived_unique_rd_configuration_state = AAZStrType(
@@ -477,6 +484,7 @@ class _WaitHelper:
         )
         vpn_configuration_properties_read.network_to_network_interconnect_id = AAZStrType(
             serialized_name="networkToNetworkInterconnectId",
+            nullable=True,
         )
         vpn_configuration_properties_read.option_a_properties = AAZObjectType(
             serialized_name="optionAProperties",

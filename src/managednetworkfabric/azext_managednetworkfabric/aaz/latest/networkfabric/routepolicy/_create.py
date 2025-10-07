@@ -92,6 +92,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="ARM Resource ID of the Network Fabric.",
             required=True,
+            nullable=True,
         )
         _args_schema.statements = AAZListArg(
             options=["--statements"],
@@ -390,7 +391,7 @@ class Create(AAZCommand):
                 properties.set_prop("addressFamilyType", AAZStrType, ".address_family_type")
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("defaultAction", AAZStrType, ".default_action")
-                properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}, "nullable": True})
                 properties.set_prop("statements", AAZListType, ".statements", typ_kwargs={"flags": {"required": True}})
 
             statements = _builder.get(".properties.statements")
@@ -506,6 +507,7 @@ class Create(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
