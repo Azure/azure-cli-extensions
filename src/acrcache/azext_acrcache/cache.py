@@ -124,7 +124,7 @@ def acr_cache_create(cmd,
     if not rg:
         raise CLIError("Resource group could not be determined. Please provide a valid resource group name.")
 
-    sync_str = "Enabled" if sync == 'enabled' else "Disabled"
+    sync_str = "ActiveSync" if sync == 'enabled' else "PassiveSync"
     sync_referrers_str = "Enabled" if sync_referrers == 'enabled' else "Disabled"
 
     if sync_referrers and not sync:
@@ -262,7 +262,7 @@ def acr_cache_update_custom(cmd,
 
     #preserve old artifact sync filters
     preserve_filters = (properties.artifact_sync_filters is not None and
-                        (sync == 'enabled' or sync is None))
+                        (sync_mode == 'ActiveSync' or sync == 'enabled'))
 
     if preserve_filters:
         # Copy tag filters If no new filters are provided
@@ -293,7 +293,7 @@ def acr_cache_update_custom(cmd,
 
     # Handle artifact sync status
     if sync is not None:
-        sync_mode = "Enabled" if sync == 'enabled' else "Disabled"
+        sync_mode = "ActiveSync" if sync == 'enabled' else "PassiveSync"
         # clear filters if sync is disabled
         if sync == 'disabled':
             updated_artifact_sync_filters = {}
@@ -302,7 +302,7 @@ def acr_cache_update_custom(cmd,
         sync_referrers_status = "Enabled" if sync_referrers == 'enabled' else "Disabled"
 
     #update artifact sync filters object
-    if sync == 'enabled':
+    if sync == 'enabled' or (sync is None and sync_mode == 'ActiveSync'):
         if starts_with or ends_with or contains:
             updated_artifact_sync_filters["tags"] = TagFilter(
                 type="KQL",
