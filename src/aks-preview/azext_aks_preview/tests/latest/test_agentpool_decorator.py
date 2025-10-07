@@ -39,7 +39,7 @@ from azext_aks_preview._consts import (
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
 )
 from azure.cli.command_modules.acs.agentpool_decorator import AKSAgentPoolParamDict
-from azure.cli.command_modules.acs.tests.latest.mocks import (
+from azext_aks_preview.tests.latest.mocks import (
     MockCLI,
     MockClient,
     MockCmd,
@@ -2742,7 +2742,7 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         # Verify LocalDNS profile wasn't changed
         self.assertEqual(dec_agentpool_2.local_dns_profile, original_local_dns_profile)
 
-        # Test case 3: LocalDNS config with null values
+        # Test case 3: LocalDNS config with null values (should throw InvalidArgumentValueError)
         localdns_config_with_nulls = {
             "mode": "Required",
             "kubeDNSOverrides": None,
@@ -2770,15 +2770,13 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
             
             agentpool_3 = self.create_initialized_agentpool_instance()
             dec_3.context.attach_agentpool(agentpool_3)
-            dec_agentpool_3 = dec_3.update_localdns_profile(agentpool_3)
             
-            # Verify that LocalDNS profile was created with null handling
-            self.assertIsNotNone(dec_agentpool_3.local_dns_profile)
-            self.assertEqual(dec_agentpool_3.local_dns_profile.mode, "Required")
-            # kubeDNSOverrides should be empty dict due to null input
-            self.assertEqual(len(dec_agentpool_3.local_dns_profile.kube_dns_overrides), 0)
-            # vnetDNSOverrides should have one entry
-            self.assertEqual(len(dec_agentpool_3.local_dns_profile.vnet_dns_overrides), 1)
+            # Test case 3 should now throw InvalidArgumentValueError when kubeDNSOverrides is None
+            with self.assertRaises(InvalidArgumentValueError) as context:
+                dec_3.update_localdns_profile(agentpool_3)
+            
+            # Verify the error message contains expected text about DNS overrides
+            self.assertIn("Expected a dictionary for DNS overrides, but got NoneType: None", str(context.exception))
             
         finally:
             os.unlink(config_file_path)
