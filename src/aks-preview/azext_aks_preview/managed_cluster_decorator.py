@@ -5784,8 +5784,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
             )
 
-        # Note: disable_azure_monitor_metrics is now handled in update_addon_profiles
-        # via _disable_azure_monitor_metrics method
+        # Handle disable Azure Monitor metrics
+        if self.context.get_disable_azure_monitor_metrics():
+            self._disable_azure_monitor_metrics(mc)
 
         if self.context.get_enable_azure_monitor_app_monitoring():
             if mc.azure_monitor_profile is None:
@@ -6690,7 +6691,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Check if MSI auth is enabled for cleanup - same logic as aks_disable_addons
             addon_enabled = mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
             addon_config = mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config
-            has_msi_auth_key = CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config
+            has_msi_auth_key = addon_config and CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config
             msi_auth_enabled = (addon_config and has_msi_auth_key and
                                 str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true")
 

@@ -8688,6 +8688,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_1 = self.models.ManagedCluster(
             location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
@@ -8714,6 +8715,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(
             location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
                 metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(
                     enabled=True,
@@ -8744,6 +8746,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_3 = self.models.ManagedCluster(
             location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_3.context.attach_mc(mc_3)
         dec_3.context.set_intermediate("subscription_id", "test-subscription-id")
@@ -8829,6 +8832,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
                 metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(
                     enabled=True,
+                ),
+                app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
                     open_telemetry_metrics=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
                         enabled=True,
                         port=8080,
@@ -8850,7 +8855,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(dec_mc_3.azure_monitor_profile.metrics)
         self.assertFalse(dec_mc_3.azure_monitor_profile.metrics.enabled)
         # OpenTelemetry metrics should still be configured but may be disabled depending on implementation
-        self.assertIsNotNone(dec_mc_3.azure_monitor_profile.metrics.open_telemetry_metrics)
+        self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
 
     def test_update_linux_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(

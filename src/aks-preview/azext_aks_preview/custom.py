@@ -211,6 +211,7 @@ def _ssl_context():
 
     return ssl.create_default_context()
 
+
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
 def ensure_container_insights_for_monitoring_preview(
     cmd,
@@ -232,7 +233,7 @@ def ensure_container_insights_for_monitoring_preview(
     """
     Preview extension version of ensure_container_insights_for_monitoring that uses REST API
     to avoid large workspace resource objects causing "Request Header Fields Too Large" errors.
-    
+
     Either adds the ContainerInsights solution to a LA Workspace OR sets up a DCR (Data Collection Rule) and DCRA
     (Data Collection Rule Association). Both let the monitoring addon send data to a Log Analytics Workspace.
     """

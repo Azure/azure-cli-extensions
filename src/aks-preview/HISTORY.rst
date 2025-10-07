@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b43
++++++++
+* Add `--enable-opentelemetry-metrics`` and `--enable-opentelemetry-logs`` to monitoring addons and disable counterparts.
+
 18.0.0b42
 +++++++
 * Fix role assignment failure when using azure-cli version >= `2.77.0`.
