@@ -1069,7 +1069,7 @@ def validate_opentelemetry_logs_dependencies(namespace):
     # 1. --enable-azure-monitor-logs
     # 2. --enable-addons monitoring
     azure_monitor_logs_enabled = (enable_azure_monitor_logs or
-                                   (enable_addons and 'monitoring' in enable_addons))
+                                  (enable_addons and 'monitoring' in enable_addons))
 
     if enable_otlp_logs and not azure_monitor_logs_enabled:
         raise ArgumentUsageError(
@@ -1122,7 +1122,7 @@ def validate_azure_monitor_logs_and_enable_addons(namespace):
 def validate_azure_monitor_logs_enable_disable(namespace):
     """Validate that enable and disable azure monitor logs parameters don't conflict."""
     if (hasattr(namespace, 'enable_azure_monitor_logs') and namespace.enable_azure_monitor_logs and
-        hasattr(namespace, 'disable_azure_monitor_logs') and namespace.disable_azure_monitor_logs):
+            hasattr(namespace, 'disable_azure_monitor_logs') and namespace.disable_azure_monitor_logs):
         raise ArgumentUsageError(
             "Cannot specify both '--enable-azure-monitor-logs' and '--disable-azure-monitor-logs'. "
             "Use either '--enable-azure-monitor-logs' or '--disable-azure-monitor-logs'."

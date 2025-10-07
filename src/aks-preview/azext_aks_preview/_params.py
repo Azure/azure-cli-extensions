@@ -1455,7 +1455,7 @@ def load_arguments(self, _):
                    help="Resource ID of the Azure Log Analytics workspace to use for monitoring")
         c.argument(
             "enable_msi_auth_for_monitoring",
-            action="store_true",
+            arg_type=get_three_state_flag(),
             is_preview=True,
             help="Enable managed identity authentication for Azure Monitor logs"
         )

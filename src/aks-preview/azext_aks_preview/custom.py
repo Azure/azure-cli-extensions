@@ -207,7 +207,6 @@ def _ssl_context():
 
     return ssl.create_default_context()
 
-
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
 def ensure_container_insights_for_monitoring_preview(
     cmd,
@@ -295,8 +294,7 @@ def ensure_container_insights_for_monitoring_preview(
                 access_token = token_info.token
             else:
                 # For older credentials, try to get the token directly
-                # pylint: disable=protected-access
-                access_token = creds._token['access_token']
+                access_token = creds._token['access_token']  # pylint: disable=protected-access
 
             # Build minimal request
             url = f"https://management.azure.com{workspace_resource_id}?api-version=2015-11-01-preview&$select=location,id"
@@ -1272,7 +1270,7 @@ def aks_update(
     enable_azure_monitor_logs=False,
     disable_azure_monitor_logs=False,
     workspace_resource_id=None,
-    enable_msi_auth_for_monitoring=True,
+    enable_msi_auth_for_monitoring=None,
     enable_syslog=False,
     data_collection_settings=None,
     enable_high_log_scale_mode=False,
