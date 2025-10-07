@@ -2819,10 +2819,11 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         process_dns_overrides(dns_overrides_with_nulls, target_dict_2, mock_build_override)
         self.assertEqual(len(target_dict_2), 1)
         
-        # Test case 3: None input (should handle gracefully)
+        # Test case 3: None input (should throw InvalidArgumentValueError)
         target_dict_3 = {}
-        process_dns_overrides(None, target_dict_3, mock_build_override)
-        self.assertEqual(len(target_dict_3), 0)
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            process_dns_overrides(None, target_dict_3, mock_build_override)
+        self.assertIn("Expected a dictionary for DNS overrides, but got NoneType: None", str(context.exception))
         
         # Test case 4: Empty input (should handle gracefully)
         target_dict_4 = {}
