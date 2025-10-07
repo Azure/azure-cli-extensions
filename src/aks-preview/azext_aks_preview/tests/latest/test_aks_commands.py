@@ -11825,8 +11825,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("azureMonitorProfile.appMonitoring.autoInstrumentation.enabled", True),
-                self.check("azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled", True),
-                self.check("azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled", True)
             ],
         )
 
@@ -12424,8 +12422,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.metrics.enabled', True),
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.port', 8080),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 8080),
         ])
 
         # delete
@@ -12464,8 +12462,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.metrics.enabled', True),
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.port', 9090),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 9090),
         ])
 
         # update: disable OpenTelemetry metrics but keep Azure Monitor metrics
@@ -12476,7 +12474,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.metrics.enabled', True),  # Still enabled
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.enabled', False),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', False),
         ])
 
         # update: disable-azure-monitor-metrics (should also disable OpenTelemetry metrics)
@@ -12642,13 +12640,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             # Azure Monitor metrics checks
             self.check('azureMonitorProfile.metrics.enabled', True),
             # Azure Monitor app monitoring checks
-            self.check('azureMonitorProfile.appMonitoring.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
             # OpenTelemetry logs checks
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 8080),
             # OpenTelemetry metrics checks
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.port', 8081),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 8081),
         ])
 
         # Phase 2: Update - disable only OpenTelemetry logs (keep everything else)
@@ -12664,11 +12662,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             # Azure Monitor metrics should still be enabled
             self.check('azureMonitorProfile.metrics.enabled', True),
             # Azure Monitor app monitoring should still be enabled
-            self.check('azureMonitorProfile.appMonitoring.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
             # OpenTelemetry logs should be disabled
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', False),
             # OpenTelemetry metrics should still be enabled
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
         ])
 
         # Phase 3: Update - disable only OpenTelemetry metrics (keep Azure Monitor features)
@@ -12684,9 +12682,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             # Azure Monitor metrics should still be enabled
             self.check('azureMonitorProfile.metrics.enabled', True),
             # Azure Monitor app monitoring should still be enabled
-            self.check('azureMonitorProfile.appMonitoring.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
             # OpenTelemetry metrics should be disabled
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.enabled', False),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', False),
         ])
 
         # Phase 4: Update - re-enable all OpenTelemetry features with different ports
@@ -12702,12 +12700,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.omsagent.enabled', True),
             self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
             self.check('azureMonitorProfile.metrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
             # OpenTelemetry features should be re-enabled with new ports
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 9090),
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.port', 9091),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 9091),
         ])
 
         # Phase 5: Update - disable Azure Monitor metrics (should also disable OpenTelemetry metrics)
@@ -12723,7 +12721,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             # Azure Monitor metrics should be disabled
             self.check('azureMonitorProfile.metrics.enabled', False),
             # Azure Monitor app monitoring should still be enabled
-            self.check('azureMonitorProfile.appMonitoring.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
             # OpenTelemetry logs should still be enabled (independent of metrics)
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
         ])
@@ -12757,12 +12755,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
             self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
             self.check('azureMonitorProfile.metrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
             # All OpenTelemetry features should be enabled with new ports
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 7070),
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.metrics.openTelemetryMetrics.port', 7071),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 7071),
         ])
 
         # Phase 8: Final cleanup - disable all monitoring features
@@ -12776,7 +12774,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             # All monitoring features should be disabled
             self.check('addonProfiles.omsagent.enabled', False),
             self.check('azureMonitorProfile.metrics.enabled', False),
-            self.check('azureMonitorProfile.appMonitoring.enabled', False),
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', False),
         ])
 
         # delete
