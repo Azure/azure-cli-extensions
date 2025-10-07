@@ -1795,26 +1795,26 @@ class TestValidateOpenTelemetryMetricsDependencies(unittest.TestCase):
 
 
 class TestValidateOpenTelemetryMetricsDependenciesForUpdate(unittest.TestCase):
-    def test_no_opentelemetry_flags(self):
+    def test_no_opentelemetry_flags_for_update(self):
         namespace = OpenTelemetryMetricsDependenciesNamespace()
         # Should pass without issue
         validators.validate_opentelemetry_metrics_dependencies_for_update(namespace)
 
-    def test_enable_only_flag(self):
+    def test_enable_only_flag_for_update(self):
         namespace = OpenTelemetryMetricsDependenciesNamespace(
             enable_opentelemetry_metrics=True
         )
         # Should pass - for updates, dependency validation is deferred to decorator
         validators.validate_opentelemetry_metrics_dependencies_for_update(namespace)
 
-    def test_disable_only_flag(self):
+    def test_disable_only_flag_for_update(self):
         namespace = OpenTelemetryMetricsDependenciesNamespace(
             disable_opentelemetry_metrics=True
         )
         # Should pass
         validators.validate_opentelemetry_metrics_dependencies_for_update(namespace)
 
-    def test_mutually_exclusive_flags_throws_error(self):
+    def test_mutually_exclusive_flags_throws_error_for_update(self):
         namespace = OpenTelemetryMetricsDependenciesNamespace(
             enable_opentelemetry_metrics=True,
             disable_opentelemetry_metrics=True
@@ -1856,26 +1856,26 @@ class TestValidateOpenTelemetryLogsDependencies(unittest.TestCase):
 
 
 class TestValidateOpenTelemetryLogsDependenciesForUpdate(unittest.TestCase):
-    def test_no_opentelemetry_flags(self):
+    def test_no_opentelemetry_flags_for_update(self):
         namespace = OpenTelemetryLogsDependenciesNamespace()
         # Should pass without issue
         validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
 
-    def test_enable_only_flag(self):
+    def test_enable_only_flag_for_update(self):
         namespace = OpenTelemetryLogsDependenciesNamespace(
             enable_opentelemetry_logs=True
         )
         # Should pass - for updates, dependency validation is deferred to decorator
         validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
 
-    def test_disable_only_flag(self):
+    def test_disable_only_flag_for_update(self):
         namespace = OpenTelemetryLogsDependenciesNamespace(
             disable_opentelemetry_logs=True
         )
         # Should pass
         validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
 
-    def test_mutually_exclusive_flags_throws_error(self):
+    def test_mutually_exclusive_flags_throws_error_for_update(self):
         namespace = OpenTelemetryLogsDependenciesNamespace(
             enable_opentelemetry_logs=True,
             disable_opentelemetry_logs=True
@@ -1957,7 +1957,7 @@ class TestValidateAzureMonitorAndOpenTelemetryForCreate(unittest.TestCase):
 
 
 class TestValidateAzureMonitorAndOpenTelemetryForUpdate(unittest.TestCase):
-    def test_valid_configuration(self):
+    def test_valid_configuration_for_update(self):
         namespace = AzureMonitorAndOpenTelemetryNamespace(
             enable_opentelemetry_metrics=True,
             enable_opentelemetry_logs=True,
@@ -1967,7 +1967,7 @@ class TestValidateAzureMonitorAndOpenTelemetryForUpdate(unittest.TestCase):
         # Should pass all validations (dependency validation deferred for updates)
         validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
 
-    def test_port_conflict_throws_error(self):
+    def test_port_conflict_throws_error_for_update(self):
         namespace = AzureMonitorAndOpenTelemetryNamespace(
             enable_opentelemetry_metrics=True,
             opentelemetry_metrics_port=8080,
