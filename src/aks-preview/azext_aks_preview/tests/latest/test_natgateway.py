@@ -22,11 +22,11 @@ class TestCreateNatGatewayProfile(unittest.TestCase):
         # store all the models used by nat gateway
         self.nat_gateway_models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
 
-    def test_empty_arguments_create(self):
+    def test_empty_arguments(self):
         profile = natgateway.create_nat_gateway_profile(None, None, models=self.nat_gateway_models)
         self.assertIsNone(profile)
 
-    def test_nonempty_arguments_create(self):
+    def test_nonempty_arguments(self):
         managed_outbound_ip_count = 2
         idle_timeout = 30
 
@@ -45,7 +45,7 @@ class TestUpdateNatGatewayProfile(unittest.TestCase):
         # store all the models used by nat gateway
         self.nat_gateway_models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
 
-    def test_empty_arguments_update(self):
+    def test_empty_arguments(self):
         origin_profile = self.nat_gateway_models.ManagedClusterNATGatewayProfile(
             managed_outbound_ip_profile=self.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(
                 count=1
@@ -71,7 +71,7 @@ class TestUpdateNatGatewayProfile(unittest.TestCase):
         self.assertEqual(profile.managed_outbound_ip_profile.count, 0)
         self.assertEqual(profile.idle_timeout_in_minutes, origin_profile.idle_timeout_in_minutes)
 
-    def test_nonempty_arguments_update(self):
+    def test_nonempty_arguments(self):
         origin_profile = self.nat_gateway_models.ManagedClusterNATGatewayProfile(
             managed_outbound_ip_profile=self.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(
                 count=1
@@ -88,7 +88,7 @@ class TestUpdateNatGatewayProfile(unittest.TestCase):
 
 
 class TestIsNatGatewayProfileProvided(unittest.TestCase):
-    def test_empty_arguments_is_nat_gateway_provided(self):
+    def test_empty_arguments(self):
         result = natgateway.is_nat_gateway_profile_provided(None, None)
         self.assertFalse(result)
 
@@ -100,7 +100,7 @@ class TestIsNatGatewayProfileProvided(unittest.TestCase):
         result = natgateway.is_nat_gateway_profile_provided(None, 4)
         self.assertTrue(result)
 
-    def test_nonempty_arguments_is_nat_gateway_provided(self):
+    def test_nonempty_arguments(self):
         result = natgateway.is_nat_gateway_profile_provided(1, 4)
         self.assertTrue(result)
 
