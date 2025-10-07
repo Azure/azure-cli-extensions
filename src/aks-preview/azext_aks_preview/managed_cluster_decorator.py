@@ -381,6 +381,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if enable_msi_auth:
             return True
         
+        # If explicitly disabled, respect the explicit setting
+        if enable_msi_auth_for_monitoring is False:
+            return False
+        
         # Check if --enable-azure-monitor-logs is specified - enable MSI auth by default
         enable_azure_monitor_logs = self.raw_param.get("enable_azure_monitor_logs")
         
@@ -388,7 +392,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return True
             
         # Default to True when neither is explicitly set (i.e., both are None/False)
-        if enable_msi_auth_for_monitoring is None or enable_msi_auth_for_monitoring is False:
+        if enable_msi_auth_for_monitoring is None:
             if not disable_msi_auth and not enable_msi_auth:
                 return True
         
@@ -2265,7 +2269,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         This function supports the option of enable_validation. When enabled, if both
         enable_azure_monitor_logs and disable_azure_monitor_logs are specified,
         raise a MutuallyExclusiveArgumentError.
-        For update operations, also validates that Azure Monitor logs (monitoring addon) is not already enabled.
         :return: bool
         """
         # Read the original value passed by the command.
@@ -4409,15 +4412,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
         
-        # DEBUG: Final monitoring addon configuration before returning
-        addon_consts = self.context.get_addon_consts()
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-        if mc.addon_profiles and CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
-            monitoring_profile = mc.addon_profiles[CONST_MONITORING_ADDON_NAME]
-            print(f'DEBUG FINAL construct_mc_profile_preview: monitoring_profile.enabled={monitoring_profile.enabled}')
-            print(f'DEBUG FINAL construct_mc_profile_preview: monitoring_profile.config={monitoring_profile.config}')
-        else:
-            print('DEBUG FINAL construct_mc_profile_preview: No monitoring addon profile found')
+
         
         return mc
 
@@ -4523,7 +4518,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         monitoring_addon_enabled = self.context.get_intermediate("monitoring_addon_enabled", default_value=False)
         if monitoring_addon_enabled:
             enable_msi_auth_for_monitoring = self.context.get_enable_msi_auth_for_monitoring()
-            print(f"DEBUG postprocessing_after_mc_created: enable_msi_auth_for_monitoring={enable_msi_auth_for_monitoring}")
             if not enable_msi_auth_for_monitoring:
                 # add cluster spn/msi Monitoring Metrics Publisher role assignment to publish metrics to MDM
                 # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
@@ -4542,6 +4536,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             elif self.context.raw_param.get("enable_addons") is not None or self.context.raw_param.get("enable-azure-monitor-logs") is not None:
                 # Create the DCR Association here
                 addon_consts = self.context.get_addon_consts()
+                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
                 self.context.external_functions.ensure_container_insights_for_monitoring(
                     self.cmd,
                     cluster.addon_profiles[CONST_MONITORING_ADDON_NAME],
@@ -4559,8 +4554,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     ampls_resource_id=self.context.get_ampls_resource_id(),
                     enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
                 )
-                
-                print(f"DEBUG postprocessing_after_mc_created: AFTER ensure_container_insights_for_monitoring")
 
         # Handle monitoring addon postprocessing (disable case) - same logic as aks_disable_addons  
         monitoring_addon_disable_postprocessing_required = self.context.get_intermediate(
