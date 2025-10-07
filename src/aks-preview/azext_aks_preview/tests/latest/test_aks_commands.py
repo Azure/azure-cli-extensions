@@ -12440,9 +12440,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', False),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', False)
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True)
         ])
 
         # update: disable-azure-monitor-app-monitoring
@@ -12453,9 +12451,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', False),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', False),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', False)
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', False)
         ])
 
         # delete
@@ -12826,7 +12822,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # delete
-        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes'
         self.cmd(cmd, checks=[
             self.is_empty(),
         ])

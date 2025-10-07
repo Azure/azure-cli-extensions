@@ -211,6 +211,38 @@ def _ssl_context():
 
     return ssl.create_default_context()
 
+def get_resource_without_auto_headers(cmd, resource_id, api_version):
+    from azure.cli.command_modules.resource._client_factory import cf_resources
+    
+    # Store original headers
+    original_headers = cmd.cli_ctx.data.get('headers', {}).copy()
+    original_safe_params = cmd.cli_ctx.data.get('safe_params')
+    original_command = cmd.cli_ctx.data.get('command')
+    
+    try:
+        # Clear or modify the headers that get automatically added
+        cmd.cli_ctx.data['headers'] = {
+            'Accept': 'application/json'
+            # Only include headers you actually want
+        }
+        
+        # Clear safe_params to prevent ParameterSetName header
+        cmd.cli_ctx.data['safe_params'] = None
+        
+        # Modify command to prevent CommandName header
+        cmd.cli_ctx.data['command'] = 'custom-resource-get'
+        
+        # Create client with modified context
+        client = cf_resources(cmd.cli_ctx)
+        
+        # Make the call
+        return client.resources.get_by_id(resource_id, api_version)
+        
+    finally:
+        # Restore original context
+        cmd.cli_ctx.data['headers'] = original_headers
+        cmd.cli_ctx.data['safe_params'] = original_safe_params
+        cmd.cli_ctx.data['command'] = original_command
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
 def ensure_container_insights_for_monitoring_preview(
@@ -285,52 +317,7 @@ def ensure_container_insights_for_monitoring_preview(
         try:
             # The problem is that the Azure CLI adds many headers that cause "Request Header Fields Too Large" (431)
             # Let's make a minimal direct HTTP request with only essential headers
-            import requests
-            from azure.cli.core._profile import Profile
-
-            # Get access token manually to avoid CLI headers
-            profile = Profile(cli_ctx=cmd.cli_ctx)
-            creds, _, _ = profile.get_login_credentials()
-
-            # Get the access token for Azure Resource Manager
-            if hasattr(creds, 'get_token'):
-                # For newer Azure Identity credentials
-                token_info = creds.get_token('https://management.azure.com/.default')
-                access_token = token_info.token
-            else:
-                # For older credentials, try to get the token directly
-                access_token = creds._token['access_token']  # pylint: disable=protected-access
-
-            # Build minimal request
-            url = f"https://management.azure.com{workspace_resource_id}?api-version=2015-11-01-preview&$select=location,id"
-
-            headers = {
-                'Authorization': f'Bearer {access_token}',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-
-            response = requests.get(url, headers=headers, timeout=30)
-
-            if response.status_code == 200:
-                resource_data = response.json()
-
-                # Create a minimal resource object with just what we need
-                # pylint: disable=too-few-public-methods
-                class MinimalResource:
-                    # pylint: disable=redefined-builtin
-                    def __init__(self, location, id):
-                        self.location = location
-                        self.id = id
-
-                resource = MinimalResource(
-                    location=resource_data.get('location'),
-                    id=resource_data.get('id')
-                )
-            else:
-                # Fallback to original approach
-                resources = get_resources_client(cmd.cli_ctx, subscription_id)
-                resource = resources.get_by_id(workspace_resource_id, "2015-11-01-preview")
+            resource = get_resource_without_auto_headers(cmd, workspace_resource_id, "2015-11-01-preview")
 
             location = resource.location
             # location can have spaces for example 'East US' hence remove the spaces
