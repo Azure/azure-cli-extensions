@@ -39,7 +39,6 @@ from azext_aks_preview._consts import (
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
 )
 from azure.cli.command_modules.acs.agentpool_decorator import AKSAgentPoolParamDict
-
 from azure.cli.command_modules.acs.tests.latest.mocks import (
     MockCLI,
     MockClient,
