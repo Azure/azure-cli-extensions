@@ -286,7 +286,7 @@ def ensure_container_insights_for_monitoring_preview(
 
             # Get access token manually to avoid CLI headers
             profile = Profile(cli_ctx=cmd.cli_ctx)
-            Fcreds, _, _ = profile.get_login_credentials()
+            creds, _, _ = profile.get_login_credentials()
 
             # Get the access token for Azure Resource Manager
             if hasattr(creds, 'get_token'):

@@ -12234,7 +12234,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
-            '--enable-managed-identity --enable-azure-monitor-logs --enable-opentelemetry-logs --opentelemetry-logs-port=8080 --output=json'
+            '--enable-managed-identity --enable-azure-monitor-logs --enable-opentelemetry-logs --opentelemetry-logs-port=8080 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview --output=json'
         )
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -12275,7 +12276,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update: enable-azure-monitor-logs with OpenTelemetry logs
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
-            '--enable-azure-monitor-logs --enable-opentelemetry-logs --opentelemetry-logs-port=9090'
+            '--enable-azure-monitor-logs --enable-opentelemetry-logs --opentelemetry-logs-port=9090 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -12317,7 +12319,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_create_with_azuremonitormetrics(self, resource_group, resource_group_location):
+    def test_aks_create_with_azuremonitormetrics_v2(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         # kwargs for string formatting
@@ -12351,7 +12353,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_update_with_azuremonitormetrics(self, resource_group, resource_group_location):
+    def test_aks_update_with_azuremonitormetrics_v2(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         node_vm_size = 'standard_d2s_v3'
         self.kwargs.update({
@@ -12416,7 +12418,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
-            '--enable-managed-identity --enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=8080 --output=json'
+            '--enable-managed-identity --enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=8080 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview --output=json'
         )
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -12455,7 +12458,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update: enable-azure-monitor-metrics with OpenTelemetry metrics
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
-            '--enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=9090'
+            '--enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=9090 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -12626,7 +12630,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--enable-managed-identity --enable-azure-monitor-logs --enable-azure-monitor-metrics --enable-azure-monitor-app-monitoring '
             '--enable-opentelemetry-logs --opentelemetry-logs-port=8080 '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port=8081 '
-            '--enable-windows-recording-rules --output=json'
+            '--enable-windows-recording-rules '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview --output=json'
         )
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -12688,7 +12693,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
             '--enable-opentelemetry-logs --opentelemetry-logs-port=9090 '
-            '--enable-opentelemetry-metrics --opentelemetry-metrics-port=9091'
+            '--enable-opentelemetry-metrics --opentelemetry-metrics-port=9091 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -12741,7 +12747,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--enable-azure-monitor-logs --enable-azure-monitor-metrics --enable-azure-monitor-app-monitoring '
             '--enable-opentelemetry-logs --opentelemetry-logs-port=7070 '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port=7071 '
-            '--enable-windows-recording-rules'
+            '--enable-windows-recording-rules '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
