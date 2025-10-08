@@ -460,6 +460,10 @@ def process_dns_overrides(overrides_dict, target_dict, build_override_func):
     :param target_dict: Target dictionary to populate with processed overrides
     :param build_override_func: Function to build override objects from dict values
     """
+    if not isinstance(overrides_dict, dict):
+        raise InvalidArgumentValueError(
+            f"Expected a dictionary for DNS overrides, but got {type(overrides_dict).__name__}: {overrides_dict}"
+        )
     if overrides_dict is not None:
         for key, value in overrides_dict.items():
             if value is not None:
