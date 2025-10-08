@@ -254,13 +254,13 @@ def _download_proxy_from_MCR(cmd, dest_dir, proxy_name, operating_system, archit
     active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
     # default for public, mc, ff clouds
     mcr_postfix = active_directory_array[2]
-    # special cases for USSec, exclude part of suffix
+    # special cases for AGC, exclude part of suffix
     if (
         len(active_directory_array) == 4
         and active_directory_array[2] == "microsoft"
     ):
         mcr_postfix = active_directory_array[3]
-    # special case for USNat
+    # special case for AGC
     elif len(active_directory_array) == 5:
         mcr_postfix = (
             active_directory_array[2]
@@ -270,7 +270,7 @@ def _download_proxy_from_MCR(cmd, dest_dir, proxy_name, operating_system, archit
             + active_directory_array[4]
         )
     mcr_url = f"mcr.microsoft.{mcr_postfix}"
-    mar_target = f"{mcr_url}/{consts.CLIENT_PROXY_MCR_TARGET}/{operating_system.lower()}/{architecture}/ssh-proxy"    
+    mar_target = f"{mcr_url}{consts.CLIENT_PROXY_MCR_TARGET}/{operating_system.lower()}/{architecture}/ssh-proxy"    
     logger.debug("Downloading Arc Connectivity Proxy from %s in Microsoft Artifact Regristy.", mar_target)
 
     client = oras.client.OrasClient()
