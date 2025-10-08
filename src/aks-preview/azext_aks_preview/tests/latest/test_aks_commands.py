@@ -13897,14 +13897,28 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--enable-azure-monitor-logs'
         )
-        self.cmd(update_cmd)
+        enable_result = self.cmd(update_cmd)
+        print(f"\n=== ENABLE COMMAND RESULT ===")
+        print(f"Output: {enable_result.output}")
+        print(f"Exit code: {enable_result.exit_code}")
 
         # Wait for the update operation to complete
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
-        self.cmd(wait_cmd)
+        wait_result = self.cmd(wait_cmd)
+        print(f"\n=== WAIT COMMAND RESULT (after enable) ===")
+        print(f"Output: {wait_result.output}")
+        print(f"Exit code: {wait_result.exit_code}")
 
         # Verify the update was successful
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        show_result = self.cmd(show_cmd)
+        print(f"\n=== SHOW COMMAND RESULT (after enable) ===")
+        import json
+        cluster_data = json.loads(show_result.output)
+        print(f"provisioningState: {cluster_data.get('provisioningState')}")
+        print(f"addonProfiles.omsagent.enabled: {cluster_data.get('addonProfiles', {}).get('omsagent', {}).get('enabled')}")
+        print(f"azureMonitorProfile.containerInsights.enabled: {cluster_data.get('azureMonitorProfile', {}).get('containerInsights', {}).get('enabled')}")
+        
         self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.omsagent.enabled', True),
@@ -13917,17 +13931,33 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--disable-azure-monitor-logs'
         )
-        self.cmd(update_cmd)
+        disable_result = self.cmd(update_cmd)
+        print(f"\n=== DISABLE COMMAND RESULT ===")
+        print(f"Output: {disable_result.output}")
+        print(f"Exit code: {disable_result.exit_code}")
 
         # Wait for the update operation to complete
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
-        self.cmd(wait_cmd)
+        wait_result = self.cmd(wait_cmd)
+        print(f"\n=== WAIT COMMAND RESULT ===")
+        print(f"Output: {wait_result.output}")
+        print(f"Exit code: {wait_result.exit_code}")
 
-        # Verify the update was successful - check Azure Monitor profile instead of addon profile
+        # Verify the update was successful - check addon profile
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        show_result = self.cmd(show_cmd)
+        print(f"\n=== SHOW COMMAND RESULT (after disable) ===")
+        import json
+        cluster_data = json.loads(show_result.output)
+        print(f"provisioningState: {cluster_data.get('provisioningState')}")
+        print(f"addonProfiles.omsagent.enabled: {cluster_data.get('addonProfiles', {}).get('omsagent', {}).get('enabled')}")
+        print(f"azureMonitorProfile.containerInsights.enabled: {cluster_data.get('azureMonitorProfile', {}).get('containerInsights', {}).get('enabled')}")
+        print(f"Full addonProfiles: {json.dumps(cluster_data.get('addonProfiles', {}), indent=2)}")
+        print(f"Full azureMonitorProfile: {json.dumps(cluster_data.get('azureMonitorProfile', {}), indent=2)}")
+        
         self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.containerInsights.enabled', False),
+            self.check('addonProfiles.omsagent.enabled', False),
         ])
 
         # delete

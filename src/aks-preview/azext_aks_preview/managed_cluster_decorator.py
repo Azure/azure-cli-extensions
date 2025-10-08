@@ -6641,6 +6641,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
     def _disable_azure_monitor_logs(self, mc: ManagedCluster) -> None:
         """Disable Azure Monitor logs configuration."""
+        from knack.log import get_logger
+        logger = get_logger(__name__)
+        logger.warning("=== _disable_azure_monitor_logs called ===")
+        
         addon_consts = self.context.get_addon_consts()
         CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
         CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
@@ -6651,9 +6655,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             CONST_MONITORING_ADDON_NAME in mc.addon_profiles and
             mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
         )
+        
+        logger.warning(f"CONST_MONITORING_ADDON_NAME: {CONST_MONITORING_ADDON_NAME}")
+        logger.warning(f"mc.addon_profiles: {mc.addon_profiles}")
+        logger.warning(f"azure_monitor_logs_enabled: {azure_monitor_logs_enabled}")
 
         # If Azure Monitor logs are not enabled, there's nothing to disable
         if not azure_monitor_logs_enabled:
+            logger.warning("Azure Monitor logs not enabled, returning early")
             return
 
         # Check if OpenTelemetry logs are enabled and prompt for confirmation
@@ -6685,11 +6694,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 # Set intermediate value to trigger postprocessing for DCR/DCRA cleanup
                 self.context.set_intermediate(
                     "monitoring_addon_disable_postprocessing_required", True, overwrite_exists=True)
+                logger.warning("Set monitoring_addon_disable_postprocessing_required = True")
 
             # Disable the addon and clear configuration to ensure clean state
+            logger.warning(f"Before disable: addon enabled = {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
             mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled = False
+            logger.warning(f"After disable: addon enabled = {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
             # Clear the config to remove old workspace resource ID and other settings
             mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = {}
+            logger.warning("Cleared addon config")
 
         # Also disable OpenTelemetry logs when disabling Azure Monitor logs
         if opentelemetry_logs_enabled:
@@ -6744,14 +6757,21 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         :return: the ManagedCluster object
         """
+        from knack.log import get_logger
+        logger = get_logger(__name__)
+        
         self._ensure_mc(mc)
 
         # Handle enable Azure Monitor logs
-        if self.context.get_enable_azure_monitor_logs():
+        enable_logs = self.context.get_enable_azure_monitor_logs()
+        logger.warning(f"=== update_addon_profiles: enable_azure_monitor_logs = {enable_logs}")
+        if enable_logs:
             self._setup_azure_monitor_logs(mc)
 
         # Handle disable Azure Monitor logs
-        if self.context.get_disable_azure_monitor_logs():
+        disable_logs = self.context.get_disable_azure_monitor_logs()
+        logger.warning(f"=== update_addon_profiles: disable_azure_monitor_logs = {disable_logs}")
+        if disable_logs:
             self._disable_azure_monitor_logs(mc)
 
         # Handle disable Azure Monitor metrics
