@@ -13923,11 +13923,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
         self.cmd(wait_cmd)
 
-        # Verify the update was successful
+        # Verify the update was successful - check Azure Monitor profile instead of addon profile
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
         self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.omsagent.enabled', False),
+            self.check('azureMonitorProfile.containerInsights.enabled', False),
         ])
 
         # delete

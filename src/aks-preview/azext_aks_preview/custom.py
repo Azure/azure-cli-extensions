@@ -162,8 +162,7 @@ from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import (
     in_cloud_console,
     sdk_no_wait,
-    shell_safe_json_parse,
-    send_raw_request,
+    shell_safe_json_parse, 
 )
 from azure.core.exceptions import (
     ResourceNotFoundError,
@@ -264,7 +263,7 @@ def ensure_container_insights_for_monitoring_preview(
         workspace_resource_id
     )
 
-     # extract subscription ID and workspace name from workspace_resource_id
+    # extract subscription ID and workspace name from workspace_resource_id
     try:
         subscription_id = workspace_resource_id.split("/")[2]
     except IndexError:
@@ -300,6 +299,7 @@ def ensure_container_insights_for_monitoring_preview(
                 access_token = token_info.token
             else:
                 # For older credentials, try to get the token directly
+                # pylint: disable=protected-access
                 access_token = creds._token['access_token']
 
             # Build minimal request
@@ -317,14 +317,15 @@ def ensure_container_insights_for_monitoring_preview(
                 resource_data = response.json()
 
                 # Create a minimal resource object with just what we need
+                # pylint: disable=too-few-public-methods
                 class MinimalResource:
-                    def __init__(self, location, id):
+                    def __init__(self, location, resource_id):
                         self.location = location
-                        self.id = id
+                        self.id = resource_id  # pylint: disable=invalid-name
 
                 resource = MinimalResource(
                     location=resource_data.get('location'),
-                    id=resource_data.get('id')
+                    resource_id=resource_data.get('id')
                 )
             else:
                 # Fallback to original approach
@@ -1400,9 +1401,7 @@ def aks_update(
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
-    # Import the DecoratorEarlyExitException from acs module
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
-    # Import the decorator from the preview extension package
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
 
     # decorator pattern
@@ -1412,15 +1411,13 @@ def aks_update(
         raw_parameters=raw_parameters,
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
     )
-
     try:
-        # update mc profile (this will handle ALL operations including Azure Monitor logs)
+        # update mc profile
         mc = aks_update_decorator.update_mc_profile_preview()
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
-
-    # Single cluster update that includes all changes (monitoring addon + other profiles)
+    # send request to update the real managed cluster
     return aks_update_decorator.update_mc(mc)
 
 

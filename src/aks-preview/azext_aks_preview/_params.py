@@ -2408,7 +2408,7 @@ def load_arguments(self, _):
         c.argument("workspace_resource_id")
         c.argument(
             "enable_msi_auth_for_monitoring",
-            action="store_true",
+            arg_type=get_three_state_flag(),
             is_preview=True,
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)

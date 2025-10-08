@@ -12,6 +12,22 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+18.0.0b44
++++++++
+* `az aks create`: Add new parameter `--enable-opentelemetry-metrics` to enable OTLP feature for metrics addon.
+* `az aks update`: Add new parameter `--enable-opentelemetry-metrics` to enable OTLP feature for metrics addon.
+* `az aks update`: Add new parameter `--disable-opentelemetry-metrics` to disable OTLP feature for metrics addon.
+* `az aks create`: Add new parameter `--opentelemetry-metrics-port` to change the OTLP port from the default for metrics addon.
+* `az aks update`: Add new parameter `--opentelemetry-metrics-port` to change the OTLP port from the default for metrics addon.
+* `az aks create`: Add new parameter `--enable-opentelemetry-logs` to enable OTLP feature for logs addon.
+* `az aks update`: Add new parameter `--enable-opentelemetry-logs` to enable OTLP feature for logs addon.
+* `az aks update`: Add new parameter `--disable-opentelemetry-logs` to disable OTLP feature for logs addon.
+* `az aks create`: Add new parameter `--opentelemetry-logs-port` to change the OTLP port from the default for logs addon.
+* `az aks update`: Add new parameter `--opentelemetry-logs-port` to change the OTLP port from the default for logs addon.
+* `az aks create`: Add new parameter `--enable-azure-monitor-logs` that is a wrapper to enable-addons -a monitoring.
+* `az aks update`: Add new parameter `--enable-azure-monitor-logs` that is a wrapper to enable-addons -a monitoring.
+* `az aks update`: Add new parameter `--disable-azure-monitor-logs` that is a wrapper to disable-addons -a monitoring.
+
 18.0.0b43
 +++++++
 * Fix `--localdns-config` parameter to handle null values and case-insensitive JSON keys in DNS override sections, preventing crashes with malformed localdns configuration files.
@@ -45,7 +61,6 @@ Pending
 * Add blue-green upgrade strategy support for AKS node pools:
   - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades. 
   - `az aks nodepool add/update/upgrade`: Add `--drain-batch-size`, `--drain-timeout-bg`, `--batch-soak-duration`, `--final-soak-duration` parameters to configure blue-green upgrade settings.
-* Add `--enable-opentelemetry-metrics`` and `--enable-opentelemetry-logs`` to monitoring addons and disable counterparts.
 
 18.0.0b38
 +++++++

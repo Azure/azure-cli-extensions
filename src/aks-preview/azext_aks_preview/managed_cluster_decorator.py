@@ -378,7 +378,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def get_enable_msi_auth_for_monitoring(self) -> Union[bool, None]:
         enable_msi_auth_for_monitoring = super().get_enable_msi_auth_for_monitoring()
-
         sku_name = self.get_sku_name()
         if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             return True
@@ -2154,6 +2153,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         disable_azure_monitor_metrics are specified, raise a MutuallyExclusiveArgumentError.
         :return: bool
         """
+
         # Read the original value passed by the command.
         # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
         enable_azure_monitor_metrics = (
@@ -2171,7 +2171,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             skuName = self.get_sku_name()
             if skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
                 enable_azure_monitor_metrics = True
-
         # This parameter does not need dynamic completion.
         if enable_validation:
             if enable_azure_monitor_metrics and self._get_disable_azure_monitor_metrics(False):
@@ -3596,7 +3595,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         mc = super().set_up_addon_profiles(mc)
 
-        # Handle enable Azure Monitor logs directly (unified approach)
+        # Handle enable Azure Monitor logs directly
         if self.context.get_enable_azure_monitor_logs():
             self._setup_azure_monitor_logs(mc)
 
@@ -3676,8 +3675,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 )
 
             # Set infrastructure encryption
-            encryption_profile = mc.security_profile.kubernetes_resource_object_encryption_profile
-            encryption_profile.infrastructure_encryption = kms_infrastructure_encryption
+            # pylint: disable=line-too-long
+            mc.security_profile.kubernetes_resource_object_encryption_profile.infrastructure_encryption = kms_infrastructure_encryption
 
         return mc
 
@@ -3806,12 +3805,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         if self.context.get_enable_optimized_addon_scaling():
             if mc.workload_auto_scaler_profile is None:
-                # pylint: disable=no-member
-                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()  # pylint: disable=no-member
             if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
-                # pylint: disable=no-member
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler = (
-                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()
+                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()  # pylint: disable=no-member
                 )
             # set enabled
             mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
@@ -4304,8 +4301,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         if self.context.get_ai_toolchain_operator(enable_validation=True):
             if mc.ai_toolchain_operator_profile is None:
-                # pylint: disable=no-member
-                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile()
+                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile() # pylint: disable=no-member
             # set enabled
             mc.ai_toolchain_operator_profile.enabled = True
 
@@ -4380,8 +4376,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     self.models.SchedulerProfileSchedulerInstanceProfiles()  # pylint: disable=no-member
                 )
             if mc.scheduler_profile.scheduler_instance_profiles.upstream is None:
-                # pylint: disable=no-member
-                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile()
+                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile() # pylint: disable=no-member
             mc.scheduler_profile.scheduler_instance_profiles.upstream.scheduler_config_mode = (
                 self.models.SchedulerConfigMode.MANAGED_BY_CRD  # pylint: disable=no-member
             )
@@ -4458,7 +4453,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
-
         return mc
 
     def verify_cli_core_version(self):
@@ -4999,7 +4993,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
                 monitoring_addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
                 if monitoring_addon_profile:
-                    # IMPORTANT: Create a proper copy of the existing config to preserve all settings
                     config = dict(monitoring_addon_profile.config) if monitoring_addon_profile.config else {}
                     config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
                     mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = config
@@ -5976,12 +5969,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if self.context.get_enable_optimized_addon_scaling():
             if mc.workload_auto_scaler_profile is None:
-                # pylint: disable=no-member
-                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile() # pylint: disable=no-member
             if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
-                # pylint: disable=no-member
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler = (
-                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()
+                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler() # pylint: disable=no-member
                 )
             # set enabled
             mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
@@ -5989,12 +5980,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if self.context.get_disable_optimized_addon_scaling():
             if mc.workload_auto_scaler_profile is None:
-                # pylint: disable=no-member
-                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile() # pylint: disable=no-member
             if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
-                # pylint: disable=no-member
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler = (
-                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()
+                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler() # pylint: disable=no-member
                 )
             # set disabled
             mc.workload_auto_scaler_profile.vertical_pod_autoscaler.addon_autoscaling = "Disabled"
@@ -6404,14 +6393,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if self.context.get_ai_toolchain_operator(enable_validation=True):
             if mc.ai_toolchain_operator_profile is None:
-                # pylint: disable=no-member
-                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile()
+                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile() # pylint: disable=no-member
             mc.ai_toolchain_operator_profile.enabled = True
 
         if self.context.get_disable_ai_toolchain_operator():
             if mc.ai_toolchain_operator_profile is None:
-                # pylint: disable=no-member
-                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile()
+                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile() # pylint: disable=no-member
             mc.ai_toolchain_operator_profile.enabled = False
         return mc
 
@@ -6560,8 +6547,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.models.SchedulerProfileSchedulerInstanceProfiles()  # pylint: disable=no-member
                 )
             if mc.scheduler_profile.scheduler_instance_profiles.upstream is None:
-                # pylint: disable=no-member
-                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile()
+                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile() # pylint: disable=no-member
             mc.scheduler_profile.scheduler_instance_profiles.upstream.scheduler_config_mode = (
                 self.models.SchedulerConfigMode.MANAGED_BY_CRD  # pylint: disable=no-member
             )
@@ -6574,8 +6560,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.models.SchedulerProfileSchedulerInstanceProfiles()  # pylint: disable=no-member
                 )
             if mc.scheduler_profile.scheduler_instance_profiles.upstream is None:
-                # pylint: disable=no-member
-                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile()
+                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile() # pylint: disable=no-member
             mc.scheduler_profile.scheduler_instance_profiles.upstream.scheduler_config_mode = (
                 self.models.SchedulerConfigMode.DEFAULT  # pylint: disable=no-member
             )
@@ -6796,10 +6781,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_integrity(mc)
         # update workload auto scaler profile
         mc = self.update_workload_auto_scaler_profile(mc)
+        # update addon profiles (monitoring logs, etc.) - do this before azure monitor profile
+        mc = self.update_addon_profiles(mc)
         # update azure monitor metrics profile
         mc = self.update_azure_monitor_profile(mc)
-        # update addon profiles (monitoring logs, etc.)
-        mc = self.update_addon_profiles(mc)
         # update vpa
         mc = self.update_vpa(mc)
         # update optimized addon scaling
