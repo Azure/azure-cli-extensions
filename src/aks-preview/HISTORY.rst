@@ -14,7 +14,9 @@ Pending
 
 18.0.0b43
 +++++++
-* Add `--enable-opentelemetry-metrics`` and `--enable-opentelemetry-logs`` to monitoring addons and disable counterparts.
+* Fix `--localdns-config` parameter to handle null values and case-insensitive JSON keys in DNS override sections, preventing crashes with malformed localdns configuration files.
+* Enhance `build_override` function to validate dictionary types and only initialize DNS overrides when present in localdns configuration (case-insensitive).
+* Refactor `build_localdns_profile` function to eliminate code duplication between AgentPool add and update operations.
 
 18.0.0b42
 +++++++
