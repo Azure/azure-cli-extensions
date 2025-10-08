@@ -6645,7 +6645,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
         CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-        # Check if the addon profile exists 
+        # Check if the addon profile exists
         has_monitoring_addon = (
             mc.addon_profiles and
             CONST_MONITORING_ADDON_NAME in mc.addon_profiles
@@ -6654,7 +6654,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # If the addon profile doesn't exist at all, there's nothing to disable
         if not has_monitoring_addon:
             return
-        
+
         # Check if Azure Monitor logs (monitoring addon) is currently enabled
         azure_monitor_logs_enabled = mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
 
