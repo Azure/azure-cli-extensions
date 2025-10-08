@@ -164,9 +164,10 @@ def _check_provider(
         raise ValueError("No provider name.")
     # Check if provider is supported
     if provider_name not in PROVIDER_REGISTRY:
+        supported = list(PROVIDER_REGISTRY.keys())
         raise ValueError(
             f"Unsupported provider {provider_name} for LLM initialization."
-            f"Supported llm providers are {PROVIDER_REGISTRY}. Please refer to doc.")
+            f"Supported llm providers are {supported}. Please refer to doc.")
     # check if provider config is complete
     if not llm_config_manager.is_config_complete(llm_config, parameter_schema):
         raise ValueError(
