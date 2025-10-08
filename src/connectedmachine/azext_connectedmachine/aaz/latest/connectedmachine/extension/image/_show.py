@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine extension image show",
 )
 class Show(AAZCommand):
-    """Get an Extension Metadata based on location, publisher, extensionType and version.
+    """Get an Extension Metadata based on location, publisher, extensionType and version
 
     :example: GET an extension metadata
         az connectedmachine extension image show --location EastUS --publisher microsoft.azure.monitor --extension-type azuremonitorlinuxagent --version 1.33.0
@@ -45,7 +45,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.extension_type = AAZStrArg(
-            options=["--extension-type"],
+            options=["--type", "--extension-type"],
             help="The extensionType of the Extension being received.",
             required=True,
         )
@@ -53,12 +53,12 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.publisher = AAZStrArg(
-            options=["--publisher"],
+            options=["-p", "--publisher"],
             help="The publisher of the Extension being received.",
             required=True,
         )
         _args_schema.version = AAZStrArg(
-            options=["--version"],
+            options=["-n", "--name", "--version"],
             help="The version of the Extension being received.",
             required=True,
         )
