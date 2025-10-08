@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2024-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/linkreferences", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/linkreferences", "2024-10-01"],
         ]
     }
 
@@ -143,7 +143,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2024-10-01",
                     required=True,
                 ),
             }

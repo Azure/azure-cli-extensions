@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"location": "eastus2euap"}'
+    body: '{"location": "centraluseuap"}'
     headers:
       Accept:
       - application/json
@@ -11,27 +11,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '27'
+      - '29'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name -l --resource-group
       User-Agent:
-      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"eastus2euap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"941b862e-77c7-4a7b-a604-2b62329afff9","provisioningState":"Succeeded"}}'
+      string: '{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"centraluseuap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"adc980a3-ffed-4baf-ac20-fef126f78c7c","provisioningState":"Succeeded"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-08T05:44:52.4883549Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-08T05:44:52.4883549Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '427'
+      - '653'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Mar 2025 14:45:46 GMT
+      - Wed, 08 Oct 2025 05:44:51 GMT
       expires:
       - '-1'
       pragma:
@@ -42,63 +42,19 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-global-writes:
-      - '11999'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/a7df241e-7361-44b2-8e52-0b7a13ed0370
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
+      x-ms-throttling-version:
+      - v2
       x-msedge-ref:
-      - 'Ref A: FBC030ADA23A4F5DA2C58F08A6763B89 Ref B: MNZ221060618023 Ref C: 2025-03-21T14:45:45Z'
+      - 'Ref A: 70A1CD052921406A8138236D9793D5AE Ref B: PNQ231110909023 Ref C: 2025-10-08T05:44:52Z'
     status:
       code: 200
       message: OK
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network perimeter profile create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --perimeter-name --resource-group
-      User-Agent:
-      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_nsp_accessrule_crud000001?api-version=2022-09-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001","name":"test_nsp_accessrule_crud000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_nsp_accessrule_crud","date":"2025-03-21T14:45:42Z","module":"nsp","Created":"2025-03-21T14:45:43.6160940Z"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '433'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 21 Mar 2025 14:45:46 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: B0BD833F8573411AB77358F260311190 Ref B: MNZ221060610029 Ref C: 2025-03-21T14:45:47Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "eastus2euap"}'
+    body: '{}'
     headers:
       Accept:
       - application/json
@@ -109,27 +65,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '27'
+      - '2'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name --perimeter-name --resource-group
       User-Agent:
-      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"TestNspProfile","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile","type":"Microsoft.Network/networkSecurityPerimeters/profiles","properties":{"accessRulesVersion":"0","diagnosticSettingsVersion":"0"},"location":"eastus2euap"}'
+      string: '{"name":"TestNspProfile","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile","type":"Microsoft.Network/networkSecurityPerimeters/profiles","properties":{"accessRulesVersion":"0","diagnosticSettingsVersion":"0"},"location":"centraluseuap","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-08T05:44:53.7213680Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-08T05:44:53.7213680Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '396'
+      - '622'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Mar 2025 14:45:48 GMT
+      - Wed, 08 Oct 2025 05:44:53 GMT
       expires:
       - '-1'
       pragma:
@@ -140,64 +96,20 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-global-writes:
-      - '11999'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/32299ced-5c73-420a-b16c-ac375e7aac1f
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
+      x-ms-throttling-version:
+      - v2
       x-msedge-ref:
-      - 'Ref A: A0437B570C5B4DBA8591A667724219D1 Ref B: MNZ221060619023 Ref C: 2025-03-21T14:45:47Z'
+      - 'Ref A: 98175799F31C46FE99849B7CB9FDD603 Ref B: PNQ231110906025 Ref C: 2025-10-08T05:44:52Z'
     status:
       code: 200
       message: OK
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network perimeter profile access-rule create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --profile-name --perimeter-name --resource-group --fqdn --direction
-      User-Agent:
-      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_nsp_accessrule_crud000001?api-version=2022-09-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001","name":"test_nsp_accessrule_crud000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_nsp_accessrule_crud","date":"2025-03-21T14:45:42Z","module":"nsp","Created":"2025-03-21T14:45:43.6160940Z"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '433'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 21 Mar 2025 14:45:49 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: D8EA24CEA70B4FF5AB4DD4F158176628 Ref B: MNZ221060619039 Ref C: 2025-03-21T14:45:49Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "eastus2euap", "properties": {"direction": "Outbound", "fullyQualifiedDomainNames":
-      ["www.abc.com", "www.google.com"]}}'
+    body: '{"properties": {"direction": "Outbound", "fullyQualifiedDomainNames": ["www.abc.com",
+      "www.google.com"]}}'
     headers:
       Accept:
       - application/json
@@ -208,27 +120,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '132'
+      - '105'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name --profile-name --perimeter-name --resource-group --fqdn --direction
       User-Agent:
-      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com","www.google.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[],"appliesTo":[{"resourceType":"*","features":["*"]}]}}'
+      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com","www.google.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[],"appliesTo":[{"resourceType":"*","features":["*"]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-08T05:44:55.0135070Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-08T05:44:55.0135070Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '636'
+      - '860'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Mar 2025 14:45:50 GMT
+      - Wed, 08 Oct 2025 05:44:58 GMT
       expires:
       - '-1'
       pragma:
@@ -239,12 +151,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centralindia/1232c384-6748-48a4-8bf5-baeaded84a23
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 50EF300BC3C74B318685C30B70E96D65 Ref B: MNZ221060608037 Ref C: 2025-03-21T14:45:49Z'
+      - 'Ref A: FF7EA4D72BE4471C99CAAE68E890EEF5 Ref B: PNQ231110907023 Ref C: 2025-10-08T05:44:54Z'
     status:
       code: 200
       message: OK
@@ -262,21 +176,21 @@ interactions:
       ParameterSetName:
       - --name --profile-name --perimeter-name --resource-group
       User-Agent:
-      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com","www.google.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[],"appliesTo":[{"resourceType":"*","features":["*"]}]}}'
+      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com","www.google.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[],"appliesTo":[{"resourceType":"*","features":["*"]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-08T05:44:55.0135070Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-08T05:44:55.0135070Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '636'
+      - '860'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Mar 2025 14:45:50 GMT
+      - Wed, 08 Oct 2025 05:44:59 GMT
       expires:
       - '-1'
       pragma:
@@ -287,10 +201,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/530c7c50-9f55-46ee-bc85-24b9bb93b759
+      x-ms-throttling-version:
+      - v2
       x-msedge-ref:
-      - 'Ref A: 6CADD9AFDAB341689D3BB599A21F661C Ref B: MNZ221060610021 Ref C: 2025-03-21T14:45:50Z'
+      - 'Ref A: 827EF01A0652482DA8468277D96DF82C Ref B: PNQ231110908060 Ref C: 2025-10-08T05:44:59Z'
     status:
       code: 200
       message: OK
@@ -308,21 +224,21 @@ interactions:
       ParameterSetName:
       - --name --profile-name --perimeter-name --resource-group --fqdn --direction
       User-Agent:
-      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_nsp_accessrule_crud000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2024-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001","name":"test_nsp_accessrule_crud000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_nsp_accessrule_crud","date":"2025-03-21T14:45:42Z","module":"nsp","Created":"2025-03-21T14:45:43.6160940Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com","www.google.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[],"appliesTo":[{"resourceType":"*","features":["*"]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-08T05:44:55.0135070Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-08T05:44:55.0135070Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '433'
+      - '860'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Mar 2025 14:45:51 GMT
+      - Wed, 08 Oct 2025 05:44:59 GMT
       expires:
       - '-1'
       pragma:
@@ -333,63 +249,19 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/f00bf8e6-fc5c-4eda-ae55-41626b01c5cf
+      x-ms-throttling-version:
+      - v2
       x-msedge-ref:
-      - 'Ref A: E1DBA247E1784FA695618E8CD7A223FE Ref B: MNZ221060619027 Ref C: 2025-03-21T14:45:51Z'
+      - 'Ref A: 657D7A109CB0468DBB5DF18E3DEF836A Ref B: PNQ231110909062 Ref C: 2025-10-08T05:44:59Z'
     status:
       code: 200
       message: OK
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network perimeter profile access-rule update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --profile-name --perimeter-name --resource-group --fqdn --direction
-      User-Agent:
-      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2024-07-01
-  response:
-    body:
-      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com","www.google.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[],"appliesTo":[{"resourceType":"*","features":["*"]}]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '636'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 21 Mar 2025 14:45:52 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: D1E12C56053046B582F84989406A890B Ref B: MNZ221060609019 Ref C: 2025-03-21T14:45:51Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "eastus2euap", "properties": {"addressPrefixes": [], "direction":
-      "Outbound", "emailAddresses": [], "fullyQualifiedDomainNames": ["www.abc.com"],
-      "phoneNumbers": [], "subscriptions": []}}'
+    body: '{"properties": {"addressPrefixes": [], "direction": "Outbound", "emailAddresses":
+      [], "fullyQualifiedDomainNames": ["www.abc.com"], "phoneNumbers": [], "subscriptions":
+      []}}'
     headers:
       Accept:
       - application/json
@@ -400,27 +272,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '200'
+      - '173'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name --profile-name --perimeter-name --resource-group --fqdn --direction
       User-Agent:
-      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[],"appliesTo":[{"resourceType":"*","features":["*"]}]}}'
+      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[],"appliesTo":[{"resourceType":"*","features":["*"]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-08T05:45:00.5893836Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-08T05:45:00.5893836Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '619'
+      - '843'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Mar 2025 14:45:53 GMT
+      - Wed, 08 Oct 2025 05:45:00 GMT
       expires:
       - '-1'
       pragma:
@@ -431,12 +303,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-global-writes:
-      - '11999'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/85dc519d-6251-4522-b7b4-cbe5bb272f03
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
+      - '798'
+      x-ms-throttling-version:
+      - v2
       x-msedge-ref:
-      - 'Ref A: EDB02FDA3AC34F2F99A1C7E494A5E20D Ref B: MNZ221060609019 Ref C: 2025-03-21T14:45:52Z'
+      - 'Ref A: F437D5E677D64185BB9CD10A906F3BA2 Ref B: PNQ231110907036 Ref C: 2025-10-08T05:45:00Z'
     status:
       code: 200
       message: OK
@@ -454,21 +328,21 @@ interactions:
       ParameterSetName:
       - --name --profile-name --perimeter-name --resource-group
       User-Agent:
-      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2024-10-01
   response:
     body:
-      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[],"appliesTo":[{"resourceType":"*","features":["*"]}]}}'
+      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[],"appliesTo":[{"resourceType":"*","features":["*"]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-08T05:45:00.5893836Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-08T05:45:00.5893836Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '619'
+      - '843'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Mar 2025 14:45:53 GMT
+      - Wed, 08 Oct 2025 05:45:04 GMT
       expires:
       - '-1'
       pragma:
@@ -479,10 +353,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/westindia/c6d9bdcd-c9c0-411f-b006-62f8c7a43fa8
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 9D3C1E470CE74B0CBB29EB0A3B95A5FE Ref B: MNZ221060619051 Ref C: 2025-03-21T14:45:54Z'
+      - 'Ref A: A6FC043E3DD4466889910D669C429066 Ref B: PNQ231110907052 Ref C: 2025-10-08T05:45:00Z'
     status:
       code: 200
       message: OK
@@ -500,21 +376,21 @@ interactions:
       ParameterSetName:
       - --perimeter-name --profile-name --resource-group
       User-Agent:
-      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules?api-version=2024-10-01
   response:
     body:
-      string: '{"nextLink":"","value":[{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[],"appliesTo":[{"resourceType":"*","features":["*"]}]}}]}'
+      string: '{"nextLink":"","value":[{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[],"appliesTo":[{"resourceType":"*","features":["*"]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-08T05:45:00.5893836Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-08T05:45:00.5893836Z"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '645'
+      - '869'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Mar 2025 14:45:54 GMT
+      - Wed, 08 Oct 2025 05:45:05 GMT
       expires:
       - '-1'
       pragma:
@@ -525,10 +401,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/69ba6c84-4373-49c3-b43d-e70a900fc2ca
+      x-ms-throttling-version:
+      - v2
       x-msedge-ref:
-      - 'Ref A: 51E4535F5208480DAC5AFDECB1100F6C Ref B: MNZ221060618033 Ref C: 2025-03-21T14:45:54Z'
+      - 'Ref A: 112A11B6E0CE4FA587F42DE61507D33D Ref B: PNQ231110909052 Ref C: 2025-10-08T05:45:04Z'
     status:
       code: 200
       message: OK
@@ -548,9 +426,9 @@ interactions:
       ParameterSetName:
       - --name --perimeter-name --profile-name --resource-group --yes
       User-Agent:
-      - AZURECLI/2.70.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.36)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2024-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2024-10-01
   response:
     body:
       string: ''
@@ -560,7 +438,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 21 Mar 2025 14:45:56 GMT
+      - Wed, 08 Oct 2025 05:45:05 GMT
       expires:
       - '-1'
       pragma:
@@ -571,12 +449,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=37ca76fe-83f1-4c59-823b-b1953db8111c/centraluseuap/9455df92-02ad-4029-96b2-b8a65eac45c7
       x-ms-ratelimit-remaining-subscription-deletes:
       - '799'
-      x-ms-ratelimit-remaining-subscription-global-deletes:
-      - '11999'
+      x-ms-throttling-version:
+      - v2
       x-msedge-ref:
-      - 'Ref A: DDD7258E9096448493E6775888B2DA72 Ref B: MNZ221060608045 Ref C: 2025-03-21T14:45:55Z'
+      - 'Ref A: E715329E5F2A494784203EEA71FBC6D4 Ref B: PNQ231110906054 Ref C: 2025-10-08T05:45:05Z'
     status:
       code: 200
       message: OK
