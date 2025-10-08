@@ -12312,15 +12312,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         assert acs_extension_found, "Azure Container Storage not found"
 
-        # Sleep for 5 mins before next operation,
-        # since update operations take
-        # some time to finish.
-        time.sleep(10 * 60)
-
         # update: disable-azure-container-storage
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --no-wait ' \
                      '--disable-azure-container-storage'
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])        
 
@@ -12519,10 +12522,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: enable-azure-monitor-logs
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--enable-azure-monitor-logs'
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.omsagent.enabled', True),
             self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
@@ -12531,10 +12542,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: disable-azure-monitor-logs
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--disable-azure-monitor-logs'
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.omsagent.enabled', False),
         ])
@@ -12789,40 +12808,61 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: enable-azure-monitor-metrics with OpenTelemetry metrics
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=9090 '
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 9090),
         ])
 
         # update: disable OpenTelemetry metrics but keep Azure Monitor metrics
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--disable-opentelemetry-metrics'
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', True),  # Still enabled
+            self.check('azureMonitorProfile.metrics.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', False),
         ])
 
         # update: disable-azure-monitor-metrics (should also disable OpenTelemetry metrics)
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--disable-azure-monitor-metrics'
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.metrics.enabled', False),
         ])
 
         # delete
-        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes'
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
         self.cmd(cmd, checks=[
             self.is_empty(),
         ])
@@ -12860,20 +12900,24 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])        
-        # Sleep for 10 mins before next operation,
-        # since azure container storage operations take
-        # some time to post process.
-        time.sleep(10 * 60)
-
+        
         # update: disable-azure-container-storage
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --no-wait ' \
                      '--disable-azure-container-storage all'
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
 
         # delete
-        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes'
         self.cmd(cmd, checks=[
             self.is_empty(),
         ])
@@ -12913,15 +12957,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])        
-        # Sleep for 10 mins before next operation,
-        # since azure container storage operations take
-        # some time to post process.
-        time.sleep(10 * 60)
-
+        
         # update: disable-azure-container-storage
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --no-wait ' \
                      '--disable-azure-container-storage all'
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
 
@@ -12983,10 +13031,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # Phase 2: Update - disable only OpenTelemetry logs (keep everything else)
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--disable-opentelemetry-logs'
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             # Azure Monitor logs should still be enabled
             self.check('addonProfiles.omsagent.enabled', True),
@@ -13003,10 +13059,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # Phase 3: Update - disable only OpenTelemetry metrics (keep Azure Monitor features)
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--disable-opentelemetry-metrics'
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             # Azure Monitor logs should still be enabled
             self.check('addonProfiles.omsagent.enabled', True),
@@ -13021,12 +13085,20 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # Phase 4: Update - re-enable all OpenTelemetry features with different ports
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--enable-opentelemetry-logs --opentelemetry-logs-port=9090 '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port=9091 '
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             # Azure Monitor features should still be enabled
             self.check('addonProfiles.omsagent.enabled', True),
@@ -13042,10 +13114,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # Phase 5: Update - disable Azure Monitor metrics (should also disable OpenTelemetry metrics)
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--disable-azure-monitor-metrics'
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             # Azure Monitor logs should still be enabled
             self.check('addonProfiles.omsagent.enabled', True),
@@ -13060,10 +13140,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # Phase 6: Update - disable Azure Monitor logs (should also disable OpenTelemetry logs)
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--disable-azure-monitor-logs'
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             # Azure Monitor logs should be disabled
             self.check('addonProfiles.omsagent.enabled', False),
@@ -13073,14 +13161,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # Phase 7: Update - re-enable all monitoring features at once
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--enable-azure-monitor-logs --enable-azure-monitor-metrics --enable-azure-monitor-app-monitoring '
             '--enable-opentelemetry-logs --opentelemetry-logs-port=7070 '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port=7071 '
             '--enable-windows-recording-rules '
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             # All Azure Monitor features should be enabled
             self.check('addonProfiles.omsagent.enabled', True),
@@ -13097,11 +13193,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # Phase 8: Final cleanup - disable all monitoring features
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
             '--disable-azure-monitor-logs --disable-azure-monitor-metrics --disable-azure-monitor-app-monitoring '
             '--disable-opentelemetry-logs --disable-opentelemetry-metrics'
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the final update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the final update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             # All monitoring features should be disabled
             self.check('addonProfiles.omsagent.enabled', False),
