@@ -21,7 +21,10 @@ logger = get_logger(__name__)
 # pylint: disable=unused-argument
 def aks_agent_init(cmd):
     """Initialize AKS agent llm configuration."""
-    print("Welcome to AKS Agent LLM configuration setup.")
+    from rich.console import Console
+    console = Console()
+    logger.info("Welcome to AKS Agent LLM configuration setup.")
+    console.print("Welcome to AKS Agent LLM configuration setup.")
 
     provider = prompt_provider_choice()
     params = provider.prompt_params()
@@ -33,7 +36,7 @@ def aks_agent_init(cmd):
         logger.info("%s", message)
         llm_config_manager.save(provider.name, params)
         logger.info("Configuration saved successfully.")
-        print("LLM configuration setup successfully.")
+        console.print("LLM configuration setup successfully.")
     elif not is_valid and action == "retry_input":
         logger.warning("%s Please re-run `aks agent init` to correct the input parameters.", message)
         raise ValueError(f"{message} Please re-run `aks agent init` to correct the input parameters.")
@@ -162,11 +165,12 @@ def _check_provider(
     # Check if provider is supported
     if provider_name not in PROVIDER_REGISTRY:
         raise ValueError(
-            f"Unsupported provider {provider_name}.")
+            f"Unsupported provider {provider_name} for LLM initialization."
+            f"Supported llm providers are {PROVIDER_REGISTRY}. Please refer to doc.")
     # check if provider config is complete
     if not llm_config_manager.is_config_complete(llm_config, parameter_schema):
         raise ValueError(
-            "Incomplete configuration in user config, please run `az aks agent init` to initialize.")
+            "Incomplete configuration in user config, please run `az aks agent-init` to initialize.")
     return True
 
 

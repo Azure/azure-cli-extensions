@@ -5,11 +5,11 @@
 
 import requests
 from urllib.parse import urljoin
-from .base import LLMProvider, non_empty, is_url
+from .base import LLMProvider, non_empty, is_valid_url
 
 
-class OpenAICompatiableProvider(LLMProvider):
-    name = "openai_compatiable"
+class OpenAICompatibleProvider(LLMProvider):
+    name = "openai_compatible"
 
     @property
     def parameter_schema(self):
@@ -30,7 +30,7 @@ class OpenAICompatiableProvider(LLMProvider):
                 "secret": False,
                 "default": "https://api.openai.com/v1",
                 "hint": None,
-                "validator": is_url
+                "validator": is_valid_url
             },
         }
 
@@ -42,7 +42,7 @@ class OpenAICompatiableProvider(LLMProvider):
         if not all([api_key, api_base, model_name]):
             return False, "Missing required parameters.", "retry_input"
 
-        url = urljoin(api_base.rstrip('/') + '/', "chat/completions")
+        url = urljoin(api_base, "chat/completions")
         headers = {"Authorization": f"Bearer {api_key}",
                    "Content-Type": "application/json"}
         payload = {

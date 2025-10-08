@@ -4,20 +4,23 @@
 # --------------------------------------------------------------------------------------------
 
 from typing import List, Tuple
+from rich.console import Console
 from .base import LLMProvider
 from .azure_provider import AzureProvider
 from .openai_provider import OpenAIProvider
 from .anthropic_provider import AnthropicProvider
 from .gemini_provider import GeminiProvider
-from .openai_compatiable_provider import OpenAICompatiableProvider
+from .openai_compatible_provider import OpenAICompatibleProvider
 
+
+console = Console()
 
 _PROVIDER_CLASSES: List[LLMProvider] = [
     AzureProvider,
     OpenAIProvider,
     AnthropicProvider,
     GeminiProvider,
-    OpenAICompatiableProvider,
+    OpenAICompatibleProvider,
     # Add new providers here
 ]
 
@@ -44,7 +47,7 @@ def _get_provider_by_index(idx: int) -> LLMProvider:
     Raises ValueError if index is out of range.
     """
     if 1 <= idx <= len(_PROVIDER_CLASSES):
-        print("You selected provider:", _PROVIDER_CLASSES[idx - 1].name)
+        console.print("You selected provider:", _PROVIDER_CLASSES[idx - 1].name)
         return _PROVIDER_CLASSES[idx - 1]()
     raise ValueError(f"Invalid provider index: {idx}")
 
@@ -59,7 +62,7 @@ def prompt_provider_choice() -> LLMProvider:
         raise ValueError("No providers are registered.")
     while True:
         for idx, name in choices:
-            print(f" {idx}. {name}")
+            console.print(f" {idx}. {name}")
         sel_idx = input("Enter the number of your choice: ").strip().lower()
 
         if sel_idx == "/exit":
@@ -67,7 +70,7 @@ def prompt_provider_choice() -> LLMProvider:
         try:
             return _get_provider_by_index(int(sel_idx))
         except ValueError as e:
-            print(
+            console.print(
                 f"Invalid input: {e}. Please enter a valid number, or type /exit to quit.")
 
 

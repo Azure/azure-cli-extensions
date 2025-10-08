@@ -16,8 +16,8 @@ class OpenAIProvider(LLMProvider):
         return {
             "MODEL_NAME": {
                 "secret": False,
-                "default": "gpt-5",
-                "hint": None,
+                "default": None,
+                "hint": "gpt-4.1",
                 "validator": non_empty
             },
             "OPENAI_API_KEY": {

@@ -7,7 +7,7 @@
 import requests
 from typing import Tuple
 from urllib.parse import urljoin, urlencode
-from .base import LLMProvider, is_url, non_empty
+from .base import LLMProvider, is_valid_url, non_empty
 
 
 class AzureProvider(LLMProvider):
@@ -16,6 +16,12 @@ class AzureProvider(LLMProvider):
     @property
     def parameter_schema(self):
         return {
+            "MODEL_NAME": {
+                "secret": False,
+                "default": None,
+                "hint": "should be consistent with your deployed name, e.g., gpt-4.1",
+                "validator": non_empty
+            },
             "AZURE_API_KEY": {
                 "secret": True,
                 "default": None,
@@ -26,20 +32,14 @@ class AzureProvider(LLMProvider):
                 "secret": False,
                 "default": None,
                 "hint": "https://{your-custom-endpoint}.openai.azure.com/",
-                "validator": is_url
+                "validator": is_valid_url
             },
             "AZURE_API_VERSION": {
                 "secret": False,
                 "default": "2025-04-01-preview",
                 "hint": None,
                 "validator": non_empty
-            },
-            "MODEL_NAME": {
-                "secret": False,
-                "default": "gpt-4.1",
-                "hint": "should be consistent with your deployed name",
-                "validator": non_empty
-            },
+            }
         }
 
     def validate_connection(self, params: dict) -> Tuple[bool, str, str]:
@@ -52,7 +52,6 @@ class AzureProvider(LLMProvider):
             return False, "Missing required Azure parameters.", "retry_input"
 
         # REST API reference: https://learn.microsoft.com/en-us/azure/ai-foundry/openai/api-version-lifecycle?tabs=rest
-        api_base = api_base.rstrip('/') + '/'
         url = urljoin(api_base, "openai/responses")
         query = {"api-version": api_version}
         full_url = f"{url}?{urlencode(query)}"

@@ -7,23 +7,24 @@
 from abc import ABC, abstractmethod
 from getpass import getpass
 from typing import Dict, Callable, Tuple, Any
-import re
+from rich.console import Console
+from urllib.parse import urlparse
+
+console = Console()
 
 
 def non_empty(v: str) -> bool:
     return bool(v and v.strip())
 
 
-def is_url(v: str) -> bool:
-    regex = re.compile(
-        r'^(?:http|ftp)s?://'             # http:// or https://
-        # domain, IPv4 or localhost
-        r'(?:[\w.-]+|\d{1,3}(?:\.\d{1,3}){3}|localhost)'
-        r'(?::\d+)?'                      # optional port
-        r'(?:/?|[/?]\S+)?$',              # path
-        re.IGNORECASE
-    )
-    return re.match(regex, v) is not None
+def is_valid_url(v: str) -> bool:
+    try:
+        parsed = urlparse(v)
+        if not parsed.scheme or not parsed.netloc:
+            return False
+        return True
+    except ValueError:
+        return False
 
 
 class LLMProvider(ABC):
@@ -78,7 +79,7 @@ class LLMProvider(ABC):
                 if validator(value):
                     params[param] = value
                     break
-                print(
+                console.print(
                     f"Invalid value for {param}. Please try again, or type /exit to quit.")
 
         return params

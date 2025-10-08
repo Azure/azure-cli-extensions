@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
-from azext_aks_agent.agent.llm_providers import  PROVIDER_REGISTRY, AzureProvider, OpenAIProvider, AnthropicProvider, GeminiProvider, OpenAICompatiableProvider
+from azext_aks_agent.agent.llm_providers import PROVIDER_REGISTRY, AnthropicProvider, GeminiProvider, AzureProvider, OpenAIProvider, OpenAICompatibleProvider
 
 
 class TestLLMProviders(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestLLMProviders(unittest.TestCase):
         self.assertIs(PROVIDER_REGISTRY['openai'], OpenAIProvider)
         self.assertIs(PROVIDER_REGISTRY['anthropic'], AnthropicProvider)
         self.assertIs(PROVIDER_REGISTRY['gemini'], GeminiProvider)
-        self.assertIs(PROVIDER_REGISTRY['openai_compatiable'], OpenAICompatiableProvider)
+        self.assertIs(PROVIDER_REGISTRY['openai_compatible'], OpenAICompatibleProvider)
 
     def test_provider_choices_numbered(self):
         """Test numbered provider choices are correct and ordered."""

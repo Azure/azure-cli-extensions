@@ -22,8 +22,8 @@ class GeminiProvider(LLMProvider):
             },
             "MODEL_NAME": {
                 "secret": False,
-                "default": "gemini-2.5",
-                "hint": None,
+                "default": None,
+                "hint": "gemini-2.5",
                 "validator": non_empty
             },
         }
