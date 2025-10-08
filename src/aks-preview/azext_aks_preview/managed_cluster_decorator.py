@@ -4301,7 +4301,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         if self.context.get_ai_toolchain_operator(enable_validation=True):
             if mc.ai_toolchain_operator_profile is None:
-                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile() # pylint: disable=no-member
+                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile()  # pylint: disable=no-member
             # set enabled
             mc.ai_toolchain_operator_profile.enabled = True
 
@@ -4376,7 +4376,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     self.models.SchedulerProfileSchedulerInstanceProfiles()  # pylint: disable=no-member
                 )
             if mc.scheduler_profile.scheduler_instance_profiles.upstream is None:
-                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile() # pylint: disable=no-member
+                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile()  # pylint: disable=no-member
             mc.scheduler_profile.scheduler_instance_profiles.upstream.scheduler_config_mode = (
                 self.models.SchedulerConfigMode.MANAGED_BY_CRD  # pylint: disable=no-member
             )
@@ -5969,10 +5969,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if self.context.get_enable_optimized_addon_scaling():
             if mc.workload_auto_scaler_profile is None:
-                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile() # pylint: disable=no-member
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()  # pylint: disable=no-member
             if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler = (
-                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler() # pylint: disable=no-member
+                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()  # pylint: disable=no-member
                 )
             # set enabled
             mc.workload_auto_scaler_profile.vertical_pod_autoscaler.enabled = True
@@ -5980,10 +5980,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if self.context.get_disable_optimized_addon_scaling():
             if mc.workload_auto_scaler_profile is None:
-                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile() # pylint: disable=no-member
+                mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()  # pylint: disable=no-member
             if mc.workload_auto_scaler_profile.vertical_pod_autoscaler is None:
                 mc.workload_auto_scaler_profile.vertical_pod_autoscaler = (
-                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler() # pylint: disable=no-member
+                    self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler()  # pylint: disable=no-member
                 )
             # set disabled
             mc.workload_auto_scaler_profile.vertical_pod_autoscaler.addon_autoscaling = "Disabled"
@@ -6393,12 +6393,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if self.context.get_ai_toolchain_operator(enable_validation=True):
             if mc.ai_toolchain_operator_profile is None:
-                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile() # pylint: disable=no-member
+                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile()  # pylint: disable=no-member
             mc.ai_toolchain_operator_profile.enabled = True
 
         if self.context.get_disable_ai_toolchain_operator():
             if mc.ai_toolchain_operator_profile is None:
-                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile() # pylint: disable=no-member
+                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile()  # pylint: disable=no-member
             mc.ai_toolchain_operator_profile.enabled = False
         return mc
 
@@ -6547,7 +6547,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.models.SchedulerProfileSchedulerInstanceProfiles()  # pylint: disable=no-member
                 )
             if mc.scheduler_profile.scheduler_instance_profiles.upstream is None:
-                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile() # pylint: disable=no-member
+                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile()  # pylint: disable=no-member
             mc.scheduler_profile.scheduler_instance_profiles.upstream.scheduler_config_mode = (
                 self.models.SchedulerConfigMode.MANAGED_BY_CRD  # pylint: disable=no-member
             )
@@ -6560,7 +6560,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.models.SchedulerProfileSchedulerInstanceProfiles()  # pylint: disable=no-member
                 )
             if mc.scheduler_profile.scheduler_instance_profiles.upstream is None:
-                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile() # pylint: disable=no-member
+                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile()  # pylint: disable=no-member
             mc.scheduler_profile.scheduler_instance_profiles.upstream.scheduler_config_mode = (
                 self.models.SchedulerConfigMode.DEFAULT  # pylint: disable=no-member
             )

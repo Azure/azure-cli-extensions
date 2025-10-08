@@ -162,7 +162,8 @@ from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import (
     in_cloud_console,
     sdk_no_wait,
-    shell_safe_json_parse, 
+    send_raw_request,
+    shell_safe_json_parse,
 )
 from azure.core.exceptions import (
     ResourceNotFoundError,
@@ -293,14 +294,11 @@ def ensure_container_insights_for_monitoring_preview(
             creds, _, _ = profile.get_login_credentials()
 
             # Get the access token for Azure Resource Manager
+            access_token = ""
             if hasattr(creds, 'get_token'):
                 # For newer Azure Identity credentials
                 token_info = creds.get_token('https://management.azure.com/.default')
                 access_token = token_info.token
-            else:
-                # For older credentials, try to get the token directly
-                # pylint: disable=protected-access
-                access_token = creds._token['access_token']
 
             # Build minimal request
             url = f"https://management.azure.com{workspace_resource_id}?api-version=2015-11-01-preview&$select=location,id"
