@@ -91,7 +91,7 @@ class PacketCaptureOperation(AAZCommand):
             help="The tcp-flag type to be captured. Used with protocol TCP",
         )
         _args_schema.number_of_packets_to_capture = AAZIntArg(
-            options=["--number-of-packets-to-capture"],
+            options=["--num-packets", "--number-of-packets-to-capture"],
             arg_group="Parameters",
             help="Number of packets to be captured. If the field is not provided, the default value is 1000.",
             default=1000,
@@ -116,7 +116,7 @@ class PacketCaptureOperation(AAZCommand):
         _args_schema.sas_url = AAZStrArg(
             options=["--sas-url"],
             arg_group="Parameters",
-            help="Upload capture location",
+            help="SAS URL of the destination blob container where the packet capture file will be uploaded.",
         )
 
         filters = cls._args_schema.filters

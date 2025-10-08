@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.0
+++++++
+* `az network azure-firewall packet-capture-operation`: Add packet capture operation support for the azure firewall
+
 1.3.0
 ++++++
 * `az network firewall create`: Add parameter `--edge-zone` to support extended location

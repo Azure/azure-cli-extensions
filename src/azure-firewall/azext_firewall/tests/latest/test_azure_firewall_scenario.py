@@ -1545,9 +1545,9 @@ class AzureFirewallScenario(ScenarioTest):
             "public_ip_name": self.create_random_name("public-ip-", 16),
             "m_public_ip_name": self.create_random_name("mpublic-ip-", 16),
             'rg' : resource_group,
-            'sub_id': "020a3f33-bdd2-4ddc-9275-6041363e2876",
+            'sub_id': self.get_subscription_id(),
             'location': "centralus",
-            'storageaccountname': f"azfwcontainerpcaptestcli",
+            'storageaccountname': self.create_random_name('fwpcap', 20).lower(),
             'expirystring': tomorrow.strftime("%Y-%m-%d"),
             'containername': 'packetcapturecontainer',
         })
@@ -1555,7 +1555,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('storage account create -g {rg} -n {storageaccountname} --sku Standard_LRS --https-only true --kind StorageV2 --access-tier Hot')
         self.cmd('storage container create -n {containername} --account-name {storageaccountname} --public-access off')
         storage_account = self.cmd('az storage account show -g {rg} -n {storageaccountname}').get_output_in_json()
-        sas_response = self.cmd('az storage container generate-sas --account-name {storageaccountname} --name {containername} --permissions acdlrw --expiry {expirystring}').get_output_in_json()
+        sas_response = self.cmd('az storage container generate-sas --account-name {storageaccountname} --name {containername} --permissions acdlrw --expiry {expirystring}').output.strip()
         blob_endpoint = storage_account['primaryEndpoints']['blob']
         sas_url = f"{blob_endpoint}{self.kwargs['containername']}?{sas_response}"
         self.kwargs.update({
