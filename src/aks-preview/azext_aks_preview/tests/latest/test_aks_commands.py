@@ -6240,22 +6240,35 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--enable-managed-identity "
             "--node-count 1 "
             "--ssh-key-value={ssh_key_value} "
+            "--no-wait "
         )
         create_cmd += (
             f"--assign-identity {identity_id}" if user_assigned_identity else ""
         )
         self.cmd(create_cmd)
 
+        # Wait for the create operation to complete
+        wait_cmd = f'aks wait --resource-group={resource_group} --name={aks_name} --created --timeout=1800'
+        self.cmd(wait_cmd)
+
         if new_addon_cmd:
             enable_monitoring_cmd = "aks addon enable -a monitoring "
         else:
             enable_monitoring_cmd = "aks enable-addons -a monitoring "
-        enable_monitoring_cmd += f"--resource-group={resource_group} --name={aks_name} "
+        enable_monitoring_cmd += f"--resource-group={resource_group} --name={aks_name} --no-wait "
         if syslog_enabled:
             enable_monitoring_cmd += "--enable-syslog "
 
+        self.cmd(enable_monitoring_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = f'aks wait --resource-group={resource_group} --name={aks_name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = f'aks show --resource-group={resource_group} --name={aks_name} --output=json'
         response = self.cmd(
-            enable_monitoring_cmd,
+            show_cmd,
             checks=[
                 self.check("addonProfiles.omsagent.enabled", True),
                 self.check("addonProfiles.omsagent.config.useAADAuth", "true"),
@@ -6306,7 +6319,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # make sure monitoring can be smoothly disabled
-        self.cmd(f"aks disable-addons -a monitoring -g={resource_group} -n={aks_name}")
+        self.cmd(f"aks disable-addons -a monitoring -g={resource_group} -n={aks_name} --no-wait")
+
+        # Wait for the disable operation to complete
+        wait_cmd = f'aks wait --resource-group={resource_group} --name={aks_name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
 
         # delete
         self.cmd(
@@ -12514,8 +12531,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # create: without enable-azure-monitor-logs
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity --output=json'
-        self.cmd(create_cmd, checks=[
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity --no-wait --output=json'
+        self.cmd(create_cmd)
+
+        # Wait for the create operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --created --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the creation was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.not_exists('addonProfiles.omsagent'),
         ])
@@ -12769,10 +12794,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
-            '--enable-managed-identity --enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=8080 '
+            '--enable-managed-identity --enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=8080 --no-wait '
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview --output=json'
         )
-        self.cmd(create_cmd, checks=[
+        self.cmd(create_cmd)
+
+        # Wait for the create operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --created --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the creation was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.metrics.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
@@ -12800,8 +12833,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # create: without enable-azure-monitor-metrics
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity --output=json'
-        self.cmd(create_cmd, checks=[
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity --no-wait --output=json'
+        self.cmd(create_cmd)
+
+        # Wait for the create operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --created --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the creation was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.not_exists('azureMonitorProfile.metrics'),
         ])
@@ -13008,10 +13049,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--enable-managed-identity --enable-azure-monitor-logs --enable-azure-monitor-metrics --enable-azure-monitor-app-monitoring '
             '--enable-opentelemetry-logs --opentelemetry-logs-port=8080 '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port=8081 '
-            '--enable-windows-recording-rules '
+            '--enable-windows-recording-rules --no-wait '
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview --output=json'
         )
-        self.cmd(create_cmd, checks=[
+        self.cmd(create_cmd)
+
+        # Wait for the create operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --created --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the creation was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             # Azure Monitor logs checks
             self.check('addonProfiles.omsagent.enabled', True),
