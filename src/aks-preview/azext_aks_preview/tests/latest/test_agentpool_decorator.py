@@ -2742,7 +2742,7 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         # Verify LocalDNS profile wasn't changed
         self.assertEqual(dec_agentpool_2.local_dns_profile, original_local_dns_profile)
 
-        # Test case 3: LocalDNS config with null values
+        # Test case 3: LocalDNS config with null values (should throw InvalidArgumentValueError)
         localdns_config_with_nulls = {
             "mode": "Required",
             "kubeDNSOverrides": None,
@@ -2770,15 +2770,13 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
             
             agentpool_3 = self.create_initialized_agentpool_instance()
             dec_3.context.attach_agentpool(agentpool_3)
-            dec_agentpool_3 = dec_3.update_localdns_profile(agentpool_3)
             
-            # Verify that LocalDNS profile was created with null handling
-            self.assertIsNotNone(dec_agentpool_3.local_dns_profile)
-            self.assertEqual(dec_agentpool_3.local_dns_profile.mode, "Required")
-            # kubeDNSOverrides should be empty dict due to null input
-            self.assertEqual(len(dec_agentpool_3.local_dns_profile.kube_dns_overrides), 0)
-            # vnetDNSOverrides should have one entry
-            self.assertEqual(len(dec_agentpool_3.local_dns_profile.vnet_dns_overrides), 1)
+            # Test case 3 should now throw InvalidArgumentValueError when kubeDNSOverrides is None
+            with self.assertRaises(InvalidArgumentValueError) as context:
+                dec_3.update_localdns_profile(agentpool_3)
+            
+            # Verify the error message contains expected text about DNS overrides
+            self.assertIn("Expected a dictionary for DNS overrides, but got NoneType: None", str(context.exception))
             
         finally:
             os.unlink(config_file_path)
@@ -2819,10 +2817,11 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         process_dns_overrides(dns_overrides_with_nulls, target_dict_2, mock_build_override)
         self.assertEqual(len(target_dict_2), 1)
         
-        # Test case 3: None input (should handle gracefully)
+        # Test case 3: None input (should throw InvalidArgumentValueError)
         target_dict_3 = {}
-        process_dns_overrides(None, target_dict_3, mock_build_override)
-        self.assertEqual(len(target_dict_3), 0)
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            process_dns_overrides(None, target_dict_3, mock_build_override)
+        self.assertIn("Expected a dictionary for DNS overrides, but got NoneType: None", str(context.exception))
         
         # Test case 4: Empty input (should handle gracefully)
         target_dict_4 = {}
