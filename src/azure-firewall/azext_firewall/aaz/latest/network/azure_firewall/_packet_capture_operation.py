@@ -28,7 +28,7 @@ class PacketCaptureOperation(AAZCommand):
     _aaz_info = {
         "version": "2024-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/azureFirewalls/{}/packetCaptureOperation", "2024-10-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls/{}/packetcaptureoperation", "2024-10-01"],
         ]
     }
 
@@ -116,7 +116,7 @@ class PacketCaptureOperation(AAZCommand):
         _args_schema.sas_url = AAZStrArg(
             options=["--sas-url"],
             arg_group="Parameters",
-            help="SAS URL of the destination blob container where the packet capture file will be uploaded.",
+            help="Upload capture location",
         )
 
         filters = cls._args_schema.filters
