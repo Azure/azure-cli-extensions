@@ -242,14 +242,14 @@ def _aks_bastion_get_current_shell_cmd():
     parent = psutil.Process(ppid)
     parent_name = parent.name()
     logger.debug(f"Immediate parent process: {parent_name} (PID: {ppid})")
-    
-    # On Windows, Azure CLI is often invoked as az.cmd, which means the immediate parent 
+
+    # On Windows, Azure CLI is often invoked as az.cmd, which means the immediate parent
     # is cmd.exe but the actual user shell (PowerShell) is the grandparent process
     if sys.platform.startswith("win"):
         try:
             parent_exe = parent.exe()
             logger.debug(f"Parent executable path: {parent_exe}")
-            
+
             # If the immediate parent is cmd.exe, check if it's wrapping az.cmd for PowerShell
             if "cmd" in parent_name.lower():
                 try:
@@ -258,7 +258,7 @@ def _aks_bastion_get_current_shell_cmd():
                     if grandparent:
                         grandparent_name = grandparent.name()
                         logger.debug(f"Detected grandparent process: {grandparent_name} (PID: {grandparent.pid})")
-                        
+
                         # If grandparent is PowerShell, that's the actual user shell
                         if "pwsh" in grandparent_name.lower() or "powershell" in grandparent_name.lower():
                             logger.debug("Grandparent is PowerShell - using PowerShell as target shell")
@@ -282,7 +282,7 @@ def _aks_bastion_get_current_shell_cmd():
                     # If we can't access grandparent, assume cmd is the actual shell
                     logger.debug(f"Cannot access grandparent process: {e} - using cmd as target shell")
                     return "cmd"
-            
+
             # For direct PowerShell processes (not wrapped by cmd), prefer pwsh over powershell.exe
             elif "pwsh" in parent_name.lower() or "powershell" in parent_name.lower():
                 logger.debug("Direct PowerShell parent detected")
@@ -304,7 +304,7 @@ def _aks_bastion_get_current_shell_cmd():
         except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
             logger.debug(f"Cannot access parent process details: {e}")
             pass
-    
+
     logger.debug(f"Using parent process name as shell: {parent_name}")
     return parent_name
 
@@ -314,7 +314,7 @@ def _aks_bastion_prepare_shell_cmd(kubeconfig_path):
 
     shell_cmd = _aks_bastion_get_current_shell_cmd()
     updated_shell_cmd = shell_cmd
-    
+
     # Handle different shell types
     if shell_cmd.endswith("bash") and os.path.exists(os.path.expanduser("~/.bashrc")):
         updated_shell_cmd = (
@@ -332,7 +332,7 @@ def _aks_bastion_prepare_shell_cmd(kubeconfig_path):
     elif shell_cmd == "cmd" or "cmd" in shell_cmd.lower():
         # CMD: Set environment variable and keep session open
         updated_shell_cmd = f'cmd /k "set KUBECONFIG={kubeconfig_path}"'
-    
+
     return shell_cmd, updated_shell_cmd
 
 
