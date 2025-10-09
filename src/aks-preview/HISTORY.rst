@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Fix `az aks bastion` subshell defaulting to cmd on Windows when invoked from PowerShell by implementing grandparent process detection to identify the actual user shell. 
 
 19.0.0b7
 +++++++
