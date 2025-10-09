@@ -9,6 +9,7 @@ import platform
 import stat
 import tempfile
 import yaml
+import time
 
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
@@ -164,6 +165,7 @@ def assign_network_contributor_role_to_subnet(cmd, object_id, subnet_id):
                        "az role assignment create --assignee-principal-type ServicePrincipal --assignee-object-id %s "
                        "--role 'Network Contributor' --scope %s",
                        subnet_id, object_id, subnet_id)
+    time.sleep(3)
 
 
 def get_msi_object_id(cmd, msi_resource_id):
