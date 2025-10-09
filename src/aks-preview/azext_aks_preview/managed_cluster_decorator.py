@@ -73,7 +73,7 @@ from azext_aks_preview._podidentity import (
 )
 from azext_aks_preview._roleassignments import (
     add_role_assignment,
-    _add_role_assignment_executor_new
+    add_role_assignment_executor
 )
 from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
@@ -212,7 +212,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             ] = ensure_azure_monitor_profile_prerequisites
             # temp workaround for the breaking change caused by default API version bump of the auth SDK
             external_functions["add_role_assignment"] = add_role_assignment
-            external_functions["_add_role_assignment_executor_new"] = _add_role_assignment_executor_new
+            external_functions["add_role_assignment_executor"] = add_role_assignment_executor
             # azure container storage functions
             external_functions[
                 "perform_enable_azure_container_storage_v1"
@@ -4227,7 +4227,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             except Exception as e:  # pylint: disable=broad-except
                 logger.warning("Could not get signed in user: %s", str(e))
             else:
-                self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
+                self.context.external_functions.add_role_assignment_executor(  # type: ignore # pylint: disable=protected-access
                     self.cmd,
                     "Azure Kubernetes Service RBAC Cluster Admin",
                     user["id"],
