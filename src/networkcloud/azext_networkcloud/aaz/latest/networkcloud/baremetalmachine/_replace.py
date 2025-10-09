@@ -13,18 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine replace",
+    is_preview=True,
 )
 class Replace(AAZCommand):
     """Replace the provided bare metal machine.
 
     :example: Replace bare metal machine
-        az networkcloud baremetalmachine replace --bare-metal-machine-name "bareMetalMachineName" --bmc-credentials password="{password}" username="bmcuser" --bmc-mac-address "00:00:4f:00:57:ad" --boot-mac-address "00:00:4e:00:58:af" --machine-name "name" --serial-number "BM1219XXX" --resource-group "resourceGroupName"
+        az networkcloud baremetalmachine replace --bare-metal-machine-name "bareMetalMachineName" --bmc-credentials password="{password}" username="bmcuser" --bmc-mac-address "00:00:4f:00:57:ad" --boot-mac-address "00:00:4e:00:58:af" --machine-name "name" --serial-number "BM1219XXX" --safeguard-mode "All" --storage-policy "DiscardAll" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/replace", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/replace", "2025-07-01-preview"],
         ]
     }
 
@@ -90,6 +91,13 @@ class Replace(AAZCommand):
                 pattern="^([a-zA-Z0-9][a-zA-Z0-9]{0,62}[a-zA-Z0-9])$",
             ),
         )
+        _args_schema.safeguard_mode = AAZStrArg(
+            options=["--safeguard-mode"],
+            arg_group="BareMetalMachineReplaceParameters",
+            help="The safeguard mode to use for the replace action, where None indicates to bypass safeguards and All indicates to utilize all safeguards.",
+            default="All",
+            enum={"All": "All", "None": "None"},
+        )
         _args_schema.serial_number = AAZStrArg(
             options=["--serial-number"],
             arg_group="BareMetalMachineReplaceParameters",
@@ -98,6 +106,13 @@ class Replace(AAZCommand):
                 max_length=64,
                 min_length=1,
             ),
+        )
+        _args_schema.storage_policy = AAZStrArg(
+            options=["--storage-policy"],
+            arg_group="BareMetalMachineReplaceParameters",
+            help="The indicator of whether to bypass clearing storage while replacing a bare metal machine.",
+            default="DiscardAll",
+            enum={"DiscardAll": "DiscardAll", "Preserve": "Preserve"},
         )
 
         bmc_credentials = cls._args_schema.bmc_credentials
@@ -203,7 +218,7 @@ class Replace(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -232,7 +247,9 @@ class Replace(AAZCommand):
             _builder.set_prop("bmcMacAddress", AAZStrType, ".bmc_mac_address")
             _builder.set_prop("bootMacAddress", AAZStrType, ".boot_mac_address")
             _builder.set_prop("machineName", AAZStrType, ".machine_name")
+            _builder.set_prop("safeguardMode", AAZStrType, ".safeguard_mode")
             _builder.set_prop("serialNumber", AAZStrType, ".serial_number")
+            _builder.set_prop("storagePolicy", AAZStrType, ".storage_policy")
 
             bmc_credentials = _builder.get(".bmcCredentials")
             if bmc_credentials is not None:
@@ -303,12 +320,15 @@ class _ReplaceHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

@@ -17,13 +17,13 @@ from azure.cli.core.aaz import *
 class ReviewSolutionVersion(AAZCommand):
     """Post request to review configuration
     :example: Remote review solution version
-        az workload-orchestration target review --target-name MyTarget --resource-group MyResourceGroup --solution-template-version-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.edge/solutionTemplateVersions/mySolutionTemplateVersion
+        az workload-orchestration target review --target-name MyTarget --resource-group MyResourceGroup --solution-template-version-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.Edge/solutionTemplateVersions/mySolutionTemplateVersion
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.edge/targets/{}/reviewsolutionversion", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/targets/{}/reviewsolutionversion", "2025-08-01"],
         ]
     }
 
@@ -196,7 +196,7 @@ class ReviewSolutionVersion(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.edge/targets/{targetName}/reviewSolutionVersion",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}/reviewSolutionVersion",
                 **self.url_parameters
             )
 
@@ -230,7 +230,7 @@ class ReviewSolutionVersion(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-08-01",
                     required=True,
                 ),
             }

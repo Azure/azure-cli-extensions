@@ -8,38 +8,30 @@ from __future__ import unicode_literals
 import os
 import os.path
 import re
-import yaml
 from ipaddress import ip_network
 from math import isclose, isnan
 
-from azure.cli.core import keys
-from azure.cli.core.api import get_config_dir
-from azure.cli.core.azclierror import (
-    ArgumentUsageError,
-    InvalidArgumentValueError,
-    MutuallyExclusiveArgumentError,
-    RequiredArgumentMissingError,
-)
-from azure.cli.core.commands.validators import validate_tag
-from azure.cli.core.util import CLIError
-from azure.mgmt.core.tools import is_valid_resource_id
 from azext_aks_preview._consts import (
     ADDONS,
+    CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
-    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
-    CONST_OS_SKU_AZURELINUX,
-    CONST_OS_SKU_CBLMARINER,
-    CONST_OS_SKU_MARINER,
+    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
-    CONST_NODEPOOL_MODE_GATEWAY,
-    CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH,
-    CONST_AGENT_CONFIG_FILE_NAME,
-)
+    CONST_NODEPOOL_MODE_GATEWAY, CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_MARINER)
 from azext_aks_preview._helpers import _fuzzy_match
+from azure.cli.core import keys
+from azure.cli.core.azclierror import (ArgumentUsageError,
+                                       InvalidArgumentValueError,
+                                       MutuallyExclusiveArgumentError,
+                                       RequiredArgumentMissingError)
+from azure.cli.core.commands.validators import validate_tag
+from azure.cli.core.util import CLIError
+from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -538,6 +530,23 @@ def validate_max_blocked_nodes(namespace):
         raise InvalidArgumentValueError('--max-blocked-nodes should be an int or percentage')
 
 
+def validate_drain_batch_size(namespace):
+    """validates drain batch size parameter as non-zero integers or percentages."""
+    if namespace.drain_batch_size is None:
+        return
+    int_or_percent = namespace.drain_batch_size
+    if int_or_percent.endswith('%'):
+        int_or_percent = int_or_percent.rstrip('%')
+
+    try:
+        value = int(int_or_percent)
+        if value <= 0:
+            raise InvalidArgumentValueError('--drain-batch-size must be a non-zero value')
+    except ValueError:
+        # pylint: disable=raise-missing-from
+        raise InvalidArgumentValueError('--drain-batch-size should be an integer or percentage (e.g., "5" or "50%")')
+
+
 def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:
         if namespace.assign_identity == '':
@@ -980,38 +989,3 @@ def validate_location_resource_group_cluster_parameters(namespace):
         raise MutuallyExclusiveArgumentError(
             "Cannot specify --location and --resource-group and --cluster at the same time."
         )
-
-
-def _validate_param_yaml_file(yaml_path, param_name):
-    if not yaml_path:
-        return
-    if not os.path.exists(yaml_path):
-        raise InvalidArgumentValueError(
-            f"--{param_name}={yaml_path}: file is not found."
-        )
-    if not os.access(yaml_path, os.R_OK):
-        raise InvalidArgumentValueError(
-            f"--{param_name}={yaml_path}: file is not readable."
-        )
-    try:
-        with open(yaml_path, "r") as file:
-            yaml.safe_load(file)
-    except yaml.YAMLError as e:
-        raise InvalidArgumentValueError(
-            f"--{param_name}={yaml_path}: file is not a valid YAML file: {e}"
-        )
-    except Exception as e:
-        raise InvalidArgumentValueError(
-            f"--{param_name}={yaml_path}: An error occurred while reading the config file: {e}"
-        )
-
-
-def validate_agent_config_file(namespace):
-    config_file = namespace.config_file
-    if not config_file:
-        return
-    default_config_path = os.path.join(get_config_dir(), CONST_AGENT_CONFIG_FILE_NAME)
-    if config_file == default_config_path and not os.path.exists(config_file):
-        return
-
-    _validate_param_yaml_file(config_file, "config-file")

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get properties of the provided cluster.
@@ -22,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2025-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2025-07-01-preview"],
         ]
     }
 
@@ -123,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2025-07-01-preview",
                     required=True,
                 ),
             }
@@ -218,6 +219,10 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.action_states = AAZListType(
+                serialized_name="actionStates",
+                flags={"read_only": True},
+            )
             properties.aggregator_or_single_rack_definition = AAZObjectType(
                 serialized_name="aggregatorOrSingleRackDefinition",
                 flags={"required": True},
@@ -329,6 +334,60 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
+            action_states = cls._schema_on_200.properties.action_states
+            action_states.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.action_states.Element
+            _element.action_type = AAZStrType(
+                serialized_name="actionType",
+                flags={"read_only": True},
+            )
+            _element.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
+            _element.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.step_states = AAZListType(
+                serialized_name="stepStates",
+                flags={"read_only": True},
+            )
+
+            step_states = cls._schema_on_200.properties.action_states.Element.step_states
+            step_states.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.action_states.Element.step_states.Element
+            _element.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.step_name = AAZStrType(
+                serialized_name="stepName",
+                flags={"read_only": True},
+            )
+
             analytics_output_settings = cls._schema_on_200.properties.analytics_output_settings
             analytics_output_settings.analytics_workspace_id = AAZStrType(
                 serialized_name="analyticsWorkspaceId",
@@ -416,6 +475,22 @@ class Show(AAZCommand):
             )
             _ShowHelper._build_schema_identity_selector_read(command_output_settings.associated_identity)
             command_output_settings.container_url = AAZStrType(
+                serialized_name="containerUrl",
+            )
+            command_output_settings.overrides = AAZListType()
+
+            overrides = cls._schema_on_200.properties.command_output_settings.overrides
+            overrides.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.command_output_settings.overrides.Element
+            _element.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _ShowHelper._build_schema_identity_selector_read(_element.associated_identity)
+            _element.command_output_type = AAZStrType(
+                serialized_name="commandOutputType",
+            )
+            _element.container_url = AAZStrType(
                 serialized_name="containerUrl",
             )
 

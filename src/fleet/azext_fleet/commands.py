@@ -113,7 +113,7 @@ def load_command_table(self, _):
         g.custom_command("generate-update-run", "generate_update_run", supports_no_wait=True)
 
     # fleet gates command group
-    with self.command_group("fleet gate", gates_sdk, client_factory=cf_gates) as g:
+    with self.command_group("fleet gate", gates_sdk, client_factory=cf_gates, is_preview=True) as g:
         g.custom_command("list", "list_gates_by_fleet")
         g.custom_show_command("show", "show_gate")
         g.custom_command("update", "update_gate")

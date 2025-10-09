@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, Callable, Dict, IO, Iterable, Iterator, Optional, TypeVar, Union, cast, overload
+from typing import Any, Callable, IO, Iterator, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core import PipelineClient
@@ -33,10 +33,11 @@ from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models as _models
 from .._configuration import ContainerServiceClientConfiguration
-from .._serialization import Deserializer, Serializer
+from .._utils.serialization import Deserializer, Serializer
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
@@ -46,7 +47,7 @@ def build_list_kubernetes_versions_request(location: str, subscription_id: str, 
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -74,7 +75,7 @@ def build_list_request(subscription_id: str, **kwargs: Any) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -100,7 +101,7 @@ def build_list_by_resource_group_request(resource_group_name: str, subscription_
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -132,7 +133,7 @@ def build_get_upgrade_profile_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -172,7 +173,7 @@ def build_get_access_profile_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -218,7 +219,7 @@ def build_list_cluster_admin_credentials_request(  # pylint: disable=name-too-lo
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -266,7 +267,7 @@ def build_list_cluster_user_credentials_request(  # pylint: disable=name-too-lon
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -315,7 +316,7 @@ def build_list_cluster_monitoring_user_credentials_request(  # pylint: disable=n
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -355,7 +356,7 @@ def build_get_request(resource_group_name: str, resource_name: str, subscription
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -401,7 +402,7 @@ def build_create_or_update_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -448,7 +449,7 @@ def build_update_tags_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -499,7 +500,7 @@ def build_delete_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -545,7 +546,7 @@ def build_reset_service_principal_profile_request(  # pylint: disable=name-too-l
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -588,7 +589,7 @@ def build_reset_aad_profile_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -631,7 +632,7 @@ def build_abort_latest_operation_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -671,7 +672,7 @@ def build_rotate_cluster_certificates_request(  # pylint: disable=name-too-long
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -711,7 +712,7 @@ def build_rotate_service_account_signing_keys_request(  # pylint: disable=name-t
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -751,7 +752,7 @@ def build_stop_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -791,7 +792,7 @@ def build_start_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -831,7 +832,7 @@ def build_run_command_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -874,7 +875,7 @@ def build_get_command_result_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -915,7 +916,7 @@ def build_list_outbound_network_dependencies_endpoints_request(  # pylint: disab
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -955,7 +956,7 @@ def build_get_guardrails_versions_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -984,7 +985,7 @@ def build_list_guardrails_versions_request(location: str, subscription_id: str, 
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1014,7 +1015,7 @@ def build_get_safeguards_versions_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1043,7 +1044,7 @@ def build_list_safeguards_versions_request(location: str, subscription_id: str, 
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1073,7 +1074,7 @@ def build_list_mesh_revision_profiles_request(  # pylint: disable=name-too-long
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1103,7 +1104,7 @@ def build_get_mesh_revision_profile_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1141,7 +1142,7 @@ def build_list_mesh_upgrade_profiles_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1181,7 +1182,7 @@ def build_get_mesh_upgrade_profile_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1229,7 +1230,7 @@ def build_rebalance_load_balancers_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -1278,7 +1279,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
     models = _models
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
         self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: ContainerServiceClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
@@ -1330,7 +1331,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("KubernetesVersionListResult", pipeline_response.http_response)
 
@@ -1340,7 +1342,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     @distributed_trace
-    def list(self, **kwargs: Any) -> Iterable["_models.ManagedCluster"]:
+    def list(self, **kwargs: Any) -> ItemPaged["_models.ManagedCluster"]:
         """Gets a list of managed clusters in the specified subscription.
 
         Gets a list of managed clusters in the specified subscription.
@@ -1409,14 +1411,15 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(get_next, extract_data)
 
     @distributed_trace
-    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> Iterable["_models.ManagedCluster"]:
+    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> ItemPaged["_models.ManagedCluster"]:
         """Lists managed clusters in the specified subscription and resource group.
 
         Lists managed clusters in the specified subscription and resource group.
@@ -1489,7 +1492,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -1545,7 +1549,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("ManagedClusterUpgradeProfile", pipeline_response.http_response)
 
@@ -1610,7 +1615,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("ManagedClusterAccessProfile", pipeline_response.http_response)
 
@@ -1672,7 +1678,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("CredentialResults", pipeline_response.http_response)
 
@@ -1745,7 +1752,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("CredentialResults", pipeline_response.http_response)
 
@@ -1807,7 +1815,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("CredentialResults", pipeline_response.http_response)
 
@@ -1864,7 +1873,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("ManagedCluster", pipeline_response.http_response)
 
@@ -1934,7 +1944,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -2160,7 +2171,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -2362,7 +2374,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
@@ -2502,7 +2515,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
@@ -2700,7 +2714,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
@@ -2887,7 +2902,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
@@ -3005,7 +3021,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
@@ -3119,7 +3136,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
@@ -3230,7 +3248,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
@@ -3343,7 +3362,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
@@ -3471,7 +3491,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
@@ -3677,7 +3698,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         response_headers = {}
@@ -3695,7 +3717,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_outbound_network_dependencies_endpoints(  # pylint: disable=name-too-long
         self, resource_group_name: str, resource_name: str, **kwargs: Any
-    ) -> Iterable["_models.OutboundEnvironmentEndpoint"]:
+    ) -> ItemPaged["_models.OutboundEnvironmentEndpoint"]:
         """Gets a list of egress endpoints (network endpoints of all outbound dependencies) in the
         specified managed cluster.
 
@@ -3775,7 +3797,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -3828,7 +3851,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("GuardrailsAvailableVersion", pipeline_response.http_response)
 
@@ -3838,7 +3862,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     @distributed_trace
-    def list_guardrails_versions(self, location: str, **kwargs: Any) -> Iterable["_models.GuardrailsAvailableVersion"]:
+    def list_guardrails_versions(self, location: str, **kwargs: Any) -> ItemPaged["_models.GuardrailsAvailableVersion"]:
         """Gets a list of supported Guardrails versions in the specified subscription and location.
 
         Contains list of Guardrails version along with its support info and whether it is a default
@@ -3913,7 +3937,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -3966,7 +3991,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("SafeguardsAvailableVersion", pipeline_response.http_response)
 
@@ -3976,7 +4002,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     @distributed_trace
-    def list_safeguards_versions(self, location: str, **kwargs: Any) -> Iterable["_models.SafeguardsAvailableVersion"]:
+    def list_safeguards_versions(self, location: str, **kwargs: Any) -> ItemPaged["_models.SafeguardsAvailableVersion"]:
         """Gets a list of supported Safeguards versions in the specified subscription and location.
 
         Contains list of Safeguards version along with its support info and whether it is a default
@@ -4051,14 +4077,15 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(get_next, extract_data)
 
     @distributed_trace
-    def list_mesh_revision_profiles(self, location: str, **kwargs: Any) -> Iterable["_models.MeshRevisionProfile"]:
+    def list_mesh_revision_profiles(self, location: str, **kwargs: Any) -> ItemPaged["_models.MeshRevisionProfile"]:
         """Lists mesh revision profiles for all meshes in the specified location.
 
         Contains extra metadata on each revision, including supported revisions, cluster compatibility
@@ -4131,7 +4158,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -4185,7 +4213,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("MeshRevisionProfile", pipeline_response.http_response)
 
@@ -4197,7 +4226,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_mesh_upgrade_profiles(
         self, resource_group_name: str, resource_name: str, **kwargs: Any
-    ) -> Iterable["_models.MeshUpgradeProfile"]:
+    ) -> ItemPaged["_models.MeshUpgradeProfile"]:
         """Lists available upgrades for all service meshes in a specific cluster.
 
         Lists available upgrades for all service meshes in a specific cluster.
@@ -4273,7 +4302,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -4332,7 +4362,8 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("MeshUpgradeProfile", pipeline_response.http_response)
 
@@ -4403,6 +4434,9 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         response_headers = {}
         response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+        response_headers["Azure-AsyncOperation"] = self._deserialize(
+            "str", response.headers.get("Azure-AsyncOperation")
+        )
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 

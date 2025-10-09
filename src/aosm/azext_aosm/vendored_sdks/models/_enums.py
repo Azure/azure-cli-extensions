@@ -92,6 +92,13 @@ class AzureOperatorNexusArtifactType(str, Enum, metaclass=CaseInsensitiveEnumMet
     ARM_TEMPLATE = "ArmTemplate"
 
 
+class BackingResourcePublicNetworkAccess(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The backing resource network access type."""
+
+    ENABLED = "Enabled"
+    DISABLED = "Disabled"
+
+
 class ConfigurationGenerationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The configuration generation type."""
 

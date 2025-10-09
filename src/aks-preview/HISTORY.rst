@@ -11,8 +11,92 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+<<<<<<< HEAD
 - Added `--enable-gateway-api` to `az aks create` to enable managed Gateway API installation
 - Added `--enable-gateway-api` and `--disable-gateway-api` to `az aks update` to enable/disable managed Gateway API installation
+=======
+* Vendor new SDK and bump API version to 2025-08-02-preview.
+* Pre-deprecate `--enable-custom-ca-trust` and `--disable-custom-ca-trust` in `az aks create`, `az aks update` commands.
+
+18.0.0b43
++++++++
+* Fix `--localdns-config` parameter to handle null values and case-insensitive JSON keys in DNS override sections, preventing crashes with malformed localdns configuration files.
+* Enhance `build_override` function to validate dictionary types and only initialize DNS overrides when present in localdns configuration (case-insensitive).
+* Refactor `build_localdns_profile` function to eliminate code duplication between AgentPool add and update operations.
+
+18.0.0b42
++++++++
+* Fix role assignment failure when using azure-cli version >= `2.77.0`.
+* Add option `Flatcar` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
+18.0.0b41
++++++++
+* Fix `--localdns-config` parameter to handle null values in JSON configuration files gracefully, preventing crashes when DNS override sections are null.
+* Add jwtauthenticator commands `az aks jwtauthenticator add/update/show/list/delete` to manage JWT authenticators for a managed cluster.
+* Fix an issue in disabling ACNS performance (--acns-datapath-acceleration-mode None).
+
+18.0.0b40
++++++++
+* Add option `Windows2025` to `--os-sku` for `az aks nodepool add`.
+* `az aks create`: Add new parameter `--container-storage-version` to enable the given version of Azure Container Storage.
+* `az aks update`: Add new parameter `--container-storage-version` to enable the given version of Azure Container Storage.
+* `az aks create`: Change behavior of `--enable-azure-container-storage` to enable latest Azure Container Storage by default.
+* `az aks update`: Change behavior of `--enable-azure-container-storage` to enable latest Azure Container Storage by default.
+* `az aks update`: Change behavior of `--disable-azure-container-storage` to handle disable based on the installed version.
+
+18.0.0b39
++++++++
+* Add option `AzureLinuxOSGuard` and `AzureLinux3OSGuard` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+* Add machine command `az aks machine add` to add a machine to an existing machine pool.
+* Add blue-green upgrade strategy support for AKS node pools:
+  - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades. 
+  - `az aks nodepool add/update/upgrade`: Add `--drain-batch-size`, `--drain-timeout-bg`, `--batch-soak-duration`, `--final-soak-duration` parameters to configure blue-green upgrade settings.
+
+18.0.0b38
++++++++
+* Add option `--acns-datapath-acceleration-mode <None|BpfVeth>` to `az aks create/update`
+
+18.0.0b37
++++++++
+* Enable autoscaler support for the VirtualMachines agent pool type.
+* Add `--node-vm-size` to `az aks update` to allow changing the VM size for VirtualMachines node pools.
+
+18.0.0b36
++++++++
+* Add option `AzureLinux3` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
+18.0.0b35
++++++++
+* Vendor new SDK and bump API version to 2025-07-02-preview.
+
+18.0.0b34
++++++++
+* Add machines agent pool support for `az aks nodepool add` command.
+
+18.0.0b33
++++++++
+* `az aks create`: Add new parameter `--kms-infrastructure-encryption` to enable KMS infrastructure encryption.
+
+18.0.0b32
++++++++
+* Remove the sku preview flag from help command for AKS automatic
+
+18.0.0b31
++++++++
+* Remove DATA_STORAGE references
+
+18.0.0b30
++++++++
+* Remove interactive AI-powered debugging tool `az aks agent`. To use the debugging tool, please enable it in the aks-agent extension by running `az extension add --name aks-agent`.
+
+18.0.0b29
++++++++
+* Refactor code to suppress ssh access warning message when creating an automatic cluster.
+
+18.0.0b28
++++++++
+* Add interactive AI-powered debugging tool `az aks agent`.
+>>>>>>> daeb3051a9845043e0eec6db7d4da77221c34874
 
 18.0.0b27
 +++++++

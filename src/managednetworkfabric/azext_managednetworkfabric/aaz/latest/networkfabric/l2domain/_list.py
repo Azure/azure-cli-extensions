@@ -201,9 +201,11 @@ class List(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.network_to_network_interconnect_id = AAZStrType(
                 serialized_name="networkToNetworkInterconnectId",
+                nullable=True,
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -374,9 +376,11 @@ class List(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.network_to_network_interconnect_id = AAZStrType(
                 serialized_name="networkToNetworkInterconnectId",
+                nullable=True,
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
