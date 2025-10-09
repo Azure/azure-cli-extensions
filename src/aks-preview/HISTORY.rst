@@ -11,12 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-<<<<<<< HEAD
-- Added `--enable-gateway-api` to `az aks create` to enable managed Gateway API installation
-- Added `--enable-gateway-api` and `--disable-gateway-api` to `az aks update` to enable/disable managed Gateway API installation
-=======
 * Vendor new SDK and bump API version to 2025-08-02-preview.
 * Pre-deprecate `--enable-custom-ca-trust` and `--disable-custom-ca-trust` in `az aks create`, `az aks update` commands.
+* Added `--enable-gateway-api` to `az aks create` to enable managed Gateway API installation
+* Added `--enable-gateway-api` and `--disable-gateway-api` to `az aks update` to enable/disable managed Gateway API installation
 
 18.0.0b43
 +++++++
@@ -96,7 +94,6 @@ Pending
 18.0.0b28
 +++++++
 * Add interactive AI-powered debugging tool `az aks agent`.
->>>>>>> daeb3051a9845043e0eec6db7d4da77221c34874
 
 18.0.0b27
 +++++++
