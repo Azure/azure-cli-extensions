@@ -30,6 +30,7 @@ from ._trusted_access_role_bindings_operations import TrustedAccessRoleBindingsO
 from ._load_balancers_operations import LoadBalancersOperations  # type: ignore
 from ._identity_bindings_operations import IdentityBindingsOperations  # type: ignore
 from ._jwt_authenticators_operations import JWTAuthenticatorsOperations  # type: ignore
+from ._mesh_memberships_operations import MeshMembershipsOperations  # type: ignore
 
 from ._patch import __all__ as _patch_all
 from ._patch import *
@@ -54,6 +55,7 @@ __all__ = [
     "LoadBalancersOperations",
     "IdentityBindingsOperations",
     "JWTAuthenticatorsOperations",
+    "MeshMembershipsOperations",
 ]
 __all__.extend([p for p in _patch_all if p not in __all__])  # pyright: ignore
 _patch_sdk()

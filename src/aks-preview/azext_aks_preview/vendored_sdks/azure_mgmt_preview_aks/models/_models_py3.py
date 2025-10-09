@@ -7,6 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
+from collections.abc import MutableMapping
 import datetime
 from typing import Any, Optional, TYPE_CHECKING, Union
 
@@ -14,6 +15,7 @@ from .._utils import serialization as _serialization
 
 if TYPE_CHECKING:
     from .. import models as _models
+JSON = MutableMapping[str, Any]
 
 
 class AbsoluteMonthlySchedule(_serialization.Model):
@@ -289,7 +291,7 @@ class AgentPool(SubResource):
     :vartype type: str
     :ivar e_tag: Unique read-only string used to implement optimistic concurrency. The eTag value
      will change when the resource is updated. Specify an if-match or if-none-match header with the
-     eTag value for a subsequent request to enable optimistic concurrency per the normal etag
+     eTag value for a subsequent request to enable optimistic concurrency per the normal eTag
      convention.
     :vartype e_tag: str
     :ivar count: Number of agents (VMs) to host docker containers. Allowed values must be in the
@@ -345,8 +347,8 @@ class AgentPool(SubResource):
     :ivar os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
      Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
      changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-     "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
-     "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
+     "AzureLinux", "AzureLinux3", "Flatcar", "CBLMariner", "Windows2019", "Windows2022",
+     "Windows2025", "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
     :vartype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
     :ivar max_count: The maximum number of nodes for auto-scaling.
     :vartype max_count: int
@@ -411,11 +413,6 @@ class AgentPool(SubResource):
      <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.
      The default is false.
     :vartype enable_node_public_ip: bool
-    :ivar enable_custom_ca_trust: Whether to enable Custom CA Trust feature. When set to true, AKS
-     adds a label to the node indicating that the feature is enabled and deploys a daemonset along
-     with host services to sync custom certificate authorities from user-provided list of base64
-     encoded certificates into node trust stores. Defaults to false.
-    :vartype enable_custom_ca_trust: bool
     :ivar node_public_ip_prefix_id: The public IP prefix ID which VM nodes should use IPs from.
      This is of the form:
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/publicIPPrefixes/{publicIPPrefixName}.
@@ -506,6 +503,10 @@ class AgentPool(SubResource):
      LocalDNS helps improve performance and reliability of DNS resolution in an AKS cluster. For
      more details see aka.ms/aks/localdns.
     :vartype local_dns_profile: ~azure.mgmt.containerservice.models.LocalDNSProfile
+    :ivar node_customization_profile: Settings to determine the node customization used to
+     provision nodes in a pool.
+    :vartype node_customization_profile:
+     ~azure.mgmt.containerservice.models.NodeCustomizationProfile
     """
 
     _validation = {
@@ -515,7 +516,6 @@ class AgentPool(SubResource):
         "e_tag": {"readonly": True},
         "os_disk_size_gb": {"maximum": 2048, "minimum": 0},
         "current_orchestrator_version": {"readonly": True},
-        "node_image_version": {"readonly": True},
         "provisioning_state": {"readonly": True},
     }
 
@@ -556,7 +556,6 @@ class AgentPool(SubResource):
         "power_state": {"key": "properties.powerState", "type": "PowerState"},
         "availability_zones": {"key": "properties.availabilityZones", "type": "[str]"},
         "enable_node_public_ip": {"key": "properties.enableNodePublicIP", "type": "bool"},
-        "enable_custom_ca_trust": {"key": "properties.enableCustomCATrust", "type": "bool"},
         "node_public_ip_prefix_id": {"key": "properties.nodePublicIPPrefixID", "type": "str"},
         "scale_set_priority": {"key": "properties.scaleSetPriority", "type": "str"},
         "scale_set_eviction_policy": {"key": "properties.scaleSetEvictionPolicy", "type": "str"},
@@ -591,6 +590,10 @@ class AgentPool(SubResource):
         "gateway_profile": {"key": "properties.gatewayProfile", "type": "AgentPoolGatewayProfile"},
         "status": {"key": "properties.status", "type": "AgentPoolStatus"},
         "local_dns_profile": {"key": "properties.localDNSProfile", "type": "LocalDNSProfile"},
+        "node_customization_profile": {
+            "key": "properties.nodeCustomizationProfile",
+            "type": "NodeCustomizationProfile",
+        },
     }
 
     def __init__(  # pylint: disable=too-many-locals
@@ -616,13 +619,13 @@ class AgentPool(SubResource):
         type_properties_type: Optional[Union[str, "_models.AgentPoolType"]] = None,
         mode: Optional[Union[str, "_models.AgentPoolMode"]] = None,
         orchestrator_version: Optional[str] = None,
+        node_image_version: Optional[str] = None,
         upgrade_strategy: Optional[Union[str, "_models.UpgradeStrategy"]] = None,
         upgrade_settings: Optional["_models.AgentPoolUpgradeSettings"] = None,
         upgrade_settings_blue_green: Optional["_models.AgentPoolBlueGreenUpgradeSettings"] = None,
         power_state: Optional["_models.PowerState"] = None,
         availability_zones: Optional[list[str]] = None,
         enable_node_public_ip: Optional[bool] = None,
-        enable_custom_ca_trust: Optional[bool] = None,
         node_public_ip_prefix_id: Optional[str] = None,
         scale_set_priority: Union[str, "_models.ScaleSetPriority"] = "Regular",
         scale_set_eviction_policy: Union[str, "_models.ScaleSetEvictionPolicy"] = "Delete",
@@ -651,6 +654,7 @@ class AgentPool(SubResource):
         gateway_profile: Optional["_models.AgentPoolGatewayProfile"] = None,
         status: Optional["_models.AgentPoolStatus"] = None,
         local_dns_profile: Optional["_models.LocalDNSProfile"] = None,
+        node_customization_profile: Optional["_models.NodeCustomizationProfile"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -709,8 +713,8 @@ class AgentPool(SubResource):
         :keyword os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
          Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
          changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-         "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
-         "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
+         "AzureLinux", "AzureLinux3", "Flatcar", "CBLMariner", "Windows2019", "Windows2022",
+         "Windows2025", "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
         :paramtype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
         :keyword max_count: The maximum number of nodes for auto-scaling.
         :paramtype max_count: int
@@ -741,6 +745,8 @@ class AgentPool(SubResource):
          information see `upgrading a node pool
          <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
         :paramtype orchestrator_version: str
+        :keyword node_image_version: The version of node image.
+        :paramtype node_image_version: str
         :keyword upgrade_strategy: Defines the upgrade strategy for the agent pool. The default is
          Rolling. Known values are: "Rolling" and "BlueGreen".
         :paramtype upgrade_strategy: str or ~azure.mgmt.containerservice.models.UpgradeStrategy
@@ -767,11 +773,6 @@ class AgentPool(SubResource):
          <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.
          The default is false.
         :paramtype enable_node_public_ip: bool
-        :keyword enable_custom_ca_trust: Whether to enable Custom CA Trust feature. When set to true,
-         AKS adds a label to the node indicating that the feature is enabled and deploys a daemonset
-         along with host services to sync custom certificate authorities from user-provided list of
-         base64 encoded certificates into node trust stores. Defaults to false.
-        :paramtype enable_custom_ca_trust: bool
         :keyword node_public_ip_prefix_id: The public IP prefix ID which VM nodes should use IPs from.
          This is of the form:
          /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/publicIPPrefixes/{publicIPPrefixName}.
@@ -864,6 +865,10 @@ class AgentPool(SubResource):
          overrides. LocalDNS helps improve performance and reliability of DNS resolution in an AKS
          cluster. For more details see aka.ms/aks/localdns.
         :paramtype local_dns_profile: ~azure.mgmt.containerservice.models.LocalDNSProfile
+        :keyword node_customization_profile: Settings to determine the node customization used to
+         provision nodes in a pool.
+        :paramtype node_customization_profile:
+         ~azure.mgmt.containerservice.models.NodeCustomizationProfile
         """
         super().__init__(**kwargs)
         self.e_tag: Optional[str] = None
@@ -888,7 +893,7 @@ class AgentPool(SubResource):
         self.mode = mode
         self.orchestrator_version = orchestrator_version
         self.current_orchestrator_version: Optional[str] = None
-        self.node_image_version: Optional[str] = None
+        self.node_image_version = node_image_version
         self.upgrade_strategy = upgrade_strategy
         self.upgrade_settings = upgrade_settings
         self.upgrade_settings_blue_green = upgrade_settings_blue_green
@@ -896,7 +901,6 @@ class AgentPool(SubResource):
         self.power_state = power_state
         self.availability_zones = availability_zones
         self.enable_node_public_ip = enable_node_public_ip
-        self.enable_custom_ca_trust = enable_custom_ca_trust
         self.node_public_ip_prefix_id = node_public_ip_prefix_id
         self.scale_set_priority = scale_set_priority
         self.scale_set_eviction_policy = scale_set_eviction_policy
@@ -925,6 +929,7 @@ class AgentPool(SubResource):
         self.gateway_profile = gateway_profile
         self.status = status
         self.local_dns_profile = local_dns_profile
+        self.node_customization_profile = node_customization_profile
 
 
 class AgentPoolArtifactStreamingProfile(_serialization.Model):
@@ -1249,11 +1254,51 @@ class AgentPoolNetworkProfile(_serialization.Model):
         self.application_security_groups = application_security_groups
 
 
+class AgentPoolRecentlyUsedVersion(_serialization.Model):
+    """A historical version that can be used for rollback operations.
+
+    :ivar orchestrator_version: The Kubernetes version (major.minor.patch) available for rollback.
+    :vartype orchestrator_version: str
+    :ivar node_image_version: The node image version available for rollback.
+    :vartype node_image_version: str
+    :ivar timestamp: The timestamp when this version was last used.
+    :vartype timestamp: ~datetime.datetime
+    """
+
+    _attribute_map = {
+        "orchestrator_version": {"key": "orchestratorVersion", "type": "str"},
+        "node_image_version": {"key": "nodeImageVersion", "type": "str"},
+        "timestamp": {"key": "timestamp", "type": "iso-8601"},
+    }
+
+    def __init__(
+        self,
+        *,
+        orchestrator_version: Optional[str] = None,
+        node_image_version: Optional[str] = None,
+        timestamp: Optional[datetime.datetime] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword orchestrator_version: The Kubernetes version (major.minor.patch) available for
+         rollback.
+        :paramtype orchestrator_version: str
+        :keyword node_image_version: The node image version available for rollback.
+        :paramtype node_image_version: str
+        :keyword timestamp: The timestamp when this version was last used.
+        :paramtype timestamp: ~datetime.datetime
+        """
+        super().__init__(**kwargs)
+        self.orchestrator_version = orchestrator_version
+        self.node_image_version = node_image_version
+        self.timestamp = timestamp
+
+
 class AgentPoolSecurityProfile(_serialization.Model):
     """The security settings of an agent pool.
 
-    :ivar ssh_access: SSH access method of an agent pool. Known values are: "LocalUser" and
-     "Disabled".
+    :ivar ssh_access: SSH access method of an agent pool. Known values are: "LocalUser",
+     "Disabled", and "EntraId".
     :vartype ssh_access: str or ~azure.mgmt.containerservice.models.AgentPoolSSHAccess
     :ivar enable_vtpm: vTPM is a Trusted Launch feature for configuring a dedicated secure vault
      for keys and measurements held locally on the node. For more details, see
@@ -1280,8 +1325,8 @@ class AgentPoolSecurityProfile(_serialization.Model):
         **kwargs: Any
     ) -> None:
         """
-        :keyword ssh_access: SSH access method of an agent pool. Known values are: "LocalUser" and
-         "Disabled".
+        :keyword ssh_access: SSH access method of an agent pool. Known values are: "LocalUser",
+         "Disabled", and "EntraId".
         :paramtype ssh_access: str or ~azure.mgmt.containerservice.models.AgentPoolSSHAccess
         :keyword enable_vtpm: vTPM is a Trusted Launch feature for configuring a dedicated secure vault
          for keys and measurements held locally on the node. For more details, see
@@ -1345,6 +1390,9 @@ class AgentPoolUpgradeProfile(_serialization.Model):
      list[~azure.mgmt.containerservice.models.AgentPoolUpgradeProfilePropertiesUpgradesItem]
     :ivar components_by_releases: List of components grouped by kubernetes major.minor version.
     :vartype components_by_releases: list[~azure.mgmt.containerservice.models.ComponentsByRelease]
+    :ivar recently_used_versions: List of historical good versions for rollback operations.
+    :vartype recently_used_versions:
+     list[~azure.mgmt.containerservice.models.AgentPoolRecentlyUsedVersion]
     :ivar latest_node_image_version: The latest AKS supported node image version.
     :vartype latest_node_image_version: str
     """
@@ -1355,6 +1403,7 @@ class AgentPoolUpgradeProfile(_serialization.Model):
         "type": {"readonly": True},
         "kubernetes_version": {"required": True},
         "os_type": {"required": True},
+        "recently_used_versions": {"readonly": True},
     }
 
     _attribute_map = {
@@ -1365,6 +1414,7 @@ class AgentPoolUpgradeProfile(_serialization.Model):
         "os_type": {"key": "properties.osType", "type": "str"},
         "upgrades": {"key": "properties.upgrades", "type": "[AgentPoolUpgradeProfilePropertiesUpgradesItem]"},
         "components_by_releases": {"key": "properties.componentsByReleases", "type": "[ComponentsByRelease]"},
+        "recently_used_versions": {"key": "properties.recentlyUsedVersions", "type": "[AgentPoolRecentlyUsedVersion]"},
         "latest_node_image_version": {"key": "properties.latestNodeImageVersion", "type": "str"},
     }
 
@@ -1401,6 +1451,7 @@ class AgentPoolUpgradeProfile(_serialization.Model):
         self.os_type = os_type
         self.upgrades = upgrades
         self.components_by_releases = components_by_releases
+        self.recently_used_versions: Optional[list["_models.AgentPoolRecentlyUsedVersion"]] = None
         self.latest_node_image_version = latest_node_image_version
 
 
@@ -2868,7 +2919,7 @@ class IdentityBinding(ProxyResource):
     :vartype properties: ~azure.mgmt.containerservice.models.IdentityBindingProperties
     :ivar e_tag: Unique read-only string used to implement optimistic concurrency. The eTag value
      will change when the resource is updated. Specify an if-match or if-none-match header with the
-     eTag value for a subsequent request to enable optimistic concurrency per the normal etag
+     eTag value for a subsequent request to enable optimistic concurrency per the normal eTag
      convention.
     :vartype e_tag: str
     """
@@ -3114,11 +3165,16 @@ class IstioComponents(_serialization.Model):
     :vartype ingress_gateways: list[~azure.mgmt.containerservice.models.IstioIngressGateway]
     :ivar egress_gateways: Istio egress gateways.
     :vartype egress_gateways: list[~azure.mgmt.containerservice.models.IstioEgressGateway]
+    :ivar proxy_redirection_mechanism: Mode of traffic redirection. Known values are:
+     "InitContainers" and "CNIChaining".
+    :vartype proxy_redirection_mechanism: str or
+     ~azure.mgmt.containerservice.models.ProxyRedirectionMechanism
     """
 
     _attribute_map = {
         "ingress_gateways": {"key": "ingressGateways", "type": "[IstioIngressGateway]"},
         "egress_gateways": {"key": "egressGateways", "type": "[IstioEgressGateway]"},
+        "proxy_redirection_mechanism": {"key": "proxyRedirectionMechanism", "type": "str"},
     }
 
     def __init__(
@@ -3126,6 +3182,7 @@ class IstioComponents(_serialization.Model):
         *,
         ingress_gateways: Optional[list["_models.IstioIngressGateway"]] = None,
         egress_gateways: Optional[list["_models.IstioEgressGateway"]] = None,
+        proxy_redirection_mechanism: Optional[Union[str, "_models.ProxyRedirectionMechanism"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3133,10 +3190,15 @@ class IstioComponents(_serialization.Model):
         :paramtype ingress_gateways: list[~azure.mgmt.containerservice.models.IstioIngressGateway]
         :keyword egress_gateways: Istio egress gateways.
         :paramtype egress_gateways: list[~azure.mgmt.containerservice.models.IstioEgressGateway]
+        :keyword proxy_redirection_mechanism: Mode of traffic redirection. Known values are:
+         "InitContainers" and "CNIChaining".
+        :paramtype proxy_redirection_mechanism: str or
+         ~azure.mgmt.containerservice.models.ProxyRedirectionMechanism
         """
         super().__init__(**kwargs)
         self.ingress_gateways = ingress_gateways
         self.egress_gateways = egress_gateways
+        self.proxy_redirection_mechanism = proxy_redirection_mechanism
 
 
 class IstioEgressGateway(_serialization.Model):
@@ -4791,8 +4853,8 @@ class MachineOSProfile(_serialization.Model):
     :ivar os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
      Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
      changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-     "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
-     "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
+     "AzureLinux", "AzureLinux3", "Flatcar", "CBLMariner", "Windows2019", "Windows2022",
+     "Windows2025", "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
     :vartype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
     :ivar os_disk_size_gb: OS Disk Size in GB to be used to specify the disk size for every machine
      in the master/agent pool. If you specify 0, it will apply the default osDisk size according to
@@ -4845,8 +4907,8 @@ class MachineOSProfile(_serialization.Model):
         :keyword os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
          Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
          changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-         "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
-         "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
+         "AzureLinux", "AzureLinux3", "Flatcar", "CBLMariner", "Windows2019", "Windows2022",
+         "Windows2025", "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
         :paramtype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
         :keyword os_disk_size_gb: OS Disk Size in GB to be used to specify the disk size for every
          machine in the master/agent pool. If you specify 0, it will apply the default osDisk size
@@ -4946,7 +5008,7 @@ class MachineProperties(_serialization.Model):
     :vartype tags: dict[str, str]
     :ivar e_tag: Unique read-only string used to implement optimistic concurrency. The eTag value
      will change when the resource is updated. Specify an if-match or if-none-match header with the
-     eTag value for a subsequent request to enable optimistic concurrency per the normal etag
+     eTag value for a subsequent request to enable optimistic concurrency per the normal eTag
      convention.
     :vartype e_tag: str
     :ivar status: Contains read-only information about the machine.
@@ -5335,7 +5397,7 @@ class ManagedCluster(TrackedResource):
     :vartype location: str
     :ivar e_tag: Unique read-only string used to implement optimistic concurrency. The eTag value
      will change when the resource is updated. Specify an if-match or if-none-match header with the
-     eTag value for a subsequent request to enable optimistic concurrency per the normal etag
+     eTag value for a subsequent request to enable optimistic concurrency per the normal eTag
      convention.
     :vartype e_tag: str
     :ivar sku: The managed cluster SKU.
@@ -5484,6 +5546,10 @@ class ManagedCluster(TrackedResource):
     :vartype bootstrap_profile: ~azure.mgmt.containerservice.models.ManagedClusterBootstrapProfile
     :ivar scheduler_profile: Profile of the pod scheduler configuration.
     :vartype scheduler_profile: ~azure.mgmt.containerservice.models.SchedulerProfile
+    :ivar hosted_system_profile: Settings for hosted system addons. For more information, see
+     https://aka.ms/aks/automatic/systemcomponents.
+    :vartype hosted_system_profile:
+     ~azure.mgmt.containerservice.models.ManagedClusterHostedSystemProfile
     :ivar status: Contains read-only information about the Managed Cluster.
     :vartype status: ~azure.mgmt.containerservice.models.ManagedClusterStatus
     """
@@ -5585,6 +5651,7 @@ class ManagedCluster(TrackedResource):
         },
         "bootstrap_profile": {"key": "properties.bootstrapProfile", "type": "ManagedClusterBootstrapProfile"},
         "scheduler_profile": {"key": "properties.schedulerProfile", "type": "SchedulerProfile"},
+        "hosted_system_profile": {"key": "properties.hostedSystemProfile", "type": "ManagedClusterHostedSystemProfile"},
         "status": {"key": "properties.status", "type": "ManagedClusterStatus"},
     }
 
@@ -5636,6 +5703,7 @@ class ManagedCluster(TrackedResource):
         node_provisioning_profile: Optional["_models.ManagedClusterNodeProvisioningProfile"] = None,
         bootstrap_profile: Optional["_models.ManagedClusterBootstrapProfile"] = None,
         scheduler_profile: Optional["_models.SchedulerProfile"] = None,
+        hosted_system_profile: Optional["_models.ManagedClusterHostedSystemProfile"] = None,
         status: Optional["_models.ManagedClusterStatus"] = None,
         **kwargs: Any
     ) -> None:
@@ -5774,6 +5842,10 @@ class ManagedCluster(TrackedResource):
          ~azure.mgmt.containerservice.models.ManagedClusterBootstrapProfile
         :keyword scheduler_profile: Profile of the pod scheduler configuration.
         :paramtype scheduler_profile: ~azure.mgmt.containerservice.models.SchedulerProfile
+        :keyword hosted_system_profile: Settings for hosted system addons. For more information, see
+         https://aka.ms/aks/automatic/systemcomponents.
+        :paramtype hosted_system_profile:
+         ~azure.mgmt.containerservice.models.ManagedClusterHostedSystemProfile
         :keyword status: Contains read-only information about the Managed Cluster.
         :paramtype status: ~azure.mgmt.containerservice.models.ManagedClusterStatus
         """
@@ -5830,6 +5902,7 @@ class ManagedCluster(TrackedResource):
         self.node_provisioning_profile = node_provisioning_profile
         self.bootstrap_profile = bootstrap_profile
         self.scheduler_profile = scheduler_profile
+        self.hosted_system_profile = hosted_system_profile
         self.status = status
 
 
@@ -6072,7 +6145,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
 
     :ivar e_tag: Unique read-only string used to implement optimistic concurrency. The eTag value
      will change when the resource is updated. Specify an if-match or if-none-match header with the
-     eTag value for a subsequent request to enable optimistic concurrency per the normal etag
+     eTag value for a subsequent request to enable optimistic concurrency per the normal eTag
      convention.
     :vartype e_tag: str
     :ivar count: Number of agents (VMs) to host docker containers. Allowed values must be in the
@@ -6128,8 +6201,8 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
     :ivar os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
      Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
      changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-     "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
-     "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
+     "AzureLinux", "AzureLinux3", "Flatcar", "CBLMariner", "Windows2019", "Windows2022",
+     "Windows2025", "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
     :vartype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
     :ivar max_count: The maximum number of nodes for auto-scaling.
     :vartype max_count: int
@@ -6194,11 +6267,6 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
      <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.
      The default is false.
     :vartype enable_node_public_ip: bool
-    :ivar enable_custom_ca_trust: Whether to enable Custom CA Trust feature. When set to true, AKS
-     adds a label to the node indicating that the feature is enabled and deploys a daemonset along
-     with host services to sync custom certificate authorities from user-provided list of base64
-     encoded certificates into node trust stores. Defaults to false.
-    :vartype enable_custom_ca_trust: bool
     :ivar node_public_ip_prefix_id: The public IP prefix ID which VM nodes should use IPs from.
      This is of the form:
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/publicIPPrefixes/{publicIPPrefixName}.
@@ -6289,13 +6357,16 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
      LocalDNS helps improve performance and reliability of DNS resolution in an AKS cluster. For
      more details see aka.ms/aks/localdns.
     :vartype local_dns_profile: ~azure.mgmt.containerservice.models.LocalDNSProfile
+    :ivar node_customization_profile: Settings to determine the node customization used to
+     provision nodes in a pool.
+    :vartype node_customization_profile:
+     ~azure.mgmt.containerservice.models.NodeCustomizationProfile
     """
 
     _validation = {
         "e_tag": {"readonly": True},
         "os_disk_size_gb": {"maximum": 2048, "minimum": 0},
         "current_orchestrator_version": {"readonly": True},
-        "node_image_version": {"readonly": True},
         "provisioning_state": {"readonly": True},
     }
 
@@ -6330,7 +6401,6 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         "power_state": {"key": "powerState", "type": "PowerState"},
         "availability_zones": {"key": "availabilityZones", "type": "[str]"},
         "enable_node_public_ip": {"key": "enableNodePublicIP", "type": "bool"},
-        "enable_custom_ca_trust": {"key": "enableCustomCATrust", "type": "bool"},
         "node_public_ip_prefix_id": {"key": "nodePublicIPPrefixID", "type": "str"},
         "scale_set_priority": {"key": "scaleSetPriority", "type": "str"},
         "scale_set_eviction_policy": {"key": "scaleSetEvictionPolicy", "type": "str"},
@@ -6359,6 +6429,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         "gateway_profile": {"key": "gatewayProfile", "type": "AgentPoolGatewayProfile"},
         "status": {"key": "status", "type": "AgentPoolStatus"},
         "local_dns_profile": {"key": "localDNSProfile", "type": "LocalDNSProfile"},
+        "node_customization_profile": {"key": "nodeCustomizationProfile", "type": "NodeCustomizationProfile"},
     }
 
     def __init__(  # pylint: disable=too-many-locals
@@ -6384,13 +6455,13 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         type: Optional[Union[str, "_models.AgentPoolType"]] = None,
         mode: Optional[Union[str, "_models.AgentPoolMode"]] = None,
         orchestrator_version: Optional[str] = None,
+        node_image_version: Optional[str] = None,
         upgrade_strategy: Optional[Union[str, "_models.UpgradeStrategy"]] = None,
         upgrade_settings: Optional["_models.AgentPoolUpgradeSettings"] = None,
         upgrade_settings_blue_green: Optional["_models.AgentPoolBlueGreenUpgradeSettings"] = None,
         power_state: Optional["_models.PowerState"] = None,
         availability_zones: Optional[list[str]] = None,
         enable_node_public_ip: Optional[bool] = None,
-        enable_custom_ca_trust: Optional[bool] = None,
         node_public_ip_prefix_id: Optional[str] = None,
         scale_set_priority: Union[str, "_models.ScaleSetPriority"] = "Regular",
         scale_set_eviction_policy: Union[str, "_models.ScaleSetEvictionPolicy"] = "Delete",
@@ -6419,6 +6490,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         gateway_profile: Optional["_models.AgentPoolGatewayProfile"] = None,
         status: Optional["_models.AgentPoolStatus"] = None,
         local_dns_profile: Optional["_models.LocalDNSProfile"] = None,
+        node_customization_profile: Optional["_models.NodeCustomizationProfile"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -6477,8 +6549,8 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         :keyword os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
          Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
          changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-         "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
-         "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
+         "AzureLinux", "AzureLinux3", "Flatcar", "CBLMariner", "Windows2019", "Windows2022",
+         "Windows2025", "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
         :paramtype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
         :keyword max_count: The maximum number of nodes for auto-scaling.
         :paramtype max_count: int
@@ -6509,6 +6581,8 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
          information see `upgrading a node pool
          <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
         :paramtype orchestrator_version: str
+        :keyword node_image_version: The version of node image.
+        :paramtype node_image_version: str
         :keyword upgrade_strategy: Defines the upgrade strategy for the agent pool. The default is
          Rolling. Known values are: "Rolling" and "BlueGreen".
         :paramtype upgrade_strategy: str or ~azure.mgmt.containerservice.models.UpgradeStrategy
@@ -6535,11 +6609,6 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
          <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.
          The default is false.
         :paramtype enable_node_public_ip: bool
-        :keyword enable_custom_ca_trust: Whether to enable Custom CA Trust feature. When set to true,
-         AKS adds a label to the node indicating that the feature is enabled and deploys a daemonset
-         along with host services to sync custom certificate authorities from user-provided list of
-         base64 encoded certificates into node trust stores. Defaults to false.
-        :paramtype enable_custom_ca_trust: bool
         :keyword node_public_ip_prefix_id: The public IP prefix ID which VM nodes should use IPs from.
          This is of the form:
          /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/publicIPPrefixes/{publicIPPrefixName}.
@@ -6632,6 +6701,10 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
          overrides. LocalDNS helps improve performance and reliability of DNS resolution in an AKS
          cluster. For more details see aka.ms/aks/localdns.
         :paramtype local_dns_profile: ~azure.mgmt.containerservice.models.LocalDNSProfile
+        :keyword node_customization_profile: Settings to determine the node customization used to
+         provision nodes in a pool.
+        :paramtype node_customization_profile:
+         ~azure.mgmt.containerservice.models.NodeCustomizationProfile
         """
         super().__init__(**kwargs)
         self.e_tag: Optional[str] = None
@@ -6656,7 +6729,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         self.mode = mode
         self.orchestrator_version = orchestrator_version
         self.current_orchestrator_version: Optional[str] = None
-        self.node_image_version: Optional[str] = None
+        self.node_image_version = node_image_version
         self.upgrade_strategy = upgrade_strategy
         self.upgrade_settings = upgrade_settings
         self.upgrade_settings_blue_green = upgrade_settings_blue_green
@@ -6664,7 +6737,6 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         self.power_state = power_state
         self.availability_zones = availability_zones
         self.enable_node_public_ip = enable_node_public_ip
-        self.enable_custom_ca_trust = enable_custom_ca_trust
         self.node_public_ip_prefix_id = node_public_ip_prefix_id
         self.scale_set_priority = scale_set_priority
         self.scale_set_eviction_policy = scale_set_eviction_policy
@@ -6693,6 +6765,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         self.gateway_profile = gateway_profile
         self.status = status
         self.local_dns_profile = local_dns_profile
+        self.node_customization_profile = node_customization_profile
 
 
 class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
@@ -6704,7 +6777,7 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
 
     :ivar e_tag: Unique read-only string used to implement optimistic concurrency. The eTag value
      will change when the resource is updated. Specify an if-match or if-none-match header with the
-     eTag value for a subsequent request to enable optimistic concurrency per the normal etag
+     eTag value for a subsequent request to enable optimistic concurrency per the normal eTag
      convention.
     :vartype e_tag: str
     :ivar count: Number of agents (VMs) to host docker containers. Allowed values must be in the
@@ -6760,8 +6833,8 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
     :ivar os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
      Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
      changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-     "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
-     "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
+     "AzureLinux", "AzureLinux3", "Flatcar", "CBLMariner", "Windows2019", "Windows2022",
+     "Windows2025", "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
     :vartype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
     :ivar max_count: The maximum number of nodes for auto-scaling.
     :vartype max_count: int
@@ -6826,11 +6899,6 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
      <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.
      The default is false.
     :vartype enable_node_public_ip: bool
-    :ivar enable_custom_ca_trust: Whether to enable Custom CA Trust feature. When set to true, AKS
-     adds a label to the node indicating that the feature is enabled and deploys a daemonset along
-     with host services to sync custom certificate authorities from user-provided list of base64
-     encoded certificates into node trust stores. Defaults to false.
-    :vartype enable_custom_ca_trust: bool
     :ivar node_public_ip_prefix_id: The public IP prefix ID which VM nodes should use IPs from.
      This is of the form:
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/publicIPPrefixes/{publicIPPrefixName}.
@@ -6921,6 +6989,10 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
      LocalDNS helps improve performance and reliability of DNS resolution in an AKS cluster. For
      more details see aka.ms/aks/localdns.
     :vartype local_dns_profile: ~azure.mgmt.containerservice.models.LocalDNSProfile
+    :ivar node_customization_profile: Settings to determine the node customization used to
+     provision nodes in a pool.
+    :vartype node_customization_profile:
+     ~azure.mgmt.containerservice.models.NodeCustomizationProfile
     :ivar name: Unique name of the agent pool profile in the context of the subscription and
      resource group. Windows agent pool names must be 6 characters or less. Required.
     :vartype name: str
@@ -6930,7 +7002,6 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         "e_tag": {"readonly": True},
         "os_disk_size_gb": {"maximum": 2048, "minimum": 0},
         "current_orchestrator_version": {"readonly": True},
-        "node_image_version": {"readonly": True},
         "provisioning_state": {"readonly": True},
         "name": {"required": True, "pattern": r"^[a-z][a-z0-9]{0,11}$"},
     }
@@ -6966,7 +7037,6 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         "power_state": {"key": "powerState", "type": "PowerState"},
         "availability_zones": {"key": "availabilityZones", "type": "[str]"},
         "enable_node_public_ip": {"key": "enableNodePublicIP", "type": "bool"},
-        "enable_custom_ca_trust": {"key": "enableCustomCATrust", "type": "bool"},
         "node_public_ip_prefix_id": {"key": "nodePublicIPPrefixID", "type": "str"},
         "scale_set_priority": {"key": "scaleSetPriority", "type": "str"},
         "scale_set_eviction_policy": {"key": "scaleSetEvictionPolicy", "type": "str"},
@@ -6995,6 +7065,7 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         "gateway_profile": {"key": "gatewayProfile", "type": "AgentPoolGatewayProfile"},
         "status": {"key": "status", "type": "AgentPoolStatus"},
         "local_dns_profile": {"key": "localDNSProfile", "type": "LocalDNSProfile"},
+        "node_customization_profile": {"key": "nodeCustomizationProfile", "type": "NodeCustomizationProfile"},
         "name": {"key": "name", "type": "str"},
     }
 
@@ -7022,13 +7093,13 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         type: Optional[Union[str, "_models.AgentPoolType"]] = None,
         mode: Optional[Union[str, "_models.AgentPoolMode"]] = None,
         orchestrator_version: Optional[str] = None,
+        node_image_version: Optional[str] = None,
         upgrade_strategy: Optional[Union[str, "_models.UpgradeStrategy"]] = None,
         upgrade_settings: Optional["_models.AgentPoolUpgradeSettings"] = None,
         upgrade_settings_blue_green: Optional["_models.AgentPoolBlueGreenUpgradeSettings"] = None,
         power_state: Optional["_models.PowerState"] = None,
         availability_zones: Optional[list[str]] = None,
         enable_node_public_ip: Optional[bool] = None,
-        enable_custom_ca_trust: Optional[bool] = None,
         node_public_ip_prefix_id: Optional[str] = None,
         scale_set_priority: Union[str, "_models.ScaleSetPriority"] = "Regular",
         scale_set_eviction_policy: Union[str, "_models.ScaleSetEvictionPolicy"] = "Delete",
@@ -7057,6 +7128,7 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         gateway_profile: Optional["_models.AgentPoolGatewayProfile"] = None,
         status: Optional["_models.AgentPoolStatus"] = None,
         local_dns_profile: Optional["_models.LocalDNSProfile"] = None,
+        node_customization_profile: Optional["_models.NodeCustomizationProfile"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -7115,8 +7187,8 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         :keyword os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
          Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
          changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-         "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
-         "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
+         "AzureLinux", "AzureLinux3", "Flatcar", "CBLMariner", "Windows2019", "Windows2022",
+         "Windows2025", "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
         :paramtype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
         :keyword max_count: The maximum number of nodes for auto-scaling.
         :paramtype max_count: int
@@ -7147,6 +7219,8 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
          information see `upgrading a node pool
          <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#upgrade-a-node-pool>`_.
         :paramtype orchestrator_version: str
+        :keyword node_image_version: The version of node image.
+        :paramtype node_image_version: str
         :keyword upgrade_strategy: Defines the upgrade strategy for the agent pool. The default is
          Rolling. Known values are: "Rolling" and "BlueGreen".
         :paramtype upgrade_strategy: str or ~azure.mgmt.containerservice.models.UpgradeStrategy
@@ -7173,11 +7247,6 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
          <https://docs.microsoft.com/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools>`_.
          The default is false.
         :paramtype enable_node_public_ip: bool
-        :keyword enable_custom_ca_trust: Whether to enable Custom CA Trust feature. When set to true,
-         AKS adds a label to the node indicating that the feature is enabled and deploys a daemonset
-         along with host services to sync custom certificate authorities from user-provided list of
-         base64 encoded certificates into node trust stores. Defaults to false.
-        :paramtype enable_custom_ca_trust: bool
         :keyword node_public_ip_prefix_id: The public IP prefix ID which VM nodes should use IPs from.
          This is of the form:
          /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/publicIPPrefixes/{publicIPPrefixName}.
@@ -7270,6 +7339,10 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
          overrides. LocalDNS helps improve performance and reliability of DNS resolution in an AKS
          cluster. For more details see aka.ms/aks/localdns.
         :paramtype local_dns_profile: ~azure.mgmt.containerservice.models.LocalDNSProfile
+        :keyword node_customization_profile: Settings to determine the node customization used to
+         provision nodes in a pool.
+        :paramtype node_customization_profile:
+         ~azure.mgmt.containerservice.models.NodeCustomizationProfile
         :keyword name: Unique name of the agent pool profile in the context of the subscription and
          resource group. Windows agent pool names must be 6 characters or less. Required.
         :paramtype name: str
@@ -7295,13 +7368,13 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
             type=type,
             mode=mode,
             orchestrator_version=orchestrator_version,
+            node_image_version=node_image_version,
             upgrade_strategy=upgrade_strategy,
             upgrade_settings=upgrade_settings,
             upgrade_settings_blue_green=upgrade_settings_blue_green,
             power_state=power_state,
             availability_zones=availability_zones,
             enable_node_public_ip=enable_node_public_ip,
-            enable_custom_ca_trust=enable_custom_ca_trust,
             node_public_ip_prefix_id=node_public_ip_prefix_id,
             scale_set_priority=scale_set_priority,
             scale_set_eviction_policy=scale_set_eviction_policy,
@@ -7330,6 +7403,7 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
             gateway_profile=gateway_profile,
             status=status,
             local_dns_profile=local_dns_profile,
+            node_customization_profile=node_customization_profile,
             **kwargs
         )
         self.name = name
@@ -7920,6 +7994,26 @@ class ManagedClusterCostAnalysis(_serialization.Model):
          'Standard' or 'Premium' to enable this feature. Enabling this will add Kubernetes Namespace and
          Deployment details to the Cost Analysis views in the Azure portal. If not specified, the
          default is false. For more information see aka.ms/aks/docs/cost-analysis.
+        :paramtype enabled: bool
+        """
+        super().__init__(**kwargs)
+        self.enabled = enabled
+
+
+class ManagedClusterHostedSystemProfile(_serialization.Model):
+    """Settings for hosted system addons.
+
+    :ivar enabled: Whether to enable hosted system addons for the cluster.
+    :vartype enabled: bool
+    """
+
+    _attribute_map = {
+        "enabled": {"key": "enabled", "type": "bool"},
+    }
+
+    def __init__(self, *, enabled: Optional[bool] = None, **kwargs: Any) -> None:
+        """
+        :keyword enabled: Whether to enable hosted system addons for the cluster.
         :paramtype enabled: bool
         """
         super().__init__(**kwargs)
@@ -10357,7 +10451,7 @@ class ManagedNamespace(SubResource):
     :vartype tags: dict[str, str]
     :ivar e_tag: Unique read-only string used to implement optimistic concurrency. The eTag value
      will change when the resource is updated. Specify an if-match or if-none-match header with the
-     eTag value for a subsequent request to enable optimistic concurrency per the normal etag
+     eTag value for a subsequent request to enable optimistic concurrency per the normal eTag
      convention.
     :vartype e_tag: str
     :ivar location: The location of the namespace.
@@ -10495,6 +10589,145 @@ class ManualScaleProfile(_serialization.Model):
         super().__init__(**kwargs)
         self.size = size
         self.count = count
+
+
+class MeshMembership(ProxyResource):
+    """Mesh membership of a managed cluster.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.containerservice.models.SystemData
+    :ivar managed_by: The fully qualified resource ID of the resource that manages this resource.
+     Indicates if this resource is managed by another Azure resource. If this is present, complete
+     mode deployment will not delete the resource if it is removed from the template since it is
+     managed by another resource.
+    :vartype managed_by: str
+    :ivar e_tag: Unique read-only string used to implement optimistic concurrency. The eTag value
+     will change when the resource is updated. Specify an if-match or if-none-match header with the
+     eTag value for a subsequent request to enable optimistic concurrency per the normal eTag
+     convention.
+    :vartype e_tag: str
+    :ivar properties: Mesh membership properties of a managed cluster.
+    :vartype properties: ~azure.mgmt.containerservice.models.MeshMembershipProperties
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "e_tag": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "managed_by": {"key": "managedBy", "type": "str"},
+        "e_tag": {"key": "eTag", "type": "str"},
+        "properties": {"key": "properties", "type": "MeshMembershipProperties"},
+    }
+
+    def __init__(
+        self,
+        *,
+        managed_by: Optional[str] = None,
+        properties: Optional["_models.MeshMembershipProperties"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword managed_by: The fully qualified resource ID of the resource that manages this
+         resource. Indicates if this resource is managed by another Azure resource. If this is present,
+         complete mode deployment will not delete the resource if it is removed from the template since
+         it is managed by another resource.
+        :paramtype managed_by: str
+        :keyword properties: Mesh membership properties of a managed cluster.
+        :paramtype properties: ~azure.mgmt.containerservice.models.MeshMembershipProperties
+        """
+        super().__init__(**kwargs)
+        self.managed_by = managed_by
+        self.e_tag: Optional[str] = None
+        self.properties = properties
+
+
+class MeshMembershipProperties(_serialization.Model):
+    """Mesh membership properties of a managed cluster.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar provisioning_state: The current provisioning state of the Mesh Membership. Known values
+     are: "Canceled", "Creating", "Deleting", "Failed", "Succeeded", and "Updating".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.containerservice.models.MeshMembershipProvisioningState
+    :ivar managed_mesh_id: The ARM resource id for the managed mesh member. This is of the form:
+     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppLink/applinks/{appLinkName}/appLinkMembers/{appLinkMemberName}'.
+     Visit https://aka.ms/applink for more information. Required.
+    :vartype managed_mesh_id: str
+    """
+
+    _validation = {
+        "provisioning_state": {"readonly": True},
+        "managed_mesh_id": {"required": True},
+    }
+
+    _attribute_map = {
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "managed_mesh_id": {"key": "managedMeshID", "type": "str"},
+    }
+
+    def __init__(self, *, managed_mesh_id: str, **kwargs: Any) -> None:
+        """
+        :keyword managed_mesh_id: The ARM resource id for the managed mesh member. This is of the form:
+         '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppLink/applinks/{appLinkName}/appLinkMembers/{appLinkMemberName}'.
+         Visit https://aka.ms/applink for more information. Required.
+        :paramtype managed_mesh_id: str
+        """
+        super().__init__(**kwargs)
+        self.provisioning_state: Optional[Union[str, "_models.MeshMembershipProvisioningState"]] = None
+        self.managed_mesh_id = managed_mesh_id
+
+
+class MeshMembershipsListResult(_serialization.Model):
+    """The result of a request to list mesh memberships in a managed cluster.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The list of mesh memberships.
+    :vartype value: list[~azure.mgmt.containerservice.models.MeshMembership]
+    :ivar next_link: The URL to get the next set of mesh membership results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[MeshMembership]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, *, value: Optional[list["_models.MeshMembership"]] = None, **kwargs: Any) -> None:
+        """
+        :keyword value: The list of mesh memberships.
+        :paramtype value: list[~azure.mgmt.containerservice.models.MeshMembership]
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link: Optional[str] = None
 
 
 class MeshRevision(_serialization.Model):
@@ -10905,6 +11138,28 @@ class NetworkProfileForSnapshot(_serialization.Model):
         self.network_policy = network_policy
         self.network_mode = network_mode
         self.load_balancer_sku = load_balancer_sku
+
+
+class NodeCustomizationProfile(_serialization.Model):
+    """Settings to determine the node customization used to provision nodes in a pool.
+
+    :ivar node_customization_id: The resource ID of the node customization resource to use. This
+     can be a version. Omitting the version will use the latest version of the node customization.
+    :vartype node_customization_id: str
+    """
+
+    _attribute_map = {
+        "node_customization_id": {"key": "nodeCustomizationId", "type": "str"},
+    }
+
+    def __init__(self, *, node_customization_id: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword node_customization_id: The resource ID of the node customization resource to use. This
+         can be a version. Omitting the version will use the latest version of the node customization.
+        :paramtype node_customization_id: str
+        """
+        super().__init__(**kwargs)
+        self.node_customization_id = node_customization_id
 
 
 class NodeImageVersion(_serialization.Model):
@@ -12140,8 +12395,8 @@ class Snapshot(TrackedResource):
     :ivar os_sku: Specifies the OS SKU used by the agent pool. If not specified, the default is
      Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be
      changed to Windows2022 after Windows2019 is deprecated. Known values are: "Ubuntu", "Mariner",
-     "AzureLinux", "AzureLinux3", "CBLMariner", "Windows2019", "Windows2022", "Windows2025",
-     "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
+     "AzureLinux", "AzureLinux3", "Flatcar", "CBLMariner", "Windows2019", "Windows2022",
+     "Windows2025", "WindowsAnnual", "Ubuntu2204", and "Ubuntu2404".
     :vartype os_sku: str or ~azure.mgmt.containerservice.models.OSSKU
     :ivar vm_size: The size of the VM.
     :vartype vm_size: str

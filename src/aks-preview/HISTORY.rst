@@ -11,6 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Vendor new SDK and bump API version to 2025-08-02-preview.
+* Pre-deprecate `--enable-custom-ca-trust` and `--disable-custom-ca-trust` in `az aks create`, `az aks update` commands.
 
 18.0.0b43
 +++++++

@@ -39,9 +39,9 @@ from ...operations._snapshots_operations import (
 )
 from .._configuration import ContainerServiceClientConfiguration
 
-List = list
 T = TypeVar("T")
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 
 class SnapshotsOperations:

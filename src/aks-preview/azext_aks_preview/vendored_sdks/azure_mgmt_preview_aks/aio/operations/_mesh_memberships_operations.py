@@ -33,7 +33,7 @@ from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
 from ..._utils.serialization import Deserializer, Serializer
-from ...operations._jwt_authenticators_operations import (
+from ...operations._mesh_memberships_operations import (
     build_create_or_update_request,
     build_delete_request,
     build_get_request,
@@ -46,14 +46,14 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T
 List = list
 
 
-class JWTAuthenticatorsOperations:
+class MeshMembershipsOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
         :class:`~azure.mgmt.containerservice.aio.ContainerServiceClient`'s
-        :attr:`jwt_authenticators` attribute.
+        :attr:`mesh_memberships` attribute.
     """
 
     models = _models
@@ -68,26 +68,26 @@ class JWTAuthenticatorsOperations:
     @distributed_trace
     def list_by_managed_cluster(
         self, resource_group_name: str, resource_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.JWTAuthenticator"]:
-        """Gets a list of JWT authenticators in the specified managed cluster.
+    ) -> AsyncItemPaged["_models.MeshMembership"]:
+        """Lists mesh memberships in a managed cluster.
 
-        Gets a list of JWT authenticators in the specified managed cluster.
+        Lists mesh memberships in a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :return: An iterator like instance of either JWTAuthenticator or the result of cls(response)
+        :return: An iterator like instance of either MeshMembership or the result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.models.JWTAuthenticator]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.models.MeshMembership]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.JWTAuthenticatorListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models.MeshMembershipsListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -128,7 +128,7 @@ class JWTAuthenticatorsOperations:
             return _request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("JWTAuthenticatorListResult", pipeline_response)
+            deserialized = self._deserialize("MeshMembershipsListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
@@ -154,21 +154,21 @@ class JWTAuthenticatorsOperations:
 
     @distributed_trace_async
     async def get(
-        self, resource_group_name: str, resource_name: str, jwt_authenticator_name: str, **kwargs: Any
-    ) -> _models.JWTAuthenticator:
-        """Gets the specified JWT authenticator of a managed cluster.
+        self, resource_group_name: str, resource_name: str, mesh_membership_name: str, **kwargs: Any
+    ) -> _models.MeshMembership:
+        """Gets the mesh membership of a managed cluster.
 
-        Gets the specified JWT authenticator of a managed cluster.
+        Gets the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param jwt_authenticator_name: The name of the JWT authenticator. Required.
-        :type jwt_authenticator_name: str
-        :return: JWTAuthenticator or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.models.JWTAuthenticator
+        :param mesh_membership_name: The name of the mesh membership. Required.
+        :type mesh_membership_name: str
+        :return: MeshMembership or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservice.models.MeshMembership
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -183,12 +183,12 @@ class JWTAuthenticatorsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.JWTAuthenticator] = kwargs.pop("cls", None)
+        cls: ClsType[_models.MeshMembership] = kwargs.pop("cls", None)
 
         _request = build_get_request(
             resource_group_name=resource_group_name,
             resource_name=resource_name,
-            jwt_authenticator_name=jwt_authenticator_name,
+            mesh_membership_name=mesh_membership_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -208,7 +208,7 @@ class JWTAuthenticatorsOperations:
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("JWTAuthenticator", pipeline_response.http_response)
+        deserialized = self._deserialize("MeshMembership", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -219,8 +219,8 @@ class JWTAuthenticatorsOperations:
         self,
         resource_group_name: str,
         resource_name: str,
-        jwt_authenticator_name: str,
-        parameters: Union[_models.JWTAuthenticator, IO[bytes]],
+        mesh_membership_name: str,
+        parameters: Union[_models.MeshMembership, IO[bytes]],
         **kwargs: Any
     ) -> AsyncIterator[bytes]:
         error_map: MutableMapping = {
@@ -244,12 +244,12 @@ class JWTAuthenticatorsOperations:
         if isinstance(parameters, (IOBase, bytes)):
             _content = parameters
         else:
-            _json = self._serialize.body(parameters, "JWTAuthenticator")
+            _json = self._serialize.body(parameters, "MeshMembership")
 
         _request = build_create_or_update_request(
             resource_group_name=resource_group_name,
             resource_name=resource_name,
-            jwt_authenticator_name=jwt_authenticator_name,
+            mesh_membership_name=mesh_membership_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             content_type=content_type,
@@ -277,15 +277,10 @@ class JWTAuthenticatorsOperations:
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        response_headers = {}
-        response_headers["Azure-AsyncOperation"] = self._deserialize(
-            "str", response.headers.get("Azure-AsyncOperation")
-        )
-
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
         if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
 
@@ -294,34 +289,31 @@ class JWTAuthenticatorsOperations:
         self,
         resource_group_name: str,
         resource_name: str,
-        jwt_authenticator_name: str,
-        parameters: _models.JWTAuthenticator,
+        mesh_membership_name: str,
+        parameters: _models.MeshMembership,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.JWTAuthenticator]:
-        """Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
+    ) -> AsyncLROPoller[_models.MeshMembership]:
+        """Creates or updates the mesh membership of a managed cluster.
 
-        Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
+        Creates or updates the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param jwt_authenticator_name: The name of the JWT authenticator. Required.
-        :type jwt_authenticator_name: str
-        :param parameters: The JWT authenticator to create or update. Required.
-        :type parameters: ~azure.mgmt.containerservice.models.JWTAuthenticator
+        :param mesh_membership_name: The name of the mesh membership. Required.
+        :type mesh_membership_name: str
+        :param parameters: The mesh membership to create or update. Required.
+        :type parameters: ~azure.mgmt.containerservice.models.MeshMembership
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either JWTAuthenticator or the result of
+        :return: An instance of AsyncLROPoller that returns either MeshMembership or the result of
          cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.models.JWTAuthenticator]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.models.MeshMembership]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -330,34 +322,31 @@ class JWTAuthenticatorsOperations:
         self,
         resource_group_name: str,
         resource_name: str,
-        jwt_authenticator_name: str,
+        mesh_membership_name: str,
         parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.JWTAuthenticator]:
-        """Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
+    ) -> AsyncLROPoller[_models.MeshMembership]:
+        """Creates or updates the mesh membership of a managed cluster.
 
-        Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
+        Creates or updates the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param jwt_authenticator_name: The name of the JWT authenticator. Required.
-        :type jwt_authenticator_name: str
-        :param parameters: The JWT authenticator to create or update. Required.
+        :param mesh_membership_name: The name of the mesh membership. Required.
+        :type mesh_membership_name: str
+        :param parameters: The mesh membership to create or update. Required.
         :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either JWTAuthenticator or the result of
+        :return: An instance of AsyncLROPoller that returns either MeshMembership or the result of
          cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.models.JWTAuthenticator]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.models.MeshMembership]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -366,30 +355,27 @@ class JWTAuthenticatorsOperations:
         self,
         resource_group_name: str,
         resource_name: str,
-        jwt_authenticator_name: str,
-        parameters: Union[_models.JWTAuthenticator, IO[bytes]],
+        mesh_membership_name: str,
+        parameters: Union[_models.MeshMembership, IO[bytes]],
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.JWTAuthenticator]:
-        """Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
+    ) -> AsyncLROPoller[_models.MeshMembership]:
+        """Creates or updates the mesh membership of a managed cluster.
 
-        Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
+        Creates or updates the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param jwt_authenticator_name: The name of the JWT authenticator. Required.
-        :type jwt_authenticator_name: str
-        :param parameters: The JWT authenticator to create or update. Is either a JWTAuthenticator type
-         or a IO[bytes] type. Required.
-        :type parameters: ~azure.mgmt.containerservice.models.JWTAuthenticator or IO[bytes]
-        :return: An instance of AsyncLROPoller that returns either JWTAuthenticator or the result of
+        :param mesh_membership_name: The name of the mesh membership. Required.
+        :type mesh_membership_name: str
+        :param parameters: The mesh membership to create or update. Is either a MeshMembership type or
+         a IO[bytes] type. Required.
+        :type parameters: ~azure.mgmt.containerservice.models.MeshMembership or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns either MeshMembership or the result of
          cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.models.JWTAuthenticator]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.models.MeshMembership]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -397,7 +383,7 @@ class JWTAuthenticatorsOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.JWTAuthenticator] = kwargs.pop("cls", None)
+        cls: ClsType[_models.MeshMembership] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -405,7 +391,7 @@ class JWTAuthenticatorsOperations:
             raw_result = await self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 resource_name=resource_name,
-                jwt_authenticator_name=jwt_authenticator_name,
+                mesh_membership_name=mesh_membership_name,
                 parameters=parameters,
                 api_version=api_version,
                 content_type=content_type,
@@ -418,38 +404,30 @@ class JWTAuthenticatorsOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            response_headers = {}
-            response = pipeline_response.http_response
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-            deserialized = self._deserialize("JWTAuthenticator", pipeline_response.http_response)
+            deserialized = self._deserialize("MeshMembership", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[_models.JWTAuthenticator].from_continuation_token(
+            return AsyncLROPoller[_models.MeshMembership].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[_models.JWTAuthenticator](
+        return AsyncLROPoller[_models.MeshMembership](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
     async def _delete_initial(
-        self, resource_group_name: str, resource_name: str, jwt_authenticator_name: str, **kwargs: Any
+        self, resource_group_name: str, resource_name: str, mesh_membership_name: str, **kwargs: Any
     ) -> AsyncIterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -468,7 +446,7 @@ class JWTAuthenticatorsOperations:
         _request = build_delete_request(
             resource_group_name=resource_group_name,
             resource_name=resource_name,
-            jwt_authenticator_name=jwt_authenticator_name,
+            mesh_membership_name=mesh_membership_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -496,14 +474,6 @@ class JWTAuthenticatorsOperations:
         response_headers = {}
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-        if response.status_code == 204:
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -514,19 +484,19 @@ class JWTAuthenticatorsOperations:
 
     @distributed_trace_async
     async def begin_delete(
-        self, resource_group_name: str, resource_name: str, jwt_authenticator_name: str, **kwargs: Any
+        self, resource_group_name: str, resource_name: str, mesh_membership_name: str, **kwargs: Any
     ) -> AsyncLROPoller[None]:
-        """Deletes a JWT authenticator and updates the managed cluster to apply the settings.
+        """Deletes the mesh membership of a managed cluster.
 
-        Deletes a JWT authenticator and updates the managed cluster to apply the settings.
+        Deletes the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param jwt_authenticator_name: The name of the JWT authenticator. Required.
-        :type jwt_authenticator_name: str
+        :param mesh_membership_name: The name of the mesh membership. Required.
+        :type mesh_membership_name: str
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -543,7 +513,7 @@ class JWTAuthenticatorsOperations:
             raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 resource_name=resource_name,
-                jwt_authenticator_name=jwt_authenticator_name,
+                mesh_membership_name=mesh_membership_name,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
                 headers=_headers,
@@ -558,9 +528,7 @@ class JWTAuthenticatorsOperations:
                 return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:

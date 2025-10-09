@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long,useless-suppression
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -7,11 +8,10 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, AsyncIterator, Callable, IO, Optional, TypeVar, Union, cast, overload
+from typing import Any, Callable, IO, Iterator, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
-from azure.core import AsyncPipelineClient
-from azure.core.async_paging import AsyncItemPaged, AsyncList
+from azure.core import PipelineClient
 from azure.core.exceptions import (
     ClientAuthenticationError,
     HttpResponseError,
@@ -22,45 +22,229 @@ from azure.core.exceptions import (
     StreamConsumedError,
     map_error,
 )
+from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
-from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
-from azure.core.rest import AsyncHttpResponse, HttpRequest
+from azure.core.polling import LROPoller, NoPolling, PollingMethod
+from azure.core.rest import HttpRequest, HttpResponse
 from azure.core.tracing.decorator import distributed_trace
-from azure.core.tracing.decorator_async import distributed_trace_async
 from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
-from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
+from azure.mgmt.core.polling.arm_polling import ARMPolling
 
-from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
-from ...operations._jwt_authenticators_operations import (
-    build_create_or_update_request,
-    build_delete_request,
-    build_get_request,
-    build_list_by_managed_cluster_request,
-)
+from .. import models as _models
 from .._configuration import ContainerServiceClientConfiguration
+from .._utils.serialization import Deserializer, Serializer
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, dict[str, Any]], Any]]
 List = list
 
+_SERIALIZER = Serializer()
+_SERIALIZER.client_side_validation = False
 
-class JWTAuthenticatorsOperations:
+
+def build_list_by_managed_cluster_request(
+    resource_group_name: str, resource_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/meshMemberships",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "resourceName": _SERIALIZER.url(
+            "resource_name",
+            resource_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_get_request(
+    resource_group_name: str, resource_name: str, mesh_membership_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/meshMemberships/{meshMembershipName}",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "resourceName": _SERIALIZER.url(
+            "resource_name",
+            resource_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$",
+        ),
+        "meshMembershipName": _SERIALIZER.url(
+            "mesh_membership_name",
+            mesh_membership_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-zA-Z][a-zA-Z0-9]{0,62}$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_create_or_update_request(
+    resource_group_name: str, resource_name: str, mesh_membership_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/meshMemberships/{meshMembershipName}",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "resourceName": _SERIALIZER.url(
+            "resource_name",
+            resource_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$",
+        ),
+        "meshMembershipName": _SERIALIZER.url(
+            "mesh_membership_name",
+            mesh_membership_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-zA-Z][a-zA-Z0-9]{0,62}$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    if content_type is not None:
+        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="PUT", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_delete_request(
+    resource_group_name: str, resource_name: str, mesh_membership_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/meshMemberships/{meshMembershipName}",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "resourceName": _SERIALIZER.url(
+            "resource_name",
+            resource_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$",
+        ),
+        "meshMembershipName": _SERIALIZER.url(
+            "mesh_membership_name",
+            mesh_membership_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-zA-Z][a-zA-Z0-9]{0,62}$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="DELETE", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+class MeshMembershipsOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerservice.aio.ContainerServiceClient`'s
-        :attr:`jwt_authenticators` attribute.
+        :class:`~azure.mgmt.containerservice.ContainerServiceClient`'s
+        :attr:`mesh_memberships` attribute.
     """
 
     models = _models
 
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
-        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: ContainerServiceClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
         self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
@@ -68,26 +252,25 @@ class JWTAuthenticatorsOperations:
     @distributed_trace
     def list_by_managed_cluster(
         self, resource_group_name: str, resource_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.JWTAuthenticator"]:
-        """Gets a list of JWT authenticators in the specified managed cluster.
+    ) -> ItemPaged["_models.MeshMembership"]:
+        """Lists mesh memberships in a managed cluster.
 
-        Gets a list of JWT authenticators in the specified managed cluster.
+        Lists mesh memberships in a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :return: An iterator like instance of either JWTAuthenticator or the result of cls(response)
-        :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.models.JWTAuthenticator]
+        :return: An iterator like instance of either MeshMembership or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.models.MeshMembership]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.JWTAuthenticatorListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models.MeshMembershipsListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -127,18 +310,18 @@ class JWTAuthenticatorsOperations:
                 _request.method = "GET"
             return _request
 
-        async def extract_data(pipeline_response):
-            deserialized = self._deserialize("JWTAuthenticatorListResult", pipeline_response)
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize("MeshMembershipsListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.next_link or None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
-        async def get_next(next_link=None):
+        def get_next(next_link=None):
             _request = prepare_request(next_link)
 
             _stream = False
-            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
                 _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
@@ -150,25 +333,25 @@ class JWTAuthenticatorsOperations:
 
             return pipeline_response
 
-        return AsyncItemPaged(get_next, extract_data)
+        return ItemPaged(get_next, extract_data)
 
-    @distributed_trace_async
-    async def get(
-        self, resource_group_name: str, resource_name: str, jwt_authenticator_name: str, **kwargs: Any
-    ) -> _models.JWTAuthenticator:
-        """Gets the specified JWT authenticator of a managed cluster.
+    @distributed_trace
+    def get(
+        self, resource_group_name: str, resource_name: str, mesh_membership_name: str, **kwargs: Any
+    ) -> _models.MeshMembership:
+        """Gets the mesh membership of a managed cluster.
 
-        Gets the specified JWT authenticator of a managed cluster.
+        Gets the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param jwt_authenticator_name: The name of the JWT authenticator. Required.
-        :type jwt_authenticator_name: str
-        :return: JWTAuthenticator or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.models.JWTAuthenticator
+        :param mesh_membership_name: The name of the mesh membership. Required.
+        :type mesh_membership_name: str
+        :return: MeshMembership or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservice.models.MeshMembership
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -183,12 +366,12 @@ class JWTAuthenticatorsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.JWTAuthenticator] = kwargs.pop("cls", None)
+        cls: ClsType[_models.MeshMembership] = kwargs.pop("cls", None)
 
         _request = build_get_request(
             resource_group_name=resource_group_name,
             resource_name=resource_name,
-            jwt_authenticator_name=jwt_authenticator_name,
+            mesh_membership_name=mesh_membership_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -197,7 +380,7 @@ class JWTAuthenticatorsOperations:
         _request.url = self._client.format_url(_request.url)
 
         _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -208,21 +391,21 @@ class JWTAuthenticatorsOperations:
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("JWTAuthenticator", pipeline_response.http_response)
+        deserialized = self._deserialize("MeshMembership", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
 
-    async def _create_or_update_initial(
+    def _create_or_update_initial(
         self,
         resource_group_name: str,
         resource_name: str,
-        jwt_authenticator_name: str,
-        parameters: Union[_models.JWTAuthenticator, IO[bytes]],
+        mesh_membership_name: str,
+        parameters: Union[_models.MeshMembership, IO[bytes]],
         **kwargs: Any
-    ) -> AsyncIterator[bytes]:
+    ) -> Iterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -236,7 +419,7 @@ class JWTAuthenticatorsOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+        cls: ClsType[Iterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -244,12 +427,12 @@ class JWTAuthenticatorsOperations:
         if isinstance(parameters, (IOBase, bytes)):
             _content = parameters
         else:
-            _json = self._serialize.body(parameters, "JWTAuthenticator")
+            _json = self._serialize.body(parameters, "MeshMembership")
 
         _request = build_create_or_update_request(
             resource_group_name=resource_group_name,
             resource_name=resource_name,
-            jwt_authenticator_name=jwt_authenticator_name,
+            mesh_membership_name=mesh_membership_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             content_type=content_type,
@@ -262,7 +445,7 @@ class JWTAuthenticatorsOperations:
 
         _decompress = kwargs.pop("decompress", True)
         _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -270,126 +453,112 @@ class JWTAuthenticatorsOperations:
 
         if response.status_code not in [200, 201]:
             try:
-                await response.read()  # Load the body in memory and close the socket
+                response.read()  # Load the body in memory and close the socket
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        response_headers = {}
-        response_headers["Azure-AsyncOperation"] = self._deserialize(
-            "str", response.headers.get("Azure-AsyncOperation")
-        )
-
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
         if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
 
     @overload
-    async def begin_create_or_update(
+    def begin_create_or_update(
         self,
         resource_group_name: str,
         resource_name: str,
-        jwt_authenticator_name: str,
-        parameters: _models.JWTAuthenticator,
+        mesh_membership_name: str,
+        parameters: _models.MeshMembership,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.JWTAuthenticator]:
-        """Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
+    ) -> LROPoller[_models.MeshMembership]:
+        """Creates or updates the mesh membership of a managed cluster.
 
-        Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
+        Creates or updates the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param jwt_authenticator_name: The name of the JWT authenticator. Required.
-        :type jwt_authenticator_name: str
-        :param parameters: The JWT authenticator to create or update. Required.
-        :type parameters: ~azure.mgmt.containerservice.models.JWTAuthenticator
+        :param mesh_membership_name: The name of the mesh membership. Required.
+        :type mesh_membership_name: str
+        :param parameters: The mesh membership to create or update. Required.
+        :type parameters: ~azure.mgmt.containerservice.models.MeshMembership
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either JWTAuthenticator or the result of
+        :return: An instance of LROPoller that returns either MeshMembership or the result of
          cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.models.JWTAuthenticator]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.models.MeshMembership]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
     @overload
-    async def begin_create_or_update(
+    def begin_create_or_update(
         self,
         resource_group_name: str,
         resource_name: str,
-        jwt_authenticator_name: str,
+        mesh_membership_name: str,
         parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.JWTAuthenticator]:
-        """Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
+    ) -> LROPoller[_models.MeshMembership]:
+        """Creates or updates the mesh membership of a managed cluster.
 
-        Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
+        Creates or updates the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param jwt_authenticator_name: The name of the JWT authenticator. Required.
-        :type jwt_authenticator_name: str
-        :param parameters: The JWT authenticator to create or update. Required.
+        :param mesh_membership_name: The name of the mesh membership. Required.
+        :type mesh_membership_name: str
+        :param parameters: The mesh membership to create or update. Required.
         :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either JWTAuthenticator or the result of
+        :return: An instance of LROPoller that returns either MeshMembership or the result of
          cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.models.JWTAuthenticator]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.models.MeshMembership]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
-    @distributed_trace_async
-    async def begin_create_or_update(
+    @distributed_trace
+    def begin_create_or_update(
         self,
         resource_group_name: str,
         resource_name: str,
-        jwt_authenticator_name: str,
-        parameters: Union[_models.JWTAuthenticator, IO[bytes]],
+        mesh_membership_name: str,
+        parameters: Union[_models.MeshMembership, IO[bytes]],
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.JWTAuthenticator]:
-        """Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
+    ) -> LROPoller[_models.MeshMembership]:
+        """Creates or updates the mesh membership of a managed cluster.
 
-        Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
+        Creates or updates the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param jwt_authenticator_name: The name of the JWT authenticator. Required.
-        :type jwt_authenticator_name: str
-        :param parameters: The JWT authenticator to create or update. Is either a JWTAuthenticator type
-         or a IO[bytes] type. Required.
-        :type parameters: ~azure.mgmt.containerservice.models.JWTAuthenticator or IO[bytes]
-        :return: An instance of AsyncLROPoller that returns either JWTAuthenticator or the result of
+        :param mesh_membership_name: The name of the mesh membership. Required.
+        :type mesh_membership_name: str
+        :param parameters: The mesh membership to create or update. Is either a MeshMembership type or
+         a IO[bytes] type. Required.
+        :type parameters: ~azure.mgmt.containerservice.models.MeshMembership or IO[bytes]
+        :return: An instance of LROPoller that returns either MeshMembership or the result of
          cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.models.JWTAuthenticator]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.models.MeshMembership]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -397,15 +566,15 @@ class JWTAuthenticatorsOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.JWTAuthenticator] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        cls: ClsType[_models.MeshMembership] = kwargs.pop("cls", None)
+        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._create_or_update_initial(
+            raw_result = self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 resource_name=resource_name,
-                jwt_authenticator_name=jwt_authenticator_name,
+                mesh_membership_name=mesh_membership_name,
                 parameters=parameters,
                 api_version=api_version,
                 content_type=content_type,
@@ -414,43 +583,35 @@ class JWTAuthenticatorsOperations:
                 params=_params,
                 **kwargs
             )
-            await raw_result.http_response.read()  # type: ignore
+            raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            response_headers = {}
-            response = pipeline_response.http_response
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-            deserialized = self._deserialize("JWTAuthenticator", pipeline_response.http_response)
+            deserialized = self._deserialize("MeshMembership", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
+            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
         elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+            polling_method = cast(PollingMethod, NoPolling())
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[_models.JWTAuthenticator].from_continuation_token(
+            return LROPoller[_models.MeshMembership].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[_models.JWTAuthenticator](
+        return LROPoller[_models.MeshMembership](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
-    async def _delete_initial(
-        self, resource_group_name: str, resource_name: str, jwt_authenticator_name: str, **kwargs: Any
-    ) -> AsyncIterator[bytes]:
+    def _delete_initial(
+        self, resource_group_name: str, resource_name: str, mesh_membership_name: str, **kwargs: Any
+    ) -> Iterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -463,12 +624,12 @@ class JWTAuthenticatorsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+        cls: ClsType[Iterator[bytes]] = kwargs.pop("cls", None)
 
         _request = build_delete_request(
             resource_group_name=resource_group_name,
             resource_name=resource_name,
-            jwt_authenticator_name=jwt_authenticator_name,
+            mesh_membership_name=mesh_membership_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -478,7 +639,7 @@ class JWTAuthenticatorsOperations:
 
         _decompress = kwargs.pop("decompress", True)
         _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -486,7 +647,7 @@ class JWTAuthenticatorsOperations:
 
         if response.status_code not in [202, 204]:
             try:
-                await response.read()  # Load the body in memory and close the socket
+                response.read()  # Load the body in memory and close the socket
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
@@ -496,14 +657,6 @@ class JWTAuthenticatorsOperations:
         response_headers = {}
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-        if response.status_code == 204:
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -512,23 +665,23 @@ class JWTAuthenticatorsOperations:
 
         return deserialized  # type: ignore
 
-    @distributed_trace_async
-    async def begin_delete(
-        self, resource_group_name: str, resource_name: str, jwt_authenticator_name: str, **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Deletes a JWT authenticator and updates the managed cluster to apply the settings.
+    @distributed_trace
+    def begin_delete(
+        self, resource_group_name: str, resource_name: str, mesh_membership_name: str, **kwargs: Any
+    ) -> LROPoller[None]:
+        """Deletes the mesh membership of a managed cluster.
 
-        Deletes a JWT authenticator and updates the managed cluster to apply the settings.
+        Deletes the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param jwt_authenticator_name: The name of the JWT authenticator. Required.
-        :type jwt_authenticator_name: str
-        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :param mesh_membership_name: The name of the mesh membership. Required.
+        :type mesh_membership_name: str
+        :return: An instance of LROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
@@ -536,21 +689,21 @@ class JWTAuthenticatorsOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[None] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(
+            raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
                 resource_name=resource_name,
-                jwt_authenticator_name=jwt_authenticator_name,
+                mesh_membership_name=mesh_membership_name,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
                 headers=_headers,
                 params=_params,
                 **kwargs
             )
-            await raw_result.http_response.read()  # type: ignore
+            raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
@@ -558,18 +711,16 @@ class JWTAuthenticatorsOperations:
                 return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
+            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
         elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+            polling_method = cast(PollingMethod, NoPolling())
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[None].from_continuation_token(
+            return LROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return LROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
