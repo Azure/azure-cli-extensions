@@ -241,72 +241,94 @@ def _aks_bastion_get_current_shell_cmd():
     ppid = os.getppid()
     parent = psutil.Process(ppid)
     parent_name = parent.name()
-    logger.debug(f"Immediate parent process: {parent_name} (PID: {ppid})")
+    logger.debug("Immediate parent process: %s (PID: %s)", parent_name, ppid)
 
     # On Windows, Azure CLI is often invoked as az.cmd, which means the immediate parent
     # is cmd.exe but the actual user shell (PowerShell) is the grandparent process
-    if sys.platform.startswith("win"):
-        try:
-            parent_exe = parent.exe()
-            logger.debug(f"Parent executable path: {parent_exe}")
+    if not sys.platform.startswith("win"):
+        logger.debug("Using parent process name as shell: %s", parent_name)
+        return parent_name
 
-            # If the immediate parent is cmd.exe, check if it's wrapping az.cmd for PowerShell
-            if "cmd" in parent_name.lower():
-                try:
-                    # Get the grandparent process (parent of cmd.exe)
-                    grandparent = parent.parent()
-                    if grandparent:
-                        grandparent_name = grandparent.name()
-                        logger.debug(f"Detected grandparent process: {grandparent_name} (PID: {grandparent.pid})")
+    return _get_windows_shell_cmd(parent, parent_name)
 
-                        # If grandparent is PowerShell, that's the actual user shell
-                        if "pwsh" in grandparent_name.lower() or "powershell" in grandparent_name.lower():
-                            logger.debug("Grandparent is PowerShell - using PowerShell as target shell")
-                            # Try to find pwsh first, fall back to powershell
-                            pwsh_path = shutil.which("pwsh")
-                            if pwsh_path:
-                                logger.debug(f"Found pwsh at: {pwsh_path}")
-                                return "pwsh"
-                            powershell_path = shutil.which("powershell")
-                            if powershell_path:
-                                logger.debug(f"Found powershell at: {powershell_path}")
-                                return "powershell"
-                            # If we can't find pwsh/powershell in PATH, use the detected grandparent
-                            logger.debug("PowerShell not found in PATH, using detected grandparent executable")
-                            return grandparent.exe() if grandparent.exe() else grandparent_name
-                        # If grandparent is not PowerShell, stick with cmd
-                        else:
-                            logger.debug("Grandparent is not PowerShell - using cmd as target shell")
-                            return "cmd"
-                except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-                    # If we can't access grandparent, assume cmd is the actual shell
-                    logger.debug(f"Cannot access grandparent process: {e} - using cmd as target shell")
-                    return "cmd"
 
-            # For direct PowerShell processes (not wrapped by cmd), prefer pwsh over powershell.exe
-            elif "pwsh" in parent_name.lower() or "powershell" in parent_name.lower():
-                logger.debug("Direct PowerShell parent detected")
-                # Try to find pwsh first, fall back to powershell
-                pwsh_path = shutil.which("pwsh")
-                if pwsh_path:
-                    logger.debug(f"Found pwsh at: {pwsh_path}")
-                    return "pwsh"
-                powershell_path = shutil.which("powershell")
-                if powershell_path:
-                    logger.debug(f"Found powershell at: {powershell_path}")
-                    return "powershell"
-                # If we can't find pwsh/powershell in PATH, use the detected parent
-                logger.debug("PowerShell not found in PATH, using detected parent executable")
-                return parent_exe if parent_exe else parent_name
-            else:
-                logger.debug(f"Other Windows shell detected: {parent_name}")
-                return parent_exe if parent_exe else parent_name
-        except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-            logger.debug(f"Cannot access parent process details: {e}")
-            pass
+def _get_windows_shell_cmd(parent, parent_name):
+    """Get the shell command on Windows, handling az.cmd wrapper scenarios."""
+    try:
+        parent_exe = parent.exe()
+        logger.debug("Parent executable path: %s", parent_exe)
 
-    logger.debug(f"Using parent process name as shell: {parent_name}")
-    return parent_name
+        # If the immediate parent is cmd.exe, check if it's wrapping az.cmd for PowerShell
+        if "cmd" in parent_name.lower():
+            return _handle_cmd_parent(parent)
+
+        # For direct PowerShell processes (not wrapped by cmd)
+        if "pwsh" in parent_name.lower() or "powershell" in parent_name.lower():
+            return _handle_powershell_parent(parent_exe, parent_name)
+
+        logger.debug("Other Windows shell detected: %s", parent_name)
+        return parent_exe if parent_exe else parent_name
+
+    except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
+        logger.debug("Cannot access parent process details: %s", e)
+        return parent_name
+
+
+def _handle_cmd_parent(parent):
+    """Handle case where immediate parent is cmd.exe - check for PowerShell grandparent."""
+    try:
+        # Get the grandparent process (parent of cmd.exe)
+        grandparent = parent.parent()
+        if not grandparent:
+            return "cmd"
+
+        grandparent_name = grandparent.name()
+        logger.debug("Detected grandparent process: %s (PID: %s)", grandparent_name, grandparent.pid)
+
+        # If grandparent is PowerShell, that's the actual user shell
+        if "pwsh" in grandparent_name.lower() or "powershell" in grandparent_name.lower():
+            return _get_powershell_executable(grandparent)
+
+        logger.debug("Grandparent is not PowerShell - using cmd as target shell")
+        return "cmd"
+
+    except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
+        # If we can't access grandparent, assume cmd is the actual shell
+        logger.debug("Cannot access grandparent process: %s - using cmd as target shell", e)
+        return "cmd"
+
+
+def _handle_powershell_parent(parent_exe, parent_name):
+    """Handle direct PowerShell parent process."""
+    logger.debug("Direct PowerShell parent detected")
+    return _get_powershell_executable_from_path() or parent_exe or parent_name
+
+
+def _get_powershell_executable(grandparent):
+    """Get PowerShell executable, preferring pwsh over powershell."""
+    logger.debug("Grandparent is PowerShell - using PowerShell as target shell")
+    powershell_cmd = _get_powershell_executable_from_path()
+    if powershell_cmd:
+        return powershell_cmd
+
+    # If we can't find pwsh/powershell in PATH, use the detected grandparent
+    logger.debug("PowerShell not found in PATH, using detected grandparent executable")
+    return grandparent.exe() if grandparent.exe() else grandparent.name()
+
+
+def _get_powershell_executable_from_path():
+    """Try to find PowerShell executable in PATH, preferring pwsh over powershell."""
+    pwsh_path = shutil.which("pwsh")
+    if pwsh_path:
+        logger.debug("Found pwsh at: %s", pwsh_path)
+        return "pwsh"
+
+    powershell_path = shutil.which("powershell")
+    if powershell_path:
+        logger.debug("Found powershell at: %s", powershell_path)
+        return "powershell"
+
+    return None
 
 
 def _aks_bastion_prepare_shell_cmd(kubeconfig_path):
