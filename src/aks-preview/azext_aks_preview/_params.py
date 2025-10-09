@@ -1127,7 +1127,7 @@ def load_arguments(self, _):
         # virtual machines
         c.argument("vm_sizes", is_preview=True)
         c.argument("enable_imds_restriction", action="store_true", is_preview=True)
-        c.argument("enable_managed_system_pool", action="store_true", is_preview=True)
+        c.argument("enable_managed_system_pool", action="store_true", is_preview=True, deprecate_info=c.deprecate(target="--enable-managed-system-pool", hide=True))
         c.argument("enable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
 
     with self.argument_context("aks update") as c:
