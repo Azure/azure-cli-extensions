@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "data-migration sql-db retry",
+    "datamigration sql-db retry",
 )
 class Retry(AAZCommand):
     """Retry on going migration for the database.
 
     :example: Retry Database Migration resource.
-        az data-migration sql-db retry --resource-group testrg --sql-db-instance-name sqldbinstance --target-db-name db1 --migration-operation-id 9a90bb84-e70f-46f7-b0ae-1aef5b3b9f07
+        az datamigration sql-db retry --resource-group testrg --sql-db-instance-name sqldbinstance --target-db-name db1 --migration-operation-id 9a90bb84-e70f-46f7-b0ae-1aef5b3b9f07
     """
 
     _aaz_info = {
@@ -46,10 +46,12 @@ class Retry(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of the Azure resource group",
             required=True,
         )
         _args_schema.sql_db_instance_name = AAZStrArg(
             options=["--sql-db-instance-name"],
+            help="Name of the SQL database instance",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -72,7 +74,7 @@ class Retry(AAZCommand):
         _args_schema.migration_operation_id = AAZUuidArg(
             options=["--migration-operation-id"],
             arg_group="MigrationOperationInput",
-            help="ID tracking migration operation.",
+            help="Unique ID for tracking the migration operation",
         )
         return cls._args_schema
 

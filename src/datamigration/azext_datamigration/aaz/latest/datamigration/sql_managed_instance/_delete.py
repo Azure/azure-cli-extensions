@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "data-migration sql-managed-instance delete",
+    "datamigration sql-managed-instance delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete Database Migration resource.
 
     :example: Delete Database Migration resource with Minimum parameters.
-        az data-migration sql-managed-instance delete --resource-group testrg --managed-instance-name managedInstance1 --target-db-name db1
+        az datamigration sql-managed-instance delete --resource-group testrg --managed-instance-name managedInstance1 --target-db-name db1
     """
 
     _aaz_info = {
@@ -48,10 +48,12 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.managed_instance_name = AAZStrArg(
             options=["--managed-instance-name"],
+            help="Name of the sql managed instance",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of the Azure resource group",
             required=True,
         )
         _args_schema.target_db_name = AAZStrArg(

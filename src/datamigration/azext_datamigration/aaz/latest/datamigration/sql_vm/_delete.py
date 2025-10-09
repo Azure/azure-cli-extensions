@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "data-migration sql-vm delete",
+    "datamigration sql-vm delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
@@ -47,10 +47,12 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of the Azure resource group",
             required=True,
         )
-        _args_schema.sql_virtual_machine_name = AAZStrArg(
-            options=["--sql-virtual-machine-name"],
+        _args_schema.sql_vm_name = AAZStrArg(
+            options=["--sql-vm-name"],
+            help="Name of the sql virtual machine",
             required=True,
             id_part="name",
         )
@@ -138,7 +140,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "sqlVirtualMachineName", self.ctx.args.sql_virtual_machine_name,
+                    "sqlVirtualMachineName", self.ctx.args.sql_vm_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

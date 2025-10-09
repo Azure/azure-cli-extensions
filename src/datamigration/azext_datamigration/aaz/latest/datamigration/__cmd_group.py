@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "data-migration sql-db",
+    "datamigration",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Sql Db
+    """Manage Datamigration
     """
     pass
 
