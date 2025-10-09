@@ -186,7 +186,6 @@ from azext_aks_preview._validators import (
     validate_defender_disable_and_enable_parameters,
     validate_disable_windows_outbound_nat,
     validate_asm_egress_name,
-    validate_enable_custom_ca_trust,
     validate_eviction_policy,
     validate_grafanaresourceid,
     validate_host_group_id,
@@ -976,8 +975,6 @@ def load_arguments(self, _):
             arg_type=get_enum_type(workload_runtimes),
             default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
         )
-        # no validation for aks create because it already only supports Linux.
-        c.argument("enable_custom_ca_trust", action="store_true")
         c.argument(
             "nodepool_allowed_host_ports",
             validator=validate_allowed_host_ports,
@@ -1780,11 +1777,6 @@ def load_arguments(self, _):
             default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
         )
         c.argument(
-            "enable_custom_ca_trust",
-            action="store_true",
-            validator=validate_enable_custom_ca_trust,
-        )
-        c.argument(
             "disable_windows_outbound_nat",
             action="store_true",
             validator=validate_disable_windows_outbound_nat,
@@ -1898,16 +1890,6 @@ def load_arguments(self, _):
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
-        c.argument(
-            "enable_custom_ca_trust",
-            action="store_true",
-            validator=validate_enable_custom_ca_trust,
-        )
-        c.argument(
-            "disable_custom_ca_trust",
-            options_list=["--disable-custom-ca-trust", "--dcat"],
-            action="store_true",
-        )
         c.argument(
             "allowed_host_ports", validator=validate_allowed_host_ports, is_preview=True
         )

@@ -731,14 +731,6 @@ def validate_bootstrap_container_registry_resource_id(namespace):
         raise InvalidArgumentValueError("--bootstrap-container-registry-resource-id is not a valid Azure resource ID.")
 
 
-def validate_enable_custom_ca_trust(namespace):
-    """Validates Custom CA Trust can only be used on Linux."""
-    if namespace.enable_custom_ca_trust:
-        if hasattr(namespace, 'os_type') and namespace.os_type != "Linux":
-            raise ArgumentUsageError(
-                '--enable_custom_ca_trust can only be set for Linux nodepools')
-
-
 def validate_custom_ca_trust_certificates(namespace):
     """Validates Custom CA Trust Certificates can only be used on Linux."""
     if namespace.custom_ca_trust_certificates is not None and namespace.custom_ca_trust_certificates != "":

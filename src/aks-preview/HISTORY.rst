@@ -11,8 +11,14 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+19.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks nodepool add`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks nodepool update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
 * Vendor new SDK and bump API version to 2025-08-02-preview.
-* Pre-deprecate `--enable-custom-ca-trust` and `--disable-custom-ca-trust` in `az aks create`, `az aks update` commands.
 
 18.0.0b43
 +++++++
