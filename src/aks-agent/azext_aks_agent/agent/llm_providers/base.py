@@ -5,12 +5,16 @@
 
 
 from abc import ABC, abstractmethod
-from getpass import getpass
 from typing import Dict, Callable, Tuple, Any
 from rich.console import Console
+from rich.prompt import Prompt
+from holmes.utils.colors import HELP_COLOR, ERROR_COLOR
+from holmes.interactive import SlashCommands
 from urllib.parse import urlparse
 
 console = Console()
+HINT_COLOR = "bright_black"
+DEFAULT_COLOR = "bright_black"
 
 
 def non_empty(v: str) -> bool:
@@ -52,7 +56,7 @@ class LLMProvider(ABC):
         schema = self.parameter_schema
         params = {}
         for param, meta in schema.items():
-            prompt = meta.get("prompt", f"Enter value for {param}: ")
+            prompt = meta.get("prompt", f"[bold {HELP_COLOR}]Enter value for {param}: [/]")
             default = meta.get("default")
             hint = meta.get("hint")
             secret = meta.get("secret", False)
@@ -60,15 +64,18 @@ class LLMProvider(ABC):
                 "validator", lambda x: True)
 
             if default:
-                prompt += f" (Default: {default}) "
+                prompt += f" [italic {DEFAULT_COLOR}](Default: {default})[/] "
             if hint:
-                prompt += f" [Hint: {hint}] "
+                prompt += f" [italic {HINT_COLOR}](Hint: {hint})[/] "
 
             while True:
                 if secret:
-                    value = getpass(prompt)
+                    value = Prompt.ask(
+                        f"[bold {HELP_COLOR}]Enter your secret value[/]",
+                        password=True
+                    )
                 else:
-                    value = input(prompt)
+                    value = console.input(prompt)
 
                 if not value and default is not None:
                     value = default
@@ -80,7 +87,8 @@ class LLMProvider(ABC):
                     params[param] = value
                     break
                 console.print(
-                    f"Invalid value for {param}. Please try again, or type /exit to quit.")
+                    f"Invalid value for {param}. Please try again, or type '{SlashCommands.EXIT.command}' to exit.",
+                    style=f"{ERROR_COLOR}")
 
         return params
 

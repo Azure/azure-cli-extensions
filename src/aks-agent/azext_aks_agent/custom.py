@@ -5,6 +5,7 @@
 
 # pylint: disable=too-many-lines, disable=broad-except
 import os
+import sys
 from typing import Dict, Optional
 from azure.cli.core.api import get_config_dir
 from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
@@ -22,9 +23,13 @@ logger = get_logger(__name__)
 def aks_agent_init(cmd):
     """Initialize AKS agent llm configuration."""
     from rich.console import Console
+    from holmes.utils.colors import HELP_COLOR, ERROR_COLOR
+    from holmes.interactive import SlashCommands
+
     console = Console()
-    logger.info("Welcome to AKS Agent LLM configuration setup.")
-    console.print("Welcome to AKS Agent LLM configuration setup.")
+    console.print(
+        f"Welcome to AKS Agent LLM configuration setup. Type '{SlashCommands.EXIT.command}' to exit.",
+        style=f"bold {HELP_COLOR}")
 
     provider = prompt_provider_choice()
     params = provider.prompt_params()
@@ -32,17 +37,23 @@ def aks_agent_init(cmd):
     llm_config_manager = LLMConfigManager()
     # If the connection to the model endpoint is valid, save the configuration
     is_valid, message, action = provider.validate_connection(params)
+
     if is_valid and action == "save":
         logger.info("%s", message)
         llm_config_manager.save(provider.name, params)
-        logger.info("Configuration saved successfully.")
-        console.print("LLM configuration setup successfully.")
+        console.print("LLM configuration setup successfully.", style=f"bold {HELP_COLOR}")
+
     elif not is_valid and action == "retry_input":
-        logger.warning("%s Please re-run `aks agent init` to correct the input parameters.", message)
-        raise ValueError(f"{message} Please re-run `aks agent init` to correct the input parameters.")
+        logger.warning("%s", message)
+        console.print(
+            "Please re-run [bold]`az aks agent-init`[/bold] to correct the input parameters.", style=f"{ERROR_COLOR}")
+        sys.exit(1)
+
     else:
         logger.error("%s", message)
-        raise ConnectionError(f"{message} Please check your deployed model and network connectivity.")
+        console.print(
+            "Please check your deployed model and network connectivity.", style=f"bold {ERROR_COLOR}")
+        sys.exit(1)
 
 
 # pylint: disable=unused-argument
@@ -109,7 +120,7 @@ def aks_agent(
         else:
             raise ValueError(
                 "No configuration found. "
-                "Please run `az aks agent init` or provide a config file using --config-file, "
+                "Please run `az aks agent-init` or provide a config file using --config-file, "
                 "or specify a model using --model.")
 
     # Check if the configuration is complete
