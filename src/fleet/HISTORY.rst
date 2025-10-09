@@ -151,7 +151,7 @@ Release History
 ++++++
 * Fix help text for `fleet list` command.
 
-1.6.5
+1.7.0
 ++++++
 * Removed is_preview flag from `enable_vnet_integration` and `assign_identity` parameters.
 * Updated Private Fleet V2 to require user assigned identity.
