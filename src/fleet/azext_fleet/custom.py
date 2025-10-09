@@ -11,12 +11,12 @@ from knack.log import get_logger
 from knack.util import CLIError
 
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_parse
+from azure.cli.core import get_default_cli
 from azure.mgmt.core.tools import parse_resource_id
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET, cf_fleet_members, cf_fleets
 from azext_fleet._helpers import is_rp_registered, print_or_merge_credentials
-from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_parse
-from azure.cli.core import get_default_cli
 from azext_fleet._helpers import assign_network_contributor_role_to_subnet
 from azext_fleet._helpers import get_msi_object_id
 from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY

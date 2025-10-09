@@ -151,7 +151,7 @@ Release History
 ++++++
 * Fix help text for `fleet list` command.
 
-1.7.0
+1.8.0
 ++++++
 * Upgrade SDK version to 2025-08-01-preview
 * Add Fleet Managed Namespace support
