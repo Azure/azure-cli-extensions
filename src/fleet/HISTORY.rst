@@ -155,3 +155,7 @@ Release History
 ++++++
 * Removed is_preview flag from `enable_vnet_integration` and `assign_identity` parameters.
 * Updated Private Fleet V2 to require user assigned identity.
+
+1.7.1
+++++++
+* Updated delay in role assignment creation for private fleet V2
