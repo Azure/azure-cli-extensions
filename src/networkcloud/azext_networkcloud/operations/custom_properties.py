@@ -106,9 +106,9 @@ class CustomActionProperties:
         for member in tar.getmembers():
             member_path = os.path.join(path, member.name)
             if not CustomActionProperties.is_within_directory(path, member_path):
-                raise Exception(
-                    "Attempted Path Traversal in Tar File"
-                )  # pylint: disable=broad-exception-raised
+                raise ValueError(
+                    f"Path traversal detected: {member_path} is outside target directory {path}"
+                )
         tar.extractall(path)
 
     # Custom handling of response will display the output head and the result_URL/result_ref
