@@ -13290,17 +13290,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        # azuremonitor metrics will be set to false after initial creation command as its in the
-        # postprocessing step that we do an update to enable it. Adding a wait for the second put request
-        # in addonput.py which enables the Azure Monitor Metrics addon as all the DC* resources
-        # have now been created.
         wait_cmd = " ".join(
             [
                 "aks",
                 "wait",
                 "--resource-group={resource_group}",
                 "--name={name}",
-                "--updated",
+                "--created",
                 "--interval 60",
                 "--timeout 300",
             ]
@@ -13312,7 +13308,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        time.sleep(10 * 60)
+        time.sleep(5 * 60)
 
         self.cmd(
             "aks show -g {resource_group} -n {name} --output=json",
@@ -13738,7 +13734,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --created --timeout=1800'
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
         self.cmd(wait_cmd)
 
         time.sleep(5 * 60)
@@ -13755,8 +13751,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks update --resource-group={resource_group} --name={name} --yes --output=json "
             "--disable-azure-monitor-metrics"
         )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
 
-        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --created --timeout=1800'
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
         self.cmd(wait_cmd)
 
         # Verify the creation was successful
@@ -13899,11 +13901,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks update --resource-group={resource_group} --name={name} --yes '
             '--enable-azure-monitor-logs'
         )
-        self.cmd(update_cmd)
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
         # Wait for the update operation to complete
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
-        self.cmd(wait_cmd)
+        self.cmd(wait_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
         # Verify the update was successful
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
@@ -13919,7 +13925,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks update --resource-group={resource_group} --name={name} --yes '
             '--disable-azure-monitor-logs'
         )
-        self.cmd(update_cmd)
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
         # Wait for the update operation to complete
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
@@ -14203,10 +14211,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes '
             '--enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=9090 '
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview '
+            '--output=json'
         )
 
-        self.cmd(update_cmd)
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
         # Wait for the update operation to complete
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
@@ -14221,9 +14232,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update: disable OpenTelemetry metrics but keep Azure Monitor metrics
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes '
-            '--disable-opentelemetry-metrics'
+            '--disable-opentelemetry-metrics --output=json '
         )
-        self.cmd(update_cmd)
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
         # Wait for the update operation to complete
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
@@ -14240,9 +14253,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update: disable-azure-monitor-metrics (should also disable OpenTelemetry metrics)
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes '
-            '--disable-azure-monitor-metrics'
+            '--disable-azure-monitor-metrics --output=json'
         )
-        self.cmd(update_cmd)
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
         # Wait for the update operation to complete
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
