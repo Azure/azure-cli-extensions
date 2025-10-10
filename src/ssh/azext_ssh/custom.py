@@ -222,7 +222,7 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
             raise azclierror.InvalidArgumentValueError(
                 f"Unsupported cloud {cmd.cli_ctx.cloud.name.lower()}",
                 "Supported clouds include azurecloud,azurechinacloud,azureusgovernment")
-        
+
         scope = f"https://pas.{scope_postfix}/CheckMyAccess/Linux/.default"
 
     scopes = [scope]
