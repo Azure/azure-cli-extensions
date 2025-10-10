@@ -6679,7 +6679,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if not prompt_y_n(msg, default="n"):
                 raise CLIError("Operation cancelled.")
 
-        # Check if MSI auth is enabled for cleanup - same logic as aks_disable_addons
+        # Check if MSI auth is enabled - if so, schedule DCR/DCRA cleanup in postprocessing
         addon_config = mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config
         logger.warning(f"DEBUG: addon_config = {addon_config}")
         logger.warning(f"DEBUG: CONST_MONITORING_USING_AAD_MSI_AUTH = {CONST_MONITORING_USING_AAD_MSI_AUTH}")
@@ -6689,37 +6689,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                             str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true")
         logger.warning(f"DEBUG: msi_auth_enabled = {msi_auth_enabled}")
 
-        # CRITICAL FIX: Perform DCR/DCRA cleanup BEFORE disabling addon
-        # Azure will reject the disable if DCR/DCRA associations still exist
+        # Schedule DCR/DCRA cleanup to run in postprocessing (same as aks_disable_addons)
         if azure_monitor_logs_enabled and msi_auth_enabled:
-            logger.warning("DEBUG: Performing DCR/DCRA cleanup BEFORE disabling addon")
-            try:
-                self.context.external_functions.ensure_container_insights_for_monitoring(
-                    self.cmd,
-                    mc.addon_profiles[CONST_MONITORING_ADDON_NAME],
-                    self.context.get_subscription_id(),
-                    self.context.get_resource_group_name(),
-                    self.context.get_name(),
-                    self.context.get_location(),
-                    remove_monitoring=True,
-                    aad_route=True,
-                    create_dcr=False,
-                    create_dcra=True,
-                    enable_syslog=False,
-                    data_collection_settings=None,
-                    ampls_resource_id=None,
-                    enable_high_log_scale_mode=False
-                )
-                logger.warning("DEBUG: DCR/DCRA cleanup completed")
-            except TypeError as e:
-                # Ignore TypeError just like aks_disable_addons does
-                logger.warning(f"DEBUG: Ignoring TypeError in cleanup: {e}")
-                pass
-            
-            # Set flag to ensure we wait for the response even though cleanup is already done
-            # This allows us to verify the disable succeeded
+            logger.warning("DEBUG: Scheduling DCR/DCRA cleanup in postprocessing")
             self.context.set_intermediate(
-                "monitoring_addon_disable_wait_required", True, overwrite_exists=True)
+                "monitoring_addon_disable_postprocessing_required", True, overwrite_exists=True)
 
         # Always disable the addon and clear configuration, even if already disabled
         # This ensures the change is sent to Azure on subsequent calls
@@ -6924,12 +6898,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             monitoring_addon_disable_postprocessing_required = self.context.get_intermediate(
                 "monitoring_addon_disable_postprocessing_required", default_value=False
             )
-            monitoring_addon_disable_wait_required = self.context.get_intermediate(
-                "monitoring_addon_disable_wait_required", default_value=False
-            )
             monitoring_required = (monitoring_addon_postprocessing_required or
-                                   monitoring_addon_disable_postprocessing_required or
-                                   monitoring_addon_disable_wait_required)
+                                   monitoring_addon_disable_postprocessing_required)
             if (enable_azure_container_storage or disable_azure_container_storage) or \
                (keyvault_id and enable_azure_keyvault_secrets_provider_addon) or \
                 (monitoring_required):
