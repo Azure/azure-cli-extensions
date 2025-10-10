@@ -330,8 +330,8 @@ class ReviewSolutionVersion(AAZCommand):
                 serialized_name="externalValidationId",
                 flags={"read_only": True},
             )
-            properties.lastest_action_triggered_by = AAZStrType(
-                serialized_name="lastestActionTriggeredBy",
+            properties.latest_action_triggered_by = AAZStrType(
+                serialized_name="latestActionTriggeredBy",
                 flags={"read_only": True},
             )
             properties.latest_action_tracking_uri = AAZStrType(
