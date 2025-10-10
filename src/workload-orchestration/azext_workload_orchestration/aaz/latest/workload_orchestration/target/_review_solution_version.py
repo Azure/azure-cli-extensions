@@ -76,21 +76,6 @@ class ReviewSolutionVersion(AAZCommand):
                 max_length=24,
             ),
         )
-        # Remove these parameters (v2025_06_01)
-        # _args_schema.solution_template = AAZStrArg(
-        #     options=["--solution-name","--solution-template-name"],
-        #     arg_group="Body",
-        #     help="Solution Template Name",
-        #     required=True,
-        # )
-        # _args_schema.solution_template_version = AAZStrArg(
-        #     options=["--solution-version","--solution-template-version"],
-        #     arg_group="Body",
-        #     help="Solution Template Version Name",
-        #     required=True,
-        # )
-        
-        # Add new parameter (v2025_06_01)
         _args_schema.solution_template_version_id = AAZStrArg(
             options=["--solution-template-version-id"],
             arg_group="Body",
@@ -109,6 +94,7 @@ class ReviewSolutionVersion(AAZCommand):
     def _build_args_solution_dependency_parameter_create(cls, _schema):
         if cls._args_solution_dependency_parameter_create is not None:
             _schema.dependencies = cls._args_solution_dependency_parameter_create.dependencies
+            _schema.solution_instance_name = cls._args_solution_dependency_parameter_create.solution_instance_name
             _schema.solution_template_id = cls._args_solution_dependency_parameter_create.solution_template_id
             _schema.solution_template_version = cls._args_solution_dependency_parameter_create.solution_template_version
             _schema.solution_version_id = cls._args_solution_dependency_parameter_create.solution_version_id
@@ -121,6 +107,14 @@ class ReviewSolutionVersion(AAZCommand):
         solution_dependency_parameter_create.dependencies = AAZListArg(
             options=["dependencies"],
             help="Solution dependencies",
+        )
+        solution_dependency_parameter_create.solution_instance_name = AAZStrArg(
+            options=["solution-instance-name"],
+            help="Solution Instance Name",
+            fmt=AAZStrArgFormat(
+                pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
+                max_length=24,
+            ),
         )
         solution_dependency_parameter_create.solution_template_id = AAZStrArg(
             options=["solution-template-id"],
@@ -144,6 +138,7 @@ class ReviewSolutionVersion(AAZCommand):
         cls._build_args_solution_dependency_parameter_create(dependencies.Element)
 
         _schema.dependencies = cls._args_solution_dependency_parameter_create.dependencies
+        _schema.solution_instance_name = cls._args_solution_dependency_parameter_create.solution_instance_name
         _schema.solution_template_id = cls._args_solution_dependency_parameter_create.solution_template_id
         _schema.solution_template_version = cls._args_solution_dependency_parameter_create.solution_template_version
         _schema.solution_version_id = cls._args_solution_dependency_parameter_create.solution_version_id
@@ -257,11 +252,6 @@ class ReviewSolutionVersion(AAZCommand):
             )
             _builder.set_prop("solutionDependencies", AAZListType, ".solution_dependencies")
             _builder.set_prop("solutionInstanceName", AAZStrType, ".solution_instance_name")
-            # Remove these properties (v2025_06_01)
-            # _builder.set_prop("solutionTemplate", AAZStrType, ".solution_template", typ_kwargs={"flags": {"required": True}})
-            # _builder.set_prop("solutionTemplateVersion", AAZStrType, ".solution_template_version", typ_kwargs={"flags": {"required": True}})
-            
-            # Add new property (v2025_06_01)
             _builder.set_prop("solutionTemplateVersionId", AAZStrType, ".solution_template_version_id", typ_kwargs={"flags": {"required": True}})
 
             solution_dependencies = _builder.get(".solutionDependencies")
@@ -295,20 +285,10 @@ class ReviewSolutionVersion(AAZCommand):
             _schema_on_200.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
             )
-
-            _schema_on_200.resourceId = AAZStrType(
-                serialized_name="resourceId",
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.status = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.startTime = AAZStrType(
-                serialized_name="startTime",
-                flags={"read_only": True},
-            )
-            _schema_on_200.endTime = AAZStrType(
-                serialized_name="endTime",
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType()
@@ -329,65 +309,86 @@ class ReviewSolutionVersion(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.properties = AAZObjectType()
-            properties.extendedLocation = AAZObjectType(
-                serialized_name="extendedLocation",
-            )
-            properties.eTag = AAZStrType(
-                serialized_name="eTag",
+            properties.action_type = AAZStrType(
+                serialized_name="actionType",
                 flags={"read_only": True},
             )
-            properties.id = AAZStrType(
+            properties.configuration = AAZStrType(
                 flags={"read_only": True},
             )
-            properties.name = AAZStrType(
+            properties.current_stage = AAZObjectType(
+                serialized_name="currentStage",
                 flags={"read_only": True},
             )
-            properties.type = AAZStrType(
+            _ReviewSolutionVersionHelper._build_schema_stage_map_read(properties.current_stage)
+            properties.error_details = AAZObjectType(
+                serialized_name="errorDetails",
                 flags={"read_only": True},
             )
-            
-            nested_properties = properties.properties
-            nested_properties.configuration = AAZStrType(
+            _ReviewSolutionVersionHelper._build_schema_error_detail_read(properties.error_details)
+            properties.external_validation_id = AAZStrType(
+                serialized_name="externalValidationId",
                 flags={"read_only": True},
             )
-            nested_properties.provisioning_state = AAZStrType(
+            properties.lastest_action_triggered_by = AAZStrType(
+                serialized_name="lastestActionTriggeredBy",
+                flags={"read_only": True},
+            )
+            properties.latest_action_tracking_uri = AAZStrType(
+                serialized_name="latestActionTrackingUri",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            nested_properties.review_id = AAZStrType(
+            properties.review_id = AAZStrType(
                 serialized_name="reviewId",
                 flags={"read_only": True},
             )
-            nested_properties.revision = AAZIntType(
+            properties.revision = AAZIntType(
                 flags={"read_only": True},
             )
-            nested_properties.solution_dependencies = AAZListType(
+            properties.solution_dependencies = AAZListType(
                 serialized_name="solutionDependencies",
                 flags={"read_only": True},
             )
-            nested_properties.solution_instance_name = AAZStrType(
+            properties.solution_instance_name = AAZStrType(
                 serialized_name="solutionInstanceName",
                 flags={"read_only": True},
             )
-            nested_properties.solution_template_version_id = AAZStrType(
+            properties.solution_template_version_id = AAZStrType(
                 serialized_name="solutionTemplateVersionId",
                 flags={"read_only": True},
             )
-            nested_properties.specification = AAZFreeFormDictType(
+            properties.specification = AAZDictType(
                 flags={"required": True},
             )
-            nested_properties.state = AAZStrType(
+            properties.stages = AAZListType(
                 flags={"read_only": True},
             )
-            nested_properties.target_display_name = AAZStrType(
+            properties.state = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.target_display_name = AAZStrType(
                 serialized_name="targetDisplayName",
                 flags={"read_only": True},
             )
+            properties.target_level_configuration = AAZStrType(
+                serialized_name="targetLevelConfiguration",
+                flags={"read_only": True},
+            )
 
-            solution_dependencies = nested_properties.solution_dependencies
+            solution_dependencies = cls._schema_on_200.properties.solution_dependencies
             solution_dependencies.Element = AAZObjectType()
             _ReviewSolutionVersionHelper._build_schema_solution_dependency_read(solution_dependencies.Element)
+
+            specification = cls._schema_on_200.properties.specification
+            specification.Element = AAZAnyType()
+
+            stages = cls._schema_on_200.properties.stages
+            stages.Element = AAZObjectType()
+            _ReviewSolutionVersionHelper._build_schema_stage_map_read(stages.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -420,6 +421,7 @@ class _ReviewSolutionVersionHelper:
         if _builder is None:
             return
         _builder.set_prop("dependencies", AAZListType, ".dependencies")
+        _builder.set_prop("solutionInstanceName", AAZStrType, ".solution_instance_name")
         _builder.set_prop("solutionTemplateId", AAZStrType, ".solution_template_id")
         _builder.set_prop("solutionTemplateVersion", AAZStrType, ".solution_template_version")
         _builder.set_prop("solutionVersionId", AAZStrType, ".solution_version_id")
@@ -429,12 +431,71 @@ class _ReviewSolutionVersionHelper:
         if dependencies is not None:
             cls._build_schema_solution_dependency_parameter_create(dependencies.set_elements(AAZObjectType, "."))
 
+    _schema_error_detail_read = None
+
+    @classmethod
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
+            return
+
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
+            serialized_name="additionalInfo",
+            flags={"read_only": True},
+        )
+        error_detail_read.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.details = AAZListType(
+            flags={"read_only": True},
+        )
+        error_detail_read.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.target = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        additional_info = _schema_error_detail_read.additional_info
+        additional_info.Element = AAZObjectType()
+
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZDictType(
+            flags={"read_only": True},
+        )
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
+
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
+
     _schema_solution_dependency_read = None
 
     @classmethod
     def _build_schema_solution_dependency_read(cls, _schema):
         if cls._schema_solution_dependency_read is not None:
             _schema.dependencies = cls._schema_solution_dependency_read.dependencies
+            _schema.solution_instance_name = cls._schema_solution_dependency_read.solution_instance_name
             _schema.solution_template_version_id = cls._schema_solution_dependency_read.solution_template_version_id
             _schema.solution_version_id = cls._schema_solution_dependency_read.solution_version_id
             _schema.target_id = cls._schema_solution_dependency_read.target_id
@@ -444,6 +505,9 @@ class _ReviewSolutionVersionHelper:
 
         solution_dependency_read = _schema_solution_dependency_read
         solution_dependency_read.dependencies = AAZListType()
+        solution_dependency_read.solution_instance_name = AAZStrType(
+            serialized_name="solutionInstanceName",
+        )
         solution_dependency_read.solution_template_version_id = AAZStrType(
             serialized_name="solutionTemplateVersionId",
             flags={"required": True},
@@ -462,9 +526,62 @@ class _ReviewSolutionVersionHelper:
         cls._build_schema_solution_dependency_read(dependencies.Element)
 
         _schema.dependencies = cls._schema_solution_dependency_read.dependencies
+        _schema.solution_instance_name = cls._schema_solution_dependency_read.solution_instance_name
         _schema.solution_template_version_id = cls._schema_solution_dependency_read.solution_template_version_id
         _schema.solution_version_id = cls._schema_solution_dependency_read.solution_version_id
         _schema.target_id = cls._schema_solution_dependency_read.target_id
+
+    _schema_stage_map_read = None
+
+    @classmethod
+    def _build_schema_stage_map_read(cls, _schema):
+        if cls._schema_stage_map_read is not None:
+            _schema.child_stages = cls._schema_stage_map_read.child_stages
+            _schema.display_state = cls._schema_stage_map_read.display_state
+            _schema.end_time = cls._schema_stage_map_read.end_time
+            _schema.stage = cls._schema_stage_map_read.stage
+            _schema.start_time = cls._schema_stage_map_read.start_time
+            _schema.status = cls._schema_stage_map_read.status
+            return
+
+        cls._schema_stage_map_read = _schema_stage_map_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        stage_map_read = _schema_stage_map_read
+        stage_map_read.child_stages = AAZListType(
+            serialized_name="childStages",
+            flags={"read_only": True},
+        )
+        stage_map_read.display_state = AAZStrType(
+            serialized_name="displayState",
+            flags={"read_only": True},
+        )
+        stage_map_read.end_time = AAZStrType(
+            serialized_name="endTime",
+            flags={"read_only": True},
+        )
+        stage_map_read.stage = AAZStrType(
+            flags={"read_only": True},
+        )
+        stage_map_read.start_time = AAZStrType(
+            serialized_name="startTime",
+            flags={"read_only": True},
+        )
+        stage_map_read.status = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        child_stages = _schema_stage_map_read.child_stages
+        child_stages.Element = AAZObjectType()
+        cls._build_schema_stage_map_read(child_stages.Element)
+
+        _schema.child_stages = cls._schema_stage_map_read.child_stages
+        _schema.display_state = cls._schema_stage_map_read.display_state
+        _schema.end_time = cls._schema_stage_map_read.end_time
+        _schema.stage = cls._schema_stage_map_read.stage
+        _schema.start_time = cls._schema_stage_map_read.start_time
+        _schema.status = cls._schema_stage_map_read.status
 
 
 __all__ = ["ReviewSolutionVersion"]
