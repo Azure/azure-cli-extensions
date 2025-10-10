@@ -364,9 +364,9 @@ class ReviewSolutionVersion(AAZCommand):
             properties.specification = AAZDictType(
                 flags={"required": True},
             )
-            properties.stages = AAZListType(
-                flags={"read_only": True},
-            )
+            # properties.stages = AAZListType(
+            #     flags={"read_only": True},
+            # )
             properties.state = AAZStrType(
                 flags={"read_only": True},
             )
@@ -386,9 +386,9 @@ class ReviewSolutionVersion(AAZCommand):
             specification = cls._schema_on_200.properties.specification
             specification.Element = AAZAnyType()
 
-            stages = cls._schema_on_200.properties.stages
-            stages.Element = AAZObjectType()
-            _ReviewSolutionVersionHelper._build_schema_stage_map_read(stages.Element)
+            # stages = cls._schema_on_200.properties.stages
+            # stages.Element = AAZObjectType()
+            # _ReviewSolutionVersionHelper._build_schema_stage_map_read(stages.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -539,9 +539,9 @@ class _ReviewSolutionVersionHelper:
             _schema.child_stages = cls._schema_stage_map_read.child_stages
             _schema.display_state = cls._schema_stage_map_read.display_state
             _schema.end_time = cls._schema_stage_map_read.end_time
-            _schema.stage = cls._schema_stage_map_read.stage
+            # _schema.stage = cls._schema_stage_map_read.stage
             _schema.start_time = cls._schema_stage_map_read.start_time
-            _schema.status = cls._schema_stage_map_read.status
+            # _schema.status = cls._schema_stage_map_read.status
             return
 
         cls._schema_stage_map_read = _schema_stage_map_read = AAZObjectType(
@@ -561,16 +561,16 @@ class _ReviewSolutionVersionHelper:
             serialized_name="endTime",
             flags={"read_only": True},
         )
-        stage_map_read.stage = AAZStrType(
-            flags={"read_only": True},
-        )
+        # stage_map_read.stage = AAZStrType(
+        #     flags={"read_only": True},
+        # )
         stage_map_read.start_time = AAZStrType(
             serialized_name="startTime",
             flags={"read_only": True},
         )
-        stage_map_read.status = AAZStrType(
-            flags={"read_only": True},
-        )
+        # stage_map_read.status = AAZStrType(
+        #     flags={"read_only": True},
+        # )
 
         child_stages = _schema_stage_map_read.child_stages
         child_stages.Element = AAZObjectType()
@@ -579,9 +579,9 @@ class _ReviewSolutionVersionHelper:
         _schema.child_stages = cls._schema_stage_map_read.child_stages
         _schema.display_state = cls._schema_stage_map_read.display_state
         _schema.end_time = cls._schema_stage_map_read.end_time
-        _schema.stage = cls._schema_stage_map_read.stage
+        # _schema.stage = cls._schema_stage_map_read.stage
         _schema.start_time = cls._schema_stage_map_read.start_time
-        _schema.status = cls._schema_stage_map_read.status
+        # _schema.status = cls._schema_stage_map_read.status
 
 
 __all__ = ["ReviewSolutionVersion"]
