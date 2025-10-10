@@ -19,6 +19,8 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
+    CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_CNI_CHAINING,
+    CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_INIT_CONTAINERS,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
@@ -3233,6 +3235,42 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return new_profile, updated
 
+    def _handle_istio_cni_asm(self, new_profile: ServiceMeshProfile) -> Tuple[ServiceMeshProfile, bool]:
+        """Handle enable/disable Istio CNI proxy redirection mechanism."""
+        updated = False
+        enable_istio_cni = self.raw_param.get("enable_istio_cni", False)
+        disable_istio_cni = self.raw_param.get("disable_istio_cni", False)
+
+        if enable_istio_cni and disable_istio_cni:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot both enable and disable Istio CNI at the same time.",
+            )
+
+        # Check if service mesh is enabled before allowing CNI changes
+        if enable_istio_cni or disable_istio_cni:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
+
+            # Ensure istio profile exists
+            if new_profile.istio is None:
+                new_profile.istio = self.models.IstioServiceMesh()  # pylint: disable=no-member
+                
+            # Ensure components exist
+            if new_profile.istio.components is None:
+                new_profile.istio.components = self.models.IstioComponents()  # pylint: disable=no-member
+
+            if enable_istio_cni:
+                new_profile.istio.components.proxy_redirection_mechanism = CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_CNI_CHAINING
+                updated = True
+            elif disable_istio_cni:
+                new_profile.istio.components.proxy_redirection_mechanism = CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_INIT_CONTAINERS
+                updated = True
+
+        return new_profile, updated
+
     # pylint: disable=too-many-branches,too-many-locals,too-many-statements
     def update_azure_service_mesh_profile(self) -> ServiceMeshProfile:
         """ Update azure service mesh profile.
@@ -3266,6 +3304,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         new_profile, updated_upgrade_asm = self._handle_upgrade_asm(new_profile)
         updated |= updated_upgrade_asm
+
+        new_profile, updated_istio_cni = self._handle_istio_cni_asm(new_profile)
+        updated |= updated_istio_cni
 
         if updated:
             return new_profile
