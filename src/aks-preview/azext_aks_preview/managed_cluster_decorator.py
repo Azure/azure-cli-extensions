@@ -6810,8 +6810,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_integrity(mc)
         # update workload auto scaler profile
         mc = self.update_workload_auto_scaler_profile(mc)
-        # update addon profiles (monitoring logs, etc.) - do this before azure monitor profile
-        mc = self.update_addon_profiles(mc)
+        # Note: update_addon_profiles is already called by base class (update_mc_profile_default)
+        # so we don't call it again here to avoid duplicate processing
         # update azure monitor metrics profile
         mc = self.update_azure_monitor_profile(mc)
         # update vpa
