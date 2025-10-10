@@ -19467,8 +19467,8 @@ spec:
             "aks create --resource-group={resource_group} --name={name} "
             "--enable-azure-service-mesh "
             "--enable-gateway-api "
-            "--ssh-key-value={ssh_key_value} -o json"
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview"
+            "--ssh-key-value={ssh_key_value} -o json "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
         )
         self.cmd(
             create_cmd,
@@ -19483,7 +19483,7 @@ spec:
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--disable-gateway-api "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview"
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
         )
         self.cmd(
             update_cmd,
@@ -19497,7 +19497,7 @@ spec:
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--enable-gateway-api "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview"
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
         )
         self.cmd(
             update_cmd,
@@ -19541,8 +19541,8 @@ spec:
         create_with_gateway_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--enable-gateway-api "
-            "--ssh-key-value={ssh_key_value} -o json"
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview"
+            "--ssh-key-value={ssh_key_value} -o json "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
         )
         self.cmd(create_with_gateway_cmd, expect_failure=True)
 
@@ -19562,7 +19562,7 @@ spec:
         update_enable_gateway_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--enable-gateway-api "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview"
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
         )
         self.cmd(update_enable_gateway_cmd, expect_failure=True)
 
