@@ -155,6 +155,8 @@ Pending
 * Add `--node-provisioning-default-pools` to the `az aks update` command.
 * Add `--node-provisioning-default-pools` to the `az aks create` command.
 
+* Removed the KataMshvVmIsolation option to --workload-runtime, due to GA.
+
 18.0.0b13
 +++++++
 * Add option `--enable-http-proxy` to `az aks update`.
