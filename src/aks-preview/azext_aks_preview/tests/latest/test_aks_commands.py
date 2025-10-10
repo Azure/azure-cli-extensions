@@ -13760,12 +13760,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # Verify the creation was successful
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
         self.cmd(show_cmd, checks=[
-            update_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("azureMonitorProfile.metrics.enabled", False),
-            ],
-        )
+            self.check("provisioningState", "Succeeded"),
+            self.check("azureMonitorProfile.metrics.enabled", False),
+        ])
 
         # delete
         cmd = (
