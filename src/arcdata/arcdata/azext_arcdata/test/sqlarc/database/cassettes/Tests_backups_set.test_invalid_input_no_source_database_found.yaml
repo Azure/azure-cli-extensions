@@ -1,0 +1,232 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 8239a78a-c784-11ee-a9bf-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4","name":"LAPTOP-OIUS4TO4","type":"microsoft.azurearcdata/sqlserverinstances","location":"eastus2euap","systemData":{"createdBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","createdByType":"Application","createdAt":"2023-12-07T20:57:32.5401341Z","lastModifiedBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","lastModifiedByType":"Application","lastModifiedAt":"2024-02-09T19:50:20.3798851Z"},"properties":{"version":"SQL
+        Server 2022","edition":"Developer","containerResourceId":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/lawynn-dotnet8Upgrade/providers/Microsoft.HybridCompute/machines/LAPTOP-OIUS4TO4","createTime":null,"vCore":"12","cores":null,"status":"Connected","patchLevel":"16.0.1110.1","collation":"SQL_Latin1_General_CP1_CI_AS","currentVersion":"16.0.1000.6","instanceName":"MSSQLSERVER","tcpDynamicPorts":"","tcpStaticPorts":"1433","productId":"Unknown","licenseType":"Free","azureDefenderStatusLastUpdated":null,"azureDefenderStatus":"Unknown","provisioningState":"Succeeded","lastInventoryUploadTime":"2024-02-09T19:50:17.0597019Z","lastUsageUploadTime":"2024-02-09T19:21:31.7416216Z","hostType":null,"alwaysOnRole":"None","failoverCluster":null,"backupPolicy":null,"upgradeLockedUntil":null,"monitoring":{"enabled":true},"migration":{"assessment":{"enabled":true}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '1457'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 19:50:42 GMT
+      ETag:
+      - '"03001732-0000-3400-0000-65c681fd0000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 3A49169401694C4B87779E74E7B73F5E Ref B: BN1AA2051015031 Ref C: 2024-02-09T19:50:43Z'
+      x-ms-correlation-request-id:
+      - cb5df8b9-7145-4eba-a803-33fc515f27a5
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99999'
+      x-ms-request-id:
+      - 4fc176e2-e4c0-4a67-9b41-a404919d8ee9
+      x-ms-routing-request-id:
+      - EASTUS:20240209T195043Z:cb5df8b9-7145-4eba-a803-33fc515f27a5
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/lawynn-dotnet8Upgrade/providers/Microsoft.HybridCompute/machines/LAPTOP-OIUS4TO4/extensions/WindowsAgent.SqlServer?api-version=2023-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.HybridCompute/machines/LAPTOP-OIUS4TO4/extensions/WindowsAgent.SqlServer","name":"WindowsAgent.SqlServer","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.AzureData","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2566.109","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"ExcludedSqlInstances":[""],"SqlManagement":{"IsEnabled":true},"LicenseType":"Paid","enableExtendedSecurityUpdates":false,"esuLastUpdatedTimestamp":"2024-02-02T18:48:37.571Z","cloudprovider":"N/A"},"provisioningState":"Succeeded","instanceView":{"name":"WindowsAgent.SqlServer","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2566.109","status":{"code":"0","level":"Information","message":"Extension
+        Message: SQL Server Extension Agent: Healthy; timestampUTC : 2024/02/09, 19:37:00.663;
+        uploadStatus : OK; uploadMessage : Upload succeeded.;;AutomaticBackups: Running;PurviewPlugin:
+        {};AzureActiveDirectoryPlugin: {\r\n  \"MSSQLSERVER\": \"\"\r\n};DatabaseMonitorArcPlugin:
+        {\"State\":\"Running\"}, AutomaticBackups: {\"$type\":\"Microsoft.Azure.Hybrid.Sql.Models.AutomaticSqlBackupConfiguration,
+        SqlAgent\",\"retentionPeriodInDays\":7,\"profiles\":{\"$type\":\"System.Collections.Generic.List`1[[Microsoft.Azure.Hybrid.Sql.Models.ShortTermRetentionAutomaticSqlBackupProfile,
+        SqlAgent]], System.Private.CoreLib\",\"$values\":[]}}, Purview plugin: [],
+        Azure active directory configuration plugin: [], Assessment: [], Assessment
+        Status: {\"AssessmentHistory\":[],\"Enabled\":false,\"ErrorMessage\":\"\",\"NextScheduledTime\":null,\"RunStatus\":\"NotRunning\",\"StartTime\":null},
+        DatabaseMonitorArcPlugin: {\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.DatabaseMonitorConfiguration,
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"endpointUrl\":\"https://telemetry.{0}.arcdataservices.com/\",\"endpointAppId\":\"524058e3-2702-4b98-932b-b2d1de613fd2\"},
+        MigrationAssessmentPlugin: {\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.PublicSettings,
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"excludedSqlInstances\":{\"$type\":\"System.String[],
+        System.Private.CoreLib\",\"$values\":[]},\"azureAD\":{\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.AADSettings[],
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"$values\":[]},\"externalPolicyBasedAuthorization\":{\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.PurviewSettings[],
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"$values\":[]},\"licenseType\":\"Undefined\",\"enableExtendedSecurityUpdates\":false,\"esuLastUpdatedTimestamp\":\"0001-01-01T00:00:00\"}"}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '2814'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 19:50:42 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 117A62066E8C4A84B0BDD9DB42EA583F Ref B: BN1AA2051012029 Ref C: 2024-02-09T19:50:43Z'
+      x-ms-correlation-request-id:
+      - fc0be4a4-5769-4e95-bd15-e3c941499d65
+      x-ms-ratelimit-remaining-subscription-reads:
+      - '11996'
+      x-ms-request-id:
+      - f83754cc-641d-400b-8511-ce9c2b5e8b19
+      x-ms-routing-request-id:
+      - EASTUS:20240209T195043Z:fc0be4a4-5769-4e95-bd15-e3c941499d65
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 82b3f6b5-c784-11ee-aa24-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4/databases/DONOTMAKE11?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.AzureArcData/SqlServerInstances/LAPTOP-OIUS4TO4/Databases/DONOTMAKE11''
+        under resource group ''lawynn-dotnet8Upgrade'' was not found. For more details
+        please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '272'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 19:50:43 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: F11294F679E94402B8AC25E0FF84BD06 Ref B: BN1AA2051015031 Ref C: 2024-02-09T19:50:43Z'
+      x-ms-correlation-request-id:
+      - 856d16ff-8302-47a1-8e95-2f0f12904c18
+      x-ms-failure-cause:
+      - gateway
+      x-ms-request-id:
+      - 856d16ff-8302-47a1-8e95-2f0f12904c18
+      x-ms-routing-request-id:
+      - EASTUS:20240209T195043Z:856d16ff-8302-47a1-8e95-2f0f12904c18
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 82cc76fb-c784-11ee-ba2b-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4/databases/NoDatabasefound?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.AzureArcData/SqlServerInstances/LAPTOP-OIUS4TO4/Databases/NoDatabasefound''
+        under resource group ''lawynn-dotnet8Upgrade'' was not found. For more details
+        please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '276'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 19:50:43 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: B14B6C1C84234D7CA398B41D1232FD3C Ref B: BN1AA2051015031 Ref C: 2024-02-09T19:50:43Z'
+      x-ms-correlation-request-id:
+      - accd69e7-2664-48d3-bd77-528f4eb8afed
+      x-ms-failure-cause:
+      - gateway
+      x-ms-request-id:
+      - accd69e7-2664-48d3-bd77-528f4eb8afed
+      x-ms-routing-request-id:
+      - EASTUS:20240209T195044Z:accd69e7-2664-48d3-bd77-528f4eb8afed
+    status:
+      code: 404
+      message: Not Found
+version: 1

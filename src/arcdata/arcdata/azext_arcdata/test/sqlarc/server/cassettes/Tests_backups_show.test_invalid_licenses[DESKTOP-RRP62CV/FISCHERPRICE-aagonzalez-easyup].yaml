@@ -1,0 +1,111 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-azurearcdatamanagementclient/1.1.20230919.10+RPSaaSMasterAaronGonzalez
+        Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - effcef79-5962-11ee-bcdf-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-easyup/providers/Microsoft.AzureArcData/sqlServerInstances/DESKTOP-RRP62CV_FISCHERPRICE
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-easyup/providers/Microsoft.AzureArcData/sqlServerInstances/DESKTOP-RRP62CV_FISCHERPRICE","name":"DESKTOP-RRP62CV_FISCHERPRICE","type":"microsoft.azurearcdata/sqlserverinstances","location":"centraluseuap","systemData":{"createdBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","createdByType":"Application","createdAt":"2023-09-07T16:00:22.7616599Z","lastModifiedBy":"aagonzalez@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-09-21T22:42:46.4135096Z"},"properties":{"version":"SQL
+        Server 2022","edition":"Developer","containerResourceId":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/aagonzalez-easyup/providers/Microsoft.HybridCompute/machines/DESKTOP-RRP62CV","createTime":null,"vCore":"20","cores":null,"status":"Connected","patchLevel":"16.0.1050.5","collation":"SQL_Latin1_General_CP1_CI_AS","currentVersion":"16.0.1000.6","instanceName":"FISCHERPRICE","tcpDynamicPorts":"0","tcpStaticPorts":"","productId":"Unknown","licenseType":"Free","azureDefenderStatusLastUpdated":null,"azureDefenderStatus":"Unknown","provisioningState":"Succeeded","hostType":null,"alwaysOnRole":null,"failoverCluster":null,"backupPolicy":{"retentionPeriodDays":30,"fullBackupDays":7,"differentialBackupHours":24,"transactionLogBackupMinutes":5},"monitoring":{"enabled":true}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '1376'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 22 Sep 2023 16:13:16 GMT
+      ETag:
+      - '"00006832-0000-3400-0000-650cc6f20000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 2E1672C77BAB4884B788F75D6B484AF2 Ref B: BN1AA2051015017 Ref C: 2023-09-22T16:13:16Z'
+      x-ms-correlation-request-id:
+      - 9a5871a2-fea4-4793-bb31-596452e0ef52
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99999'
+      x-ms-request-id:
+      - fc6fef38-cb69-4bba-9af8-f149ccca415a
+      x-ms-routing-request-id:
+      - CANADACENTRAL:20230922T161316Z:9a5871a2-fea4-4793-bb31-596452e0ef52
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/aagonzalez-easyup/providers/Microsoft.HybridCompute/machines/DESKTOP-RRP62CV/extensions/WindowsAgent.SqlServer?api-version=2023-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-easyup/providers/Microsoft.HybridCompute/machines/DESKTOP-RRP62CV/extensions/WindowsAgent.SqlServer","name":"WindowsAgent.SqlServer","type":"Microsoft.HybridCompute/machines/extensions","location":"centraluseuap","properties":{"publisher":"Microsoft.AzureData","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2437.52","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"ExcludedSqlInstances":[""],"LicenseType":"LicenseOnly","SqlManagement":{"IsEnabled":true},"FeatureFlags":[{"Name":"SqlManagement","Enable":true},{"Name":"AvailabilityGroupDiscovery","Enable":true}],"cloudprovider":"N/A"},"provisioningState":"Creating","instanceView":{"name":"WindowsAgent.SqlServer","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2437.52","status":{"code":"null","level":"Information","message":"Extension
+        is processing request. "}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '950'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 22 Sep 2023 16:13:17 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 566DC94C503E491BAD68EF5D047B4EF7 Ref B: BN1AA2051014035 Ref C: 2023-09-22T16:13:17Z'
+      x-ms-correlation-request-id:
+      - 028a7667-99d8-4b45-8488-f4c4cdb9fdda
+      x-ms-ratelimit-remaining-subscription-reads:
+      - '11991'
+      x-ms-request-id:
+      - 15abf140-39b1-4206-b174-9384cd4b8ff1
+      x-ms-routing-request-id:
+      - CANADACENTRAL:20230922T161317Z:028a7667-99d8-4b45-8488-f4c4cdb9fdda
+    status:
+      code: 200
+      message: OK
+version: 1

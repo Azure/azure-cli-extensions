@@ -1,0 +1,161 @@
+# ------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for
+# license information.
+# ------------------------------------------------------------------------------
+
+import os
+import re
+import json
+import zipfile
+import requests
+
+# copy from wheel==0.30.0
+WHEEL_INFO_RE = re.compile(
+    r"""^(?P<namever>(?P<name>.+?)(-(?P<ver>\d.+?))?)
+    ((-(?P<build>\d.*?))?-(?P<pyver>.+?)-(?P<abi>.+?)-(?P<plat>.+?)
+    \.whl|\.dist-info)$""",
+    re.VERBOSE,
+).match
+
+
+def get_index_json_from_repo(index_json):
+    url = (
+        "https://raw.githubusercontent.com/Azure/azure-cli-extensions/main/"
+        "src/index.json"
+    )
+    TRIES = 3
+    download_successful = False
+
+    if os.path.exists(index_json):
+        os.remove(index_json)
+
+    for try_number in range(TRIES):
+        try:
+            r = requests.get(url, stream=True)
+            assert r.status_code == 200, "Request to {} failed with {}".format(
+                url, r.status_code
+            )
+            download_successful = True
+            break
+        except (
+            requests.exceptions.ConnectionError,
+            requests.exceptions.HTTPError,
+        ) as err:
+            import time
+
+            time.sleep(15)
+            continue
+    if not download_successful:
+        raise Exception(f"Failed to download {url}")
+
+    with open(index_json, "wb") as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:  # ignore keep-alive new chunks
+                f.write(chunk)
+
+    with open(index_json, "r") as infile:
+        curr_index = json.loads(infile.read())
+
+    return curr_index
+
+
+def _get_extension_modname(ext_dir):
+    EXTENSIONS_MOD_PREFIX = "azext_"
+    pos_mods = [
+        n
+        for n in os.listdir(ext_dir)
+        if n.startswith(EXTENSIONS_MOD_PREFIX)
+        and os.path.isdir(os.path.join(ext_dir, n))
+    ]
+    if len(pos_mods) != 1:
+        raise AssertionError(
+            "Expected 1 module to load starting with "
+            "'{}': got {}".format(EXTENSIONS_MOD_PREFIX, pos_mods)
+        )
+    return pos_mods[0]
+
+
+def _get_azext_metadata(ext_dir):
+    AZEXT_METADATA_FILENAME = "azext_metadata.json"
+    azext_metadata = None
+    ext_modname = _get_extension_modname(ext_dir=ext_dir)
+    azext_metadata_filepath = os.path.join(
+        ext_dir, ext_modname, AZEXT_METADATA_FILENAME
+    )
+    if os.path.isfile(azext_metadata_filepath):
+        with open(azext_metadata_filepath) as f:
+            azext_metadata = json.load(f)
+    return azext_metadata
+
+
+def get_ext_metadata(ext_dir, ext_file, ext_name):
+    WHL_METADATA_FILENAME = "metadata.json"
+    zip_ref = zipfile.ZipFile(ext_file, "r")
+    zip_ref.extractall(ext_dir)
+    zip_ref.close()
+    metadata = {}
+    dist_info_dirs = [
+        f for f in os.listdir(ext_dir) if f.endswith(".dist-info")
+    ]
+
+    azext_metadata = _get_azext_metadata(ext_dir)
+
+    if not azext_metadata:
+        raise ValueError(
+            'azext_metadata.json for Extension "{}" Metadata is missing'.format(
+                ext_name
+            )
+        )
+
+    metadata.update(azext_metadata)
+
+    for dist_info_dirname in dist_info_dirs:
+        parsed_dist_info_dir = WHEEL_INFO_RE(dist_info_dirname)
+        if parsed_dist_info_dir and parsed_dist_info_dir.groupdict().get(
+            "name"
+        ) == ext_name.replace("-", "_"):
+            whl_metadata_filepath = os.path.join(
+                ext_dir, dist_info_dirname, WHL_METADATA_FILENAME
+            )
+            if os.path.isfile(whl_metadata_filepath):
+                with open(whl_metadata_filepath) as f:
+                    metadata.update(json.load(f))
+    return metadata
+
+
+def get_whl_from_url(url, filename, tmp_dir, whl_cache=None):
+    if not whl_cache:
+        whl_cache = {}
+    if url in whl_cache:
+        return whl_cache[url]
+
+    TRIES = 3
+    download_successful = False
+    for try_number in range(TRIES):
+        try:
+            r = requests.get(url, stream=True)
+            assert r.status_code == 200, "Request to {} failed with {}".format(
+                url, r.status_code
+            )
+            download_successful = True
+            break
+        except (
+            requests.exceptions.ConnectionError,
+            requests.exceptions.HTTPError,
+        ) as err:
+            import time
+
+            time.sleep(15)
+            continue
+
+    if not download_successful:
+        raise Exception(f"Failed to download {url}")
+
+    ext_file = os.path.join(tmp_dir, filename)
+    with open(ext_file, "wb") as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:  # ignore keep-alive new chunks
+                f.write(chunk)
+    whl_cache[url] = ext_file
+    return ext_file

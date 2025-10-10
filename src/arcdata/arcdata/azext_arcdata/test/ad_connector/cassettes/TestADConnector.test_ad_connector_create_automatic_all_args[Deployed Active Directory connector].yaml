@@ -1,0 +1,140 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v1/namespaces/test/activedirectoryconnectors/arcadcauto
+  response:
+    body:
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"activedirectoryconnectors.arcdata.microsoft.com
+        \"arcadcauto\" not found","reason":"NotFound","details":{"name":"arcadcauto","group":"arcdata.microsoft.com","kind":"activedirectoryconnectors"},"code":404}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '284'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 19:35:09 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/api/v1/namespaces/test/secrets/arcadc-domain-service-account-secret
+  response:
+    body:
+      string: '{"kind":"Secret","apiVersion":"v1","metadata":{"name":"arcadc-domain-service-account-secret","namespace":"test","uid":"a1091b2a-eb16-44f3-9cc7-70d68adf1526","resourceVersion":"1299742","creationTimestamp":"2022-09-23T19:35:09Z","managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"v1","time":"2022-09-23T19:35:09Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:password":{},"f:username":{}},"f:type":{}}}]},"data":{"password":"Placeholder001","username":"dXNlcm5hbWU="},"type":"Opaque"}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '533'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 19:35:09 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/api/v1/namespaces/test/secrets/arcadc-domain-service-account-secret
+  response:
+    body:
+      string: '{"kind":"Secret","apiVersion":"v1","metadata":{"name":"arcadc-domain-service-account-secret","namespace":"test","uid":"a1091b2a-eb16-44f3-9cc7-70d68adf1526","resourceVersion":"1299742","creationTimestamp":"2022-09-23T19:35:09Z","managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"v1","time":"2022-09-23T19:35:09Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:password":{},"f:username":{}},"f:type":{}}}]},"data":{"password":"Placeholder001","username":"dXNlcm5hbWU="},"type":"Opaque"}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '533'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 19:35:09 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "arcdata.microsoft.com/v1", "kind": "ActiveDirectoryConnector",
+      "spec": {"activeDirectory": {"realm": "CONTOSO.LOCAL", "netbiosDomainName":
+      "CONTOSO", "ouDistinguishedName": "OU=arcou,DC=contoso,DC=local", "serviceAccountProvisioning":
+      "automatic", "domainServiceAccountSecret": "arcadc-domain-service-account-secret",
+      "domainControllers": {"primaryDomainController": {"hostname": "dc1.contoso.local"},
+      "secondaryDomainControllers": [{"hostname": "dc2.contoso.local"}, {"hostname":
+      "dc3.contoso.local"}, {"hostname": "dc2.contoso.local"}, {"hostname": "dc3.contoso.local"}]}},
+      "dns": {"domainName": "contoso.local", "nameserverIPAddresses": ["11.11.111.111",
+      "22.22.222.222"], "replicas": 2, "preferK8sDnsForPtrLookups": false}}, "metadata":
+      {"name": "arcadcauto", "namespace": "test"}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: POST
+    uri: https://mock-host/apis/arcdata.microsoft.com/v1/namespaces/test/activedirectoryconnectors
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v1","kind":"ActiveDirectoryConnector","metadata":{"creationTimestamp":"2022-09-23T19:35:09Z","generation":1,"labels":{"management.azure.com/resourceProvider":"Microsoft.AzureArcData"},"managedFields":[{"apiVersion":"arcdata.microsoft.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:activeDirectory":{".":{},"f:domainControllers":{".":{},"f:primaryDomainController":{".":{},"f:hostname":{}},"f:secondaryDomainControllers":{}},"f:domainServiceAccountSecret":{},"f:netbiosDomainName":{},"f:ouDistinguishedName":{},"f:realm":{},"f:serviceAccountProvisioning":{}},"f:dns":{".":{},"f:domainName":{},"f:nameserverIPAddresses":{},"f:preferK8sDnsForPtrLookups":{},"f:replicas":{}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-09-23T19:35:09Z"}],"name":"arcadcauto","namespace":"test","ownerReferences":[{"apiVersion":"arcdata.microsoft.com/v5","controller":true,"kind":"DataController","name":"datacontroller-ravpate-4881c1a57","uid":"edd415e9-6395-417c-b169-996b47e4de3d"}],"resourceVersion":"1299747","uid":"f59a9af6-8977-4a67-acba-7f386e0e950e"},"spec":{"activeDirectory":{"domainControllers":{"primaryDomainController":{"hostname":"dc1.contoso.local"},"secondaryDomainControllers":[{"hostname":"dc2.contoso.local"},{"hostname":"dc3.contoso.local"},{"hostname":"dc2.contoso.local"},{"hostname":"dc3.contoso.local"}]},"domainServiceAccountSecret":"arcadc-domain-service-account-secret","netbiosDomainName":"CONTOSO","ouDistinguishedName":"OU=arcou,DC=contoso,DC=local","realm":"CONTOSO.LOCAL","serviceAccountProvisioning":"automatic"},"dns":{"domainName":"contoso.local","nameserverIPAddresses":["11.11.111.111","22.22.222.222"],"preferK8sDnsForPtrLookups":false,"replicas":2}}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '1746'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 19:35:09 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 201
+      message: Created
+version: 1
