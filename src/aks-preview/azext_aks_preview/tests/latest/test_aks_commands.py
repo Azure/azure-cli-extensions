@@ -19475,7 +19475,7 @@ spec:
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("serviceMeshProfile.mode", "Istio"),
-                self.check("ingressProfile.gatewayAPI.installation", "Standard"),
+                self.check("ingressProfile.gatewayApi.installation", "Standard"),
             ],
         )
 
@@ -19489,7 +19489,7 @@ spec:
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("ingressProfile.gatewayAPI.installation", "Disabled"),
+                self.check("ingressProfile.gatewayApi.installation", "Disabled"),
             ],
         )
 
@@ -19503,7 +19503,7 @@ spec:
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("ingressProfile.gatewayAPI.installation", "Standard"),
+                self.check("ingressProfile.gatewayApi.installation", "Standard"),
             ],
         )
 
