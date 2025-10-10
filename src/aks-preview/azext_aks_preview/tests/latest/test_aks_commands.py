@@ -13298,7 +13298,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "--name={name}",
                 "--created",
                 "--interval 60",
-                "--timeout 300",
+                "--timeout 1800",
             ]
         )
         self.cmd(
@@ -13922,7 +13922,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: disable-azure-monitor-logs
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes '
+            'aks update --resource-group={resource_group} --name={name} '
             '--disable-azure-monitor-logs'
         )
         self.cmd(update_cmd, checks=[
@@ -13937,11 +13937,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         time.sleep(5 * 60)
 
         # Verify the update was successful - check addon profile
+        # Retry up to 10 times with 60-second intervals to allow provisioning to complete
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
-        self.cmd(show_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('addonProfiles.omsagent.enabled', False),
-        ])
+        max_retries = 10
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('addonProfiles.omsagent.enabled', False),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} failed, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
 
         # delete
         cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
@@ -14166,19 +14177,31 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # in addonput.py which enables the Azure Monitor Metrics addon as all the DC* resources
         # have now been created.
         wait_cmd = ' '.join([
-            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
-            '--interval 60', '--timeout 300',
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--created',
+            '--interval 60', '--timeout 1800',
         ])
         self.cmd(wait_cmd, checks=[
             self.is_empty(),
         ])
 
-        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 8080),
-        ])
+        # Retry up to 10 times with 60-second intervals to allow provisioning to complete
+        show_cmd = 'aks show -g {resource_group} -n {name} --output=json'
+        max_retries = 10
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('azureMonitorProfile.metrics.enabled', True),
+                    self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+                    self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 8080),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} failed, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
 
         # delete
         cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
@@ -14224,10 +14247,21 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(wait_cmd)
 
         # Verify the update was successful
+        # Retry up to 10 times with 60-second intervals to allow provisioning to complete
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
-        self.cmd(show_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-        ])
+        max_retries = 10
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} failed, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
 
         # update: disable OpenTelemetry metrics but keep Azure Monitor metrics
         update_cmd = (
@@ -14243,12 +14277,23 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(wait_cmd)
 
         # Verify the update was successful
+        # Retry up to 10 times with 60-second intervals to allow provisioning to complete
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
-        self.cmd(show_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', False),
-        ])
+        max_retries = 10
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('azureMonitorProfile.metrics.enabled', True),
+                    self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', False),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} failed, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
 
         # update: disable-azure-monitor-metrics (should also disable OpenTelemetry metrics)
         update_cmd = (
@@ -14264,11 +14309,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(wait_cmd)
 
         # Verify the update was successful
+        # Retry up to 10 times with 60-second intervals to allow provisioning to complete
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
-        self.cmd(show_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', False),
-        ])
+        max_retries = 10
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('azureMonitorProfile.metrics.enabled', False),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} failed, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
 
         # delete
         cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
@@ -14425,8 +14481,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # in addonput.py which enables the Azure Monitor Metrics addon as all the DC* resources
         # have now been created.
         wait_cmd = ' '.join([
-            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
-            '--interval 60', '--timeout 300',
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--created',
+            '--interval 60', '--timeout 1800',
         ])
         self.cmd(wait_cmd, checks=[
             self.is_empty(),
@@ -14461,7 +14517,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         wait_cmd = ' '.join([
             'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
-            '--interval 60', '--timeout 300',
+            '--interval 60', '--timeout 1800',
         ])
         self.cmd(wait_cmd, checks=[
             self.is_empty(),
@@ -14493,7 +14549,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         wait_cmd = ' '.join([
             'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
-            '--interval 60', '--timeout 300',
+            '--interval 60', '--timeout 1800',
         ])
         self.cmd(wait_cmd, checks=[
             self.is_empty(),
@@ -14525,7 +14581,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         wait_cmd = ' '.join([
             'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
-            '--interval 60', '--timeout 300',
+            '--interval 60', '--timeout 1800',
         ])
         self.cmd(wait_cmd, checks=[
             self.is_empty(),
@@ -14556,7 +14612,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         wait_cmd = ' '.join([
             'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
-            '--interval 60', '--timeout 300',
+            '--interval 60', '--timeout 1800',
         ])
         self.cmd(wait_cmd, checks=[
             self.is_empty(),
@@ -14586,7 +14642,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         wait_cmd = ' '.join([
             'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
-            '--interval 60', '--timeout 300',
+            '--interval 60', '--timeout 1800',
         ])
         self.cmd(wait_cmd, checks=[
             self.is_empty(),
@@ -14615,7 +14671,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         wait_cmd = ' '.join([
             'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
-            '--interval 60', '--timeout 300',
+            '--interval 60', '--timeout 1800',
         ])
         self.cmd(wait_cmd, checks=[
             self.is_empty(),
@@ -14648,7 +14704,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         wait_cmd = ' '.join([
             'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
-            '--interval 60', '--timeout 300',
+            '--interval 60', '--timeout 1800',
         ])
         self.cmd(wait_cmd, checks=[
             self.is_empty(),
