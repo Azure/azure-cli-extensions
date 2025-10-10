@@ -3257,16 +3257,18 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # Ensure istio profile exists
             if new_profile.istio is None:
                 new_profile.istio = self.models.IstioServiceMesh()  # pylint: disable=no-member
-                
+
             # Ensure components exist
             if new_profile.istio.components is None:
                 new_profile.istio.components = self.models.IstioComponents()  # pylint: disable=no-member
 
             if enable_istio_cni:
-                new_profile.istio.components.proxy_redirection_mechanism = CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_CNI_CHAINING
+                new_profile.istio.components.proxy_redirection_mechanism = \
+                    CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_CNI_CHAINING
                 updated = True
             elif disable_istio_cni:
-                new_profile.istio.components.proxy_redirection_mechanism = CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_INIT_CONTAINERS
+                new_profile.istio.components.proxy_redirection_mechanism = \
+                    CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_INIT_CONTAINERS
                 updated = True
 
         return new_profile, updated
