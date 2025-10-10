@@ -6685,11 +6685,32 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         msi_auth_enabled = (addon_config and has_msi_auth_key and
                             str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true")
 
-        # Only set cleanup flag if the addon is currently enabled (not already disabled)
+        # CRITICAL FIX: Perform DCR/DCRA cleanup BEFORE disabling addon
+        # Azure will reject the disable if DCR/DCRA associations still exist
         if azure_monitor_logs_enabled and msi_auth_enabled:
-            # Set intermediate value to trigger postprocessing for DCR/DCRA cleanup
-            self.context.set_intermediate(
-                "monitoring_addon_disable_postprocessing_required", True, overwrite_exists=True)
+            logger.warning("DEBUG: Performing DCR/DCRA cleanup BEFORE disabling addon")
+            try:
+                self.context.external_functions.ensure_container_insights_for_monitoring(
+                    self.cmd,
+                    mc.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                    self.context.get_subscription_id(),
+                    self.context.get_resource_group_name(),
+                    self.context.get_name(),
+                    self.context.get_location(),
+                    remove_monitoring=True,
+                    aad_route=True,
+                    create_dcr=False,
+                    create_dcra=True,
+                    enable_syslog=False,
+                    data_collection_settings=None,
+                    ampls_resource_id=None,
+                    enable_high_log_scale_mode=False
+                )
+                logger.warning("DEBUG: DCR/DCRA cleanup completed")
+            except TypeError as e:
+                # Ignore TypeError just like aks_disable_addons does
+                logger.warning(f"DEBUG: Ignoring TypeError in cleanup: {e}")
+                pass
 
         # Always disable the addon and clear configuration, even if already disabled
         # This ensures the change is sent to Azure on subsequent calls
