@@ -13734,10 +13734,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
-        self.cmd(wait_cmd)
-
         time.sleep(5 * 60)
+
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
 
         # Verify the creation was successful
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
@@ -13759,7 +13761,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
-        self.cmd(wait_cmd)
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
 
         # Verify the creation was successful
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
@@ -13908,8 +13912,23 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # Wait for the update operation to complete
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
         self.cmd(wait_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
+            self.is_empty(),
         ])
+
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        max_retries = 30
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} waiting for provisioning, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
 
         # Verify the update was successful
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
@@ -13931,10 +13950,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # Wait for the update operation to complete
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
-        self.cmd(wait_cmd)
-
-        # Sleep to allow update operation to fully propagate
-        time.sleep(5 * 60)
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
 
         # Verify the update was successful - check addon profile
         # Retry up to 10 times with 60-second intervals to allow provisioning to complete
@@ -14090,6 +14108,32 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.metrics.enabled', True),
         ])
+
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--created',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+                # Retry up to 10 times with 60-second intervals to allow provisioning to complete
+        show_cmd = 'aks show -g {resource_group} -n {name} --output=json'
+        max_retries = 10
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('azureMonitorProfile.metrics.enabled', True),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} failed, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
+
 
         # delete
         cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
