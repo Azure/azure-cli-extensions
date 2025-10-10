@@ -13,6 +13,8 @@ from azext_aks_agent.agent.agent import aks_agent as aks_agent_internal
 from azext_aks_agent.agent.llm_providers import prompt_provider_choice, PROVIDER_REGISTRY
 from azext_aks_agent.agent.llm_config_manager import LLMConfigManager
 
+from azext_aks_agent.agent.agent import init_log
+
 from knack.log import get_logger
 
 
@@ -22,6 +24,9 @@ logger = get_logger(__name__)
 # pylint: disable=unused-argument
 def aks_agent_init(cmd):
     """Initialize AKS agent llm configuration."""
+
+    init_log()
+
     from rich.console import Console
     from holmes.utils.colors import HELP_COLOR, ERROR_COLOR
     from holmes.interactive import SlashCommands

@@ -5,8 +5,6 @@
 
 from typing import List, Tuple
 from rich.console import Console
-from holmes.utils.colors import HELP_COLOR, ERROR_COLOR
-from holmes.interactive import SlashCommands
 from .base import LLMProvider
 from .azure_provider import AzureProvider
 from .openai_provider import OpenAIProvider
@@ -48,6 +46,7 @@ def _get_provider_by_index(idx: int) -> LLMProvider:
     Return provider instance by numeric index (1-based).
     Raises ValueError if index is out of range.
     """
+    from holmes.utils.colors import HELP_COLOR
     if 1 <= idx <= len(_PROVIDER_CLASSES):
         console.print("You selected provider:", _PROVIDER_CLASSES[idx - 1].name, style=f"bold {HELP_COLOR}")
         return _PROVIDER_CLASSES[idx - 1]()
@@ -59,6 +58,8 @@ def prompt_provider_choice() -> LLMProvider:
     Show a numbered menu and return the chosen provider instance.
     Keeps prompting until a valid selection is made.
     """
+    from holmes.utils.colors import HELP_COLOR, ERROR_COLOR
+    from holmes.interactive import SlashCommands
     choices = _provider_choices_numbered()
     if not choices:
         raise ValueError("No providers are registered.")

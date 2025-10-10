@@ -8,8 +8,6 @@ from abc import ABC, abstractmethod
 from typing import Dict, Callable, Tuple, Any
 from rich.console import Console
 from rich.prompt import Prompt
-from holmes.utils.colors import HELP_COLOR, ERROR_COLOR
-from holmes.interactive import SlashCommands
 from urllib.parse import urlparse
 
 console = Console()
@@ -53,6 +51,9 @@ class LLMProvider(ABC):
 
     def prompt_params(self):
         """Prompt user for parameters using parameter_schema when available."""
+        from holmes.utils.colors import HELP_COLOR, ERROR_COLOR
+        from holmes.interactive import SlashCommands
+
         schema = self.parameter_schema
         params = {}
         for param, meta in schema.items():
@@ -71,7 +72,7 @@ class LLMProvider(ABC):
             while True:
                 if secret:
                     value = Prompt.ask(
-                        f"[bold {HELP_COLOR}]Enter your secret value[/]",
+                        f"[bold {HELP_COLOR}]Enter your API key[/]",
                         password=True
                     )
                 else:
