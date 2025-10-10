@@ -1170,15 +1170,6 @@ def aks_create(
             "or select a different cluster name to create a new cluster."
         )
 
-    # Handle enable_azure_monitor_logs parameter
-    if enable_azure_monitor_logs:
-        if enable_addons:
-            if "monitoring" not in enable_addons:
-                enable_addons.append("monitoring")
-        else:
-            enable_addons = ["monitoring"]
-        raw_parameters["enable_addons"] = enable_addons
-
     # decorator pattern
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterCreateDecorator

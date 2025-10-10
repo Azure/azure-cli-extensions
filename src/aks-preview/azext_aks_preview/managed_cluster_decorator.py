@@ -360,20 +360,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 skuName = CONST_MANAGED_CLUSTER_SKU_NAME_BASE
         return skuName
 
-    def _get_enable_addons(self, enable_validation: bool = False) -> str:
-        # Get the original enable_addons parameter from raw_param first
-        enable_addons_param = self.raw_param.get("enable_addons")
-
+    def _get_enable_addons(self, enable_validation: bool = False) -> List[str]:
+        enable_addons = super()._get_enable_addons()
         sku_name = self.get_sku_name()
         if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-            # For Automatic SKU, add monitoring addon
-            if enable_addons_param:
-                enable_addons = f"{enable_addons_param},monitoring"
-            else:
-                enable_addons = "monitoring"
-        else:
-            # For other SKUs, use the original parameter value
-            enable_addons = enable_addons_param if enable_addons_param else ""
+            enable_addons.append("monitoring")
         return enable_addons
 
     def get_enable_msi_auth_for_monitoring(self) -> Union[bool, None]:
@@ -2151,9 +2142,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """Internal function to obtain the value of enable_azure_monitor_metrics.
         This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_metrics and
         disable_azure_monitor_metrics are specified, raise a MutuallyExclusiveArgumentError.
+
         :return: bool
         """
-
         # Read the original value passed by the command.
         # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
         enable_azure_monitor_metrics = (
@@ -3884,13 +3875,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc.azure_monitor_profile.app_monitoring = (
             self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
         )
-        app_monitoring_auto_instrumentation = (
+        mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
             self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=True)
         )
-        mc.azure_monitor_profile.app_monitoring.auto_instrumentation = app_monitoring_auto_instrumentation
 
-    def _setup_monitoring_addon_profile(self, mc: ManagedCluster, addon_consts: dict) -> None:
-        """Set up monitoring addon profile configuration."""
+    def _setup_azure_monitor_logs(self, mc: ManagedCluster) -> None:
+        """Set up Azure Monitor logs configuration."""
+
+        addon_consts = self.context.get_addon_consts()
 
         if mc.addon_profiles is None:
             mc.addon_profiles = {}
@@ -3935,17 +3927,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         }
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
 
-    def _setup_container_insights(self, mc: ManagedCluster) -> None:
-        """Set up container insights configuration - DISABLED per user request."""
-        # Container insights profile setup has been removed
-
-    def _setup_azure_monitor_logs(self, mc: ManagedCluster) -> None:
-        """Set up Azure Monitor logs configuration."""
-
-        addon_consts = self.context.get_addon_consts()
-        self._setup_monitoring_addon_profile(mc, addon_consts)
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
-        self._setup_container_insights(mc)
 
         # Call ensure_container_insights_for_monitoring with all parameters (similar to postprocessing)
         CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
@@ -4015,19 +3997,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if self.context.get_enable_azure_monitor_app_monitoring():
             self._setup_azure_monitor_app_monitoring(mc)
 
-        # Check if monitoring addon is enabled and set up Azure Monitor logs (container insights)
-        monitoring_addon_enabled = self.context.get_intermediate("monitoring_addon_enabled", default_value=False)
-        if not monitoring_addon_enabled:
-            # Also check if monitoring addon is enabled via addon profiles
-            addon_consts = self.context.get_addon_consts()
-            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-            if (mc.addon_profiles and
-                    CONST_MONITORING_ADDON_NAME in mc.addon_profiles and
-                    mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled):
-                monitoring_addon_enabled = True
-
-        if monitoring_addon_enabled:
-            self._setup_container_insights(mc)
 
         if self.context.get_enable_opentelemetry_metrics():
             self._setup_opentelemetry_metrics(mc)
@@ -4315,8 +4284,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if ssh_access is not None:
             for agent_pool_profile in mc.agent_pool_profiles:
                 if agent_pool_profile.security_profile is None:
-                    # pylint: disable=no-member
-                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()
+                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
                 agent_pool_profile.security_profile.ssh_access = ssh_access
         return mc
 
@@ -4993,7 +4961,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
                 monitoring_addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
                 if monitoring_addon_profile:
-                    config = dict(monitoring_addon_profile.config) if monitoring_addon_profile.config else {}
+                    config = monitoring_addon_profile.config or {}
                     config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
                     mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = config
         return mc
@@ -5791,29 +5759,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.models.ManagedClusterAzureMonitorProfileAppMonitoring())
 
             # Only enable auto instrumentation, preserve OpenTelemetry settings
-            app_monitoring_auto_instrumentation = (
-                self.models.
-                ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(
-                    enabled=True))
             mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
-                app_monitoring_auto_instrumentation)
-
-        if self.context.get_disable_azure_monitor_app_monitoring():
-            if mc.azure_monitor_profile is None:
-                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
-
-            # Preserve existing app_monitoring configuration if it exists
-            if mc.azure_monitor_profile.app_monitoring is None:
-                mc.azure_monitor_profile.app_monitoring = (
-                    self.models.ManagedClusterAzureMonitorProfileAppMonitoring())
-
-            # Only disable auto instrumentation, preserve OpenTelemetry settings
-            auto_instrumentation_disabled = (
-                self.models.
-                ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(
-                    enabled=False))
-            mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
-                auto_instrumentation_disabled)
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=True)
+            )
 
         # Handle OpenTelemetry metrics updates - these work within the Azure Monitor App Monitoring context
         if self.context.get_enable_opentelemetry_metrics():
@@ -5848,6 +5796,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 otlp_logs_config.port = self.context.get_opentelemetry_logs_port()
 
             mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = otlp_logs_config
+
+        if self.context.get_disable_azure_monitor_app_monitoring():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+
+            # Preserve existing app_monitoring configuration if it exists
+            if mc.azure_monitor_profile.app_monitoring is None:
+                mc.azure_monitor_profile.app_monitoring = (
+                    self.models.ManagedClusterAzureMonitorProfileAppMonitoring())
+
+            # Only disable auto instrumentation, preserve OpenTelemetry settings
+            mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=False)
+                )
 
         # Handle disable OpenTelemetry metrics updates
         if self.context.get_disable_opentelemetry_metrics():
@@ -6572,9 +6534,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if mc.azure_monitor_profile is None:
             mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
 
-    def _setup_monitoring_addon_profile(self, mc: ManagedCluster, addon_consts: dict) -> None:
-        """Set up monitoring addon profile configuration."""
 
+    def _setup_azure_monitor_logs(self, mc: ManagedCluster) -> None:
+        """Set up Azure Monitor logs configuration."""
+
+        addon_consts = self.context.get_addon_consts()
         if mc.addon_profiles is None:
             mc.addon_profiles = {}
 
@@ -6585,6 +6549,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         addon_profile.enabled = True
 
         # Get or create workspace resource ID
+        logger.info("Headers: %s", dict(self.cmd.cli_ctx.data.get('headers', {})))
+        logger.info("Safe params: %s", self.cmd.cli_ctx.data.get('safe_params', {}))
+        logger.info("Command extension name: %s", self.cmd.cli_ctx.data.get('command_extension_name', ''))
         workspace_resource_id = self.context.raw_param.get("workspace_resource_id")
         if not workspace_resource_id:
             ensure_workspace_func = (
@@ -6594,6 +6561,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.context.get_subscription_id(),
                 self.context.get_resource_group_name()
             )
+        logger.info("Headers: %s", dict(self.cmd.cli_ctx.data.get('headers', {})))
+        logger.info("Safe params: %s", self.cmd.cli_ctx.data.get('safe_params', {}))
+        logger.info("Command extension name: %s", self.cmd.cli_ctx.data.get('command_extension_name', ''))
 
         # Sanitize and configure
         sanitize_func = self.context.external_functions.sanitize_loganalytics_ws_resource_id
@@ -6618,18 +6588,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         addon_profile.config = new_config
 
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
-
-    def _setup_container_insights(self, mc: ManagedCluster) -> None:
-        """Set up container insights configuration - DISABLED per user request."""
-        # Container insights profile setup has been removed
-
-    def _setup_azure_monitor_logs(self, mc: ManagedCluster) -> None:
-        """Set up Azure Monitor logs configuration."""
-
-        addon_consts = self.context.get_addon_consts()
-        self._setup_monitoring_addon_profile(mc, addon_consts)
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
-        self._setup_container_insights(mc)
         # Call ensure_container_insights_for_monitoring with all parameters (similar to postprocessing)
         CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
         if (mc.addon_profiles and
@@ -6690,7 +6649,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # This ensures the change is sent to Azure on subsequent calls
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled = False
         # Clear the config to remove old workspace resource ID and other settings
-        mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = {}
+        mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = None
 
         # Also disable OpenTelemetry logs when disabling Azure Monitor logs
         if opentelemetry_logs_enabled:
@@ -6754,10 +6713,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # Handle disable Azure Monitor logs
         if self.context.get_disable_azure_monitor_logs():
             self._disable_azure_monitor_logs(mc)
-
-        # Handle disable Azure Monitor metrics
-        if self.context.get_disable_azure_monitor_metrics():
-            self._disable_azure_monitor_metrics(mc)
 
         return mc
 
@@ -6870,13 +6825,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             monitoring_addon_disable_postprocessing_required = self.context.get_intermediate(
                 "monitoring_addon_disable_postprocessing_required", default_value=False
             )
-            # Check for various postprocessing conditions
-            container_storage_required = enable_azure_container_storage or disable_azure_container_storage
-            keyvault_required = keyvault_id and enable_azure_keyvault_secrets_provider_addon
             monitoring_required = (monitoring_addon_postprocessing_required or
                                    monitoring_addon_disable_postprocessing_required)
-
-            if container_storage_required or keyvault_required or monitoring_required:
+            if (enable_azure_container_storage or disable_azure_container_storage) or \
+               (keyvault_id and enable_azure_keyvault_secrets_provider_addon) or \
+                (monitoring_required):
                 return True
         return postprocessing_required
 
