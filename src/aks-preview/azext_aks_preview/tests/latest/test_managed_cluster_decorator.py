@@ -4397,7 +4397,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ))
 
     def test_handle_disable_istio_cni(self):
-        # Test enabling Istio CNI on existing ASM-enabled cluster
+        # Test disabling Istio CNI on existing ASM-enabled cluster
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
