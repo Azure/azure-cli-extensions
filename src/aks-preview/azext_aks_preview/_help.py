@@ -660,6 +660,10 @@ helps['aks create'] = f"""
         - name: --vm-sizes
           type: string
           short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
+        - name: --enable-managed-system-pool
+          type: bool
+          short-summary: Create a default ManagedSystem mode that is fully managed by AKS.
+          long-summary: When set, the default system node pool is created with ManagedSystem mode, where all properties except name and mode are managed by AKS. Learn more at https://aka.ms/aks/nodepool/mode.
         - name: --enable-upstream-kubescheduler-user-configuration
           type: bool
           short-summary: Enable user-defined scheduler configuration for kube-scheduler upstream on the cluster
@@ -742,6 +746,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu --max-pods MaxPodsPerNode --network-plugin azure --vnet-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/NodeSubnet --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/PodSubnet --pod-ip-allocation-mode StaticBlock
         - name: Create a kubernetes cluster with a VirtualMachines nodepool
           text: az aks create -g MyResourceGroup -n MyManagedCluster --vm-set-type VirtualMachines --vm-sizes "VMSize1,VMSize2" --node-count 3
+        - name: Create a kubernetes cluster with a fully managed system node pool
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-managed-system-pool
 
 """
 
