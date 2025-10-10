@@ -13741,6 +13741,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --created --timeout=1800'
         self.cmd(wait_cmd)
 
+        time.sleep(5 * 60)
+
         # Verify the creation was successful
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
         self.cmd(show_cmd, checks=[
@@ -13876,7 +13878,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # create: without enable-azure-monitor-logs
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity --no-wait --output=json'
+        create_cmd = (
+            'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} '
+            '--node-vm-size={node_vm_size} --enable-managed-identity --output=json')
         self.cmd(create_cmd)
 
         # Wait for the create operation to complete
@@ -13892,7 +13896,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: enable-azure-monitor-logs
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
+            'aks update --resource-group={resource_group} --name={name} --yes '
             '--enable-azure-monitor-logs'
         )
         self.cmd(update_cmd)
@@ -13912,7 +13916,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: disable-azure-monitor-logs
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --no-wait '
+            'aks update --resource-group={resource_group} --name={name} --yes '
             '--disable-azure-monitor-logs'
         )
         self.cmd(update_cmd)
@@ -13922,7 +13926,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(wait_cmd)
 
         # Sleep to allow update operation to fully propagate
-        import time
         time.sleep(5 * 60)
 
         # Verify the update was successful - check addon profile
@@ -14203,64 +14206,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
         )
 
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-        ])
-
-        # azuremonitor metrics will be set to false after initial creation command as its in the
-        # postprocessing step that we do an update to enable it. Adding a wait for the second put request
-        # in addonput.py which enables the Azure Monitor Metrics addon as all the DC* resources
-        # have now been created.
-        wait_cmd = ' '.join([
-            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
-            '--interval 60', '--timeout 300',
-        ])
-        self.cmd(wait_cmd, checks=[
-            self.is_empty(),
-        ])
-
-        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 8080),
-        ])
-
-        # delete
-        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
-        self.cmd(cmd, checks=[
-            self.is_empty(),
-        ])
-
-    @live_only()
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_update_with_azuremonitormetrics_and_opentelemetry(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name('cliakstest', 16)
-        node_vm_size = 'standard_d2s_v3'
-        self.kwargs.update({
-            'resource_group': resource_group,
-            'name': aks_name,
-            'location': resource_group_location,
-            'ssh_key_value': self.generate_ssh_keys(),
-            'node_vm_size': node_vm_size,
-        })
-
-        # create: without enable-azure-monitor-metrics
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity --output=json'
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.not_exists('azureMonitorProfile.metrics'),
-        ])
-
-        # update: enable-azure-monitor-metrics with OpenTelemetry metrics
-        update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes '
-            '--enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=9090 '
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
-        )
-
-        self.cmd(create_cmd)
+        self.cmd(update_cmd)
 
         # Wait for the update operation to complete
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'

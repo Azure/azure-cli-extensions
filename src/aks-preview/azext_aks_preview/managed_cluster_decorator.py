@@ -3997,7 +3997,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if self.context.get_enable_azure_monitor_app_monitoring():
             self._setup_azure_monitor_app_monitoring(mc)
 
-
         if self.context.get_enable_opentelemetry_metrics():
             self._setup_opentelemetry_metrics(mc)
 
