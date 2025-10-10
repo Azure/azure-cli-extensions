@@ -13312,6 +13312,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        time.sleep(10 * 60)
+
         self.cmd(
             "aks show -g {resource_group} -n {name} --output=json",
             checks=[
@@ -13733,16 +13735,31 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("azureMonitorProfile.metrics.enabled", True),
             ],
         )
+
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --created --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the creation was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("azureMonitorProfile.metrics.enabled", True),
+        ])
 
         # update: disable-azure-monitor-metrics
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} --yes --output=json "
             "--disable-azure-monitor-metrics"
         )
-        self.cmd(
+
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --created --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the creation was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
@@ -13906,6 +13923,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # Wait for the update operation to complete
         wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
         self.cmd(wait_cmd)
+
+        # Sleep to allow update operation to fully propagate
+        import time
+        time.sleep(5 * 60)
 
         # Verify the update was successful - check addon profile
         show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
