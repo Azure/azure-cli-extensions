@@ -19,6 +19,10 @@ Pending
 * Added `--enable-gateway-api` to `az aks create` to enable managed Gateway API installation
 * Added `--enable-gateway-api` and `--disable-gateway-api` to `az aks update` to enable/disable managed Gateway API installation
 
+19.0.0b4
++++++++
+* Add `enable-istio-cni`` and `disable-istio-cni`` commands under `az aks mesh`.
+
 19.0.0b3
 +++++++
 * Implement platform-managed-keys (PMK) awared validation for KMS customer-managed-key (CMK)
