@@ -6681,9 +6681,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # Check if MSI auth is enabled for cleanup - same logic as aks_disable_addons
         addon_config = mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config
+        logger.warning(f"DEBUG: addon_config = {addon_config}")
+        logger.warning(f"DEBUG: CONST_MONITORING_USING_AAD_MSI_AUTH = {CONST_MONITORING_USING_AAD_MSI_AUTH}")
         has_msi_auth_key = addon_config and CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config
+        logger.warning(f"DEBUG: has_msi_auth_key = {has_msi_auth_key}")
         msi_auth_enabled = (addon_config and has_msi_auth_key and
                             str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true")
+        logger.warning(f"DEBUG: msi_auth_enabled = {msi_auth_enabled}")
 
         # CRITICAL FIX: Perform DCR/DCRA cleanup BEFORE disabling addon
         # Azure will reject the disable if DCR/DCRA associations still exist
@@ -6711,6 +6715,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 # Ignore TypeError just like aks_disable_addons does
                 logger.warning(f"DEBUG: Ignoring TypeError in cleanup: {e}")
                 pass
+            
+            # Set flag to ensure we wait for the response even though cleanup is already done
+            # This allows us to verify the disable succeeded
+            self.context.set_intermediate(
+                "monitoring_addon_disable_wait_required", True, overwrite_exists=True)
 
         # Always disable the addon and clear configuration, even if already disabled
         # This ensures the change is sent to Azure on subsequent calls
@@ -6915,8 +6924,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             monitoring_addon_disable_postprocessing_required = self.context.get_intermediate(
                 "monitoring_addon_disable_postprocessing_required", default_value=False
             )
+            monitoring_addon_disable_wait_required = self.context.get_intermediate(
+                "monitoring_addon_disable_wait_required", default_value=False
+            )
             monitoring_required = (monitoring_addon_postprocessing_required or
-                                   monitoring_addon_disable_postprocessing_required)
+                                   monitoring_addon_disable_postprocessing_required or
+                                   monitoring_addon_disable_wait_required)
             if (enable_azure_container_storage or disable_azure_container_storage) or \
                (keyvault_id and enable_azure_keyvault_secrets_provider_addon) or \
                 (monitoring_required):
@@ -7222,8 +7235,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 headers=self.context.get_aks_custom_headers(),
             )
             logger.warning("=== PUT_MC - NO WAIT MODE ===")
-            if cluster.addon_profiles and CONST_MONITORING_ADDON_NAME in cluster.addon_profiles:
-                logger.warning(f"DEBUG: After PUT (no-wait) - addon enabled = {cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
+            # In no-wait mode, cluster is an LROPoller, not a ManagedCluster
+            # so we can't access addon_profiles
         
         logger.warning("=== PUT_MC END ===")
         return cluster
