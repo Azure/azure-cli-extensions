@@ -13941,7 +13941,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: disable-azure-monitor-logs
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} '
+            'aks update --resource-group={resource_group} --name={name} --yes '
             '--disable-azure-monitor-logs'
         )
         self.cmd(update_cmd, checks=[
@@ -14167,20 +14167,47 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
             '--enable-azure-monitor-metrics'
         )
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', True),
-        ])
+        self.cmd(update_cmd)
+
+        # Wait for enable operation to complete before attempting disable
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        max_retries = 30
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('azureMonitorProfile.metrics.enabled', True),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} waiting for enable to complete, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
 
         # update: disable-azure-monitor-metrics
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
             '--disable-azure-monitor-metrics'
         )
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', False),
-        ])
+        self.cmd(update_cmd)
+
+        # Wait for disable operation to complete
+        max_retries = 30
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('azureMonitorProfile.metrics.enabled', False),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} waiting for disable to complete, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
 
         # delete
         cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'

@@ -4520,8 +4520,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         :return: None
         """
+        logger.warning("=== POSTPROCESSING AFTER MC CREATED START ===")
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        if cluster.addon_profiles and CONST_MONITORING_ADDON_NAME in cluster.addon_profiles:
+            logger.warning(f"DEBUG: Postprocessing entry - addon enabled = {cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
+        
         # monitoring addon
         monitoring_addon_enabled = self.context.get_intermediate("monitoring_addon_enabled", default_value=False)
+        logger.warning(f"DEBUG: monitoring_addon_enabled intermediate = {monitoring_addon_enabled}")
         if monitoring_addon_enabled:
             enable_msi_auth_for_monitoring = self.context.get_enable_msi_auth_for_monitoring()
             if not enable_msi_auth_for_monitoring:
@@ -4566,12 +4573,19 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         monitoring_addon_disable_postprocessing_required = self.context.get_intermediate(
             "monitoring_addon_disable_postprocessing_required", default_value=False
         )
+        logger.warning(f"DEBUG: monitoring_addon_disable_postprocessing_required = {monitoring_addon_disable_postprocessing_required}")
+        
         if monitoring_addon_disable_postprocessing_required:
+            logger.warning("=== DISABLE POSTPROCESSING START ===")
             addon_consts = self.context.get_addon_consts()
             CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
 
             # Get the current cluster state to check config before it was disabled
+            logger.warning("DEBUG: Fetching current cluster state for disable cleanup")
             current_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
+            
+            if current_cluster.addon_profiles and CONST_MONITORING_ADDON_NAME in current_cluster.addon_profiles:
+                logger.warning(f"DEBUG: Current cluster addon enabled = {current_cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
 
             if (current_cluster.addon_profiles and
                     CONST_MONITORING_ADDON_NAME in current_cluster.addon_profiles):
@@ -4580,6 +4594,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 addon_profile = current_cluster.addon_profiles[CONST_MONITORING_ADDON_NAME]
 
                 # Call ensure_container_insights_for_monitoring with remove_monitoring=True (same as aks_disable_addons)
+                logger.warning("DEBUG: Calling ensure_container_insights_for_monitoring with remove_monitoring=True")
                 try:
                     self.context.external_functions.ensure_container_insights_for_monitoring(
                         self.cmd,
@@ -4597,9 +4612,13 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                         ampls_resource_id=None,
                         enable_high_log_scale_mode=False
                     )
-                except TypeError:
+                    logger.warning("DEBUG: ensure_container_insights_for_monitoring completed successfully")
+                except TypeError as e:
                     # Ignore TypeError just like aks_disable_addons does
+                    logger.warning(f"DEBUG: Ignoring TypeError in ensure_container_insights_for_monitoring: {e}")
                     pass
+            
+            logger.warning("=== DISABLE POSTPROCESSING END ===")
 
         # ingress appgw addon
         ingress_appgw_addon_enabled = self.context.get_intermediate("ingress_appgw_addon_enabled", default_value=False)
@@ -4739,6 +4758,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     scope=cluster.id,
                     resolve_assignee=False,
                 )
+        
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        if cluster.addon_profiles and CONST_MONITORING_ADDON_NAME in cluster.addon_profiles:
+            logger.warning(f"DEBUG: Postprocessing exit - addon enabled = {cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
+        logger.warning("=== POSTPROCESSING AFTER MC CREATED END ===")
 
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
@@ -5721,6 +5746,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
+        
+        logger.warning("=== UPDATE AZURE MONITOR PROFILE START ===")
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        if mc.addon_profiles and CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
+            logger.warning(f"DEBUG: On entry - addon enabled = {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
 
         # read the original value passed by the command
         ksm_metric_labels_allow_list = self.context.raw_param.get("ksm_metric_labels_allow_list")
@@ -5882,6 +5913,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.__raw_parameters,
                 self.context.get_disable_azure_monitor_metrics())
 
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        if mc.addon_profiles and CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
+            logger.warning(f"DEBUG: On exit - addon enabled = {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
+        logger.warning("=== UPDATE AZURE MONITOR PROFILE END ===")
+        
         return mc
 
     def update_vpa(self, mc: ManagedCluster) -> ManagedCluster:
@@ -6599,22 +6636,32 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
     def _disable_azure_monitor_logs(self, mc: ManagedCluster) -> None:
         """Disable Azure Monitor logs configuration."""
+        from azure.cli.core.azclierror import CLIInternalError
+        logger.warning("=== DISABLE AZURE MONITOR LOGS DEBUG START ===")
+        
         addon_consts = self.context.get_addon_consts()
         CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
         CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+        
+        logger.warning(f"DEBUG: CONST_MONITORING_ADDON_NAME = {CONST_MONITORING_ADDON_NAME}")
 
         # Check if the addon profile exists
         has_monitoring_addon = (
             mc.addon_profiles and
             CONST_MONITORING_ADDON_NAME in mc.addon_profiles
         )
+        
+        logger.warning(f"DEBUG: has_monitoring_addon = {has_monitoring_addon}")
+        logger.warning(f"DEBUG: mc.addon_profiles keys = {list(mc.addon_profiles.keys()) if mc.addon_profiles else None}")
 
         # If the addon profile doesn't exist at all, there's nothing to disable
         if not has_monitoring_addon:
+            logger.warning("DEBUG: No monitoring addon found, returning early")
             return
 
         # Check if Azure Monitor logs (monitoring addon) is currently enabled
         azure_monitor_logs_enabled = mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+        logger.warning(f"DEBUG: azure_monitor_logs_enabled (before disable) = {azure_monitor_logs_enabled}")
 
         # Check if OpenTelemetry logs are enabled and prompt for confirmation
         opentelemetry_logs_enabled = (
@@ -6646,15 +6693,23 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # Always disable the addon and clear configuration, even if already disabled
         # This ensures the change is sent to Azure on subsequent calls
+        logger.warning("DEBUG: Setting addon enabled = False")
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled = False
+        logger.warning(f"DEBUG: After setting, enabled = {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
+        
         # Clear the config to remove old workspace resource ID and other settings
+        logger.warning("DEBUG: Clearing config")
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = None
+        logger.warning(f"DEBUG: After clearing, config = {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
 
         # Also disable OpenTelemetry logs when disabling Azure Monitor logs
         if opentelemetry_logs_enabled:
+            logger.warning("DEBUG: Disabling OpenTelemetry logs")
             mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled = False
             # Clear the port when disabling OpenTelemetry logs
             mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.port = None
+        
+        logger.warning("=== DISABLE AZURE MONITOR LOGS DEBUG END ===")
 
     def _disable_azure_monitor_metrics(self, mc: ManagedCluster) -> None:
         """Disable Azure Monitor metrics configuration."""
@@ -6704,15 +6759,30 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
+        
+        logger.warning("=== UPDATE ADDON PROFILES START ===")
+        logger.warning(f"DEBUG: get_enable_azure_monitor_logs = {self.context.get_enable_azure_monitor_logs()}")
+        logger.warning(f"DEBUG: get_disable_azure_monitor_logs = {self.context.get_disable_azure_monitor_logs()}")
 
         # Handle enable Azure Monitor logs
         if self.context.get_enable_azure_monitor_logs():
+            logger.warning("DEBUG: Calling _setup_azure_monitor_logs")
             self._setup_azure_monitor_logs(mc)
 
         # Handle disable Azure Monitor logs
         if self.context.get_disable_azure_monitor_logs():
+            logger.warning("DEBUG: Calling _disable_azure_monitor_logs")
+            addon_consts = self.context.get_addon_consts()
+            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            if mc.addon_profiles and CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
+                logger.warning(f"DEBUG: Before disable - addon enabled = {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
+            
             self._disable_azure_monitor_logs(mc)
-
+            
+            if mc.addon_profiles and CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
+                logger.warning(f"DEBUG: After disable - addon enabled = {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
+        
+        logger.warning("=== UPDATE ADDON PROFILES END ===")
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
@@ -7089,6 +7159,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 raise CLIError('Keyvault secrets provider addon must be enabled to attach keyvault.\n')
 
     def put_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        logger.warning("=== PUT_MC START ===")
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        if mc.addon_profiles and CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
+            logger.warning(f"DEBUG: Before PUT - addon enabled = {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
+            logger.warning(f"DEBUG: Before PUT - addon config = {mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
+        logger.warning("=== PUT_MC - SENDING REQUEST ===")
+        
         if self.check_is_postprocessing_required(mc):
             # send request
             poller = self.client.begin_create_or_update(
@@ -7101,8 +7179,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
             self.immediate_processing_after_request(mc)
             # poll until the result is returned
+            logger.warning("=== PUT_MC - WAITING FOR RESPONSE ===")
             cluster = LongRunningOperation(self.cmd.cli_ctx)(poller)
+            logger.warning("=== PUT_MC - RESPONSE RECEIVED ===")
+            if cluster.addon_profiles and CONST_MONITORING_ADDON_NAME in cluster.addon_profiles:
+                logger.warning(f"DEBUG: After PUT response - addon enabled = {cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
             self.postprocessing_after_mc_created(cluster)
+            logger.warning("=== PUT_MC - AFTER POSTPROCESSING ===")
+            if cluster.addon_profiles and CONST_MONITORING_ADDON_NAME in cluster.addon_profiles:
+                logger.warning(f"DEBUG: After postprocessing - addon enabled = {cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
+                logger.warning(f"DEBUG: After postprocessing - addon config = {cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
         else:
             cluster = sdk_no_wait(
                 self.context.get_no_wait(),
@@ -7114,4 +7200,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 if_none_match=self.context.get_if_none_match(),
                 headers=self.context.get_aks_custom_headers(),
             )
+            logger.warning("=== PUT_MC - NO WAIT MODE ===")
+            if cluster.addon_profiles and CONST_MONITORING_ADDON_NAME in cluster.addon_profiles:
+                logger.warning(f"DEBUG: After PUT (no-wait) - addon enabled = {cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
+        
+        logger.warning("=== PUT_MC END ===")
         return cluster
