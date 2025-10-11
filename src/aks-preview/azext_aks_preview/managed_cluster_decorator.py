@@ -6692,14 +6692,21 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # Perform DCR/DCRA cleanup BEFORE disabling (same as aks_disable_addons lines 2796-2822)
         if azure_monitor_logs_enabled and msi_auth_enabled:
             logger.warning("DEBUG: Performing DCR/DCRA cleanup BEFORE disabling addon")
+            # Fetch the current cluster state from Azure (same as aks_disable_addons line 2791)
+            logger.warning("DEBUG: Fetching current cluster state from Azure")
+            current_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
+            logger.warning(f"DEBUG: Current cluster addon enabled = {current_cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled}")
+            logger.warning(f"DEBUG: Current cluster addon config = {current_cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config}")
+            
             try:
+                # Use the current cluster's addon profile for cleanup (not the modified mc object)
                 self.context.external_functions.ensure_container_insights_for_monitoring(
                     self.cmd,
-                    mc.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                    current_cluster.addon_profiles[CONST_MONITORING_ADDON_NAME],
                     self.context.get_subscription_id(),
                     self.context.get_resource_group_name(),
                     self.context.get_name(),
-                    mc.location,
+                    current_cluster.location,
                     remove_monitoring=True,
                     aad_route=True,
                     create_dcr=False,
