@@ -1288,6 +1288,29 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return kms_infrastructure_encryption
 
+    def get_azure_keyvault_kms_key_vault_resource_id(self) -> Union[str, None]:
+        """Obtain the value of azure_keyvault_kms_key_vault_resource_id.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        azure_keyvault_kms_key_vault_resource_id = self.raw_param.get(
+            "azure_keyvault_kms_key_vault_resource_id"
+        )
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                hasattr(self.mc, "security_profile") and  # backward compatibility
+                self.mc.security_profile and
+                self.mc.security_profile.azure_key_vault_kms and
+                self.mc.security_profile.azure_key_vault_kms.key_vault_resource_id is not None
+            ):
+                azure_keyvault_kms_key_vault_resource_id = (
+                    self.mc.security_profile.azure_key_vault_kms.key_vault_resource_id
+                )
+
+        return azure_keyvault_kms_key_vault_resource_id
+
     def get_cluster_snapshot_id(self) -> Union[str, None]:
         """Obtain the values of cluster_snapshot_id.
 
@@ -3313,8 +3336,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
-    def set_up_kms_infrastructure_encryption(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up security profile KubernetesResourceObjectEncryptionProfile for the ManagedCluster object.
+    def set_up_kms_pmk_and_cmk(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up security profile KubernetesResourceObjectEncryptionProfile and AzureKeyVaultKms for
+        the ManagedCluster object.
 
         :return: the ManagedCluster object
         """
@@ -3334,6 +3358,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             # Set infrastructure encryption
             # pylint: disable=line-too-long
             mc.security_profile.kubernetes_resource_object_encryption_profile.infrastructure_encryption = kms_infrastructure_encryption
+
+        if self.context.get_enable_azure_keyvault_kms():
+            key_id = self.context.get_azure_keyvault_kms_key_id()
+            if key_id:
+                if mc.security_profile is None:
+                    mc.security_profile = self.models.ManagedClusterSecurityProfile()
+                mc.security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+                    enabled=True,
+                    key_id=key_id,
+                    key_vault_resource_id=self.context.get_azure_keyvault_kms_key_vault_resource_id(),
+                )
 
         return mc
 
@@ -3906,7 +3941,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # set up image integrity
         mc = self.set_up_image_integrity(mc)
         # set up KMS infrastructure encryption
-        mc = self.set_up_kms_infrastructure_encryption(mc)
+        mc = self.set_up_kms_pmk_and_cmk(mc)
         # set up cluster snapshot
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
         # set up app routing profile

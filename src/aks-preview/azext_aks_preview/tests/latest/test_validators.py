@@ -585,8 +585,9 @@ class TestValidateHostGroupID(unittest.TestCase):
 
 
 class AzureKeyVaultKmsKeyIdNamespace:
-    def __init__(self, azure_keyvault_kms_key_id):
+    def __init__(self, azure_keyvault_kms_key_id, kms_infrastructure_encryption=None):
         self.azure_keyvault_kms_key_id = azure_keyvault_kms_key_id
+        self.kms_infrastructure_encryption = kms_infrastructure_encryption
 
 
 class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
@@ -634,19 +635,102 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
             validators.validate_azure_keyvault_kms_key_id(namespace)
         self.assertEqual(str(cm.exception), err)
 
+    # PMK-aware tests
+    def test_valid_versionless_key_id_with_pmk_enabled(self):
+        # PMK enabled: versionless key ID should be accepted
+        valid_versionless_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=valid_versionless_key_id,
+            kms_infrastructure_encryption="Enabled"
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_id(namespace)
+
+    def test_invalid_versioned_key_id_with_pmk_enabled(self):
+        # PMK enabled: versioned key ID should be rejected
+        invalid_versioned_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname/abc123def456"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=invalid_versioned_key_id,
+            kms_infrastructure_encryption="Enabled"
+        )
+        err = (
+            "--azure-keyvault-kms-key-id is not a valid versionless Key Vault key ID for PMK. "
+            "Valid format is https://{key-vault-url}/keys/{key-name}. "
+            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
+        )
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_versioned_key_id_with_pmk_disabled(self):
+        # PMK disabled: versioned key ID should be accepted
+        valid_versioned_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname/abc123def456"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=valid_versioned_key_id,
+            kms_infrastructure_encryption="Disabled"
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_id(namespace)
+
+    def test_valid_versioned_key_id_without_pmk_parameter(self):
+        # No PMK parameter (backward compatibility): versioned key ID should be accepted
+        valid_versioned_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname/abc123def456"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=valid_versioned_key_id
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_id(namespace)
+
+    def test_invalid_versionless_key_id_with_pmk_disabled(self):
+        # PMK disabled: versionless key ID should be rejected
+        invalid_versionless_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=invalid_versionless_key_id,
+            kms_infrastructure_encryption="Disabled"
+        )
+        err = (
+            "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
+        )
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_key_id_wrong_object_type_with_pmk_enabled(self):
+        # PMK enabled: wrong object type should be rejected
+        invalid_key_id = "https://fakekeyvault.vault.azure.net/secrets/fakesecretname"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=invalid_key_id,
+            kms_infrastructure_encryption="Enabled"
+        )
+        err = (
+            "--azure-keyvault-kms-key-id is not a valid versionless Key Vault key ID for PMK. "
+            "Valid format is https://{key-vault-url}/keys/{key-name}. "
+            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
+        )
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
 
 class AzureKeyVaultKmsKeyVaultResourceIdNamespace:
-    def __init__(self, azure_keyvault_kms_key_vault_resource_id):
+    def __init__(self, azure_keyvault_kms_key_vault_resource_id, kms_infrastructure_encryption=None, enable_azure_keyvault_kms=None):
         self.azure_keyvault_kms_key_vault_resource_id = (
             azure_keyvault_kms_key_vault_resource_id
         )
+        self.kms_infrastructure_encryption = kms_infrastructure_encryption
+        self.enable_azure_keyvault_kms = enable_azure_keyvault_kms
 
 
 class TestValidateAzureKeyVaultKmsKeyVaultResourceId(unittest.TestCase):
     def test_invalid_azure_keyvault_kms_key_vault_resource_id(self):
         invalid_azure_keyvault_kms_key_vault_resource_id = "invalid"
         namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
-            azure_keyvault_kms_key_vault_resource_id=invalid_azure_keyvault_kms_key_vault_resource_id
+            azure_keyvault_kms_key_vault_resource_id=invalid_azure_keyvault_kms_key_vault_resource_id,
+            enable_azure_keyvault_kms=True
         )
         err = "--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID."
 
@@ -657,9 +741,151 @@ class TestValidateAzureKeyVaultKmsKeyVaultResourceId(unittest.TestCase):
     def test_valid_azure_keyvault_kms_key_vault_resource_id(self):
         valid_azure_keyvault_kms_key_vault_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"
         namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
-            azure_keyvault_kms_key_vault_resource_id=valid_azure_keyvault_kms_key_vault_resource_id
+            azure_keyvault_kms_key_vault_resource_id=valid_azure_keyvault_kms_key_vault_resource_id,
+            enable_azure_keyvault_kms=True
         )
 
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+    # CMK disabled tests
+    def test_cmk_disabled_empty_resource_id_should_pass(self):
+        # CMK disabled and empty resource ID should return without error
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id="",
+            enable_azure_keyvault_kms=False
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+    def test_cmk_disabled_none_resource_id_should_pass(self):
+        # CMK disabled and None resource ID should return without error
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=None,
+            enable_azure_keyvault_kms=False
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+    def test_cmk_disabled_with_resource_id_should_fail(self):
+        # CMK disabled but resource ID provided should fail
+        resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/myvault"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=resource_id,
+            enable_azure_keyvault_kms=False
+        )
+        err = '"--azure-keyvault-kms-key-vault-resource-id" requires "--enable-azure-keyvault-kms".'
+
+        with self.assertRaises(RequiredArgumentMissingError) as cm:
+            validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    # CMK enabled tests
+    def test_cmk_enabled_empty_resource_id_without_pmk_should_pass(self):
+        # CMK enabled but no PMK and empty resource ID should return without error
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id="",
+            enable_azure_keyvault_kms=True,
+            kms_infrastructure_encryption="Disabled"
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+    def test_cmk_enabled_empty_resource_id_with_pmk_should_fail(self):
+        # CMK enabled with PMK but empty resource ID should fail
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id="",
+            enable_azure_keyvault_kms=True,
+            kms_infrastructure_encryption="Enabled"
+        )
+        err = (
+            "--azure-keyvault-kms-key-vault-resource-id is required when "
+            "--kms-infrastructure-encryption is set to Enabled (PMK)."
+        )
+
+        with self.assertRaises(RequiredArgumentMissingError) as cm:
+            validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_cmk_enabled_none_resource_id_with_pmk_should_fail(self):
+        # CMK enabled with PMK but None resource ID should fail
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=None,
+            enable_azure_keyvault_kms=True,
+            kms_infrastructure_encryption="Enabled"
+        )
+        err = (
+            "--azure-keyvault-kms-key-vault-resource-id is required when "
+            "--kms-infrastructure-encryption is set to Enabled (PMK)."
+        )
+
+        with self.assertRaises(RequiredArgumentMissingError) as cm:
+            validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    # Valid resource ID tests
+    def test_valid_keyvault_resource_id_with_cmk_and_pmk_enabled(self):
+        # CMK and PMK enabled: valid KeyVault vaults resource ID should be accepted
+        valid_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/myvault"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=valid_resource_id,
+            enable_azure_keyvault_kms=True,
+            kms_infrastructure_encryption="Enabled"
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+    def test_valid_managedhsm_resource_id_with_cmk_and_pmk_enabled(self):
+        # CMK and PMK enabled: valid KeyVault managedHSMs resource ID should be accepted
+        valid_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/managedHSMs/myhsm"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=valid_resource_id,
+            enable_azure_keyvault_kms=True,
+            kms_infrastructure_encryption="Enabled"
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+    def test_invalid_non_keyvault_resource_id(self):
+        # Non-KeyVault resource ID should be rejected
+        invalid_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.Storage/storageAccounts/mystorageaccount"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=invalid_resource_id,
+            enable_azure_keyvault_kms=True
+        )
+        err = "--azure-keyvault-kms-key-vault-resource-id must reference a Microsoft.KeyVault resource."
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_keyvault_wrong_resource_type(self):
+        # KeyVault resource with wrong type (e.g., secrets) should be rejected
+        invalid_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/secrets/mysecret"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=invalid_resource_id,
+            enable_azure_keyvault_kms=True
+        )
+        err = "--azure-keyvault-kms-key-vault-resource-id must reference a Key Vault (vaults) or Managed HSM (managedHSMs)."
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    # Backward compatibility tests
+    def test_no_cmk_attribute_empty_resource_id_should_pass(self):
+        # No CMK attribute and empty resource ID should return without error
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=""
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+    def test_no_cmk_attribute_none_resource_id_should_pass(self):
+        # No CMK attribute and None resource ID should return without error
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=None
+        )
+        # Should not raise any exception
         validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
 
 

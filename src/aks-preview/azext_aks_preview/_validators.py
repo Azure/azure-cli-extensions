@@ -31,7 +31,7 @@ from azure.cli.core.azclierror import (ArgumentUsageError,
                                        RequiredArgumentMissingError)
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
-from azure.mgmt.core.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -701,26 +701,100 @@ def validate_crg_id(namespace):
 def validate_azure_keyvault_kms_key_id(namespace):
     key_id = namespace.azure_keyvault_kms_key_id
     if key_id:
-        err_msg = (
-            "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
-            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
+        # Check if PMK (Platform-Managed Keys) is enabled
+        is_pmk_enabled = (
+            hasattr(namespace, 'kms_infrastructure_encryption') and
+            namespace.kms_infrastructure_encryption == "Enabled"
         )
 
         https_prefix = "https://"
         if not key_id.startswith(https_prefix):
+            err_msg = (
+                "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+                "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
+            )
             raise InvalidArgumentValueError(err_msg)
 
         segments = key_id[len(https_prefix):].split("/")
-        if len(segments) != 4 or segments[1] != "keys":
-            raise InvalidArgumentValueError(err_msg)
+
+        if is_pmk_enabled:
+            # PMK enabled (K2P): Only accept versionless key ID (3 segments: vault.net/keys/key-name)
+            if len(segments) != 3 or segments[1] != "keys":
+                err_msg = (
+                    "--azure-keyvault-kms-key-id is not a valid versionless Key Vault key ID for PMK. "
+                    "Valid format is https://{key-vault-url}/keys/{key-name}. "
+                    "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
+                )
+                raise InvalidArgumentValueError(err_msg)
+        else:
+            # PMK disabled (KMS v2): Accept versioned key ID (4 segments)
+            if len(segments) != 4 or segments[1] != "keys":
+                err_msg = (
+                    "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+                    "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
+                )
+                raise InvalidArgumentValueError(err_msg)
 
 
 def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
     key_vault_resource_id = namespace.azure_keyvault_kms_key_vault_resource_id
-    if key_vault_resource_id is None or key_vault_resource_id == '':
+
+    # Check if PMK (Platform-Managed Keys) is enabled
+    is_pmk_enabled = (
+        hasattr(namespace, 'kms_infrastructure_encryption') and
+        namespace.kms_infrastructure_encryption == "Enabled"
+    )
+
+    # Check if CMK (Customer-Managed Keys) is enabled
+    is_cmk_enabled = (
+        hasattr(namespace, 'enable_azure_keyvault_kms') and
+        namespace.enable_azure_keyvault_kms
+    )
+
+    # Validate key vault resource ID requirements
+    key_vault_missing = key_vault_resource_id is None or key_vault_resource_id == ''
+
+    if not is_cmk_enabled:
+        if key_vault_missing:
+            return
+        raise RequiredArgumentMissingError(
+            '"--azure-keyvault-kms-key-vault-resource-id" requires "--enable-azure-keyvault-kms".'
+        )
+
+    if key_vault_missing:
+        if is_pmk_enabled:
+            raise RequiredArgumentMissingError(
+                "--azure-keyvault-kms-key-vault-resource-id is required when "
+                "--kms-infrastructure-encryption is set to Enabled (PMK)."
+            )
         return
+
     if not is_valid_resource_id(key_vault_resource_id):
-        raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
+        raise InvalidArgumentValueError(
+            "--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID."
+        )
+
+    try:
+        parsed = parse_resource_id(key_vault_resource_id)
+        provider = parsed.get('namespace', '').lower()
+        if provider != 'microsoft.keyvault':
+            raise InvalidArgumentValueError(
+                "--azure-keyvault-kms-key-vault-resource-id must reference a "
+                "Microsoft.KeyVault resource."
+            )
+        resource_type = parsed.get('type', '').lower()
+        if resource_type not in ['vaults', 'managedhsms']:
+            raise InvalidArgumentValueError(
+                "--azure-keyvault-kms-key-vault-resource-id must reference a Key Vault "
+                "(vaults) or Managed HSM (managedHSMs)."
+            )
+    except InvalidArgumentValueError:
+        # Re-raise our validation errors
+        raise
+    except Exception as ex:
+        raise InvalidArgumentValueError(
+            f"--azure-keyvault-kms-key-vault-resource-id parsing failed: {str(ex)}"
+        )
 
 
 def validate_bootstrap_container_registry_resource_id(namespace):
