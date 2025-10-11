@@ -13,6 +13,7 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2025-08-02-preview.
 * Pre-deprecate `--enable-custom-ca-trust` and `--disable-custom-ca-trust` in `az aks create`, `az aks update` commands.
+* `az aks get-credentials``: Convert device code mode kubeconfig to Azure CLI token format to bypass conditional access login blocks.
 
 18.0.0b44
 +++++++
