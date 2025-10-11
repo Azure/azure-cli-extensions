@@ -1933,53 +1933,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_5.get_enable_azure_keyvault_kms()
 
-    def test_get_disable_azure_keyvault_kms(self):
-        ctx_0 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({}),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertIsNone(ctx_0.get_enable_azure_keyvault_kms())
-
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disable_azure_keyvault_kms": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_1.get_disable_azure_keyvault_kms(), True)
-
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disable_azure_keyvault_kms": False,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_2.get_disable_azure_keyvault_kms(), False)
-
-        ctx_3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_azure_keyvault_kms": True,
-                    "disable_azure_keyvault_kms": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_3.get_disable_azure_keyvault_kms()
-
     def test_get_azure_keyvault_kms_key_id(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -2081,19 +2034,115 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_5.get_azure_keyvault_kms_key_id()
 
+    def test_get_azure_keyvault_kms_key_id_with_pmk_validation(self):
+        # Test PMK-aware validation in _get_azure_keyvault_kms_key_id method
+        
+        # PMK enabled (infrastructure encryption = "Enabled") - should accept versionless key ID
+        versionless_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
+        ctx_pmk_versionless = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_keyvault_kms": True,
+                    "azure_keyvault_kms_key_id": versionless_key_id,
+                    "kms_infrastructure_encryption": "Enabled",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id)
+
+        # PMK enabled - should reject versioned key ID (4 segments)
+        versioned_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname/fakeversion"
+        ctx_pmk_versioned = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_keyvault_kms": True,
+                    "azure_keyvault_kms_key_id": versioned_key_id,
+                    "kms_infrastructure_encryption": "Enabled",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            ctx_pmk_versioned.get_azure_keyvault_kms_key_id()
+        self.assertIn("not a valid versionless Key Vault key ID for PMK", str(cm.exception))
+
+        # PMK disabled - should accept versioned key ID (4 segments)
+        ctx_no_pmk_versioned = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_keyvault_kms": True,
+                    "azure_keyvault_kms_key_id": versioned_key_id,
+                    "kms_infrastructure_encryption": "Disabled",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_no_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id)
+
+        # PMK disabled - should reject versionless key ID (3 segments)
+        ctx_no_pmk_versionless = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_keyvault_kms": True,
+                    "azure_keyvault_kms_key_id": versionless_key_id,
+                    "kms_infrastructure_encryption": "Disabled",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            ctx_no_pmk_versionless.get_azure_keyvault_kms_key_id()
+        self.assertIn("not a valid Key Vault key ID", str(cm.exception))
+
+        # Test with existing cluster data (UPDATE mode) - PMK enabled should read from cluster
+        ctx_update_pmk = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_azure_keyvault_kms": True,
+                    "azure_keyvault_kms_key_id": versionless_key_id,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # Create MC with PMK enabled in existing cluster
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.kubernetes_resource_object_encryption_profile = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        ctx_update_pmk.attach_mc(mc)
+        self.assertEqual(ctx_update_pmk.get_azure_keyvault_kms_key_id(), versionless_key_id)
+
     def test_get_azure_keyvault_kms_key_vault_network_access(self):
         key_vault_network_access_1 = "Public"
         key_vault_network_access_2 = "Private"
 
+        # Test 1: No parameters - should return None
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict({}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        with self.assertRaises(RequiredArgumentMissingError):
-            ctx_0.get_azure_keyvault_kms_key_vault_network_access()
+        self.assertEqual(ctx_0.get_azure_keyvault_kms_key_vault_network_access(), None)
 
+        # Test 2: Network access provided without enabling KMS - should raise error
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
@@ -2107,6 +2156,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_1.get_azure_keyvault_kms_key_vault_network_access()
 
+        # Test 3: KMS explicitly disabled with network access - should raise error
         ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
@@ -2121,6 +2171,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_2.get_azure_keyvault_kms_key_vault_network_access()
 
+        # Test 4: KMS enabled with Public network access - should return the value
         ctx_3 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
@@ -2137,6 +2188,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             key_vault_network_access_1,
         )
 
+        # Test 5: KMS enabled with Private network access - should return the value
         ctx_4 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
@@ -2148,8 +2200,10 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        with self.assertRaises(RequiredArgumentMissingError):
-            ctx_4.get_azure_keyvault_kms_key_vault_network_access()
+        self.assertEqual(
+            ctx_4.get_azure_keyvault_kms_key_vault_network_access(),
+            key_vault_network_access_2,
+        )
 
         ctx_5 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -2195,174 +2249,318 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             key_vault_network_access_2,
         )
 
+    def _create_kms_context(self, params_dict, decorator_mode=DecoratorMode.CREATE):
+        """Helper method to create AKSPreviewManagedClusterContext with KMS parameters."""
+        return AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(params_dict),
+            self.models,
+            decorator_mode=decorator_mode,
+        )
+
+    def _create_mc_with_kms_security_profile(self, key_vault_resource_id, network_access="Private"):
+        """Helper method to create ManagedCluster with KMS security profile."""
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_vault_network_access=network_access,
+            key_vault_resource_id=key_vault_resource_id,
+        )
+        return self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+
+    def _create_mc_with_kms_key_id(self, key_id, enabled=True):
+        """Helper method to create ManagedCluster with KMS key ID."""
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=enabled,
+            key_id=key_id,
+        )
+        return self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+
+    def test_get_azure_keyvault_kms_key_id(self):
+        """Test get_azure_keyvault_kms_key_id method functionality."""
+        key_id_1 = "https://fakekeyvault.vault.azure.net/keys/fakekeyname/fakekeyversion"
+        key_id_2 = "https://fakekeyvault2.vault.azure.net/keys/fakekeyname2/fakekeyversion2"
+
+        # Test 1: Default case - no parameters set
+        ctx_default = self._create_kms_context({})
+        self.assertIsNone(ctx_default.get_azure_keyvault_kms_key_id())
+
+        # Test 2: KMS enabled with key ID - should return the key ID
+        ctx_with_key = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_id": key_id_1,
+        })
+        self.assertEqual(ctx_with_key.get_azure_keyvault_kms_key_id(), key_id_1)
+
+        # Test 3: CREATE mode - existing MC security profile should override parameters
+        ctx_create_with_existing = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_id": key_id_1,
+        })
+        mc_existing = self._create_mc_with_kms_key_id(key_id_2)
+        ctx_create_with_existing.attach_mc(mc_existing)
+        self.assertEqual(
+            ctx_create_with_existing.get_azure_keyvault_kms_key_id(), 
+            key_id_2  # Should return existing MC value in CREATE mode
+        )
+
+        # Test 4: UPDATE mode - parameters should override existing MC values
+        ctx_update = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_id": key_id_1,
+        }, DecoratorMode.UPDATE)
+        mc_update = self._create_mc_with_kms_key_id(key_id_2)
+        ctx_update.attach_mc(mc_update)
+        self.assertEqual(
+            ctx_update.get_azure_keyvault_kms_key_id(), 
+            key_id_1  # Should return parameter value in UPDATE mode
+        )
+
+        # Test 5: Error case - key ID provided without enabling KMS
+        ctx_no_enable = self._create_kms_context({
+            "azure_keyvault_kms_key_id": key_id_1,
+        })
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_no_enable.get_azure_keyvault_kms_key_id()
+
+        # Test 6: Error case - key ID provided with KMS explicitly disabled
+        ctx_disabled = self._create_kms_context({
+            "enable_azure_keyvault_kms": False,
+            "azure_keyvault_kms_key_id": key_id_1,
+        })
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_disabled.get_azure_keyvault_kms_key_id()
+
+        # Test 7: PMK enabled - should accept versionless key ID
+        versionless_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
+        ctx_pmk_versionless = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_id": versionless_key_id,
+            "kms_infrastructure_encryption": "Enabled",
+        })
+        self.assertEqual(ctx_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id)
+
+        # Test 8: PMK enabled - should reject versioned key ID
+        versioned_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname/fakeversion"
+        ctx_pmk_versioned = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_id": versioned_key_id,
+            "kms_infrastructure_encryption": "Enabled",
+        })
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            ctx_pmk_versioned.get_azure_keyvault_kms_key_id()
+        self.assertIn("not a valid versionless Key Vault key ID for PMK", str(cm.exception))
+
+        # Test 9: PMK disabled - should accept versioned key ID
+        ctx_no_pmk_versioned = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_id": versioned_key_id,
+            "kms_infrastructure_encryption": "Disabled",
+        })
+        self.assertEqual(ctx_no_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id)
+
+        # Test 10: PMK disabled - should reject versionless key ID
+        ctx_no_pmk_versionless = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_id": versionless_key_id,
+            "kms_infrastructure_encryption": "Disabled",
+        })
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            ctx_no_pmk_versionless.get_azure_keyvault_kms_key_id()
+        self.assertIn("not a valid Key Vault key ID", str(cm.exception))
+
+        # Test 11: PMK enabled in UPDATE mode - should read PMK status from existing cluster
+        ctx_update_pmk = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_id": versionless_key_id,
+        }, DecoratorMode.UPDATE)
+        # Create MC with PMK enabled in existing cluster
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.kubernetes_resource_object_encryption_profile = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
+        )
+        mc_pmk = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        ctx_update_pmk.attach_mc(mc_pmk)
+        self.assertEqual(ctx_update_pmk.get_azure_keyvault_kms_key_id(), versionless_key_id)
+
     def test_get_azure_keyvault_kms_key_vault_resource_id(self):
+        """Test get_azure_keyvault_kms_key_vault_resource_id method functionality."""
         key_vault_resource_id_1 = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"
         key_vault_resource_id_2 = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/bar/providers/Microsoft.KeyVault/vaults/bar"
 
-        ctx_0 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertIsNone(ctx_0.get_azure_keyvault_kms_key_vault_resource_id())
+        # Test 1: Default case - no parameters set
+        ctx_default = self._create_kms_context({})
+        self.assertIsNone(ctx_default.get_azure_keyvault_kms_key_vault_resource_id())
 
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_azure_keyvault_kms": True,
-                    "azure_keyvault_kms_key_vault_network_access": "Public",
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_1.get_azure_keyvault_kms_key_vault_resource_id(), None)
+        # Test 2: Public network access - resource ID should be None
+        ctx_public = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_vault_network_access": "Public",
+        })
+        self.assertEqual(ctx_public.get_azure_keyvault_kms_key_vault_resource_id(), None)
 
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_azure_keyvault_kms": True,
-                    "azure_keyvault_kms_key_vault_network_access": "Public",
-                    "azure_keyvault_kms_key_vault_resource_id": "",
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_2.get_azure_keyvault_kms_key_vault_resource_id(), "")
+        # Test 3: Public network access with empty resource ID - should return empty string
+        ctx_public_empty = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_vault_network_access": "Public",
+            "azure_keyvault_kms_key_vault_resource_id": "",
+        })
+        self.assertEqual(ctx_public_empty.get_azure_keyvault_kms_key_vault_resource_id(), "")
 
-        ctx_3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_azure_keyvault_kms": True,
-                    "azure_keyvault_kms_key_vault_network_access": "Private",
-                    "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
+        # Test 4: Private network access with resource ID - should return the resource ID
+        ctx_private = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_vault_network_access": "Private",
+            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+        })
         self.assertEqual(
-            ctx_3.get_azure_keyvault_kms_key_vault_resource_id(),
+            ctx_private.get_azure_keyvault_kms_key_vault_resource_id(),
             key_vault_resource_id_1,
         )
 
-        ctx_4 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_azure_keyvault_kms": True,
-                    "azure_keyvault_kms_key_vault_network_access": "Private",
-                    "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
+        # Test 5: CREATE mode - existing MC security profile should not override parameters
+        ctx_create_with_existing = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_vault_network_access": "Private",
+            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+        })
+        mc_existing = self._create_mc_with_kms_security_profile(key_vault_resource_id_2)
+        ctx_create_with_existing.attach_mc(mc_existing)
+        self.assertEqual(
+            ctx_create_with_existing.get_azure_keyvault_kms_key_vault_resource_id(),
+            key_vault_resource_id_2,  # Should return existing MC value in CREATE mode
         )
+
+        # Test 6: UPDATE mode - parameters should override existing MC values
+        ctx_update = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_vault_network_access": "Private",
+            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_2,
+        }, DecoratorMode.UPDATE)
+        mc_update = self._create_mc_with_kms_security_profile(key_vault_resource_id_1)
+        ctx_update.attach_mc(mc_update)
+        self.assertEqual(
+            ctx_update.get_azure_keyvault_kms_key_vault_resource_id(),
+            key_vault_resource_id_2,  # Should return parameter value in UPDATE mode
+        )
+
+        # Test 7: Error case - resource ID provided without enabling KMS
+        ctx_no_enable = self._create_kms_context({
+            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+        })
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_no_enable.get_azure_keyvault_kms_key_vault_resource_id()
+
+        # Test 8: Error case - resource ID provided with KMS explicitly disabled
+        ctx_disabled = self._create_kms_context({
+            "enable_azure_keyvault_kms": False,
+            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+        })
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_disabled.get_azure_keyvault_kms_key_vault_resource_id()
+
+        # Test 9: Public network access with resource ID - should return the resource ID
+        ctx_public_with_resource = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_vault_network_access": "Public",
+            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+        })
+        self.assertEqual(
+            ctx_public_with_resource.get_azure_keyvault_kms_key_vault_resource_id(),
+            key_vault_resource_id_1,
+        )
+
+        # Test 10: Private network access with empty resource ID - should return empty string
+        ctx_private_empty = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_vault_network_access": "Private",
+            "azure_keyvault_kms_key_vault_resource_id": "",
+        })
+        self.assertEqual(ctx_private_empty.get_azure_keyvault_kms_key_vault_resource_id(), "")
+
+        # Test 11: PMK enabled - should require key vault resource ID
+        ctx_pmk_no_resource = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "kms_infrastructure_encryption": "Enabled",
+        })
+        with self.assertRaises(RequiredArgumentMissingError) as cm:
+            ctx_pmk_no_resource.get_azure_keyvault_kms_key_vault_resource_id()
+        self.assertIn("azure-keyvault-kms-key-vault-resource-id is required when", str(cm.exception))
+        self.assertIn("kms-infrastructure-encryption is set to Enabled (PMK)", str(cm.exception))
+
+        # Test 12: PMK enabled - should accept provided resource ID
+        ctx_pmk_with_resource = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "kms_infrastructure_encryption": "Enabled",
+            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+        })
+        self.assertEqual(
+            ctx_pmk_with_resource.get_azure_keyvault_kms_key_vault_resource_id(),
+            key_vault_resource_id_1
+        )
+
+        # Test 13: PMK disabled - should not require resource ID
+        ctx_no_pmk_optional = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "kms_infrastructure_encryption": "Disabled",
+        })
+        self.assertIsNone(ctx_no_pmk_optional.get_azure_keyvault_kms_key_vault_resource_id())
+
+        # Test 14: PMK disabled - should accept provided resource ID
+        ctx_no_pmk_with_resource = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "kms_infrastructure_encryption": "Disabled",
+            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+        })
+        self.assertEqual(
+            ctx_no_pmk_with_resource.get_azure_keyvault_kms_key_vault_resource_id(),
+            key_vault_resource_id_1
+        )
+
+        # Test 15: PMK enabled in UPDATE mode - should read PMK status from existing cluster
+        ctx_update_pmk = self._create_kms_context({
+            "enable_azure_keyvault_kms": True,
+            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+        }, DecoratorMode.UPDATE)
+        # Create MC with PMK enabled in existing cluster
         security_profile = self.models.ManagedClusterSecurityProfile()
-        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
-            enabled=True,
-            key_vault_network_access="Private",
-            key_vault_resource_id=key_vault_resource_id_2,
+        security_profile.kubernetes_resource_object_encryption_profile = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
         )
-        mc = self.models.ManagedCluster(
+        mc_pmk = self.models.ManagedCluster(
             location="test_location",
             security_profile=security_profile,
         )
-        ctx_4.attach_mc(mc)
+        ctx_update_pmk.attach_mc(mc_pmk)
         self.assertEqual(
-            ctx_4.get_azure_keyvault_kms_key_vault_resource_id(),
-            key_vault_resource_id_2,
+            ctx_update_pmk.get_azure_keyvault_kms_key_vault_resource_id(),
+            key_vault_resource_id_1
         )
 
-        ctx_5 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_azure_keyvault_kms": True,
-                    "azure_keyvault_kms_key_vault_network_access": "Private",
-                    "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_2,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        security_profile = self.models.ManagedClusterSecurityProfile()
-        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
-            enabled=True,
-            key_vault_network_access="Private",
-            key_vault_resource_id=key_vault_resource_id_1,
-        )
-        mc = self.models.ManagedCluster(
-            location="test_location",
-            security_profile=security_profile,
-        )
-        ctx_5.attach_mc(mc)
-        self.assertEqual(
-            ctx_5.get_azure_keyvault_kms_key_vault_resource_id(),
-            key_vault_resource_id_2,
-        )
-
-        ctx_6 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        with self.assertRaises(RequiredArgumentMissingError):
-            ctx_6.get_azure_keyvault_kms_key_vault_resource_id()
-
-        ctx_7 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_azure_keyvault_kms": False,
-                    "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        with self.assertRaises(RequiredArgumentMissingError):
-            ctx_7.get_azure_keyvault_kms_key_vault_resource_id()
-
-        ctx_8 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_azure_keyvault_kms": True,
-                    "azure_keyvault_kms_key_vault_network_access": "Public",
-                    "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        with self.assertRaises(ArgumentUsageError):
-            ctx_8.get_azure_keyvault_kms_key_vault_resource_id()
-
-        ctx_9 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_azure_keyvault_kms": True,
-                    "azure_keyvault_kms_key_vault_network_access": "Private",
-                    "azure_keyvault_kms_key_vault_resource_id": "",
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        with self.assertRaises(ArgumentUsageError):
-            ctx_9.get_azure_keyvault_kms_key_vault_resource_id()
+        # Test 16: PMK enabled but CMK not enabled - should still fail validation
+        ctx_pmk_no_cmk = self._create_kms_context({
+            "enable_azure_keyvault_kms": False,
+            "kms_infrastructure_encryption": "Enabled",
+            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+        })
+        with self.assertRaises(RequiredArgumentMissingError) as cm:
+            ctx_pmk_no_cmk.get_azure_keyvault_kms_key_vault_resource_id()
+        self.assertIn("azure-keyvault-kms-key-vault-resource-id", str(cm.exception))
+        self.assertIn("enable-azure-keyvault-kms", str(cm.exception))
 
     def test_get_kms_infrastructure_encryption(self):
         # default
@@ -5035,7 +5233,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
-    def test_set_up_kms_infrastructure_encryption(self):
+    def test_set_up_kms_pmk_and_cmk(self):
         # test default (no infrastructure encryption)
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -5045,7 +5243,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         mc_1 = self.models.ManagedCluster(location="test_location")
         dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.set_up_kms_infrastructure_encryption(mc_1)
+        dec_mc_1 = dec_1.set_up_kms_pmk_and_cmk(mc_1)
         # no change expected
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
@@ -5061,7 +5259,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_kms_infrastructure_encryption(mc_2)
+        dec_mc_2 = dec_2.set_up_kms_pmk_and_cmk(mc_2)
         # no change expected
         ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
@@ -5077,7 +5275,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         mc_3 = self.models.ManagedCluster(location="test_location")
         dec_3.context.attach_mc(mc_3)
-        dec_mc_3 = dec_3.set_up_kms_infrastructure_encryption(mc_3)
+        dec_mc_3 = dec_3.set_up_kms_pmk_and_cmk(mc_3)
         
         # expected security profile with infrastructure encryption
         ground_truth_kube_resource_encryption_profile_3 = self.models.KubernetesResourceObjectEncryptionProfile(
@@ -5107,7 +5305,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             security_profile=existing_security_profile,
         )
         dec_4.context.attach_mc(mc_4)
-        dec_mc_4 = dec_4.set_up_kms_infrastructure_encryption(mc_4)
+        dec_mc_4 = dec_4.set_up_kms_pmk_and_cmk(mc_4)
         
         # should add to existing security profile
         ground_truth_kube_resource_encryption_profile_4 = self.models.KubernetesResourceObjectEncryptionProfile(
@@ -8065,7 +8263,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
 
-    def test_update_kms_infrastructure_encryption(self):
+    def test_update_kms_pmk_cmk(self):
         # test no change when no parameter provided
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -8075,7 +8273,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_1 = self.models.ManagedCluster(location="test_location")
         dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.update_kms_infrastructure_encryption(mc_1)
+        dec_mc_1 = dec_1.update_kms_pmk_cmk(mc_1)
         # no change expected
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
@@ -8091,7 +8289,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.update_kms_infrastructure_encryption(mc_2)
+        dec_mc_2 = dec_2.update_kms_pmk_cmk(mc_2)
         # no change expected
         ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
@@ -8107,7 +8305,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_3 = self.models.ManagedCluster(location="test_location")
         dec_3.context.attach_mc(mc_3)
-        dec_mc_3 = dec_3.update_kms_infrastructure_encryption(mc_3)
+        dec_mc_3 = dec_3.update_kms_pmk_cmk(mc_3)
 
         # expected security profile with infrastructure encryption
         ground_truth_kube_resource_encryption_profile_3 = self.models.KubernetesResourceObjectEncryptionProfile(
@@ -8137,7 +8335,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             security_profile=existing_security_profile,
         )
         dec_4.context.attach_mc(mc_4)
-        dec_mc_4 = dec_4.update_kms_infrastructure_encryption(mc_4)
+        dec_mc_4 = dec_4.update_kms_pmk_cmk(mc_4)
 
         # should add to existing security profile
         ground_truth_kube_resource_encryption_profile_4 = self.models.KubernetesResourceObjectEncryptionProfile(
@@ -8170,7 +8368,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             security_profile=existing_security_profile,
         )
         dec_5.context.attach_mc(mc_5)
-        dec_mc_5 = dec_5.update_kms_infrastructure_encryption(mc_5)
+        dec_mc_5 = dec_5.update_kms_pmk_cmk(mc_5)
 
         # should update existing profile
         ground_truth_kube_resource_encryption_profile_5 = self.models.KubernetesResourceObjectEncryptionProfile(
