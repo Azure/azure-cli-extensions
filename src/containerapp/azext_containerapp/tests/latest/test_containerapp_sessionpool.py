@@ -19,7 +19,7 @@ from .utils import create_containerapp_env
 class ContainerappSessionPoolTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+    @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
@@ -139,7 +139,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+    @SubnetPreparer(location="eastasia", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_registry_update(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
@@ -209,7 +209,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+    @SubnetPreparer(location="eastasia", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_registry(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
@@ -287,7 +287,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+    @SubnetPreparer(location="eastasia", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_registry_identity(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
@@ -379,7 +379,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+    @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_oncontainerexit(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
@@ -489,7 +489,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+    @SubnetPreparer(location="eastasia", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_health_probe(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
