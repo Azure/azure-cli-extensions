@@ -270,8 +270,10 @@ def _download_proxy_from_MCR(cmd, dest_dir, proxy_name, operating_system, archit
             + active_directory_array[4]
         )
     mcr_url = f"mcr.microsoft.{mcr_postfix}"
-    mar_target = f"{mcr_url}{consts.CLIENT_PROXY_MCR_TARGET}/{operating_system.lower()}/{architecture}/ssh-proxy"
-    logger.debug("Downloading Arc Connectivity Proxy from %s in Microsoft Artifact Regristy.", mar_target)
+    if mcr_url.endswith("/"):
+        mcr_url = mcr_url[:-1]
+    mar_target = f"{mcr_url}/{consts.CLIENT_PROXY_MCR_TARGET}/{operating_system.lower()}/{architecture}/ssh-proxy"
+    logger.debug("Downloading Arc Connectivity Proxy from %s in Microsoft Artifact Registry.", mar_target)
 
     client = oras.client.OrasClient()
     t0 = time.time()
