@@ -90,7 +90,7 @@ def test_get_mcr_path():
     assert(get_mcr_path(input_active_directory) == expected_output)
 
     input_active_directory = "https://login.microsoftonline.some.cloud.bar"
-    expected_output = "mcr.microsoft.bar"
+    expected_output = "mcr.microsoft.some.cloud.bar"
     assert(get_mcr_path(input_active_directory) == expected_output)
 
 if __name__ == "__main__":
