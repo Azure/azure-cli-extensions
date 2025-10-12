@@ -1,5 +1,8 @@
 Release History
 ===============
+2.0.7
+-----
+* Add in auth handling for air gapped and sovereign environments
 2.0.6
 -----
 * Remove msrestazure dependency
