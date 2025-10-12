@@ -1668,9 +1668,9 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - AnatoliB
-            - Francisco-Gamino
-            - shreyabatra4
+            - kamperiadis
+            - amamounelsayed
+            - khkh-ms
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1765,20 +1765,8 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - iluican
-            - jlian
-            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
-            assignMentionees: False
-      - if:
-        - hasLabel:
-            label: Service Attention
-        - hasLabel:
-            label: IotDPS
-        then:
-        - mentionUsers:
-            mentionees:
-            - iluican
-            - jlian
+            - digimaun
+            - Azure/azure-iot-cli-triage
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2736,6 +2724,7 @@ configuration:
             mentionees:
             - shariq-mcs
             - MSFTeegarden
+            - abhijitch25
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2874,6 +2863,7 @@ configuration:
         - mentionUsers:
             mentionees:
             - nazang
+            - mooshc
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
