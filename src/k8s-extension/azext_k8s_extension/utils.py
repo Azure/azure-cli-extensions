@@ -361,8 +361,8 @@ def create_folder_diagnosticlogs(folder_name: str, base_folder_name: str) -> tup
         )
         return "", False
 
-def get_mcr_path(cmd: CLICommand) -> str:
-    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+def get_mcr_path(active_directory_endpoint: str) -> str:
+    active_directory_array = active_directory_endpoint.split(".")
 
     # default for public, mc, ff clouds
     mcr_postfix = ".com"
