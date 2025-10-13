@@ -1267,6 +1267,11 @@ def load_arguments(self, _):
             "azure_keyvault_kms_key_vault_resource_id",
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
         )
+        c.argument(
+            "kms_infrastructure_encryption",
+            arg_type=get_enum_type(["Enabled", "Disabled"]),
+            is_preview=True,
+        )
         c.argument("http_proxy_config")
         c.argument(
             "bootstrap_artifact_source",
