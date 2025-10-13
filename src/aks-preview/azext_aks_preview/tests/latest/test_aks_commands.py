@@ -3354,59 +3354,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
-    def test_aks_custom_ca_trust_flow(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name("cliakstest", 16)
-        node_pool_name = self.create_random_name("c", 6)
-        node_pool_name_second = self.create_random_name("c", 6)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "node_pool_name": node_pool_name,
-                "node_pool_name_second": node_pool_name_second,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
-
-        # 1. create
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--nodepool-name {node_pool_name} -c 1 "
-            "--ssh-key-value={ssh_key_value} "
-            "--enable-custom-ca-trust"
-        )
-        self.cmd(
-            create_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("agentPoolProfiles[0].enableCustomCaTrust", "True"),
-            ],
-        )
-
-        # 2. add nodepool
-        self.cmd(
-            "aks nodepool add "
-            "--resource-group={resource_group} "
-            "--cluster-name={name} "
-            "--name={node_pool_name_second} "
-            "--os-type Linux "
-            "--enable-custom-ca-trust",
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("enableCustomCaTrust", "True"),
-            ],
-        )
-
-        # delete
-        self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
-            checks=[self.is_empty()],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
-    )
     def test_aks_create_add_nodepool_with_custom_ca_trust_certificates(
         self, resource_group, resource_group_location
     ):
@@ -12028,6 +11975,69 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         self.cmd(
             create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "securityProfile.kubernetesResourceObjectEncryptionProfile.infrastructureEncryption", 
+                    "Enabled"
+                ),
+            ],
+        )
+
+        # delete
+        cmd = (
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
+        )
+        self.cmd(
+            cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_update_with_kms_infrastructure_encryption(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        k8s_version = self._get_version_in_range(location=resource_group_location, min_version="1.33.0", max_version="1.34.0")
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "k8s_version": k8s_version,
+            }
+        )
+
+        # create cluster without infrastructure encryption
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--kubernetes-version={k8s_version} "
+            "--ssh-key-value={ssh_key_value} -o json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.not_exists("securityProfile.kubernetesResourceObjectEncryptionProfile"),
+            ],
+        )
+
+        # update cluster to enable infrastructure encryption
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--kms-infrastructure-encryption Enabled "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/KMSPMKPreview "
+            "-o json"
+        )
+        self.cmd(
+            update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check(
