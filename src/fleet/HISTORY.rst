@@ -155,3 +155,8 @@ Release History
 ++++++
 * Removed is_preview flag from `enable_vnet_integration` and `assign_identity` parameters.
 * Updated Private Fleet V2 to require user assigned identity.
+
+1.8.0
+++++++
+* Upgrade SDK version to 2025-08-01-preview
+* Add Fleet Managed Namespace support
