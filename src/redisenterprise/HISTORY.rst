@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.2.3
+- Added breaking change warning for upcoming release
+
 1.2.2
 - Added breaking change warning for upcoming release
 
