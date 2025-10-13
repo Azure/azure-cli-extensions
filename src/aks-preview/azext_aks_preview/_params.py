@@ -1131,7 +1131,6 @@ def load_arguments(self, _):
         c.argument("enable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
         c.argument(
             "enable_gateway_api",
-            options_list=["--enable-gateway-api"],
             action="store_true",
             help="Enable managed installation of Gateway API CRDs from the standard release channel."
         )
@@ -1598,13 +1597,11 @@ def load_arguments(self, _):
         c.argument("disable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
         c.argument(
             "enable_gateway_api",
-            options_list=["--enable-gateway-api"],
             action="store_true",
             help="Enable managed installation of Gateway API CRDs from the standard release channel."
         )
         c.argument(
             "disable_gateway_api",
-            options_list=["--disable-gateway-api"],
             action="store_true",
             help="Disable managed installation of Gateway API CRDs."
         )
