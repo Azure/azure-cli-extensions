@@ -124,10 +124,10 @@ def acr_cache_create(cmd,
     if not rg:
         raise CLIError("Resource group could not be determined. Please provide a valid resource group name.")
 
-    sync_str = "ActiveSync" if sync == 'activesync' else "PassiveSync"
-    sync_referrers_str = "Enabled" if sync_referrers == 'enabled' else "Disabled"
+    sync_str = sync if sync else None
+    sync_referrers_str = "Enabled" if sync_referrers and sync_referrers.lower() == 'enabled' else "Disabled"
 
-    if sync_referrers == 'enabled' and sync != 'activesync':
+    if sync_referrers and sync_referrers.lower() == 'enabled' and sync and sync.lower() != 'activesync':
         raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
 
     if include_artifact_types and exclude_artifact_types:
@@ -137,7 +137,7 @@ def acr_cache_create(cmd,
         raise CLIError("You cannot specify both include_image_types and exclude_image_types. Please choose one.")
 
     #validate that filter parameters require sync to be enabled
-    if sync != 'activesync' and (include_artifact_types or exclude_artifact_types or 
+    if sync and sync.lower() != 'activesync' and (include_artifact_types or exclude_artifact_types or 
                               include_image_types or exclude_image_types or 
                               platforms or starts_with or ends_with or contains):
         raise CLIError("Artifact sync filters (--include-artifact-types, --exclude-artifact-types, "
@@ -153,7 +153,7 @@ def acr_cache_create(cmd,
     #create artifact sync filters object
     artifact_sync_filters = None
 
-    if sync == 'activesync':
+    if sync and sync.lower() == 'activesync':
         artifact_sync_filters = {}
 
         if platforms:
@@ -260,9 +260,10 @@ def acr_cache_update_custom(cmd,
     sync_referrers_status = properties.sync_referrers
 
     #check if activesync is enabled 
-    isActiveSync = sync is None and sync_mode == 'activeSync'
+    #check both existing sync mode (when not changing sync) AND new sync value (when updating sync)
+    isActiveSync = (sync is None and sync_mode and sync_mode.lower() == 'activesync') or (sync and sync.lower() == 'activesync')
 
-    if sync_referrers == 'enabled' and not isActiveSync and sync != 'activesync':
+    if sync_referrers and sync_referrers.lower() == 'enabled' and not isActiveSync and sync and sync.lower() != 'activesync':
         raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
 
     # Warn if mutually exclusive parameters are provided
@@ -309,10 +310,10 @@ def acr_cache_update_custom(cmd,
 
     # Handle artifact sync status - only change if explicitly provided
     if sync is not None:
-        sync_mode = "ActiveSync" if sync == 'activesync' else "PassiveSync"
+        sync_mode = "ActiveSync" if sync.lower() == 'activesync' else "PassiveSync"
 
     if sync_referrers is not None:
-        sync_referrers_status = "Enabled" if sync_referrers == 'enabled' else "Disabled"    
+        sync_referrers_status = "Enabled" if sync_referrers and sync_referrers.lower() == 'enabled' else "Disabled"
 
     #update artifact sync filters object
     updated_artifact_sync_filters = None
