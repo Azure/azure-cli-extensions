@@ -1127,7 +1127,10 @@ def load_arguments(self, _):
         # virtual machines
         c.argument("vm_sizes", is_preview=True)
         c.argument("enable_imds_restriction", action="store_true", is_preview=True)
-        c.argument("enable_managed_system_pool", action="store_true", is_preview=True)
+        c.argument("enable_managed_system_pool",
+                   action="store_true",
+                   is_preview=True,
+                   deprecate_info=c.deprecate(target="--enable-managed-system-pool", hide=True))
         c.argument("enable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
         c.argument(
             "enable_gateway_api",
@@ -1268,6 +1271,11 @@ def load_arguments(self, _):
         c.argument(
             "azure_keyvault_kms_key_vault_resource_id",
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
+        )
+        c.argument(
+            "kms_infrastructure_encryption",
+            arg_type=get_enum_type(["Enabled", "Disabled"]),
+            is_preview=True,
         )
         c.argument("http_proxy_config")
         c.argument(

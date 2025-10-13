@@ -5165,6 +5165,34 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_kms_infrastructure_encryption(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update security profile KubernetesResourceObjectEncryptionProfile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        kms_infrastructure_encryption = self.context.get_kms_infrastructure_encryption()
+
+        # no infrastructure encryption related changes
+        if not kms_infrastructure_encryption or kms_infrastructure_encryption == "Disabled":
+            return mc
+
+        if mc.security_profile is None:
+            mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
+
+        # Set or update the kubernetes resource object encryption profile
+        if mc.security_profile.kubernetes_resource_object_encryption_profile is None:
+            mc.security_profile.kubernetes_resource_object_encryption_profile = (
+                self.models.KubernetesResourceObjectEncryptionProfile()  # pylint: disable=no-member
+            )
+
+        # Set infrastructure encryption
+        # pylint: disable=line-too-long
+        mc.security_profile.kubernetes_resource_object_encryption_profile.infrastructure_encryption = kms_infrastructure_encryption
+
+        return mc
+
     def update_storage_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update storage profile for the ManagedCluster object.
 
@@ -6023,6 +6051,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_cleaner(mc)
         # update image integrity
         mc = self.update_image_integrity(mc)
+        # update KMS infrastructure encryption
+        mc = self.update_kms_infrastructure_encryption(mc)
         # update workload auto scaler profile
         mc = self.update_workload_auto_scaler_profile(mc)
         # update azure monitor metrics profile
