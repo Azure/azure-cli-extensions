@@ -41,7 +41,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
 
     def test_create_asc_heavy_cases(self):
         self.kwargs.update({
-            'serviceName': 'cli-unittest',
+            'serviceName': 'cli-unittest-12',
             'SKU': 'Basic',
             'location': 'eastus2',
             'rg': 'cli',
@@ -154,7 +154,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
 
     def test_asc_update(self):
         self.kwargs.update({
-            'serviceName': 'cli-unittest10',
+            'serviceName': 'cli-unittest11',
             'rg': 'cli',
             'shared_ai_name': 'cli_scenario_test_202207021820'
         })
@@ -206,7 +206,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
 
     def test_asc_app_insights_update(self):
         self.kwargs.update({
-            'serviceName': 'cli-unittest10',
+            'serviceName': 'cli-unittest11',
             'rg': 'cli',
             'shared_ai_name': 'cli_scenario_test_202207021820'
         })
