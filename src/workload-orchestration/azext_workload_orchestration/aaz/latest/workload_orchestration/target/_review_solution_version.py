@@ -171,7 +171,7 @@ class ReviewSolutionVersion(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_202,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -265,6 +265,14 @@ class ReviewSolutionVersion(AAZCommand):
             self.ctx.set_var(
                 "instance",
                 data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        def on_202(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data["properties"],
                 schema_builder=self._build_schema_on_200
             )
 
