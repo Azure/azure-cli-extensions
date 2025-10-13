@@ -4566,7 +4566,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         monitoring_addon_disable_postprocessing_required = self.context.get_intermediate(
             "monitoring_addon_disable_postprocessing_required", default_value=False
         )
-        
+
         if monitoring_addon_disable_postprocessing_required:
             addon_consts = self.context.get_addon_consts()
             CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
@@ -5809,7 +5809,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Only disable auto instrumentation, preserve OpenTelemetry settings
             mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
                 self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=False)
-                )
+            )
 
         # Handle disable OpenTelemetry metrics updates
         if self.context.get_disable_opentelemetry_metrics():
@@ -5882,7 +5882,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.context.get_location(),
                 self.__raw_parameters,
                 self.context.get_disable_azure_monitor_metrics())
-        
+
         return mc
 
     def update_vpa(self, mc: ManagedCluster) -> ManagedCluster:
@@ -6534,7 +6534,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if mc.azure_monitor_profile is None:
             mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
 
-
     def _setup_azure_monitor_logs(self, mc: ManagedCluster) -> None:
         """Set up Azure Monitor logs configuration."""
 
@@ -6643,7 +6642,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if azure_monitor_logs_enabled and msi_auth_enabled:
             # Fetch the current cluster state from Azure (same as aks_disable_addons line 2791)
             current_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
-            
+
             try:
                 # Use the current cluster's addon profile for cleanup (not the modified mc object)
                 self.context.external_functions.ensure_container_insights_for_monitoring(
@@ -6668,7 +6667,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # Now disable the addon and clear configuration
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled = False
-        
+
         # Clear the config to remove old workspace resource ID and other settings
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = None
 
@@ -6734,7 +6733,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # Handle disable Azure Monitor logs
         if self.context.get_disable_azure_monitor_logs():
             self._disable_azure_monitor_logs(mc)
-        
+
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
@@ -6846,7 +6845,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Note: monitoring_addon_disable_postprocessing_required is no longer used - cleanup is done upfront
             if (enable_azure_container_storage or disable_azure_container_storage) or \
                (keyvault_id and enable_azure_keyvault_secrets_provider_addon) or \
-                (monitoring_addon_postprocessing_required):
+               (monitoring_addon_postprocessing_required):
                 return True
         return postprocessing_required
 
@@ -7096,5 +7095,5 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 if_none_match=self.context.get_if_none_match(),
                 headers=self.context.get_aks_custom_headers(),
             )
-        
+
         return cluster
