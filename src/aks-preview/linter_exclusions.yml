@@ -143,6 +143,9 @@ aks update:
     azure_keyvault_kms_key_vault_resource_id:
       rule_exclusions:
         - option_length_too_long
+    kms_infrastructure_encryption:
+      rule_exclusions:
+        - option_length_too_long
     enable_workload_identity:
       rule_exclusions:
         - option_length_too_long
