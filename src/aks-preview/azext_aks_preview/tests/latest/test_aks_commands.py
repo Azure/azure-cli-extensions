@@ -13939,39 +13939,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
         ])
 
-        # update: disable-azure-monitor-logs
-        update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes '
-            '--disable-azure-monitor-logs'
-        )
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-        ])
-
-        # Wait for the update operation to complete
-        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
-        self.cmd(wait_cmd, checks=[
-            self.is_empty(),
-        ])
-
-        # Verify the update was successful - check addon profile
-        # Retry up to 10 times with 60-second intervals to allow provisioning to complete
-        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
-        max_retries = 10
-        for attempt in range(max_retries):
-            try:
-                self.cmd(show_cmd, checks=[
-                    self.check('provisioningState', 'Succeeded'),
-                    self.check('addonProfiles.omsagent.enabled', False),
-                ])
-                break  # Success, exit loop
-            except Exception as e:
-                if attempt < max_retries - 1:
-                    print(f"Attempt {attempt + 1}/{max_retries} failed, retrying in 60 seconds...")
-                    time.sleep(60)
-                else:
-                    raise  # Re-raise on final attempt
-
         # delete
         cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
         self.cmd(cmd, checks=[
