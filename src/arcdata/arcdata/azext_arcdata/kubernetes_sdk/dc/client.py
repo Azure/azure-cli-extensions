@@ -1377,12 +1377,17 @@ class DataControllerClient(object):
                             "creationTimestamp": item["metadata"][
                                 "creationTimestamp"
                             ],
-                            "externalEndpoint": status["externalEndpoint"]
-                            if "externalEndpoint" in status
-                            else "-",
-                            "vcores": str(spec["limits"]["vcores"])
-                            if "limits" in spec and "vcores" in spec["limits"]
-                            else "-",
+                            "externalEndpoint": (
+                                status["externalEndpoint"]
+                                if "externalEndpoint" in status
+                                else "-"
+                            ),
+                            "vcores": (
+                                str(spec["limits"]["vcores"])
+                                if "limits" in spec
+                                and "vcores" in spec["limits"]
+                                else "-"
+                            ),
                             "k8sRaw": item,
                         }
                     )

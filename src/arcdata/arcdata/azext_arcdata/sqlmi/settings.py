@@ -28,6 +28,7 @@ def parse_traceflags(tf_str: str):
 
     return traceflags
 
+
 def parse_dataGitoIntInMb(memory: str):
     """
     Extract the numeric value and the unit from the string
@@ -38,20 +39,20 @@ def parse_dataGitoIntInMb(memory: str):
 
     numeric_value = int(memory[:-2])
     unit = memory[-2:]
-    
+
     # Convert the value to bytes based on the unit
     #
-    if unit == 'Gi':
+    if unit == "Gi":
         mbbytes_value = numeric_value * 1024
-    elif unit == 'Mi':
+    elif unit == "Mi":
         mbbytes_value = numeric_value
     else:
         raise ValueError("Unsupported memory unit")
-    
+
     # Convert bytes to integer
     #
     integer_value = int(mbbytes_value)
-    
+
     return integer_value
 
 

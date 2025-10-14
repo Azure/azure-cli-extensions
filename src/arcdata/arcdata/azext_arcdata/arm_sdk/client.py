@@ -908,7 +908,9 @@ class ArmClient(object):
                 k8s["spec"]["settings"][SQLMI_TIMEZONE] = time_zone
 
             if memory_limit:
-                k8s["spec"]["settings"][SQLMI_MEMORYLIMIT] = parse_dataGitoIntInMb(memory_limit)
+                k8s["spec"]["settings"][SQLMI_MEMORYLIMIT] = (
+                    parse_dataGitoIntInMb(memory_limit)
+                )
             if trace_flags:
                 k8s["spec"]["settings"][SQLMI_TRACEFLAGS] = parse_traceflags(
                     trace_flags
@@ -1000,9 +1002,9 @@ class ArmClient(object):
                 and "metadata" in dc_in_rg.properties.k8_s_raw
                 and "namespace" in dc_in_rg.properties.k8_s_raw["metadata"]
             ):
-                k8s["spec"]["metadata"][
-                    "namespace"
-                ] = dc_in_rg.properties.k8_s_raw["metadata"]["namespace"]
+                k8s["spec"]["metadata"]["namespace"] = (
+                    dc_in_rg.properties.k8_s_raw["metadata"]["namespace"]
+                )
 
             # -- TODO: Remove Validation check --
             #
@@ -1666,7 +1668,8 @@ class ArmClient(object):
                 result = [
                     sql
                     for sql in result
-                    if sql.extended_location is not None and sql.extended_location.name.lower()
+                    if sql.extended_location is not None
+                    and sql.extended_location.name.lower()
                     == cl_resource_id.lower()
                 ]
 

@@ -7,19 +7,18 @@
 from knack.help_files import helps
 
 # pylint: disable=line-too-long
-helps[
-    "sql instance-failover-group-arc"
-] = """
+helps["sql instance-failover-group-arc"] = (
+    """
     type: group
     short-summary: {short}
 """.format(
-    short="Manage Arc-enabled SQL managed instance Failover Groups."
+        short="Manage Arc-enabled SQL managed instance Failover Groups."
+    )
 )
 
 # pylint: disable=line-too-long
-helps[
-    "sql instance-failover-group-arc create"
-] = """
+helps["sql instance-failover-group-arc create"] = (
+    """
     type: command
     short-summary: {short}
     long-summary: {long}
@@ -44,20 +43,20 @@ helps[
             --partner-sync-mode async --primary-mirroring-url 21.10.6.30:6603
             --partner-mirroring-url 10.20.5.20:970
 """.format(
-    short="Create a failover group resource",
-    long="Create an Arc-enabled SQL Managed Instance failover group resource to set up a "
-    "distributed availability group.",
-    ex1="Use the Kubernetes API to create a failover group resource between "
-    "primary SQL managed instance sqlmi1 and partner SQL managed instance sqlmi2."
-    "The partner mirroring endpoint and cert file are required.",
-    ex2="Use Azure Resource Manager (ARM) to create a failover group resource.",
-    ex3="Use ARM to create a failover group with custom mirroring URLs.",
+        short="Create a failover group resource",
+        long="Create an Arc-enabled SQL Managed Instance failover group resource to set up a "
+        "distributed availability group.",
+        ex1="Use the Kubernetes API to create a failover group resource between "
+        "primary SQL managed instance sqlmi1 and partner SQL managed instance sqlmi2."
+        "The partner mirroring endpoint and cert file are required.",
+        ex2="Use Azure Resource Manager (ARM) to create a failover group resource.",
+        ex3="Use ARM to create a failover group with custom mirroring URLs.",
+    )
 )
 
 # pylint: disable=line-too-long
-helps[
-    "sql instance-failover-group-arc update"
-] = """
+helps["sql instance-failover-group-arc update"] = (
+    """
     type: command
     short-summary: {short}
     long-summary: {long}
@@ -70,17 +69,17 @@ helps[
             az sql instance-failover-group-arc update --name fogcr 
             --role secondary --mi sqlmi1 --resource-group rg-name
 """.format(
-    short="Update a failover group resource",
-    long="Update an Arc-enabled SQL Managed Instance failover group resource to "
-    "change the role of the distributed availability group.",
-    ex1="Update a failover group resource to the secondary role from primary using the Kubernetes API.",
-    ex2="Update a failover group resource using Azure Resource Manager.",
+        short="Update a failover group resource",
+        long="Update an Arc-enabled SQL Managed Instance failover group resource to "
+        "change the role of the distributed availability group.",
+        ex1="Update a failover group resource to the secondary role from primary using the Kubernetes API.",
+        ex2="Update a failover group resource using Azure Resource Manager.",
+    )
 )
 
 # pylint: disable=line-too-long
-helps[
-    "sql instance-failover-group-arc delete"
-] = """
+helps["sql instance-failover-group-arc delete"] = (
+    """
     type: command
     short-summary: {short}
     examples:
@@ -91,14 +90,14 @@ helps[
           text: >
             az sql instance-failover-group-arc delete --name fogcr --mi sqlmi1 -g rg-name
 """.format(
-    short="Delete an Arc-enabled SQL Managed Instance failover group.",
-    ex1="Delete a failover group resource using the Kubernetes API.",
-    ex2="Delete a failover group resource using Azure Resource Manager.",
+        short="Delete an Arc-enabled SQL Managed Instance failover group.",
+        ex1="Delete a failover group resource using the Kubernetes API.",
+        ex2="Delete a failover group resource using Azure Resource Manager.",
+    )
 )
 
-helps[
-    "sql instance-failover-group-arc show"
-] = """
+helps["sql instance-failover-group-arc show"] = (
+    """
     type: command
     short-summary: {short}
     examples:
@@ -109,14 +108,14 @@ helps[
           text: >
             az sql instance-failover-group-arc show --name fogcr1 --mi sqlmi1 -g rg-name
 """.format(
-    short="Show the details of a failover group resource.",
-    ex1="Show the details of a failover group using the Kubernetes API.",
-    ex2="Show the details of a failover group by querying Azure Resource Manager (ARM).",
+        short="Show the details of a failover group resource.",
+        ex1="Show the details of a failover group using the Kubernetes API.",
+        ex2="Show the details of a failover group by querying Azure Resource Manager (ARM).",
+    )
 )
 
-helps[
-    "sql instance-failover-group-arc list"
-] = """
+helps["sql instance-failover-group-arc list"] = (
+    """
     type: command
     short-summary: {short}
     examples:
@@ -127,7 +126,8 @@ helps[
           text: >
             az sql instance-failover-group-arc list --mi sqlmi1 -g rg-name
 """.format(
-    short="List all failover groups.",
-    ex1="List all failover groups in a namespace using the Kubernetes API.",
-    ex2="List all failover groups by querying Azure Resource Manager (ARM).",
+        short="List all failover groups.",
+        ex1="List all failover groups in a namespace using the Kubernetes API.",
+        ex2="List all failover groups by querying Azure Resource Manager (ARM).",
+    )
 )

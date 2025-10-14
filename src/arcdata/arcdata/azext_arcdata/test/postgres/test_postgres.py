@@ -95,7 +95,7 @@ class TestPostgres(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "expected",
-        [("pg-ut00001")],
+        ["pg-ut00001"],
     )
     def test_arc_postgres_server_list(self, expected, az):
         result = az(

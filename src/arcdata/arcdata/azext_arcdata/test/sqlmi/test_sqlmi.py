@@ -179,7 +179,7 @@ class TestSqlmi(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "expected",
-        [("sqlmi1")],
+        ["sqlmi1"],
     )
     def test_arc_sql_mi_list(self, expected, az):
         result = az(

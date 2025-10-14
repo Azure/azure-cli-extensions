@@ -436,9 +436,11 @@ def az(mock_kube_config, mock_az_profile, capsys):
             try:
                 return {
                     "out": json.loads(self.out) if self.out else None,
-                    "err": json.loads(self.err.strip("ERROR:"))
-                    if self.err
-                    else None,
+                    "err": (
+                        json.loads(self.err.strip("ERROR:"))
+                        if self.err
+                        else None
+                    ),
                 }
             except json.JSONDecodeError:
                 return None

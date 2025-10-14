@@ -25,6 +25,7 @@ from azext_arcdata.core.exceptions import CLIError
 
 logger = get_logger(__name__)
 
+
 # ------------Backup Policy Commands----------------
 def server_backups_policy_set(
     client,

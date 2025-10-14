@@ -1,8 +1,12 @@
-from azext_arcdata.kubernetes_sdk.models.custom_resource_update import Policy, PolicyValue, Update
+from azext_arcdata.kubernetes_sdk.models.custom_resource_update import (
+    Policy,
+    PolicyValue,
+    Update,
+)
 from azext_arcdata.core.json_serialization import jsonProperty, tags, to_json
 
 
-class TestUpdateModelDeserialization():
+class TestUpdateModelDeserialization:
     def test_custom_resource_update_hydration(self):
         update = {
             "desiredVersion": "1.2.3",

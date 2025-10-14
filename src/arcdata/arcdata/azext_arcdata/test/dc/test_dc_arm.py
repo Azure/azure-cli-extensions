@@ -35,7 +35,7 @@ class TestDataControllerARM(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "profile",
-        [("azure-arc-aks-default-storage")],
+        ["azure-arc-aks-default-storage"],
     )
     def test_arcdata_dc_create_no_wait(self, az, profile):
         result = az(

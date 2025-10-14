@@ -10,7 +10,9 @@ import pytest
 VCR_RECORD_MODE = "once"  # options: None, once, all, rerecord
 
 
-@pytest.mark.skip(reason="Skipping this entire test suite due to vc and urllib and how the testsare witten.")
+@pytest.mark.skip(
+    reason="Skipping this entire test suite due to vc and urllib and how the testsare witten."
+)
 @pytest.mark.usefixtures("setup")
 class Tests_backups_set(object):
     @pytest.fixture

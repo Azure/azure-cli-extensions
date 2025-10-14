@@ -13,9 +13,7 @@ import tempfile
 from util import get_ext_metadata, get_index_json_from_repo
 
 EXTENSION_NAME = "arcdata"
-DOWNLOAD_URL = (
-    "https://azurearcdatacli.z13.web.core.windows.net/{filename}"
-)
+DOWNLOAD_URL = "https://azurearcdatacli.z13.web.core.windows.net/{filename}"
 
 
 def get_sha256sum(a_file):

@@ -24,7 +24,9 @@ class TelemetryCollectorCustomResource(CustomResource):
         """
 
         if not n:
-            raise ValueError("TelemetryCollector custom resource name cannot be empty")
+            raise ValueError(
+                "TelemetryCollector custom resource name cannot be empty"
+            )
 
         if len(n) > self.otel_collector_name_max_length:
             raise ValueError(

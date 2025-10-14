@@ -5,6 +5,7 @@
 # ------------------------------------------------------------------------------
 from azext_arcdata.sqlarc.database.argument_dicts import *  # Note: this implicitly adds common argument_dicts
 
+
 # These arguments should be neccessary for all commands in this file
 def load_common_arc_database_arguments(
     arg_context, name_help_override="Name of the database."

@@ -9,7 +9,9 @@ import sys
 VCR_RECORD_MODE = "once"  # options: None, once, all, rerecord
 
 
-@pytest.mark.skipif(sys.version_info < (3, 10), reason="requires python3.10 or higher")
+@pytest.mark.skipif(
+    sys.version_info < (3, 10), reason="requires python3.10 or higher"
+)
 @pytest.mark.usefixtures("setup")
 class Tests_host_feature_flag_set(object):
     @pytest.fixture

@@ -832,9 +832,11 @@ class PostgreSqlClient(object):
             custom_resource = PostgresCustomResource.from_dict(item)
             result.append(
                 {
-                    "desiredVersion": custom_resource.spec.update.desiredVersion
-                    if custom_resource.spec.update
-                    else None,
+                    "desiredVersion": (
+                        custom_resource.spec.update.desiredVersion
+                        if custom_resource.spec.update
+                        else None
+                    ),
                     "name": custom_resource.metadata.name,
                     "primaryEndpoint": custom_resource.status.primary_endpoint,
                     "replicas": "{}/1".format(
@@ -993,9 +995,9 @@ class PostgreSqlClient(object):
             custom_resource.spec.scheduling.default.resources.requests = {}
 
         if cores_limit or cores_limit == "":
-            custom_resource.spec.scheduling.default.resources.limits[
-                "cpu"
-            ] = cores_limit
+            custom_resource.spec.scheduling.default.resources.limits["cpu"] = (
+                cores_limit
+            )
 
         if memory_limit or memory_limit == "":
             custom_resource.spec.scheduling.default.resources.limits[
@@ -1207,9 +1209,9 @@ class PostgreSqlClient(object):
             for item in items:
                 label = item.split("=")
                 if len(label) == 2:
-                    custom_resource.spec.services.primary.labels[
-                        label[0]
-                    ] = label[1]
+                    custom_resource.spec.services.primary.labels[label[0]] = (
+                        label[1]
+                    )
                 else:
                     raise ValueError(
                         "Labels must be formatted: 'name=value,...'"

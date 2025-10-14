@@ -547,12 +547,14 @@ class AzureResourceClient(object):
                 success_msg = "Uploaded {} usage records using fallback DPS URI {}.".format(
                     len(usages), url
                 )
-                
+
                 print("\t" + success_msg)
                 log.info(success_msg)
                 if response.headers:
                     log.info(
-                        "Fallback URI usage upload response header: {}".format(response.headers)
+                        "Fallback URI usage upload response header: {}".format(
+                            response.headers
+                        )
                     )
                 return True
 
@@ -571,9 +573,9 @@ class AzureResourceClient(object):
         sku = {"name": skuName, "tier": format_sqlmi_tier_for_azure(tier)}
 
         params["sku"] = sku
-        params["properties"][
-            "licenseType"
-        ] = format_sqlmi_license_type_for_azure(license_type)
+        params["properties"]["licenseType"] = (
+            format_sqlmi_license_type_for_azure(license_type)
+        )
 
     def get_generic_azure_resource(
         self,
@@ -885,7 +887,6 @@ class AzureResourceClient(object):
         role_id,
         role_description,
     ):
-
         """
         Check if a role (role_id) is assigned to identity_principal_id with
         resource group scope.

@@ -380,6 +380,7 @@ def build_post_upgrade_request(
         **kwargs
     )
 
+
 # fmt: on
 class SqlServerInstancesOperations(object):
     """SqlServerInstancesOperations operations.

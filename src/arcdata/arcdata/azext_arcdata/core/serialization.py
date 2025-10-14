@@ -118,7 +118,6 @@ class Sanitizer(object):
         from_start=False,
         from_end=False,
     ):
-
         """
         Convenience method Replace occurrences of `pattern` with `repl` in `
         text` without the need to check for str type. Optionally, ignore case

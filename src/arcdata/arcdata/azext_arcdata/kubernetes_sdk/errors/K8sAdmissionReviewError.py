@@ -31,9 +31,11 @@ class K8sAdmissionReviewError(Exception):
         self._status: V1Status = V1Status(
             api_version=body["apiVersion"] if "apiVersion" in body else None,
             code=body["code"] if "code" in body else None,
-            details=V1StatusDetails(**body["details"])
-            if "details" in body
-            else None,
+            details=(
+                V1StatusDetails(**body["details"])
+                if "details" in body
+                else None
+            ),
             kind=body["kind"] if "kind" in body else None,
             message=body["message"] if "message" in body else None,
             metadata=body["metadata"] if "metadata" in body else None,

@@ -1533,9 +1533,7 @@ def get_private_key_from_data(
     return base64Data
 
 
-def get_private_key_from_file(
-    private_key_file: str, private_key_password: str
-):
+def get_private_key_from_file(private_key_file: str, private_key_password: str):
     """
     get machine private key from private key file.
     """

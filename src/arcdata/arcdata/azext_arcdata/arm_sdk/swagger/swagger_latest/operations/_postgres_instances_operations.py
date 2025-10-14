@@ -266,6 +266,7 @@ def build_update_request(
         **kwargs
     )
 
+
 # fmt: on
 class PostgresInstancesOperations(object):
     """PostgresInstancesOperations operations.

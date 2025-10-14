@@ -263,6 +263,7 @@ def build_update_request(
         **kwargs
     )
 
+
 # fmt: on
 class SqlServerInstancesOperations(object):
     """SqlServerInstancesOperations operations.

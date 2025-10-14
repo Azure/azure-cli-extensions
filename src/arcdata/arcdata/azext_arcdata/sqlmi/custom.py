@@ -443,7 +443,7 @@ def arc_sql_mi_create(
             ).decode(encoding)
 
             machineId = _get_sql_mi_id(private_key_file)
-            if machineId :
+            if machineId:
                 secrets["base64MachineId"] = machineId
 
             temp = get_config_from_template(
@@ -1149,19 +1149,25 @@ def arc_sql_mi_list(
                 result.append(
                     {
                         "name": cr.metadata.name,
-                        "primaryEndpoint": cr.status.endpoints.primary
-                        if cr.status.endpoints
-                        else None,
-                        "replicas": "{}/{}".format(
-                            cr.status.roles.sql.readyReplicas,
-                            cr.status.roles.sql.replicas,
-                        )
-                        if cr.status.roles.sql
-                        else None,
+                        "primaryEndpoint": (
+                            cr.status.endpoints.primary
+                            if cr.status.endpoints
+                            else None
+                        ),
+                        "replicas": (
+                            "{}/{}".format(
+                                cr.status.roles.sql.readyReplicas,
+                                cr.status.roles.sql.replicas,
+                            )
+                            if cr.status.roles.sql
+                            else None
+                        ),
                         "state": cr.status.state,
-                        "desiredVersion": cr.spec.update.desiredVersion
-                        if cr.spec.update
-                        else None,
+                        "desiredVersion": (
+                            cr.spec.update.desiredVersion
+                            if cr.spec.update
+                            else None
+                        ),
                         "runningVersion": cr.status.runningVersion,
                     }
                 )
@@ -1236,9 +1242,12 @@ def arc_sql_endpoint_list(client, name=None, namespace=None, use_k8s=None):
                 endpoints.append(
                     {
                         descrip_str: "SQL Managed Instance",
-                        endpoint_str: cr.status.endpoints.primary
-                        if cr.status.endpoints and cr.status.endpoints.primary
-                        else "Not yet available",
+                        endpoint_str: (
+                            cr.status.endpoints.primary
+                            if cr.status.endpoints
+                            and cr.status.endpoints.primary
+                            else "Not yet available"
+                        ),
                     }
                 )
 
@@ -1246,10 +1255,12 @@ def arc_sql_endpoint_list(client, name=None, namespace=None, use_k8s=None):
                 endpoints.append(
                     {
                         descrip_str: "Log Search Dashboard",
-                        endpoint_str: cr.status.endpoints.log_search_dashboard
-                        if cr.status.endpoints
-                        and cr.status.endpoints.log_search_dashboard
-                        else "Not yet available",
+                        endpoint_str: (
+                            cr.status.endpoints.log_search_dashboard
+                            if cr.status.endpoints
+                            and cr.status.endpoints.log_search_dashboard
+                            else "Not yet available"
+                        ),
                     }
                 )
 
@@ -1257,10 +1268,12 @@ def arc_sql_endpoint_list(client, name=None, namespace=None, use_k8s=None):
                 endpoints.append(
                     {
                         descrip_str: "Metrics Dashboard",
-                        endpoint_str: cr.status.endpoints.metrics_dashboard
-                        if cr.status.endpoints
-                        and cr.status.endpoints.metrics_dashboard
-                        else "Not yet available",
+                        endpoint_str: (
+                            cr.status.endpoints.metrics_dashboard
+                            if cr.status.endpoints
+                            and cr.status.endpoints.metrics_dashboard
+                            else "Not yet available"
+                        ),
                     }
                 )
 
@@ -1608,9 +1621,7 @@ def _get_sql_mi_id(private_key_file):
         if private_key_file:
             if sys.stdin.isatty():
                 print("Reading private key file.")
-                machineId = get_private_key_from_file(
-                    private_key_file, None
-                )
+                machineId = get_private_key_from_file(private_key_file, None)
             else:
                 raise ValueError(
                     "Please provide an Arc SQL managed instance id "

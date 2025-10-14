@@ -236,4 +236,3 @@ Different types of TDE modes supported by SQL MI and CLI
 SQLMI_AUTO_UPGRADE_DOCS_LINK = "https://aka.ms/arc-sqlmi-auto-upgrade"
 
 AZDATA_SQLMI_ID = "AZDATA_SQLMI_ID"
-

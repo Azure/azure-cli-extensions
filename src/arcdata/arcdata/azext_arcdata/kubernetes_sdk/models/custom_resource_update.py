@@ -1,15 +1,19 @@
-from azext_arcdata.core.json_serialization import jsonProperty, jsonSerializable, jsonType
+from azext_arcdata.core.json_serialization import (
+    jsonProperty,
+    jsonSerializable,
+    jsonType,
+)
 
 
-class PolicyValue():
+class PolicyValue:
     def __init__(self, name: str = None, value: str = None):
         self.name = name
         self.value = value
-    
+
     @property
     def name(self):
         return self._name
-    
+
     @name.setter
     def name(self, value):
         self._name = value
@@ -17,31 +21,29 @@ class PolicyValue():
     @property
     def value(self):
         return self._value
-    
+
     @value.setter
     def value(self, value):
         self._value = value
 
 
 @jsonSerializable
-class Policy():
+class Policy:
     """
     Contains information for a single update policy
     """
+
     def __init__(
-        self,
-        name: str = None,
-        enabled: bool = False,
-        values: list = []
+        self, name: str = None, enabled: bool = False, values: list = []
     ):
         self.name = name
         self.enabled = enabled
         self.values = values
-    
+
     @property
     def name(self) -> str:
         return self._name
-    
+
     @name.setter
     def name(self, value: str):
         self._name = value
@@ -49,7 +51,7 @@ class Policy():
     @property
     def enabled(self) -> bool:
         return self._enabled
-    
+
     @enabled.setter
     def enabled(self, value: bool):
         self._enabled = value
@@ -58,21 +60,22 @@ class Policy():
     @jsonType(PolicyValue, True)
     def values(self) -> list:
         return self._values
-    
+
     @values.setter
     def values(self, value: list):
         self._values = value
-    
+
 
 @jsonSerializable
-class Update():
+class Update:
     """
     Contains update information for this resource
     """
+
     def __init__(
         self,
         desiredVersion: str = None,
-        # policies: list = [],      
+        # policies: list = [],
         # bypassPoliciesVersion: str = None
     ):
         self.desiredVersion = desiredVersion
@@ -92,7 +95,7 @@ class Update():
     # @jsonType(Policy, True)
     # def policies(self):
     #     return self._policies
-    
+
     # @policies.setter
     # def policies(self, value):
     #     self._policies = value
@@ -100,8 +103,7 @@ class Update():
     # @jsonProperty
     # def bypassPoliciesVersion(self):
     #     return self._bypassPoliciesVersion
-    
+
     # @bypassPoliciesVersion.setter
     # def bypassPoliciesVersion(self, value):
     #     self._bypassPoliciesVersion = value
-    

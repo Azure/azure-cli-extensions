@@ -7,6 +7,7 @@ import pydash as _
 from azext_arcdata.sqlarc.common.validators import *
 from azext_arcdata.arm_sdk.swagger.swagger_latest.models import BackupPolicy
 
+
 # Reads the Backup Policy and checks if it is enabled
 def is_backups_enabled(arm_model):
     return arm_model.properties.backup_policy.retention_period_days == 0
@@ -57,21 +58,21 @@ def displayable_backups_policy_config(
 
     backups_policy_config["instanceName"] = instance_name
 
-    backups_policy_config[
-        "retentionPeriodDays"
-    ] = arm_model.properties.backup_policy.retention_period_days
+    backups_policy_config["retentionPeriodDays"] = (
+        arm_model.properties.backup_policy.retention_period_days
+    )
 
-    backups_policy_config[
-        "fullBackupDays"
-    ] = arm_model.properties.backup_policy.full_backup_days
+    backups_policy_config["fullBackupDays"] = (
+        arm_model.properties.backup_policy.full_backup_days
+    )
 
-    backups_policy_config[
-        "differentialBackupHours"
-    ] = arm_model.properties.backup_policy.differential_backup_hours
+    backups_policy_config["differentialBackupHours"] = (
+        arm_model.properties.backup_policy.differential_backup_hours
+    )
 
-    backups_policy_config[
-        "transactionLogBackupMinutes"
-    ] = arm_model.properties.backup_policy.transaction_log_backup_minutes
+    backups_policy_config["transactionLogBackupMinutes"] = (
+        arm_model.properties.backup_policy.transaction_log_backup_minutes
+    )
 
     return backups_policy_config
 

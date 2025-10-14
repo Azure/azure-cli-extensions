@@ -92,7 +92,9 @@ def upgrade_sqlmi_instances(
 
         # In alignment with CustomResourceStateMachine.cs, upgrades to Controller version is allowed,
         # provided runningVersion imageTag is not same as desiredVersion
-        if ((desired_version == datacontrollerVersion) and (sqlmiVersion != desired_version)):
+        if (desired_version == datacontrollerVersion) and (
+            sqlmiVersion != desired_version
+        ):
             upgrade_instances.append(sqlmi)
             continue
 
@@ -107,7 +109,7 @@ def upgrade_sqlmi_instances(
                 )
         # SemVer of desiredVersion is same as runningVersion and imageTag is same
         # No upgrade
-        elif ((val == 0) and (sqlmiVersion == desired_version)):
+        elif (val == 0) and (sqlmiVersion == desired_version):
             if auto_upgrade_setting and auto_upgrade_setting == "auto":
                 # Disabling auto-upgrade by replacing auto with current version
                 upgrade_instances.append(sqlmi)

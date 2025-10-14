@@ -811,9 +811,11 @@ class Serializer(object):
             if data_type.startswith("["):
                 internal_data_type = data_type[1:-1]
                 data = [
-                    self.serialize_data(d, internal_data_type, **kwargs)
-                    if d is not None
-                    else ""
+                    (
+                        self.serialize_data(d, internal_data_type, **kwargs)
+                        if d is not None
+                        else ""
+                    )
                     for d in data
                 ]
                 if not kwargs.get("skip_quote", False):
@@ -1090,9 +1092,9 @@ class Serializer(object):
             serialized = {}
             for key, value in attr.items():
                 try:
-                    serialized[
-                        self.serialize_unicode(key)
-                    ] = self.serialize_object(value, **kwargs)
+                    serialized[self.serialize_unicode(key)] = (
+                        self.serialize_object(value, **kwargs)
+                    )
                 except ValueError:
                     serialized[self.serialize_unicode(key)] = None
             return serialized

@@ -136,7 +136,9 @@ MONITOR_CRD_NAME = "monitors.arcdata.microsoft.com"
 Well known name of the monitor crd
 """
 
-TELEMETRY_COLLECTOR_CRD = os.path.join(TEMPLATE_DIR, "telemetry_collector_crd.yaml")
+TELEMETRY_COLLECTOR_CRD = os.path.join(
+    TEMPLATE_DIR, "telemetry_collector_crd.yaml"
+)
 """
 File location for otel collector CRD.
 """
@@ -156,7 +158,9 @@ KAFKA_CRD_NAME = "kafkas.arcdata.microsoft.com"
 Well known name of the Kafka crd
 """
 
-ACTIVE_DIRECTORY_CONNECTOR_CRD_NAME = "activedirectoryconnectors.arcdata.microsoft.com"
+ACTIVE_DIRECTORY_CONNECTOR_CRD_NAME = (
+    "activedirectoryconnectors.arcdata.microsoft.com"
+)
 """
 Well known name of the active directory connector crd
 """
@@ -466,7 +470,9 @@ Bootstrap template directory
 
 
 class BOOTSTRAP_TEMPLATES:
-    CLUSTER_ROLE = os.path.join(BOOTSTRAP_TEMPLATE_DIR, "cluster-role.yaml.tmpl")
+    CLUSTER_ROLE = os.path.join(
+        BOOTSTRAP_TEMPLATE_DIR, "cluster-role.yaml.tmpl"
+    )
     """
     Template for cluster role for bootstrap job for deployment and upgrade.
     """
@@ -485,17 +491,23 @@ class BOOTSTRAP_TEMPLATES:
     Template for bootstrapper role, for granting during deployment and upgrade.
     """
 
-    DEPLOYER_ROLE = os.path.join(BOOTSTRAP_TEMPLATE_DIR, "deployer-role.yaml.tmpl")
+    DEPLOYER_ROLE = os.path.join(
+        BOOTSTRAP_TEMPLATE_DIR, "deployer-role.yaml.tmpl"
+    )
     """
     Template for deployer role for bootstrap job for deployment and upgrade.
     """
 
-    ROLE_BINDING = os.path.join(BOOTSTRAP_TEMPLATE_DIR, "role-binding.yaml.tmpl")
+    ROLE_BINDING = os.path.join(
+        BOOTSTRAP_TEMPLATE_DIR, "role-binding.yaml.tmpl"
+    )
     """
     Template for role binding for bootstrap job for deployment and upgrade.
     """
 
-    SERVICE_ACCOUNT = os.path.join(BOOTSTRAP_TEMPLATE_DIR, "service-account.yaml.tmpl")
+    SERVICE_ACCOUNT = os.path.join(
+        BOOTSTRAP_TEMPLATE_DIR, "service-account.yaml.tmpl"
+    )
     """
     Template for service account for bootstrap job for deployment and upgrade.
     """
@@ -540,4 +552,6 @@ class BOOTSTRAP_TEMPLATES:
         """
         Returns the cluster role binding name for a given namespace.
         """
-        return BOOTSTRAP_TEMPLATES.CLUSTER_ROLE_BINDING_NAME_FORMAT.format(namespace)
+        return BOOTSTRAP_TEMPLATES.CLUSTER_ROLE_BINDING_NAME_FORMAT.format(
+            namespace
+        )

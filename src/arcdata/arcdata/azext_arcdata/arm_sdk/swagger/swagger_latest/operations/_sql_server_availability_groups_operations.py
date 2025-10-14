@@ -400,6 +400,7 @@ def build_list_request(
         **kwargs
     )
 
+
 # fmt: on
 class SqlServerAvailabilityGroupsOperations(object):
     """SqlServerAvailabilityGroupsOperations operations.

@@ -32,7 +32,11 @@ from azext_arcdata.sqlmi.constants import (
     SQLMI_TRACEFLAGS,
     SQLMI_MEMORYLIMIT,
 )
-from azext_arcdata.sqlmi.settings import add_to_settings, parse_traceflags, parse_dataGitoIntInMb
+from azext_arcdata.sqlmi.settings import (
+    add_to_settings,
+    parse_traceflags,
+    parse_dataGitoIntInMb,
+)
 from azext_arcdata.sqlmi.util import (
     validate_sqlmi_license_type,
     validate_sqlmi_name,
@@ -600,12 +604,14 @@ class SqlmiCustomResource(CustomResource):
                             mem = getattr(self, "memory", None)
                             cores = getattr(self, "cpu", None)
                             return {
-                                "memory": mem.quantity
-                                if mem is not None
-                                else mem,
-                                "cpu": cores.quantity
-                                if cores is not None
-                                else cores,
+                                "memory": (
+                                    mem.quantity if mem is not None else mem
+                                ),
+                                "cpu": (
+                                    cores.quantity
+                                    if cores is not None
+                                    else cores
+                                ),
                             }
 
                         def _hydrate(self, d: dict):
@@ -661,12 +667,14 @@ class SqlmiCustomResource(CustomResource):
                             mem = getattr(self, "memory", None)
                             cores = getattr(self, "cpu", None)
                             return {
-                                "memory": mem.quantity
-                                if mem is not None
-                                else mem,
-                                "cpu": cores.quantity
-                                if cores is not None
-                                else cores,
+                                "memory": (
+                                    mem.quantity if mem is not None else mem
+                                ),
+                                "cpu": (
+                                    cores.quantity
+                                    if cores is not None
+                                    else cores
+                                ),
                             }
 
                         def _hydrate(self, d: dict):
@@ -829,9 +837,9 @@ class SqlmiCustomResource(CustomResource):
             base["serviceType"] = getattr(self, "serviceType", None)
             base["security"] = self.security._to_dict()
             base["scheduling"] = self.scheduling._to_dict()
-            base[
-                "preferredPrimaryReplicaSpec"
-            ] = self.preferredPrimaryReplicaSpec._to_dict()
+            base["preferredPrimaryReplicaSpec"] = (
+                self.preferredPrimaryReplicaSpec._to_dict()
+            )
             base["tier"] = self.tier
             base["dev"] = self.dev
             base["licenseType"] = self.license_type
@@ -1367,7 +1375,9 @@ class SqlmiCustomResource(CustomResource):
         add_to_settings(settings, SQLMI_TIMEZONE, kwargs, "time_zone")
 
         if "memory_limit" in kwargs and kwargs["memory_limit"] is not None:
-            settings[SQLMI_MEMORYLIMIT] = parse_dataGitoIntInMb(kwargs["memory_limit"])
+            settings[SQLMI_MEMORYLIMIT] = parse_dataGitoIntInMb(
+                kwargs["memory_limit"]
+            )
 
         if "trace_flags" in kwargs and kwargs["trace_flags"] is not None:
             traceflags = parse_traceflags(kwargs["trace_flags"])

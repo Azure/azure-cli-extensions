@@ -82,9 +82,9 @@ def _store_spn_in_env(spn: Spn):
         os.environ[azure_constants.SPN_ENV_KEYS["authority"]] = spn.authority
         os.environ[azure_constants.SPN_ENV_KEYS["tenant_id"]] = spn.tenant_id
         os.environ[azure_constants.SPN_ENV_KEYS["client_id"]] = spn.client_id
-        os.environ[
-            azure_constants.SPN_ENV_KEYS["client_secret"]
-        ] = spn.client_secret
+        os.environ[azure_constants.SPN_ENV_KEYS["client_secret"]] = (
+            spn.client_secret
+        )
     else:
         missing_keys = []
         for spn_env in azure_constants.SPN_ENV_KEYS.values():
@@ -129,9 +129,11 @@ def _get_token_using_msal(spn, scopes):
     if os.path.exists(cache_file):
         cache.deserialize(open(cache_file, "r").read())
     atexit.register(
-        lambda: open(cache_file, "w").write(cache.serialize())
-        if cache.has_state_changed
-        else None
+        lambda: (
+            open(cache_file, "w").write(cache.serialize())
+            if cache.has_state_changed
+            else None
+        )
     )
 
     app = msal.ConfidentialClientApplication(

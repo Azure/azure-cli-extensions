@@ -264,6 +264,7 @@ def build_update_request(
         **kwargs
     )
 
+
 # fmt: on
 class SqlServerLicensesOperations(object):
     """SqlServerLicensesOperations operations.

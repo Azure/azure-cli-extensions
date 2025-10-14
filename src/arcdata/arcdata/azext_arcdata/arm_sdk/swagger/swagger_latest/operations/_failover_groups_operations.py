@@ -201,6 +201,7 @@ def build_get_request(
         **kwargs
     )
 
+
 # fmt: on
 class FailoverGroupsOperations(object):
     """FailoverGroupsOperations operations.

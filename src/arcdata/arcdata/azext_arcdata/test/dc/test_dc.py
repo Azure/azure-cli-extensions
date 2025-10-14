@@ -80,7 +80,7 @@ class TestDC(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "namespace",
-        [(NAMESPACE)],
+        [NAMESPACE],
     )
     def test_export(self, namespace, az):
         result = az(
@@ -94,7 +94,7 @@ class TestDC(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "namespace",
-        [(NAMESPACE)],
+        [NAMESPACE],
     )
     def test_target_version_validation_default(self, namespace):
         target = resolve_valid_target_version(namespace, use_k8s=True)
@@ -103,7 +103,7 @@ class TestDC(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "namespace",
-        [(NAMESPACE)],
+        [NAMESPACE],
     )
     def test_list_versions(self, namespace, az):
         results = az(
@@ -136,7 +136,7 @@ class TestDC(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "namespace",
-        [(NAMESPACE)],
+        [NAMESPACE],
     )
     def _test_dry_run_upgrade_indirect(self, namespace, az):
         (
@@ -184,7 +184,7 @@ class TestDC(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "namespace",
-        [(NAMESPACE)],
+        [NAMESPACE],
     )
     def test_upgrade_fails_when_pg_present(self, namespace, az):
         az(
@@ -217,7 +217,7 @@ class TestDC(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "namespace",
-        [(NAMESPACE)],
+        [NAMESPACE],
     )
     def test_delete_dc(self, namespace, az):
         results = az(
@@ -230,7 +230,7 @@ class TestDC(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "namespace",
-        [(NAMESPACE)],
+        [NAMESPACE],
     )
     def test_update_maintenance_window(self, namespace, az):
         results = az(

@@ -134,17 +134,17 @@ def validate_mutually_exclusive_direct_indirect(
     if hasattr(namespace, "noexternal_endpoint"):
         forbidden_list["--no-external-endpoint"] = namespace.noexternal_endpoint
     if hasattr(namespace, "certificate_public_key_file"):
-        forbidden_list[
-            "--cert-public-key-file"
-        ] = namespace.certificate_public_key_file
+        forbidden_list["--cert-public-key-file"] = (
+            namespace.certificate_public_key_file
+        )
     if hasattr(namespace, "certificate_private_key_file"):
-        forbidden_list[
-            "--cert-private-key-file"
-        ] = namespace.certificate_private_key_file
+        forbidden_list["--cert-private-key-file"] = (
+            namespace.certificate_private_key_file
+        )
     if hasattr(namespace, "service_certificate_secret"):
-        forbidden_list[
-            "--service-cert-secret"
-        ] = namespace.service_certificate_secret
+        forbidden_list["--service-cert-secret"] = (
+            namespace.service_certificate_secret
+        )
     if hasattr(namespace, "admin_login_secret"):
         forbidden_list["--admin-login-secret"] = namespace.admin_login_secret
     if hasattr(namespace, "labels"):

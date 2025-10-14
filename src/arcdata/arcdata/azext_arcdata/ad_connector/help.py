@@ -6,18 +6,17 @@
 
 from knack.help_files import helps
 
-helps[
-    "arcdata ad-connector"
-] = """
+helps["arcdata ad-connector"] = (
+    """
     type: group
     short-summary: {short}
 """.format(
-    short="Manage Active Directory authentication for Azure Arc data services."
+        short="Manage Active Directory authentication for Azure Arc data services."
+    )
 )
 
-helps[
-    "arcdata ad-connector create"
-] = """
+helps["arcdata ad-connector create"] = (
+    """
     type: command
     short-summary: {short}
     examples:
@@ -52,14 +51,14 @@ helps[
             --dns-replicas 2 
             --prefer-k8s-dns false
 """.format(
-    short="Create a new Active Directory connector.",
-    ex1="Ex 1 - Deploy a new Active Directory connector using the Kubernetes API.",
-    ex2="Ex 2 - Deploy a new Active Directory connector through Azure Resource Manager (ARM).",
+        short="Create a new Active Directory connector.",
+        ex1="Ex 1 - Deploy a new Active Directory connector using the Kubernetes API.",
+        ex2="Ex 2 - Deploy a new Active Directory connector through Azure Resource Manager (ARM).",
+    )
 )
 
-helps[
-    "arcdata ad-connector update"
-] = """
+helps["arcdata ad-connector update"] = (
+    """
     type: command
     short-summary: {short}
     examples:
@@ -86,14 +85,14 @@ helps[
             --dns-replicas 2
             --prefer-k8s-dns false
 """.format(
-    short="Update the settings of an existing Active Directory connector.",
-    ex1="Ex 1 - Update an existing Active Directory connector using the Kubernetes API.",
-    ex2="Ex 2 - Update an existing Active Directory connector through Azure Resource Manager (ARM).",
+        short="Update the settings of an existing Active Directory connector.",
+        ex1="Ex 1 - Update an existing Active Directory connector using the Kubernetes API.",
+        ex2="Ex 2 - Update an existing Active Directory connector through Azure Resource Manager (ARM).",
+    )
 )
 
-helps[
-    "arcdata ad-connector delete"
-] = """
+helps["arcdata ad-connector delete"] = (
+    """
     type: command
     short-summary: {short}
     examples:
@@ -110,14 +109,14 @@ helps[
             --resource-group rg-name 
             --data-controller-name dc-name
 """.format(
-    short="Delete an existing Active Directory connector.",
-    ex1="Ex 1 - Delete an existing Active Directory connector using the Kubernetes API.",
-    ex2="Ex 2 - Delete an existing Active Directory connector through Azure Resource Manager (ARM).",
+        short="Delete an existing Active Directory connector.",
+        ex1="Ex 1 - Delete an existing Active Directory connector using the Kubernetes API.",
+        ex2="Ex 2 - Delete an existing Active Directory connector through Azure Resource Manager (ARM).",
+    )
 )
 
-helps[
-    "arcdata ad-connector show"
-] = """
+helps["arcdata ad-connector show"] = (
+    """
     type: command
     short-summary: {short}
     examples:
@@ -134,14 +133,14 @@ helps[
             --resource-group rg-name
             --data-controller-name dc-name
 """.format(
-    short="Get the details of an existing Active Directory connector.",
-    ex1="Ex 1 - Get an existing Active Directory connector using the Kubernetes API.",
-    ex2="Ex 2 - Get an existing Active Directory connector by querying Azure Resource Manager (ARM).",
+        short="Get the details of an existing Active Directory connector.",
+        ex1="Ex 1 - Get an existing Active Directory connector using the Kubernetes API.",
+        ex2="Ex 2 - Get an existing Active Directory connector by querying Azure Resource Manager (ARM).",
+    )
 )
 
-helps[
-    "arcdata ad-connector list"
-] = """
+helps["arcdata ad-connector list"] = (
+    """
     type: command
     short-summary: {short}
     examples:
@@ -156,9 +155,10 @@ helps[
             --resource-group rg-name
             --data-controller-name dc-name
 """.format(
-    short="List all Active Directory connectors.",
-    ex1="Ex 1 - List all Active Directory connectors "
-    "in a given Kubernetes namespace using the Kubernetes API.",
-    ex2="Ex 2 - List all Active Directory connectors "
-    "associated with a given Arc data controller by querying Azure Resource Manager (ARM).",
+        short="List all Active Directory connectors.",
+        ex1="Ex 1 - List all Active Directory connectors "
+        "in a given Kubernetes namespace using the Kubernetes API.",
+        ex2="Ex 2 - List all Active Directory connectors "
+        "associated with a given Arc data controller by querying Azure Resource Manager (ARM).",
+    )
 )

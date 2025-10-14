@@ -66,6 +66,7 @@ def build_list_request(
         **kwargs
     )
 
+
 # fmt: on
 class Operations(object):
     """Operations operations.

@@ -21,6 +21,7 @@ logger = get_logger(__name__)
 
 class AzureArcSqlWebService(object):
     logger = get_logger(__name__)
+
     # initialize the service for making Http Requests to ARM
     def __init__(self, azure_credential, subscription):
         self._azure_credential = azure_credential

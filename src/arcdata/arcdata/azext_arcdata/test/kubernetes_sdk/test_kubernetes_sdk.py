@@ -1,5 +1,7 @@
 import pydash as _
-from azext_arcdata.kubernetes_sdk.arc_docker_image_service import ArcDataImageService
+from azext_arcdata.kubernetes_sdk.arc_docker_image_service import (
+    ArcDataImageService,
+)
 from azext_arcdata.core.util import retry_method
 
 
@@ -11,9 +13,17 @@ class TestArcDataImageService(object):
         pass
 
     def test_image_tag_sort(self):
-        imageTags = ["1.0.1_test", "1.0.2_test", "1.0.3", "1.0.10", "some invalid tag"]
+        imageTags = [
+            "1.0.1_test",
+            "1.0.2_test",
+            "1.0.3",
+            "1.0.10",
+            "some invalid tag",
+        ]
         versions = ArcDataImageService.resolve_valid_image_versions(imageTags)
-        assert _.matches(["1.0.10", "1.0.3", "1.0.2_test", "1.0.1_test"])(versions)
+        assert _.matches(["1.0.10", "1.0.3", "1.0.2_test", "1.0.1_test"])(
+            versions
+        )
 
     def test_image_tag_validation(self):
         assert ArcDataImageService.validate_image_tag("20210102.4")
@@ -25,7 +35,9 @@ class TestArcDataImageService(object):
         assert ArcDataImageService.validate_image_tag("v1.0 tag") is False
 
     def test_imagetag_parsing(self):
-        (major, minor, revision, label) = ArcDataImageService.parse_image_tag("v1.2.3_2021-07-30")
+        (major, minor, revision, label) = ArcDataImageService.parse_image_tag(
+            "v1.2.3_2021-07-30"
+        )
         assert major == 1
         assert minor == 2
         assert revision == 3
@@ -36,9 +48,9 @@ class TestArcDataImageService(object):
 
         @retry_method(
             retry_count=5,
-            retry_delay=.1,
+            retry_delay=0.1,
             retry_method_description="retry test",
-            retry_on_exceptions=(ValueError)
+            retry_on_exceptions=(ValueError),
         )
         def retry_this():
             nonlocal retryCount
@@ -53,9 +65,9 @@ class TestArcDataImageService(object):
     def test_retry_decorator_failed(self):
         @retry_method(
             retry_count=5,
-            retry_delay=.1,
+            retry_delay=0.1,
             retry_method_description="retry test",
-            retry_on_exceptions=(ValueError)
+            retry_on_exceptions=(ValueError),
         )
         def retry_this():
             raise ValueError("Should fail")
@@ -64,4 +76,6 @@ class TestArcDataImageService(object):
             retry_this()
             assert False
         except Exception as e:
-            assert "Failed to retry test after retrying for 0 minute(s)." == str(e)
+            assert (
+                "Failed to retry test after retrying for 0 minute(s)." == str(e)
+            )

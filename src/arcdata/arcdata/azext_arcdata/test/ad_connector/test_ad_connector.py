@@ -45,7 +45,7 @@ class TestADConnector(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "expected",
-        [("is being created")],
+        ["is being created"],
     )
     def test_ad_connector_create_manual_required_args(self, expected, az):
         result = az(
@@ -71,7 +71,7 @@ class TestADConnector(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "expected",
-        [("is being created")],
+        ["is being created"],
     )
     def test_ad_connector_create_automatic_required_args(self, expected, az):
         result = az(
@@ -98,7 +98,7 @@ class TestADConnector(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "expected",
-        [("is being created")],
+        ["is being created"],
     )
     def test_ad_connector_create_manual_all_args(self, expected, az):
         result = az(
@@ -121,7 +121,7 @@ class TestADConnector(object):
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
         "expected",
-        [("is being created")],
+        ["is being created"],
     )
     def test_ad_connector_create_automatic_all_args(self, expected, az):
         result = az(

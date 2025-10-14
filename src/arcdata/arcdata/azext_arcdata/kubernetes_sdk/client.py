@@ -931,7 +931,6 @@ class KubernetesClient(object):
     def get_arc_datacontroller(
         namespace: str, use_k8s: bool = True
     ) -> Tuple[CustomResource, str]:
-
         """
         Return the data controller custom resource for the given namespace.
         """

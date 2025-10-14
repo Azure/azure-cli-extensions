@@ -7,6 +7,7 @@
 from azext_arcdata.sqlarc.server.argument_dicts import *
 from azext_arcdata.sqlarc.server.help_strings import *
 
+
 # These arguments are necessary for all commands in this file
 def load_common_arc_server_arguments(
     arg_context,
