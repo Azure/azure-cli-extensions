@@ -52,8 +52,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     job_input_file_type = CLIArgumentType(help='The location of the input file to submit.')
     job_input_format_type = CLIArgumentType(help='The format of the file to submit.')
     job_output_format_type = CLIArgumentType(help='The expected job output format')
-    entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for QIR jobs.')
-    item_type = CLIArgumentType(help='The item index in a batching job.')
+    entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for some provider QIR jobs.')
     skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
     key_type = CLIArgumentType(options_list=['--key-type'], help='The api keys to be regenerated, should be Primary and/or Secondary.')
     enable_key_type = CLIArgumentType(options_list=['--enable-api-key'], help='Enable or disable API key authentication.')
@@ -92,7 +91,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('shots', shots_type)
         c.argument('storage', storage_type)
         c.argument('max_poll_wait_secs', max_poll_wait_secs_type)
-        c.argument('item', item_type)
 
     with self.argument_context('quantum job list') as c:
         c.argument('job_type', job_type_type)
