@@ -256,7 +256,7 @@ class Test_Serialization(unittest.TestCase):
         cdsc.complexChild.name = "child1"
         cdsc.complexChild2.prop1 = "testChange"
         cdsc.complexChild2.name = "child2"
-        changed_keys = cdsc._changed_keys()
+        cdsc._changed_keys()
         json_str = to_json(cdsc, changesOnly=True)
 
         deserialized = json.loads(json_str)
