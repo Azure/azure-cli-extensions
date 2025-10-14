@@ -29,9 +29,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01-preview",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2025-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2025-09-01"],
         ]
     }
 
@@ -309,7 +309,7 @@ class Create(AAZCommand):
         _element.command_output_type = AAZStrArg(
             options=["command-output-type"],
             help="The type of command output for the override.",
-            enum={"BareMetalMachineRunCommand": "BareMetalMachineRunCommand", "BareMetalMachineRunDataExtracts": "BareMetalMachineRunDataExtracts", "BareMetalMachineRunReadCommands": "BareMetalMachineRunReadCommands", "StorageRunReadCommands": "StorageRunReadCommands"},
+            enum={"BareMetalMachineRunCommand": "BareMetalMachineRunCommand", "BareMetalMachineRunDataExtracts": "BareMetalMachineRunDataExtracts", "BareMetalMachineRunDataExtractsRestricted": "BareMetalMachineRunDataExtractsRestricted", "BareMetalMachineRunReadCommands": "BareMetalMachineRunReadCommands", "StorageRunReadCommands": "StorageRunReadCommands"},
         )
         _element.container_url = AAZStrArg(
             options=["container-url"],
@@ -696,7 +696,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01-preview",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }

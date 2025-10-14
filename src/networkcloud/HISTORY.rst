@@ -2,10 +2,9 @@
 
 Release History
 ===============
-
-4.0.0b2
+4.0.0
 ++++++++
-* Fixing zip/slip vulnerability in our custom_operations code.
+* This stable version supports NetworkCloud 2025-09-01 APIs.
 
 4.0.0b1
 ++++++++
