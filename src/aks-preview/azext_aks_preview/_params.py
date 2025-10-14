@@ -93,6 +93,7 @@ from azext_aks_preview._consts import (
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_AZURELINUX3,
+    CONST_OS_SKU_FLATCAR,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_AZURELINUXOSGUARD,
@@ -280,6 +281,7 @@ node_mode_types = [
 node_os_skus_create = [
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_AZURELINUX3,
+    CONST_OS_SKU_FLATCAR,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
@@ -297,6 +299,7 @@ node_os_skus_add = node_os_skus_create + [
 node_os_skus_update = [
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_AZURELINUX3,
+    CONST_OS_SKU_FLATCAR,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
@@ -1124,7 +1127,10 @@ def load_arguments(self, _):
         # virtual machines
         c.argument("vm_sizes", is_preview=True)
         c.argument("enable_imds_restriction", action="store_true", is_preview=True)
-        c.argument("enable_managed_system_pool", action="store_true", is_preview=True)
+        c.argument("enable_managed_system_pool",
+                   action="store_true",
+                   is_preview=True,
+                   deprecate_info=c.deprecate(target="--enable-managed-system-pool", hide=True))
         c.argument("enable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
 
     with self.argument_context("aks update") as c:
@@ -1260,6 +1266,11 @@ def load_arguments(self, _):
         c.argument(
             "azure_keyvault_kms_key_vault_resource_id",
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
+        )
+        c.argument(
+            "kms_infrastructure_encryption",
+            arg_type=get_enum_type(["Enabled", "Disabled"]),
+            is_preview=True,
         )
         c.argument("http_proxy_config")
         c.argument(

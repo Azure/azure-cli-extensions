@@ -221,79 +221,6 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_1.attach_agentpool(agentpool_1)
         self.assertEqual(ctx_1.get_workload_runtime(), "test_workload_runtime")
 
-    def common_get_enable_custom_ca_trust(self):
-        # default
-        ctx_1 = AKSPreviewAgentPoolContext(
-            self.cmd,
-            AKSAgentPoolParamDict({"enable_custom_ca_trust": True}),
-            self.models,
-            DecoratorMode.CREATE,
-            self.agentpool_decorator_mode,
-        )
-        self.assertEqual(ctx_1.get_enable_custom_ca_trust(), True)
-        agentpool_1 = self.create_initialized_agentpool_instance(
-            enable_custom_ca_trust=False
-        )
-        ctx_1.attach_agentpool(agentpool_1)
-        self.assertEqual(ctx_1.get_enable_custom_ca_trust(), False)
-
-        # custom
-        ctx_2 = AKSPreviewAgentPoolContext(
-            self.cmd,
-            AKSAgentPoolParamDict({"enable_custom_ca_trust": True}),
-            self.models,
-            DecoratorMode.UPDATE,
-            self.agentpool_decorator_mode,
-        )
-        self.assertEqual(ctx_2.get_enable_custom_ca_trust(), True)
-        agentpool_2 = self.create_initialized_agentpool_instance(
-            enable_custom_ca_trust=False
-        )
-        ctx_2.attach_agentpool(agentpool_2)
-        self.assertEqual(ctx_2.get_enable_custom_ca_trust(), True)
-
-        # custom
-        ctx_3 = AKSPreviewAgentPoolContext(
-            self.cmd,
-            AKSAgentPoolParamDict(
-                {"enable_custom_ca_trust": True, "disable_custom_ca_trust": True}
-            ),
-            self.models,
-            DecoratorMode.UPDATE,
-            self.agentpool_decorator_mode,
-        )
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_3.get_enable_custom_ca_trust()
-
-    def common_get_disable_custom_ca_trust(self):
-        # default
-        ctx_1 = AKSPreviewAgentPoolContext(
-            self.cmd,
-            AKSAgentPoolParamDict({"disable_custom_ca_trust": True}),
-            self.models,
-            DecoratorMode.UPDATE,
-            self.agentpool_decorator_mode,
-        )
-        self.assertEqual(ctx_1.get_disable_custom_ca_trust(), True)
-        agentpool_1 = self.create_initialized_agentpool_instance(
-            enable_custom_ca_trust=True
-        )
-        ctx_1.attach_agentpool(agentpool_1)
-        self.assertEqual(ctx_1.get_disable_custom_ca_trust(), True)
-
-        # custom
-        ctx_2 = AKSPreviewAgentPoolContext(
-            self.cmd,
-            AKSAgentPoolParamDict(
-                {"enable_custom_ca_trust": True, "disable_custom_ca_trust": True}
-            ),
-            self.models,
-            DecoratorMode.UPDATE,
-            self.agentpool_decorator_mode,
-        )
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_2.get_disable_custom_ca_trust()
-
     def common_get_enable_artifact_streaming(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -1077,12 +1004,6 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_workload_runtime(self):
         self.common_get_workload_runtime()
 
-    def test_get_enable_custom_ca_trust(self):
-        self.common_get_enable_custom_ca_trust()
-
-    def test_get_disable_custom_ca_trust(self):
-        self.common_get_disable_custom_ca_trust()
-
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
 
@@ -1173,12 +1094,6 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_workload_runtime(self):
         self.common_get_workload_runtime()
-
-    def test_get_enable_custom_ca_trust(self):
-        self.common_get_enable_custom_ca_trust()
-
-    def test_get_disable_custom_ca_trust(self):
-        self.common_get_disable_custom_ca_trust()
 
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
@@ -1296,7 +1211,6 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
             enable_fips=False,
             mode=CONST_NODEPOOL_MODE_SYSTEM,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
-            enable_custom_ca_trust=False,
             network_profile=self.models.AgentPoolNetworkProfile(),
             security_profile=ground_truth_security_profile,
         )
@@ -1471,26 +1385,6 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
             gpu_instance_profile="test_gpu_instance_profile",
             workload_runtime="test_workload_runtime",
-        )
-        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
-
-    def common_set_up_custom_ca_trust(self):
-        dec_1 = AKSPreviewAgentPoolAddDecorator(
-            self.cmd,
-            self.client,
-            {"enable_custom_ca_trust": True},
-            self.resource_type,
-            self.agentpool_decorator_mode,
-        )
-        # fail on passing the wrong agentpool object
-        with self.assertRaises(CLIInternalError):
-            dec_1.set_up_custom_ca_trust(None)
-        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
-        dec_1.context.attach_agentpool(agentpool_1)
-        dec_agentpool_1 = dec_1.set_up_custom_ca_trust(agentpool_1)
-        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
-        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
-            enable_custom_ca_trust=True,
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
@@ -1805,7 +1699,6 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
                 # Add some parameters that would normally set properties
                 "node_count": 3,
                 "node_vm_size": "Standard_D2s_v3",
-                "enable_custom_ca_trust": True,
                 "crg_id": "test_crg_id",
                 "enable_artifact_streaming": True,
             },
@@ -1987,9 +1880,6 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
     def test_set_up_gpu_propertes(self):
         self.common_set_up_gpu_propertes()
 
-    def test_set_up_custom_ca_trust(self):
-        self.common_set_up_custom_ca_trust()
-
     def test_set_up_artifact_streaming(self):
         self.common_set_up_artifact_streaming()
 
@@ -2088,7 +1978,6 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
             mode=CONST_NODEPOOL_MODE_USER,
             scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
-            enable_custom_ca_trust=False,
             network_profile=self.models.AgentPoolNetworkProfile(),
             security_profile=ground_truth_security_profile,
         )
@@ -2126,9 +2015,6 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
 
     def test_set_up_gpu_propertes(self):
         self.common_set_up_gpu_propertes()
-
-    def test_set_up_custom_ca_trust(self):
-        self.common_set_up_custom_ca_trust()
 
     def test_set_up_artifact_streaming(self):
         self.common_set_up_artifact_streaming()
@@ -2225,7 +2111,6 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
             enable_fips=False,
             mode=CONST_NODEPOOL_MODE_SYSTEM,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
-            enable_custom_ca_trust=False,
             network_profile=self.models.AgentPoolNetworkProfile(),
             security_profile=ground_truth_security_profile,
         )
@@ -2285,47 +2170,6 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         if restore_defaults:
             self._restore_defaults_in_agentpool(agentpool)
         return agentpool
-
-    def common_update_custom_ca_trust(self):
-        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_custom_ca_trust": True, "disable_custom_ca_trust": False},
-            self.resource_type,
-            self.agentpool_decorator_mode,
-        )
-        # fail on passing the wrong agentpool object
-        with self.assertRaises(CLIInternalError):
-            dec_1.update_custom_ca_trust(None)
-        agentpool_1 = self.create_initialized_agentpool_instance(
-            enable_custom_ca_trust=False,
-        )
-        dec_1.context.attach_agentpool(agentpool_1)
-        dec_agentpool_1 = dec_1.update_custom_ca_trust(agentpool_1)
-        grond_truth_agentpool_1 = self.create_initialized_agentpool_instance(
-            enable_custom_ca_trust=True,
-        )
-        self.assertEqual(dec_agentpool_1, grond_truth_agentpool_1)
-
-        dec_2 = AKSPreviewAgentPoolUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_custom_ca_trust": False, "disable_custom_ca_trust": True},
-            self.resource_type,
-            self.agentpool_decorator_mode,
-        )
-        # fail on passing the wrong agentpool object
-        with self.assertRaises(CLIInternalError):
-            dec_2.update_custom_ca_trust(None)
-        agentpool_2 = self.create_initialized_agentpool_instance(
-            enable_custom_ca_trust=True,
-        )
-        dec_2.context.attach_agentpool(agentpool_2)
-        dec_agentpool_2 = dec_2.update_custom_ca_trust(agentpool_2)
-        grond_truth_agentpool_2 = self.create_initialized_agentpool_instance(
-            enable_custom_ca_trust=False,
-        )
-        self.assertEqual(dec_agentpool_2, grond_truth_agentpool_2)
 
     def common_update_artifact_streaming(self):
         dec_1 = AKSPreviewAgentPoolUpdateDecorator(
@@ -2742,7 +2586,7 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         # Verify LocalDNS profile wasn't changed
         self.assertEqual(dec_agentpool_2.local_dns_profile, original_local_dns_profile)
 
-        # Test case 3: LocalDNS config with null values
+        # Test case 3: LocalDNS config with null values (should throw InvalidArgumentValueError)
         localdns_config_with_nulls = {
             "mode": "Required",
             "kubeDNSOverrides": None,
@@ -2770,15 +2614,13 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
             
             agentpool_3 = self.create_initialized_agentpool_instance()
             dec_3.context.attach_agentpool(agentpool_3)
-            dec_agentpool_3 = dec_3.update_localdns_profile(agentpool_3)
             
-            # Verify that LocalDNS profile was created with null handling
-            self.assertIsNotNone(dec_agentpool_3.local_dns_profile)
-            self.assertEqual(dec_agentpool_3.local_dns_profile.mode, "Required")
-            # kubeDNSOverrides should be empty dict due to null input
-            self.assertEqual(len(dec_agentpool_3.local_dns_profile.kube_dns_overrides), 0)
-            # vnetDNSOverrides should have one entry
-            self.assertEqual(len(dec_agentpool_3.local_dns_profile.vnet_dns_overrides), 1)
+            # Test case 3 should now throw InvalidArgumentValueError when kubeDNSOverrides is None
+            with self.assertRaises(InvalidArgumentValueError) as context:
+                dec_3.update_localdns_profile(agentpool_3)
+            
+            # Verify the error message contains expected text about DNS overrides
+            self.assertIn("Expected a dictionary for DNS overrides, but got NoneType: None", str(context.exception))
             
         finally:
             os.unlink(config_file_path)
@@ -2819,10 +2661,11 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         process_dns_overrides(dns_overrides_with_nulls, target_dict_2, mock_build_override)
         self.assertEqual(len(target_dict_2), 1)
         
-        # Test case 3: None input (should handle gracefully)
+        # Test case 3: None input (should throw InvalidArgumentValueError)
         target_dict_3 = {}
-        process_dns_overrides(None, target_dict_3, mock_build_override)
-        self.assertEqual(len(target_dict_3), 0)
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            process_dns_overrides(None, target_dict_3, mock_build_override)
+        self.assertIn("Expected a dictionary for DNS overrides, but got NoneType: None", str(context.exception))
         
         # Test case 4: Empty input (should handle gracefully)
         target_dict_4 = {}
@@ -2844,9 +2687,6 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
             self.cmd, self.resource_type, self.agentpool_decorator_mode
         )
         self.client = MockClient()
-
-    def test_update_custom_ca_trust(self):
-        self.common_update_custom_ca_trust()
 
     def test_update_artifact_streaming(self):
         self.common_update_artifact_streaming()
@@ -2937,9 +2777,6 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
             self.cmd, self.resource_type, self.agentpool_decorator_mode
         )
         self.client = MockClient()
-
-    def test_update_custom_ca_trust(self):
-        self.common_update_custom_ca_trust()
 
     def test_update_artifact_streaming(self):
         self.common_update_artifact_streaming()
