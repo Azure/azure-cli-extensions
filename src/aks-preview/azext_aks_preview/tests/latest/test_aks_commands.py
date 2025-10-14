@@ -16465,7 +16465,7 @@ spec:
         # create cluster with --enable-azure-service-mesh
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/IstioCNIPreview "
             "--ssh-key-value={ssh_key_value} "
             "--enable-azure-service-mesh --revision={revision} --output=json"
         )
