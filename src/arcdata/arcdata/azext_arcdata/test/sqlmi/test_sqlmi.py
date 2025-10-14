@@ -141,7 +141,7 @@ class TestSqlmi(object):
     )
     def test_arc_sql_mi_edit_rd_invalid(self, name, rd, az):
         try:
-            result = az(
+            az(
                 "sql mi-arc update --no-wait -n {0} --k8s-namespace {1} --use-k8s --retention-days {2}".format(
                     name, NAMESPACE, rd
                 )
@@ -285,7 +285,7 @@ class TestSqlmi(object):
     )
     def test_arc_sql_mi_create_rd_invalid(self, name, rd, az):
         try:
-            result = az(
+            az(
                 "sql mi-arc create -n {0} --k8s-namespace {1} --use-k8s --retention-days {2}".format(
                     name, NAMESPACE, rd
                 )
@@ -413,7 +413,7 @@ class TestSqlmi(object):
         self, name, replicas, sync_secondary_commit, expected, az
     ):
         try:
-            result = az(
+            az(
                 "az sql mi-arc create --no-wait --dev --use-k8s",
                 name=name,
                 k8s_namespace=NAMESPACE,
@@ -464,7 +464,7 @@ class TestSqlmi(object):
     )
     def test_arc_sql_mi_replicas_invalid(self, name, replicas, expected, az):
         try:
-            result = az(
+            az(
                 "az sql mi-arc create --no-wait --dev --use-k8s",
                 name=name,
                 k8s_namespace=NAMESPACE,
