@@ -62,7 +62,7 @@ class ConnectedClusterPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
 
 class SubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
-    def __init__(self, name_prefix='vnet', location="centralus", resource_group_parameter_name='resource_group', vnet_name=None, vnet_address_prefixes='14.0.0.0/23', subnet_address_prefixes='14.0.0.0/23',
+    def __init__(self, name_prefix='vnet', location="centralus", location_replace_stage="centralus", resource_group_parameter_name='resource_group', vnet_name=None, vnet_address_prefixes='14.0.0.0/23', subnet_address_prefixes='14.0.0.0/23',
                  delegations=None, subnet_name="default", service_endpoints=None, skip_delete=False):
         super(SubnetPreparer, self).__init__(name_prefix, 15)
         self.cli_ctx = get_dummy_cli()
@@ -77,12 +77,17 @@ class SubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.subnet_name = subnet_name
         self.service_endpoints = service_endpoints
         self.skip_delete = skip_delete
+        self.location_replace_stage = location_replace_stage
 
     def create_resource(self, name, **kwargs):
         resource_group = self._get_resource_group(**kwargs)
         subnet_id = "FAKESUBNETID"
+        location = self.location
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = self.location_replace_stage
+
         try:
-            self.live_only_execute(self.cli_ctx, f"az network vnet create --address-prefixes {self.vnet_address_prefixes} -g {resource_group} -n {self.vnet_name} --subnet-name {self.subnet_name} --location {self.location}")
+            self.live_only_execute(self.cli_ctx, f"az network vnet create --address-prefixes {self.vnet_address_prefixes} -g {resource_group} -n {self.vnet_name} --subnet-name {self.subnet_name} --location {location}")
             subnet_command = f"az network vnet subnet update --address-prefixes {self.subnet_address_prefixes} " \
                              f"-n {self.subnet_name} " \
                              f"-g {resource_group} " \

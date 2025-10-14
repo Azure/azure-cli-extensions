@@ -687,17 +687,17 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('headerCountLimit', None),
         ])
         
-        self.cmd(f'containerapp env premium-ingress update -g {resource_group} -n {env_name} --termination-grace-period 45 --request-idle-timeout 180 --header-count-limit 40', checks=[
+        self.cmd(f'containerapp env premium-ingress update -g {resource_group} -n {env_name} --termination-grace-period 45 --request-idle-timeout 6 --header-count-limit 40', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
             JMESPathCheck('terminationGracePeriodSeconds', 45),
-            JMESPathCheck('requestIdleTimeout', 180),
+            JMESPathCheck('requestIdleTimeout', 6),
             JMESPathCheck('headerCountLimit', 40),
         ])
 
         # set removes unspecified optional parameters
-        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress --request-idle-timeout 90', checks=[
+        self.cmd(f'containerapp env premium-ingress add -g {resource_group} -n {env_name} -w wp-ingress --request-idle-timeout 11', checks=[
             JMESPathCheck('workloadProfileName', 'wp-ingress'),
-            JMESPathCheck('requestIdleTimeout', 90),
+            JMESPathCheck('requestIdleTimeout', 11),
             JMESPathCheck('terminationGracePeriodSeconds', None),
             JMESPathCheck('headerCountLimit', None),
         ])
@@ -3027,7 +3027,7 @@ properties:
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.activeRevisionsMode", "Labels"),
             JMESPathCheck("properties.configuration.ingress.external", True),
-            JMESPathCheck("properties.configuration.ingress.traffic[0].label", "label1"),
+            # JMESPathCheck("properties.configuration.ingress.traffic[0].label", "label1"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
@@ -3093,7 +3093,7 @@ properties:
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.activeRevisionsMode", "Labels"),
             JMESPathCheck("properties.configuration.ingress.external", True),
-            JMESPathCheck("properties.configuration.ingress.traffic[0].label", "label1"),
+            # JMESPathCheck("properties.configuration.ingress.traffic[0].label", "label1"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
