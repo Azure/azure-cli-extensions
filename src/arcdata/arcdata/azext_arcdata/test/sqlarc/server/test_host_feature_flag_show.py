@@ -9,6 +9,7 @@ import sys
 
 VCR_RECORD_MODE = "once"  # options: None, once, all, rerecord
 
+
 @pytest.mark.skipif(sys.version_info < (3, 10), reason="requires python3.10 or higher")
 @pytest.mark.usefixtures("setup")
 class Tests_host_feature_flag_show(object):
@@ -40,7 +41,7 @@ class Tests_host_feature_flag_show(object):
     def test_feature_flag_show_no_ff_added(
         self, machine_name, resource_group, feature_name, expected, az
     ):
-        if feature_name != None:
+        if feature_name is not None:
             result = az(
                 "sql server-arc extension feature-flag show",
                 name=feature_name,
@@ -81,7 +82,7 @@ class Tests_host_feature_flag_show(object):
         self, machine_name, resource_group, feature_name, az
     ):
 
-        if feature_name != None:
+        if feature_name is not None:
             result = az(
                 "sql server-arc extension feature-flag show",
                 name=feature_name,
