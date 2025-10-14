@@ -183,7 +183,7 @@ class TestsAvailabilityGroupCreate(object):
             replica_ids="/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/hh-sqldev01-rg/providers/Microsoft.AzureArcData/sqlServerInstances/sql3000",
             databases="appdb01",
             mirroring_port=5022,
-            endpoint_login="FG\\\Administrator",
+            endpoint_login="FG\\Administrator",
             endpoint_auth_mode="WINDOWS_NEGOTIATE",
         )
 
