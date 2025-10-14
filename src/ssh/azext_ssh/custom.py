@@ -216,7 +216,7 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
         # This dynamically creates correct scope api endpoints given generic suffixes that are 4 and 5 segments long
         active_directory_graph_api_array = cmd.cli_ctx.cloud.endpoints.activeDirectoryGraphResourceId.split(".")
         separator = "."
-        scope_postfix = separator.join(active_directory_graph_api_array[1:])  # default to everything after first segment
+        scope_postfix = separator.join(active_directory_graph_api_array[1:])  # default to all but first segment
 
         if len(active_directory_graph_api_array) not in [4, 5]:
             raise azclierror.InvalidArgumentValueError(
