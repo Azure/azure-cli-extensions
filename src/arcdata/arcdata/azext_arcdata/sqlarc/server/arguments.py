@@ -4,8 +4,48 @@
 # license information.
 # ------------------------------------------------------------------------------
 
-from azext_arcdata.sqlarc.server.argument_dicts import *
-from azext_arcdata.sqlarc.server.help_strings import *
+from azext_arcdata.sqlarc.server.argument_dicts import (
+    availability_group_automated_backup_preference,
+    availability_group_availability_mode,
+    availability_group_certificate_name,
+    availability_group_cluster_type,
+    availability_group_databases,
+    availability_group_db_failover,
+    availability_group_dtc_support,
+    availability_group_endpoint_auth_mode,
+    availability_group_endpoint_login,
+    availability_group_failover_mode,
+    availability_group_failure_condition_level,
+    availability_group_health_check_timeout,
+    availability_group_listener_ipv4_addresses,
+    availability_group_listener_ipv4_masks,
+    availability_group_listener_ipv6_addresses,
+    availability_group_listener_name,
+    availability_group_listener_port,
+    availability_group_mirroring_port,
+    availability_group_name,
+    availability_group_no_wait,
+    availability_group_replica_ids,
+    availability_group_required_synchronized_secondaries,
+    availability_group_seeding_mode,
+    availability_group_server_name,
+    esu_enabled,
+    feature_flag_value,
+    license_type,
+    resource_group,
+    skip_instances,
+    sql_server_arc_name,
+    arguments,
+    load_backups_policy_set_arguments,
+    load_confirmation_argument,
+    get_machine_name_argument,
+    getFeatureNameArgument,
+    getNameArgument,
+    getResourceGroupArgument
+)
+from azext_arcdata.sqlarc.server.help_strings import (
+    HELP_RG_ARC_SERVER
+)
 
 
 # These arguments are necessary for all commands in this file
