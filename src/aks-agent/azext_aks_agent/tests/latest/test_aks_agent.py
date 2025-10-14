@@ -16,8 +16,11 @@ from azext_aks_agent.agent.agent import aks_agent, init_log
 from azure.cli.core.util import CLIError
 
 # Mock the holmes modules before any imports that might trigger holmes imports
-sys.modules['holmes'] = Mock()
-sys.modules['holmes.config'] = Mock()
+holmes_mock = Mock()
+holmes_mock.config = Mock()
+holmes_mock.config.Config = Mock()
+sys.modules['holmes'] = holmes_mock
+sys.modules['holmes.config'] = holmes_mock.config
 sys.modules['holmes.core'] = Mock()
 sys.modules['holmes.core.prompt'] = Mock()
 sys.modules['holmes.interactive'] = Mock()
