@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b5
++++++++
+* Introduce the new `az aks agent-init` command for better cli interaction.
+* Separate llm configuration from main agent command for improved clarity and extensibility.
+
 1.0.0b4
 +++++++
 * Fix the --aks-mcp flag to allow true/false values.

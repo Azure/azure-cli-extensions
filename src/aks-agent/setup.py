@@ -9,7 +9,7 @@ from codecs import open as open1
 
 from setuptools import find_packages, setup
 
-VERSION = "1.0.0b4"
+VERSION = "1.0.0b5"
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
@@ -25,6 +25,7 @@ CLASSIFIERS = [
 
 DEPENDENCIES = [
     "holmesgpt==0.12.6; python_version >= '3.10'",
+    "rich==13.9.4",
     "pytest-asyncio>=1.1.0",
 ]
 
