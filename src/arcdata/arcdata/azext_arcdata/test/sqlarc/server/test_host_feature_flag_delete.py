@@ -57,7 +57,7 @@ class Tests_host_feature_flag_delete(object):
                 "ARCBOX-SQL",
                 "arcee-test-1",
                 "RandomFeature",
-                1, # 0
+                1,  # 0
             ),
             (
                 "ARCBOX_SQL-1",
