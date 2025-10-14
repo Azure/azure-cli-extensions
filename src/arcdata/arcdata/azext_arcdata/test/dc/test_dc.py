@@ -129,9 +129,8 @@ class TestDC(object):
         ), "Expected initial message not found in results."
 
         assert (
-            "latest" not in versions,
-            "'latest' version found but not expected in results."
-        )
+            "latest" not in versions
+        ), "'latest' version found but not expected in results."
 
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
