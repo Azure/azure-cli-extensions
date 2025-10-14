@@ -506,7 +506,7 @@ class TestMonitoring(object):
 
             # Create dc with logs and metrics certificate arguments
             #
-            results = az(
+            az(
                 "{0} {1} {2} {3} {4}".format(
                     self._get_dc_create_str(),
                     "{0} {1}".format(
@@ -562,7 +562,6 @@ class TestMonitoring(object):
                 plural="monitors",
             )
             logsui_endpoint = monitor["status"]["logSearchDashboard"]
-            metricsui_endpoint = monitor["status"]["metricsDashboard"]
 
             headers = urllib3.make_headers(
                 basic_auth="{0}:{1}".format("admin", "AAAbbb1234")
@@ -575,7 +574,7 @@ class TestMonitoring(object):
 
             import ssl
 
-            cert = ssl.get_server_certificate(
+            ssl.get_server_certificate(
                 logsui_endpoint[:-1].replace("//", "").split(":")[1:]
             )
 
@@ -583,7 +582,7 @@ class TestMonitoring(object):
                 http = urllib3.PoolManager(assert_hostname=False)
                 resp = http.request("GET", logsui_endpoint, headers=headers)
                 assert False
-            except Exception as e:
+            except Exception:
                 assert True
 
     def _get_dc_create_str(self, use_k8s=True, namespace="test"):
