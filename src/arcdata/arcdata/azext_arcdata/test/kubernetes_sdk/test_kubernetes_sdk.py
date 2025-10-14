@@ -2,6 +2,7 @@ import pydash as _
 from azext_arcdata.kubernetes_sdk.arc_docker_image_service import ArcDataImageService
 from azext_arcdata.core.util import retry_method
 
+
 # todo: these are integration tests used for debugging early,  we need to create recordings and wire these up for unit testing.
 class TestArcDataImageService(object):
     def test_remote_imagetag_list(self):
@@ -32,15 +33,15 @@ class TestArcDataImageService(object):
 
     def test_retry_decorator_success(self):
         retryCount = 0
-        
+
         @retry_method(
-            retry_count=5, 
-            retry_delay=.1, 
-            retry_method_description="retry test", 
+            retry_count=5,
+            retry_delay=.1,
+            retry_method_description="retry test",
             retry_on_exceptions=(ValueError)
         )
         def retry_this():
-            nonlocal retryCount 
+            nonlocal retryCount
             retryCount += 1
             if retryCount < 4:
                 raise ValueError("Should fail")
@@ -49,17 +50,17 @@ class TestArcDataImageService(object):
         results = retry_this()
         assert results == "Retried 4 times"
 
-    def test_retry_decorator_failed(self):              
+    def test_retry_decorator_failed(self):
         @retry_method(
-            retry_count=5, 
-            retry_delay=.1, 
-            retry_method_description="retry test", 
+            retry_count=5,
+            retry_delay=.1,
+            retry_method_description="retry test",
             retry_on_exceptions=(ValueError)
         )
         def retry_this():
             raise ValueError("Should fail")
 
-        try: 
+        try:
             retry_this()
             assert False
         except Exception as e:
