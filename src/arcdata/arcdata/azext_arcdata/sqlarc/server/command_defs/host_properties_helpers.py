@@ -6,7 +6,9 @@
 
 import json
 from azext_arcdata.sqlarc.common.helpers import convert_string_to_bool
-from azext_arcdata.sqlarc.server.constants import *
+from azext_arcdata.sqlarc.server.constants import (
+    valid_license_types
+)
 
 
 def update_license_type(config, value):

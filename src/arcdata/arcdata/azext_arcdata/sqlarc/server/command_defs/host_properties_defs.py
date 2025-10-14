@@ -4,7 +4,12 @@
 # license information.
 # ------------------------------------------------------------------------------
 from knack.log import get_logger
-from azext_arcdata.sqlarc.server.command_defs.host_properties_helpers import *
+from azext_arcdata.sqlarc.server.command_defs.host_properties_helpers import (
+    is_settings_empty,
+    update_esu_enabled,
+    update_excluded_instances_list,
+    update_license_type
+)
 from azext_arcdata.sqlarc.common.helpers import get_machine_name
 from azext_arcdata.core.exceptions import CLIError
 
