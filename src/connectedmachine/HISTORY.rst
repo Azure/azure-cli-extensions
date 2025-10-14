@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.0b2
++++++	
+* Update connectedmachine extension image commands and set subscription id as optional.
+
 2.0.0b1
 +++++	
 * 2024/11/10-preview is used for aaz generation. Migrated to aaz.
