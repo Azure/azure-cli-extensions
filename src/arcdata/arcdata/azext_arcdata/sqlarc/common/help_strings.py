@@ -1,4 +1,8 @@
-from azext_arcdata.sqlarc.common.help_formats import *
+from azext_arcdata.sqlarc.common.help_formats import (
+    help_format_example,
+    help_format_examples_3,
+    help_format_short
+)
 
 HELP_BACKUPS_POLICY = help_format_short.format(
     type="group",

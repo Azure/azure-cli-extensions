@@ -3,9 +3,28 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # ------------------------------------------------------------------------------
-from azext_arcdata.sqlarc.common.help_strings import *  # Note: This implicitly imports help_formats
+from azext_arcdata.sqlarc.common.help_formats import (
+    help_format_short
+)
+from azext_arcdata.sqlarc.common.help_strings import (
+    HELP_BACKUPS_POLICY_DELETE,
+    HELP_BACKUPS_POLICY,
+    HELP_BACKUPS_POLICY_SET,
+    HELP_BACKUPS_POLICY_SHOW
+)
 from knack.help_files import helps
-from azext_arcdata.sqlarc.server.help_strings import *
+from azext_arcdata.sqlarc.server.help_strings import (
+    HELP_AVAILABILITY_GROUP,
+    HELP_AVAILABILITY_GROUP_CREATE,
+    HELP_AVAILABILITY_GROUP_FAILOVER,
+    HELP_HOST,
+    HELP_HOST_FEATURE_FLAG,
+    HELP_HOST_FEATURE_FLAG_DELETE,
+    HELP_HOST_FEATURE_FLAG_SET,
+    HELP_HOST_FEATURE_FLAG_SHOW,
+    HELP_HOST_SET,
+    HELP_HOST_SHOW
+)
 
 helps["sql server-arc"] = help_format_short.format(
     type="group", short="Manage SQL Server enabled by Azure Arc."

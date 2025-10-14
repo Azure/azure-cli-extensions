@@ -321,6 +321,7 @@ helps["sql mi-arc reprovision-replica"] = (
     """
     type: command
     short-summary: {short}
+    long-summary: {long}
     examples:
         - name: {ex1}
           text: >
