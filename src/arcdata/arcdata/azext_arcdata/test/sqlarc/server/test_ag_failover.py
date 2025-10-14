@@ -31,7 +31,7 @@ class TestsAvailabilityGroupFailover(object):
             f"-n {availability_group} -g {resource_group} --server-name {server}",
         )
         assert result.exit_code != 0
-    
+
     @pytest.mark.skipif(sys.version_info < (3, 10), reason="requires python3.10 or higher")
     @pytest.mark.az_vcr(record_mode=VCR_RECORD_MODE)
     @pytest.mark.parametrize(
