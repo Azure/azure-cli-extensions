@@ -14225,31 +14225,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # in addonput.py which enables the Azure Monitor Metrics addon as all the DC* resources
         # have now been created.
         wait_cmd = ' '.join([
-            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--created',
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
             '--interval 60', '--timeout 1800',
         ])
         self.cmd(wait_cmd, checks=[
             self.is_empty(),
         ])
 
-        # Retry up to 10 times with 60-second intervals to allow provisioning to complete
-        show_cmd = 'aks show -g {resource_group} -n {name} --output=json'
-        max_retries = 10
-        for attempt in range(max_retries):
-            try:
-                self.cmd(show_cmd, checks=[
-                    self.check('provisioningState', 'Succeeded'),
-                    self.check('azureMonitorProfile.metrics.enabled', True),
-                    self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
-                    self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 8080),
-                ])
-                break  # Success, exit loop
-            except Exception as e:
-                if attempt < max_retries - 1:
-                    print(f"Attempt {attempt + 1}/{max_retries} failed, retrying in 60 seconds...")
-                    time.sleep(60)
-                else:
-                    raise  # Re-raise on final attempt
+        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('azureMonitorProfile.metrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 8080),
+        ])
 
         # delete
         cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
@@ -14529,7 +14517,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # in addonput.py which enables the Azure Monitor Metrics addon as all the DC* resources
         # have now been created.
         wait_cmd = ' '.join([
-            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--created',
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
             '--interval 60', '--timeout 1800',
         ])
         self.cmd(wait_cmd, checks=[

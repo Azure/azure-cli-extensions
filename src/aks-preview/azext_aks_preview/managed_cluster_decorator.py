@@ -6576,9 +6576,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         addon_profile.enabled = True
 
         # Get or create workspace resource ID
-        logger.info("Headers: %s", dict(self.cmd.cli_ctx.data.get('headers', {})))
-        logger.info("Safe params: %s", self.cmd.cli_ctx.data.get('safe_params', {}))
-        logger.info("Command extension name: %s", self.cmd.cli_ctx.data.get('command_extension_name', ''))
         workspace_resource_id = self.context.raw_param.get("workspace_resource_id")
         if not workspace_resource_id:
             ensure_workspace_func = (
@@ -6588,9 +6585,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.context.get_subscription_id(),
                 self.context.get_resource_group_name()
             )
-        logger.info("Headers: %s", dict(self.cmd.cli_ctx.data.get('headers', {})))
-        logger.info("Safe params: %s", self.cmd.cli_ctx.data.get('safe_params', {}))
-        logger.info("Command extension name: %s", self.cmd.cli_ctx.data.get('command_extension_name', ''))
 
         # Sanitize and configure
         sanitize_func = self.context.external_functions.sanitize_loganalytics_ws_resource_id
