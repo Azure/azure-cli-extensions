@@ -139,7 +139,8 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+    # `acr` cannot be created in stage region
+    @SubnetPreparer(location=TEST_LOCATION, location_replace_stage="eastasia", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_registry_update(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
@@ -209,7 +210,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+    @SubnetPreparer(location=TEST_LOCATION, location_replace_stage="eastasia", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_registry(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
@@ -287,7 +288,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+    @SubnetPreparer(location=TEST_LOCATION, location_replace_stage="eastasia", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_registry_identity(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
@@ -493,8 +494,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_health_probe(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
-        if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastasia"
+ 
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-sp-env-probe', length=24)
