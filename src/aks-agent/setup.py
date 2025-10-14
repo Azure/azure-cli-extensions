@@ -24,8 +24,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "holmesgpt @ git+ssh://git@github.com/robusta-dev/holmesgpt@master",
-    # "holmesgpt==0.14.3; python_version >= '3.10'",
+    "holmesgpt==0.15.0; python_version >= '3.10'",
 ]
 
 with open1("README.rst", "r", encoding="utf-8") as f:

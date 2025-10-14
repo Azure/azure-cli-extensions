@@ -14,8 +14,8 @@ Pending
 
 1.0.0b5
 +++++++
-* Bump holmesgpt to 0.14.3 - Enhanced AI debugging experience and bug fixes
-  * Added TODO list feature to allows holmes to reliably answers questions it wasn’t able to answer before due to early-stopping
+* Bump holmesgpt to 0.15.0 - Enhanced AI debugging experience and bug fixes
+  * Added TODO list feature to allows holmes to reliably answers questions it wasn't able to answer before due to early-stopping
   * Fixed mcp server http connection fails when using socks proxy by adding the missing socks dependency
   * Fixed gpt-5 temperature bug by upgrading litellm and dropping non-1 values for temperature
   * Improved the installation time by removing unnecessary dependencies and move test dependencies to dev dependency group
