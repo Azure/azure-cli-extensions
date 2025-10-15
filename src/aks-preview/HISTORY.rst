@@ -12,6 +12,31 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks nodepool add`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks nodepool update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* `az aks update`: Add new parameter `--kms-infrastructure-encryption` to enable KMS infrastructure encryption on an existing cluster.
+
+18.0.0b44
++++++++
+* Vendor new SDK and bump API version to 2025-08-02-preview.
+* Pre-deprecate `--enable-custom-ca-trust` and `--disable-custom-ca-trust` in `az aks create`, `az aks update` commands.
+* Hide `--enable-managed-system-pool` parameter for `az aks create` for now, as the feature is not ready yet.
+
+18.0.0b43
++++++++
+* Fix `--localdns-config` parameter to handle null values and case-insensitive JSON keys in DNS override sections, preventing crashes with malformed localdns configuration files.
+* Enhance `build_override` function to validate dictionary types and only initialize DNS overrides when present in localdns configuration (case-insensitive).
+* Refactor `build_localdns_profile` function to eliminate code duplication between AgentPool add and update operations.
+
+18.0.0b42
++++++++
+* Fix role assignment failure when using azure-cli version >= `2.77.0`.
+* Add option `Flatcar` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
 18.0.0b41
 +++++++
 * Fix `--localdns-config` parameter to handle null values in JSON configuration files gracefully, preventing crashes when DNS override sections are null.
@@ -32,7 +57,7 @@ Pending
 * Add option `AzureLinuxOSGuard` and `AzureLinux3OSGuard` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 * Add machine command `az aks machine add` to add a machine to an existing machine pool.
 * Add blue-green upgrade strategy support for AKS node pools:
-  - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades. 
+  - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades.
   - `az aks nodepool add/update/upgrade`: Add `--drain-batch-size`, `--drain-timeout-bg`, `--batch-soak-duration`, `--final-soak-duration` parameters to configure blue-green upgrade settings.
 
 18.0.0b38
