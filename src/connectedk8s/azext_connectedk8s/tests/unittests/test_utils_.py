@@ -84,6 +84,10 @@ def test_get_mcr_path():
     input_active_directory = "login.microsoftonline.us"
     expected_output = "mcr.microsoft.com"
     assert(get_mcr_path(input_active_directory) == expected_output)
+
+    input_active_directory = "login.chinacloudapi.cn"
+    expected_output = "mcr.microsoft.com"
+    assert(get_mcr_path(input_active_directory) == expected_output)
     
     input_active_directory = "https://login.microsoftonline.microsoft.foo"
     expected_output = "mcr.microsoft.foo"
