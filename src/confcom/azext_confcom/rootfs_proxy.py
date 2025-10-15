@@ -89,6 +89,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         self,
         image: str,
         tag: str,
+        platform: str = "linux/amd64",
         tar_location: str = "",
         faster_hashing=False
     ) -> List[str]:
@@ -114,7 +115,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             arg_list += ["-b"]
 
         # add the image to the end of the parameter list
-        arg_list += ["roothash", "-i", f"{image_name}"]
+        arg_list += ["roothash", "-i", f"{image_name}", "--platform", platform]
 
         item = subprocess.run(
             arg_list,
