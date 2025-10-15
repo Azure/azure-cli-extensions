@@ -26,7 +26,7 @@ Pending
 * Pre-deprecate `--enable-custom-ca-trust` and `--disable-custom-ca-trust` in `az aks create`, `az aks update` commands.
 * Hide `--enable-managed-system-pool` parameter for `az aks create` for now, as the feature is not ready yet.
 
-18.0.0b45
+19.0.0b2
 +++++++
 * `az aks create`: Add new parameter `--enable-opentelemetry-metrics` to enable OTLP feature for metrics addon.
 * `az aks update`: Add new parameter `--enable-opentelemetry-metrics` to enable OTLP feature for metrics addon.
