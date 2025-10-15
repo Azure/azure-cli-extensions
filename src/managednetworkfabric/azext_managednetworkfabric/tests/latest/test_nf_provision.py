@@ -36,7 +36,7 @@ def step_provision(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric provision --resource-name {provisionNFName} --resource-group {provisionNFRGName}"
+        "az networkfabric fabric provision --resource-name {name} --resource-group {resourceGroup}"
     )
 
 
@@ -47,12 +47,8 @@ class GA_NFProvisionScenarioTest1(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
-                "provisionNFRGName": CONFIG.get(
-                    "NETWORK_FABRIC_PROVISION", "provision_nf_resource_group"
-                ),
-                "provisionNFName": CONFIG.get(
-                    "NETWORK_FABRIC_PROVISION", "provision_nf_name"
-                ),
+                "name": CONFIG.get("NETWORK_FABRIC", "name"),
+                "resourceGroup": CONFIG.get("NETWORK_FABRIC", "resource_group"),
             }
         )
 

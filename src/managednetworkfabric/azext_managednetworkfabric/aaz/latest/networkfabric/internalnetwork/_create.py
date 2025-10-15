@@ -26,9 +26,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2025-07-15"],
         ]
     }
 
@@ -145,17 +145,17 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.native_ipv4_prefix_limit = AAZObjectArg(
-            options=["--native-ipv4-prefix-limit"],
+            options=["--nat-ipv4-prefix-limit", "--native-ipv4-prefix-limit"],
             arg_group="Properties",
             help="Native IPv4 Prefix Limit Configuration properties.",
         )
         _args_schema.native_ipv6_prefix_limit = AAZObjectArg(
-            options=["--native-ipv6-prefix-limit"],
+            options=["--nat-ipv6-prefix-limit", "--native-ipv6-prefix-limit"],
             arg_group="Properties",
             help="Native IPv6 Prefix Limit Configuration properties.",
         )
         _args_schema.static_route_configuration = AAZObjectArg(
-            options=["--static-route-configuration"],
+            options=["--static-route-config", "--static-route-configuration"],
             arg_group="Properties",
             help="Static Route Configuration properties.",
         )
@@ -247,12 +247,30 @@ class Create(AAZCommand):
             help="BMP Monitoring configuration state.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
+        bmp_configuration.export_policy_configuration = AAZObjectArg(
+            options=["export-policy-configuration"],
+            help="BMP Export Policy configuration.",
+        )
         bmp_configuration.neighbor_ip_exclusions = AAZListArg(
             options=["neighbor-ip-exclusions"],
             help="BMP Collector Address.",
             fmt=AAZListArgFormat(
                 min_length=1,
             ),
+        )
+
+        export_policy_configuration = cls._args_schema.bgp_configuration.bmp_configuration.export_policy_configuration
+        export_policy_configuration.export_policies = AAZListArg(
+            options=["export-policies"],
+            help="Export Policy for the BGP Monitoring Protocol (BMP) Configuration.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
+        )
+
+        export_policies = cls._args_schema.bgp_configuration.bmp_configuration.export_policy_configuration.export_policies
+        export_policies.Element = AAZStrArg(
+            enum={"All": "All", "LocalRib": "LocalRib", "Post-Policy": "Post-Policy", "Pre-Policy": "Pre-Policy"},
         )
 
         neighbor_ip_exclusions = cls._args_schema.bgp_configuration.bmp_configuration.neighbor_ip_exclusions
@@ -586,7 +604,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -650,7 +668,16 @@ class Create(AAZCommand):
             bmp_configuration = _builder.get(".properties.bgpConfiguration.bmpConfiguration")
             if bmp_configuration is not None:
                 bmp_configuration.set_prop("bmpConfigurationState", AAZStrType, ".bmp_configuration_state")
+                bmp_configuration.set_prop("exportPolicyConfiguration", AAZObjectType, ".export_policy_configuration")
                 bmp_configuration.set_prop("neighborIpExclusions", AAZListType, ".neighbor_ip_exclusions")
+
+            export_policy_configuration = _builder.get(".properties.bgpConfiguration.bmpConfiguration.exportPolicyConfiguration")
+            if export_policy_configuration is not None:
+                export_policy_configuration.set_prop("exportPolicies", AAZListType, ".export_policies")
+
+            export_policies = _builder.get(".properties.bgpConfiguration.bmpConfiguration.exportPolicyConfiguration.exportPolicies")
+            if export_policies is not None:
+                export_policies.set_elements(AAZStrType, ".")
 
             neighbor_ip_exclusions = _builder.get(".properties.bgpConfiguration.bmpConfiguration.neighborIpExclusions")
             if neighbor_ip_exclusions is not None:
@@ -806,6 +833,11 @@ class Create(AAZCommand):
             properties.native_ipv6_prefix_limit = AAZObjectType(
                 serialized_name="nativeIpv6PrefixLimit",
             )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                nullable=True,
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -867,9 +899,20 @@ class Create(AAZCommand):
             bmp_configuration.bmp_configuration_state = AAZStrType(
                 serialized_name="bmpConfigurationState",
             )
+            bmp_configuration.export_policy_configuration = AAZObjectType(
+                serialized_name="exportPolicyConfiguration",
+            )
             bmp_configuration.neighbor_ip_exclusions = AAZListType(
                 serialized_name="neighborIpExclusions",
             )
+
+            export_policy_configuration = cls._schema_on_200_201.properties.bgp_configuration.bmp_configuration.export_policy_configuration
+            export_policy_configuration.export_policies = AAZListType(
+                serialized_name="exportPolicies",
+            )
+
+            export_policies = cls._schema_on_200_201.properties.bgp_configuration.bmp_configuration.export_policy_configuration.export_policies
+            export_policies.Element = AAZStrType()
 
             neighbor_ip_exclusions = cls._schema_on_200_201.properties.bgp_configuration.bmp_configuration.neighbor_ip_exclusions
             neighbor_ip_exclusions.Element = AAZStrType()

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}", "2025-07-15"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -155,6 +155,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -173,18 +174,56 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.properties
             properties.administrative_state = AAZStrType(
                 serialized_name="administrativeState",
                 flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
+            properties.certificate_rotation_status = AAZListType(
+                serialized_name="certificateRotationStatus",
+                flags={"read_only": True},
+            )
             properties.configuration_state = AAZStrType(
                 serialized_name="configurationState",
                 flags={"read_only": True},
             )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
+            )
+            properties.identity_selector = AAZObjectType(
+                serialized_name="identitySelector",
             )
             properties.last_operation = AAZObjectType(
                 serialized_name="lastOperation",
@@ -205,6 +244,11 @@ class Wait(AAZWaitCommand):
             properties.network_device_sku = AAZStrType(
                 serialized_name="networkDeviceSku",
             )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                nullable=True,
+                flags={"read_only": True},
+            )
             properties.network_rack_id = AAZStrType(
                 serialized_name="networkRackId",
                 flags={"read_only": True},
@@ -217,6 +261,10 @@ class Wait(AAZWaitCommand):
                 serialized_name="rwDeviceConfig",
                 flags={"read_only": True},
             )
+            properties.secret_rotation_status = AAZListType(
+                serialized_name="secretRotationStatus",
+                flags={"read_only": True},
+            )
             properties.serial_number = AAZStrType(
                 serialized_name="serialNumber",
                 flags={"required": True},
@@ -225,8 +273,102 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
 
+            certificate_rotation_status = cls._schema_on_200.properties.certificate_rotation_status
+            certificate_rotation_status.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.certificate_rotation_status.Element
+            _element.certificate_archive_reference = AAZObjectType(
+                serialized_name="certificateArchiveReference",
+                flags={"read_only": True},
+            )
+            _element.certificate_type = AAZStrType(
+                serialized_name="certificateType",
+                flags={"read_only": True},
+            )
+            _element.expire_time = AAZStrType(
+                serialized_name="expireTime",
+                flags={"read_only": True},
+            )
+            _element.last_rotation_time = AAZStrType(
+                serialized_name="lastRotationTime",
+                flags={"read_only": True},
+            )
+            _element.synchronization_status = AAZStrType(
+                serialized_name="synchronizationStatus",
+                flags={"read_only": True},
+            )
+
+            certificate_archive_reference = cls._schema_on_200.properties.certificate_rotation_status.Element.certificate_archive_reference
+            certificate_archive_reference.certificate_name = AAZStrType(
+                serialized_name="certificateName",
+                flags={"read_only": True},
+            )
+            certificate_archive_reference.certificate_version = AAZStrType(
+                serialized_name="certificateVersion",
+                flags={"read_only": True},
+            )
+            certificate_archive_reference.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            certificate_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+                flags={"read_only": True},
+            )
+
+            identity_selector = cls._schema_on_200.properties.identity_selector
+            identity_selector.identity_type = AAZStrType(
+                serialized_name="identityType",
+                flags={"required": True},
+            )
+            identity_selector.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
+                nullable=True,
+            )
+
             last_operation = cls._schema_on_200.properties.last_operation
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            secret_rotation_status = cls._schema_on_200.properties.secret_rotation_status
+            secret_rotation_status.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.secret_rotation_status.Element
+            _element.last_rotation_time = AAZStrType(
+                serialized_name="lastRotationTime",
+                flags={"read_only": True},
+            )
+            _element.secret_archive_reference = AAZObjectType(
+                serialized_name="secretArchiveReference",
+                flags={"read_only": True},
+            )
+            _element.secret_type = AAZStrType(
+                serialized_name="secretType",
+                flags={"read_only": True},
+            )
+            _element.synchronization_status = AAZStrType(
+                serialized_name="synchronizationStatus",
+                flags={"read_only": True},
+            )
+
+            secret_archive_reference = cls._schema_on_200.properties.secret_rotation_status.Element.secret_archive_reference
+            secret_archive_reference.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            secret_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_name = AAZStrType(
+                serialized_name="secretName",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_version = AAZStrType(
+                serialized_name="secretVersion",
                 flags={"read_only": True},
             )
 
