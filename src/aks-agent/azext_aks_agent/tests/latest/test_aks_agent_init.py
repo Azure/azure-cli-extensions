@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import sys
 import types
 import unittest
 from unittest.mock import patch, MagicMock
@@ -22,7 +21,7 @@ mock_holmes = types.SimpleNamespace(
             ERROR_COLOR=MagicMock(),
             HELP_COLOR=MagicMock(),
         ),
-        console=mock_console_mod,  # 添加 console 子模块
+        console=mock_console_mod,
     )
 )
 
@@ -32,20 +31,25 @@ mock_rich = types.SimpleNamespace(
     )
 )
 
-# 注册所有可能被 import 的路径
-sys.modules.update({
-    'holmes': mock_holmes,
-    'holmes.interactive': mock_holmes.interactive,
-    'holmes.utils': mock_holmes.utils,
-    'holmes.utils.colors': mock_holmes.utils.colors,
-    'holmes.utils.console': mock_holmes.utils.console,
-    'holmes.utils.console.logging': mock_holmes.utils.console.logging,
-    'rich': mock_rich,
-    'rich.console': mock_rich.console,
-})
-
 
 class TestAksAgentInit(unittest.TestCase):
+
+    def setUp(self):
+        patcher = patch.dict(
+            'sys.modules',
+            {
+                'holmes': mock_holmes,
+                'holmes.interactive': mock_holmes.interactive,
+                'holmes.utils': mock_holmes.utils,
+                'holmes.utils.colors': mock_holmes.utils.colors,
+                'holmes.utils.console': mock_holmes.utils.console,
+                'holmes.utils.console.logging': mock_holmes.utils.console.logging,
+                'rich': mock_rich,
+                'rich.console': mock_rich.console,
+            }
+        )
+        self.addCleanup(patcher.stop)
+        patcher.start()
 
     @patch('holmes.interactive.SlashCommands')
     @patch('holmes.utils.colors.ERROR_COLOR')
