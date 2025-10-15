@@ -62,8 +62,7 @@ def get_mcr_path(active_directory_endpoint: str) -> str:
     active_directory_array = active_directory_endpoint.split(".")
 
     # For US Government and China clouds, use public mcr
-    if (active_directory_endpoint.endswith(".us") or 
-        active_directory_endpoint.endswith(".cn")):
+    if active_directory_endpoint.endswith((".us", ".cn")):
         return "mcr.microsoft.com"
 
     # Default MCR postfix
