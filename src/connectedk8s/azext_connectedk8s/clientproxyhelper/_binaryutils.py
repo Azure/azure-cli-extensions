@@ -76,7 +76,7 @@ def _download_proxy_from_MCR(
     operating_system: str,
     architecture: str,
 ) -> None:
-    mcr_url = utils.get_mcr_path(cmd)
+    mcr_url = utils.get_mcr_path(cmd.cli_ctx.cloud.endpoints.active_directory)
 
     mar_target = f"{mcr_url}/{consts.CLIENT_PROXY_MCR_TARGET}/{operating_system.lower()}/{architecture}/arc-proxy"
     logger.debug(
