@@ -25,6 +25,7 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_MONITORING_ADDON_NAME_CAMELCASE,
     CONST_NETWORK_DATAPLANE_CILIUM,
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
@@ -2460,18 +2461,34 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 # Check if Azure Monitor logs is being enabled in this command
                 enable_azure_monitor_logs_in_command = self.raw_param.get("enable_azure_monitor_logs")
 
-                # Check if monitoring addon is currently enabled in the cluster
+                # Check if Azure Monitor logs is currently enabled in the cluster
+                # This can be in two places:
+                # 1. New API: azureMonitorProfile.containerInsights.enabled
+                # 2. Legacy: addonProfiles.omsagent.enabled (or omsAgent with camelCase)
                 addon_consts = self.get_addon_consts()
                 CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
 
-                monitoring_addon_currently_enabled = (
-                    self.mc.addon_profiles and
-                    CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles and
-                    self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+                # Check new API location
+                container_insights_enabled = (
+                    self.mc.azure_monitor_profile and
+                    self.mc.azure_monitor_profile.container_insights and
+                    self.mc.azure_monitor_profile.container_insights.enabled
                 )
 
-                # Allow OpenTelemetry logs if monitoring addon is either:
-                # 1. Currently enabled in the cluster, OR
+                # Check legacy addon location (try both lowercase and camelCase)
+                monitoring_addon_enabled = False
+                if self.mc.addon_profiles:
+                    # Try lowercase first (constant value)
+                    if CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles:
+                        monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+                    # Try camelCase variant (what Azure actually returns)
+                    elif CONST_MONITORING_ADDON_NAME_CAMELCASE in self.mc.addon_profiles:
+                        monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME_CAMELCASE].enabled
+
+                monitoring_addon_currently_enabled = container_insights_enabled or monitoring_addon_enabled
+
+                # Allow OpenTelemetry logs if monitoring is either:
+                # 1. Currently enabled in the cluster (via new API or legacy addon), OR
                 # 2. Being enabled in this command
                 if not (monitoring_addon_currently_enabled or enable_azure_monitor_logs_in_command):
                     raise ArgumentUsageError(
@@ -5848,9 +5865,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
                 )
 
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
-                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=False)
-            )
+            # Create or update the metrics config, setting enabled=False and clearing the port
+            if mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics is None:
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
+                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=False)
+                )
+            else:
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled = False
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port = None
 
         # Handle disable OpenTelemetry logs updates
         if self.context.get_disable_opentelemetry_logs():
@@ -5861,9 +5883,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
                 )
 
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
-                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=False)
-            )
+            # Create or update the logs config, setting enabled=False and clearing the port
+            if mc.azure_monitor_profile.app_monitoring.open_telemetry_logs is None:
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
+                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=False)
+                )
+            else:
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled = False
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.port = None
 
         # Handle standalone port updates for OpenTelemetry metrics
         if (self.context.get_opentelemetry_metrics_port() and
@@ -6570,9 +6597,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.addon_profiles = {}
 
         CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-        addon_profile = mc.addon_profiles.get(
-            CONST_MONITORING_ADDON_NAME,
-            self.models.ManagedClusterAddonProfile(enabled=False))
+
+        # Detect existing key (could be "omsagent" or "omsAgent" from Azure API)
+        existing_key = None
+        if CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
+            existing_key = CONST_MONITORING_ADDON_NAME
+        elif CONST_MONITORING_ADDON_NAME_CAMELCASE in mc.addon_profiles:
+            existing_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
+
+        if existing_key:
+            addon_profile = mc.addon_profiles[existing_key]
+        else:
+            addon_profile = self.models.ManagedClusterAddonProfile(enabled=False)
+            existing_key = CONST_MONITORING_ADDON_NAME
+
         addon_profile.enabled = True
 
         # Get or create workspace resource ID
@@ -6608,13 +6646,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # Replace the entire config, not just individual keys
         addon_profile.config = new_config
 
-        mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
+        mc.addon_profiles[existing_key] = addon_profile
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
         # Call ensure_container_insights_for_monitoring with all parameters (similar to postprocessing)
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
         if (mc.addon_profiles and
-                CONST_MONITORING_ADDON_NAME in mc.addon_profiles and
-                mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled):
+                existing_key in mc.addon_profiles and
+                mc.addon_profiles[existing_key].enabled):
 
             # Set intermediate value to trigger postprocessing
             self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
@@ -6625,18 +6662,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
         CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-        # Check if the addon profile exists
-        has_monitoring_addon = (
-            mc.addon_profiles and
-            CONST_MONITORING_ADDON_NAME in mc.addon_profiles
-        )
+        # Check if the addon profile exists (check both lowercase and camelCase)
+        addon_key = None
+        if mc.addon_profiles:
+            if CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
+                addon_key = CONST_MONITORING_ADDON_NAME
+            elif CONST_MONITORING_ADDON_NAME_CAMELCASE in mc.addon_profiles:
+                addon_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
 
         # If the addon profile doesn't exist at all, there's nothing to disable
-        if not has_monitoring_addon:
+        if not addon_key:
             return
 
         # Check if Azure Monitor logs (monitoring addon) is currently enabled
-        azure_monitor_logs_enabled = mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+        azure_monitor_logs_enabled = mc.addon_profiles[addon_key].enabled
 
         # Check if OpenTelemetry logs are enabled and prompt for confirmation
         opentelemetry_logs_enabled = (
@@ -6655,7 +6694,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 raise CLIError("Operation cancelled.")
 
         # Check if MSI auth is enabled - if so, cleanup DCR/DCRA BEFORE disabling (same as aks_disable_addons)
-        addon_config = mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config
+        addon_config = mc.addon_profiles[addon_key].config
         has_msi_auth_key = addon_config and CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config
         msi_auth_enabled = (addon_config and has_msi_auth_key and
                             str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true")
@@ -6665,33 +6704,42 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Fetch the current cluster state from Azure (same as aks_disable_addons line 2791)
             current_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
 
-            try:
-                # Use the current cluster's addon profile for cleanup (not the modified mc object)
-                self.context.external_functions.ensure_container_insights_for_monitoring(
-                    self.cmd,
-                    current_cluster.addon_profiles[CONST_MONITORING_ADDON_NAME],
-                    self.context.get_subscription_id(),
-                    self.context.get_resource_group_name(),
-                    self.context.get_name(),
-                    current_cluster.location,
-                    remove_monitoring=True,
-                    aad_route=True,
-                    create_dcr=False,
-                    create_dcra=True,
-                    enable_syslog=False,
-                    data_collection_settings=None,
-                    ampls_resource_id=None,
-                    enable_high_log_scale_mode=False
-                )
-            except TypeError:
-                # Ignore TypeError just like aks_disable_addons does (line 2823)
-                pass
+            # Find the addon key in current_cluster (it may have different casing)
+            current_addon_key = None
+            if current_cluster.addon_profiles:
+                if CONST_MONITORING_ADDON_NAME in current_cluster.addon_profiles:
+                    current_addon_key = CONST_MONITORING_ADDON_NAME
+                elif CONST_MONITORING_ADDON_NAME_CAMELCASE in current_cluster.addon_profiles:
+                    current_addon_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
+
+            if current_addon_key:
+                try:
+                    # Use the current cluster's addon profile for cleanup (not the modified mc object)
+                    self.context.external_functions.ensure_container_insights_for_monitoring(
+                        self.cmd,
+                        current_cluster.addon_profiles[current_addon_key],
+                        self.context.get_subscription_id(),
+                        self.context.get_resource_group_name(),
+                        self.context.get_name(),
+                        current_cluster.location,
+                        remove_monitoring=True,
+                        aad_route=True,
+                        create_dcr=False,
+                        create_dcra=True,
+                        enable_syslog=False,
+                        data_collection_settings=None,
+                        ampls_resource_id=None,
+                        enable_high_log_scale_mode=False
+                    )
+                except TypeError:
+                    # Ignore TypeError just like aks_disable_addons does (line 2823)
+                    pass
 
         # Now disable the addon and clear configuration
-        mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled = False
+        mc.addon_profiles[addon_key].enabled = False
 
         # Clear the config to remove old workspace resource ID and other settings
-        mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = None
+        mc.addon_profiles[addon_key].config = None
 
         # Also disable OpenTelemetry logs when disabling Azure Monitor logs
         if opentelemetry_logs_enabled:
