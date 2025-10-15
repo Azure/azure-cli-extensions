@@ -278,6 +278,7 @@ def _set_debug_defaults(cmd, namespace):
         if revision_containers:
             namespace.container = revision_containers[0]["name"]
 
+
 def validate_container_app_exists(cmd, resource_group_name, container_app_name):
     from ._client_factory import handle_raw_exception
     from ._clients import ContainerAppPreviewClient
