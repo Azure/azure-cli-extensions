@@ -227,7 +227,6 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             mode=CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
             vm_size="Standard_D2s_v3",
             count=5,
-            enable_custom_ca_trust=True,
         )
 
         # Mock the update_agentpool_profile_default method
@@ -319,7 +318,6 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
             "nodepool_name": "test_nodepool",
-            "enable_custom_ca_trust": True,
         }
 
         decorator = AKSPreviewAgentPoolUpdateDecorator(

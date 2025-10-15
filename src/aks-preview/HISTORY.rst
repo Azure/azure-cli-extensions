@@ -11,6 +11,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+19.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks nodepool add`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks nodepool update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
 * `az aks update`: Add new parameter `--kms-infrastructure-encryption` to enable KMS infrastructure encryption on an existing cluster.
 
 18.0.0b44
