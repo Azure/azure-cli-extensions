@@ -1,6 +1,6 @@
 # Azure CLI AKS Live Test Pipeline & Azure CLI AKS Unit Test Pipeline
 
-These pipelines are used to test newly added aks commands in module aks-preview (azure-cli-extensions) / acs (azure-cli, not covered by default). For more details, you may refer to this [wiki](https://dev.azure.com/msazure/CloudNativeCompute/_wiki/wikis/CloudNativeCompute.wiki/156735/CLI-AKS-Live-Unit-Test-Pipeline).
+These pipelines are used to test newly added aks commands in module aks-preview (azure-cli-extensions) / acs (azure-cli, not covered by default). For more details, you may refer to this [wiki](https://dev.azure.com/msazure/CloudNativeCompute/_wiki/wikis/CloudNativeCompute.wiki/358312/AZCLI-AKS-Live-Unit-Test-Pipelines).
 
 ## How to use
 
