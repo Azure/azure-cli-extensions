@@ -61,8 +61,13 @@ logger = get_logger(__name__)
 def get_mcr_path(active_directory_endpoint: str) -> str:
     active_directory_array = active_directory_endpoint.split(".")
 
-    # default for public, mc, ff clouds
-    mcr_postfix = ".com"
+    # For US Government and China clouds, use public mcr
+    if (active_directory_endpoint.endswith(".us") or 
+        active_directory_endpoint.endswith(".cn")):
+        return "mcr.microsoft.com"
+
+    # Default MCR postfix
+    mcr_postfix = "com"
     # special cases for USSec, exclude part of suffix
     if len(active_directory_array) == 4 and active_directory_array[2] == "microsoft":
         mcr_postfix = active_directory_array[3]
