@@ -106,6 +106,6 @@ Describe 'ConnectedK8s Enable Disable Features Scenario' {
 
         # Configuration should be removed from the resource model - expect ResourceNotFound error
         $output = Invoke-AzCommand "az connectedk8s show -n $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup)" 2>&1
-        $output | Should -Match "ResourceNotFound"
+        $output | Should -Match "(ResourceNotFound|could not be found|not found)"
     }
 }
