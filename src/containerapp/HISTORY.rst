@@ -7,6 +7,13 @@ upcoming
 
 1.2.0b4
 ++++++
+* 'az containerapp function list': List functions in a container app
+* 'az containerapp function show': Show specific function in a container app
+* 'az containerapp function keys show': Show specific function key in a container app
+* 'az containerapp function keys list': List function keys in a container app
+* 'az containerapp function keys set': Create a new or update an existing function key in a container app
+* 'az containerapp function invocations summary': Get function invocation summary from Application Insights
+* 'az containerapp function invocations traces': Get function invocation traces from Application Insights
 * 'az containerapp update/up': Disallow changing `--revisions-mode` to Labels.
 * 'az containerapp session code-interpreter': Fix `--path` in examples
 * 'az containerapp sessionpool create/update': Support `--lifecycle-type` and `--max-alive-period`
@@ -14,6 +21,7 @@ upcoming
 * 'az containerapp env premium-ingress': Deprecate `--min-replicas` and `--max-replicas` parameters, use workload profile scale instead.
 * 'az containerapp sessionpool create/update': Support `--probe-yaml`
 * 'az containerapp session stop': Support stop session for custom container sessions
+* 'az containerapp debug': Support `--command` to run a command inside the container and exit
 
 1.2.0b3
 ++++++
