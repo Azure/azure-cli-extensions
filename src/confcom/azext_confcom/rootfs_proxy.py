@@ -32,28 +32,28 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         if not os.path.exists(bin_folder):
             os.makedirs(bin_folder)
 
-        # get the most recent release artifacts from github
-        r = requests.get("https://api.github.com/repos/microsoft/integrity-vhd/releases")
-        r.raise_for_status()
-        needed_assets = ["dmverity-vhd", "dmverity-vhd.exe"]
-        # these should be newest to oldest
-        for release in r.json():
-            # search for both windows and linux binaries
-            needed_asset_info = [asset for asset in release["assets"] if asset["name"] in needed_assets]
-            if len(needed_asset_info) == len(needed_assets):
-                for asset in needed_asset_info:
-                    # say which version we're downloading
-                    print(f"Downloading integrity-vhd version {release['tag_name']}")
-                    # get the download url for the dmverity-vhd file
-                    exe_url = asset["browser_download_url"]
-                    # download the file
-                    r = requests.get(exe_url)
-                    r.raise_for_status()
-                    # save the file to the bin folder
+        # These will normally be the same, I'm splitting them here to get the
+        # modified windows binary separately
+        asset_to_version = {
+            "dmverity-vhd": "v1.6",
+            "dmverity-vhd.exe": "dev-platform-support"
+        }
+
+        for asset_name, release_version in asset_to_version.items():
+            release_req = requests.get(f"https://api.github.com/repos/microsoft/integrity-vhd/releases/tags/{release_version}")
+            release_req.raise_for_status()
+            asset_found = False
+            for asset in release_req.json()["assets"]:
+                if asset["name"] == asset_name:
+                    asset_found = True
+                    print(f"Downloading integrity-vhd version {release_req.json()['tag_name']}")
+                    asset_req = requests.get(asset["browser_download_url"])
+                    asset_req.raise_for_status()
                     with open(os.path.join(bin_folder, asset["name"]), "wb") as f:
-                        f.write(r.content)
-                # stop iterating through releases
-                break
+                        f.write(asset_req.content)
+                    break
+            assert asset_found, f"Could not find {asset} in release {release_version}"
+
 
     def __init__(self):
         script_directory = os.path.dirname(os.path.realpath(__file__))
