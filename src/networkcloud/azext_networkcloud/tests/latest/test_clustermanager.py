@@ -5,6 +5,9 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
+# customizations-custom-params={"clustermanager_create": ["--mi-system-assigned", "--mi-user-assigned"]}
+# customizations-custom-params={"clustermanager_update": ["--mi-system-assigned", "--mi-user-assigned"]}
+
 """
 ClusterManager test scenarios
 """

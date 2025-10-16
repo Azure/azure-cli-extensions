@@ -25,6 +25,7 @@ from azext_confcom._validators import (
     validate_fragment_json,
     validate_fragment_json_policy,
     validate_image_target,
+    validate_stdio,
     validate_upload_fragment,
     validate_infrastructure_svn,
 )
@@ -133,9 +134,15 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_stdio",
-            options_list=("--disable-stdio",),
-            required=False,
+            action="store_true",
             help="Disabling container stdio will disable the ability to see the output of the container in the terminal for Confidential ACI",
+            validator=validate_stdio,
+        )
+        c.argument(
+            "enable_stdio",
+            action="store_true",
+            help="Enable the standard io streams to leave the container",
+            validator=validate_stdio,
         )
         c.argument(
             "diff",
@@ -318,9 +325,15 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_stdio",
-            options_list=("--disable-stdio",),
-            required=False,
+            action="store_true",
             help="Disabling container stdio will disable the ability to see the output of the container in the terminal for Confidential ACI",
+            validator=validate_stdio,
+        )
+        c.argument(
+            "enable_stdio",
+            action="store_true",
+            help="Enable the standard io streams to leave the container",
+            validator=validate_stdio,
         )
         c.argument(
             "debug_mode",

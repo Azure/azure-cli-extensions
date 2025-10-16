@@ -4,6 +4,13 @@ Release History
 ===============
 ===============
 
+##### 1.1.0
+++++++
+* Pointed to ARM API version 2024-10-01
+
+New commands added:
+* perimeter service-tag: list
+
 ##### 1.0.0
 ++++++
 New commands added:

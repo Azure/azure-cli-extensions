@@ -87,6 +87,30 @@ def _get_az_command():
 class CustomActionProperties:
     """Helper class for all POST commands that return extra properties back to the customer"""
 
+    @staticmethod
+    def is_within_directory(directory, target):
+        """
+        Ensure the target path is within the intended directory
+        """
+        abs_directory = os.path.abspath(directory)
+        abs_target = os.path.abspath(target)
+        return os.path.commonpath([abs_directory]) == os.path.commonpath(
+            [abs_directory, abs_target]
+        )
+
+    @staticmethod
+    def safe_extract(tar, path="."):
+        """
+        Validates each file's path before extraction to prevent malicious files from escaping the target directory
+        """
+        for member in tar.getmembers():
+            member_path = os.path.join(path, member.name)
+            if not CustomActionProperties.is_within_directory(path, member_path):
+                raise ValueError(
+                    f"Path traversal detected: {member_path} is outside target directory {path}"
+                )
+        tar.extractall(path)
+
     # Custom handling of response will display the output head and the result_URL/result_ref
     # it will also save files into output directory if provided
     @staticmethod
@@ -120,7 +144,7 @@ class CustomActionProperties:
                 try:
                     with urllib.request.urlopen(result_url) as result:
                         with tarfile.open(fileobj=result, mode="r:gz") as tar:
-                            tar.extractall(path=output_directory)
+                            CustomActionProperties.safe_extract(tar, output_directory)
                             logger.warning(
                                 "Extracted results are available in directory: %s",
                                 output_directory,
@@ -190,7 +214,7 @@ class CustomActionProperties:
                 try:
                     # Extract the downloaded blob
                     with tarfile.open(downloaded_blob_name, mode="r:gz") as tar:
-                        tar.extractall(path=output_directory)
+                        CustomActionProperties.safe_extract(tar, output_directory)
                         logger.warning(
                             "Extracted results are available in directory: %s",
                             output_directory,

@@ -13,16 +13,21 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud clustermanager identity remove",
-    is_preview=True,
 )
 class Remove(AAZCommand):
     """Remove the user or system managed identities.
+
+    :example: Remove the system managed identity from cluster manager
+        az networkcloud clustermanager identity remove --name "clusterManagerName" --resource-group "resourceGroupName" --system-assigned
+
+    :example: Remove the user managed identity from cluster manager
+        az networkcloud clustermanager identity remove --name "clusterManagerName" --resource-group "resourceGroupName" --mi-user-assigned "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI"
     """
 
     _aaz_info = {
-        "version": "2025-07-01-preview",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2025-07-01-preview", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2025-09-01", "identity"],
         ]
     }
 
@@ -172,7 +177,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01-preview",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -271,7 +276,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01-preview",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
