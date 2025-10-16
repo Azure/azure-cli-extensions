@@ -1,8 +1,6 @@
-import sys
 import re
 from azext_arcdata.postgres.constants import (
     API_GROUP,
-    RESOURCE_KIND,
     RESOURCE_KIND_PLURAL,
 )
 import pydash as _
@@ -18,7 +16,6 @@ def resolve_postgres_instances(
     name=None,
     field_filter=None,
     label_filter=None,
-    desired_version=None,
 ) -> list:
 
     client = KubernetesClient.resolve_k8s_client().CustomObjectsApi()
@@ -37,8 +34,8 @@ def resolve_postgres_instances(
     instances = _.map_(items, lambda cr: PostgresCustomResource.from_dict(cr))
 
     if name is not None:
-        instances = _.filter_(
-            instances, lambda i: re.match(name, i.metadata.name)
-        )
+        def name_matches(instance):
+            return re.match(name, instance.metadata.name)
+        instances = _.filter_(instances, name_matches)
 
     return instances

@@ -4,25 +4,9 @@
 # license information.
 # -----------------------------------------------------------------------------
 
-# import azext_arcdata.core.deploy as util
-from knack.cli import CLIError
-from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
-    K8sApiException,
-    KubernetesClient,
-)
 from azext_arcdata.core.constants import DIRECT
-
-from azext_arcdata.core.constants import (
-    ARC_GROUP,
-    DATA_CONTROLLER_CRD_VERSION,
-    DATA_CONTROLLER_PLURAL,
-)
-
-from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import DATA_CONTROLLER_CRD_NAME
-
 from collections import OrderedDict
-from urllib3.exceptions import NewConnectionError, MaxRetryError
-from azext_arcdata.core.util import retry
+from knack.output import format_json
 
 
 def order_endpoints():
@@ -113,5 +97,4 @@ def hierarchical_output(command_result):
             bdc_config=True,
         )
     except Exception:  # -- fallback --
-        from knack.output import format_json
-    return format_json(command_result)
+        return format_json(command_result)

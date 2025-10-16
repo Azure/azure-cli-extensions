@@ -52,14 +52,14 @@ def validate_create(namespace):
         _validate_dns_service(
             name=namespace.primary_dns_name,
             port=namespace.primary_port_number,
-            type="primary",
+            service_type="primary",
         )
 
     if namespace.secondary_dns_name or namespace.secondary_port_number:
         _validate_dns_service(
             name=namespace.secondary_dns_name,
             port=namespace.secondary_port_number,
-            type="secondary",
+            service_type="secondary",
         )
 
     # -- validate active directory args if provided -- #
@@ -95,7 +95,8 @@ def validate_create(namespace):
             or namespace.tde_mode.lower() != "CustomerManaged".lower()
         ):
             raise ValueError(
-                f"To use the protector secret for Transparent Data Encryption (TDE), the TDE mode must be specified and set to 'CustomerManaged', not '{namespace.tde_mode}'."
+                "To use the protector secret for Transparent Data Encryption (TDE), ",
+                f"the TDE mode must be specified and set to 'CustomerManaged', not '{namespace.tde_mode}'."
             )
 
     if namespace.tier:
@@ -200,10 +201,10 @@ def validate_update(namespace):
             )
 
 
-def _validate_dns_service(name, port, type="primary"):
+def _validate_dns_service(name, port, service_type="primary"):
     if name is not None and not _validate_domain_name(name):
         raise ValueError(
-            "The {0} DNS service name '{1}' is invalid.".format(type, name)
+            "The {0} DNS service name '{1}' is invalid.".format(service_type, name)
         )
 
     try:
@@ -249,10 +250,10 @@ def _validate_retention_days(days):
 
 
 def _validate_ad_encryption_types(types_string):
-    types = types_string.replace(" ", "").split(",")
+    encryption_types = types_string.replace(" ", "").split(",")
 
-    for type in types:
-        if type not in AD_SUPPORTED_ENCRYPTION_TYPES:
+    for encryption_type in encryption_types:
+        if encryption_type not in AD_SUPPORTED_ENCRYPTION_TYPES:
             raise ValueError(
                 "One or more specified Active Directory supported encryption types is invalid. "
                 "Allowed values are: {values}".format(

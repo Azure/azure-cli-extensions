@@ -70,7 +70,7 @@ SQLMI_LICENSE_TYPE_ALLOWED_VALUES_MSG_CREATE = (
         SQLMI_LICENSE_TYPE_BASE_PRICE,
         SQLMI_LICENSE_TYPE_LICENSE_INCLUDED,
         SQLMI_LICENSE_TYPE_DISASTER_RECOVERY,
-        SQLMI_LICENSE_TYPE_LICENSE_INCLUDED,
+        SQLMI_LICENSE_TYPE_LICENSE_INCLUDED_AZURE,
     )
 )
 
@@ -124,24 +124,22 @@ SQLMI_TIERS_MAP = {
 SQLMI_TIER_ALLOWED_VALUES_MSG_CREATE = (
     "Allowed values: {0} ({1} for short) "
     "or {2} ({3} for short). Default is "
-    "{4}.".format(
+    "{2}.".format(
         SQLMI_TIER_BUSINESS_CRITICAL,
         SQLMI_TIER_BUSINESS_CRITICAL_SHORT,
         SQLMI_TIER_GENERAL_PURPOSE,
         SQLMI_TIER_GENERAL_PURPOSE_SHORT,
-        SQLMI_TIER_GENERAL_PURPOSE,
     )
 )
 
 # generic message to display allowed values
 SQLMI_TIER_ALLOWED_VALUES_MSG = (
     "Allowed values: {0} ({1} for short) or "
-    "{2} ({3} for short). Default is {4}.".format(
+    "{2} ({3} for short). Default is {2}.".format(
         SQLMI_TIER_BUSINESS_CRITICAL,
         SQLMI_TIER_BUSINESS_CRITICAL_SHORT,
         SQLMI_TIER_GENERAL_PURPOSE,
         SQLMI_TIER_GENERAL_PURPOSE_SHORT,
-        SQLMI_TIER_GENERAL_PURPOSE,
     )
 )
 

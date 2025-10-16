@@ -1,11 +1,11 @@
-import sys
+import pydash as _
 import re
+import sys
 from azext_arcdata.core.util import retry
 from azext_arcdata.sqlmi.constants import (
     API_GROUP,
     RESOURCE_KIND_PLURAL,
 )
-import pydash as _
 from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
 from azext_arcdata.sqlmi.models.sqlmi_cr_model import SqlmiCustomResource
 from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
@@ -30,7 +30,6 @@ def upgrade_sqlmi_instances(
     label_filter=None,
     desired_version=None,
     dry_run=None,
-    force=False,
     use_k8s=None,
 ):
     KubernetesClient.assert_use_k8s(use_k8s)
@@ -45,7 +44,7 @@ def upgrade_sqlmi_instances(
             )
         )
 
-    (datacontroller, dc_config) = KubernetesClient.get_arc_datacontroller(
+    (datacontroller, _) = KubernetesClient.get_arc_datacontroller(
         namespace, use_k8s
     )
     datacontrollerVersion = _.get(datacontroller, "spec.docker.imageTag")
@@ -219,7 +218,8 @@ def patch_all_namespaced_objects(instances: list, namespace, body):
 
 def get_sqlmi_custom_resource(client, name, namespace):
     """
-    Queries the kubernetes cluster and returns the custom resource for a SQL Instance with the given name in the specified namespace
+    Queries the kubernetes cluster and returns the custom resource for a SQL Instancewith the given name in
+    the specified namespace
     :param client: KubernetesClient
     :param name: The name of the SQL Managed Instance
     :param namespace: Namespace where the SQL Managed Instance is deployed.

@@ -37,38 +37,8 @@ class progress_state(str, Enum):
 
 def postgres_server_arc_create(
     client,
-    name,
-    path=None,
-    namespace=None,
-    admin_login_secret=None,
-    certificate_private_key_file=None,
-    certificate_public_key_file=None,
-    cores_limit=None,
-    cores_request=None,
-    log_level=None,
-    memory_limit=None,
-    memory_request=None,
-    service_annotations=None,
-    service_certificate_secret=None,
-    service_labels=None,
-    service_type=None,
-    storage_class_data=None,
-    storage_class_logs=None,
-    storage_class_backups=None,
-    volume_size_data=None,
-    volume_size_logs=None,
-    volume_size_backups=None,
-    no_external_endpoint=None,
-    dev=None,
-    port=None,
-    nowait=False,
     use_k8s=None,
-    ad_connector_name=None,
-    ad_account_name=None,
-    keytab_secret=None,
-    dns_name=None,
-    extensions=None,
-    retention_days=None,
+    **kwargs
 ):
     """
     Create an Azure Arc enabled PostgreSQL server.
@@ -126,6 +96,9 @@ def postgres_server_arc_create(
     """
     if not use_k8s:
         raise ValueError(USE_K8S_EXCEPTION_TEXT)
+    
+    if not kwargs.get("name"):
+        raise ValueError("Please provide a name for the PostgreSQL server.")
 
     cvo = client.args_to_command_value_object(locals())
     try:

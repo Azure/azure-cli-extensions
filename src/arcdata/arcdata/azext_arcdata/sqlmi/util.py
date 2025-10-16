@@ -9,20 +9,8 @@ from azext_arcdata.ad_connector.constants import (
     ACCOUNT_PROVISIONING_MODE_MANUAL,
 )
 from azext_arcdata.ad_connector.util import _get_ad_connector_custom_resource
-from azext_arcdata.ad_connector.validators import _validate_domain_name
-from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import (
-    DATA_CONTROLLER_CRD_NAME,
-)
-from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
 from azext_arcdata.vendored_sdks.kubernetes_sdk.util import check_secret_exists_with_retries
-from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import DATA_CONTROLLER_CRD_NAME
 from azext_arcdata.core.constants import ARC_API_V1BETA2, DNS_NAME_REQUIREMENTS
-from azext_arcdata.core.constants import (
-    ARC_GROUP,
-    DATA_CONTROLLER_CRD_VERSION,
-    DATA_CONTROLLER_PLURAL,
-    DIRECT,
-)
 from azext_arcdata.core.labels import parse_labels
 from azext_arcdata.core.util import (
     check_and_set_kubectl_context,
@@ -33,23 +21,17 @@ from azext_arcdata.core.util import (
 from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     K8sApiException,
     KubernetesClient,
-    KubernetesError,
     http_status_codes,
 )
 from azext_arcdata.sqlmi.constants import (
     SQLMI_LICENSE_TYPES,
-    SQLMI_PASSWORD_MIN_LENGTH,
-    SQLMI_PASSWORD_REQUIRED_GROUPS,
     SQLMI_TIERS,
 )
 from azext_arcdata.sqlmi.exceptions import SqlmiError
 from knack.cli import CLIError
 from urllib3.exceptions import MaxRetryError, NewConnectionError
 
-import pem
-import yaml
 import base64
-import os
 
 CONNECTION_RETRY_ATTEMPTS = 12
 RETRY_INTERVAL = 5

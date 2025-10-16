@@ -178,7 +178,9 @@ def load_arguments(self, _):
             options_list=["--sync-secondary-to-commit"],
             choices=SYNC_SECONDARY_COMMIT_ALLOWED_VALUES,
             default=-1,
-            help="Number of secondary replicas that must be synchronized to commit. Setting this value to -1 will set the number of required synchronized secondaries to '(# of replicas - 1) / 2', rounded down.",
+            help="Number of secondary replicas that must be synchronized to commit. "
+                 "Setting this value to -1 will set the number of required "
+                 "synchronized secondaries to '(# of replicas - 1) / 2', rounded down.",
         )
         c.argument(
             "retention_days",
@@ -221,7 +223,8 @@ def load_arguments(self, _):
         c.argument(
             "secondary_dns_name",
             options_list=["--secondary-dns-name"],
-            help="The secondary service DNS name exposed to the end-users to connect to this Arc-enabled SQL Managed Instance (e.g. sqlinstancename2.contoso.com).",
+            help="The secondary service DNS name exposed to the end-users to connect to this Arc-enabled "
+                 "SQL Managed Instance (e.g. sqlinstancename2.contoso.com).",
         )
         c.argument(
             "secondary_port_number",
@@ -381,7 +384,8 @@ def load_arguments(self, _):
         c.argument(
             "ad_encryption_types",
             options_list=["--ad-encryption-types"],
-            help="A comma-separated list of supported Active Directory encryption types. Must be a subset of the following values: RC4, AES128, AES256",
+            help="A comma-separated list of supported Active Directory encryption types. "
+                 "Must be a subset of the following values: RC4, AES128, AES256",
         )
         # -- Transparent Data Encryption --
         c.argument(
@@ -625,7 +629,9 @@ def load_arguments(self, _):
             "sync_secondary_to_commit",
             options_list=["--sync-secondary-to-commit"],
             choices=SYNC_SECONDARY_COMMIT_ALLOWED_VALUES,
-            help="Number of secondary replicas that must be synchronized to commit. Setting this value to -1 will set the number of required synchronized secondaries to '(# of replicas - 1) / 2', rounded down.",
+            help="Number of secondary replicas that must be synchronized to commit. "
+                 "Setting this value to -1 will set the number of required synchronized "
+                 "secondaries to '(# of replicas - 1) / 2', rounded down.",
         )
         # -- indirect --
         c.argument(
@@ -687,7 +693,8 @@ def load_arguments(self, _):
         c.argument(
             "ad_encryption_types",
             options_list=["--ad-encryption-types"],
-            help="A comma-separated list of supported Active Directory encryption types. Must be a subset of the following values: RC4, AES128, AES256",
+            help="A comma-separated list of supported Active Directory encryption types. "
+                 "Must be a subset of the following values: RC4, AES128, AES256",
         )
         # -- Transparent Data Encryption --
         c.argument(

@@ -5,7 +5,6 @@
 # ------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_arcdata import help
 
 __all__ = ["COMMAND_LOADER_CLS"]
 

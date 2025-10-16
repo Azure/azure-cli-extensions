@@ -7,7 +7,7 @@
 from collections import OrderedDict
 from azure.cli.core.commands import CliCommandType
 from azext_arcdata.sqlmi.client import beget, beget_no_namespace
-import azext_arcdata.sqlmi.validators as validators
+from azext_arcdata.sqlmi import validators
 
 
 def load_commands(self, _):
@@ -19,19 +19,19 @@ def load_commands(self, _):
         for item in result:
             if "resourceGroup" in item:
                 return result  # ARM object already transformed
-            else:
-                items.append(
-                    OrderedDict(
-                        [
-                            ("name", item["name"]),
-                            ("primaryEndpoint", item["primaryEndpoint"]),
-                            ("replicas", item["replicas"]),
-                            ("state", item["state"]),
-                            ("desiredVersion", item["desiredVersion"]),
-                            ("runningVersion", item["runningVersion"]),
-                        ]
-                    )
+
+            items.append(
+                OrderedDict(
+                    [
+                        ("name", item["name"]),
+                        ("primaryEndpoint", item["primaryEndpoint"]),
+                        ("replicas", item["replicas"]),
+                        ("state", item["state"]),
+                        ("desiredVersion", item["desiredVersion"]),
+                        ("runningVersion", item["runningVersion"]),
+                    ]
                 )
+            )
 
         return items
 
