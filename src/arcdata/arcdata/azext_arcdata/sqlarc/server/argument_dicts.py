@@ -8,7 +8,9 @@
 # if the argument can be reused for other SQL Arc commands put it in
 # Common/argument_dicts instead of here
 
-from azext_arcdata.sqlarc.common.argument_loading_defs import *
+from azext_arcdata.sqlarc.common.argument_loading_defs import (
+    name
+)
 
 
 def getNameArg(name_help_override=None):

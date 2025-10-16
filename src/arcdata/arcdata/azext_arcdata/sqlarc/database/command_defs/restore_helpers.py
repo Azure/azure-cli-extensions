@@ -6,7 +6,8 @@
 import pydash as _
 import copy
 import time
-from azext_arcdata.sqlarc.database.validators import *
+
+from azext_arcdata.core.exceptions import CLIError
 
 
 def create_new_database_model_to_restore_to(arm_model, source, time, name):

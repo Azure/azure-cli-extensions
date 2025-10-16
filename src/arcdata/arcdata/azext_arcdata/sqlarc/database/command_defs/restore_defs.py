@@ -4,7 +4,18 @@
 # license information.
 # ------------------------------------------------------------------------------
 from knack.log import get_logger
-from azext_arcdata.sqlarc.database.command_defs.restore_helpers import *
+from azext_arcdata.sqlarc.common.validators import (
+    validate_fci_is_inactive,
+    validate_license_type,
+)
+from azext_arcdata.sqlarc.database.command_defs.restore_helpers import (
+    create_new_database_model_to_restore_to,
+    poll_restore_status
+)
+from azext_arcdata.sqlarc.database.validators import (
+    validate_backups_are_active,
+    validate_time
+)
 from azext_arcdata.core.exceptions import CLIError
 from datetime import datetime, timezone
 
@@ -18,7 +29,7 @@ def restore(client):
         cvo = client.args_to_command_value_object()
 
         # Create a datetime object representing the current date and time if not time was given
-        pitr_time = datetime.now(timezone.utc) if cvo.time == None else cvo.time
+        pitr_time = datetime.now(timezone.utc) if cvo.time is None else cvo.time
 
         full_instance_name = cvo.server.replace("/", "_")
 

@@ -3,9 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # ------------------------------------------------------------------------------
-from azext_arcdata.sqlarc.common.help_strings import *  # Note: This implicitly imports help_formats
+from azext_arcdata.sqlarc.common.help_formats import (
+    help_format_example,
+    help_format_short
+)
+from azext_arcdata.sqlarc.common.help_strings import (
+    HELP_BACKUPS_POLICY,
+    HELP_BACKUPS_POLICY_DELETE,
+    HELP_BACKUPS_POLICY_SET,
+    HELP_BACKUPS_POLICY_SHOW
+)
 from knack.help_files import helps
-from azext_arcdata.sqlarc.database.help_strings import *
 
 helps["sql db-arc"] = help_format_short.format(
     type="group",

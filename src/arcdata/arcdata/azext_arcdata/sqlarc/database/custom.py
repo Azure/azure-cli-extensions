@@ -4,8 +4,14 @@
 # license information.
 # ------------------------------------------------------------------------------
 from knack.log import get_logger
-from azext_arcdata.sqlarc.common.command_defs.backups_policy_defs import *
-from azext_arcdata.sqlarc.database.command_defs.restore_defs import *
+from azext_arcdata.sqlarc.common.command_defs.backups_policy_defs import (
+    backups_policy_delete,
+    backups_policy_set,
+    backups_policy_show
+)
+from azext_arcdata.sqlarc.database.command_defs.restore_defs import (
+    restore
+)
 
 logger = get_logger(__name__)
 
