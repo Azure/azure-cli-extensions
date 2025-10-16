@@ -3,13 +3,13 @@
 Release History
 ===============
 
-1.2.9
+1.3.1
 ++++++
 * bugfix for --exclude-default-fragments flag not working as intended
 
-1.2.8
+1.3.0
 ++++++
-* Made the default minimum SVN of the infrastructure fragment 4
+* Add a new --enable-stdio flag, with a warning if neither this or --disable-stdio is set
 
 1.2.7
 ++++++

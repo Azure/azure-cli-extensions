@@ -66,6 +66,8 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(), help='Allow fat flow logging. By default it is false.')
         c.argument('enable_udp_log_optimization', options_list=['--enable-udp-log-optimization', '--udp-log-optimization'],
                    arg_type=get_three_state_flag(), help='Allow UDP log optimization. By default it is false.')
+        c.argument('enable_dnstap_logging', options_list=['--enable-dnstap-logging', '--dnstap-logging'],
+                   arg_type=get_three_state_flag(), help='Allow dnstap logging. By default it is false.')
 
     with self.argument_context('network firewall', arg_group='Virtual Hub Public Ip') as c:
         c.argument('hub_public_ip_count', options_list=['--public-ip-count', '--count'], type=int,

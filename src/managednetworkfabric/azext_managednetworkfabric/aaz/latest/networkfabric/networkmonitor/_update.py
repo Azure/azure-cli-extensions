@@ -26,9 +26,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors/{}", "2025-07-15"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_monitor_name = AAZStrArg(
-            options=["-n", "--name", "--network-monitor-name"],
+            options=["-n", "--name", "--resource-name", "--network-monitor-name"],
             help="Name of the Network Monitor.",
             required=True,
             id_part="name",
@@ -81,7 +81,11 @@ class Update(AAZCommand):
         bmp_configuration.export_policy = AAZStrArg(
             options=["export-policy"],
             help="Export Policy for the BMP Configuration.",
-            enum={"All": "All", "Post-Policy": "Post-Policy", "Pre-Policy": "Pre-Policy"},
+            enum={"All": "All", "LocalRib": "LocalRib", "Post-Policy": "Post-Policy", "Pre-Policy": "Pre-Policy"},
+        )
+        bmp_configuration.export_policy_configuration = AAZObjectArg(
+            options=["export-policy-configuration"],
+            help="Export Policy configuration properties for the BMP.",
         )
         bmp_configuration.monitored_address_families = AAZListArg(
             options=["monitored-address-families"],
@@ -130,6 +134,17 @@ class Update(AAZCommand):
                 maximum=65535,
                 minimum=1,
             ),
+        )
+
+        export_policy_configuration = cls._args_schema.bmp_configuration.export_policy_configuration
+        export_policy_configuration.export_policies = AAZListArg(
+            options=["export-policies"],
+            help="Export Policy for the BGP Monitoring Protocol (BMP) Configuration.",
+        )
+
+        export_policies = cls._args_schema.bmp_configuration.export_policy_configuration.export_policies
+        export_policies.Element = AAZStrArg(
+            enum={"All": "All", "LocalRib": "LocalRib", "Post-Policy": "Post-Policy", "Pre-Policy": "Pre-Policy"},
         )
 
         monitored_address_families = cls._args_schema.bmp_configuration.monitored_address_families
@@ -253,7 +268,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -278,7 +293,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -288,6 +303,7 @@ class Update(AAZCommand):
             bmp_configuration = _builder.get(".properties.bmpConfiguration")
             if bmp_configuration is not None:
                 bmp_configuration.set_prop("exportPolicy", AAZStrType, ".export_policy")
+                bmp_configuration.set_prop("exportPolicyConfiguration", AAZObjectType, ".export_policy_configuration")
                 bmp_configuration.set_prop("monitoredAddressFamilies", AAZListType, ".monitored_address_families")
                 bmp_configuration.set_prop("monitoredNetworks", AAZListType, ".monitored_networks")
                 bmp_configuration.set_prop("scopeResourceId", AAZStrType, ".scope_resource_id", typ_kwargs={"nullable": True})
@@ -298,6 +314,14 @@ class Update(AAZCommand):
                 bmp_configuration.set_prop("stationName", AAZStrType, ".station_name")
                 bmp_configuration.set_prop("stationNetwork", AAZStrType, ".station_network", typ_kwargs={"nullable": True})
                 bmp_configuration.set_prop("stationPort", AAZIntType, ".station_port")
+
+            export_policy_configuration = _builder.get(".properties.bmpConfiguration.exportPolicyConfiguration")
+            if export_policy_configuration is not None:
+                export_policy_configuration.set_prop("exportPolicies", AAZListType, ".export_policies")
+
+            export_policies = _builder.get(".properties.bmpConfiguration.exportPolicyConfiguration.exportPolicies")
+            if export_policies is not None:
+                export_policies.set_elements(AAZStrType, ".")
 
             monitored_address_families = _builder.get(".properties.bmpConfiguration.monitoredAddressFamilies")
             if monitored_address_families is not None:
@@ -384,6 +408,9 @@ class Update(AAZCommand):
             bmp_configuration.export_policy = AAZStrType(
                 serialized_name="exportPolicy",
             )
+            bmp_configuration.export_policy_configuration = AAZObjectType(
+                serialized_name="exportPolicyConfiguration",
+            )
             bmp_configuration.monitored_address_families = AAZListType(
                 serialized_name="monitoredAddressFamilies",
             )
@@ -416,6 +443,14 @@ class Update(AAZCommand):
             bmp_configuration.station_port = AAZIntType(
                 serialized_name="stationPort",
             )
+
+            export_policy_configuration = cls._schema_on_200.properties.bmp_configuration.export_policy_configuration
+            export_policy_configuration.export_policies = AAZListType(
+                serialized_name="exportPolicies",
+            )
+
+            export_policies = cls._schema_on_200.properties.bmp_configuration.export_policy_configuration.export_policies
+            export_policies.Element = AAZStrType()
 
             monitored_address_families = cls._schema_on_200.properties.bmp_configuration.monitored_address_families
             monitored_address_families.Element = AAZStrType()

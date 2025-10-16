@@ -79,18 +79,20 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd(
             "network firewall create -n {firewall_name} -g {rg} "
-            "--enable-fat-flow-logging --enable-udp-log-optimization",
+            "--enable-fat-flow-logging --enable-udp-log-optimization --enable-dnstap-logging",
             checks=[
                 self.check('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"', "true"),
-                self.check('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"', "true")
+                self.check('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"', "true"),
+                self.check('additionalProperties."Network.AdditionalLogs.EnableDnstapLogging"', "true")
             ]
         )
         self.cmd(
             "network firewall update -n {firewall_name} -g {rg} "
-            "--enable-fat-flow-logging false --enable-udp-log-optimization false",
+            "--enable-fat-flow-logging false --enable-udp-log-optimization false --enable-dnstap-logging false",
             checks=[
                 self.not_exists('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"'),
-                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"')
+                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"'),
+                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableDnstapLogging"')
             ]
         )
 
