@@ -371,6 +371,7 @@ async def _setup_mcp_mode(mcp_manager, config_file: str, model: str, api_key: st
 
     # Generate enhanced MCP config
     mcp_config_dict = ConfigurationGenerator.generate_mcp_config(base_config_dict, server_url)
+    mcp_config_dict.pop("llms", None)  # Remove existing llms to avoid conflicts
 
     # Create temporary config file with MCP settings
     with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as temp_file:
@@ -739,6 +740,7 @@ def _setup_traditional_mode_sync(config_file: str, model: str, api_key: str,
 
     # Generate traditional config
     traditional_config_dict = ConfigurationGenerator.generate_traditional_config(base_config_dict)
+    traditional_config_dict.pop("llms", None)     # Remove existing llms to avoid conflicts
 
     # Create temporary config and load
     with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as temp_file:
