@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists/{}", "2025-07-15"],
         ]
     }
 
@@ -66,7 +66,7 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Access Control List (ACL) Type",
             nullable=True,
-            enum={"ControlPlaneTrafficPolicy": "ControlPlaneTrafficPolicy", "Management": "Management", "Tenant": "Tenant"},
+            enum={"ControlPlaneAcl": "ControlPlaneAcl", "ControlPlaneTrafficPolicy": "ControlPlaneTrafficPolicy", "Management": "Management", "Tenant": "Tenant"},
         )
         _args_schema.acls_url = AAZStrArg(
             options=["--acls-url"],
@@ -87,6 +87,12 @@ class Update(AAZCommand):
             nullable=True,
             enum={"File": "File", "Inline": "Inline"},
         )
+        _args_schema.control_plane_acl_configuration = AAZListArg(
+            options=["--cp-acl-config", "--control-plane-acl-configuration"],
+            arg_group="Properties",
+            help="Access Control List (ACL) configurations.",
+            nullable=True,
+        )
         _args_schema.default_action = AAZStrArg(
             options=["--default-action"],
             arg_group="Properties",
@@ -102,7 +108,7 @@ class Update(AAZCommand):
             enum={"CE": "CE", "ManagementSwitch": "ManagementSwitch", "NPB": "NPB", "ToR": "ToR"},
         )
         _args_schema.dynamic_match_configurations = AAZListArg(
-            options=["--dynamic-match-configurations"],
+            options=["--dynamic-match-configs", "--dynamic-match-configurations"],
             arg_group="Properties",
             help="List of dynamic match configurations.",
             nullable=True,
@@ -111,13 +117,13 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.global_access_control_list_actions = AAZObjectArg(
-            options=["--global-access-control-list-actions"],
+            options=["--global-acl-actions", "--global-access-control-list-actions"],
             arg_group="Properties",
             help="Global Access Control List (ACL) actions",
             nullable=True,
         )
         _args_schema.match_configurations = AAZListArg(
-            options=["--match-configurations"],
+            options=["--match-configs", "--match-configurations"],
             arg_group="Properties",
             help="List of match configurations.",
             nullable=True,
@@ -129,6 +135,119 @@ class Update(AAZCommand):
             options=["--tags"],
             arg_group="Properties",
             help="Resource tags.",
+        )
+
+        control_plane_acl_configuration = cls._args_schema.control_plane_acl_configuration
+        control_plane_acl_configuration.Element = AAZObjectArg()
+
+        _element = cls._args_schema.control_plane_acl_configuration.Element
+        _element.ip_address_type = AAZStrArg(
+            options=["ip-address-type"],
+            help="IP Address Type. IPv4 or IPv6",
+            enum={"IPv4": "IPv4", "IPv6": "IPv6"},
+        )
+        _element.match_configurations = AAZListArg(
+            options=["match-configurations"],
+            help="Access Control List (ACL) match configurations.",
+        )
+
+        match_configurations = cls._args_schema.control_plane_acl_configuration.Element.match_configurations
+        match_configurations.Element = AAZObjectArg()
+
+        _element = cls._args_schema.control_plane_acl_configuration.Element.match_configurations.Element
+        _element.action = AAZObjectArg(
+            options=["action"],
+            help="Action that need to be performed for the matched conditions.",
+        )
+        _element.match_condition = AAZObjectArg(
+            options=["match-condition"],
+            help="Match conditions",
+        )
+        _element.match_configuration_name = AAZStrArg(
+            options=["match-configuration-name"],
+            help="The name of the match configuration.",
+        )
+        _element.sequence_number = AAZIntArg(
+            options=["sequence-number"],
+            help="Sequence Number of the match configuration.",
+            fmt=AAZIntArgFormat(
+                maximum=4294967295,
+                minimum=1,
+            ),
+        )
+
+        action = cls._args_schema.control_plane_acl_configuration.Element.match_configurations.Element.action
+        action.remark_comment = AAZStrArg(
+            options=["remark-comment"],
+            help="Remark comment",
+        )
+        action.type = AAZStrArg(
+            options=["type"],
+            help="Type of actions that can be performed.",
+            enum={"Deny": "Deny", "Permit": "Permit", "Remark": "Remark"},
+        )
+
+        match_condition = cls._args_schema.control_plane_acl_configuration.Element.match_configurations.Element.match_condition
+        match_condition.flags = AAZListArg(
+            options=["flags"],
+            help="Flags that need to be matched. Example: established | initial | <List-of-TCP-flags>. List of eligible TCP Flags are ack, cwr, ece, fin, psh, rst, syn, urg, established",
+        )
+        match_condition.icmp_configuration = AAZObjectArg(
+            options=["icmp-configuration"],
+            help="Internet Control Message Protocol (ICMP) configuration",
+        )
+        cls._build_args_icmp_configuration_patch_properties_update(match_condition.icmp_configuration)
+        match_condition.ip_condition = AAZObjectArg(
+            options=["ip-condition"],
+            help="IP condition that needs to be matched.",
+        )
+        match_condition.port_condition = AAZObjectArg(
+            options=["port-condition"],
+            help="Port condition that needs to be matched.",
+        )
+        match_condition.protocol_types = AAZStrArg(
+            options=["protocol-types"],
+            help="Protocols that need to be matched.",
+        )
+        match_condition.ttl_match_condition = AAZObjectArg(
+            options=["ttl-match-condition"],
+            help="TTL [Time To Live] values that need to be matched.",
+        )
+
+        flags = cls._args_schema.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.flags
+        flags.Element = AAZStrArg()
+
+        ip_condition = cls._args_schema.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.ip_condition
+        ip_condition.destination_ip_prefix = AAZStrArg(
+            options=["destination-ip-prefix"],
+            help="List of the destination IP addresses that need to be matched.",
+        )
+        ip_condition.source_ip_prefix = AAZStrArg(
+            options=["source-ip-prefix"],
+            help="List of the source IP addresses that need to be matched.",
+        )
+
+        port_condition = cls._args_schema.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.port_condition
+        port_condition.destination_ports = AAZObjectArg(
+            options=["destination-ports"],
+            help="List of the destination ports that need to be matched.",
+        )
+        cls._build_args_control_plane_acl_port_condition_update(port_condition.destination_ports)
+        port_condition.source_ports = AAZObjectArg(
+            options=["source-ports"],
+            help="List of the ports that need to be matched.",
+        )
+        cls._build_args_control_plane_acl_port_condition_update(port_condition.source_ports)
+
+        ttl_match_condition = cls._args_schema.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.ttl_match_condition
+        ttl_match_condition.ttl_match_type = AAZStrArg(
+            options=["ttl-match-type"],
+            help="TTL [Time To Live] match type. Example: eq | neq | gt | lt | range",
+            enum={"eq": "eq", "gt": "gt", "lt": "lt", "neq": "neq"},
+        )
+        ttl_match_condition.ttl_value = AAZStrArg(
+            options=["ttl-value"],
+            help="TTL [Time To Live] values that need to be matched.",
         )
 
         dynamic_match_configurations = cls._args_schema.dynamic_match_configurations
@@ -299,7 +418,7 @@ class Update(AAZCommand):
         bit_rate.unit = AAZStrArg(
             options=["unit"],
             help="Bitrate unit.",
-            enum={"Gbps": "Gbps", "Kbps": "Kbps", "Mbps": "Mbps", "bps": "bps"},
+            enum={"Gbps": "Gbps", "Kbps": "Kbps", "Mbps": "Mbps", "Pps": "Pps", "bps": "bps"},
         )
 
         burst_size = cls._args_schema.match_configurations.Element.actions.Element.police_rate_configuration.burst_size
@@ -310,7 +429,7 @@ class Update(AAZCommand):
         burst_size.unit = AAZStrArg(
             options=["unit"],
             help="Burst size unit.",
-            enum={"Bytes": "Bytes", "GBytes": "GBytes", "KBytes": "KBytes", "MBytes": "MBytes"},
+            enum={"Bytes": "Bytes", "GBytes": "GBytes", "KBytes": "KBytes", "MBytes": "MBytes", "Packets": "Packets"},
         )
 
         match_conditions = cls._args_schema.match_configurations.Element.match_conditions
@@ -364,9 +483,6 @@ class Update(AAZCommand):
         _element.protocol_types = AAZListArg(
             options=["protocol-types"],
             help="List of the protocols that need to be matched.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         _element.ttl_values = AAZListArg(
             options=["ttl-values"],
@@ -393,9 +509,6 @@ class Update(AAZCommand):
         icmp_configuration.icmp_types = AAZListArg(
             options=["icmp-types"],
             help="Internet Control Message Protocol (ICMP) types",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
 
         icmp_types = cls._args_schema.match_configurations.Element.match_conditions.Element.icmp_configuration.icmp_types
@@ -405,16 +518,10 @@ class Update(AAZCommand):
         ip_condition.ip_group_names = AAZListArg(
             options=["ip-group-names"],
             help="The List of IP Group Names that need to be matched.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         ip_condition.ip_prefix_values = AAZListArg(
             options=["ip-prefix-values"],
             help="The list of IP Prefixes that need to be matched.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         ip_condition.prefix_type = AAZStrArg(
             options=["prefix-type"],
@@ -482,23 +589,14 @@ class Update(AAZCommand):
         vlan_match_condition.inner_vlans = AAZListArg(
             options=["inner-vlans"],
             help="List of inner vlans that need to be matched.Inputs can be single vlan or the range of vlans.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         vlan_match_condition.vlan_group_names = AAZListArg(
             options=["vlan-group-names"],
             help="List of vlan group names that need to be matched.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         vlan_match_condition.vlans = AAZListArg(
             options=["vlans"],
             help="List of vlans that need to be matched. Inputs can be single vlan or the range of vlans.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
 
         inner_vlans = cls._args_schema.match_configurations.Element.match_conditions.Element.vlan_match_condition.inner_vlans
@@ -513,6 +611,55 @@ class Update(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
         return cls._args_schema
+
+    _args_control_plane_acl_port_condition_update = None
+
+    @classmethod
+    def _build_args_control_plane_acl_port_condition_update(cls, _schema):
+        if cls._args_control_plane_acl_port_condition_update is not None:
+            _schema.port_match_type = cls._args_control_plane_acl_port_condition_update.port_match_type
+            _schema.ports = cls._args_control_plane_acl_port_condition_update.ports
+            return
+
+        cls._args_control_plane_acl_port_condition_update = AAZObjectArg()
+
+        control_plane_acl_port_condition_update = cls._args_control_plane_acl_port_condition_update
+        control_plane_acl_port_condition_update.port_match_type = AAZStrArg(
+            options=["port-match-type"],
+            help="Port match type. Example: eq | neq | gt | lt | range",
+            enum={"eq": "eq", "gt": "gt", "lt": "lt", "neq": "neq", "range": "range"},
+        )
+        control_plane_acl_port_condition_update.ports = AAZListArg(
+            options=["ports"],
+            help="List of the ports that need to be matched. Possible values: 1234, 1234-1235, 1234,1235,1236",
+        )
+
+        ports = cls._args_control_plane_acl_port_condition_update.ports
+        ports.Element = AAZStrArg()
+
+        _schema.port_match_type = cls._args_control_plane_acl_port_condition_update.port_match_type
+        _schema.ports = cls._args_control_plane_acl_port_condition_update.ports
+
+    _args_icmp_configuration_patch_properties_update = None
+
+    @classmethod
+    def _build_args_icmp_configuration_patch_properties_update(cls, _schema):
+        if cls._args_icmp_configuration_patch_properties_update is not None:
+            _schema.icmp_types = cls._args_icmp_configuration_patch_properties_update.icmp_types
+            return
+
+        cls._args_icmp_configuration_patch_properties_update = AAZObjectArg()
+
+        icmp_configuration_patch_properties_update = cls._args_icmp_configuration_patch_properties_update
+        icmp_configuration_patch_properties_update.icmp_types = AAZListArg(
+            options=["icmp-types"],
+            help="Internet Control Message Protocol (ICMP) types",
+        )
+
+        icmp_types = cls._args_icmp_configuration_patch_properties_update.icmp_types
+        icmp_types.Element = AAZStrArg()
+
+        _schema.icmp_types = cls._args_icmp_configuration_patch_properties_update.icmp_types
 
     def _execute_operations(self):
         self.pre_operations()
@@ -595,7 +742,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -620,7 +767,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -629,11 +776,65 @@ class Update(AAZCommand):
                 properties.set_prop("aclsUrl", AAZStrType, ".acls_url", typ_kwargs={"nullable": True})
                 properties.set_prop("annotation", AAZStrType, ".annotation", typ_kwargs={"nullable": True})
                 properties.set_prop("configurationType", AAZStrType, ".configuration_type", typ_kwargs={"nullable": True})
+                properties.set_prop("controlPlaneAclConfiguration", AAZListType, ".control_plane_acl_configuration", typ_kwargs={"nullable": True})
                 properties.set_prop("defaultAction", AAZStrType, ".default_action", typ_kwargs={"nullable": True})
                 properties.set_prop("deviceRole", AAZStrType, ".device_role", typ_kwargs={"nullable": True})
                 properties.set_prop("dynamicMatchConfigurations", AAZListType, ".dynamic_match_configurations", typ_kwargs={"nullable": True})
                 properties.set_prop("globalAccessControlListActions", AAZObjectType, ".global_access_control_list_actions", typ_kwargs={"nullable": True})
                 properties.set_prop("matchConfigurations", AAZListType, ".match_configurations", typ_kwargs={"nullable": True})
+
+            control_plane_acl_configuration = _builder.get(".properties.controlPlaneAclConfiguration")
+            if control_plane_acl_configuration is not None:
+                control_plane_acl_configuration.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.controlPlaneAclConfiguration[]")
+            if _elements is not None:
+                _elements.set_prop("ipAddressType", AAZStrType, ".ip_address_type")
+                _elements.set_prop("matchConfigurations", AAZListType, ".match_configurations")
+
+            match_configurations = _builder.get(".properties.controlPlaneAclConfiguration[].matchConfigurations")
+            if match_configurations is not None:
+                match_configurations.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.controlPlaneAclConfiguration[].matchConfigurations[]")
+            if _elements is not None:
+                _elements.set_prop("action", AAZObjectType, ".action")
+                _elements.set_prop("matchCondition", AAZObjectType, ".match_condition")
+                _elements.set_prop("matchConfigurationName", AAZStrType, ".match_configuration_name")
+                _elements.set_prop("sequenceNumber", AAZIntType, ".sequence_number")
+
+            action = _builder.get(".properties.controlPlaneAclConfiguration[].matchConfigurations[].action")
+            if action is not None:
+                action.set_prop("remarkComment", AAZStrType, ".remark_comment")
+                action.set_prop("type", AAZStrType, ".type")
+
+            match_condition = _builder.get(".properties.controlPlaneAclConfiguration[].matchConfigurations[].matchCondition")
+            if match_condition is not None:
+                match_condition.set_prop("flags", AAZListType, ".flags")
+                _UpdateHelper._build_schema_icmp_configuration_patch_properties_update(match_condition.set_prop("icmpConfiguration", AAZObjectType, ".icmp_configuration"))
+                match_condition.set_prop("ipCondition", AAZObjectType, ".ip_condition")
+                match_condition.set_prop("portCondition", AAZObjectType, ".port_condition")
+                match_condition.set_prop("protocolTypes", AAZStrType, ".protocol_types")
+                match_condition.set_prop("ttlMatchCondition", AAZObjectType, ".ttl_match_condition")
+
+            flags = _builder.get(".properties.controlPlaneAclConfiguration[].matchConfigurations[].matchCondition.flags")
+            if flags is not None:
+                flags.set_elements(AAZStrType, ".")
+
+            ip_condition = _builder.get(".properties.controlPlaneAclConfiguration[].matchConfigurations[].matchCondition.ipCondition")
+            if ip_condition is not None:
+                ip_condition.set_prop("destinationIpPrefix", AAZStrType, ".destination_ip_prefix")
+                ip_condition.set_prop("sourceIpPrefix", AAZStrType, ".source_ip_prefix")
+
+            port_condition = _builder.get(".properties.controlPlaneAclConfiguration[].matchConfigurations[].matchCondition.portCondition")
+            if port_condition is not None:
+                _UpdateHelper._build_schema_control_plane_acl_port_condition_update(port_condition.set_prop("destinationPorts", AAZObjectType, ".destination_ports"))
+                _UpdateHelper._build_schema_control_plane_acl_port_condition_update(port_condition.set_prop("sourcePorts", AAZObjectType, ".source_ports"))
+
+            ttl_match_condition = _builder.get(".properties.controlPlaneAclConfiguration[].matchConfigurations[].matchCondition.ttlMatchCondition")
+            if ttl_match_condition is not None:
+                ttl_match_condition.set_prop("ttlMatchType", AAZStrType, ".ttl_match_type")
+                ttl_match_condition.set_prop("ttlValue", AAZStrType, ".ttl_value")
 
             dynamic_match_configurations = _builder.get(".properties.dynamicMatchConfigurations")
             if dynamic_match_configurations is not None:
@@ -899,6 +1100,9 @@ class Update(AAZCommand):
                 serialized_name="configurationType",
                 flags={"required": True},
             )
+            properties.control_plane_acl_configuration = AAZListType(
+                serialized_name="controlPlaneAclConfiguration",
+            )
             properties.default_action = AAZStrType(
                 serialized_name="defaultAction",
             )
@@ -922,9 +1126,93 @@ class Update(AAZCommand):
             properties.match_configurations = AAZListType(
                 serialized_name="matchConfigurations",
             )
+            properties.network_fabric_ids = AAZListType(
+                serialized_name="networkFabricIds",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            control_plane_acl_configuration = cls._schema_on_200.properties.control_plane_acl_configuration
+            control_plane_acl_configuration.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.control_plane_acl_configuration.Element
+            _element.ip_address_type = AAZStrType(
+                serialized_name="ipAddressType",
+            )
+            _element.match_configurations = AAZListType(
+                serialized_name="matchConfigurations",
+            )
+
+            match_configurations = cls._schema_on_200.properties.control_plane_acl_configuration.Element.match_configurations
+            match_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.control_plane_acl_configuration.Element.match_configurations.Element
+            _element.action = AAZObjectType()
+            _element.match_condition = AAZObjectType(
+                serialized_name="matchCondition",
+            )
+            _element.match_configuration_name = AAZStrType(
+                serialized_name="matchConfigurationName",
+            )
+            _element.sequence_number = AAZIntType(
+                serialized_name="sequenceNumber",
+            )
+
+            action = cls._schema_on_200.properties.control_plane_acl_configuration.Element.match_configurations.Element.action
+            action.remark_comment = AAZStrType(
+                serialized_name="remarkComment",
+            )
+            action.type = AAZStrType()
+
+            match_condition = cls._schema_on_200.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition
+            match_condition.flags = AAZListType()
+            match_condition.icmp_configuration = AAZObjectType(
+                serialized_name="icmpConfiguration",
+            )
+            _UpdateHelper._build_schema_icmp_configuration_properties_read(match_condition.icmp_configuration)
+            match_condition.ip_condition = AAZObjectType(
+                serialized_name="ipCondition",
+            )
+            match_condition.port_condition = AAZObjectType(
+                serialized_name="portCondition",
+            )
+            match_condition.protocol_types = AAZStrType(
+                serialized_name="protocolTypes",
+            )
+            match_condition.ttl_match_condition = AAZObjectType(
+                serialized_name="ttlMatchCondition",
+            )
+
+            flags = cls._schema_on_200.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.flags
+            flags.Element = AAZStrType()
+
+            ip_condition = cls._schema_on_200.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.ip_condition
+            ip_condition.destination_ip_prefix = AAZStrType(
+                serialized_name="destinationIpPrefix",
+            )
+            ip_condition.source_ip_prefix = AAZStrType(
+                serialized_name="sourceIpPrefix",
+            )
+
+            port_condition = cls._schema_on_200.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.port_condition
+            port_condition.destination_ports = AAZObjectType(
+                serialized_name="destinationPorts",
+            )
+            _UpdateHelper._build_schema_control_plane_acl_port_condition_read(port_condition.destination_ports)
+            port_condition.source_ports = AAZObjectType(
+                serialized_name="sourcePorts",
+            )
+            _UpdateHelper._build_schema_control_plane_acl_port_condition_read(port_condition.source_ports)
+
+            ttl_match_condition = cls._schema_on_200.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.ttl_match_condition
+            ttl_match_condition.ttl_match_type = AAZStrType(
+                serialized_name="ttlMatchType",
+            )
+            ttl_match_condition.ttl_value = AAZStrType(
+                serialized_name="ttlValue",
             )
 
             dynamic_match_configurations = cls._schema_on_200.properties.dynamic_match_configurations
@@ -1049,6 +1337,7 @@ class Update(AAZCommand):
             _element.icmp_configuration = AAZObjectType(
                 serialized_name="icmpConfiguration",
             )
+            _UpdateHelper._build_schema_icmp_configuration_properties_read(_element.icmp_configuration)
             _element.ip_condition = AAZObjectType(
                 serialized_name="ipCondition",
             )
@@ -1079,14 +1368,6 @@ class Update(AAZCommand):
 
             fragments = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.fragments
             fragments.Element = AAZStrType()
-
-            icmp_configuration = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.icmp_configuration
-            icmp_configuration.icmp_types = AAZListType(
-                serialized_name="icmpTypes",
-            )
-
-            icmp_types = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.icmp_configuration.icmp_types
-            icmp_types.Element = AAZStrType()
 
             ip_condition = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.ip_condition
             ip_condition.ip_group_names = AAZListType(
@@ -1159,6 +1440,11 @@ class Update(AAZCommand):
             vlans = cls._schema_on_200.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlans
             vlans.Element = AAZStrType()
 
+            network_fabric_ids = cls._schema_on_200.properties.network_fabric_ids
+            network_fabric_ids.Element = AAZStrType(
+                nullable=True,
+            )
+
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
@@ -1187,6 +1473,70 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    @classmethod
+    def _build_schema_control_plane_acl_port_condition_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("portMatchType", AAZStrType, ".port_match_type")
+        _builder.set_prop("ports", AAZListType, ".ports")
+
+        ports = _builder.get(".ports")
+        if ports is not None:
+            ports.set_elements(AAZStrType, ".")
+
+    @classmethod
+    def _build_schema_icmp_configuration_patch_properties_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("icmpTypes", AAZListType, ".icmp_types")
+
+        icmp_types = _builder.get(".icmpTypes")
+        if icmp_types is not None:
+            icmp_types.set_elements(AAZStrType, ".")
+
+    _schema_control_plane_acl_port_condition_read = None
+
+    @classmethod
+    def _build_schema_control_plane_acl_port_condition_read(cls, _schema):
+        if cls._schema_control_plane_acl_port_condition_read is not None:
+            _schema.port_match_type = cls._schema_control_plane_acl_port_condition_read.port_match_type
+            _schema.ports = cls._schema_control_plane_acl_port_condition_read.ports
+            return
+
+        cls._schema_control_plane_acl_port_condition_read = _schema_control_plane_acl_port_condition_read = AAZObjectType()
+
+        control_plane_acl_port_condition_read = _schema_control_plane_acl_port_condition_read
+        control_plane_acl_port_condition_read.port_match_type = AAZStrType(
+            serialized_name="portMatchType",
+        )
+        control_plane_acl_port_condition_read.ports = AAZListType()
+
+        ports = _schema_control_plane_acl_port_condition_read.ports
+        ports.Element = AAZStrType()
+
+        _schema.port_match_type = cls._schema_control_plane_acl_port_condition_read.port_match_type
+        _schema.ports = cls._schema_control_plane_acl_port_condition_read.ports
+
+    _schema_icmp_configuration_properties_read = None
+
+    @classmethod
+    def _build_schema_icmp_configuration_properties_read(cls, _schema):
+        if cls._schema_icmp_configuration_properties_read is not None:
+            _schema.icmp_types = cls._schema_icmp_configuration_properties_read.icmp_types
+            return
+
+        cls._schema_icmp_configuration_properties_read = _schema_icmp_configuration_properties_read = AAZObjectType()
+
+        icmp_configuration_properties_read = _schema_icmp_configuration_properties_read
+        icmp_configuration_properties_read.icmp_types = AAZListType(
+            serialized_name="icmpTypes",
+        )
+
+        icmp_types = _schema_icmp_configuration_properties_read.icmp_types
+        icmp_types.Element = AAZStrType()
+
+        _schema.icmp_types = cls._schema_icmp_configuration_properties_read.icmp_types
 
 
 __all__ = ["Update"]
