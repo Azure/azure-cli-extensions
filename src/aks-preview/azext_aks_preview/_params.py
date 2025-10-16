@@ -176,6 +176,10 @@ from azext_aks_preview._validators import (
     validate_assign_kubelet_identity,
     validate_azure_keyvault_kms_key_id,
     validate_azure_keyvault_kms_key_vault_resource_id,
+    validate_azure_monitor_and_opentelemetry_for_create,
+    validate_azure_monitor_and_opentelemetry_for_update,
+    validate_azure_monitor_logs_and_enable_addons,
+    validate_azure_monitor_logs_enable_disable,
     validate_azuremonitorworkspaceresourceid,
     validate_cluster_id,
     validate_cluster_snapshot_id,
@@ -749,6 +753,12 @@ def load_arguments(self, _):
             options_list=["--enable-addons", "-a"],
             validator=validate_addons,
         )
+        c.argument(
+            "enable_azure_monitor_logs",
+            action="store_true",
+            validator=validate_azure_monitor_logs_and_enable_addons,
+            help="Enable Azure Monitor logs for the cluster. Equivalent to '--enable-addons monitoring'."
+        )
         c.argument("workspace_resource_id")
         c.argument(
             "enable_msi_auth_for_monitoring",
@@ -1028,9 +1038,50 @@ def load_arguments(self, _):
         c.argument("ksm_metric_annotations_allow_list")
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
-        c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
-        c.argument("enable_cost_analysis", action="store_true")
-        c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
+        c.argument("enable_azure_monitor_app_monitoring",
+                   is_preview=True,
+                   action="store_true"
+                   )
+        # OpenTelemetry parameters
+        c.argument("enable_opentelemetry_metrics",
+                   is_preview=True,
+                   action="store_true",
+                   help="Enable OpenTelemetry metrics collection",
+                   validator=validate_azure_monitor_and_opentelemetry_for_create
+                   )
+        c.argument("opentelemetry_metrics_port",
+                   is_preview=True,
+                   type=int,
+                   help="Port for OpenTelemetry metrics collection"
+                   )
+        c.argument("disable_opentelemetry_metrics",
+                   is_preview=True,
+                   action="store_true",
+                   help="Disable OpenTelemetry metrics collection"
+                   )
+        c.argument("enable_opentelemetry_logs",
+                   options_list=["--enable-opentelemetry-logs"],
+                   is_preview=True,
+                   action="store_true",
+                   help="Enable OpenTelemetry logs collection"
+                   )
+        c.argument("opentelemetry_logs_port",
+                   is_preview=True,
+                   type=int,
+                   help="Port for OpenTelemetry logs collection"
+                   )
+        c.argument("disable_opentelemetry_logs",
+                   is_preview=True,
+                   action="store_true",
+                   help="Disable OpenTelemetry logs collection"
+                   )
+        c.argument("enable_cost_analysis",
+                   action="store_true"
+                   )
+        c.argument("enable_ai_toolchain_operator",
+                   is_preview=True,
+                   action="store_true"
+                   )
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
@@ -1281,6 +1332,18 @@ def load_arguments(self, _):
             is_preview=True,
         )
         # addons
+        c.argument(
+            "enable_azure_monitor_logs",
+            action="store_true",
+            validator=validate_azure_monitor_logs_enable_disable,
+            help="Enable Azure Monitor logs for the cluster. Equivalent to 'az aks enable-addons -a monitoring'."
+        )
+# Monitoring parameters are inherited from base CLI
+        c.argument(
+            "disable_azure_monitor_logs",
+            action="store_true",
+            help="Disable Azure Monitor logs for the cluster. Equivalent to 'az aks disable-addons -a monitoring'."
+        )
         c.argument("enable_secret_rotation", action="store_true")
         c.argument("disable_secret_rotation", action="store_true")
         c.argument("rotation_poll_interval")
@@ -1407,9 +1470,69 @@ def load_arguments(self, _):
                 hide=True,
             ),
         )
-        c.argument("disable_azure_monitor_metrics", action="store_true")
-        c.argument("enable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
-        c.argument("disable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
+        c.argument("enable_azure_monitor_app_monitoring",
+                   action="store_true",
+                   is_preview=True
+                   )
+        c.argument("disable_azure_monitor_app_monitoring",
+                   action="store_true",
+                   is_preview=True
+                   )
+        # Azure Monitor logs additional parameters
+        c.argument("workspace_resource_id",
+                   help="Resource ID of the Azure Log Analytics workspace to use for monitoring")
+        c.argument(
+            "enable_msi_auth_for_monitoring",
+            arg_type=get_three_state_flag(),
+            is_preview=True,
+            help="Enable managed identity authentication for Azure Monitor logs"
+        )
+        c.argument("enable_syslog",
+                   arg_type=get_three_state_flag(),
+                   is_preview=True,
+                   help="Enable syslog collection for Azure Monitor logs")
+        c.argument("data_collection_settings",
+                   is_preview=True,
+                   help="Data collection settings for Azure Monitor logs")
+        c.argument("enable_high_log_scale_mode",
+                   arg_type=get_three_state_flag(),
+                   is_preview=True,
+                   help="Enable high log scale mode for Azure Monitor logs")
+        c.argument("ampls_resource_id",
+                   is_preview=True,
+                   help="Resource ID of the Azure Monitor Private Link Scope to associate with the cluster")
+        # OpenTelemetry parameters
+        c.argument("enable_opentelemetry_metrics",
+                   is_preview=True,
+                   action="store_true",
+                   help="Enable OpenTelemetry metrics collection",
+                   validator=validate_azure_monitor_and_opentelemetry_for_update
+                   )
+        c.argument("opentelemetry_metrics_port",
+                   is_preview=True,
+                   type=int,
+                   help="Port for OpenTelemetry metrics collection"
+                   )
+        c.argument("disable_opentelemetry_metrics",
+                   is_preview=True,
+                   action="store_true",
+                   help="Disable OpenTelemetry metrics collection"
+                   )
+        c.argument("enable_opentelemetry_logs",
+                   is_preview=True,
+                   action="store_true",
+                   help="Enable OpenTelemetry logs collection"
+                   )
+        c.argument("opentelemetry_logs_port",
+                   is_preview=True,
+                   type=int,
+                   help="Port for OpenTelemetry logs collection"
+                   )
+        c.argument("disable_opentelemetry_logs",
+                   is_preview=True,
+                   action="store_true",
+                   help="Disable OpenTelemetry logs collection"
+                   )
         c.argument(
             "enable_vpa",
             action="store_true",

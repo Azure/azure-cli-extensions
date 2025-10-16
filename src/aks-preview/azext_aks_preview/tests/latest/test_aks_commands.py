@@ -7602,6 +7602,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # make sure monitoring can be smoothly disabled
         self.cmd(f"aks disable-addons -a monitoring -g={resource_group} -n={aks_name}")
 
+        # Wait for the disable operation to complete
+        wait_cmd = f'aks wait --resource-group={resource_group} --name={aks_name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
         # delete
         self.cmd(
             f"aks delete -g {resource_group} -n {aks_name} --yes --no-wait",
@@ -13296,19 +13300,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        # azuremonitor metrics will be set to false after initial creation command as its in the
-        # postprocessing step that we do an update to enable it. Adding a wait for the second put request
-        # in addonput.py which enables the Azure Monitor Metrics addon as all the DC* resources
-        # have now been created.
         wait_cmd = " ".join(
             [
                 "aks",
                 "wait",
                 "--resource-group={resource_group}",
                 "--name={name}",
-                "--updated",
+                "--created",
                 "--interval 60",
-                "--timeout 300",
+                "--timeout 1800",
             ]
         )
         self.cmd(
@@ -13317,6 +13317,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.is_empty(),
             ],
         )
+
+        time.sleep(5 * 60)
 
         self.cmd(
             "aks show -g {resource_group} -n {name} --output=json",
@@ -13373,8 +13375,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("azureMonitorProfile.appMonitoring.autoInstrumentation.enabled", True),
-                self.check("azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled", True),
-                self.check("azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled", True)
             ],
         )
 
@@ -13681,7 +13681,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--disable-azure-container-storage'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-        ])        
+        ])
 
         # Verify that the azure-container-storage extension doesn't exist anymore
         extension_list_cmd = "k8s-extension list --resource-group={resource_group} --cluster-name={name} --cluster-type managedClusters"
@@ -13741,9 +13741,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("azureMonitorProfile.metrics.enabled", True),
             ],
         )
+
+        time.sleep(5 * 60)
+
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        # Verify the creation was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("azureMonitorProfile.metrics.enabled", True),
+        ])
 
         # update: disable-azure-monitor-metrics
         update_cmd = (
@@ -13754,9 +13767,20 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("azureMonitorProfile.metrics.enabled", False),
             ],
         )
+
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        # Verify the creation was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("azureMonitorProfile.metrics.enabled", False),
+        ])
 
         # delete
         cmd = (
@@ -13799,9 +13823,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True)
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True)
         ])
 
         # update: disable-azure-monitor-app-monitoring
@@ -13812,10 +13834,533 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', False),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', False),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', False)
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', False)
         ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_azuremonitorlogs(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+
+        node_vm_size = 'standard_d2s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        create_cmd = (
+            'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
+            '--enable-managed-identity --enable-azure-monitor-logs --output=json'
+        )
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.omsagent.enabled', True),
+            self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_azuremonitorlogs(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_vm_size = 'standard_d2s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        # create: without enable-azure-monitor-logs
+        create_cmd = (
+            'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} '
+            '--node-vm-size={node_vm_size} --enable-managed-identity --output=json')
+        self.cmd(create_cmd)
+
+        # Wait for the create operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --created --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the creation was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.not_exists('addonProfiles.omsagent'),
+        ])
+
+        # update: enable-azure-monitor-logs
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes '
+            '--enable-azure-monitor-logs'
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        max_retries = 30
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} waiting for provisioning, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.omsagent.enabled', True),
+            self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_azuremonitorlogs_and_opentelemetry(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+
+        node_vm_size = 'standard_d2s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        create_cmd = (
+            'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
+            '--enable-managed-identity --enable-azure-monitor-logs --enable-opentelemetry-logs --opentelemetry-logs-port=8080 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview --output=json'
+        )
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.omsagent.enabled', True),
+            self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 8080),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_azuremonitorlogs_and_opentelemetry(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_vm_size = 'standard_d2s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        # create: without enable-azure-monitor-logs
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity --output=json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.not_exists('addonProfiles.omsagent'),
+        ])
+
+        # update: enable-azure-monitor-logs with OpenTelemetry logs
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--enable-azure-monitor-logs --enable-opentelemetry-logs --opentelemetry-logs-port=9090 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.omsagent.enabled', True),
+            self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 9090),
+        ])
+
+        # update: disable OpenTelemetry logs but keep Azure Monitor logs
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--disable-opentelemetry-logs'
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.omsagent.enabled', True),  # Still enabled
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', False),
+        ])
+
+        # update: disable-azure-monitor-logs (should also disable OpenTelemetry logs)
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--disable-azure-monitor-logs'
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.omsagent.enabled', False),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_azuremonitormetrics_v2(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+
+        node_vm_size = 'standard_d2s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        create_cmd = (
+            'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
+            '--enable-managed-identity --enable-azure-monitor-metrics --output=json'
+        )
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('azureMonitorProfile.metrics.enabled', True),
+        ])
+
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--created',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+                # Retry up to 10 times with 60-second intervals to allow provisioning to complete
+        show_cmd = 'aks show -g {resource_group} -n {name} --output=json'
+        max_retries = 10
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('azureMonitorProfile.metrics.enabled', True),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} failed, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
+
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_azuremonitormetrics_v2(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_vm_size = 'standard_d2s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        # create: without enable-azure-monitor-metrics
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity --output=json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.not_exists('azureMonitorProfile.metrics'),
+        ])
+
+        # update: enable-azure-monitor-metrics
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--enable-azure-monitor-metrics'
+        )
+        self.cmd(update_cmd)
+
+        # Wait for enable operation to complete before attempting disable
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        max_retries = 30
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('azureMonitorProfile.metrics.enabled', True),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} waiting for enable to complete, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
+
+        # update: disable-azure-monitor-metrics
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--disable-azure-monitor-metrics'
+        )
+        self.cmd(update_cmd)
+
+        # Wait for disable operation to complete
+        max_retries = 30
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('azureMonitorProfile.metrics.enabled', False),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} waiting for disable to complete, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_azuremonitormetrics_and_opentelemetry(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+
+        node_vm_size = 'standard_d2s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        create_cmd = (
+            'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
+            '--enable-managed-identity --enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=8080 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview --output=json'
+        )
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # azuremonitor metrics will be set to false after initial creation command as its in the
+        # postprocessing step that we do an update to enable it. Adding a wait for the second put request
+        # in addonput.py which enables the Azure Monitor Metrics addon as all the DC* resources
+        # have now been created.
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('azureMonitorProfile.metrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 8080),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_azuremonitormetrics_and_opentelemetry(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_vm_size = 'standard_d2s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        # create: without enable-azure-monitor-metrics
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity --output=json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.not_exists('azureMonitorProfile.metrics'),
+        ])
+
+        # update: enable-azure-monitor-metrics with OpenTelemetry metrics
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes '
+            '--enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=9090 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview '
+            '--output=json'
+        )
+
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        # Retry up to 10 times with 60-second intervals to allow provisioning to complete
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        max_retries = 10
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} failed, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
+
+        # update: disable OpenTelemetry metrics but keep Azure Monitor metrics
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes '
+            '--disable-opentelemetry-metrics --output=json '
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        # Retry up to 10 times with 60-second intervals to allow provisioning to complete
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        max_retries = 10
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('azureMonitorProfile.metrics.enabled', True),
+                    self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', False),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} failed, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
+
+        # update: disable-azure-monitor-metrics (should also disable OpenTelemetry metrics)
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes '
+            '--disable-azure-monitor-metrics --output=json'
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        # Retry up to 10 times with 60-second intervals to allow provisioning to complete
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        max_retries = 10
+        for attempt in range(max_retries):
+            try:
+                self.cmd(show_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('azureMonitorProfile.metrics.enabled', False),
+                ])
+                break  # Success, exit loop
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    print(f"Attempt {attempt + 1}/{max_retries} failed, retrying in 60 seconds...")
+                    time.sleep(60)
+                else:
+                    raise  # Re-raise on final attempt
 
         # delete
         cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
@@ -13861,7 +14406,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # some time to post process.
         time.sleep(10 * 60)
 
-        # update: disable-azure-container-storage
+       # update: disable-azure-container-storage
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
                      '--disable-azure-container-storage all'
         self.cmd(update_cmd, checks=[
@@ -13909,16 +14454,304 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])        
-        # Sleep for 10 mins before next operation,
-        # since azure container storage operations take
-        # some time to post process.
-        time.sleep(10 * 60)
-
+        
         # update: disable-azure-container-storage
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --no-wait ' \
                      '--disable-azure-container-storage all'
+        self.cmd(update_cmd)
+
+        # Wait for the update operation to complete
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd)
+
+        # Verify the update was successful
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} --output=json'
+        self.cmd(show_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_comprehensive_monitoring_integration(self, resource_group, resource_group_location):
+        """
+        Comprehensive test for all monitoring features: Azure Monitor logs, metrics, app monitoring, and OpenTelemetry integration.
+        Tests create and update scenarios with all monitoring features enabled and disabled.
+        """
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+
+        node_vm_size = 'standard_d2s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        # Phase 1: Create cluster with all monitoring features enabled
+        create_cmd = (
+            'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
+            '--enable-managed-identity --enable-azure-monitor-logs --enable-azure-monitor-metrics --enable-azure-monitor-app-monitoring '
+            '--enable-opentelemetry-logs --opentelemetry-logs-port=8080 '
+            '--enable-opentelemetry-metrics --opentelemetry-metrics-port=8081 '
+            '--enable-windows-recording-rules '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview --output=json'
+        )
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # azuremonitor metrics will be set to false after initial creation command as its in the
+        # postprocessing step that we do an update to enable it. Adding a wait for the second put request
+        # in addonput.py which enables the Azure Monitor Metrics addon as all the DC* resources
+        # have now been created.
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            # Azure Monitor logs checks
+            self.check('addonProfiles.omsagent.enabled', True),
+            self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
+            # Azure Monitor metrics checks
+            self.check('azureMonitorProfile.metrics.enabled', True),
+            # Azure Monitor app monitoring checks
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
+            # OpenTelemetry logs checks
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 8080),
+            # OpenTelemetry metrics checks
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 8081),
+        ])
+
+        # Phase 2: Update - disable only OpenTelemetry logs (keep everything else)
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--disable-opentelemetry-logs'
+        )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
+        ])
+
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            # Azure Monitor logs should still be enabled
+            self.check('addonProfiles.omsagent.enabled', True),
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
+            # Azure Monitor metrics should still be enabled
+            self.check('azureMonitorProfile.metrics.enabled', True),
+            # Azure Monitor app monitoring should still be enabled
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
+            # OpenTelemetry logs should be disabled
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', False),
+            # OpenTelemetry metrics should still be enabled
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+        ])
+
+        # Phase 3: Update - disable only OpenTelemetry metrics (keep Azure Monitor features)
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--disable-opentelemetry-metrics'
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            # Azure Monitor logs should still be enabled
+            self.check('addonProfiles.omsagent.enabled', True),
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
+            # Azure Monitor metrics should still be enabled
+            self.check('azureMonitorProfile.metrics.enabled', True),
+            # Azure Monitor app monitoring should still be enabled
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
+            # OpenTelemetry metrics should be disabled
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', False),
+        ])
+
+        # Phase 4: Update - re-enable all OpenTelemetry features with different ports
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--enable-opentelemetry-logs --opentelemetry-logs-port=9090 '
+            '--enable-opentelemetry-metrics --opentelemetry-metrics-port=9091 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            # Azure Monitor features should still be enabled
+            self.check('addonProfiles.omsagent.enabled', True),
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
+            self.check('azureMonitorProfile.metrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
+            # OpenTelemetry features should be re-enabled with new ports
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 9090),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 9091),
+        ])
+
+        # Phase 5: Update - disable Azure Monitor metrics (should also disable OpenTelemetry metrics)
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--disable-azure-monitor-metrics'
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            # Azure Monitor logs should still be enabled
+            self.check('addonProfiles.omsagent.enabled', True),
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
+            # Azure Monitor metrics should be disabled
+            self.check('azureMonitorProfile.metrics.enabled', False),
+            # Azure Monitor app monitoring should still be enabled
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
+            # OpenTelemetry logs should still be enabled (independent of metrics)
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
+        ])
+
+        # Phase 6: Update - disable Azure Monitor logs (should also disable OpenTelemetry logs)
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--disable-azure-monitor-logs'
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            # Azure Monitor logs should be disabled
+            self.check('addonProfiles.omsagent.enabled', False),
+            # Azure Monitor metrics should still be disabled
+            self.check('azureMonitorProfile.metrics.enabled', False),
+        ])
+
+        # Phase 7: Update - re-enable all monitoring features at once
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--enable-azure-monitor-logs --enable-azure-monitor-metrics --enable-azure-monitor-app-monitoring '
+            '--enable-opentelemetry-logs --opentelemetry-logs-port=7070 '
+            '--enable-opentelemetry-metrics --opentelemetry-metrics-port=7071 '
+            '--enable-windows-recording-rules '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            # All Azure Monitor features should be enabled
+            self.check('addonProfiles.omsagent.enabled', True),
+            self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
+            self.check('azureMonitorProfile.metrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
+            # All OpenTelemetry features should be enabled with new ports
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 7070),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 7071),
+        ])
+
+        # Phase 8: Final cleanup - disable all monitoring features
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--disable-azure-monitor-logs --disable-azure-monitor-metrics --disable-azure-monitor-app-monitoring '
+            '--disable-opentelemetry-logs --disable-opentelemetry-metrics'
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            # All monitoring features should be disabled
+            self.check('addonProfiles.omsagent.enabled', False),
+            self.check('azureMonitorProfile.metrics.enabled', False),
+            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', False),
         ])
 
         # delete
