@@ -11,14 +11,25 @@ from azext_aks_agent._consts import (
     CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY,
     CONST_AGENT_NAME,
     CONST_AGENT_NAME_ENV_KEY,
+    CONST_DISABLE_PROMETHEUS_TOOLSET_ENV_KEY,
+    CONST_PRIVACY_NOTICE_BANNER,
+    CONST_PRIVACY_NOTICE_BANNER_ENV_KEY,
 )
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.util import CLIError
 
+from .error_handler import MCPError
 from .prompt import AKS_CONTEXT_PROMPT_MCP, AKS_CONTEXT_PROMPT_TRADITIONAL
 from .telemetry import CLITelemetryClient
-from .error_handler import MCPError
+
+
+# NOTE(mainred): environment variables to disable prometheus toolset loading should be set before importing holmes.
+def customize_holmesgpt():
+    os.environ[CONST_DISABLE_PROMETHEUS_TOOLSET_ENV_KEY] = "true"
+    os.environ[CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY] = get_config_dir()
+    os.environ[CONST_AGENT_NAME_ENV_KEY] = CONST_AGENT_NAME
+    os.environ[CONST_PRIVACY_NOTICE_BANNER_ENV_KEY] = CONST_PRIVACY_NOTICE_BANNER
 
 
 # NOTE(mainred): holmes leverage the log handler RichHandler to provide colorful, readable and well-formatted logs
@@ -151,20 +162,18 @@ def aks_agent(
     :type use_aks_mcp: bool
     """
 
-    with CLITelemetryClient():
+    with CLITelemetryClient() as telemetry:
         if sys.version_info < (3, 10):
             raise CLIError(
                 "Please upgrade the python version to 3.10 or above to use aks agent."
             )
+        # customizing holmesgpt should called before importing holmes
+        customize_holmesgpt()
 
         # Initialize variables
         interactive = not no_interactive
         echo = not no_echo_request
         console = init_log()
-
-        # Set environment variables for Holmes
-        os.environ[CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY] = get_config_dir()
-        os.environ[CONST_AGENT_NAME_ENV_KEY] = CONST_AGENT_NAME
 
         # Detect and read piped input
         piped_data = None
@@ -265,7 +274,7 @@ def aks_agent(
             is_mcp_mode = current_mode == "mcp"
             if interactive:
                 _run_interactive_mode_sync(ai, cmd, resource_group_name, name,
-                                           prompt, console, show_tool_output, is_mcp_mode)
+                                           prompt, console, show_tool_output, is_mcp_mode, telemetry)
             else:
                 _run_noninteractive_mode_sync(ai, config, cmd, resource_group_name, name,
                                               prompt, console, echo, show_tool_output, is_mcp_mode)
@@ -312,13 +321,15 @@ async def _setup_mcp_mode(mcp_manager, config_file: str, model: str, api_key: st
     :return: Enhanced Holmes configuration
     :raises: Exception if MCP setup fails
     """
-    from pathlib import Path
-    import yaml
     import tempfile
+    from pathlib import Path
+
+    import yaml
     from holmes.config import Config
+
     from .config_generator import ConfigurationGenerator
-    from .user_feedback import ProgressReporter
     from .error_handler import AgentErrorHandler
+    from .user_feedback import ProgressReporter
 
     # Ensure binary is available (download if needed)
     if not mcp_manager.is_binary_available() or not mcp_manager.validate_binary_version():
@@ -603,7 +614,7 @@ def _build_aks_context(cluster_name, resource_group_name, subscription_id, is_mc
 
 
 def _run_interactive_mode_sync(ai, cmd, resource_group_name, name,
-                               prompt, console, show_tool_output, is_mcp_mode):
+                               prompt, console, show_tool_output, is_mcp_mode, telemetry):
     """
     Run interactive mode synchronously - no event loop conflicts.
 
@@ -618,6 +629,7 @@ def _run_interactive_mode_sync(ai, cmd, resource_group_name, name,
     :param console: Console object for output
     :param show_tool_output: Whether to show tool output
     :param is_mcp_mode: Whether running in MCP mode (affects prompt selection)
+    :param telemetry: CLITelemetryClient instance for tracking events
     """
     from holmes.interactive import run_interactive_loop
 
@@ -634,7 +646,8 @@ def _run_interactive_mode_sync(ai, cmd, resource_group_name, name,
         ai, console, prompt, None, None,
         show_tool_output=show_tool_output,
         system_prompt_additions=aks_context,
-        check_version=False
+        check_version=False,
+        feedback_callback=telemetry.track_agent_feedback if telemetry else None
     )
 
 
@@ -654,8 +667,9 @@ def _run_noninteractive_mode_sync(ai, config, cmd, resource_group_name, name,
     :param show_tool_output: Whether to show tool output
     :param is_mcp_mode: Whether running in MCP mode (affects prompt selection)
     """
-    import uuid
     import socket
+    import uuid
+
     from holmes.core.prompt import build_initial_ask_messages
     from holmes.plugins.destinations import DestinationType
     from holmes.plugins.interfaces import Issue
@@ -703,10 +717,12 @@ def _setup_traditional_mode_sync(config_file: str, model: str, api_key: str,
     :param verbose: Enable verbose output
     :return: Traditional Holmes configuration
     """
-    from pathlib import Path
-    import yaml
     import tempfile
+    from pathlib import Path
+
+    import yaml
     from holmes.config import Config
+
     from .config_generator import ConfigurationGenerator
 
     # Load base config

@@ -11,6 +11,29 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+19.0.0b2
++++++++
+* `az aks create`: Add new parameter `--enable-opentelemetry-metrics` to enable OTLP feature for metrics addon.
+* `az aks update`: Add new parameter `--enable-opentelemetry-metrics` to enable OTLP feature for metrics addon.
+* `az aks update`: Add new parameter `--disable-opentelemetry-metrics` to disable OTLP feature for metrics addon.
+* `az aks create`: Add new parameter `--opentelemetry-metrics-port` to change the OTLP port from the default for metrics addon.
+* `az aks update`: Add new parameter `--opentelemetry-metrics-port` to change the OTLP port from the default for metrics addon.
+* `az aks create`: Add new parameter `--enable-opentelemetry-logs` to enable OTLP feature for logs addon.
+* `az aks update`: Add new parameter `--enable-opentelemetry-logs` to enable OTLP feature for logs addon.
+* `az aks update`: Add new parameter `--disable-opentelemetry-logs` to disable OTLP feature for logs addon.
+* `az aks create`: Add new parameter `--opentelemetry-logs-port` to change the OTLP port from the default for logs addon.
+* `az aks update`: Add new parameter `--opentelemetry-logs-port` to change the OTLP port from the default for logs addon.
+* `az aks create`: Add new parameter `--enable-azure-monitor-logs` that is a wrapper to enable-addons -a monitoring.
+* `az aks update`: Add new parameter `--enable-azure-monitor-logs` that is a wrapper to enable-addons -a monitoring.
+* `az aks update`: Add new parameter `--disable-azure-monitor-logs` that is a wrapper to disable-addons -a monitoring.
+
+19.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks nodepool add`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks nodepool update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
 * `az aks update`: Add new parameter `--kms-infrastructure-encryption` to enable KMS infrastructure encryption on an existing cluster.
 
 18.0.0b44

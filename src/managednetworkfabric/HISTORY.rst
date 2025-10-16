@@ -2,6 +2,13 @@
 
 Release History
 ===============
+9.0.0b1
+++++++
+* Per the v8.1.0 30-day [Breaking Change] notice - the folowing updates have been implmemented:
+*  - Command group `fabric identity` has been removed as current az-cli-core does not support GET-PATCH. This includes the `assign`, `remove`, `show` sub-commands.
+*  - Parameter `route-prefix-limit` has been removed from `l3domain create` and `l3domain update` commands.
+*  - Parameter `version` on `device upgrade` command is now required.
+
 8.2.1
 ++++++
 * Removing the following commands as they are not supported in the API:
