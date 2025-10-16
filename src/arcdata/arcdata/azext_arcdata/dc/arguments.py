@@ -482,7 +482,6 @@ def load_arguments(self, _):
             " key=./values.json. The add command does NOT support conditionals.  "
             "If the inline value you are providing is a key "
             'value pair itself with "=" and "," escape those characters.  '
-            'For example, key1="key2\=val2\,key3\=val3". '
             "See http://jsonpatch.com/ for "
             "examples of how your path should look.  If you would like to access an array, you must do so "
             "by indicating the index, such as key.0=value",

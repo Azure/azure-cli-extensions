@@ -44,6 +44,7 @@ import pem
 
 logger = get_logger(__name__)
 
+
 def BOOLEAN_STATES(x):
     """
     Mapping of different common logical prepositions to boolean equivalent.
@@ -60,9 +61,6 @@ def BOOLEAN_STATES(x):
         None: False,
         "none": False,
     }.get(str(x).lower() if x else x, False)
-"""
-Mapping of different common logical prepositions to boolean equivalent.
-"""
 
 
 def is_windows():

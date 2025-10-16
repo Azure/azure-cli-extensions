@@ -96,7 +96,7 @@ def postgres_server_arc_create(
     """
     if not use_k8s:
         raise ValueError(USE_K8S_EXCEPTION_TEXT)
-    
+
     if not kwargs.get("name"):
         raise ValueError("Please provide a name for the PostgreSQL server.")
 
