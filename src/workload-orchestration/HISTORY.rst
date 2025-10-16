@@ -3,6 +3,12 @@
 Release History
 ===============
 
+4.1.0
+++++++
+* Added currentStage and latestActionTriggeredBy fields in response of below commands:
+  * ``az workload-orchestration target review`` - Post request to review configuration.
+  * ``az workload-orchestration target solution-revision-list`` - List all revisions of a solution deployed on a target.
+
 4.0.0
 ++++++
 * Added new bulk management commands:
