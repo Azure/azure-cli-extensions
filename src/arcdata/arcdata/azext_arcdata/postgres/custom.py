@@ -9,7 +9,7 @@ from enum import Enum
 from knack.cli import CLIError
 from knack.log import get_logger
 
-from azext_arcdata.kubernetes_sdk.client import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     KubernetesError,
 )
 from azext_arcdata.core.constants import (

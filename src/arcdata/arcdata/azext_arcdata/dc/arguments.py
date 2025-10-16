@@ -4,7 +4,7 @@
 # license information.
 # ------------------------------------------------------------------------------
 
-from azext_arcdata.arm_sdk.azure.constants import (
+from azext_arcdata.vendored_sdks.arm_sdk.azure.constants import (
     INSTANCE_TYPE_DATA_CONTROLLER,
     RESOURCE_PROVIDER_NAMESPACE,
 )
@@ -17,8 +17,8 @@ from azext_arcdata.core.constants import (
     CLI_ARG_RESOURCE_GROUP_TEXT,
     CLI_ARG_GROUP_USE_K8S,
 )
-from azext_arcdata.kubernetes_sdk.dc.constants import CONFIG_DIR
-from azext_arcdata.kubernetes_sdk.dc.common_util import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import CONFIG_DIR
+from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.common_util import (
     get_valid_dc_infrastructures,
 )
 

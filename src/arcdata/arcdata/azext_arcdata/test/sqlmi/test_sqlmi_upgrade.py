@@ -1,9 +1,9 @@
-from azext_arcdata.kubernetes_sdk.client import KubernetesError
-from azext_arcdata.kubernetes_sdk.errors.K8sAdmissionReviewError import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesError
+from azext_arcdata.vendored_sdks.kubernetes_sdk.errors.K8sAdmissionReviewError import (
     K8sAdmissionReviewError,
 )
 from azext_arcdata.sqlmi.sqlmi_utilities import upgrade_sqlmi_instances
-from azext_arcdata.kubernetes_sdk.client import KubernetesClient
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesClient
 import os
 import pytest
 from pytest_az import VCRState, RECORD_MODES

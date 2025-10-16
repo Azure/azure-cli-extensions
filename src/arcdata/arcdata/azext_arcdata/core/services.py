@@ -93,7 +93,7 @@ class BaseServiceProxy(object):
 
     @staticmethod
     def get_crd_dict():
-        import azext_arcdata.kubernetes_sdk.dc.constants as dc_constants
+        import azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants as dc_constants
 
         return {
             "PostgreSql": dc_constants.POSTGRES_CRD_NAME,
@@ -111,7 +111,7 @@ class BaseServiceProxy(object):
 
     @staticmethod
     def get_spec_file_dict():
-        import azext_arcdata.kubernetes_sdk.dc.constants as dc_constants
+        import azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants as dc_constants
 
         return {
             "PostgreSql": dc_constants.POSTGRES_SPEC,
@@ -128,13 +128,13 @@ class BaseServiceProxy(object):
 
     @staticmethod
     def get_deployment_config_dir():
-        from azext_arcdata.kubernetes_sdk.dc.constants import CONFIG_DIR
+        from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import CONFIG_DIR
 
         return CONFIG_DIR
 
     @staticmethod
     def get_deployment_config_files():
-        from azext_arcdata.kubernetes_sdk.dc.constants import CONFIG_FILES
+        from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import CONFIG_FILES
 
         return CONFIG_FILES
 
@@ -265,7 +265,7 @@ class ArmMixin(object):
 
     @staticmethod
     def acquire_arm_client(az_cli):
-        from azext_arcdata.arm_sdk.client import ArmClient
+        from azext_arcdata.vendored_sdks.arm_sdk.client import ArmClient
 
         result = ArmMixin.get_azure_credentials(az_cli)
         return ArmClient(result["credentials"], result["subscription"])
@@ -439,7 +439,7 @@ class NoOptDataControllerServiceProxy(BaseServiceProxy, ArmMixin):
 
     @staticmethod
     def export_upload_log_and_metrics(command_value_object: tuple):
-        from azext_arcdata.arm_sdk.client import ArmClient
+        from azext_arcdata.vendored_sdks.arm_sdk.client import ArmClient
 
         # TODO: build credentials here rather than deep into this call stack
         class NoOptCred(object):
@@ -497,7 +497,7 @@ class KubernetesDataControllerServiceProxy(
     BaseDataControllerServiceProxy, KubernetesMixin
 ):
     def __init__(self, az_cli):
-        from azext_arcdata.kubernetes_sdk.dc.client import DataControllerClient
+        from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.client import DataControllerClient
 
         self._client = DataControllerClient(self.stdout, self.stderr)
 
@@ -596,7 +596,7 @@ class KubernetesDataControllerServiceProxy(
         """
         Enables or disables Change Data Capture for 'controller' Database and supported system tables - requires kube config
         """
-        from azext_arcdata.kubernetes_sdk.dc.debug import controldb_cdc
+        from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.debug import controldb_cdc
 
         namespace = namespace or self.namespace
 
@@ -625,7 +625,7 @@ class KubernetesDataControllerServiceProxy(
         """
         Copy Logs commands - requires kube config
         """
-        from azext_arcdata.kubernetes_sdk.dc.debug import copy_debug_logs
+        from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.debug import copy_debug_logs
 
         namespace = namespace or self.namespace
 
@@ -653,7 +653,7 @@ class KubernetesDataControllerServiceProxy(
         """
         Restore ControlDB from Local Backup File - requires kube config
         """
-        from azext_arcdata.kubernetes_sdk.dc.debug import (
+        from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.debug import (
             restore_unique_controldb_from_backup,
         )
 
@@ -692,7 +692,7 @@ class KubernetesDataControllerServiceProxy(
         )
 
         # -- Check Kubectl Context --
-        from azext_arcdata.kubernetes_sdk.dc.debug import take_dump
+        from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.debug import take_dump
 
         namespace = namespace or self.namespace
         take_dump(namespace, container, target_folder)
@@ -716,7 +716,7 @@ class ArmPostgresServiceProxy(BasePostgresServiceProxy):
 
 class KubernetesPostgresServiceProxy(BasePostgresServiceProxy, KubernetesMixin):
     def __init__(self, az_cli):
-        from azext_arcdata.kubernetes_sdk.postgres.client import (
+        from azext_arcdata.vendored_sdks.kubernetes_sdk.postgres.client import (
             PostgreSqlClient,
         )
 
@@ -854,7 +854,7 @@ class KubernetesActiveDirectoryConnectorServiceProxy(
     BaseActiveDirectoryConnectorServiceProxy, KubernetesMixin
 ):
     def __init__(self, az_cli):
-        from azext_arcdata.kubernetes_sdk.ad_connector.client import (
+        from azext_arcdata.vendored_sdks.kubernetes_sdk.ad_connector.client import (
             ActiveDirectoryConnectorClient,
         )
 
@@ -1206,7 +1206,7 @@ class KubernetesFailoverGroupServiceProxy(
     BaseFailoverGroupServiceProxy, KubernetesMixin
 ):
     def __init__(self, az_cli):
-        from azext_arcdata.kubernetes_sdk.failover_group.client import (
+        from azext_arcdata.vendored_sdks.kubernetes_sdk.failover_group.client import (
             FailoverGroupClient,
         )
 

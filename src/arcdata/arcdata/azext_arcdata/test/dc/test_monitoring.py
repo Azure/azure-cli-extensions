@@ -2,7 +2,7 @@ import base64
 from typing import Dict, List
 import io
 from azext_arcdata.core.util import generate_certificate_and_key
-from azext_arcdata.kubernetes_sdk.client import KubernetesClient
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesClient
 import urllib3
 from azext_arcdata.core.constants import (
     DEFAULT_LOGSUI_CERT_SECRET_NAME,
@@ -14,7 +14,7 @@ from azext_arcdata.core.constants import (
     AZDATA_USERNAME,
     AZDATA_PASSWORD,
 )
-from azext_arcdata.kubernetes_sdk.dc.constants import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import (
     LOGSUI_LOGIN_SECRET_NAME,
     METRICSUI_LOGIN_SECRET_NAME,
 )
@@ -59,25 +59,25 @@ class TestMonitoring(object):
             lambda *args, **kwargs: True,
         )
         monkeypatch.setattr(
-            "azext_arcdata.kubernetes_sdk.dc.client.DataControllerClient._dc_create",
+            "azext_arcdata.vendored_sdks.kubernetes_sdk.dc.client.DataControllerClient._dc_create",
             lambda *args, **kwargs: (None, None),
         )
         monkeypatch.setattr(
-            "azext_arcdata.kubernetes_sdk.dc.client.DataControllerClient._await_dc_ready",
+            "azext_arcdata.vendored_sdks.kubernetes_sdk.dc.client.DataControllerClient._await_dc_ready",
             lambda *args, **kwargs: (None, None),
         )
 
     @pytest.fixture
     def mock_dc_arm_create(self, monkeypatch):
         monkeypatch.setattr(
-            "azext_arcdata.arm_sdk.client.ArmClient.create_dc",
+            "azext_arcdata.vendored_sdks.arm_sdk.client.ArmClient.create_dc",
             lambda *args, **kwargs: (None, None),
         )
 
     @pytest.fixture
     def mock_create_secret(self, monkeypatch):
         monkeypatch.setattr(
-            "azext_arcdata.kubernetes_sdk.client.KubernetesClient.create_secret",
+            "azext_arcdata.vendored_sdks.kubernetes_sdk.client.KubernetesClient.create_secret",
             lambda *args, **kwargs: True,
         )
 
@@ -292,11 +292,11 @@ class TestMonitoring(object):
         self, monkeypatch, az, mock_constants
     ):
         monkeypatch.setattr(
-            "azext_arcdata.kubernetes_sdk.dc.client.DataControllerClient._dc_create",
+            "azext_arcdata.vendored_sdks.kubernetes_sdk.dc.client.DataControllerClient._dc_create",
             lambda *args, **kwargs: (None, None),
         )
         monkeypatch.setattr(
-            "azext_arcdata.kubernetes_sdk.dc.client.DataControllerClient._await_dc_ready",
+            "azext_arcdata.vendored_sdks.kubernetes_sdk.dc.client.DataControllerClient._await_dc_ready",
             lambda *args, **kwargs: (None, None),
         )
         LOGSUI_PASS = "AAAbbb1234"

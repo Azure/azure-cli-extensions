@@ -4,7 +4,7 @@
 # license information.
 # ------------------------------------------------------------------------------
 from azext_arcdata.failover_group.exceptions import FailoverGroupError
-from azext_arcdata.kubernetes_sdk.client import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     KubernetesError,
 )
 from knack.cli import CLIError

@@ -6,9 +6,9 @@ from azext_arcdata.sqlmi.constants import (
     RESOURCE_KIND_PLURAL,
 )
 import pydash as _
-from azext_arcdata.kubernetes_sdk.models.custom_resource import CustomResource
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
 from azext_arcdata.sqlmi.models.sqlmi_cr_model import SqlmiCustomResource
-from azext_arcdata.kubernetes_sdk.client import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     CONNECTION_RETRY_ATTEMPTS,
     RETRY_INTERVAL,
     KubernetesClient,
@@ -16,8 +16,8 @@ from azext_arcdata.kubernetes_sdk.client import (
     K8sApiException,
     http_status_codes,
 )
-from azext_arcdata.kubernetes_sdk.dc.constants import SQLMI_CRD_NAME
-from azext_arcdata.kubernetes_sdk.arc_docker_image_service import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import SQLMI_CRD_NAME
+from azext_arcdata.vendored_sdks.kubernetes_sdk.arc_docker_image_service import (
     ArcDataImageService,
 )
 from urllib3.exceptions import MaxRetryError, NewConnectionError

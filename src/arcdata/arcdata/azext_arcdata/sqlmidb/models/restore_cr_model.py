@@ -6,7 +6,7 @@
 
 from datetime import datetime
 
-from azext_arcdata.kubernetes_sdk.models import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models import (
     CustomResource,
     KubeQuantity,
     SerializationUtils,

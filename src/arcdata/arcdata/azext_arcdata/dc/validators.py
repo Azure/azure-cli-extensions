@@ -11,10 +11,10 @@ from azure.cli.core.azclierror import (
 )
 import azext_arcdata.core.common_validators as validators
 import os
-from azext_arcdata.kubernetes_sdk.dc.constants import CONFIG_DIR
+from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import CONFIG_DIR
 import json
 import pydash as _
-from azext_arcdata.kubernetes_sdk.arc_docker_image_service import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.arc_docker_image_service import (
     ArcDataImageService,
 )
 

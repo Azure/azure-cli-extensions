@@ -8,8 +8,8 @@ import time
 
 from azext_arcdata.core.cli_client import CliClient
 from azext_arcdata.core.util import DeploymentConfigUtil, retry
-from azext_arcdata.kubernetes_sdk.client import KubernetesError
-from azext_arcdata.kubernetes_sdk.models.custom_resource import CustomResource
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesError
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
 from azext_arcdata.sqlmi.util import CONNECTION_RETRY_ATTEMPTS, RETRY_INTERVAL
 from urllib3.exceptions import MaxRetryError, NewConnectionError
 

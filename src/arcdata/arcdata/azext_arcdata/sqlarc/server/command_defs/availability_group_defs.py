@@ -6,7 +6,7 @@
 import re
 
 from knack.log import get_logger
-from azext_arcdata.arm_sdk.swagger.swagger_latest.models import (
+from azext_arcdata.vendored_sdks.arm_sdk.swagger.swagger_latest.models import (
     ArcSqlServerAvailabilityMode,
     ArcSqlServerFailoverMode,
     AvailabilityGroupCreateUpdateConfiguration,

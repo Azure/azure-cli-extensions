@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 from typing import List
-from azext_arcdata.kubernetes_sdk.models import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models import (
     CustomResource,
 )
 from azext_arcdata.failover_group.models.fog_replica import FogReplica

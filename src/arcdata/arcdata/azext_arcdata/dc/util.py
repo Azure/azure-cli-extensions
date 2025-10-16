@@ -11,7 +11,7 @@ import azext_arcdata.dc.constants as instance_properties
 from azext_arcdata.core.configuration import Configuration
 from azext_arcdata.core.prompt import prompt, prompt_y_n
 from azext_arcdata.core.util import display
-from azext_arcdata.arm_sdk.azure import constants as azure_constants
+from azext_arcdata.vendored_sdks.arm_sdk.azure import constants as azure_constants
 from knack.log import get_logger
 from knack.prompting import NoTTYException
 

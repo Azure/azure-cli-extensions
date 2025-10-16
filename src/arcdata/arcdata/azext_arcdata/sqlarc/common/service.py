@@ -7,10 +7,10 @@ import json
 import re
 import requests
 from knack.log import get_logger
-from azext_arcdata.arm_sdk.swagger.swagger_latest import (
+from azext_arcdata.vendored_sdks.arm_sdk.swagger.swagger_latest import (
     AzureArcDataManagementClient,
 )
-from azext_arcdata.arm_sdk.swagger.swagger_latest.models import (
+from azext_arcdata.vendored_sdks.arm_sdk.swagger.swagger_latest.models import (
     AvailabilityGroupCreateUpdateConfiguration,
     SqlServerAvailabilityGroupResource,
 )

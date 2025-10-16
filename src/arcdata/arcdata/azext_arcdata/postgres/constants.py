@@ -4,7 +4,7 @@
 # license information.
 # -----------------------------------------------------------------------------
 
-from azext_arcdata.kubernetes_sdk.models.kube_quantity import KubeQuantity
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.kube_quantity import KubeQuantity
 from azext_arcdata.core.constants import (
     ARC_API_V1BETA1,
     ARC_API_V1BETA6,

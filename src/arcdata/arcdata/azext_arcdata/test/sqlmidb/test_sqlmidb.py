@@ -7,7 +7,7 @@ import os
 import time
 
 import pytest
-from azext_arcdata.kubernetes_sdk.models.custom_resource import CustomResource
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
 from azext_arcdata.sqlmidb.constants import TASK_API_VERSION
 from azext_arcdata.sqlmidb.models.restore_cr_model import (
     SqlmiRestoreTaskCustomResource,

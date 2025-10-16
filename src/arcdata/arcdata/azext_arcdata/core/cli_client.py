@@ -90,7 +90,7 @@ class CliClient(BaseCliClient):
             ###############################################################
             from azext_arcdata.core.prompt import prompt
             from azext_arcdata.core.util import load_kube_config
-            from azext_arcdata.kubernetes_sdk.client import KubernetesClient
+            from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesClient
             from knack.prompting import NoTTYException
             from kubernetes.config.config_exception import ConfigException
 

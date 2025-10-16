@@ -1,5 +1,5 @@
 import pydash as _
-from azext_arcdata.kubernetes_sdk.arc_docker_image_service import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.arc_docker_image_service import (
     ArcDataImageService,
 )
 from azext_arcdata.core.util import retry_method

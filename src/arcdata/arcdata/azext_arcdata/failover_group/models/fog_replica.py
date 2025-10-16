@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # ------------------------------------------------------------------------------
 
-from azext_arcdata.kubernetes_sdk.models.dict_utils import SerializationUtils
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.dict_utils import SerializationUtils
 
 
 class FogReplica(SerializationUtils):

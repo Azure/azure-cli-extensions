@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import List
 from azext_arcdata.core.constants import DNS_NAME_REQUIREMENTS
 from azext_arcdata.core.util import name_meets_dns_requirements
-from azext_arcdata.kubernetes_sdk.models import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models import (
     CustomResource,
     SerializationUtils,
 )
@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING
 
 # KubernetesClient is only needed for typehints, but causes a circular import. This is the python provided workaround
 if TYPE_CHECKING:
-    from azext_arcdata.kubernetes_sdk.client import KubernetesClient
+    from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesClient
 
 
 class DomainControllerSpec(SerializationUtils):

@@ -6,7 +6,7 @@
 
 """Command definitions for `data control`."""
 
-from azext_arcdata.arm_sdk.azure.export_util import (
+from azext_arcdata.vendored_sdks.arm_sdk.azure.export_util import (
     ExportType,
     check_prompt_export_output_file,
 )
@@ -20,10 +20,10 @@ from azext_arcdata.core.prompt import (
 )
 from azext_arcdata.core.text import Text
 from azext_arcdata.core.util import DeploymentConfigUtil
-from azext_arcdata.kubernetes_sdk.arc_docker_image_service import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.arc_docker_image_service import (
     ArcDataImageService,
 )
-from azext_arcdata.kubernetes_sdk.client import KubernetesClient
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesClient
 from knack.prompting import NoTTYException
 from knack.log import get_logger
 from knack.cli import CLIError
@@ -72,7 +72,7 @@ def dc_create(
     try:
         stdout = client.stdout
         if not path and not profile_name:
-            from azext_arcdata.kubernetes_sdk.dc.constants import CONFIG_DIR
+            from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import CONFIG_DIR
 
             # Prompt the user for a choice between configs
             stdout("Please choose a deployment configuration: ")

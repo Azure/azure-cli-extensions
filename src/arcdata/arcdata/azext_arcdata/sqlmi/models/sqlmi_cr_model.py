@@ -14,14 +14,14 @@ from azext_arcdata.core.class_utils import (
 from azext_arcdata.core.constants import DNS_NAME_REQUIREMENTS
 from azext_arcdata.core.labels import parse_labels
 from azext_arcdata.core.util import name_meets_dns_requirements
-from azext_arcdata.kubernetes_sdk.models import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models import (
     CustomResource,
     KubeQuantity,
     SerializationUtils,
     StorageSpec,
     VolumeClaim,
 )
-from azext_arcdata.kubernetes_sdk.models.custom_resource_update import Update
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource_update import Update
 from azext_arcdata.sqlmi.constants import (
     SQLMI_AGENT_ENABLED,
     SQLMI_COLLATION,
@@ -45,7 +45,7 @@ from azext_arcdata.sqlmi.util import (
 # KubernetesClient is only needed for typehints, but causes a circular import.
 # This is the python provided workaround
 if TYPE_CHECKING:
-    from azext_arcdata.kubernetes_sdk.client import KubernetesClient
+    from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesClient
 
 TYPE_ERROR = "Type '{}' is incompatible with property '{}'"
 

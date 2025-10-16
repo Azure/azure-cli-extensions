@@ -38,25 +38,25 @@ from azext_arcdata.core.util import (
     get_private_key_from_data,
     get_private_key_from_file,
 )
-from azext_arcdata.kubernetes_sdk.util import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.util import (
     validate_certificate_secret,
     create_certificate_secret,
     check_secret_exists_with_retries,
 )
-from azext_arcdata.kubernetes_sdk.dc.constants import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import (
     DATA_CONTROLLER_CRD_NAME,
     SQLMI_CRD_NAME,
     SQLMI_REPROVISION_REPLICA_TASK_CRD_NAME,
 )
-from azext_arcdata.kubernetes_sdk.client import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     K8sApiException,
     KubernetesClient,
     KubernetesError,
     http_status_codes,
 )
-from azext_arcdata.kubernetes_sdk.models import CustomResourceDefinition
-from azext_arcdata.kubernetes_sdk.models.custom_resource import CustomResource
-from azext_arcdata.kubernetes_sdk.models.data_controller_custom_resource import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models import CustomResourceDefinition
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.data_controller_custom_resource import (
     DataControllerCustomResource,
 )
 from azext_arcdata.sqlmi.constants import (
@@ -176,7 +176,7 @@ def arc_sql_mi_create(
         if not use_k8s:
             validate_sqlmi_name(name)
 
-            from azext_arcdata.arm_sdk.client import ArmClient
+            from azext_arcdata.vendored_sdks.arm_sdk.client import ArmClient
 
             cred = ArcDataCliCredential()
             subscription = client.subscription
@@ -607,7 +607,7 @@ def arc_sql_mi_upgrade(
 
     try:
         if not use_k8s:
-            from azext_arcdata.arm_sdk.client import ArmClient
+            from azext_arcdata.vendored_sdks.arm_sdk.client import ArmClient
 
             if name is None:
                 raise CLIError(
@@ -782,7 +782,7 @@ def arc_sql_mi_update(
 
     try:
         if not use_k8s:
-            from azext_arcdata.arm_sdk.client import ArmClient
+            from azext_arcdata.vendored_sdks.arm_sdk.client import ArmClient
 
             cred = ArcDataCliCredential()
             subscription = client.subscription
@@ -1001,7 +1001,7 @@ def arc_sql_mi_delete(
     """
     try:
         if not use_k8s:
-            from azext_arcdata.arm_sdk.client import ArmClient
+            from azext_arcdata.vendored_sdks.arm_sdk.client import ArmClient
 
             cred = ArcDataCliCredential()
             subscription = client.subscription
@@ -1038,7 +1038,7 @@ def arc_sql_mi_show(
     """
     try:
         if not use_k8s:
-            from azext_arcdata.arm_sdk.client import ArmClient
+            from azext_arcdata.vendored_sdks.arm_sdk.client import ArmClient
 
             cred = ArcDataCliCredential()
             subscription = client.subscription
@@ -1114,7 +1114,7 @@ def arc_sql_mi_list(
     try:
         result = []
         if not use_k8s:
-            from azext_arcdata.arm_sdk.client import ArmClient
+            from azext_arcdata.vendored_sdks.arm_sdk.client import ArmClient
 
             cred = ArcDataCliCredential()
             subscription = client.subscription

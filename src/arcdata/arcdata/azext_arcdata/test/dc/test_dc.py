@@ -6,14 +6,14 @@
 
 from collections import namedtuple
 from multiprocessing.sharedctypes import Value
-from azext_arcdata.kubernetes_sdk.arc_docker_image_service import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.arc_docker_image_service import (
     ArcDataImageService,
 )
-from azext_arcdata.kubernetes_sdk.dc.dc_utilities import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.dc_utilities import (
     get_bootstrapper_deployment,
     resolve_valid_target_version,
 )
-from azext_arcdata.kubernetes_sdk.client import KubernetesClient
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesClient
 
 from pytest_az import VCRState, RECORD_MODES
 import azext_arcdata.dc.validators

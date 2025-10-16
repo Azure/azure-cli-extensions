@@ -10,12 +10,12 @@ from azext_arcdata.ad_connector.constants import (
 )
 from azext_arcdata.ad_connector.util import _get_ad_connector_custom_resource
 from azext_arcdata.ad_connector.validators import _validate_domain_name
-from azext_arcdata.kubernetes_sdk.dc.constants import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import (
     DATA_CONTROLLER_CRD_NAME,
 )
-from azext_arcdata.kubernetes_sdk.models.custom_resource import CustomResource
-from azext_arcdata.kubernetes_sdk.util import check_secret_exists_with_retries
-from azext_arcdata.kubernetes_sdk.dc.constants import DATA_CONTROLLER_CRD_NAME
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
+from azext_arcdata.vendored_sdks.kubernetes_sdk.util import check_secret_exists_with_retries
+from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import DATA_CONTROLLER_CRD_NAME
 from azext_arcdata.core.constants import ARC_API_V1BETA2, DNS_NAME_REQUIREMENTS
 from azext_arcdata.core.constants import (
     ARC_GROUP,
@@ -30,7 +30,7 @@ from azext_arcdata.core.util import (
     name_meets_dns_requirements,
     retry,
 )
-from azext_arcdata.kubernetes_sdk.client import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     K8sApiException,
     KubernetesClient,
     KubernetesError,

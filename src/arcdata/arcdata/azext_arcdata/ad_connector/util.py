@@ -29,20 +29,20 @@ from azext_arcdata.core.constants import (
 )
 from azext_arcdata.core.prompt import prompt, prompt_pass
 from azext_arcdata.core.util import get_config_from_template, retry
-from azext_arcdata.kubernetes_sdk.client import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     K8sApiException,
     KubernetesClient,
     KubernetesError,
     http_status_codes,
 )
-from azext_arcdata.kubernetes_sdk.dc.constants import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import (
     ACTIVE_DIRECTORY_CONNECTOR_CRD_NAME,
     DATA_CONTROLLER_CRD_NAME,
     TEMPLATE_DIR,
 )
-from azext_arcdata.kubernetes_sdk.models.custom_resource import CustomResource
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
 from urllib3.exceptions import MaxRetryError, NewConnectionError
-from azext_arcdata.kubernetes_sdk.util import check_secret_exists_with_retries
+from azext_arcdata.vendored_sdks.kubernetes_sdk.util import check_secret_exists_with_retries
 import yaml
 
 

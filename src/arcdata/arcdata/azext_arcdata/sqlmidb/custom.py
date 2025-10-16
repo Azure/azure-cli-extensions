@@ -31,16 +31,16 @@ from azext_arcdata.core.util import (
     is_windows,
     retry,
 )
-from azext_arcdata.kubernetes_sdk.client import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     K8sApiException,
     KubernetesError,
     http_status_codes,
 )
-from azext_arcdata.kubernetes_sdk.errors.K8sAdmissionReviewError import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.errors.K8sAdmissionReviewError import (
     K8sAdmissionReviewError,
 )
-from azext_arcdata.kubernetes_sdk.models.custom_resource import CustomResource
-from azext_arcdata.kubernetes_sdk.models.data_controller_custom_resource import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.data_controller_custom_resource import (
     DataControllerCustomResource,
 )
 from azext_arcdata.sqlmidb.constants import (

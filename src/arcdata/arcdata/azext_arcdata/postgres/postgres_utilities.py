@@ -6,9 +6,9 @@ from azext_arcdata.postgres.constants import (
     RESOURCE_KIND_PLURAL,
 )
 import pydash as _
-from azext_arcdata.kubernetes_sdk.client import KubernetesClient
-from azext_arcdata.kubernetes_sdk.dc.constants import POSTGRES_CRD_NAME
-from azext_arcdata.kubernetes_sdk.models._models import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesClient
+from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import POSTGRES_CRD_NAME
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models._models import (
     ComMicrosoftArcdataV1Beta6PostgreSql as PostgresCustomResource,
 )
 

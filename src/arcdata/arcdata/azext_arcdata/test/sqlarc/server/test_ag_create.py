@@ -5,7 +5,7 @@
 import os
 import pytest
 
-from azext_arcdata.arm_sdk.swagger.swagger_latest.models import (
+from azext_arcdata.vendored_sdks.arm_sdk.swagger.swagger_latest.models import (
     SqlServerAvailabilityGroupResource,
     SqlAvailabilityGroupReplicaResourceProperties,
 )

@@ -4,7 +4,7 @@
 # license information.
 # ------------------------------------------------------------------------------
 import pydash as _
-from azext_arcdata.arm_sdk.swagger.swagger_latest.models import BackupPolicy
+from azext_arcdata.vendored_sdks.arm_sdk.swagger.swagger_latest.models import BackupPolicy
 
 
 # Reads the Backup Policy and checks if it is enabled

@@ -1,4 +1,4 @@
-from azext_arcdata.kubernetes_sdk.models.custom_resource_update import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource_update import (
     Policy,
     PolicyValue,
     Update,

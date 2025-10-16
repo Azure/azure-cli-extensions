@@ -6,7 +6,7 @@
 
 # import azext_arcdata.core.deploy as util
 from knack.cli import CLIError
-from azext_arcdata.kubernetes_sdk.client import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     K8sApiException,
     KubernetesClient,
 )
@@ -18,7 +18,7 @@ from azext_arcdata.core.constants import (
     DATA_CONTROLLER_PLURAL,
 )
 
-from azext_arcdata.kubernetes_sdk.dc.constants import DATA_CONTROLLER_CRD_NAME
+from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import DATA_CONTROLLER_CRD_NAME
 
 from collections import OrderedDict
 from urllib3.exceptions import NewConnectionError, MaxRetryError

@@ -6,7 +6,7 @@
 
 from azext_arcdata.ad_connector.validators import _validate_domain_name
 import azext_arcdata.core.common_validators as validators
-from azext_arcdata.kubernetes_sdk.arc_docker_image_service import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.arc_docker_image_service import (
     ArcDataImageService,
 )
 from azext_arcdata.sqlmi.constants import (

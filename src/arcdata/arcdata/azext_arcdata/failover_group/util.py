@@ -8,9 +8,9 @@
 import time
 from azext_arcdata.core.util import retry
 from azext_arcdata.failover_group.models.fog_cr import FogCustomResource
-from azext_arcdata.kubernetes_sdk.models.custom_resource import CustomResource
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
 from azext_arcdata.core.constants import ARC_API_V1BETA2
-from azext_arcdata.kubernetes_sdk.client import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     K8sApiException,
     KubernetesClient,
     KubernetesError,
