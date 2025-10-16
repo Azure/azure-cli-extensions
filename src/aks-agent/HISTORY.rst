@@ -12,11 +12,21 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-1.0.0b5
+1.0.0b6
 +++++++
 * Fix stdin reading hang in CI/CD pipelines by using select with timeout for non-interactive mode.
 * Update pytest marker registration and fix datetime.utcnow() deprecation warning in tests.
 * Improve test framework with real-time stderr output visibility and subprocess timeout.
+
+1.0.0b5
++++++++
+* Bump holmesgpt to 0.15.0 - Enhanced AI debugging experience and bug fixes
+  * Added TODO list feature to allows holmes to reliably answers questions it wasn't able to answer before due to early-stopping
+  * Fixed mcp server http connection fails when using socks proxy by adding the missing socks dependency
+  * Fixed gpt-5 temperature bug by upgrading litellm and dropping non-1 values for temperature
+  * Improved the installation time by removing unnecessary dependencies and move test dependencies to dev dependency group
+* Added Feedback slash command Feature to allow users to provide feedback on their experience with the agent performance
+* Disable prometheus toolset loading by default to workaround the libbz2-dev missing issue in Azure CLI python environment.
 
 1.0.0b4
 +++++++

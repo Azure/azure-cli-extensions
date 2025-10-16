@@ -48,22 +48,19 @@ class ListRevisions(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.target_name = AAZStrArg(
-            options=["--target-name", "--name", "-n"],
-            help="Name of the target",
+        _args_schema.solution_name = AAZStrArg(
+            options=["--solution-template-name", "--solution"],
+            help="Name of the solution",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
+                pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
                 max_length=61,
                 min_length=3,
             ),
         )
-
-        # define Arg Group "Body"
-
-        _args_schema.solution_name = AAZStrArg(
-            options=["--solution-template-name", "--solution"],
-            help="Name of the solution",
+        _args_schema.target_name = AAZStrArg(
+            options=["--target-name", "--name", "-n"],
+            help="Name of the target",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
@@ -125,15 +122,15 @@ class ListRevisions(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "solutionName", self.ctx.args.solution_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "targetName", self.ctx.args.target_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "solutionName", self.ctx.args.solution_name,
                     required=True,
                 ),
             }
@@ -187,6 +184,10 @@ class ListRevisions(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.e_tag = AAZStrType(
+                serialized_name="eTag",
+                flags={"read_only": True},
+            )
             _element.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
             )
@@ -206,13 +207,42 @@ class ListRevisions(AAZCommand):
             )
 
             extended_location = cls._schema_on_200.value.Element.extended_location
-            extended_location.name = AAZStrType()
-            extended_location.type = AAZStrType()
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.configuration = AAZStrType()
+            properties.action_type = AAZStrType(
+                serialized_name="actionType",
+                flags={"read_only": True},
+            )
+            properties.configuration = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.current_stage = AAZObjectType(
+                serialized_name="currentStage",
+                flags={"read_only": True},
+            )
+            _ListRevisionsHelper._build_schema_stage_map_read(properties.current_stage)
+            properties.error_details = AAZObjectType(
+                serialized_name="errorDetails",
+                flags={"read_only": True},
+            )
+            _ListRevisionsHelper._build_schema_error_detail_read(properties.error_details)
             properties.external_validation_id = AAZStrType(
                 serialized_name="externalValidationId",
+                flags={"read_only": True},
+            )
+            properties.latest_action_triggered_by = AAZStrType(
+                serialized_name="latestActionTriggeredBy",
+                flags={"read_only": True},
+            )
+            properties.latest_action_tracking_uri = AAZStrType(
+                serialized_name="latestActionTrackingUri",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -220,43 +250,51 @@ class ListRevisions(AAZCommand):
             )
             properties.review_id = AAZStrType(
                 serialized_name="reviewId",
+                flags={"read_only": True},
             )
-            properties.revision = AAZIntType()
+            properties.revision = AAZIntType(
+                flags={"read_only": True},
+            )
             properties.solution_dependencies = AAZListType(
                 serialized_name="solutionDependencies",
+                flags={"read_only": True},
             )
             properties.solution_instance_name = AAZStrType(
                 serialized_name="solutionInstanceName",
+                flags={"read_only": True},
             )
             properties.solution_template_version_id = AAZStrType(
                 serialized_name="solutionTemplateVersionId",
+                flags={"read_only": True},
             )
-            properties.specification = AAZFreeFormDictType()
-            properties.state = AAZStrType()
+            properties.specification = AAZDictType(
+                flags={"required": True},
+            )
+            # properties.stages = AAZListType(
+            #     flags={"read_only": True},
+            # )
+            properties.state = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.target_display_name = AAZStrType(
                 serialized_name="targetDisplayName",
+                flags={"read_only": True},
+            )
+            properties.target_level_configuration = AAZStrType(
+                serialized_name="targetLevelConfiguration",
+                flags={"read_only": True},
             )
 
             solution_dependencies = cls._schema_on_200.value.Element.properties.solution_dependencies
             solution_dependencies.Element = AAZObjectType()
+            _ListRevisionsHelper._build_schema_solution_dependency_read(solution_dependencies.Element)
 
-            _element = cls._schema_on_200.value.Element.properties.solution_dependencies.Element
-            _element.dependencies = AAZListType()
-            _element.solution_instance_name = AAZStrType(
-                serialized_name="solutionInstanceName",
-            )
-            _element.solution_template_version_id = AAZStrType(
-                serialized_name="solutionTemplateVersionId",
-            )
-            _element.solution_version_id = AAZStrType(
-                serialized_name="solutionVersionId",
-            )
-            _element.target_id = AAZStrType(
-                serialized_name="targetId",
-            )
+            specification = cls._schema_on_200.value.Element.properties.specification
+            specification.Element = AAZAnyType()
 
-            dependencies = cls._schema_on_200.value.Element.properties.solution_dependencies.Element.dependencies
-            dependencies.Element = AAZObjectType()
+            # stages = cls._schema_on_200.value.Element.properties.stages
+            # stages.Element = AAZObjectType()
+            # _ListRevisionsHelper._build_schema_stage_map_read(stages.Element)
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -283,6 +321,158 @@ class ListRevisions(AAZCommand):
 
 class _ListRevisionsHelper:
     """Helper class for ListRevisions"""
+
+    _schema_error_detail_read = None
+
+    @classmethod
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
+            return
+
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
+            serialized_name="additionalInfo",
+            flags={"read_only": True},
+        )
+        error_detail_read.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.details = AAZListType(
+            flags={"read_only": True},
+        )
+        error_detail_read.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.target = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        additional_info = _schema_error_detail_read.additional_info
+        additional_info.Element = AAZObjectType()
+
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZDictType(
+            flags={"read_only": True},
+        )
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
+
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
+
+    _schema_solution_dependency_read = None
+
+    @classmethod
+    def _build_schema_solution_dependency_read(cls, _schema):
+        if cls._schema_solution_dependency_read is not None:
+            _schema.dependencies = cls._schema_solution_dependency_read.dependencies
+            _schema.solution_instance_name = cls._schema_solution_dependency_read.solution_instance_name
+            _schema.solution_template_version_id = cls._schema_solution_dependency_read.solution_template_version_id
+            _schema.solution_version_id = cls._schema_solution_dependency_read.solution_version_id
+            _schema.target_id = cls._schema_solution_dependency_read.target_id
+            return
+
+        cls._schema_solution_dependency_read = _schema_solution_dependency_read = AAZObjectType()
+
+        solution_dependency_read = _schema_solution_dependency_read
+        solution_dependency_read.dependencies = AAZListType()
+        solution_dependency_read.solution_instance_name = AAZStrType(
+            serialized_name="solutionInstanceName",
+        )
+        solution_dependency_read.solution_template_version_id = AAZStrType(
+            serialized_name="solutionTemplateVersionId",
+            flags={"required": True},
+        )
+        solution_dependency_read.solution_version_id = AAZStrType(
+            serialized_name="solutionVersionId",
+            flags={"required": True},
+        )
+        solution_dependency_read.target_id = AAZStrType(
+            serialized_name="targetId",
+            flags={"required": True},
+        )
+
+        dependencies = _schema_solution_dependency_read.dependencies
+        dependencies.Element = AAZObjectType()
+        cls._build_schema_solution_dependency_read(dependencies.Element)
+
+        _schema.dependencies = cls._schema_solution_dependency_read.dependencies
+        _schema.solution_instance_name = cls._schema_solution_dependency_read.solution_instance_name
+        _schema.solution_template_version_id = cls._schema_solution_dependency_read.solution_template_version_id
+        _schema.solution_version_id = cls._schema_solution_dependency_read.solution_version_id
+        _schema.target_id = cls._schema_solution_dependency_read.target_id
+
+    _schema_stage_map_read = None
+
+    @classmethod
+    def _build_schema_stage_map_read(cls, _schema):
+        if cls._schema_stage_map_read is not None:
+            _schema.child_stages = cls._schema_stage_map_read.child_stages
+            _schema.display_state = cls._schema_stage_map_read.display_state
+            _schema.end_time = cls._schema_stage_map_read.end_time
+            # _schema.stage = cls._schema_stage_map_read.stage
+            _schema.start_time = cls._schema_stage_map_read.start_time
+            # _schema.status = cls._schema_stage_map_read.status
+            return
+
+        cls._schema_stage_map_read = _schema_stage_map_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        stage_map_read = _schema_stage_map_read
+        stage_map_read.child_stages = AAZListType(
+            serialized_name="childStages",
+            flags={"read_only": True},
+        )
+        stage_map_read.display_state = AAZStrType(
+            serialized_name="displayState",
+            flags={"read_only": True},
+        )
+        stage_map_read.end_time = AAZStrType(
+            serialized_name="endTime",
+            flags={"read_only": True},
+        )
+        # stage_map_read.stage = AAZStrType(
+        #     flags={"read_only": True},
+        # )
+        stage_map_read.start_time = AAZStrType(
+            serialized_name="startTime",
+            flags={"read_only": True},
+        )
+        # stage_map_read.status = AAZStrType(
+        #     flags={"read_only": True},
+        # )
+
+        child_stages = _schema_stage_map_read.child_stages
+        child_stages.Element = AAZObjectType()
+        cls._build_schema_stage_map_read(child_stages.Element)
+
+        _schema.child_stages = cls._schema_stage_map_read.child_stages
+        _schema.display_state = cls._schema_stage_map_read.display_state
+        _schema.end_time = cls._schema_stage_map_read.end_time
+        # _schema.stage = cls._schema_stage_map_read.stage
+        _schema.start_time = cls._schema_stage_map_read.start_time
+        # _schema.status = cls._schema_stage_map_read.status
 
 
 __all__ = ["ListRevisions"]
