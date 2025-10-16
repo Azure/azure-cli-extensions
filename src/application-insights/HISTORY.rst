@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.0b2
+++++++++++++++++++
+* `az monitor app-insights workbook --help`: Fix typo in description
+
 2.0.0b1
 ++++++++++++++++++
 * `az monitor app-insights events/metrics/query`: Migrate data-plane using codegen tool
