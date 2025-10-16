@@ -1,0 +1,13 @@
+golden-eagle pod in app-18 namespace crashes due to expired SSL certificate.                                                       
+
+Relevant error:                                                                                                                    
+
+                                                                                                                                   
+ Certificate has expired. Update the ssl certificate using the '/update_certificate' API or update the config map.                 
+ ERROR - SSL certificate expired                                                                                                   
+ ExpiredCertException: Certificate expired on 2024-08-03 17:00:08                                                                  
+                                                                                                                                   
+
+Root cause: Secret db-certs-config (used for certs) is missing, and the certificate is expired.                                    
+
+Fix: Create/update the db-certs-config secret with a valid certificate and key. Then restart the deployment.

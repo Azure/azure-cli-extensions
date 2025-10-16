@@ -58,11 +58,15 @@ logger = get_logger(__name__)
 # pylint: disable=bare-except
 
 
-def get_mcr_path(cmd: CLICommand) -> str:
-    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+def get_mcr_path(active_directory_endpoint: str) -> str:
+    active_directory_array = active_directory_endpoint.split(".")
 
-    # default for public, mc, ff clouds
-    mcr_postfix = active_directory_array[2]
+    # For US Government and China clouds, use public mcr
+    if active_directory_endpoint.endswith((".us", ".cn")):
+        return "mcr.microsoft.com"
+
+    # Default MCR postfix
+    mcr_postfix = "com"
     # special cases for USSec, exclude part of suffix
     if len(active_directory_array) == 4 and active_directory_array[2] == "microsoft":
         mcr_postfix = active_directory_array[3]
@@ -1056,10 +1060,10 @@ def arm_exception_handler(
         status_code = ex.status_code
         if status_code == 404 and return_if_not_found:
             return
-        if status_code is not None and status_code // 100 == 4:
+        if status_code and status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        if status_code is not None and status_code // 100 == 5:
+        if status_code and status_code // 100 == 5:
             raise AzureInternalError(
                 "Http response error occured while making ARM request: "
                 + str(ex)
