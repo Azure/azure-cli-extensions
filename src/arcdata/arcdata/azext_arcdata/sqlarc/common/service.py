@@ -167,7 +167,7 @@ class AzureArcSqlWebService(object):
         except Exception as e:
             logger.info(e)
             raise Exception(
-                f"Unable to find a arc server resource for the arc sql instance name provided."
+                "Unable to find a arc server resource for the arc sql instance name provided."
             )
 
     def get_sqlarc_database_config(self, resource_group, instance, database):
@@ -289,7 +289,7 @@ class AzureArcSqlWebService(object):
             raise Exception(
                 'Could not find resource group "{0}".'.format(resource_group)
             )
-        if "(ResourceNotFound)" in str(e) and not "/Databases/" in str(e):
+        if "(ResourceNotFound)" in str(e) and "/Databases/" not in str(e):
             raise Exception(
                 'Could not find Sql Server instance "{0}" in the resource group "{1}". For more details please go to https://aka.ms/ARMResourceNotFoundFix'.format(
                     instance_name, resource_group

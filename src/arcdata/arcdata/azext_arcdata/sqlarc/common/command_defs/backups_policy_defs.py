@@ -4,7 +4,16 @@
 # license information.
 # ------------------------------------------------------------------------------
 from knack.log import get_logger
-from azext_arcdata.sqlarc.common.command_defs.backups_policy_helpers import *
+from azext_arcdata.sqlarc.common.validators import (
+    validate_fci_is_inactive,
+    validate_license_type,
+)
+from azext_arcdata.sqlarc.common.command_defs.backups_policy_helpers import (
+    apply_policy_changes_to_backups_policy,
+    create_backups_policy_config,
+    delete_backups_policy_config,
+    displayable_backups_policy_config
+)
 from azext_arcdata.core.exceptions import CLIError
 
 logger = get_logger(__name__)

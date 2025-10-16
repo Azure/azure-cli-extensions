@@ -6,7 +6,9 @@
 import re as reg
 import pydash as _
 from azext_arcdata.core.exceptions import CLIError
-from azext_arcdata.sqlarc.server.constants import *
+from azext_arcdata.sqlarc.server.constants import (
+    allowed_feature_flags
+)
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -62,23 +64,23 @@ def validate_backups_policy_set_arguments(namespace):
             )
         )
     is_a_disable_arguement = (
-        namespace.backups_full_backup_days == None
-        and namespace.backups_diff_backup_hours == None
-        and namespace.backups_tlog_backup_mins == None
+        namespace.backups_full_backup_days is None
+        and namespace.backups_diff_backup_hours is None
+        and namespace.backups_tlog_backup_mins is None
         and namespace.backups_retention_days == 0
         and not namespace.backups_default_policy
     )
     all_values_are_entered = (
-        namespace.backups_full_backup_days != None
-        and namespace.backups_diff_backup_hours != None
-        and namespace.backups_tlog_backup_mins != None
-        and namespace.backups_retention_days != None
+        namespace.backups_full_backup_days is not None
+        and namespace.backups_diff_backup_hours is not None
+        and namespace.backups_tlog_backup_mins is not None
+        and namespace.backups_retention_days is not None
     )
     atleast_one_value_is_entered = (
-        namespace.backups_full_backup_days != None
-        or namespace.backups_diff_backup_hours != None
-        or namespace.backups_tlog_backup_mins != None
-        or namespace.backups_retention_days != None
+        namespace.backups_full_backup_days is not None
+        or namespace.backups_diff_backup_hours is not None
+        or namespace.backups_tlog_backup_mins is not None
+        or namespace.backups_retention_days is not None
     )
     if is_a_disable_arguement:
         return
@@ -89,13 +91,13 @@ def validate_backups_policy_set_arguments(namespace):
     if not all_values_are_entered and not namespace.backups_default_policy:
         error_msg = "Please enter all the following parameter(s): {0}. Or you can do --default-policy to use the default policy."
         error_list = ""
-        if namespace.backups_full_backup_days == None:
+        if namespace.backups_full_backup_days is None:
             error_list += "--full-backup-days,"
-        if namespace.backups_diff_backup_hours == None:
+        if namespace.backups_diff_backup_hours is None:
             error_list += "--diff-backup-hours,"
-        if namespace.backups_tlog_backup_mins == None:
+        if namespace.backups_tlog_backup_mins is None:
             error_list += "--tlog-backup-mins,"
-        if namespace.backups_retention_days == None:
+        if namespace.backups_retention_days is None:
             error_list += "--retention-days,"
         raise CLIError(error_msg.format(error_list[:-1]))
 

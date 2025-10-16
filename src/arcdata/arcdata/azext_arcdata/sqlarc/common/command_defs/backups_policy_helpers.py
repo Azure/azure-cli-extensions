@@ -4,7 +4,6 @@
 # license information.
 # ------------------------------------------------------------------------------
 import pydash as _
-from azext_arcdata.sqlarc.common.validators import *
 from azext_arcdata.arm_sdk.swagger.swagger_latest.models import BackupPolicy
 
 
@@ -26,22 +25,22 @@ def apply_policy_changes_to_backups_policy(cvo, arm_model):
     if cvo.backups_default_policy:
         setup_default_values(arm_model)
 
-    if cvo.backups_full_backup_days != None:
+    if cvo.backups_full_backup_days is not None:
         arm_model.properties.backup_policy.full_backup_days = (
             cvo.backups_full_backup_days
         )
 
-    if cvo.backups_diff_backup_hours != None:
+    if cvo.backups_diff_backup_hours is not None:
         arm_model.properties.backup_policy.differential_backup_hours = (
             cvo.backups_diff_backup_hours
         )
 
-    if cvo.backups_tlog_backup_mins != None:
+    if cvo.backups_tlog_backup_mins is not None:
         arm_model.properties.backup_policy.transaction_log_backup_minutes = (
             cvo.backups_tlog_backup_mins
         )
 
-    if cvo.backups_retention_days != None:
+    if cvo.backups_retention_days is not None:
         arm_model.properties.backup_policy.retention_period_days = (
             cvo.backups_retention_days
         )

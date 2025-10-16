@@ -19,7 +19,7 @@ help_format_example = """
         - name: {exName}
           text: >
             {example}
-            
+
 """
 help_format_examples_2 = """
     type: {type}
@@ -31,7 +31,7 @@ help_format_examples_2 = """
         - name: {exName2}
           text: >
             {example2}
-            
+
 """
 help_format_examples_3 = """
     type: {type}
@@ -46,7 +46,7 @@ help_format_examples_3 = """
         - name: {exName3}
           text: >
             {example3}
-            
+
 """
 help_format_examples_4 = """
     type: {type}
@@ -63,6 +63,6 @@ help_format_examples_4 = """
             {example3}
         - name: {exName4}
           text: >
-            {example4}  
-            
+            {example4}
+
 """

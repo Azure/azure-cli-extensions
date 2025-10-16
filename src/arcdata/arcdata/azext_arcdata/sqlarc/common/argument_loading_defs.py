@@ -3,7 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # ------------------------------------------------------------------------------
-from azext_arcdata.sqlarc.common.argument_dicts import *
+from azext_arcdata.sqlarc.common.argument_dicts import (
+    backups_default_policy,
+    backups_diff_backup_hours,
+    backups_full_backup_days,
+    backups_retention_days,
+    backups_tlog_backup_mins,
+    yes
+)
 
 # Place reusable argument loading functions here
 
