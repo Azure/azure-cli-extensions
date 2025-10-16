@@ -514,7 +514,6 @@ def load_arguments(self, _):
             'such as -j $.key1.key2[?(@.key3=="someValue"].key4=value. '
             "If the inline value you are providing is a key "
             'value pair itself with "=" and "," escape those characters.  '
-            'For example, key1="key2\=val2\,key3\=val3". '
             "You may see examples below. "
             "For additional help, See: https://jsonpath.com/",
         )

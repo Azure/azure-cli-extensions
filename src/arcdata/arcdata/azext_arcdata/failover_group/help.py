@@ -31,14 +31,14 @@ helps["sql instance-failover-group-arc create"] = (
             --partner-mirroring-cert-file ./sqlmi2.cer --use-k8s
         - name: {ex2}
           text: >
-            az sql instance-failover-group-arc create --name fogcr 
-            --mi sqlmi1 --resource-group primary-rg-name 
+            az sql instance-failover-group-arc create --name fogcr
+            --mi sqlmi1 --resource-group primary-rg-name
             --partner-mi sqlmi2 --partner-resource-group partner-rg-name
             --partner-sync-mode async
         - name: {ex3}
           text: >
-            az sql instance-failover-group-arc create --name fogcr 
-            --mi sqlmi1 --resource-group primary-rg-name 
+            az sql instance-failover-group-arc create --name fogcr
+            --mi sqlmi1 --resource-group primary-rg-name
             --partner-mi sqlmi2 --partner-resource-group partner-rg-name
             --partner-sync-mode async --primary-mirroring-url 21.10.6.30:6603
             --partner-mirroring-url 10.20.5.20:970
@@ -66,7 +66,7 @@ helps["sql instance-failover-group-arc update"] = (
             az sql instance-failover-group-arc update --name fogcr --role secondary --use-k8s
         - name: {ex2}
           text: >
-            az sql instance-failover-group-arc update --name fogcr 
+            az sql instance-failover-group-arc update --name fogcr
             --role secondary --mi sqlmi1 --resource-group rg-name
 """.format(
         short="Update a failover group resource",

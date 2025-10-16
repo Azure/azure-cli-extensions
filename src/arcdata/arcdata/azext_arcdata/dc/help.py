@@ -36,14 +36,14 @@ helps["arcdata dc create"] = (
     examples:
         - name: {ex1}
           text: >
-            az arcdata dc create --name dc-name 
+            az arcdata dc create --name dc-name
             --connectivity-mode direct --resource-group rg-name
-            --location eastasia --subscription subscription 
+            --location eastasia --subscription subscription
             --custom-location arc-cl
         - name: {ex2}
           text: >
             az arcdata dc create --name dc-name
-            --subscription subscription --resource-group rg-name 
+            --subscription subscription --resource-group rg-name
             --cluster-name arc-cluster --connectivity-mode direct
             --custom-location arc-cl
 """.format(
@@ -120,7 +120,7 @@ helps["arcdata dc list-upgrades"] = (
     examples:
         - name: {ex1}
           text: >
-            az arcdata dc list-upgrades --k8s-namespace namespace --use-k8s            
+            az arcdata dc list-upgrades --k8s-namespace namespace --use-k8s
 """.format(
         short="List available upgrade versions.",
         long="Attempts to list versions that are available in the docker image registry for upgrade. "
@@ -146,9 +146,7 @@ helps["arcdata dc delete"] = (
             az arcdata dc delete --name dc-name --resource-group rg-name
 """.format(
         short="Delete data controller.",
-        long="Delete data controller - kube config is required on your system.".format(
-            get_environment_list_by_target("cluster")
-        ),
+        long="Delete data controller - kube config is required on your system.",
         ex1="Delete a data controller through the Kubernetes API.",
         ex2="Delete a data controller through Azure Resource Manager (ARM).",
     )
@@ -192,9 +190,7 @@ helps["arcdata dc endpoint list"] = (
             az arcdata dc endpoint list --k8s-namespace namespace
 """.format(
         short="List the data controller endpoint.",
-        long="List the data controller endpoint.".format(
-            get_environment_list_by_target("cluster")
-        ),
+        long="List the data controller endpoint.",
         ex1="Lists all available data controller endpoints.",
     )
 )
@@ -219,12 +215,10 @@ helps["arcdata dc status show"] = (
             az arcdata dc status show --k8s-namespace namespace --use-k8s
         - name: {ex2}
           text: >
-            az arcdata dc status show --resource-group resource-group    
+            az arcdata dc status show --resource-group resource-group
 """.format(
         short="Show the status of the data controller.",
-        long="Show the status of the data controller.".format(
-            get_environment_list_by_target("cluster")
-        ),
+        long="Show the status of the data controller.",
         ex1="Show the status of the data controller in a particular kubernetes "
         "namespace.",
         ex2="Show the status of a directly connected data controller in a "
@@ -385,9 +379,9 @@ helps["arcdata dc config patch"] = (
 helps["arcdata dc debug"] = (
     """
     type: group
-    short-summary: Debug data controller.
+    short-summary: {short}.
 """.format(
-        short="Debug commands."
+        short="Debug data controller."
     )
 )
 
@@ -424,7 +418,7 @@ helps["arcdata dc debug restore-controldb-snapshot"] = (
             az arcdata dc debug restore-controldb-snapshot -k arc-data-services -f /path/to/backup/controller-1675653451.bak
         - name: {ex2}
           text: >
-            az arcdata dc debug restore-controldb-snapshot -k arc-data-services -f C:\path\\to\\backup\\controller-1675653451.bak
+            az arcdata dc debug restore-controldb-snapshot -k arc-data-services -f C:\\path\\to\\backup\\controller-1675653451.bak
 """.format(
         short="Restores a unique copy of ControlDB from backup - for troubleshooting purposes only.",
         long="Restores a COPY_ONLY backup of ControlDB under a unique name for troubleshooting - Kubernetes configuration is required on your system.",

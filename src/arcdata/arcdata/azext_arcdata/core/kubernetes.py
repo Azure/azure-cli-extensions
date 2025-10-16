@@ -10,8 +10,6 @@ from azext_arcdata.core.util import (
     retry,
 )
 from knack.log import get_logger
-
-logger = get_logger(__name__)
 from azext_arcdata.core.constants import (
     DOCKER_USERNAME,
     DOCKER_PASSWORD,
@@ -853,14 +851,14 @@ def create_namespace_with_retry(
 def validate_rwx_storage_class(name: str, type: str, instanceType: str):
     try:
         config.load_incluster_config()
-    except ConfigException as e:
+    except ConfigException:
         config.load_kube_config()
     storageClass = None
     for s in client.StorageV1Api().list_storage_class().items:
         if s.metadata.name == name:
             storageClass = s
 
-    if storageClass == None:
+    if storageClass is None:
         raise Exception("Storage class '{}' does not exist".format(name))
     # A generic expression to match storage from list https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes and usage examples.
     #
@@ -886,7 +884,7 @@ def validate_rwx_storage_class(name: str, type: str, instanceType: str):
         )
     ) is None:
         if (
-            storageClass.provisioner == None
+            storageClass.provisioner is None
             or storageClass.provisioner == "kubernetes.io/no-provisioner"
         ):
             raise Exception(

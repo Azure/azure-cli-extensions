@@ -44,18 +44,22 @@ import pem
 
 logger = get_logger(__name__)
 
-BOOLEAN_STATES = lambda x: {
-    "1": True,
-    "yes": True,
-    "true": True,
-    "on": True,
-    "0": False,
-    "no": False,
-    "false": False,
-    "off": False,
-    None: False,
-    "none": False,
-}.get(str(x).lower() if x else x, False)
+def BOOLEAN_STATES(x):
+    """
+    Mapping of different common logical prepositions to boolean equivalent.
+    """
+    return {
+        "1": True,
+        "yes": True,
+        "true": True,
+        "on": True,
+        "0": False,
+        "no": False,
+        "false": False,
+        "off": False,
+        None: False,
+        "none": False,
+    }.get(str(x).lower() if x else x, False)
 """
 Mapping of different common logical prepositions to boolean equivalent.
 """
@@ -510,7 +514,7 @@ def load_kube_config(context=None):
                     )
                     kube_context_loaded = True
                     break
-                except Exception as e:
+                except Exception:
                     raise (
                         "Could not find context %s in file - %s"
                         % (context, config_file)
@@ -1262,7 +1266,7 @@ def check_and_set_kubectl_context():
         if os.getenv("KUBERNETES_SERVICE_HOST"):
             try:
                 kconfig.load_incluster_config()
-            except ConfigException as e:
+            except ConfigException:
                 load_kube_config()
         elif os.getenv("KUBECTL_CONTEXT") is None:
             load_kube_config()
@@ -1308,7 +1312,7 @@ def load_kube_config(context=None):
                     )
                     kube_context_loaded = True
                     break
-                except Exception as e:
+                except Exception:
                     logger.debug(
                         "Could not find context %s in file - %s"
                         % (context, config_file)

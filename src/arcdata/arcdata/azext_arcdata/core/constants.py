@@ -12,7 +12,7 @@ BASE = os.path.dirname(os.path.realpath(__file__))
 Base directory
 """
 
-IO_DELIM = "(?<!\\\\),(?=[\w/.$]+)"
+IO_DELIM = "(?<!\\\\),(?=[\\w/.$]+)"
 """
 Defines the IO delimiter for json key/value pairs on config set.
 """
@@ -134,11 +134,11 @@ The default docker image pull policy
 """
 
 CERT_ARGUMENT_ERROR_TEMPLATE = """Kubernetes secret '{}'
-                        already exists while private key or public key 
-                        files are provided on the command line. If you intend 
-                        to use the secret, please remove the file parameters 
-                        and try again. If you intend to use the files 
-                        provided to the command, use a different secret name 
+                        already exists while private key or public key
+                        files are provided on the command line. If you intend
+                        to use the secret, please remove the file parameters
+                        and try again. If you intend to use the files
+                        provided to the command, use a different secret name
                         or delete the existing secret."""
 
 # ------------------------------------------------------------------------------

@@ -23,32 +23,32 @@ helps["arcdata ad-connector create"] = (
         - name: {ex1}
           text: >
             az arcdata ad-connector create
-            --name arcadc 
-            --k8s-namespace arc 
-            --realm CONTOSO.LOCAL 
+            --name arcadc
+            --k8s-namespace arc
+            --realm CONTOSO.LOCAL
             --account-provisioning manual
-            --primary-ad-dc-hostname azdc01.contoso.local 
-            --secondary-ad-dc-hostnames "azdc02.contoso.local, azdc03.contoso.local" 
-            --netbios-domain-name CONTOSO 
-            --dns-domain-name contoso.local 
-            --nameserver-addresses 10.10.10.11,10.10.10.12,10.10.10.13 
-            --dns-replicas 2 
-            --prefer-k8s-dns false 
+            --primary-ad-dc-hostname azdc01.contoso.local
+            --secondary-ad-dc-hostnames "azdc02.contoso.local, azdc03.contoso.local"
+            --netbios-domain-name CONTOSO
+            --dns-domain-name contoso.local
+            --nameserver-addresses 10.10.10.11,10.10.10.12,10.10.10.13
+            --dns-replicas 2
+            --prefer-k8s-dns false
             --use-k8s
         - name: {ex2}
           text: >
-            az arcdata ad-connector create 
+            az arcdata ad-connector create
             --name arcadc
             --resource-group rg-name
             --data-controller-name dc-name
-            --realm CONTOSO.LOCAL 
+            --realm CONTOSO.LOCAL
             --account-provisioning manual
-            --primary-ad-dc-hostname azdc01.contoso.local 
-            --secondary-ad-dc-hostnames "azdc02.contoso.local, azdc03.contoso.local" 
-            --netbios-domain-name CONTOSO 
-            --dns-domain-name contoso.local 
-            --nameserver-addresses 10.10.10.11,10.10.10.12,10.10.10.13 
-            --dns-replicas 2 
+            --primary-ad-dc-hostname azdc01.contoso.local
+            --secondary-ad-dc-hostnames "azdc02.contoso.local, azdc03.contoso.local"
+            --netbios-domain-name CONTOSO
+            --dns-domain-name contoso.local
+            --nameserver-addresses 10.10.10.11,10.10.10.12,10.10.10.13
+            --dns-replicas 2
             --prefer-k8s-dns false
 """.format(
         short="Create a new Active Directory connector.",
@@ -65,13 +65,13 @@ helps["arcdata ad-connector update"] = (
         - name: {ex1}
           text: >
             az arcdata ad-connector update
-            --name arcadc 
-            --k8s-namespace arc 
+            --name arcadc
+            --k8s-namespace arc
             --primary-ad-dc-hostname azdc01.contoso.local
-            --secondary-ad-dc-hostname "azdc02.contoso.local, azdc03.contoso.local" 
+            --secondary-ad-dc-hostname "azdc02.contoso.local, azdc03.contoso.local"
             --nameserver-addresses 10.10.10.11,10.10.10.12,10.10.10.13
-            --dns-replicas 2 
-            --prefer-k8s-dns false 
+            --dns-replicas 2
+            --prefer-k8s-dns false
             --use-k8s
         - name: {ex2}
           text: >
@@ -100,13 +100,13 @@ helps["arcdata ad-connector delete"] = (
           text: >
             az arcdata ad-connector delete
             --name arcadc
-            --k8s-namespace arc 
+            --k8s-namespace arc
             --use-k8s
         - name: {ex2}
           text: >
             az arcdata ad-connector delete
             --name arcadc
-            --resource-group rg-name 
+            --resource-group rg-name
             --data-controller-name dc-name
 """.format(
         short="Delete an existing Active Directory connector.",
