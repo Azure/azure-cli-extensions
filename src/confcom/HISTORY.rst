@@ -9,6 +9,10 @@ Release History
 * added `fragment push` command to allow explicit uploading of standalone fragments
 * added `fragment attach` command to allow explicit uploading of image attached fragments
 
+1.3.0
+++++++
+* Add a new --enable-stdio flag, with a warning if neither this or --disable-stdio is set
+
 1.2.8
 ++++++
 * Add a new --enable-stdio flag, with a warning if neither this or --disable-stdio is set
