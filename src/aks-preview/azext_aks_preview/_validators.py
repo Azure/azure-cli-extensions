@@ -31,7 +31,7 @@ from azure.cli.core.azclierror import (ArgumentUsageError,
                                        RequiredArgumentMissingError)
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
-from azure.mgmt.core.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -701,26 +701,51 @@ def validate_crg_id(namespace):
 def validate_azure_keyvault_kms_key_id(namespace):
     key_id = namespace.azure_keyvault_kms_key_id
     if key_id:
-        err_msg = (
-            "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
-            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
-        )
-
         https_prefix = "https://"
         if not key_id.startswith(https_prefix):
+            err_msg = (
+                "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+                "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
+            )
             raise InvalidArgumentValueError(err_msg)
-
         segments = key_id[len(https_prefix):].split("/")
-        if len(segments) != 4 or segments[1] != "keys":
+        if len(segments) < 3 or segments[1] != "keys":
+            err_msg = (
+                "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+                "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
+            )
             raise InvalidArgumentValueError(err_msg)
 
 
 def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
     key_vault_resource_id = namespace.azure_keyvault_kms_key_vault_resource_id
-    if key_vault_resource_id is None or key_vault_resource_id == '':
-        return
-    if not is_valid_resource_id(key_vault_resource_id):
-        raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
+    if key_vault_resource_id:
+        if not is_valid_resource_id(key_vault_resource_id):
+            raise InvalidArgumentValueError(
+                "--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID."
+            )
+
+        try:
+            parsed = parse_resource_id(key_vault_resource_id)
+            provider = parsed.get('namespace', '').lower()
+            if provider != 'microsoft.keyvault':
+                raise InvalidArgumentValueError(
+                    "--azure-keyvault-kms-key-vault-resource-id must reference a "
+                    "Microsoft.KeyVault resource."
+                )
+            resource_type = parsed.get('type', '').lower()
+            if resource_type not in ['vaults', 'managedhsms']:
+                raise InvalidArgumentValueError(
+                    "--azure-keyvault-kms-key-vault-resource-id must reference a Key Vault "
+                    "(vaults) or Managed HSM (managedHSMs)."
+                )
+        except InvalidArgumentValueError:
+            # Re-raise our validation errors
+            raise
+        except Exception as ex:
+            raise InvalidArgumentValueError(
+                f"--azure-keyvault-kms-key-vault-resource-id parsing failed: {str(ex)}"
+            )
 
 
 def validate_bootstrap_container_registry_resource_id(namespace):

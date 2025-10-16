@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b3
++++++++
+* Implement platform-managed-keys (PMK) awared validation for KMS customer-managed-key (CMK)
+
 19.0.0b2
 +++++++
 * `az aks create`: Add new parameter `--enable-opentelemetry-metrics` to enable OTLP feature for metrics addon.

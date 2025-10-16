@@ -11944,29 +11944,48 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
         location="eastus2euap",
     )
-    def test_aks_create_with_kms_infrastructure_encryption(
+    def test_aks_create_with_kms_pmk_and_update_cmk(
         self, resource_group, resource_group_location
     ):
+        """Test creating PMK-enabled cluster and then updating it to enable CMK"""
         aks_name = self.create_random_name("cliakstest", 16)
+        kv_name = self.create_random_name("cliakstestkv", 16)
+        identity_name = self.create_random_name("cliakstestidentity", 24)
         k8s_version = self._get_version_in_range(location=resource_group_location, min_version="1.33.0", max_version="1.34.0")
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "name": aks_name,
+                "kv_name": kv_name,
+                "identity_name": identity_name,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "k8s_version": k8s_version,
             }
         )
 
-        # create cluster with infrastructure encryption enabled
+        # create user-assigned identity
+        identity_id = self._get_user_assigned_identity(resource_group)
+        identity_object_id = self._get_principal_id_of_user_assigned_identity(identity_id)
+        assert identity_id is not None
+        assert identity_object_id is not None
+        self.kwargs.update(
+            {
+                "identity_id": identity_id,
+                "identity_object_id": identity_object_id,
+            }
+        )
+
+        # create cluster with PMK infrastructure encryption enabled
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
+            "--assign-identity {identity_id} "
             "--kms-infrastructure-encryption Enabled "
             "--kubernetes-version={k8s_version} "
             "--ssh-key-value={ssh_key_value} "
@@ -11979,6 +11998,211 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check(
                     "securityProfile.kubernetesResourceObjectEncryptionProfile.infrastructureEncryption", 
+                    "Enabled"
+                ),
+                self.not_exists("securityProfile.azureKeyVaultKms"),
+            ],
+        )
+
+        # create key vault and key for CMK
+        create_keyvault = (
+            "keyvault create --resource-group={resource_group} --name={kv_name} --enable-rbac-authorization=false --no-self-perms -o json"
+        )
+        self.cmd(
+            create_keyvault,
+            checks=[self.check("properties.provisioningState", "Succeeded")],
+        )
+
+        # set access policy for test identity
+        test_identity_object_id = self._get_test_identity_object_id()
+        test_identity_access_policy = 'keyvault set-policy --resource-group={resource_group} --name={kv_name} ' \
+                                      '--key-permissions all --object-id ' + test_identity_object_id
+        self.cmd(test_identity_access_policy, checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
+
+        # create key and extract versionless key ID
+        create_key = "keyvault key create -n kms --vault-name {kv_name} -o json"
+        key = self.cmd(
+            create_key, checks=[self.check("attributes.enabled", True)]
+        ).get_output_in_json()
+        key_id_versioned = key["key"]["kid"]
+        # Extract versionless key ID (remove version part)
+        # Format: https://{vault}.vault.azure.net/keys/{name}/{version}
+        # We want: https://{vault}.vault.azure.net/keys/{name}
+        key_id_parts = key_id_versioned.rsplit('/', 1)
+        key_id_versionless = key_id_parts[0]
+
+        assert key_id_versionless is not None
+        self.kwargs.update(
+            {
+                "key_id": key_id_versionless,
+            }
+        )
+
+        # Get key vault resource ID
+        kv_resource_id = self.cmd(
+            "keyvault show --resource-group={resource_group} --name={kv_name} --query id -o tsv"
+        ).output.strip()
+        self.kwargs.update(
+            {
+                "kv_resource_id": kv_resource_id,
+            }
+        )
+
+        # assign access policy for cluster identity
+        set_policy = (
+            "keyvault set-policy --resource-group={resource_group} --name={kv_name} "
+            "--object-id {identity_object_id} --key-permissions encrypt decrypt -o json"
+        )
+        self.cmd(
+            set_policy, checks=[self.check("properties.provisioningState", "Succeeded")]
+        )
+
+        # update existing PMK cluster to enable CMK
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} "
+            "--azure-keyvault-kms-key-vault-resource-id={kv_resource_id} "
+            "-o json"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.azureKeyVaultKms.enabled", True),
+                self.check("securityProfile.azureKeyVaultKms.keyId", key_id_versionless),
+                self.check(
+                    "securityProfile.kubernetesResourceObjectEncryptionProfile.infrastructureEncryption",
+                    "Enabled"
+                ),
+            ],
+        )
+
+        # delete
+        cmd = (
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
+        )
+        self.cmd(
+            cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_create_with_kms_pmk_and_cmk(
+        self, resource_group, resource_group_location
+    ):
+        """Test PMK-enabled cluster creation with versionless key ID"""
+        aks_name = self.create_random_name("cliakstest", 16)
+        kv_name = self.create_random_name("cliakstestkv", 16)
+        identity_name = self.create_random_name("cliakstestidentity", 24)
+        k8s_version = self._get_version_in_range(location=resource_group_location, min_version="1.33.0", max_version="1.34.0")
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "kv_name": kv_name,
+                "identity_name": identity_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "k8s_version": k8s_version,
+            }
+        )
+
+        # create user-assigned identity
+        identity_id = self._get_user_assigned_identity(resource_group)
+        identity_object_id = self._get_principal_id_of_user_assigned_identity(identity_id)
+        assert identity_id is not None
+        assert identity_object_id is not None
+        self.kwargs.update(
+            {
+                "identity_id": identity_id,
+                "identity_object_id": identity_object_id,
+            }
+        )
+
+        # create key vault and key
+        create_keyvault = (
+            "keyvault create --resource-group={resource_group} --name={kv_name} --enable-rbac-authorization=false --no-self-perms -o json"
+        )
+        self.cmd(
+            create_keyvault,
+            checks=[self.check("properties.provisioningState", "Succeeded")],
+        )
+
+        # set access policy for test identity
+        test_identity_object_id = self._get_test_identity_object_id()
+        test_identity_access_policy = 'keyvault set-policy --resource-group={resource_group} --name={kv_name} ' \
+                                      '--key-permissions all --object-id ' + test_identity_object_id
+        self.cmd(test_identity_access_policy, checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
+
+        # create key and extract versionless key ID
+        create_key = "keyvault key create -n kms --vault-name {kv_name} -o json"
+        key = self.cmd(
+            create_key, checks=[self.check("attributes.enabled", True)]
+        ).get_output_in_json()
+        key_id_versioned = key["key"]["kid"]
+        # Extract versionless key ID (remove version part)
+        # Format: https://{vault}.vault.azure.net/keys/{name}/{version}
+        # We want: https://{vault}.vault.azure.net/keys/{name}
+        key_id_parts = key_id_versioned.rsplit('/', 1)
+        key_id_versionless = key_id_parts[0]
+
+        assert key_id_versionless is not None
+        self.kwargs.update(
+            {
+                "key_id": key_id_versionless,
+            }
+        )
+
+        # Get key vault resource ID
+        kv_resource_id = self.cmd(
+            "keyvault show --resource-group={resource_group} --name={kv_name} --query id -o tsv"
+        ).output.strip()
+        self.kwargs.update(
+            {
+                "kv_resource_id": kv_resource_id,
+            }
+        )
+
+        # assign access policy
+        set_policy = (
+            "keyvault set-policy --resource-group={resource_group} --name={kv_name} "
+            "--object-id {identity_object_id} --key-permissions encrypt decrypt -o json"
+        )
+        self.cmd(
+            set_policy, checks=[self.check("properties.provisioningState", "Succeeded")]
+        )
+
+        # create cluster with PMK enabled and versionless key ID
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--assign-identity {identity_id} "
+            "--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} "
+            "--azure-keyvault-kms-key-vault-resource-id={kv_resource_id} "
+            "--kms-infrastructure-encryption=Enabled "
+            "--kubernetes-version={k8s_version} "
+            "--ssh-key-value={ssh_key_value} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/KMSPMKPreview "
+            "-o json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.azureKeyVaultKms.enabled", True),
+                self.check("securityProfile.azureKeyVaultKms.keyId", key_id_versionless),
+                self.check(
+                    "securityProfile.kubernetesResourceObjectEncryptionProfile.infrastructureEncryption",
                     "Enabled"
                 ),
             ],
@@ -12001,7 +12225,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         name_prefix="clitest",
         location="eastus2euap",
     )
-    def test_aks_update_with_kms_infrastructure_encryption(
+    def test_aks_update_with_kms_pmk(
         self, resource_group, resource_group_location
     ):
         aks_name = self.create_random_name("cliakstest", 16)
