@@ -12002,6 +12002,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
     def test_update_azure_monitor_profile_with_opentelemetry_metrics(self):
         # Test enabling OpenTelemetry metrics on update
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
