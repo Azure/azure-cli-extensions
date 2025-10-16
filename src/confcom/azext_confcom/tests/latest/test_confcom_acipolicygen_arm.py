@@ -33,6 +33,11 @@ POLICYGEN_ARGS = {
         "include_fragments": True,
         "fragments_json": os.path.join(FRAGMENTS_DIR, "fragment.json"),
     },
+    "policy_fragment_plus_infrastructure_svn.rego": {
+        "infrastructure_svn": "99",
+        "include_fragments": True,
+        "fragments_json": os.path.join(FRAGMENTS_DIR, "fragment.json"),
+    },
 }
 
 
@@ -47,13 +52,13 @@ def test_acipolicygen(sample_directory, generated_policy_path):
     # absolute paths
     os.chdir(CONFCOM_DIR)
 
-    for failing_sample_directory, failing_generated_policy_path in [
-        ("multi_container_groups", "policy_fragment.rego"), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9229
-        (None, "policy_exclude_default_fragment.rego"), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9198
+    for failing_sample_directory, failing_generated_policy_paths in [
+        ("multi_container_groups", ("policy_fragment.rego", "policy_fragment_plus_infrastructure_svn.rego")), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9229
+        (None, ("policy_exclude_default_fragment.rego",)), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9198
     ]:
         if (
-            failing_sample_directory in (None, sample_directory)
-            and failing_generated_policy_path in (None, generated_policy_path)
+            (sample_directory == failing_sample_directory or failing_sample_directory is None)
+            and (generated_policy_path in failing_generated_policy_paths or failing_generated_policy_paths is None)
         ):
             pytest.skip("Skipping test due to known issue")
 
