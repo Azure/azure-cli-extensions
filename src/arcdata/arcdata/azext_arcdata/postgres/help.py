@@ -108,7 +108,7 @@ helps["postgres server-arc list"] = (
     short-summary: {short}
     examples:
         - name: {ex1}
-          text: >            
+          text: >
             az postgres server-arc list --k8s-namespace namespace --use-k8s
 """.format(
         short="List Azure Arc enabled PostgreSQL server.",
@@ -132,7 +132,7 @@ helps["postgres server-arc endpoint list"] = (
     examples:
         - name: {ex1}
           text: >
-            az postgres server-arc endpoint list --name postgres01 
+            az postgres server-arc endpoint list --name postgres01
             --k8s-namespace namespace --use-k8s
 """.format(
         short="List Azure Arc enabled PostgreSQL server endpoints.",

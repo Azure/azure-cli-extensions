@@ -1160,7 +1160,7 @@ class PostgreSqlClient(object):
 
             self.init_service_model(custom_resource)
         else:
-            if not service_type in SERVICE_TYPES:
+            if service_type not in SERVICE_TYPES:
                 raise ValueError(
                     f"Invalid service type: {service_type}. "
                     f"Must be one of {SERVICE_TYPES}"
@@ -1619,7 +1619,6 @@ def _validate_custom_resource(custom_resource: PostgresCustomResource):
 
     limits = custom_resource.spec.scheduling.default.resources.limits
     requests = custom_resource.spec.scheduling.default.resources.requests
-    is_dev = custom_resource.spec.dev
 
     if "memory" in requests and requests["memory"] != "":
         val = KubeQuantity(requests["memory"])
@@ -1707,7 +1706,7 @@ def _validate_ad_connector(client, name, namespace):
 
     check_and_set_kubectl_context()
 
-    cr = _get_ad_connector_custom_resource(client, name, namespace)
+    _get_ad_connector_custom_resource(client, name, namespace)
 
 
 def _validate_keytab_secret(namespace, keytab_secret_name):
@@ -1767,7 +1766,7 @@ def _validate_storage(storage: PostgresCustomResourceSpecStorageData):
             ):
                 raise ValueError(STORAGE_CLASS_ERROR.format(v.class_name))
             if v.size:
-                size_qty = KubeQuantity(v.size)
+                KubeQuantity(v.size)
 
 
 def _validate_backup_storage(
@@ -1781,7 +1780,7 @@ def _validate_backup_storage(
             elif not KubernetesClient.storage_class_exists(v.class_name):
                 raise ValueError(STORAGE_CLASS_ERROR.format(v.class_name))
             if v.size:
-                size_qty = KubeQuantity(v.size)
+                KubeQuantity(v.size)
             if is_dev is None:
                 try:
                     validate_rwx_storage_class(

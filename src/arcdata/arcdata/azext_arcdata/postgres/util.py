@@ -112,6 +112,6 @@ def hierarchical_output(command_result):
             },
             bdc_config=True,
         )
-    except Exception as e:  # -- fallback --
+    except Exception:  # -- fallback --
         from knack.output import format_json
     return format_json(command_result)
