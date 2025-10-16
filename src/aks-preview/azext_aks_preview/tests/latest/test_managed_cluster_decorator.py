@@ -5479,7 +5479,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         mc_1 = self.models.ManagedCluster(location="test_location")
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_ingress_profile_gateway_api(mc_1)
-        
+
         ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
             gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
                 installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
@@ -5500,7 +5500,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.set_up_ingress_profile_gateway_api(mc_2)
-        
+
         ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
@@ -5514,7 +5514,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         mc_3 = self.models.ManagedCluster(location="test_location")
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.set_up_ingress_profile_gateway_api(mc_3)
-        
+
         ground_truth_mc_3 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
@@ -11881,7 +11881,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_1 = self.models.ManagedCluster(location="test_location")
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.update_ingress_profile_gateway_api(mc_1)
-        
+
         ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
             gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
                 installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
@@ -11907,7 +11907,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_ingress_profile_gateway_api(mc_2)
-        
+
         ground_truth_ingress_profile_2 = self.models.ManagedClusterIngressProfile(
             web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True),
             gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
@@ -11934,8 +11934,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 )
             )
         )
+        dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.update_ingress_profile_gateway_api(mc_3)
-        
+
         ground_truth_ingress_profile_3 = self.models.ManagedClusterIngressProfile(
             gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
                 installation=CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED
@@ -11970,7 +11971,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_4 = self.models.ManagedCluster(location="test_location")
         dec_4.context.attach_mc(mc_4)
         dec_mc_4 = dec_4.update_ingress_profile_gateway_api(mc_4)
-        
+
         ground_truth_mc_4 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_4, ground_truth_mc_4)
 
@@ -11991,7 +11992,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_5.context.attach_mc(mc_5)
         dec_mc_5 = dec_5.update_ingress_profile_gateway_api(mc_5)
-        
+
         # Should remain unchanged
         ground_truth_mc_5 = self.models.ManagedCluster(
             location="test_location",
