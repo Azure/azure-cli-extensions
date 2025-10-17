@@ -14,6 +14,7 @@ Helper class for all POST commands that return extra properties back to the cust
 import os
 import subprocess
 import tarfile
+import time
 import urllib
 
 from azure.cli.core.aaz import has_value
@@ -23,8 +24,92 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
+def _safe_remove_file(file_path, max_retries=3, delay=0.1):
+    """
+    Safely remove a file with retry logic to handle Windows file locking issues.
+    Args:
+        file_path (str): Path to the file to be removed
+        max_retries (int): Maximum number of retry attempts
+        delay (float): Delay in seconds between retry attempts
+    """
+    if not os.path.exists(file_path):
+        return
+
+    for attempt in range(max_retries + 1):
+        try:
+            os.remove(file_path)
+            logger.info("Successfully removed temporary file: %s", file_path)
+            return
+        except PermissionError as e:
+            if attempt < max_retries:
+                logger.warning(
+                    "Failed to remove file %s (attempt %d/%d): %s. Retrying in %s seconds...",
+                    file_path,
+                    attempt + 1,
+                    max_retries + 1,
+                    str(e),
+                    delay,
+                )
+                time.sleep(delay)
+                delay *= 2  # Exponential backoff
+            else:
+                logger.error(
+                    "Failed to remove temporary file %s after %d attempts: %s",
+                    file_path,
+                    max_retries + 1,
+                    str(e),
+                )
+                # Don't raise the exception, just log it to avoid breaking the main operation
+        except OSError as e:
+            logger.error("Unexpected error removing file %s: %s", file_path, str(e))
+            return
+
+
+def _get_az_command():
+    """Get the appropriate az command for the current platform"""
+    if os.name == "nt":  # Windows
+        # Common Azure CLI installation paths on Windows
+        possible_paths = [
+            r"C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin\az.cmd",
+            r"C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin\az.cmd",
+            # Try az.exe as well
+            r"C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin\az.exe",
+            r"C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin\az.exe",
+        ]
+        for path in possible_paths:
+            if os.path.exists(path):
+                return path
+
+    # Default to 'az' for other platforms or if not found in common paths
+    return "az"
+
+
 class CustomActionProperties:
     """Helper class for all POST commands that return extra properties back to the customer"""
+
+    @staticmethod
+    def is_within_directory(directory, target):
+        """
+        Ensure the target path is within the intended directory
+        """
+        abs_directory = os.path.abspath(directory)
+        abs_target = os.path.abspath(target)
+        return os.path.commonpath([abs_directory]) == os.path.commonpath(
+            [abs_directory, abs_target]
+        )
+
+    @staticmethod
+    def safe_extract(tar, path="."):
+        """
+        Validates each file's path before extraction to prevent malicious files from escaping the target directory
+        """
+        for member in tar.getmembers():
+            member_path = os.path.join(path, member.name)
+            if not CustomActionProperties.is_within_directory(path, member_path):
+                raise ValueError(
+                    f"Path traversal detected: {member_path} is outside target directory {path}"
+                )
+        tar.extractall(path)
 
     # Custom handling of response will display the output head and the result_URL/result_ref
     # it will also save files into output directory if provided
@@ -59,7 +144,7 @@ class CustomActionProperties:
                 try:
                     with urllib.request.urlopen(result_url) as result:
                         with tarfile.open(fileobj=result, mode="r:gz") as tar:
-                            tar.extractall(path=output_directory)
+                            CustomActionProperties.safe_extract(tar, output_directory)
                             logger.warning(
                                 "Extracted results are available in directory: %s",
                                 output_directory,
@@ -98,9 +183,12 @@ class CustomActionProperties:
                     if isinstance(args.output, str)
                     else args.output.to_serialized_data()
                 )
+                # Get the appropriate az command for this platform
+                az_command = _get_az_command()
+
                 # download the blob using "az storage blob download --blob-url %s --auth-mode login"
                 download_command = [
-                    "az",
+                    az_command,
                     "storage",
                     "blob",
                     "download",
@@ -126,16 +214,18 @@ class CustomActionProperties:
                 try:
                     # Extract the downloaded blob
                     with tarfile.open(downloaded_blob_name, mode="r:gz") as tar:
-                        tar.extractall(path=output_directory)
+                        CustomActionProperties.safe_extract(tar, output_directory)
                         logger.warning(
                             "Extracted results are available in directory: %s",
                             output_directory,
                         )
-                        os.remove(downloaded_blob_name)
                 except tarfile.TarError as e:
                     error_message = f"Failed to extract blob. Error: {str(e)}"
                     logger.error(error_message)
                     raise AzureInternalError(error_message) from e
+                finally:
+                    # Clean up the downloaded file with retry logic for Windows
+                    _safe_remove_file(downloaded_blob_name)
         else:
             result = parent_cmd.deserialize_output(
                 parent_cmd.ctx.vars.instance, client_flatten=True

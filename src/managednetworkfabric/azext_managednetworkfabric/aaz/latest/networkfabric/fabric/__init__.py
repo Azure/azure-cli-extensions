@@ -9,7 +9,6 @@
 # flake8: noqa
 
 from .__cmd_group import *
-from ._arm_configuration_diff import *
 from ._commit_batch_status import *
 from ._commit_configuration import *
 from ._create import *
@@ -19,6 +18,8 @@ from ._discard_commit_batch import *
 from ._list import *
 from ._lock_fabric import *
 from ._provision import *
+from ._resync_password import *
+from ._rotate_password import *
 from ._show import *
 from ._update import *
 from ._upgrade import *

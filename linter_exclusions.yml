@@ -198,6 +198,11 @@ aks update:
     cluster_service_load_balancer_health_probe_mode:
       rule_exclusions:
       - option_length_too_long
+aks agent:
+  parameters:
+    prompt:
+      rule_exclusions:
+        - no_positional_parameters
 arcdata dc config init:
   parameters:
     path:
@@ -1415,20 +1420,44 @@ iot edge deployment update:
       - no_parameter_defaults_for_update_commands
 iot ops asset create:
   parameters:
-    cluster_resource_group:
+    instance_resource_group:
       rule_exclusions:
       - parameter_should_not_end_in_resource_group
-    custom_location_resource_group:
-      rule_exclusions:
-      - parameter_should_not_end_in_resource_group
-iot ops asset endpoint create:
+iot ops asset query:
   parameters:
-    cluster_resource_group:
+    instance_resource_group:
       rule_exclusions:
       - parameter_should_not_end_in_resource_group
-    custom_location_resource_group:
+iot ops asset endpoint create custom:
+  parameters:
+    instance_resource_group:
       rule_exclusions:
       - parameter_should_not_end_in_resource_group
+iot ops asset endpoint create onvif:
+  parameters:
+    instance_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot ops asset endpoint create opcua:
+  parameters:
+    instance_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot ops asset endpoint query:
+  parameters:
+    instance_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot ops ns device create:
+  parameters:
+    instance_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot ops broker persist update:
+  parameters:
+    broker_name:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
 k8sconfiguration create:
   parameters:
     helm_operator_version:
@@ -3373,3 +3402,43 @@ eventgrid namespace topic update:
     event_retention_in_days:
       rule_exclusions:
       - option_length_too_long
+
+neon postgres endpoint create:
+  rule_exclusions:
+  - missing_command_example
+
+neon postgres neon-role create:
+  rule_exclusions:
+  - missing_command_example
+
+neon postgres neon-database create:
+  rule_exclusions:
+  - missing_command_example
+
+neon postgres get-postgres-version:
+  rule_exclusions:
+  - missing_command_example
+
+neon postgres branch:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+
+neon postgres endpoint:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+
+neon postgres neon-database:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+
+neon postgres neon-role:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+
+neon postgres organization:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+
+neon postgres project:
+  rule_exclusions:
+  - require_wait_command_if_no_wait

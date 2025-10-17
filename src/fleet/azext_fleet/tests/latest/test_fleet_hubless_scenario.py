@@ -53,8 +53,11 @@ class FleetHublessScenarioTest(ScenarioTest):
             'updaterun': self.create_random_name(prefix='uprn-', length=9),
             'updateStrategy_name': self.create_random_name(prefix='upstr-', length=10),
             'autoupgradeprofile_name': self.create_random_name(prefix='aup-', length=10),
+            'autoupgradeprofile_name_TKV': self.create_random_name(prefix='aup-', length=10),
             'ssh_key_value': self.generate_ssh_keys(),
-            'stages_file': _get_test_data_file('stages.json')
+            'stages_file': _get_test_data_file('stages.json'),
+            'kubernetes_version': '1.33.0',
+            'target_kubernetes_version': '1.30'
         })
 
         self.cmd('fleet create -g {rg} -n {fleet_name}', checks=[
@@ -93,10 +96,11 @@ class FleetHublessScenarioTest(ScenarioTest):
             'mc_id': mc_id,
         })
 
-        self.cmd('fleet member create -g {rg} --fleet-name {fleet_name} -n {member_name} --member-cluster-id {mc_id} --update-group group1', checks=[
+        self.cmd('fleet member create -g {rg} --fleet-name {fleet_name} -n {member_name} --member-cluster-id {mc_id} --update-group group1 --member-labels "team=fleet"', checks=[
             self.check('name', '{member_name}'),
             self.check('clusterResourceId', '{mc_id}'),
-            self.check('group', 'group1')
+            self.check('group', 'group1'),
+            self.check('labels.team', 'fleet')
         ])
 
         self.cmd('fleet member update -g {rg} --fleet-name {fleet_name} -n {member_name} --update-group group2', checks=[
@@ -122,7 +126,7 @@ class FleetHublessScenarioTest(ScenarioTest):
         self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member_name} --updated', checks=[self.is_empty()])
         self.cmd('aks wait -g {rg} -n {member_name} --updated', checks=[self.is_empty()])
 
-        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.29.2 --stages {stages_file}', checks=[
+        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version {kubernetes_version} --stages {stages_file}', checks=[
             self.check('name', '{updaterun}')
         ])
 
@@ -149,7 +153,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             'update_strategy_id': update_strategy['id'],
         })
 
-        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.29.2 --update-strategy-name {update_strategy_name}', checks=[
+        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version {kubernetes_version} --update-strategy-name {update_strategy_name}', checks=[
             self.check('name', '{updaterun}')
         ])
 
@@ -165,18 +169,54 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('length([])', 1)
         ])
 
+        self.cmd('fleet gate list -g {rg} -f {fleet_name}', checks=[
+            self.check('length([])', 1)
+        ])
+
+        gate_list = self.cmd('fleet gate list -g {rg} -f {fleet_name}', checks=[
+            self.check('length([])', 1)
+        ]).get_output_in_json()
+
+        gate = gate_list[0]
+
+        gate_name = gate['name']
+
+        self.kwargs.update({
+            'gate_name': gate_name
+        })
+
+        self.cmd('fleet gate show -g {rg} -f {fleet_name} -n {gate_name}', checks=[
+            self.check('name', '{gate_name}')
+        ])
+
+        self.cmd('fleet gate approve -g {rg} -f {fleet_name} -n {gate_name}', checks=[
+            self.check('state', 'Completed')
+        ])
+
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
 
         self.cmd('fleet autoupgradeprofile create -g {rg} -f {fleet_name} -n {autoupgradeprofile_name} -c Rapid --node-image-selection Latest --update-strategy-id {update_strategy_id} --disabled', checks=[
             self.check('name', '{autoupgradeprofile_name}')
         ])
 
+        self.cmd('fleet autoupgradeprofile create -g {rg} -f {fleet_name} -n {autoupgradeprofile_name_TKV} -c TargetKubernetesVersion --long-term-support --target-kubernetes-version {target_kubernetes_version}', checks=[
+            self.check('name', '{autoupgradeprofile_name_TKV}'),
+            self.check('longTermSupport', True),
+            self.check('targetKubernetesVersion', '{target_kubernetes_version}')
+        ])
+
         self.cmd('fleet autoupgradeprofile show -g {rg} -f {fleet_name} -n {autoupgradeprofile_name}', checks=[
             self.check('name', '{autoupgradeprofile_name}')
         ])
 
+        self.cmd('fleet autoupgradeprofile show -g {rg} -f {fleet_name} -n {autoupgradeprofile_name_TKV}', checks=[
+            self.check('name', '{autoupgradeprofile_name_TKV}'),
+            self.check('longTermSupport', True),
+            self.check('targetKubernetesVersion', '{target_kubernetes_version}')
+        ])
+
         self.cmd('fleet autoupgradeprofile list -g {rg} -f {fleet_name}', checks=[
-            self.check('length([])', 1)
+            self.check('length([])', 2)
         ])
 
         self.cmd('fleet autoupgradeprofile generate-update-run -g {rg} -f {fleet_name} --auto-upgrade-profile-name {autoupgradeprofile_name}', checks=[

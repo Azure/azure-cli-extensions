@@ -1,0 +1,287 @@
+interactions:
+- request:
+    body: '{"properties": {"description": "This is it", "isAnonymous": false, "isArchived":
+      false, "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '151'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/myTestEnv/versions/18.04%3A2022?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/environments/myTestEnv/versions/18.04:2022",
+        "name": "18.04:2022", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": "This is it", "tags": {}, "properties": {},
+        "isArchived": false, "isAnonymous": false, "environmentType": "UserCreated",
+        "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04", "condaFile":
+        "", "osType": "Linux"}, "systemData": {"createdAt": "2022-08-10T05:50:27.5706305Z",
+        "createdBy": "Ayush Mishra", "createdByType": "User", "lastModifiedAt": "2022-08-10T05:50:27.5706305Z",
+        "lastModifiedBy": "Ayush Mishra", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '787'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 05:50:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sasik_rg/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/environments/myTestEnv/versions/18.04:2022?api-version=2022-05-01
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-7008f54dd2dd744fae1cec60ff16a59c-8267b6b658f0800b-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.855'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2",
+        "name": "sasik_ws_eastus2", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "eastus2", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "sasik_ws_eastus2", "description": "", "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sasik_rg/providers/microsoft.storage/storageaccounts/sasikwsestoragee0dc2ea37",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sasik_rg/providers/microsoft.keyvault/vaults/sasikwsekeyvault369fd30c",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sasik_rg/providers/microsoft.insights/components/sasikwseinsights7ddb2508",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "containerRegistry":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/sasikwseastu27309512",
+        "notebookInfo": {"resourceId": "c2ceaf451e1247f0b1b1846b8d027b20", "fqdn":
+        "ml-sasik_ws_eastus-eastus2-c2d2b02b-3250-4809-be79-86cf1ca775ec.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        null, "workspaceId": "c2d2b02b-3250-4809-be79-86cf1ca775ec", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://eastus2.api.azureml.ms/discovery", "mlFlowTrackingUri": "azureml://eastus2.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2",
+        "sdkTelemetryAppInsightsKey": "066b0d89-53d2-4b58-8bc8-ac382527e4fb", "sasGetterUri":
+        null}, "identity": {"type": "SystemAssigned", "principalId": "bae87aee-e3a4-4766-996f-65adc4a2a123",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "sku": {"name": "Basic",
+        "tier": "Basic"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2133'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 05:50:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-bbd0e13d784e1c4db7841f5584087721-cb932aa122afd117-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.022'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"computeType": "AmlCompute", "properties": {"osType": "Linux",
+      "vmSize": "STANDARD_DS3_V2", "scaleSettings": {"maxNodeCount": 1, "minNodeCount":
+      0}, "remoteLoginPortPublicAccess": "NotSpecified", "enableNodePublicIp": true}},
+      "location": "eastus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '264'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/computes/testCompute?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/computes/testCompute",
+        "name": "testCompute", "type": "Microsoft.MachineLearningServices/workspaces/computes",
+        "location": "eastus2", "tags": null, "properties": {"createdOn": "2022-08-10T05:50:32.8681636+00:00",
+        "modifiedOn": "2022-08-10T05:50:32.8681636+00:00", "disableLocalAuth": false,
+        "description": null, "resourceId": null, "computeType": "AmlCompute", "provisioningState":
+        "Creating", "provisioningErrors": null, "isAttachedCompute": false, "properties":
+        {"vmSize": "STANDARD_DS3_V2", "vmPriority": null, "scaleSettings": {"maxNodeCount":
+        1, "minNodeCount": 0, "nodeIdleTimeBeforeScaleDown": null}, "subnet": null,
+        "currentNodeCount": null, "targetNodeCount": null, "nodeStateCounts": null,
+        "allocationState": null, "errors": null, "remoteLoginPortPublicAccess": "NotSpecified",
+        "osType": "Linux", "virtualMachineImage": null, "isolatedNetwork": false,
+        "enableNodePublicIp": true}}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/computeOperationsStatus/52ca553c-0e7d-4fda-8ea6-0fab5a77c7f8?api-version=2022-01-01-preview&service=new
+      cache-control:
+      - no-cache
+      content-length:
+      - '1054'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 05:50:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-f09daf5a0029ad4791f1402c6f7f77ed-f7317f6d57858371-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.223'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"properties": {"properties": {"mlflow.source.git.repoURL": "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+      "mlflow.source.git.branch": "ayushmishra/sdk-june-api", "mlflow.source.git.commit":
+      "d5056d9e05656a6672a2c51b1c65ca0f5e5ee892", "azureml.git.dirty": "True"}, "tags":
+      {}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sasik_rg/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/computes/testCompute",
+      "displayName": "test-environment-000004-4", "experimentName": "sdk-cli-v2",
+      "isArchived": false, "jobType": "Command", "command": "echo test", "environmentId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sasik_rg/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/environments/myTestEnv/versions/18.04:2022",
+      "environmentVariables": {}, "inputs": {}, "outputs": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '902'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.19041-SP0)
+      x-azureml-token:
+      - <dummyToken>
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs/test-environment-000004-4?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/jobs/test-environment-000004-4",
+        "name": "test-environment-000004-4", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {}, "properties": {"mlflow.source.git.repoURL":
+        "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "ayushmishra/sdk-june-api", "mlflow.source.git.commit":
+        "d5056d9e05656a6672a2c51b1c65ca0f5e5ee892", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test-environment-000004-4", "status": "Starting",
+        "experimentName": "sdk-cli-v2", "services": {"Tracking": {"jobServiceType":
+        "Tracking", "port": null, "endpoint": "azureml://eastus2.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2?",
+        "status": null, "errorMessage": null, "properties": null}, "Studio": {"jobServiceType":
+        "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/test-environment-000004-4?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sasik_rg/workspaces/sasik_ws_eastus2",
+        "status": null, "errorMessage": null, "properties": null}}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/computes/testCompute",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Command",
+        "resources": {"instanceCount": 1, "instanceType": null, "properties": null,
+        "shmSize": "2g", "dockerArgs": null}, "codeId": null, "command": "echo test",
+        "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/environments/myTestEnv/versions/18.04:2022",
+        "inputs": {}, "outputs": {"default": {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.test-environment-000004-4",
+        "mode": "ReadWriteMount", "jobOutputType": "uri_folder"}}, "distribution":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}}, "systemData":
+        {"createdAt": "2022-08-10T05:50:38.3600118Z", "createdBy": "Ayush Mishra",
+        "createdByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2456'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 05:50:38 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sasik_rg/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/jobs/test-environment-000004-4?api-version=2022-06-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-642126b604b2d74ca6132f7893e83289-7328665a3f96fc6b-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.576'
+    status:
+      code: 201
+      message: Created
+version: 1

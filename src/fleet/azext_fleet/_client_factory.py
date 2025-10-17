@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.mgmt.msi import ManagedServiceIdentityClient
 from azure.cli.core.profiles import (
     CustomResourceType,
     ResourceType
@@ -23,6 +24,14 @@ def cf_fleets(cli_ctx, *_):
 
 def cf_fleet_members(cli_ctx, *_):
     return get_container_service_client(cli_ctx).fleet_members
+
+
+def cf_gates(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).gates
+
+
+def cf_fleet_managed_namespaces(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).fleet_managed_namespaces
 
 
 def cf_update_runs(cli_ctx, *_):
@@ -49,3 +58,7 @@ def cf_auto_upgrade_profile_operations(cli_ctx, *_):
 def get_provider_client(cli_ctx):
     return get_mgmt_service_client(
         cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+
+
+def get_msi_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ManagedServiceIdentityClient, subscription_id=subscription_id)

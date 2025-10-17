@@ -4,20 +4,38 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import json
+import yaml
+import tempfile
 
+from knack.log import get_logger
 from knack.util import CLIError
 
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_parse
+from azure.cli.core import get_default_cli
+from azure.mgmt.core.tools import parse_resource_id
 
-from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
-from azext_fleet._helpers import print_or_merge_credentials
+from azext_fleet._client_factory import CUSTOM_MGMT_FLEET, cf_fleet_members, cf_fleets
+from azext_fleet._helpers import is_rp_registered, print_or_merge_credentials
 from azext_fleet._helpers import assign_network_contributor_role_to_subnet
+from azext_fleet._helpers import get_msi_object_id
 from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
 from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
 from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
+from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
+from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
+from azext_fleet.constants import FLEET_1P_APP_ID
+from azext_fleet.vendored_sdks.v2025_08_01_preview.models import (
+    PropagationPolicy,
+    PlacementProfile,
+    PlacementV1ClusterResourcePlacementSpec,
+    PlacementV1PlacementPolicy,
+    PropagationType,
+    PlacementType
+)
+
+logger = get_logger(__name__)
 
 
 # pylint: disable=too-many-locals
@@ -111,7 +129,17 @@ def create_fleet(cmd,
     )
 
     if enable_private_cluster:
-        assign_network_contributor_role_to_subnet(cmd, agent_subnet_id)
+        # provider registration state being is checked to ensure that the Fleet service principal is available
+        # to create the role assignment on the subnet
+        if not is_rp_registered(cmd):
+            raise CLIError("The Microsoft.ContainerService resource provider is not registered."
+                           "Run `az provider register -n Microsoft.ContainerService --wait`.")
+        assign_network_contributor_role_to_subnet(cmd, FLEET_1P_APP_ID, agent_subnet_id)
+
+    if enable_vnet_integration and assign_identity is not None:
+        object_id = get_msi_object_id(cmd, assign_identity)
+        assign_network_contributor_role_to_subnet(cmd, object_id, apiserver_subnet_id)
+        assign_network_contributor_role_to_subnet(cmd, object_id, agent_subnet_id)
 
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
@@ -188,25 +216,63 @@ def delete_fleet(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name, polling_interval=5)
 
 
-def get_credentials(cmd,  # pylint: disable=unused-argument
+def get_credentials(cmd,
                     client,
                     resource_group_name,
                     name,
-                    path=os.path.join(os.path.expanduser(
-                        '~'), '.kube', 'config'),
+                    path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                     overwrite_existing=False,
-                    context_name=None):
-    credential_results = client.list_credentials(resource_group_name, name)
-    if not credential_results:
-        raise CLIError("No Kubernetes credentials found.")
+                    context_name=None,
+                    member_name=None):
 
-    try:
-        kubeconfig = credential_results.kubeconfigs[0].value.decode(
-            encoding='UTF-8')
-        print_or_merge_credentials(
-            path, kubeconfig, overwrite_existing, context_name)
-    except (IndexError, ValueError) as exc:
-        raise CLIError("Fail to find kubeconfig file.") from exc
+    # If a member name is given, we use the cluster resource ID from the fleet member
+    # to get that member cluster's credentials
+    # Otherwise, we get the credentials for the fleet hub
+    if member_name:
+        fleet_members_client = cf_fleet_members(cmd.cli_ctx)
+
+        try:
+            fleet_member = fleet_members_client.get(resource_group_name, name, member_name)
+
+            parsed_id = parse_resource_id(fleet_member.cluster_resource_id)
+            if (parsed_id.get('resource_type') != 'managedClusters' or
+                    parsed_id.get('namespace') != 'Microsoft.ContainerService'):
+                raise CLIError(f"Fleet member '{member_name}' is not associated with an AKS managed cluster. "
+                               f"Currently, only AKS managed clusters are supported for this command.")
+
+            args = [
+                'aks', 'get-credentials',
+                '--subscription', parsed_id['subscription'],
+                '--resource-group', parsed_id['resource_group'],
+                '--name', parsed_id['resource_name'],
+                '--context', context_name or member_name,
+                '--file', path,
+            ]
+
+            if overwrite_existing:
+                args.append("--overwrite-existing")
+
+            exit_code = get_default_cli().invoke(args)
+            if exit_code != 0:
+                error_msg = (f"Failed to get credentials from managed cluster '{parsed_id['resource_name']}' "
+                             f"for fleet member '{member_name}'")
+                raise CLIError(error_msg)
+
+        except Exception as exc:
+            if isinstance(exc, CLIError):
+                raise
+            raise CLIError(f"Error getting credentials for fleet member '{member_name}': {str(exc)}") from exc
+
+    else:
+        credential_results = client.list_credentials(resource_group_name, name)
+        if not credential_results:
+            raise CLIError("No Kubernetes credentials found.")
+
+        try:
+            kubeconfig = credential_results.kubeconfigs[0].value.decode(encoding='UTF-8')
+            print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
+        except (IndexError, ValueError) as exc:
+            raise CLIError("Fail to find kubeconfig file.") from exc
 
 
 def reconcile_fleet(cmd,  # pylint: disable=unused-argument
@@ -236,13 +302,14 @@ def create_fleet_member(cmd,
                         fleet_name,
                         member_cluster_id,
                         update_group=None,
+                        member_labels=None,
                         no_wait=False):
     fleet_member_model = cmd.get_models(
         "FleetMember",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleet_members"
     )
-    fleet_member = fleet_member_model(cluster_resource_id=member_cluster_id, group=update_group)
+    fleet_member = fleet_member_model(cluster_resource_id=member_cluster_id, group=update_group, labels=member_labels)
     return sdk_no_wait(no_wait, client.begin_create, resource_group_name, fleet_name, name, fleet_member)
 
 
@@ -252,13 +319,14 @@ def update_fleet_member(cmd,
                         name,
                         fleet_name,
                         update_group=None,
+                        member_labels=None,
                         no_wait=False):
     fleet_member_update_model = cmd.get_models(
         "FleetMemberUpdate",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleet_members"
     )
-    properties = fleet_member_update_model(group=update_group)
+    properties = fleet_member_update_model(group=update_group, labels=member_labels)
     return sdk_no_wait(no_wait, client.begin_update, resource_group_name, fleet_name, name, properties)
 
 
@@ -458,9 +526,11 @@ def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
         return None
 
-    with open(stages, 'r', encoding='utf-8') as fp:
-        data = json.load(fp)
-        fp.close()
+    # Check if the input is a file path or inline JSON
+    if os.path.exists(stages):
+        data = get_file_json(stages)
+    else:
+        data = shell_safe_json_parse(stages)
 
     update_group_model = cmd.get_models(
         "UpdateGroup",
@@ -479,15 +549,25 @@ def get_update_run_strategy(cmd, operation_group, stages):
     )
 
     update_stages = []
+
     for stage in data["stages"]:
         update_groups = []
         for group in stage["groups"]:
-            update_groups.append(update_group_model(name=group["name"]))
-        sec = stage.get("afterStageWaitInSeconds") or 0
+            update_groups.append(update_group_model(
+                name=group["name"],
+                before_gates=group.get("beforeGates", []),
+                after_gates=group.get("afterGates", []),
+            ))
+
+        after_wait = stage.get("afterStageWaitInSeconds") or 0
+
         update_stages.append(update_stage_model(
             name=stage["name"],
             groups=update_groups,
-            after_stage_wait_in_seconds=sec))
+            before_gates=stage.get("beforeGates", []),
+            after_gates=stage.get("afterGates", []),
+            after_stage_wait_in_seconds=after_wait
+        ))
 
     return update_run_strategy_model(stages=update_stages)
 
@@ -543,6 +623,8 @@ def create_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
                                 channel,
                                 update_strategy_id=None,
                                 node_image_selection=None,
+                                target_kubernetes_version=None,
+                                long_term_support=False,
                                 disabled=False,
                                 no_wait=False):
 
@@ -574,6 +656,8 @@ def create_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
         update_strategy_id=update_strategy_id,
         channel=upgrade_channel,
         node_image_selection=auto_upgrade_node_image_selection,
+        target_kubernetes_version=target_kubernetes_version,
+        long_term_support=long_term_support,
         disabled=disabled
     )
 
@@ -622,3 +706,293 @@ def generate_update_run(cmd,  # pylint: disable=unused-argument
         fleet_name,
         auto_upgrade_profile_name
     )
+
+
+def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        fleet_name,
+                        state_filter=None):
+    params = {}
+
+    if state_filter:
+        if state_filter not in SUPPORTED_GATE_STATES_FILTERS:
+            raise CLIError(
+                f"Unsupported gate state filter value: '{state_filter}'. "
+                f"Allowed values are {SUPPORTED_GATE_STATES_FILTERS}"
+            )
+
+        params["$filter"] = f"state eq {state_filter}"
+
+    return client.list_by_fleet(resource_group_name, fleet_name, params=params)
+
+
+def show_gate(cmd,  # pylint: disable=unused-argument
+              client,
+              resource_group_name,
+              fleet_name,
+              gate_name):
+    return client.get(resource_group_name, fleet_name, gate_name)
+
+
+def _patch_gate(cmd,  # pylint: disable=unused-argument
+                client,
+                resource_group_name,
+                fleet_name,
+                gate_name,
+                gate_state,
+                no_wait=False):
+    if gate_state not in SUPPORTED_GATE_STATES_PATCH:
+        raise CLIError(
+            f"Unsupported gate state value: '{gate_state}'. "
+            f"Allowed values are {SUPPORTED_GATE_STATES_PATCH}"
+        )
+
+    gate_model = cmd.get_models(
+        "GatePatch",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="gates"
+    )
+    gate_properties_model = cmd.get_models(
+        "GatePatchProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="gates"
+    )
+
+    properties = gate_properties_model(state=gate_state)
+    patch_request = gate_model(properties=properties)
+
+    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, fleet_name, gate_name, patch_request)
+
+
+def update_gate(cmd,  # pylint: disable=unused-argument
+                client,
+                resource_group_name,
+                fleet_name,
+                gate_name,
+                gate_state=None,
+                no_wait=False):
+    return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, gate_state, no_wait)
+
+
+def approve_gate(cmd,  # pylint: disable=unused-argument
+                 client,
+                 resource_group_name,
+                 fleet_name,
+                 gate_name,
+                 no_wait=False):
+    return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, "Completed", no_wait)
+
+
+def create_managed_namespace(cmd,
+                             client,
+                             resource_group_name,
+                             fleet_name,
+                             managed_namespace_name,
+                             tags=None,
+                             labels=None,
+                             annotations=None,
+                             cpu_requests=None,
+                             cpu_limits=None,
+                             memory_requests=None,
+                             memory_limits=None,
+                             ingress_policy=None,
+                             egress_policy=None,
+                             delete_policy=None,
+                             adoption_policy=None,
+                             member_cluster_names=None,
+                             no_wait=False):
+
+    managed_namespace_model = cmd.get_models(
+        "FleetManagedNamespace",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+
+    managed_namespace_properties_model = cmd.get_models(
+        "ManagedNamespaceProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+
+    resource_quota_model = cmd.get_models(
+        "ResourceQuota",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+
+    network_policy_model = cmd.get_models(
+        "NetworkPolicy",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+
+    fleet_client = cf_fleets(cmd.cli_ctx)
+    fleet = fleet_client.get(resource_group_name, fleet_name)
+
+    default_resource_quota = None
+    if cpu_requests or cpu_limits or memory_requests or memory_limits:
+        resource_limits = {}
+        if cpu_requests:
+            resource_limits['cpu_request'] = cpu_requests
+        if memory_requests:
+            resource_limits['memory_request'] = memory_requests
+        if cpu_limits:
+            resource_limits['cpu_limit'] = cpu_limits
+        if memory_limits:
+            resource_limits['memory_limit'] = memory_limits
+        default_resource_quota = resource_quota_model(**resource_limits)
+
+    default_network_policy = None
+    if ingress_policy or egress_policy:
+        network_policies = {}
+        if ingress_policy:
+            network_policies['ingress'] = ingress_policy
+        if egress_policy:
+            network_policies['egress'] = egress_policy
+        default_network_policy = network_policy_model(**network_policies)
+
+    managed_namespace_props = managed_namespace_properties_model(
+        labels=labels,
+        annotations=annotations,
+        default_resource_quota=default_resource_quota,
+        default_network_policy=default_network_policy
+    )
+
+    propagation_policy = None
+    if member_cluster_names:
+        placement_policy = PlacementV1PlacementPolicy(
+            placement_type=PlacementType.pick_fixed,
+            cluster_names=member_cluster_names
+        )
+        placement_spec = PlacementV1ClusterResourcePlacementSpec(
+            policy=placement_policy
+        )
+        placement_profile = PlacementProfile(
+            default_cluster_resource_placement=placement_spec
+        )
+        propagation_policy = PropagationPolicy(
+            type=PropagationType.placement,
+            placement_profile=placement_profile
+        )
+    else:
+        logger.warning("--member-cluster-names was empty; namespace will not be placed on any member clusters")
+
+    managed_namespace = managed_namespace_model(
+        location=fleet.location,
+        tags=tags,
+        managed_namespace_properties=managed_namespace_props,
+        adoption_policy=adoption_policy,
+        delete_policy=delete_policy,
+        propagation_policy=propagation_policy
+    )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        fleet_name,
+        managed_namespace_name,
+        managed_namespace,
+        polling_interval=5
+    )
+
+
+def update_managed_namespace(cmd,
+                             client,
+                             resource_group_name,
+                             fleet_name,
+                             managed_namespace_name,
+                             tags=None):
+    """
+    Update a fleet managed namespace. Currently only supports updating tags.
+    """
+    fleet_managed_namespace_patch_model = cmd.get_models(
+        "FleetManagedNamespacePatch",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+
+    patch = fleet_managed_namespace_patch_model(tags=tags)
+
+    return client.begin_update(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        managed_namespace_name=managed_namespace_name,
+        properties=patch
+    )
+
+
+def delete_managed_namespace(cmd,  # pylint: disable=unused-argument
+                             client,
+                             resource_group_name,
+                             fleet_name,
+                             managed_namespace_name,
+                             no_wait=False):
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        fleet_name,
+        managed_namespace_name,
+        polling_interval=5
+    )
+
+
+def show_managed_namespace(cmd,  # pylint: disable=unused-argument
+                           client,
+                           resource_group_name,
+                           fleet_name,
+                           managed_namespace_name):
+    return client.get(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name,
+        managed_namespace_name=managed_namespace_name
+    )
+
+
+def list_managed_namespaces(cmd,  # pylint: disable=unused-argument
+                            client,
+                            resource_group_name,
+                            fleet_name):
+    return client.list_by_fleet(
+        resource_group_name=resource_group_name,
+        fleet_name=fleet_name
+    )
+
+
+def get_namespace_credentials(cmd,
+                              client,  # pylint: disable=unused-argument
+                              resource_group_name,
+                              fleet_name,
+                              managed_namespace_name,
+                              path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
+                              overwrite_existing=True,
+                              context_name=None,
+                              member_name=None):
+    """
+    Get credentials for a fleet hub or managed cluster and modifies the kubeconfig to set the default namespace.
+    """
+    fleet_client = cf_fleets(cmd.cli_ctx)
+    with tempfile.NamedTemporaryFile(mode='w+', suffix='.kubeconfig') as temp_file:
+        get_credentials(
+            cmd=cmd,
+            client=fleet_client,
+            resource_group_name=resource_group_name,
+            name=fleet_name,
+            path=temp_file.name,
+            overwrite_existing=overwrite_existing,
+            context_name=context_name,
+            member_name=member_name
+        )
+
+        with open(temp_file.name, 'r', encoding='utf-8') as f:
+            kubeconfig = yaml.safe_load(f.read())
+
+        ctx = next(ctx for ctx in kubeconfig['contexts']
+                   if ctx['name'] == kubeconfig['current-context'])
+        ctx['context']['namespace'] = managed_namespace_name
+
+        modified_kubeconfig = yaml.dump(kubeconfig, default_flow_style=False)
+        print_or_merge_credentials(path, modified_kubeconfig, overwrite_existing, context_name)
+        print(f"Default namespace set to '{managed_namespace_name}' for context '{kubeconfig.get('current-context')}'")

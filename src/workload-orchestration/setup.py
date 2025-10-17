@@ -10,12 +10,12 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-VERSION = '1.0.0'
+VERSION = '4.1.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
+    'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
     'Intended Audience :: System Administrators',
     'Programming Language :: Python',
@@ -33,11 +33,16 @@ with open('README.md', 'r', encoding='utf-8') as f:
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
+SUMMARY = """
+Workload orchestration for Azure Arc is a comprehensive, cloud-native, cross-platform service engine that simplifies the deployment, management, and update of application workloads across edge environments. Workload orchestration addresses typical application lifecycle management problems for customers who need to have application deployments across multiple fleets with site-specific configurations. It natively supports kubernetes workloads.
+
+"""
+
 setup(
     name='workload-orchestration',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools WorkloadOperations Extension.',
-    long_description=README + '\n\n' + HISTORY,
+    long_description=SUMMARY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',

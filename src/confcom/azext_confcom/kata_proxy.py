@@ -3,15 +3,15 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import subprocess
 import os
-import stat
-import sys
 import platform
+import stat
+import subprocess
+import sys
+
 import requests
 from azext_confcom.config import DATA_FOLDER
 from azext_confcom.errors import eprint
-
 
 host_os = platform.system()
 machine = platform.machine()
@@ -50,6 +50,8 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
                 for asset in release["assets"]:
                     # download the file if it contains genpolicy
                     if asset["name"] in needed_assets:
+                        # say which version we're downloading
+                        print(f"Downloading genpolicy version {release['tag_name']}")
                         save_name = ""
                         if ".exe" in asset["name"]:
                             save_name = "genpolicy-windows.exe"

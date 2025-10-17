@@ -53,11 +53,29 @@ from .aaz.latest.apic.integration import (
     List as ListIntegration,
     Delete as DeleteIntegration
 )
-from .aaz.latest.apic import Import
+from .aaz.latest.apic.api_analysis import (
+    Create as CreateApiAnalysis,
+    Delete as DeleteApiAnalysis,
+    ImportRuleset,
+    ExportRuleset,
+    List as ListAPIAnalysis,
+    Show as ShowAPIAnalysis,
+    Update as UpdateAPIAnalysis
+)
 
-from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg, AAZResourceIdArg
 from azure.cli.core.aaz import register_command
+from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg, AAZResourceIdArg
+from azure.cli.core.azclierror import FileOperationError, AzureResponseError
 from azure.mgmt.core.tools import is_valid_resource_id
+import base64
+import zipfile
+import os
+import io
+import requests
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class DefaultWorkspaceParameter:
@@ -243,7 +261,12 @@ class ExportMetadataExtension(ExportMetadata):
 
 
 # `az apic service commands`
+@register_command(
+    "apic import-from-apim",
+    hide=True
+)
 class ImportFromApimExtension(ImportFromApim):
+    """Import APIs from an Azure API Management instance to the specified API Center."""
     # pylint: disable=too-few-public-methods
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -321,7 +344,6 @@ class ShowIntegrationExtension(DefaultWorkspaceParameter, ShowIntegration):
 
 @register_command(
     "apic integration create apim",
-    is_preview=True,
 )
 class CreateApimIntegration(DefaultWorkspaceParameter, CreateIntegration):
     # pylint: disable=C0301
@@ -389,7 +411,6 @@ class CreateApimIntegration(DefaultWorkspaceParameter, CreateIntegration):
 
 @register_command(
     "apic integration create aws",
-    is_preview=True,
 )
 class CreateAmazonApiGatewayIntegration(DefaultWorkspaceParameter, CreateIntegration):
     # pylint: disable=C0301
@@ -453,69 +474,135 @@ class CreateAmazonApiGatewayIntegration(DefaultWorkspaceParameter, CreateIntegra
         }
 
 
-# `az apic import` commands
-@register_command(
-    "apic import aws",
-    is_preview=True,
-)
-class ImportAmazonApiGatewaySource(DefaultWorkspaceParameter, Import):
-    # pylint: disable=C0301
-    """Import an Amazon API Gateway API source
-
-    :example: Import an Amazon API Gateway API source
-        az apic import aws -g contoso-resources -n contoso -a https://{keyvaultName}.vault.azure.net/secrets/{secretName1} -s https://{keyvaultName}.vault.azure.net/secrets/{secretName2} -r us-east-2
-    """
+# `az apic api-analysis` commands
+class CreateApiAnalysisConfig(DefaultWorkspaceParameter, CreateApiAnalysis):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         # pylint: disable=protected-access
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        # Remove the azure-api-management-source parameter
-        args_schema.azure_api_management_source._registered = False
-        # Remove the amazon-api-gateway-source parameter
-        args_schema.amazon_api_gateway_source._registered = False
-        # Remove the api_source_type parameter, will set it for users in pre_operations
-        args_schema.api_source_type._required = False
-        args_schema.api_source_type._registered = False
-
-        # Create arg group for AmazonApiGatewaySource
-        # Add separate parameters for access-key, secret-access-key, and region-name
-        args_schema.access_key = AAZStrArg(
-            options=["--aws-access-key-reference", "-a"],
-            arg_group="AmazonApiGatewaySource",
-            help="Amazon API Gateway Access Key. Must be an Azure Key Vault secret reference.",
-            required=True,
-        )
-        args_schema.secret_access_key = AAZStrArg(
-            options=["--aws-secret-access-key-reference", "-s"],
-            arg_group="AmazonApiGatewaySource",
-            help="Amazon API Gateway Secret Access Key. Must be an Azure Key Vault secret reference.",
-            required=True,
-        )
-        args_schema.region_name = AAZStrArg(
-            options=["--aws-region-name", "-r"],
-            arg_group="AmazonApiGatewaySource",
-            help="Amazon API Gateway Region (ex. us-east-2).",
-            required=True,
-        )
-        args_schema.msi_resource_id = AAZResourceIdArg(
-            options=["--msi-resource-id"],
-            arg_group="AmazonApiGatewaySource",
-            help="The resource ID of the managed identity that has access to the Azure Key Vault.",
-            required=False,
-        )
-
+        args_schema.analyzer_type._registered = False
         return args_schema
 
     def pre_operations(self):
         super().pre_operations()
         args = self.ctx.args
-        args.api_source_type = "AmazonApiGateway"
 
-        # Set the properties for Amazon API Gateway source
-        args.amazon_api_gateway_source = {
-            "access_key": args.access_key,
-            "secret_access_key": args.secret_access_key,
-            "region_name": args.region_name,
-            "msi_resource_id": args.msi_resource_id
-        }
+        # set default analyzer type
+        args.analyzer_type = "spectral"
+
+
+class DeleteApiAnalysisConfig(DefaultWorkspaceParameter, DeleteApiAnalysis):
+    pass
+
+
+class ImportApiAnalysisRuleset(DefaultWorkspaceParameter, ImportRuleset):
+    # Zip and encode the ruleset folder to base64
+    def _zip_folder_to_buffer(self, folder_path):
+        # pylint: disable=unused-variable
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for root, dirs, files in os.walk(folder_path):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    zip_file.write(file_path, os.path.relpath(file_path, folder_path))
+        return base64.b64encode(buffer.getvalue()).decode('utf-8')
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.format._registered = False
+        args_schema.value._registered = False
+
+        args_schema.ruleset_folder_path = AAZStrArg(
+            options=["--path"],
+            help="The folder path containing the ruleset files.",
+            required=True,
+        )
+        return args_schema
+
+    def pre_operations(self):
+        super().pre_operations()
+        args = self.ctx.args
+
+        args.format = 'inline-zip'
+        args.value = self._zip_folder_to_buffer(str(args.ruleset_folder_path))
+
+
+class ExportApiAnalysisRuleset(DefaultWorkspaceParameter, ExportRuleset):
+    # Decode and extract the ruleset folder from base64
+    def _unzip_buffer_to_folder(self, buffer, folder_path):
+        zip_file = io.BytesIO(base64.b64decode(buffer))
+        with zipfile.ZipFile(zip_file) as zip_ref:
+            zip_ref.extractall(folder_path)
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        args_schema.ruleset_folder_path = AAZStrArg(
+            options=["--path"],
+            help="The folder path to extract the ruleset files.",
+            required=True,
+        )
+        return args_schema
+
+    def _output(self, *args, **kwargs):
+        # pylint: disable=C0301
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        arguments = self.ctx.args
+
+        if result:
+            response_format = result['format']
+            exportedResults = result['value']
+
+            if response_format == 'link':
+                logger.info('Fetching specification from: %s', exportedResults)
+                getReponse = requests.get(exportedResults, timeout=10)
+                if getReponse.status_code == 200:
+                    exportedResults = getReponse.content.decode()
+                else:
+                    error_message = f'Error while fetching the results from the link. Status code: {getReponse.status_code}'
+                    logger.error(error_message)
+                    raise getReponse.raise_for_status()
+
+            try:
+                self._unzip_buffer_to_folder(exportedResults, str(arguments.ruleset_folder_path))
+                logger.info('Results exported to %s', arguments.ruleset_folder_path)
+            except Exception as e:  # pylint: disable=broad-except
+                error_message = f'Error while writing the results to the file. Error: {e}'
+                logger.error(error_message)
+                raise FileOperationError(error_message)
+        else:
+            error_message = 'No results found.'
+            logger.error(error_message)
+            raise AzureResponseError(error_message)
+
+        return result
+
+
+class ListAPIAnalysisConfig(DefaultWorkspaceParameter, ListAPIAnalysis):
+    pass
+
+
+class ShowAPIAnalysisConfig(DefaultWorkspaceParameter, ShowAPIAnalysis):
+    pass
+
+
+class UpdateAPIAnalysisConfig(DefaultWorkspaceParameter, UpdateAPIAnalysis):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.analyzer_type._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        super().pre_operations()
+        args = self.ctx.args
+
+        # set default analyzer type
+        args.analyzer_type = "spectral"

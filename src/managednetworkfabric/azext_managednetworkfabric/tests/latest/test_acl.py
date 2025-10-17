@@ -14,37 +14,58 @@ from azure.cli.testsdk import ScenarioTest
 from .config import CONFIG
 
 
-def setup_scenario1(test):
-    """Env setup_scenario1"""
+def setup_scenario(test):
+    """Env setup_scenario"""
     pass
 
 
-def cleanup_scenario1(test):
-    """Env cleanup_scenario1"""
+def cleanup_scenario(test):
+    """Env cleanup_scenario"""
     pass
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
-    setup_scenario1(test)
-    step_create(test, checks=[])
+    """Testcase: scenario1"""
+    setup_scenario(test)
+    step_create_scenario1(test, checks=[])
     step_show(test, checks=[])
-    step_update(test, checks=[])
+    step_update_scenario1(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     step_delete(test, checks=[])
-    cleanup_scenario1(test)
+    cleanup_scenario(test)
 
 
-def step_create(test, checks=None):
+def call_scenario2(test):
+    """Testcase: scenario2"""
+    setup_scenario(test)
+    step_create_scenario2(test, checks=[])
+    step_update_scenario2(test, checks=[])
+    cleanup_scenario(test)
+
+
+def step_create_scenario1(test, checks=None):
     """Access Control List create operation"""
     if checks is None:
         checks = []
     test.cmd(
         "az networkfabric acl create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType}"
-        " --acl-type {aclType} --acls-url {aclsUrl} --default-action {defaultAction} --device-role {deviceRole}"
+        " --acl-type {aclType} --acls-url {aclsUrl} --default-action {defaultAction} --device-role {deviceRole} --annotation {annotation}"
         " --dynamic-match-configurations {dynamicMatchConfigurations} --global-access-control-list-actions enable-count={enableCount}"
-        " --match-configurations {matchConfigurations}",
+        " --match-configurations {matchConfigurations} --control-plane-acl-configuration  {controlPlaneAclConfiguration}",
+        checks=checks,
+    )
+
+
+def step_create_scenario2(test, checks=None):
+    """Access Control List create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric acl create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType}"
+        " --acl-type {aclType} --acls-url {aclsUrl} --default-action {defaultAction} --device-role {deviceRole} --annotation {annotation}"
+        " --dynamic-match-configs {dynamicMatchConfigurations} --global-acl-actions enable-count={enableCount}"
+        " --match-configs {matchConfigurations} --cp-acl-config  {controlPlaneAclConfiguration}",
         checks=checks,
     )
 
@@ -56,14 +77,28 @@ def step_show(test, checks=None):
     test.cmd("az networkfabric acl show --resource-name {name} --resource-group {rg}")
 
 
-def step_update(test, checks=None):
+def step_update_scenario1(test, checks=None):
     """Access Control List update operation"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric acl update --resource-group {rg} --resource-name {name}"
-        ' --configuration-type "Inline" --default-action {defaultAction}'
-        " --match-configurations {updatedMatchConfigurations}",
+        "az networkfabric acl update --resource-group {rg} --resource-name {name} --configuration-type {configurationType}"
+        " --acl-type {aclType} --acls-url {aclsUrl} --default-action {defaultAction} --device-role {deviceRole} --annotation {annotation}"
+        " --dynamic-match-configurations {dynamicMatchConfigurations} --global-access-control-list-actions enable-count={enableCount}"
+        " --match-configurations {updatedMatchConfigurations} --control-plane-acl-configuration  {controlPlaneAclConfiguration}",
+        checks=checks,
+    )
+
+
+def step_update_scenario2(test, checks=None):
+    """Access Control List update operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric acl update --resource-group {rg} --resource-name {name} --configuration-type {configurationType}"
+        " --acl-type {aclType} --acls-url {aclsUrl} --default-action {defaultAction} --device-role {deviceRole} --annotation {annotation}"
+        " --dynamic-match-configs {dynamicMatchConfigurations} --global-acl-actions enable-count={enableCount}"
+        " --match-configs {updatedMatchConfigurations} --cp-acl-config  {controlPlaneAclConfiguration}",
         checks=checks,
     )
 
@@ -97,6 +132,7 @@ class GA_AccessControlListsScenarioTest1(ScenarioTest):
         self.kwargs.update(
             {
                 "name": CONFIG.get("ACCESS_CONTROL_LIST", "name"),
+                "annotation": CONFIG.get("ACCESS_CONTROL_LIST", "annotation"),
                 "rg": CONFIG.get("ACCESS_CONTROL_LIST", "resource_group"),
                 "location": CONFIG.get("ACCESS_CONTROL_LIST", "location"),
                 "configurationType": CONFIG.get(
@@ -108,6 +144,9 @@ class GA_AccessControlListsScenarioTest1(ScenarioTest):
                 "deviceRole": CONFIG.get("ACCESS_CONTROL_LIST", "device_role"),
                 "dynamicMatchConfigurations": CONFIG.get(
                     "ACCESS_CONTROL_LIST", "dynamic_match_configurations"
+                ),
+                "controlPlaneAclConfiguration": CONFIG.get(
+                    "ACCESS_CONTROL_LIST", "control_plane_acl_configuration"
                 ),
                 "enableCount": CONFIG.get("ACCESS_CONTROL_LIST", "enable_count"),
                 "matchConfigurations": CONFIG.get(

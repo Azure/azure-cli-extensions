@@ -27,7 +27,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_update_admin_state(test, checks=[])
     cleanup_scenario1(test)
@@ -38,7 +38,7 @@ def step_update_admin_state(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric device update-admin-state --resource-name {name} --resource-group {rg} --state {state}"
+        "az networkfabric device update-admin-state --resource-name {name} --resource-group {rg} --state {state} --resource-ids {resourceIds}"
     )
 
 
@@ -51,6 +51,7 @@ class GA_DeviceUpdateAdminStateScenarioTest1(ScenarioTest):
             {
                 "name": CONFIG.get("NETWORK_DEVICE", "update_admin_state_device_name"),
                 "rg": CONFIG.get("NETWORK_DEVICE", "update_admin_state_device_rg"),
+                "resourceIds": CONFIG.get("NETWORK_DEVICE", "resource_ids"),
                 "state": CONFIG.get(
                     "NETWORK_DEVICE", "update_admin_state_device_state"
                 ),
@@ -58,6 +59,6 @@ class GA_DeviceUpdateAdminStateScenarioTest1(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_UpdateAdminState_scenario1(self):
+    def test_GA_device_update_admin_state_scenario1(self):
         """test scenario for Device CRUD operations"""
         call_scenario1(self)

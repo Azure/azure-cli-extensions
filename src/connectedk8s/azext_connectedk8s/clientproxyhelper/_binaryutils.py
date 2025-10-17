@@ -13,16 +13,18 @@ import oras.client  # type: ignore[import-untyped]
 from azure.cli.core import azclierror, telemetry
 from azure.cli.core.style import Style, print_styled_text
 from knack import log
+from knack.commands import CLICommand
 
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._fileutils as file_utils
+import azext_connectedk8s._utils as utils
 
 logger = log.get_logger(__name__)
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
 def install_client_side_proxy(
-    arc_proxy_folder: Optional[str], debug: bool = False
+    cmd: CLICommand, arc_proxy_folder: Optional[str], debug: bool = False
 ) -> str:
     client_operating_system = _get_client_operating_system()
     client_architecture = _get_client_architeture()
@@ -48,7 +50,11 @@ def install_client_side_proxy(
                     )
 
             _download_proxy_from_MCR(
-                install_dir, proxy_name, client_operating_system, client_architecture
+                cmd,
+                install_dir,
+                proxy_name,
+                client_operating_system,
+                client_architecture,
             )
             _check_proxy_installation(install_dir, proxy_name, debug)
 
@@ -64,15 +70,21 @@ def install_client_side_proxy(
 
 
 def _download_proxy_from_MCR(
-    dest_dir: str, proxy_name: str, operating_system: str, architecture: str
+    cmd: CLICommand,
+    dest_dir: str,
+    proxy_name: str,
+    operating_system: str,
+    architecture: str,
 ) -> None:
-    mar_target = f"{consts.CLIENT_PROXY_MCR_TARGET}/{operating_system.lower()}/{architecture}/arc-proxy"
+    mcr_url = utils.get_mcr_path(cmd.cli_ctx.cloud.endpoints.active_directory)
+
+    mar_target = f"{mcr_url}/{consts.CLIENT_PROXY_MCR_TARGET}/{operating_system.lower()}/{architecture}/arc-proxy"
     logger.debug(
         "Downloading Arc Connectivity Proxy from %s in Microsoft Artifact Regristy.",
         mar_target,
     )
 
-    client = oras.client.OrasClient()
+    client = oras.client.OrasClient(hostname=mcr_url)
     t0 = time.time()
 
     try:

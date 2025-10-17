@@ -13,16 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkfabric networkmonitor delete",
-    confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete layer 2 connectivity between compute nodes by managed by named NetworkMonitor name.
+
+    :example: Delete the Network Monitor
+        az networkfabric networkmonitor delete --resource-group rgmanagednetworkfabric --network-monitor-name example-monitor
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors/{}", "2025-07-15"],
         ]
     }
 
@@ -44,7 +46,7 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_monitor_name = AAZStrArg(
-            options=["-n", "--name", "--network-monitor-name"],
+            options=["-n", "--name", "--resource-name", "--network-monitor-name"],
             help="Name of the Network Monitor.",
             required=True,
             id_part="name",
@@ -143,7 +145,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }

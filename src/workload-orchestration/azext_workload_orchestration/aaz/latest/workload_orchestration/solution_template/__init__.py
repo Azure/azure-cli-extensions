@@ -17,5 +17,6 @@ from ._remove_version import *
 from ._show import *
 from ._bulk_deploy_solution import *
 from ._bulk_publish_solution import *
+from ._bulk_review_solution import *
 # from ._update import *
 from ._wait import *

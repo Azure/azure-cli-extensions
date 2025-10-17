@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class RunRo(AAZCommand):
     """Run the RO Command on the Network Device.
 
-    :example: Run ro on the network device
+    :example: Run ro on the Network Device
         az networkfabric device run-ro --resource-name "example-device" --resource-group "example-rg" --ro-command "example command"
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/runrocommand", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/runrocommand", "2025-07-15"],
         ]
     }
 
@@ -149,7 +149,7 @@ class RunRo(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -211,6 +211,7 @@ class RunRo(AAZCommand):
             _schema_on_200.properties = AAZObjectType()
             _schema_on_200.resource_id = AAZStrType(
                 serialized_name="resourceId",
+                nullable=True,
                 flags={"read_only": True},
             )
             _schema_on_200.start_time = AAZStrType(
@@ -275,12 +276,15 @@ class _RunRoHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

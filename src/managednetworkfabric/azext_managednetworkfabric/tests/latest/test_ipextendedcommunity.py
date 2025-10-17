@@ -27,7 +27,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
@@ -43,8 +43,8 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric ipextendedcommunity create --resource-group {rg} --location {location} --resource-name {name}"
-        " --ip-extended-community-rules {ipExtendedCommunityRules}",
+        "az networkfabric ipextendedcommunity create --resource-group {rg} --location {location} --resource-name {name} --annotation {annotation}"
+        " --ip-extended-community-rules {ipExtendedCommunityRules} --ip-ext-community-rules {ipExtendedCommunityRules}",
         checks=checks,
     )
 
@@ -63,8 +63,8 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric ipextendedcommunity create --resource-group {rg} --location {location} --resource-name {name}"
-        " --ip-extended-community-rules {updatedIpExtendedCommunityRules}",
+        "az networkfabric ipextendedcommunity update --resource-group {rg} --resource-name {name} --annotation {annotation}"
+        " --ip-extended-community-rules {updatedIpExtendedCommunityRules} --ip-ext-community-rules {ipExtendedCommunityRules}",
         checks=checks,
     )
 
@@ -102,6 +102,7 @@ class GA_IpExtendedCommunityScenarioTest1(ScenarioTest):
         self.kwargs.update(
             {
                 "name": CONFIG.get("IP_EXTENDED_COMMUNITY", "name"),
+                "annotation": CONFIG.get("IP_EXTENDED_COMMUNITY", "annotation"),
                 "rg": CONFIG.get("IP_EXTENDED_COMMUNITY", "resource_group"),
                 "location": CONFIG.get("IP_EXTENDED_COMMUNITY", "location"),
                 "ipExtendedCommunityRules": CONFIG.get(
