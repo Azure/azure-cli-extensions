@@ -227,6 +227,7 @@ REGO_IMPORT_FILE_STRUCTURE = """
 }
 """
 CUSTOMER_REGO_POLICY = load_str_from_file(REGO_FILE_PATH)
+CUSTOMER_REGO_POLICY_WINDOWS = load_str_from_file(f"{script_directory}/data/customer_rego_policy_windows.txt")
 CUSTOMER_REGO_FRAGMENT = load_str_from_file(REGO_FRAGMENT_FILE_PATH)
 # sidecar rego file
 SIDECAR_REGO_FILE = "./data/sidecar_rego_policy.txt"

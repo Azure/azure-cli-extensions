@@ -40,6 +40,7 @@ from azext_confcom.template_util import (case_insensitive_dict_get,
                                          process_mounts,
                                          process_mounts_from_config,
                                          readable_diff)
+from azext_confcom.lib.images import get_image_platform
 from knack.log import get_logger
 from tqdm import tqdm
 
@@ -67,6 +68,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         fragment_contents: Any = None,
     ) -> None:
         self._rootfs_proxy = None
+        self._platform = None
         self._policy_str = None
         self._policy_str_pp = None
         self._disable_stdio = disable_stdio
@@ -129,6 +131,13 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         # parse and generate each container, either user or sidecar
         for c in containers:
+
+            image_platform = c.get("platform", "linux/amd64")
+            if self._platform is None:
+                self._platform = image_platform
+            else:
+                assert self._platform == image_platform, "All images must have the same platform"
+
             if not is_sidecar(c[config.POLICY_FIELD_CONTAINERS_ID]):
                 container_image = UserContainerImage.from_json(c, is_vn2=is_vn2)
             else:
@@ -200,17 +209,29 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         # get rid of fields that aren't strictly needed for the fragment import
         sanitized_fragments = sanitize_fragment_fields(self.get_fragments())
-        return config.CUSTOMER_REGO_POLICY % (
-            pretty_print_func(self._api_version),
-            pretty_print_func(sanitized_fragments),
-            output,
-            pretty_print_func(self._allow_properties_access),
-            pretty_print_func(self._allow_dump_stacks),
-            pretty_print_func(self._allow_runtime_logging),
-            pretty_print_func(self._allow_environment_variable_dropping),
-            pretty_print_func(self._allow_unencrypted_scratch),
-            pretty_print_func(self._allow_capability_dropping),
-        )
+
+        if self._platform.startswith("linux"):
+            return config.CUSTOMER_REGO_POLICY % (
+                pretty_print_func(self._api_version),
+                pretty_print_func(sanitized_fragments),
+                output,
+                pretty_print_func(self._allow_properties_access),
+                pretty_print_func(self._allow_dump_stacks),
+                pretty_print_func(self._allow_runtime_logging),
+                pretty_print_func(self._allow_environment_variable_dropping),
+                pretty_print_func(self._allow_unencrypted_scratch),
+                pretty_print_func(self._allow_capability_dropping),
+            )
+        elif self._platform.startswith("windows"):
+            return config.CUSTOMER_REGO_POLICY_WINDOWS % (
+                pretty_print_func(self._api_version),
+                pretty_print_func(sanitized_fragments),
+                output,
+                pretty_print_func(self._allow_properties_access),
+                pretty_print_func(self._allow_dump_stacks),
+                pretty_print_func(self._allow_runtime_logging),
+                pretty_print_func(self._allow_environment_variable_dropping),
+            )
 
     def validate_cce_policy(self) -> Tuple[bool, Dict]:
         """Utility method: check to see if the existing policy
@@ -394,7 +415,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             policy.append(image_dict)
         if (not is_sidecars or len(regular_container_images) == 0) and include_sidecars:
             # add in the default containers that have their hashes pre-computed
-            policy += copy.deepcopy(config.DEFAULT_CONTAINERS)
+            if self._platform.startswith("linux"):
+                policy += copy.deepcopy(config.DEFAULT_CONTAINERS)
             if self._disable_stdio:
                 for container in policy:
                     container[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS] = False
@@ -560,7 +582,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 image.set_layers(proxy.get_policy_image_layers(
                     image.base,
                     image.tag,
-                    platform=image_info.get("platform", "linux/amd64"),
+                    platform=self._platform,
                     tar_location=tar_location if tar else "",
                     faster_hashing=faster_hashing,
                 ))
@@ -795,6 +817,7 @@ def load_policy_from_arm_template_str(
                     config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
                         image_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
                     ),
+                    "platform": get_image_platform(image_name),
                 }
             )
 
@@ -869,6 +892,8 @@ def load_policy_from_image_name(
 
         container[config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE] = image_name
         container[config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS] = not disable_stdio
+
+        container["platform"] = get_image_platform(image_name)
 
         containers.append(container)
 
@@ -1033,6 +1058,7 @@ def load_policy_from_json(
                 config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
                     container_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
                 ),
+                "platform": get_image_platform(image_name),
             }
         )
 
