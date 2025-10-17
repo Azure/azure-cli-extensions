@@ -6,12 +6,8 @@ import logging
 import os
 import sys
 import unittest
-from types import SimpleNamespace
-from unittest.mock import MagicMock, Mock, call, patch
+from unittest.mock import Mock, patch
 
-from azext_aks_agent._consts import (CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY,
-                                     CONST_AGENT_NAME,
-                                     CONST_AGENT_NAME_ENV_KEY)
 from azext_aks_agent.agent.agent import aks_agent, init_log
 from azure.cli.core.util import CLIError
 
