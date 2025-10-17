@@ -152,16 +152,18 @@ def _validate_ou_distinguished_name(
     if not ou_distinguished_name:
         if account_provisioning == ACCOUNT_PROVISIONING_MODE_AUTOMATIC:
             raise ValueError(
-                "The distinguished name of the AD Organizational Unit (OU) is required if service account provisioning is set to '{}'.".format(
+                "The distinguished name of the AD Organizational Unit (OU) is required if ",
+                "service account provisioning is set to '{}'.".format(
                     ACCOUNT_PROVISIONING_MODE_AUTOMATIC
                 )
             )
-        else:
-            return
+        
+        return
 
     if not ou_distinguished_name.startswith("OU="):
         raise ValueError(
-            "Invalid distinguished name of AD Organizational Unit (OU). The value for --ou-distinguished-name should start with 'OU='"
+            "Invalid distinguished name of AD Organizational Unit (OU). ",
+            "The value for --ou-distinguished-name should start with 'OU='"
         )
 
     return ou_distinguished_name
@@ -235,7 +237,7 @@ def _validate_ip_address(address):
     try:
         ipaddress.ip_address(address)
         return True
-    except:
+    except ValueError:
         return False
 
 

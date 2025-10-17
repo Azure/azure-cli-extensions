@@ -17,13 +17,9 @@ from azext_arcdata.ad_connector.models.ad_connector_cr_model import (
 )
 from azext_arcdata.ad_connector.validators import (
     _validate_domain_name,
-    _validate_netbios_domain_name,
     _validate_ip_address,
 )
 from azext_arcdata.core.constants import (
-    ARC_GROUP,
-    DATA_CONTROLLER_PLURAL,
-    DIRECT,
     DOMAIN_SERVICE_ACCOUNT_PASSWORD,
     DOMAIN_SERVICE_ACCOUNT_USERNAME,
 )
@@ -37,7 +33,6 @@ from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
 )
 from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import (
     ACTIVE_DIRECTORY_CONNECTOR_CRD_NAME,
-    DATA_CONTROLLER_CRD_NAME,
     TEMPLATE_DIR,
 )
 from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
@@ -121,16 +116,18 @@ def _parse_prefer_k8s_dns(prefer_k8s_dns):
             "The allowed values for --prefer-k8s-dns are 'true' or 'false'"
         )
 
-    return False if prefer_k8s_dns == "false" else True
+    return not prefer_k8s_dns == "false"
 
 
 def _get_ad_connector_custom_resource(client, name, namespace):
     """
-    Queries the kubernetes cluster and returns the custom resource for an AD connector with the given name in the specified namespace
+    Queries the kubernetes cluster and returns the custom resource for an AD connector
+    with the given name in the specified namespace
     :param client: KubernetesClient
     :param name: The name of the AD connector.
     :param namespace: Namespace where the AD connector is deployed.
-    :return: The k8s custom resource if one is found. An error will be raised if the AD connector is not found.
+    :return: The k8s custom resource if one is found. An error will be raised if the AD
+    connector is not found.
     """
 
     try:
@@ -216,11 +213,8 @@ def validate_domain_service_account_secret(
         or password_entry_in_secret not in secret_data
     ):
         raise ValueError(
-            "The Active Directory domain service account Kubernetes secret '{0}' must contain the keys '{1}' and '{2}'.".format(
-                domain_service_account_secret,
-                username_entry_in_secret,
-                password_entry_in_secret,
-            )
+            f"The Active Directory domain service account Kubernetes secret '{domain_service_account_secret}' ",
+            f"must contain the keys '{username_entry_in_secret}' and '{password_entry_in_secret}'."
         )
 
 

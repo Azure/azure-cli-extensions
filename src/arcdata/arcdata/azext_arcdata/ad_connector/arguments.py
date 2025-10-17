@@ -51,7 +51,8 @@ def load_arguments(self, _):
         arg_context.argument(
             "account_provisioning",
             options_list=["--account-provisioning"],
-            help="Value indicating whether service account provisioning for data services should be automatic or manual. Allowed values are: 'manual' or 'automatic'",
+            help="Value indicating whether service account provisioning for data services should be automatic or "
+                 "manual. Allowed values are: 'manual' or 'automatic'",
         )
         arg_context.argument(
             "realm",
@@ -61,7 +62,8 @@ def load_arguments(self, _):
         arg_context.argument(
             "nameserver_addresses",
             options_list=["--nameserver-addresses"],
-            help="List of Active Directory DNS server IP addresses separated by ',' (e.g. 10.10.10.11,10.10.10.12,10.10.10.13)",
+            help="List of Active Directory DNS server IP addresses separated by ',' "
+                 "(e.g. 10.10.10.11,10.10.10.12,10.10.10.13)",
         )
         arg_context.argument(
             "primary_domain_controller",
@@ -92,17 +94,22 @@ def load_arguments(self, _):
         arg_context.argument(
             "prefer_k8s_dns",
             options_list=["--prefer-k8s-dns"],
-            help="Use Kubernetes DNS Server responses over the Active Directory DNS server responses for IP address lookup. Allowed values are 'true' or 'false'",
+            help="Use Kubernetes DNS Server responses over the Active Directory DNS server responses for "
+                 "IP address lookup. Allowed values are 'true' or 'false'",
         )
         arg_context.argument(
             "ou_distinguished_name",
             options_list=["--ou-distinguished-name"],
-            help="The distinguished name of the pre-created Organizational Unit (OU) in the Active Directory domain. (e.g. OU=arcou,DC=contoso,DC=com).",
+            help="The distinguished name of the pre-created Organizational Unit (OU) in the "
+                 "Active Directory domain. (e.g. OU=arcou,DC=contoso,DC=com).",
         )
         arg_context.argument(
             "domain_service_account_secret",
             options_list=["--domain-service-account-secret"],
-            help="The name of the Kubernetes secret containing the credentials for the pre-created Active Directory account with permissions to create and manage accounts in the given OU. Alternatively, setting the 'DOMAIN_SERVICE_ACCOUNT_USERNAME' and 'DOMAIN_SERVICE_ACCOUNT_PASSWORD' env variables will create this secret automatically.",
+            help="The name of the Kubernetes secret containing the credentials for the pre-created "
+                 "Active Directory account with permissions to create and manage accounts in the given OU. "
+                 "Alternatively, setting the 'DOMAIN_SERVICE_ACCOUNT_USERNAME' and "
+                 "'DOMAIN_SERVICE_ACCOUNT_PASSWORD' env variables will create this secret automatically.",
         )
 
     with ArgumentsContext(self, "arcdata ad-connector update") as arg_context:
@@ -142,7 +149,8 @@ def load_arguments(self, _):
         arg_context.argument(
             "nameserver_addresses",
             options_list=["--nameserver-addresses"],
-            help="List of Active Directory DNS server IP addresses separated by ',' (e.g. 10.10.10.11,10.10.10.12,10.10.10.13)",
+            help="List of Active Directory DNS server IP addresses separated by ',' "
+                 "(e.g. 10.10.10.11,10.10.10.12,10.10.10.13)",
         )
         arg_context.argument(
             "primary_domain_controller",
@@ -163,12 +171,14 @@ def load_arguments(self, _):
         arg_context.argument(
             "prefer_k8s_dns",
             options_list=["--prefer-k8s-dns"],
-            help="Use Kubernetes DNS Server responses over the Active Directory DNS server responses for IP address lookup. Allowed values are 'true' or 'false'",
+            help="Use Kubernetes DNS Server responses over the Active Directory DNS server responses for "
+                 "IP address lookup. Allowed values are 'true' or 'false'",
         )
         arg_context.argument(
             "domain_service_account_secret",
             options_list=["--domain-service-account-secret"],
-            help="The name of the Kubernetes secret containing the credentials for the pre-created Active Directory account with permissions to create and manage accounts in the given OU.",
+            help="The name of the Kubernetes secret containing the credentials for the pre-created "
+                 "Active Directory account with permissions to create and manage accounts in the given OU.",
         )
 
     with ArgumentsContext(self, "arcdata ad-connector delete") as arg_context:
