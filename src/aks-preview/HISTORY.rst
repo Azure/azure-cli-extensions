@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b4
++++++++
+* Add `enable-istio-cni`` and `disable-istio-cni`` commands under `az aks mesh`.
+
 19.0.0b3
 +++++++
 * Implement platform-managed-keys (PMK) awared validation for KMS customer-managed-key (CMK)

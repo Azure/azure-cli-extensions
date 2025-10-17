@@ -2036,7 +2036,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
     def test_get_azure_keyvault_kms_key_id_with_pmk_validation(self):
         # Test PMK-aware validation in _get_azure_keyvault_kms_key_id method
-        
+
         # PMK enabled (infrastructure encryption = "Enabled") - should accept versionless key ID
         versionless_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
         ctx_pmk_versionless = AKSPreviewManagedClusterContext(
@@ -2307,7 +2307,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         mc_existing = self._create_mc_with_kms_key_id(key_id_2)
         ctx_create_with_existing.attach_mc(mc_existing)
         self.assertEqual(
-            ctx_create_with_existing.get_azure_keyvault_kms_key_id(), 
+            ctx_create_with_existing.get_azure_keyvault_kms_key_id(),
             key_id_2  # Should return existing MC value in CREATE mode
         )
 
@@ -2319,7 +2319,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         mc_update = self._create_mc_with_kms_key_id(key_id_2)
         ctx_update.attach_mc(mc_update)
         self.assertEqual(
-            ctx_update.get_azure_keyvault_kms_key_id(), 
+            ctx_update.get_azure_keyvault_kms_key_id(),
             key_id_1  # Should return parameter value in UPDATE mode
         )
 
@@ -4361,6 +4361,71 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             istio=self.models.IstioServiceMesh(revisions=["asm-1-17", "asm-1-18"]),
         ))
 
+    def test_handle_enable_istio_cni(self):
+        # Test enabling Istio CNI on existing ASM-enabled cluster
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    # "enable_azure_service_mesh": True,
+                    "enable_istio_cni": True,
+                    # "revision": "asm-1-25"
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        old_profile = self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                revisions=["asm-1-25"],
+                components=self.models.IstioComponents()
+            ),
+        )
+        new_profile, updated = ctx_0._handle_istio_cni_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                revisions=["asm-1-25"],
+                components=self.models.IstioComponents(
+                    proxy_redirection_mechanism="CNIChaining"
+                )
+            )
+        ))
+
+    def test_handle_disable_istio_cni(self):
+        # Test disabling Istio CNI on existing ASM-enabled cluster
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_istio_cni": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        old_profile = self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                revisions=["asm-1-25"],
+                components=self.models.IstioComponents()
+            ),
+        )
+        new_profile, updated = ctx_0._handle_istio_cni_asm(old_profile)
+        self.assertEqual(updated, True)
+        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
+            mode="Istio",
+            istio=self.models.IstioServiceMesh(
+                revisions=["asm-1-25"],
+                components=self.models.IstioComponents(
+                    proxy_redirection_mechanism="InitContainers"
+                )
+            )
+        ))
+
+
     def test_get_disable_local_accounts(self):
         # automatic cluster needs to enable the disable_local_accounts
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -4876,7 +4941,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_3.context.attach_mc(mc_3)
         dec_mc_sku_3 = dec_3.set_up_sku(mc_3)
         external_functions = dec_3.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None), patch.object(external_functions, 'ensure_default_log_analytics_workspace_for_monitoring', 
+        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None), patch.object(external_functions, 'ensure_default_log_analytics_workspace_for_monitoring',
             return_value = "/subscriptions/test_subscription_id/resourceGroups/test_rg_name/providers/Microsoft.OperationalInsights/workspaces/test_workspace_resource_id",
         ):
             dec_mc_3 = dec_3.set_up_addon_profiles(dec_mc_sku_3)
@@ -5276,7 +5341,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         mc_3 = self.models.ManagedCluster(location="test_location")
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.set_up_kms_pmk_and_cmk(mc_3)
-        
+
         # expected security profile with infrastructure encryption
         ground_truth_kube_resource_encryption_profile_3 = self.models.KubernetesResourceObjectEncryptionProfile(
             infrastructure_encryption="Enabled"
@@ -5306,7 +5371,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         dec_4.context.attach_mc(mc_4)
         dec_mc_4 = dec_4.set_up_kms_pmk_and_cmk(mc_4)
-        
+
         # should add to existing security profile
         ground_truth_kube_resource_encryption_profile_4 = self.models.KubernetesResourceObjectEncryptionProfile(
             infrastructure_encryption="Enabled"
@@ -6169,14 +6234,14 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        
+
         mc_1 = self.models.ManagedCluster(
             location="test_location",
             identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(mc_1)
-        
+
         # Expected ground truth object
         ground_truth_opentelemetry_metrics = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
             enabled=True,
@@ -6215,14 +6280,14 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        
+
         mc_1 = self.models.ManagedCluster(
             location="test_location",
             identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(mc_1)
-        
+
         # Expected ground truth object
         ground_truth_opentelemetry_metrics = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
             enabled=False,
@@ -6266,15 +6331,15 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_1.context.attach_mc(mc_1)
-        
+
         # Mock the subscription_id to avoid authentication requirement
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # First set up addon profiles - this enables the monitoring addon
         external_functions = dec_1.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
-            
+
         # Then set up Azure Monitor profile
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(dec_mc_1)
 
@@ -6296,23 +6361,23 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        
+
         mc_1 = self.models.ManagedCluster(
             location="test_location",
             identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_1.context.attach_mc(mc_1)
-        
+
         # Mock the subscription_id to avoid authentication requirement
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # First set up addon profiles - this enables the monitoring addon
         external_functions = dec_1.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
-            
+
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(dec_mc_1)
-        
+
         # Verify OpenTelemetry logs are configured correctly (since this includes OpenTelemetry logs)
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile)
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring)
@@ -6332,23 +6397,23 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        
+
         mc_1 = self.models.ManagedCluster(
             location="test_location",
             identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_1.context.attach_mc(mc_1)
-        
+
         # Mock the subscription_id to avoid authentication requirement
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # First set up addon profiles - this enables the monitoring addon
         external_functions = dec_1.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
-            
+
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(dec_mc_1)
-        
+
         # Since no OpenTelemetry features are enabled and container insights profiles were removed,
         # just verify the monitoring addon was set up properly
         self.assertIsNotNone(dec_mc_1.addon_profiles)
@@ -6373,15 +6438,15 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_1.context.attach_mc(mc_1)
-        
+
         # Mock the subscription_id to avoid authentication requirement
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # Set up addon profiles (this is what would happen with enable_azure_monitor_logs=True)
         external_functions = dec_1.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
-        
+
         # Verify that monitoring addon is enabled correctly
         self.assertIsNotNone(dec_mc_1.addon_profiles)
         self.assertIn("omsagent", dec_mc_1.addon_profiles)
@@ -6409,15 +6474,15 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_1.context.attach_mc(mc_1)
-        
+
         # Mock the subscription_id to avoid authentication requirement
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # Set up addon profiles
         external_functions = dec_1.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
-        
+
         # Verify both addons are enabled
         self.assertIsNotNone(dec_mc_1.addon_profiles)
         self.assertIn("omsagent", dec_mc_1.addon_profiles)
@@ -6444,15 +6509,15 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_1.context.attach_mc(mc_1)
-        
+
         # Mock the subscription_id to avoid authentication requirement
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # First set up addon profiles - this enables the monitoring addon
         external_functions = dec_1.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
-            
+
         # Set up Azure Monitor profile with OpenTelemetry logs
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(dec_mc_1)
 
@@ -6481,24 +6546,24 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_1.context.attach_mc(mc_1)
-        
+
         # Mock the subscription_id to avoid authentication requirement
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # First set up addon profiles - this enables the monitoring addon
         external_functions = dec_1.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
-            
+
         # Then set up Azure Monitor profile - this should create container insights profile
         # when monitoring addon is enabled
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(dec_mc_1)
-        
+
         # Verify the monitoring addon is enabled correctly
         self.assertIsNotNone(dec_mc_1.addon_profiles)
         self.assertIn("omsagent", dec_mc_1.addon_profiles)
         self.assertTrue(dec_mc_1.addon_profiles["omsagent"].enabled)
-        
+
         # Container insights profile setup was removed, so azure_monitor_profile may be None
         # The monitoring addon itself should still be configured correctly in addon_profiles
         # (This is the current expected behavior after container insights profile changes were removed)
@@ -6521,18 +6586,18 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_1.context.attach_mc(mc_1)
-        
+
         # Mock the subscription_id to avoid authentication requirement
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # First set up addon profiles - this enables the monitoring addon
         external_functions = dec_1.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
-            
+
         # Then set up Azure Monitor profile
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(dec_mc_1)
-        
+
         # Since container insights profiles were removed, verify the addon profile has the correct workspace
         self.assertIn("omsagent", dec_mc_1.addon_profiles)
         self.assertTrue(dec_mc_1.addon_profiles["omsagent"].enabled)
@@ -6557,10 +6622,10 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec_1.context.attach_mc(mc_1)
-        
+
         # Set up Azure Monitor profile
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(mc_1)
-        
+
         # Verify containerinsights is disabled
         if dec_mc_1.azure_monitor_profile and dec_mc_1.azure_monitor_profile.containerinsights:
             self.assertFalse(dec_mc_1.azure_monitor_profile.containerinsights.enabled)
@@ -6577,7 +6642,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        
+
         # Create a managed cluster with monitoring addon already enabled
         mc = self.models.ManagedCluster(
             location="test_location",
@@ -6588,7 +6653,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             }
         )
         ctx_1.attach_mc(mc)
-        
+
         # Should succeed when trying to enable Azure Monitor logs that's already enabled (idempotent)
         result = ctx_1.get_enable_azure_monitor_logs()
         self.assertTrue(result)
@@ -6605,14 +6670,14 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        
+
         # Create a managed cluster without monitoring addon enabled
         mc = self.models.ManagedCluster(
             location="test_location",
             addon_profiles={}
         )
         ctx_1.attach_mc(mc)
-        
+
         # Should succeed when monitoring addon is not enabled
         result = ctx_1.get_enable_azure_monitor_logs()
         self.assertTrue(result)
@@ -6629,7 +6694,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        
+
         # Create a managed cluster with monitoring addon already enabled (shouldn't matter in CREATE mode)
         mc = self.models.ManagedCluster(
             location="test_location",
@@ -6640,7 +6705,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             }
         )
         ctx_1.attach_mc(mc)
-        
+
         # Should succeed in CREATE mode even if addon appears enabled
         result = ctx_1.get_enable_azure_monitor_logs()
         self.assertTrue(result)
@@ -8782,12 +8847,12 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # Mock external functions
         external_functions = dec_1.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
             dec_mc_1 = dec_1.update_addon_profiles(mc_1)
-        
+
         # Verify monitoring addon is enabled
         self.assertIn(CONST_MONITORING_ADDON_NAME, dec_mc_1.addon_profiles)
         self.assertTrue(dec_mc_1.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
@@ -8815,7 +8880,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
         )
         dec_2.context.attach_mc(mc_2)
-        
+
         # Should succeed when trying to enable already enabled monitoring (idempotent)
         result = dec_2.context.get_enable_azure_monitor_logs()
         self.assertTrue(result)
@@ -8838,23 +8903,23 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_3.context.attach_mc(mc_3)
         dec_3.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # First update addon profiles
         external_functions = dec_3.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
             dec_mc_3 = dec_3.update_addon_profiles(mc_3)
-        
+
         # Then update Azure Monitor profile with OpenTelemetry
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription-id'), \
              patch.object(dec_3.context, 'get_resource_group_name', return_value='test-rg'), \
              patch.object(dec_3.context, 'get_name', return_value='test-cluster'):
             dec_mc_3 = dec_3.update_azure_monitor_profile(dec_mc_3)
-        
+
         # Verify monitoring addon is enabled
         self.assertIn(CONST_MONITORING_ADDON_NAME, dec_mc_3.addon_profiles)
         self.assertTrue(dec_mc_3.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
-        
+
         # Verify OpenTelemetry logs are configured
         if dec_mc_3.azure_monitor_profile and dec_mc_3.azure_monitor_profile.app_monitoring:
             self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs)
@@ -8878,11 +8943,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_4.context.attach_mc(mc_4)
         dec_4.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         external_functions = dec_4.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
             dec_mc_4 = dec_4.update_addon_profiles(mc_4)
-        
+
         # Verify MSI auth is enabled
         self.assertIn(CONST_MONITORING_ADDON_NAME, dec_mc_4.addon_profiles)
         self.assertTrue(dec_mc_4.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
@@ -8914,12 +8979,12 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
         )
         dec_1.context.attach_mc(mc_1)
-        
+
         external_functions = dec_1.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None), \
              patch("azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True):
             dec_mc_1 = dec_1.update_addon_profiles(mc_1)
-        
+
         # Verify monitoring addon is disabled
         self.assertIn(CONST_MONITORING_ADDON_NAME, dec_mc_1.addon_profiles)
         self.assertFalse(dec_mc_1.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
@@ -8939,7 +9004,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             addon_profiles={},
         )
         dec_2.context.attach_mc(mc_2)
-        
+
         # Should succeed even when monitoring is not enabled (idempotent operation)
         result = dec_2.context.get_disable_azure_monitor_logs()
         self.assertTrue(result)
@@ -8971,23 +9036,23 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         dec_3.context.attach_mc(mc_3)
-        
+
         # First update addon profiles to disable monitoring
         external_functions = dec_3.context.external_functions
         with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None), \
              patch("azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True):
             dec_mc_3 = dec_3.update_addon_profiles(mc_3)
-        
+
         # Then update Azure Monitor profile
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription-id'), \
              patch.object(dec_3.context, 'get_resource_group_name', return_value='test-rg'), \
              patch.object(dec_3.context, 'get_name', return_value='test-cluster'):
             dec_mc_3 = dec_3.update_azure_monitor_profile(dec_mc_3)
-        
+
         # Verify monitoring addon is disabled
         self.assertFalse(dec_mc_3.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
-        
+
         # Verify OpenTelemetry logs are also disabled in Azure Monitor profile
         if dec_mc_3.azure_monitor_profile and dec_mc_3.azure_monitor_profile.app_monitoring:
             self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs)
@@ -9009,13 +9074,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec_1.context, 'get_subscription_id', return_value='test-subscription-id'), \
              patch.object(dec_1.context, 'get_resource_group_name', return_value='test-rg'), \
              patch.object(dec_1.context, 'get_name', return_value='test-cluster'):
             dec_mc_1 = dec_1.update_azure_monitor_profile(mc_1)
-        
+
         # Verify Azure Monitor metrics are enabled
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile)
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.metrics)
@@ -9041,13 +9106,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_2.context.attach_mc(mc_2)
         dec_2.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec_2.context, 'get_subscription_id', return_value='test-subscription-id'), \
              patch.object(dec_2.context, 'get_resource_group_name', return_value='test-rg'), \
              patch.object(dec_2.context, 'get_name', return_value='test-cluster'):
             dec_mc_2 = dec_2.update_azure_monitor_profile(mc_2)
-        
+
         # Should remain enabled
         self.assertTrue(dec_mc_2.azure_monitor_profile.metrics.enabled)
 
@@ -9067,13 +9132,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_3.context.attach_mc(mc_3)
         dec_3.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription-id'), \
              patch.object(dec_3.context, 'get_resource_group_name', return_value='test-rg'), \
              patch.object(dec_3.context, 'get_name', return_value='test-cluster'):
             dec_mc_3 = dec_3.update_azure_monitor_profile(mc_3)
-        
+
         # Verify Azure Monitor metrics and Windows recording rules are enabled
         self.assertIsNotNone(dec_mc_3.azure_monitor_profile)
         self.assertIsNotNone(dec_mc_3.azure_monitor_profile.metrics)
@@ -9102,14 +9167,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         dec_1.context.attach_mc(mc_1)
-        
+
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec_1.context, 'get_subscription_id', return_value='test-subscription-id'), \
              patch.object(dec_1.context, 'get_resource_group_name', return_value='test-rg'), \
              patch.object(dec_1.context, 'get_name', return_value='test-cluster'), \
              patch("azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True):
             dec_mc_1 = dec_1.update_azure_monitor_profile(mc_1)
-        
+
         # Verify Azure Monitor metrics are disabled
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile)
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.metrics)
@@ -9129,7 +9194,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         dec_2.context.attach_mc(mc_2)
-        
+
         # Should succeed even when metrics are not enabled (idempotent operation)
         result = dec_2.context.get_disable_azure_monitor_metrics()
         self.assertTrue(result)
@@ -9159,14 +9224,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         dec_3.context.attach_mc(mc_3)
-        
+
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription-id'), \
              patch.object(dec_3.context, 'get_resource_group_name', return_value='test-rg'), \
              patch.object(dec_3.context, 'get_name', return_value='test-cluster'), \
              patch("azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True):
             dec_mc_3 = dec_3.update_azure_monitor_profile(mc_3)
-        
+
         # Verify Azure Monitor metrics are disabled but OpenTelemetry metrics configuration is preserved
         self.assertIsNotNone(dec_mc_3.azure_monitor_profile)
         self.assertIsNotNone(dec_mc_3.azure_monitor_profile.metrics)
@@ -9202,10 +9267,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # Call _setup_azure_monitor_logs
         dec_1._setup_azure_monitor_logs(mc_1)
-        
+
         # Verify: Should update existing omsAgent key (not create omsagent lowercase)
         self.assertIn("omsAgent", mc_1.addon_profiles)
         self.assertNotIn("omsagent", mc_1.addon_profiles)  # Should NOT create duplicate
@@ -9242,10 +9307,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # Call _setup_azure_monitor_logs
         dec_1._setup_azure_monitor_logs(mc_1)
-        
+
         # Verify: Should update existing omsagent key
         self.assertIn("omsagent", mc_1.addon_profiles)
         self.assertNotIn("omsAgent", mc_1.addon_profiles)  # Should NOT create CamelCase variant
@@ -9278,10 +9343,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # Call _disable_azure_monitor_logs
         dec_1._disable_azure_monitor_logs(mc_1)
-        
+
         # Verify: omsAgent should be disabled
         self.assertIn("omsAgent", mc_1.addon_profiles)
         self.assertFalse(mc_1.addon_profiles["omsAgent"].enabled)
@@ -9314,10 +9379,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
-        
+
         # Call _disable_azure_monitor_logs
         dec_1._disable_azure_monitor_logs(mc_1)
-        
+
         # Verify: omsagent should be disabled
         self.assertIn("omsagent", mc_1.addon_profiles)
         self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
@@ -9335,7 +9400,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        
+
         # Create MC with omsAgent (camelCase) already enabled
         mc = self.models.ManagedCluster(
             location="test_location",
@@ -9347,7 +9412,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             }
         )
         ctx_1.attach_mc(mc)
-        
+
         # Should succeed - validation should find omsAgent enabled
         result = ctx_1.get_enable_opentelemetry_logs()
         self.assertTrue(result)
@@ -9364,7 +9429,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        
+
         # Create MC with containerInsights enabled (new API)
         mc = self.models.ManagedCluster(
             location="test_location",
@@ -9376,7 +9441,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         ctx_1.attach_mc(mc)
-        
+
         # Should succeed - validation should find containerInsights enabled
         result = ctx_1.get_enable_opentelemetry_logs()
         self.assertTrue(result)
@@ -11767,7 +11832,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        
+
         # Mock existing cluster with Azure Monitor metrics enabled
         mc_1 = self.models.ManagedCluster(
             location="test_location",
@@ -11786,7 +11851,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
              patch.object(dec_1.context, 'get_name', return_value='test-cluster'), \
              patch.object(dec_1.context, 'get_location', return_value='test-location'):
             dec_mc_1 = dec_1.update_azure_monitor_profile(mc_1)
-        
+
         # Verify OpenTelemetry metrics configuration is updated
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring)
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
@@ -11802,7 +11867,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        
+
         # Mock existing cluster with OpenTelemetry metrics enabled
         mc_2 = self.models.ManagedCluster(
             location="test_location",
@@ -11819,7 +11884,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         dec_2.context.attach_mc(mc_2)
-        
+
         # Mock authentication-related functions for second test
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec_2.context, 'get_subscription_id', return_value='test-subscription'), \
@@ -11827,7 +11892,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
              patch.object(dec_2.context, 'get_name', return_value='test-cluster'), \
              patch.object(dec_2.context, 'get_location', return_value='test-location'):
             dec_mc_2 = dec_2.update_azure_monitor_profile(mc_2)
-        
+
         # Verify OpenTelemetry metrics is disabled
         self.assertIsNotNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
         self.assertFalse(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
@@ -11842,7 +11907,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        
+
         # Mock existing cluster with OpenTelemetry metrics already enabled
         mc_3 = self.models.ManagedCluster(
             location="test_location",
@@ -11859,7 +11924,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         dec_3.context.attach_mc(mc_3)
-        
+
         # Mock authentication-related functions for third test
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription'), \
@@ -11867,7 +11932,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
              patch.object(dec_3.context, 'get_name', return_value='test-cluster'), \
              patch.object(dec_3.context, 'get_location', return_value='test-location'):
             dec_mc_3 = dec_3.update_azure_monitor_profile(mc_3)
-        
+
         # Verify OpenTelemetry metrics port is updated while remaining enabled
         self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
         self.assertTrue(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
@@ -11884,7 +11949,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        
+
         # Mock existing cluster with Azure Monitor logs enabled (monitoring addon enabled)
         addon_profiles = {
             "omsagent": self.models.ManagedClusterAddonProfile(
@@ -11912,7 +11977,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
              patch.object(dec_1.context, 'get_name', return_value='test-cluster'), \
              patch.object(dec_1.context, 'get_location', return_value='test-location'):
             dec_mc_1 = dec_1.update_azure_monitor_profile(mc_1)
-        
+
         # Verify OpenTelemetry logs configuration is updated
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring)
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs)
@@ -11928,7 +11993,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        
+
         # Mock existing cluster with OpenTelemetry logs enabled
         mc_2 = self.models.ManagedCluster(
             location="test_location",
@@ -11946,7 +12011,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         dec_2.context.attach_mc(mc_2)
-        
+
         # Mock authentication-related functions for second test
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec_2.context, 'get_subscription_id', return_value='test-subscription'), \
@@ -11969,7 +12034,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        
+
         # Mock existing cluster with OpenTelemetry logs already enabled
         mc_3 = self.models.ManagedCluster(
             location="test_location",
@@ -11987,7 +12052,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         dec_3.context.attach_mc(mc_3)
-        
+
         # Mock authentication-related functions for third test
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription'), \
@@ -11995,7 +12060,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
              patch.object(dec_3.context, 'get_name', return_value='test-cluster'), \
              patch.object(dec_3.context, 'get_location', return_value='test-location'):
             dec_mc_3 = dec_3.update_azure_monitor_profile(mc_3)
-        
+
         # Verify OpenTelemetry logs port is updated while remaining enabled
         self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs)
         self.assertTrue(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
@@ -12011,7 +12076,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        
+
         # Mock existing cluster with both Azure Monitor app monitoring and OpenTelemetry metrics enabled
         mc = self.models.ManagedCluster(
             location="test_location",
@@ -12028,7 +12093,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         dec.context.attach_mc(mc)
-        
+
         # Mock authentication-related functions
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec.context, 'get_subscription_id', return_value='test-subscription'), \
@@ -12036,11 +12101,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
              patch.object(dec.context, 'get_name', return_value='test-cluster'), \
              patch.object(dec.context, 'get_location', return_value='test-location'):
             dec_mc = dec.update_azure_monitor_profile(mc)
-        
+
         # Verify Azure Monitor app monitoring auto instrumentation is disabled
         self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation)
         self.assertFalse(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation.enabled)
-        
+
         # Verify OpenTelemetry metrics configuration is preserved
         self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
         self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
@@ -12056,7 +12121,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        
+
         # Mock existing cluster with OpenTelemetry logs enabled but Azure Monitor app monitoring disabled
         mc = self.models.ManagedCluster(
             location="test_location",
@@ -12073,7 +12138,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         dec.context.attach_mc(mc)
-        
+
         # Mock authentication-related functions
         with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
              patch.object(dec.context, 'get_subscription_id', return_value='test-subscription'), \
@@ -12081,11 +12146,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
              patch.object(dec.context, 'get_name', return_value='test-cluster'), \
              patch.object(dec.context, 'get_location', return_value='test-location'):
             dec_mc = dec.update_azure_monitor_profile(mc)
-        
+
         # Verify Azure Monitor app monitoring auto instrumentation is enabled
         self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation)
         self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation.enabled)
-        
+
         # Verify OpenTelemetry logs configuration is preserved
         self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs)
         self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
