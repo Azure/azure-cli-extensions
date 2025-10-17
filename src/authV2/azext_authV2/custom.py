@@ -160,7 +160,7 @@ def update_auth_settings_v2(cmd, resource_group_name, name, set_string=None, ena
         if "globalValidation" not in existing_auth.keys():
             existing_auth["globalValidation"] = {}
         try:
-            if isinstance(json.loads(excluded_paths),list):
+            if isinstance(json.loads(excluded_paths), list):
                 excluded_paths_list = json.loads(excluded_paths)
             else:
                 excluded_paths_list = excluded_paths.split(",")
