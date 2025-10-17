@@ -675,14 +675,14 @@ def load_policy_from_arm_template_str(
         containers = []
         existing_containers = None
         fragments = None
-        exclude_default_fragments_this_group = exclude_default_fragments
+        group_exclude_default_fragments = exclude_default_fragments
 
         tags = case_insensitive_dict_get(resource, config.ACI_FIELD_TEMPLATE_TAGS)
         if tags:
-            exclude_default_fragments_this_group = \
+            group_exclude_default_fragments = \
                 case_insensitive_dict_get(tags, config.ACI_FIELD_TEMPLATE_ZERO_SIDECAR)
-            if isinstance(exclude_default_fragments_this_group, str):
-                exclude_default_fragments_this_group = exclude_default_fragments_this_group.lower() == "true"
+            if isinstance(group_exclude_default_fragments, str):
+                group_exclude_default_fragments = group_exclude_default_fragments.lower() == "true"
 
         container_group_properties = case_insensitive_dict_get(
             resource, config.ACI_FIELD_TEMPLATE_PROPERTIES
@@ -723,7 +723,7 @@ def load_policy_from_arm_template_str(
 
         rego_fragments = (
             copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS)
-            if not exclude_default_fragments_this_group else []
+            if not group_exclude_default_fragments else []
         )
         if infrastructure_svn:
             # assumes the first DEFAULT_REGO_FRAGMENT is always the
