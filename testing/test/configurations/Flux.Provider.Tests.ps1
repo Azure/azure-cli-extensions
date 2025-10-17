@@ -6,7 +6,7 @@ Describe 'Flux Configuration Testing with provider' {
     }
 
     It 'Creates a configuration with provider and checks that it onboards correctly' {
-        az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/Azure/arc-k8s-demo" -n $configurationName --scope cluster --namespace $configurationName --branch main --no-wait --provider azure
+        az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/AzureArcForKubernetes/arc-k8s-demo" -n $configurationName --scope cluster --namespace $configurationName --branch main --no-wait --provider azure
         $? | Should -BeTrue
 
         # Loop and retry until the configuration installs

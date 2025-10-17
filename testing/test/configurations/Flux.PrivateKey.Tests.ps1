@@ -22,7 +22,7 @@ Describe 'Flux Configuration (SSH Configs) Testing' {
         }
 
         $SSH_GIT_URL = "ssh://github.com/anubhav929/flux-get-started.git"
-        $HTTP_GIT_URL = "https://github.com/Azure/arc-k8s-demo"
+        $HTTP_GIT_URL = "https://github.com/AzureArcForKubernetes/arc-k8s-demo"
 
         $configDataRSA = [System.Tuple]::Create("rsa-config", $RSA_KEYPATH)
         $configDataECDSA = [System.Tuple]::Create("ecdsa-config", $ECDSA_KEYPATH)

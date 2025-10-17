@@ -7,7 +7,7 @@ Describe 'Basic Flux Configuration Testing' {
     }
 
     It 'Creates a configuration for testing default wait value' {
-        az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/Azure/gitops-flux2-kustomize-helm-mt" -n $configurationName --scope cluster --namespace $configurationName --branch main --kustomization name=infra path=./infrastructure prune=true --no-wait
+        az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/AzureArcForKubernetes/flux2-kustomize-helm-example" -n $configurationName --scope cluster --namespace $configurationName --branch namespace-scope --kustomization name=infra path=./infrastructure prune=true --no-wait
         $? | Should -BeTrue
 
         # Loop and retry until the configuration installs
@@ -32,7 +32,7 @@ Describe 'Basic Flux Configuration Testing' {
     }
 
     It "Performs a re-PUT of the configuration on the cluster, with health check disabled for kustomization" {
-        az k8s-configuration flux update -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/Azure/gitops-flux2-kustomize-helm-mt" -n $configurationName --kustomization name=infra path=./infrastructure disable-health-check=true --no-wait
+        az k8s-configuration flux update -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/AzureArcForKubernetes/flux2-kustomize-helm-example" -n $configurationName --kustomization name=infra path=./infrastructure disable-health-check=true --no-wait
         $? | Should -BeTrue
 
         # Loop and retry until the configuration installs
@@ -118,7 +118,7 @@ Describe 'Basic Flux Configuration Testing' {
     }
 
     It 'Creates a configuration for testing with health check disabled for kustomization' {
-        az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/Azure/gitops-flux2-kustomize-helm-mt" -n $secondConfig --scope cluster --namespace $secondConfig --branch main --kustomization name=infra path=./infrastructure prune=true disable-health-check=true --no-wait
+        az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/AzureArcForKubernetes/flux2-kustomize-helm-example" -n $secondConfig --scope cluster --namespace $secondConfig --branch namespace-scope --kustomization name=infra path=./infrastructure prune=true disable-health-check=true --no-wait
         $? | Should -BeTrue
 
         # Loop and retry until the configuration installs

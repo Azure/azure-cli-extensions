@@ -32,6 +32,10 @@ stages:
     parameters:
       jobName: Kustomization_FluxConfigurationTests
       path: ./test/configurations/FluxKustomization.*.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: OCIRepository_FluxConfigurationTests
+      path: ./test/configurations/FluxOCIRepository.*.Tests.ps1
   - job: BuildPublishExtension
     pool:
       vmImage: 'ubuntu-latest'
@@ -41,9 +45,9 @@ stages:
       EXTENSION_NAME: "k8s-configuration"
     steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.10'
+      displayName: 'Use Python 3.13'
       inputs:
-        versionSpec: 3.10
+        versionSpec: 3.13
     - bash: |
         set -ev
         echo "Building extension ${EXTENSION_NAME}..."
@@ -78,9 +82,9 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.10'
+      displayName: 'Use Python 3.13'
       inputs:
-        versionSpec: 3.10
+        versionSpec: 3.13
     - bash: |
         set -ev
 

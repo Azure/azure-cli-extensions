@@ -31,7 +31,7 @@ Describe 'Bucket Flux Configuration Testing' {
     }
 
     It "Performs an update on the configuration changing the kind from Bucket to Git" {
-        $output = az k8s-configuration flux update -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -n $configurationName --kind git -u "https://github.com/Azure/arc-k8s-demo" --branch main --no-wait
+        $output = az k8s-configuration flux update -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -n $configurationName --kind git -u "https://github.com/AzureArcForKubernetes/arc-k8s-demo" --branch main --no-wait
         $? | Should -BeTrue
 
         # Loop and retry until the configuration installs

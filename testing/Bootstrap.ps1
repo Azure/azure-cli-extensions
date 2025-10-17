@@ -77,4 +77,4 @@ if ($?)
 Write-Host "Connecting the cluster to Arc with connectedk8s..."
 $Env:KUBECONFIG="$PSScriptRoot/tmp/KUBECONFIG"
 $Env:HELMVALUESPATH="$PSScriptRoot/bin/connectedk8s-values.yaml"
-az connectedk8s connect -g $ENVCONFIG.resourceGroup -n $ENVCONFIG.arcClusterName -l uksouth
+az connectedk8s connect -g $ENVCONFIG.resourceGroup -n $ENVCONFIG.arcClusterName -l centraluseuap

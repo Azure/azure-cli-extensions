@@ -6,7 +6,7 @@ Describe 'Basic Flux Configuration Testing' {
     }
 
     It 'Creates a configuration and checks that it onboards correctly' {
-        az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/Azure/arc-k8s-demo" -n $configurationName --scope cluster --namespace $configurationName --branch main --no-wait
+        az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/AzureArcForKubernetes/arc-k8s-demo" -n $configurationName --scope cluster --namespace $configurationName --branch main --no-wait
         $? | Should -BeTrue
 
         # Loop and retry until the configuration installs
@@ -32,7 +32,7 @@ Describe 'Basic Flux Configuration Testing' {
     }
 
     It "Performs a re-PUT of the configuration on the cluster, with HTTPS in caps" {
-        az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "HTTPS://github.com/Azure/arc-k8s-demo" -n $configurationName --scope cluster --namespace $configurationName --branch main --no-wait
+        az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/AzureArcForKubernetes/arc-k8s-demo" -n $configurationName --scope cluster --namespace $configurationName --branch main --no-wait
         $? | Should -BeTrue
     }
 

@@ -9,7 +9,7 @@ Describe 'Flux Configuration (HTTPS) Testing' {
     }
 
     It 'Creates a configuration with https user and https key on the cluster' {
-        $output = az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/Azure/arc-k8s-demo" -n $configurationName --scope cluster --https-user $dummyValue --https-key $dummyValue --namespace $configurationName --branch main --no-wait 
+        $output = az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "https://github.com/AzureArcForKubernetes/arc-k8s-demo" -n $configurationName --scope cluster --https-user $dummyValue --https-key $dummyValue --namespace $configurationName --branch main --no-wait 
         $? | Should -BeTrue
 
         # Loop and retry until the configuration installs and helm pod comes up
