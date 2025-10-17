@@ -12,6 +12,7 @@ def load_arguments(self, _):
         c.argument('registry_name', options_list=['--registry', '-r'], help='The name of the container registry. It should be specified in lower case. You can configure the default registry name using `az configure --defaults acr=<registry name>`')
         c.argument('name', options_list=['--name', '-n'], help='The name of the cache rule.')
         c.argument('cred_set', options_list=['--cred-set', '-c'], help='The name of the credential set.')
+        c.argument('assign_identity', options_list=['--assign-identity', '-i'], help='Resource ID of the user-assigned managed identity for authenticating with the ACR source registry. Must be in the same tenant as both registries. Format: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}')
         c.argument('source_repo', options_list=['--source-repo', '-s'], help="The full source repository path such as 'docker.io/library/ubuntu'.")
         c.argument('target_repo', options_list=['--target-repo', '-t'], help="The target repository namespace such as 'ubuntu'.")
         c.argument('remove_cred_set', action="store_true", help='Optional boolean indicating whether to remove the credential set from the cache rule. False by default.')

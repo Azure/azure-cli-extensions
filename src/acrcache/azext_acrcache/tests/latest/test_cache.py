@@ -219,5 +219,200 @@ class TestCacheSync(unittest.TestCase):
         self.assertEqual(params.target_tags, ["repo/target:tag1"])
         self.assertEqual(params.source.cache_rule_resource_id, "ruleid")
 
+class TestIdentityProcessing(unittest.TestCase):
+    """Test identity parameter processing functionality"""
+
+    def test_process_assign_identity_parameter_none(self):
+        """Test process_assign_identity_parameter returns None when no identity provided"""
+        result = cache.process_assign_identity_parameter(None)
+        self.assertIsNone(result)
+
+        result = cache.process_assign_identity_parameter("")
+        self.assertIsNone(result)
+
+    def test_process_assign_identity_parameter_valid(self):
+        """Test process_assign_identity_parameter with valid resource ID"""
+        resource_id = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity"
+
+        result = cache.process_assign_identity_parameter(resource_id)
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result.type, "UserAssigned")
+        self.assertIn(resource_id, result.user_assigned_identities)
+        self.assertIsInstance(result.user_assigned_identities[resource_id], cache.UserIdentityProperties)
+    
+    def test_process_assign_identity_parameter_invalid(self):
+        """Test process_assign_identity_parameter raises error for invalid resource ID"""
+        invalid_ids = [
+            "invalid-resource-id",
+            "/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity",
+            "subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity"
+        ]
+        
+        for invalid_id in invalid_ids:
+            with self.assertRaises(CLIError) as context:
+                cache.process_assign_identity_parameter(invalid_id)
+            self.assertIn("Invalid user-assigned managed identity resource ID", str(context.exception))
+    
+    def test_is_valid_user_assigned_managed_identity_resource_id(self):
+        """Test resource ID validation function"""
+        # Valid resource IDs
+        valid_ids = [
+            "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity",
+            "/subscriptions/abcdefgh-1234-5678-9012-123456789012/resourceGroups/test-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test-identity"
+        ]
+        
+        for valid_id in valid_ids:
+            self.assertTrue(cache.is_valid_user_assigned_managed_identity_resource_id(valid_id))
+        
+        # Invalid resource IDs
+        invalid_ids = [
+            "invalid-resource-id",
+            "/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity",
+            "subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity",
+            ""
+        ]
+        
+        for invalid_id in invalid_ids:
+            self.assertFalse(cache.is_valid_user_assigned_managed_identity_resource_id(invalid_id))
+
+
+class TestCacheCreateWithIdentity(unittest.TestCase):
+    """Test cache creation with identity parameter"""
+    
+    def setUp(self):
+        """Set up test fixtures"""
+        self.cmd = mock.Mock()
+        self.cmd.cli_ctx = mock.Mock()
+        self.client = mock.Mock()
+        self.valid_identity_id = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity"
+        
+    @mock.patch('azext_acrcache.cache.get_registry_by_name')
+    @mock.patch('azext_acrcache.cache.user_confirmation')
+    def test_acr_cache_create_with_valid_identity(self, mock_confirmation, mock_get_registry):
+        """Test cache creation with valid identity"""
+        mock_registry = mock.Mock()
+        mock_registry.id = "/subscriptions/xxx/resourceGroups/rg1/providers/Microsoft.ContainerRegistry/registries/registry1"
+        mock_get_registry.return_value = (mock_registry, None)
+        
+        cache.acr_cache_create(
+            self.cmd, self.client, "mockRegistry", "mockCacheRule", "source/repo", "target/repo",
+            resource_group_name="mockrg", 
+            assign_identity=self.valid_identity_id,
+            sync="activesync",
+            yes=True
+        )
+        
+        # Verify client.begin_create was called
+        self.client.begin_create.assert_called_once()
+        
+        # Extract the cache rule from the call
+        call_args = self.client.begin_create.call_args[1]
+        cache_rule = call_args['cache_rule_create_parameters']
+        
+        # Verify identity was set
+        self.assertIsNotNone(cache_rule.identity)
+        self.assertEqual(cache_rule.identity.type, "UserAssigned")
+        self.assertIn(self.valid_identity_id, cache_rule.identity.user_assigned_identities)
+    
+    @mock.patch('azext_acrcache.cache.get_registry_by_name')
+    def test_acr_cache_create_with_invalid_identity(self, mock_get_registry):
+        """Test cache creation with invalid identity raises error"""
+        mock_registry = mock.Mock()
+        mock_registry.id = "/subscriptions/xxx/resourceGroups/rg1/providers/Microsoft.ContainerRegistry/registries/registry1"
+        mock_get_registry.return_value = (mock_registry, None)
+        
+        with self.assertRaises(CLIError):
+            cache.acr_cache_create(
+                self.cmd, self.client, "mockRegistry", "mockCacheRule", "source/repo", "target/repo",
+                resource_group_name="mockrg", 
+                assign_identity="invalid-identity-id"
+            )
+    
+    @mock.patch('azext_acrcache.cache.get_registry_by_name')
+    @mock.patch('azext_acrcache.cache.user_confirmation')
+    def test_acr_cache_create_without_identity(self, mock_confirmation, mock_get_registry):
+        """Test cache creation without identity works normally"""
+        mock_registry = mock.Mock()
+        mock_registry.id = "/subscriptions/xxx/resourceGroups/rg1/providers/Microsoft.ContainerRegistry/registries/registry1"
+        mock_get_registry.return_value = (mock_registry, None)
+        
+        cache.acr_cache_create(
+            self.cmd, self.client, "mockRegistry", "mockCacheRule", "source/repo", "target/repo",
+            resource_group_name="mockrg",
+            sync="activesync",
+            yes=True
+        )
+        
+        # Verify client.begin_create was called
+        self.client.begin_create.assert_called_once()
+        
+        # Extract the cache rule from the call
+        call_args = self.client.begin_create.call_args[1]
+        cache_rule = call_args['cache_rule_create_parameters']
+        
+        # Verify identity is None
+        self.assertIsNone(cache_rule.identity)
+
+class TestCacheUpdateWithIdentity(unittest.TestCase):
+    """Test cache update with identity parameter"""
+    
+    def setUp(self):
+        """Set up test fixtures"""
+        self.cmd = mock.Mock()
+        self.cmd.cli_ctx = mock.Mock()
+        self.client = mock.Mock()
+        self.valid_identity_id = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity"
+        
+        # Set up mock cache rule
+        self.dummy_rule = mock.Mock()
+        self.dummy_rule.properties = mock.Mock()
+        self.dummy_rule.properties.sync_mode = "ActiveSync"
+        self.dummy_rule.properties.sync_referrers = "Disabled"
+        self.dummy_rule.properties.artifact_sync_filters = None
+        self.dummy_rule.properties.credential_set_resource_id = None
+        
+    @mock.patch('azext_acrcache.cache.get_registry_by_name')
+    @mock.patch('azext_acrcache.cache.user_confirmation')
+    def test_acr_cache_update_with_valid_identity(self, mock_confirmation, mock_get_registry):
+        """Test cache update with valid identity"""
+        mock_registry = mock.Mock()
+        mock_registry.id = "/subscriptions/xxx/resourceGroups/rg1/providers/Microsoft.ContainerRegistry/registries/registry1"
+        mock_get_registry.return_value = (mock_registry, "mockrg")
+        self.client.get.return_value = self.dummy_rule
+        
+        cache.acr_cache_update_custom(
+            self.cmd, self.client, "mockRegistry", "mockCacheRule",
+            assign_identity=self.valid_identity_id,
+            yes=True
+        )
+        
+        # Verify client.begin_update was called
+        self.client.begin_update.assert_called_once()
+        
+        # Extract the update parameters from the call
+        call_args = self.client.begin_update.call_args[1]
+        update_params = call_args['cache_rule_update_parameters']
+        
+        # Verify identity was set
+        self.assertIsNotNone(update_params.identity)
+        self.assertEqual(update_params.identity.type, "UserAssigned")
+        self.assertIn(self.valid_identity_id, update_params.identity.user_assigned_identities)
+    
+    @mock.patch('azext_acrcache.cache.get_registry_by_name')
+    def test_acr_cache_update_with_invalid_identity(self, mock_get_registry):
+        """Test cache update with invalid identity raises error"""
+        mock_registry = mock.Mock()
+        mock_registry.id = "/subscriptions/xxx/resourceGroups/rg1/providers/Microsoft.ContainerRegistry/registries/registry1"
+        mock_get_registry.return_value = (mock_registry, "mockrg")
+        self.client.get.return_value = self.dummy_rule
+        
+        with self.assertRaises(CLIError):
+            cache.acr_cache_update_custom(
+                self.cmd, self.client, "mockRegistry", "mockCacheRule",
+                assign_identity="invalid-identity-id"
+            )
+
+
 if __name__ == '__main__':
     unittest.main()

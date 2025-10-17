@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+import re
 from azure.cli.core.util import user_confirmation
 from knack.util import CLIError
 from azure.core.serialization import NULL as AzureCoreNull
@@ -11,7 +12,8 @@ from azure.cli.command_modules.acr._utils import get_resource_group_name_by_regi
 from .vendored_sdks.containerregistry.v2025_09_01_preview.generated.container_registry_management_client.models._models import (
     CacheRule, CacheRuleProperties,
     CacheRuleUpdateParameters, CacheRuleUpdateProperties, ImportSource, ImportImageParameters,
-    PlatformFilter, ArtifactTypeFilter, TagFilter, ArtifactSyncFilterProperties
+    PlatformFilter, ArtifactTypeFilter, TagFilter, ArtifactSyncFilterProperties,
+    IdentityProperties, UserIdentityProperties
 )
 
 def _create_kql(starts_with=None, ends_with=None, contains=None):
@@ -50,6 +52,40 @@ def _separate_params(query):
 
     return starts_with, ends_with, contains
 
+def process_assign_identity_parameter(assign_identity: str) -> IdentityProperties:
+    """   
+    Process assign identity parameter and return IdentityProperties object.
+
+    :param assign_identity: User-assigned managed identity resource ID
+    :return: IdentityProperties object or None
+    """
+
+    if not assign_identity:
+        return None
+  
+    if not is_valid_user_assigned_managed_identity_resource_id(assign_identity):
+        raise CLIError(f"Invalid user-assigned managed identity resource ID: {assign_identity}")
+
+
+    identity_properties = IdentityProperties(
+        type="UserAssigned",
+        user_assigned_identities={
+            assign_identity: UserIdentityProperties()
+        }
+    )
+    return identity_properties
+    
+def is_valid_user_assigned_managed_identity_resource_id(resource_id):
+    # format Validation logic for user-assigned managed identity resource ID
+    # include the full pattern of Microsoft.ManagedIdentity.
+    # check GUID format for subscription ID
+    # https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules#microsoftmanagedidentity
+   pattern = (
+        r"^/subscriptions/[0-9a-zA-Z\-]{36}"
+        r"/resourceGroups/[^/]+"
+        r"/providers/Microsoft\.ManagedIdentity/userAssignedIdentities/[^/]+$"
+    ) 
+   return bool(re.match(pattern, resource_id, re.IGNORECASE))
 
 def acr_cache_show(cmd,
                    client,
@@ -96,6 +132,7 @@ def acr_cache_create(cmd,
                      target_repo,
                      resource_group_name=None,
                      cred_set=None,
+                     assign_identity=None,
                      sync=False,
                      starts_with=None,
                      ends_with=None,
@@ -145,6 +182,9 @@ def acr_cache_create(cmd,
                         "--starts-with, --ends-with, --contains) require --sync activesync.")
 
     cred_set_id = AzureCoreNull if not cred_set else f'{registry.id}/credentialSets/{cred_set}'
+
+    identity_properties = process_assign_identity_parameter(assign_identity)
+
     tag = None
 
     if ':' in source_repo:
@@ -213,7 +253,8 @@ def acr_cache_create(cmd,
     # Create cache rule with properties
     cache_rule = CacheRule(
         name=name,
-        properties=properties
+        properties=properties,
+        identity=identity_properties
     )
 
     if tag is None and sync and not dry_run:
@@ -233,6 +274,7 @@ def acr_cache_update_custom(cmd,
                             name,
                             resource_group_name=None,
                             cred_set=None,
+                            assign_identity=None,
                             remove_cred_set=False,
                             sync=None,
                             starts_with=None,
@@ -308,6 +350,9 @@ def acr_cache_update_custom(cmd,
     if cred_set is None and not remove_cred_set:
         cred_set_id = AzureCoreNull
 
+    # Process identity parameter
+    identity_properties = process_assign_identity_parameter(assign_identity)
+
     # Handle artifact sync status - only change if explicitly provided
     if sync is not None:
         sync_mode = "ActiveSync" if sync.lower() == 'activesync' else "PassiveSync"
@@ -380,12 +425,16 @@ def acr_cache_update_custom(cmd,
         return client.begin_create(resource_group_name=rg,
                                    registry_name=registry_name,
                                    cache_rule_name=name,
-                                   cache_rule_create_parameters=CacheRuleUpdateParameters(properties=updated_properties))
+                                   cache_rule_create_parameters=CacheRuleUpdateParameters(
+                                        properties=updated_properties,
+                                        identity=identity_properties))
 
     return client.begin_update(resource_group_name=rg,
                                registry_name=registry_name,
                                cache_rule_name=name,
-                               cache_rule_update_parameters=CacheRuleUpdateParameters(properties=updated_properties))
+                               cache_rule_update_parameters=CacheRuleUpdateParameters(
+                                    properties=updated_properties,
+                                    identity=identity_properties))
 
 
 def acr_cache_sync(cmd,
