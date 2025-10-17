@@ -13,7 +13,7 @@ from dataclasses import asdict
 
 from azext_confcom.lib.aci_policy_spec import AciFragmentSpec
 from azext_confcom.lib.arm_to_aci_policy_spec import arm_to_aci_policy_spec
-from azext_confcom import (config, os_util)
+from azext_confcom import config, os_util
 from azext_confcom.container import ContainerImage, UserContainerImage
 from azext_confcom.errors import eprint
 from azext_confcom.fragment_util import sanitize_fragment_fields
