@@ -15,17 +15,17 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack list",
 )
 class List(AAZCommand):
-    """List LocalRulestackResource resources by subscription ID
+    """List all Palo Alto Networks Cloud local rulestack resource on Azure under the current subscription.
 
     :example: List LocalRulestackResource resources by subscription ID
         az palo-alto cloudngfw local-rulestack list -g MyResourceGroup
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/paloaltonetworks.cloudngfw/localrulestacks", "2022-08-29"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/providers/paloaltonetworks.cloudngfw/localrulestacks", "2025-10-08"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks", "2025-10-08"],
         ]
     }
 
@@ -51,12 +51,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.LocalRulestacksListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.LocalRulestacksListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.LocalRulestacksListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +72,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class LocalRulestacksListByResourceGroup(AAZHttpOperation):
+    class LocalRulestacksListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -86,7 +86,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks",
+                "/subscriptions/{subscriptionId}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks",
                 **self.url_parameters
             )
 
@@ -102,10 +102,6 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -116,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
@@ -228,6 +224,7 @@ class List(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.scope = AAZStrType()
             properties.security_services = AAZObjectType(
@@ -288,7 +285,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class LocalRulestacksListBySubscription(AAZHttpOperation):
+    class LocalRulestacksListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -302,7 +299,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks",
                 **self.url_parameters
             )
 
@@ -318,6 +315,10 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -328,7 +329,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
@@ -440,6 +441,7 @@ class List(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.scope = AAZStrType()
             properties.security_services = AAZObjectType(

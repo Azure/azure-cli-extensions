@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "palo-alto cloudngfw local-rulestack fqdnlist list",
+    "palo-alto cloudngfw firewall metric list",
 )
 class List(AAZCommand):
-    """List all FQDN list resources associated with local rulestacks in Palo Alto Networks.
+    """List all metrics resources associated with a Palo Alto Networks Firewall
 
-    :example: List all FQDN list resources associated with local rulestacks in Palo Alto Networks.
-        az palo-alto cloudngfw local-rulestack fqdnlist list -g MyResourceGroup --local-rulestack-name MyLocalRulestacks
+    :example: List metrics configuration object for a firewall
+        az palo-alto cloudngfw firewall metric list --resource-group MyResourceGroup --firewall-name MyCloudngfwFirewall
     """
 
     _aaz_info = {
         "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/fqdnlists", "2025-10-08"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/metrics", "2025-10-08"],
         ]
     }
 
@@ -45,10 +45,13 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.local_rulestack_name = AAZStrArg(
-            options=["--local-rulestack-name"],
-            help="LocalRulestack resource name",
+        _args_schema.firewall_name = AAZStrArg(
+            options=["--firewall-name"],
+            help="Firewall resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^(?![-_])(?!.*[-_]{2})(?!.*[-_]$)[a-zA-Z0-9][a-zA-Z0-9-]{0,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -57,7 +60,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.FqdnListLocalRulestackListByLocalRulestacks(ctx=self.ctx)()
+        self.MetricsObjectFirewallListByFirewalls(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +76,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class FqdnListLocalRulestackListByLocalRulestacks(AAZHttpOperation):
+    class MetricsObjectFirewallListByFirewalls(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +90,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}/fqdnlists",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/firewalls/{firewallName}/metrics",
                 **self.url_parameters
             )
 
@@ -103,7 +106,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "localRulestackName", self.ctx.args.local_rulestack_name,
+                    "firewallName", self.ctx.args.firewall_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -183,22 +186,21 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.audit_comment = AAZStrType(
-                serialized_name="auditComment",
-            )
-            properties.description = AAZStrType()
-            properties.etag = AAZStrType()
-            properties.fqdn_list = AAZListType(
-                serialized_name="fqdnList",
+            properties.application_insights_connection_string = AAZStrType(
+                serialized_name="applicationInsightsConnectionString",
                 flags={"required": True},
+            )
+            properties.application_insights_resource_id = AAZStrType(
+                serialized_name="applicationInsightsResourceId",
+                flags={"required": True},
+            )
+            properties.pan_etag = AAZStrType(
+                serialized_name="panEtag",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-
-            fqdn_list = cls._schema_on_200.value.Element.properties.fqdn_list
-            fqdn_list.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

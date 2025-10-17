@@ -9,6 +9,8 @@
 # flake8: noqa
 
 from .__cmd_group import *
-from ._create_product_serial_number import *
-from ._list_cloud_manager_tenant import *
-from ._list_support_info import *
+from ._create import *
+from ._delete import *
+from ._show import *
+from ._update import *
+from ._wait import *

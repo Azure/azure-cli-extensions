@@ -8,7 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._create_product_serial_number import *
-from ._list_cloud_manager_tenant import *
-from ._list_support_info import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "palo-alto cloudngfw firewall metric",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage metric configuration of a Cloud NGFW within az cli
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
