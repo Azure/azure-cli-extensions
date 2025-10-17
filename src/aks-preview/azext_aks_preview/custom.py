@@ -1151,6 +1151,7 @@ def aks_create(
     # managed system pool
     enable_managed_system_pool=False,
     enable_upstream_kubescheduler_user_configuration=False,
+    enable_hosted_system=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
