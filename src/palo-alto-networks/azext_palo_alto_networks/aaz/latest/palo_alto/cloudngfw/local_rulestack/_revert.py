@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Revert(AAZCommand):
     """Revert configuration changes to a Palo Alto Networks local rulestack resource.
 
-    :example: Revert rulestack configuration
+    :example: Revert configuration changes to a Palo Alto Networks local rulestack resource.
         az palo-alto cloudngfw local-rulestack revert -g MyResourceGroup -n MyLocalRulestacks
     """
 

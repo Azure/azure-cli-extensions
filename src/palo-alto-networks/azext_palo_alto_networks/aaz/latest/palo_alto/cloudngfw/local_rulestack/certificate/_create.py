@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new certificate for a Palo Alto Networks local rulestack.
 
-    :example: Create a CertificateObjectLocalRulestackResource
+    :example: Create a new certificate for a Palo Alto Networks local rulestack.
         az palo-alto cloudngfw local-rulestack certificate create -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyCertificate --audit-comment "comment" --certificate-self-signed "TRUE" --description "description"
     """
 

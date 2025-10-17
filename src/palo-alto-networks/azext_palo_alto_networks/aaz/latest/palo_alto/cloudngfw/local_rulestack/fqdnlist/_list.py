@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List all FQDN list resources associated with local rulestacks in Palo Alto Networks.
 
-    :example: List FqdnListLocalRulestackResource resources by LocalRulestacks
+    :example: List all FQDN list resources associated with local rulestacks in Palo Alto Networks.
         az palo-alto cloudngfw local-rulestack fqdnlist list -g MyResourceGroup --local-rulestack-name MyLocalRulestacks
     """
 

@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class ShowChangeLog(AAZCommand):
     """Get the changelog for a Palo Alto networks local rulestack.
 
-    :example: Get changelog
+    :example: Get the changelog for a Palo Alto Networks local rulestack.
         az palo-alto cloudngfw local-rulestack show-change-log -g MyResourceGroup -n MyLocalRulestacks
     """
 

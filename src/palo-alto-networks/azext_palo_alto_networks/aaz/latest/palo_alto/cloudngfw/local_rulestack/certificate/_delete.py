@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete an existing certificate for a Palo Alto Networks local rulestack.
 
-    :example: Delete a CertificateObjectLocalRulestackResource
+    :example: Delete an existing certificate for a Palo Alto Networks local rulestack.
         az palo-alto cloudngfw local-rulestack certificate delete -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyCertificate
     """
 

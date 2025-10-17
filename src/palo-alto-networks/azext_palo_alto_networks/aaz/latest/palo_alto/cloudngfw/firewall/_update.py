@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update configuration or metadata for a Palo Alto Networks Cloud NGFW resource on Azure.
 
-    :example: Update a FirewallResource
+    :example: Update configuration or metadata for a Palo Alto Networks Cloud NGFW resource on Azure.
         az palo-alto cloudngfw firewall update --name MyCloudngfwFirewall -g MyResourceGroup --tags "{tagName:value}"
     """
 

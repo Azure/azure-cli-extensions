@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List all Palo Alto Networks Cloud NGFW on Azure resources under the current subscription.
 
-    :example: List FirewallResource resources by subscription ID
+    :example: List all Palo Alto Networks Cloud NGFW on Azure resources under the current subscription.
         az palo-alto cloudngfw firewall list --resource-group MyResourceGroup
     """
 

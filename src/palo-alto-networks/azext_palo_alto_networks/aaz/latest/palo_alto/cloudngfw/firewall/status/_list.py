@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List all firewall status resources associated with Palo Alto Networks firewalls.
 
-    :example: List FirewallStatusResource resources by Firewalls
+    :example: List all firewall status resources associated with Palo Alto Networks firewalls.
         az palo-alto cloudngfw firewall status list --resource-group MyResourceGroup -n MyCloudngfwFirewall
     """
 

@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class ShowLogProfile(AAZCommand):
     """Get log profile information for a Palo Alto Networks Cloud NGFW on Azure.
 
-    :example: Get Log Profile for Firewall
+    :example: Get log profile information for a Palo Alto Networks Cloud NGFW on Azure.
         az palo-alto cloudngfw firewall show-log-profile --resource-group MyResourceGroup -n MyCloudngfwFirewall
     """
 

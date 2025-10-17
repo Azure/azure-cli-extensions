@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack local-rule create",
 )
 class Create(AAZCommand):
-    """Create a new Palo Alto Networks local rulestack resource.
+    """Create a LocalRulesResource
 
     :example: Create a LocalRulesResource
         az palo-alto cloudngfw local-rulestack local-rule create -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --rule-name MyLocalRule --priority "1" --action-type "Allow" --enable-logging "DISABLED" --rule-state "DISABLED"

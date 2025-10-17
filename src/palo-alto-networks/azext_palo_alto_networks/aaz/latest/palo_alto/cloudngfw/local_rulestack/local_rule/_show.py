@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack local-rule show",
 )
 class Show(AAZCommand):
-    """Retrieve details of a specific Palo Alto Networks local rulestack resource.
+    """Get a LocalRulesResource
 
     :example: Get a LocalRulesResource
         az palo-alto cloudngfw local-rulestack local-rule show -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --priority "1"

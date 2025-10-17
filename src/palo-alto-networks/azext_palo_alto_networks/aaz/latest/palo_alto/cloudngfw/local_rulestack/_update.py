@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update configuration or metadata for a Palo Alto Networks local rulestack.
 
-    :example: Update a LocalRulestackResource
+    :example: Update configuration or metadata for a Palo Alto Networks local rulestack.
         az palo-alto cloudngfw local-rulestack update -g MyResourceGroup -n MyLocalRulestacks --tags "{tag-name:value}"
     """
 

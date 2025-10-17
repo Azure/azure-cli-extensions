@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack local-rule delete",
 )
 class Delete(AAZCommand):
-    """Delete an existing Palo Alto Networks local rulestack resource.
+    """Delete a LocalRulesResource
 
     :example: Delete a LocalRulesResource
         az palo-alto cloudngfw local-rulestack local-rule delete -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --priority "1"
