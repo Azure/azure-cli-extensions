@@ -154,3 +154,57 @@ class Authv2ScenarioTest(ScenarioTest):
             JMESPathCheck('facebookAppId', 'facebook_id')]).get_output_in_json()
 
         self.assertIn('https://audience1', result['allowedAudiences'])
+
+    @ResourceGroupPreparer(name_prefix='cli_test_authV2')
+    @AllowLargeResponse()
+    def test_authV2_excluded_paths_parsing(self, resource_group):
+        webapp_name = self.create_random_name('webapp-authentication-test', 40)
+        plan_name = self.create_random_name('webapp-authentication-plan', 40)
+        self.cmd(
+            'appservice plan create -g {} -n {} --sku S1'.format(resource_group, plan_name))
+        self.cmd(
+            'webapp create -g {} -n {} --plan {}'.format(resource_group, webapp_name, plan_name))
+        self.cmd('webapp auth config-version show -g {} -n {}'.format(resource_group, webapp_name)).assert_with_checks([
+            JMESPathCheck('configVersion', 'v1')
+        ])
+
+        self.cmd('webapp auth show -g {} -n {}'.format(resource_group, webapp_name)).assert_with_checks([
+            JMESPathCheck('properties.platform.enabled', False)
+        ])
+        self.cmd('webapp auth config-version upgrade -g {} -n {}'.format(resource_group, webapp_name))
+
+        # # update and verify
+        # test single path
+        self.cmd('webapp auth update -g {} -n {} --enabled true --excluded-paths "/health"'
+                .format(resource_group, webapp_name)).assert_with_checks([
+                    JMESPathCheck('platform.enabled', True),
+                    JMESPathCheck('globalValidation.excludedPaths[0]', '/health')
+        ])
+
+        # test multiple comma separated paths
+        self.cmd('webapp auth update -g {} -n {} --excluded-paths "/health,/status,/metrics"'
+                .format(resource_group, webapp_name)).assert_with_checks([
+                    JMESPathCheck('globalValidation.excludedPaths[0]', '/health'),
+                    JMESPathCheck('globalValidation.excludedPaths[1]', '/status'),
+                    JMESPathCheck('globalValidation.excludedPaths[2]', '/metrics')
+        ])
+
+        # test JSON array format
+        self.cmd('webapp auth update -g {} -n {} --excluded-paths \'["/api/health", "/api/status"]\''
+                .format(resource_group, webapp_name)).assert_with_checks([
+                    JMESPathCheck('globalValidation.excludedPaths[0]', '/api/health'),
+                    JMESPathCheck('globalValidation.excludedPaths[1]', '/api/status')
+        ])
+
+        # test paths with special characters
+        self.cmd('webapp auth update -g {} -n {} --excluded-paths "/api/v1/health,/webhook/callback"'
+                .format(resource_group, webapp_name)).assert_with_checks([
+                    JMESPathCheck('globalValidation.excludedPaths[0]', '/api/v1/health'),
+                    JMESPathCheck('globalValidation.excludedPaths[1]', '/webhook/callback')
+        ])
+
+        # test single path without leading slash
+        self.cmd('webapp auth update -g {} -n {} --excluded-paths "public"'
+                .format(resource_group, webapp_name)).assert_with_checks([
+                    JMESPathCheck('globalValidation.excludedPaths[0]', 'public')
+        ])

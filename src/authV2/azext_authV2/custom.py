@@ -159,8 +159,15 @@ def update_auth_settings_v2(cmd, resource_group_name, name, set_string=None, ena
     if excluded_paths is not None:
         if "globalValidation" not in existing_auth.keys():
             existing_auth["globalValidation"] = {}
-        excluded_paths_list_string = excluded_paths[1:-1]
-        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths_list_string.split(",")
+        try:
+            if isinstance(json.loads(excluded_paths),list):
+                excluded_paths_list = json.loads(excluded_paths)
+            else:
+                excluded_paths_list = excluded_paths.split(",")
+        except json.JSONDecodeError:
+            excluded_paths_list = excluded_paths.split(",")
+
+        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths_list
 
     existing_auth = update_http_settings_in_auth_settings(existing_auth, require_https,
                                                           proxy_convention, proxy_custom_host_header,
