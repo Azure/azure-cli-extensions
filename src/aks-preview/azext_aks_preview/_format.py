@@ -157,7 +157,7 @@ def aks_agentpool_rollback_versions_table_format(results):
     """Format rollback versions for display with "-o table"."""
     if not results:
         return []
-    
+
     def _format_rollback_version(result):
         parsed = compile_jmes("""{
             kubernetesVersion: orchestrator_version,
@@ -165,7 +165,7 @@ def aks_agentpool_rollback_versions_table_format(results):
             timestamp: timestamp
         }""")
         return parsed.search(result, Options(dict_cls=OrderedDict))
-    
+
     return [_format_rollback_version(r) for r in results]
 
 
