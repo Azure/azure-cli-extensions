@@ -61,13 +61,13 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.application_insights_connection_string = AAZStrArg(
-            options=["--application-insights-connection-string"],
+            options=["--aics", "--application-insights-connection-string"],
             arg_group="Properties",
             help="Connection string of application insights resource",
             required=True,
         )
         _args_schema.application_insights_resource_id = AAZStrArg(
-            options=["--application-insights-resource-id"],
+            options=["--airi", "--application-insights-resource-id"],
             arg_group="Properties",
             help="Resource Id of application insights resource",
             required=True,

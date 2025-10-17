@@ -83,7 +83,7 @@ class Create(AAZCommand):
             enum={"FALSE": "FALSE", "TRUE": "TRUE"},
         )
         _args_schema.is_strata_cloud_managed = AAZStrArg(
-            options=["--is-strata-cloud-managed"],
+            options=["--is-scm", "--is-strata-cloud-managed"],
             arg_group="Properties",
             help="Strata Cloud Managed: Default is False. Default will be CloudSec managed",
             enum={"FALSE": "FALSE", "TRUE": "TRUE"},
@@ -117,7 +117,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.strata_cloud_manager_config = AAZObjectArg(
-            options=["--strata-cloud-manager-config"],
+            options=["--scm-config", "--strata-cloud-manager-config"],
             arg_group="Properties",
             help="Strata Cloud Manager Configuration, only applicable if Strata Cloud Manager is selected.",
         )
