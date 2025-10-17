@@ -11,9 +11,6 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-
-1.0.0b7
-+++++++
 * Fix stdin reading hang in CI/CD pipelines by using select with timeout for non-interactive mode.
 * Update pytest marker registration and fix datetime.utcnow() deprecation warning in tests.
 * Improve test framework with real-time stderr output visibility and subprocess timeout.
