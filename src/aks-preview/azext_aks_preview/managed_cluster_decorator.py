@@ -3567,6 +3567,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         return disable_upstream_kubescheduler_user_configuration
 
+    def get_enable_hosted_system(self) -> bool:
+        """Obtain the value of enable_hosted_system.
+
+        :return: bool
+        """
+        enable_hosted_system = self.raw_param.get("enable_hosted_system")
+        if self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
+        return enable_hosted_system
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -4574,6 +4584,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_enable_hosted_components(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        enable_hosted_components = self.context.get_enable_hosted_system()
+        if enable_hosted_components:
+            if mc.hosted_system_profile is None:
+                mc.hosted_system_profile = self.models.ManagedClusterHostedSystemProfile()  # pylint: disable=no-member
+            mc.hosted_system_profile.enabled = True
+
+        return mc
+
     # pylint: disable=unused-argument
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
@@ -4638,6 +4659,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_imds_restriction(mc)
         # set up user-defined scheduler configuration for kube-scheduler upstream
         mc = self.set_up_upstream_kubescheduler_user_configuration(mc)
+        # set up enable hosted components
+        mc = self.set_up_enable_hosted_components(mc)
 
         # validate the azure cli core version
         self.verify_cli_core_version()
