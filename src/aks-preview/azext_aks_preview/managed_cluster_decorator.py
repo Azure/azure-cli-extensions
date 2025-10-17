@@ -44,6 +44,8 @@ from azext_aks_preview._consts import (
     CONST_IMDS_RESTRICTION_DISABLED,
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
+    CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD,
+    CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE
 )
@@ -3567,6 +3569,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         return disable_upstream_kubescheduler_user_configuration
 
+    def get_enable_gateway_api(self) -> bool:
+        """Obtain the value of enable_gateway_api.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_gateway_api", False)
+
+    def get_disable_gateway_api(self) -> bool:
+        """Obtain the value of disable_gateway_api.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_gateway_api", False)
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -3950,6 +3966,25 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if "web_application_routing" in addons:
                 dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
                 mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
+
+        return mc
+
+    def set_up_ingress_profile_gateway_api(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up Gateway API configuration in ingress profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_gateway_api():
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            if mc.ingress_profile.gateway_api is None:
+                mc.ingress_profile.gateway_api = (
+                    self.models.ManagedClusterIngressProfileGatewayConfiguration(  # pylint: disable=no-member
+                        installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+                    )
+                )
 
         return mc
 
@@ -4600,6 +4635,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
         # set up app routing profile
         mc = self.set_up_ingress_web_app_routing(mc)
+        # set up gateway api profile
+        mc = self.set_up_ingress_profile_gateway_api(mc)
         # set up workload auto scaler profile
         mc = self.set_up_workload_auto_scaler_profile(mc)
         # set up vpa
@@ -6608,6 +6645,36 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         else:
             raise CLIError('App Routing must be enabled to modify DNS zone resource IDs.\n')
 
+    def update_ingress_profile_gateway_api(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update Gateway API configuration in ingress profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        enable_gateway_api = self.context.get_enable_gateway_api()
+        disable_gateway_api = self.context.get_disable_gateway_api()
+
+        # Check for mutually exclusive arguments
+        if enable_gateway_api and disable_gateway_api:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-gateway-api and --disable-gateway-api at the same time."
+            )
+
+        if enable_gateway_api or disable_gateway_api:
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            if mc.ingress_profile.gateway_api is None:
+                mc.ingress_profile.gateway_api = (
+                    self.models.ManagedClusterIngressProfileGatewayConfiguration()  # pylint: disable=no-member
+                )
+            if enable_gateway_api:
+                mc.ingress_profile.gateway_api.installation = CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+            elif disable_gateway_api:
+                mc.ingress_profile.gateway_api.installation = CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED
+
+        return mc
+
     def update_node_provisioning_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Updates the nodeProvisioningProfile field of the managed cluster
 
@@ -7069,6 +7136,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nat_gateway_profile(mc)
         # update kube proxy config
         mc = self.update_kube_proxy_config(mc)
+        # update ingress profile gateway api
+        mc = self.update_ingress_profile_gateway_api(mc)
         # update custom ca trust certificates
         mc = self.update_custom_ca_trust_certificates(mc)
         # update run command
