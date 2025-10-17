@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack local-rule delete",
 )
 class Delete(AAZCommand):
-    """Delete a LocalRulesResource
+    """Delete an existing Palo Alto Networks local rulestack resource.
 
     :example: Delete a LocalRulesResource
         az palo-alto cloudngfw local-rulestack local-rule delete -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --priority "1"
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/localrules/{}", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/localrules/{}", "2025-10-08"],
         ]
     }
 
@@ -152,7 +152,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }

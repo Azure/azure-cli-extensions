@@ -12,19 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "palo-alto cloudngfw local-rulestack list-firewall",
+    "palo-alto cloudngfw create-product-serial-number",
 )
-class ListFirewall(AAZCommand):
-    """List of Firewalls associated with for Palo Alto Networks local rulestack.
-
-    :example: List of Firewalls associated with Rulestack
-        az palo-alto cloudngfw local-rulestack list-firewall -g MyResourceGroup -n MyLocalRulestacks
+class CreateProductSerialNumber(AAZCommand):
+    """Create Product Serial Number
     """
 
     _aaz_info = {
         "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/listfirewalls", "2025-10-08"],
+            ["mgmt-plane", "/subscriptions/{}/providers/paloaltonetworks.cloudngfw/createproductserialnumber", "2025-10-08"],
         ]
     }
 
@@ -42,22 +39,11 @@ class ListFirewall(AAZCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
-
-        _args_schema = cls._args_schema
-        _args_schema.local_rulestack_name = AAZStrArg(
-            options=["-n", "--name", "--local-rulestack-name"],
-            help="LocalRulestack resource name",
-            required=True,
-            id_part="name",
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LocalRulestacksListFirewalls(ctx=self.ctx)()
+        self.PaloAltoNetworksCloudngfwOperationsCreateProductSerialNumber(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +58,7 @@ class ListFirewall(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class LocalRulestacksListFirewalls(AAZHttpOperation):
+    class PaloAltoNetworksCloudngfwOperationsCreateProductSerialNumber(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -86,7 +72,7 @@ class ListFirewall(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}/listFirewalls",
+                "/subscriptions/{subscriptionId}/providers/PaloAltoNetworks.Cloudngfw/createProductSerialNumber",
                 **self.url_parameters
             )
 
@@ -101,14 +87,6 @@ class ListFirewall(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "localRulestackName", self.ctx.args.local_rulestack_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -153,21 +131,15 @@ class ListFirewall(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
+            _schema_on_200.status = AAZStrType(
                 flags={"required": True},
             )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ListFirewallHelper:
-    """Helper class for ListFirewall"""
+class _CreateProductSerialNumberHelper:
+    """Helper class for CreateProductSerialNumber"""
 
 
-__all__ = ["ListFirewall"]
+__all__ = ["CreateProductSerialNumber"]

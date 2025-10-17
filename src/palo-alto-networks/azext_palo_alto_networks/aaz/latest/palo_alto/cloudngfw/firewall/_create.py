@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new Palo Alto Networks Cloud NGFW on Azure.
 
-    :example: Create a new Palo Alto Networks Cloud NGFW on Azure
+    :example: Create a FirewallResource
         az palo-alto cloudngfw firewall create --name MyCloudngfwFirewall -g MyResourceGroup --location eastus --associated-rulestack "{location:eastus,resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/MyLocalRulestacks}" --dns-settings "{enable-dns-proxy:DISABLED,enabled-dns-type:CUSTOM}" --is-panorama-managed FALSE --marketplace-details "{marketplace-subscription-status:Subscribed,offer-id:offer-id,publisher-id:publisher-id}" --network-profile "{egress-nat-ip:[],enable-egress-nat:DISABLED,network-type:VNET,public-ips:[{address:10.0.0.0/16,resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Network/publicIPAddresses/MypublicIP}],vnet-configuration:{ip-of-trust-subnet-for-udr:{address:10.0.0.0/16},trust-subnet:{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/subnet1},un-trust-subnet:{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/subnet1},vnet:{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet}}}" --panorama-config "{config-string:bas64EncodedString}" --plan-data "{billing-cycle:MONTHLY,plan-id:plan-id,usage-type:PAYG}"
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}", "2025-10-08"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Create(AAZCommand):
             options=["-n", "--name", "--firewall-name"],
             help="Firewall resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^(?![-_])(?!.*[-_]{2})(?!.*[-_]$)[a-zA-Z0-9][a-zA-Z0-9-]{0,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -79,6 +82,12 @@ class Create(AAZCommand):
             help="Panorama Managed: Default is False. Default will be CloudSec managed",
             enum={"FALSE": "FALSE", "TRUE": "TRUE"},
         )
+        _args_schema.is_strata_cloud_managed = AAZStrArg(
+            options=["--is-strata-cloud-managed"],
+            arg_group="Properties",
+            help="Strata Cloud Managed: Default is False. Default will be CloudSec managed",
+            enum={"FALSE": "FALSE", "TRUE": "TRUE"},
+        )
         _args_schema.marketplace_details = AAZObjectArg(
             options=["--marketplace-details"],
             arg_group="Properties",
@@ -106,6 +115,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Billing plan information.",
             required=True,
+        )
+        _args_schema.strata_cloud_manager_config = AAZObjectArg(
+            options=["--strata-cloud-manager-config"],
+            arg_group="Properties",
+            help="Strata Cloud Manager Configuration, only applicable if Strata Cloud Manager is selected.",
         )
 
         associated_rulestack = cls._args_schema.associated_rulestack
@@ -204,10 +218,18 @@ class Create(AAZCommand):
             required=True,
             enum={"VNET": "VNET", "VWAN": "VWAN"},
         )
+        network_profile.private_source_nat_rules_destination = AAZListArg(
+            options=["private-source-nat-rules-destination"],
+            help="Array of ipv4 destination address for which source NAT is to be performed",
+        )
         network_profile.public_ips = AAZListArg(
             options=["public-ips"],
             help="List of IPs associated with the Firewall",
             required=True,
+        )
+        network_profile.trusted_ranges = AAZListArg(
+            options=["trusted-ranges"],
+            help="Non-RFC 1918 address",
         )
         network_profile.vnet_configuration = AAZObjectArg(
             options=["vnet-configuration"],
@@ -222,9 +244,15 @@ class Create(AAZCommand):
         egress_nat_ip.Element = AAZObjectArg()
         cls._build_args_ip_address_create(egress_nat_ip.Element)
 
+        private_source_nat_rules_destination = cls._args_schema.network_profile.private_source_nat_rules_destination
+        private_source_nat_rules_destination.Element = AAZStrArg()
+
         public_ips = cls._args_schema.network_profile.public_ips
         public_ips.Element = AAZObjectArg()
         cls._build_args_ip_address_create(public_ips.Element)
+
+        trusted_ranges = cls._args_schema.network_profile.trusted_ranges
+        trusted_ranges.Element = AAZStrArg()
 
         vnet_configuration = cls._args_schema.network_profile.vnet_configuration
         vnet_configuration.ip_of_trust_subnet_for_udr = AAZObjectArg(
@@ -304,6 +332,13 @@ class Create(AAZCommand):
             options=["usage-type"],
             help="different usage type like PAYG/COMMITTED",
             enum={"COMMITTED": "COMMITTED", "PAYG": "PAYG"},
+        )
+
+        strata_cloud_manager_config = cls._args_schema.strata_cloud_manager_config
+        strata_cloud_manager_config.cloud_manager_name = AAZStrArg(
+            options=["cloud-manager-name"],
+            help="Strata Cloud Manager name which is intended to manage the policy for this firewall.",
+            required=True,
         )
 
         # define Arg Group "Resource"
@@ -513,7 +548,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
@@ -563,11 +598,13 @@ class Create(AAZCommand):
                 properties.set_prop("dnsSettings", AAZObjectType, ".dns_settings", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("frontEndSettings", AAZListType, ".front_end_settings")
                 properties.set_prop("isPanoramaManaged", AAZStrType, ".is_panorama_managed")
+                properties.set_prop("isStrataCloudManaged", AAZStrType, ".is_strata_cloud_managed")
                 properties.set_prop("marketplaceDetails", AAZObjectType, ".marketplace_details", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkProfile", AAZObjectType, ".network_profile", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("panEtag", AAZStrType, ".pan_etag")
                 properties.set_prop("panoramaConfig", AAZObjectType, ".panorama_config")
                 properties.set_prop("planData", AAZObjectType, ".plan_data", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("strataCloudManagerConfig", AAZObjectType, ".strata_cloud_manager_config")
 
             associated_rulestack = _builder.get(".properties.associatedRulestack")
             if associated_rulestack is not None:
@@ -607,7 +644,9 @@ class Create(AAZCommand):
                 network_profile.set_prop("egressNatIp", AAZListType, ".egress_nat_ip")
                 network_profile.set_prop("enableEgressNat", AAZStrType, ".enable_egress_nat", typ_kwargs={"flags": {"required": True}})
                 network_profile.set_prop("networkType", AAZStrType, ".network_type", typ_kwargs={"flags": {"required": True}})
+                network_profile.set_prop("privateSourceNatRulesDestination", AAZListType, ".private_source_nat_rules_destination")
                 network_profile.set_prop("publicIps", AAZListType, ".public_ips", typ_kwargs={"flags": {"required": True}})
+                network_profile.set_prop("trustedRanges", AAZListType, ".trusted_ranges")
                 network_profile.set_prop("vnetConfiguration", AAZObjectType, ".vnet_configuration")
                 network_profile.set_prop("vwanConfiguration", AAZObjectType, ".vwan_configuration")
 
@@ -615,9 +654,17 @@ class Create(AAZCommand):
             if egress_nat_ip is not None:
                 _CreateHelper._build_schema_ip_address_create(egress_nat_ip.set_elements(AAZObjectType, "."))
 
+            private_source_nat_rules_destination = _builder.get(".properties.networkProfile.privateSourceNatRulesDestination")
+            if private_source_nat_rules_destination is not None:
+                private_source_nat_rules_destination.set_elements(AAZStrType, ".")
+
             public_ips = _builder.get(".properties.networkProfile.publicIps")
             if public_ips is not None:
                 _CreateHelper._build_schema_ip_address_create(public_ips.set_elements(AAZObjectType, "."))
+
+            trusted_ranges = _builder.get(".properties.networkProfile.trustedRanges")
+            if trusted_ranges is not None:
+                trusted_ranges.set_elements(AAZStrType, ".")
 
             vnet_configuration = _builder.get(".properties.networkProfile.vnetConfiguration")
             if vnet_configuration is not None:
@@ -643,6 +690,10 @@ class Create(AAZCommand):
                 plan_data.set_prop("billingCycle", AAZStrType, ".billing_cycle", typ_kwargs={"flags": {"required": True}})
                 plan_data.set_prop("planId", AAZStrType, ".plan_id", typ_kwargs={"flags": {"required": True}})
                 plan_data.set_prop("usageType", AAZStrType, ".usage_type")
+
+            strata_cloud_manager_config = _builder.get(".properties.strataCloudManagerConfig")
+            if strata_cloud_manager_config is not None:
+                strata_cloud_manager_config.set_prop("cloudManagerName", AAZStrType, ".cloud_manager_name", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -731,6 +782,9 @@ class Create(AAZCommand):
             properties.is_panorama_managed = AAZStrType(
                 serialized_name="isPanoramaManaged",
             )
+            properties.is_strata_cloud_managed = AAZStrType(
+                serialized_name="isStrataCloudManaged",
+            )
             properties.marketplace_details = AAZObjectType(
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
@@ -751,6 +805,10 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.strata_cloud_manager_config = AAZObjectType(
+                serialized_name="strataCloudManagerConfig",
             )
 
             associated_rulestack = cls._schema_on_200_201.properties.associated_rulestack
@@ -827,9 +885,15 @@ class Create(AAZCommand):
                 serialized_name="networkType",
                 flags={"required": True},
             )
+            network_profile.private_source_nat_rules_destination = AAZListType(
+                serialized_name="privateSourceNatRulesDestination",
+            )
             network_profile.public_ips = AAZListType(
                 serialized_name="publicIps",
                 flags={"required": True},
+            )
+            network_profile.trusted_ranges = AAZListType(
+                serialized_name="trustedRanges",
             )
             network_profile.vnet_configuration = AAZObjectType(
                 serialized_name="vnetConfiguration",
@@ -842,9 +906,15 @@ class Create(AAZCommand):
             egress_nat_ip.Element = AAZObjectType()
             _CreateHelper._build_schema_ip_address_read(egress_nat_ip.Element)
 
+            private_source_nat_rules_destination = cls._schema_on_200_201.properties.network_profile.private_source_nat_rules_destination
+            private_source_nat_rules_destination.Element = AAZStrType()
+
             public_ips = cls._schema_on_200_201.properties.network_profile.public_ips
             public_ips.Element = AAZObjectType()
             _CreateHelper._build_schema_ip_address_read(public_ips.Element)
+
+            trusted_ranges = cls._schema_on_200_201.properties.network_profile.trusted_ranges
+            trusted_ranges.Element = AAZStrType()
 
             vnet_configuration = cls._schema_on_200_201.properties.network_profile.vnet_configuration
             vnet_configuration.ip_of_trust_subnet_for_udr = AAZObjectType(
@@ -937,6 +1007,12 @@ class Create(AAZCommand):
             )
             plan_data.usage_type = AAZStrType(
                 serialized_name="usageType",
+            )
+
+            strata_cloud_manager_config = cls._schema_on_200_201.properties.strata_cloud_manager_config
+            strata_cloud_manager_config.cloud_manager_name = AAZStrType(
+                serialized_name="cloudManagerName",
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200_201.system_data

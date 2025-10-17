@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List all firewall status resources associated with Palo Alto Networks firewalls.
 
-    :example: List all firewall status resources associated with Palo Alto Networks firewalls.
+    :example: List FirewallStatusResource resources by Firewalls
         az palo-alto cloudngfw firewall status list --resource-group MyResourceGroup -n MyCloudngfwFirewall
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/statuses", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/statuses", "2025-10-08"],
         ]
     }
 
@@ -49,6 +49,9 @@ class List(AAZCommand):
             options=["-n", "--name", "--firewall-name"],
             help="Firewall resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^(?![-_])(?!.*[-_]{2})(?!.*[-_]$)[a-zA-Z0-9][a-zA-Z0-9-]{0,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -121,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
@@ -189,23 +192,44 @@ class List(AAZCommand):
             )
             properties.health_status = AAZStrType(
                 serialized_name="healthStatus",
+                flags={"read_only": True},
             )
             properties.is_panorama_managed = AAZStrType(
                 serialized_name="isPanoramaManaged",
+                flags={"read_only": True},
+            )
+            properties.is_strata_cloud_managed = AAZStrType(
+                serialized_name="isStrataCloudManaged",
+                flags={"read_only": True},
             )
             properties.panorama_status = AAZObjectType(
                 serialized_name="panoramaStatus",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.strata_cloud_manager_info = AAZObjectType(
+                serialized_name="strataCloudManagerInfo",
             )
 
             panorama_status = cls._schema_on_200.value.Element.properties.panorama_status
             panorama_status.panorama_server2_status = AAZStrType(
                 serialized_name="panoramaServer2Status",
+                flags={"read_only": True},
             )
             panorama_status.panorama_server_status = AAZStrType(
                 serialized_name="panoramaServerStatus",
+                flags={"read_only": True},
+            )
+
+            strata_cloud_manager_info = cls._schema_on_200.value.Element.properties.strata_cloud_manager_info
+            strata_cloud_manager_info.folder_name = AAZStrType(
+                serialized_name="folderName",
+            )
+            strata_cloud_manager_info.hub_url = AAZStrType(
+                serialized_name="hubUrl",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

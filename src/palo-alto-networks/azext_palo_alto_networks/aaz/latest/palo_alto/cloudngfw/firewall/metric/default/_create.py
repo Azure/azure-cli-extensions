@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "palo-alto cloudngfw local-rulestack fqdnlist create",
+    "palo-alto cloudngfw firewall metric default create",
 )
 class Create(AAZCommand):
-    """Create a new FQDN list resource for a Palo Alto Networks local rulestack.
+    """Create a metrics configuration object for a Palo Alto Networks Cloud NGFW
 
-    :example: Create a FqdnListLocalRulestackResource
-        az palo-alto cloudngfw local-rulestack fqdnlist create -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyFqdnlist --audit-comment "string" --description "description" --fqdn-list "string1" "string2"
+    :example: Create Metrics configuration object for a firewall
+        az palo-alto cloudngfw firewall metric default create --resource-group MyResourceGroup --firewall-name MyCloudngfwFirewall --application-insights-connection-string "InstrumentationKey=xxxx;IngestionEndpoint=https://xxxx-x.xx.xxxxx.xxxxx.com/;LiveEndpoint=https://xxxxx.com/;ApplicationId=xxxxx" --application-insights-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyAppInsightsResourceGroup/providers/microsoft.insights/components/MyAppInsightsName"
     """
 
     _aaz_info = {
         "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/fqdnlists/{}", "2025-10-08"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/metrics/default", "2025-10-08"],
         ]
     }
 
@@ -45,15 +45,13 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.local_rulestack_name = AAZStrArg(
-            options=["--local-rulestack-name"],
-            help="LocalRulestack resource name",
+        _args_schema.firewall_name = AAZStrArg(
+            options=["--firewall-name"],
+            help="Firewall resource name",
             required=True,
-        )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="fqdn list name",
-            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^(?![-_])(?!.*[-_]{2})(?!.*[-_]$)[a-zA-Z0-9][a-zA-Z0-9-]{0,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -62,35 +60,28 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.audit_comment = AAZStrArg(
-            options=["--audit-comment"],
+        _args_schema.application_insights_connection_string = AAZStrArg(
+            options=["--application-insights-connection-string"],
             arg_group="Properties",
-            help="comment for this object",
-        )
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            arg_group="Properties",
-            help="fqdn object description",
-        )
-        _args_schema.etag = AAZStrArg(
-            options=["--etag"],
-            arg_group="Properties",
-            help="etag info",
-        )
-        _args_schema.fqdn_list = AAZListArg(
-            options=["--fqdn-list"],
-            arg_group="Properties",
-            help="fqdn list",
+            help="Connection string of application insights resource",
             required=True,
         )
-
-        fqdn_list = cls._args_schema.fqdn_list
-        fqdn_list.Element = AAZStrArg()
+        _args_schema.application_insights_resource_id = AAZStrArg(
+            options=["--application-insights-resource-id"],
+            arg_group="Properties",
+            help="Resource Id of application insights resource",
+            required=True,
+        )
+        _args_schema.pan_etag = AAZStrArg(
+            options=["--pan-etag"],
+            arg_group="Properties",
+            help="read only string representing last create or update",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.FqdnListLocalRulestackCreateOrUpdate(ctx=self.ctx)()
+        yield self.MetricsObjectFirewallCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -105,7 +96,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class FqdnListLocalRulestackCreateOrUpdate(AAZHttpOperation):
+    class MetricsObjectFirewallCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -135,7 +126,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}/fqdnlists/{name}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/firewalls/{firewallName}/metrics/default",
                 **self.url_parameters
             )
 
@@ -151,11 +142,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "localRulestackName", self.ctx.args.local_rulestack_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "name", self.ctx.args.name,
+                    "firewallName", self.ctx.args.firewall_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -202,14 +189,9 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("auditComment", AAZStrType, ".audit_comment")
-                properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("etag", AAZStrType, ".etag")
-                properties.set_prop("fqdnList", AAZListType, ".fqdn_list", typ_kwargs={"flags": {"required": True}})
-
-            fqdn_list = _builder.get(".properties.fqdnList")
-            if fqdn_list is not None:
-                fqdn_list.set_elements(AAZStrType, ".")
+                properties.set_prop("applicationInsightsConnectionString", AAZStrType, ".application_insights_connection_string", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("applicationInsightsResourceId", AAZStrType, ".application_insights_resource_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("panEtag", AAZStrType, ".pan_etag")
 
             return self.serialize_content(_content_value)
 
@@ -249,22 +231,21 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.audit_comment = AAZStrType(
-                serialized_name="auditComment",
-            )
-            properties.description = AAZStrType()
-            properties.etag = AAZStrType()
-            properties.fqdn_list = AAZListType(
-                serialized_name="fqdnList",
+            properties.application_insights_connection_string = AAZStrType(
+                serialized_name="applicationInsightsConnectionString",
                 flags={"required": True},
+            )
+            properties.application_insights_resource_id = AAZStrType(
+                serialized_name="applicationInsightsResourceId",
+                flags={"required": True},
+            )
+            properties.pan_etag = AAZStrType(
+                serialized_name="panEtag",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-
-            fqdn_list = cls._schema_on_200_201.properties.fqdn_list
-            fqdn_list.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

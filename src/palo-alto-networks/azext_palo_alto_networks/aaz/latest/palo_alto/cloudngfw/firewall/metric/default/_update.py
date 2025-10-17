@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "palo-alto cloudngfw local-rulestack update",
+    "palo-alto cloudngfw firewall metric default update",
 )
 class Update(AAZCommand):
-    """Update configuration or metadata for a Palo Alto Networks local rulestack.
+    """Update a metrics configuration object for a Palo Alto Networks Cloud NGFW
 
-    :example: Update a LocalRulestackResource
-        az palo-alto cloudngfw local-rulestack update -g MyResourceGroup -n MyLocalRulestacks --tags "{tag-name:value}"
+    :example: Update a metrics configuration object
+        az palo-alto cloudngfw firewall metric default update --resource-group MyResourceGroup -firewall-name MyCloudngfwFirewall
     """
 
     _aaz_info = {
         "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}", "2025-10-08"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/metrics/default", "2025-10-08"],
         ]
     }
 
@@ -47,75 +47,28 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.local_rulestack_name = AAZStrArg(
-            options=["-n", "--name", "--local-rulestack-name"],
-            help="LocalRulestack resource name",
+        _args_schema.firewall_name = AAZStrArg(
+            options=["--firewall-name"],
+            help="Firewall resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^(?![-_])(?!.*[-_]{2})(?!.*[-_]$)[a-zA-Z0-9][a-zA-Z0-9-]{0,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
-        )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Resource",
-            help="The managed service identities assigned to this resource.",
-            nullable=True,
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="The type of managed identity assigned to this resource.",
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
-        )
-        identity.user_assigned_identities = AAZDictArg(
-            options=["user-assigned-identities"],
-            help="The identities assigned to this resource by the user.",
-            nullable=True,
-        )
-
-        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.identity.user_assigned_identities.Element
-        _element.client_id = AAZStrArg(
-            options=["client-id"],
-            help="The active directory client identifier for this principal.",
-            nullable=True,
-        )
-        _element.principal_id = AAZStrArg(
-            options=["principal-id"],
-            help="The active directory identifier for this principal.",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LocalRulestacksGet(ctx=self.ctx)()
+        self.MetricsObjectFirewallGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.LocalRulestacksCreateOrUpdate(ctx=self.ctx)()
+        yield self.MetricsObjectFirewallCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -138,7 +91,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class LocalRulestacksGet(AAZHttpOperation):
+    class MetricsObjectFirewallGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -152,7 +105,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/firewalls/{firewallName}/metrics/default",
                 **self.url_parameters
             )
 
@@ -168,7 +121,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "localRulestackName", self.ctx.args.local_rulestack_name,
+                    "firewallName", self.ctx.args.firewall_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -217,11 +170,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_local_rulestack_resource_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_metrics_object_firewall_resource_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class LocalRulestacksCreateOrUpdate(AAZHttpOperation):
+    class MetricsObjectFirewallCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -251,7 +204,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/firewalls/{firewallName}/metrics/default",
                 **self.url_parameters
             )
 
@@ -267,7 +220,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "localRulestackName", self.ctx.args.local_rulestack_name,
+                    "firewallName", self.ctx.args.firewall_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -328,7 +281,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_local_rulestack_resource_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_metrics_object_firewall_resource_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -343,26 +296,6 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
-
-            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
-            if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".identity.userAssignedIdentities{}")
-            if _elements is not None:
-                _elements.set_prop("clientId", AAZStrType, ".client_id")
-                _elements.set_prop("principalId", AAZStrType, ".principal_id")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -378,129 +311,56 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_local_rulestack_resource_read = None
+    _schema_metrics_object_firewall_resource_read = None
 
     @classmethod
-    def _build_schema_local_rulestack_resource_read(cls, _schema):
-        if cls._schema_local_rulestack_resource_read is not None:
-            _schema.id = cls._schema_local_rulestack_resource_read.id
-            _schema.identity = cls._schema_local_rulestack_resource_read.identity
-            _schema.location = cls._schema_local_rulestack_resource_read.location
-            _schema.name = cls._schema_local_rulestack_resource_read.name
-            _schema.properties = cls._schema_local_rulestack_resource_read.properties
-            _schema.system_data = cls._schema_local_rulestack_resource_read.system_data
-            _schema.tags = cls._schema_local_rulestack_resource_read.tags
-            _schema.type = cls._schema_local_rulestack_resource_read.type
+    def _build_schema_metrics_object_firewall_resource_read(cls, _schema):
+        if cls._schema_metrics_object_firewall_resource_read is not None:
+            _schema.id = cls._schema_metrics_object_firewall_resource_read.id
+            _schema.name = cls._schema_metrics_object_firewall_resource_read.name
+            _schema.properties = cls._schema_metrics_object_firewall_resource_read.properties
+            _schema.system_data = cls._schema_metrics_object_firewall_resource_read.system_data
+            _schema.type = cls._schema_metrics_object_firewall_resource_read.type
             return
 
-        cls._schema_local_rulestack_resource_read = _schema_local_rulestack_resource_read = AAZObjectType()
+        cls._schema_metrics_object_firewall_resource_read = _schema_metrics_object_firewall_resource_read = AAZObjectType()
 
-        local_rulestack_resource_read = _schema_local_rulestack_resource_read
-        local_rulestack_resource_read.id = AAZStrType(
+        metrics_object_firewall_resource_read = _schema_metrics_object_firewall_resource_read
+        metrics_object_firewall_resource_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        local_rulestack_resource_read.identity = AAZObjectType()
-        local_rulestack_resource_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        local_rulestack_resource_read.name = AAZStrType(
+        metrics_object_firewall_resource_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        local_rulestack_resource_read.properties = AAZObjectType(
+        metrics_object_firewall_resource_read.properties = AAZObjectType(
             flags={"required": True, "client_flatten": True},
         )
-        local_rulestack_resource_read.system_data = AAZObjectType(
+        metrics_object_firewall_resource_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        local_rulestack_resource_read.tags = AAZDictType()
-        local_rulestack_resource_read.type = AAZStrType(
+        metrics_object_firewall_resource_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        identity = _schema_local_rulestack_resource_read.identity
-        identity.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-        identity.tenant_id = AAZStrType(
-            serialized_name="tenantId",
-            flags={"read_only": True},
-        )
-        identity.type = AAZStrType(
+        properties = _schema_metrics_object_firewall_resource_read.properties
+        properties.application_insights_connection_string = AAZStrType(
+            serialized_name="applicationInsightsConnectionString",
             flags={"required": True},
         )
-        identity.user_assigned_identities = AAZDictType(
-            serialized_name="userAssignedIdentities",
-        )
-
-        user_assigned_identities = _schema_local_rulestack_resource_read.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectType()
-
-        _element = _schema_local_rulestack_resource_read.identity.user_assigned_identities.Element
-        _element.client_id = AAZStrType(
-            serialized_name="clientId",
-        )
-        _element.principal_id = AAZStrType(
-            serialized_name="principalId",
-        )
-
-        properties = _schema_local_rulestack_resource_read.properties
-        properties.associated_subscriptions = AAZListType(
-            serialized_name="associatedSubscriptions",
-        )
-        properties.default_mode = AAZStrType(
-            serialized_name="defaultMode",
-        )
-        properties.description = AAZStrType()
-        properties.min_app_id_version = AAZStrType(
-            serialized_name="minAppIdVersion",
+        properties.application_insights_resource_id = AAZStrType(
+            serialized_name="applicationInsightsResourceId",
+            flags={"required": True},
         )
         properties.pan_etag = AAZStrType(
             serialized_name="panEtag",
-        )
-        properties.pan_location = AAZStrType(
-            serialized_name="panLocation",
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.scope = AAZStrType()
-        properties.security_services = AAZObjectType(
-            serialized_name="securityServices",
-        )
 
-        associated_subscriptions = _schema_local_rulestack_resource_read.properties.associated_subscriptions
-        associated_subscriptions.Element = AAZStrType()
-
-        security_services = _schema_local_rulestack_resource_read.properties.security_services
-        security_services.anti_spyware_profile = AAZStrType(
-            serialized_name="antiSpywareProfile",
-        )
-        security_services.anti_virus_profile = AAZStrType(
-            serialized_name="antiVirusProfile",
-        )
-        security_services.dns_subscription = AAZStrType(
-            serialized_name="dnsSubscription",
-        )
-        security_services.file_blocking_profile = AAZStrType(
-            serialized_name="fileBlockingProfile",
-        )
-        security_services.outbound_trust_certificate = AAZStrType(
-            serialized_name="outboundTrustCertificate",
-        )
-        security_services.outbound_un_trust_certificate = AAZStrType(
-            serialized_name="outboundUnTrustCertificate",
-        )
-        security_services.url_filtering_profile = AAZStrType(
-            serialized_name="urlFilteringProfile",
-        )
-        security_services.vulnerability_profile = AAZStrType(
-            serialized_name="vulnerabilityProfile",
-        )
-
-        system_data = _schema_local_rulestack_resource_read.system_data
+        system_data = _schema_metrics_object_firewall_resource_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -520,17 +380,11 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        tags = _schema_local_rulestack_resource_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.id = cls._schema_local_rulestack_resource_read.id
-        _schema.identity = cls._schema_local_rulestack_resource_read.identity
-        _schema.location = cls._schema_local_rulestack_resource_read.location
-        _schema.name = cls._schema_local_rulestack_resource_read.name
-        _schema.properties = cls._schema_local_rulestack_resource_read.properties
-        _schema.system_data = cls._schema_local_rulestack_resource_read.system_data
-        _schema.tags = cls._schema_local_rulestack_resource_read.tags
-        _schema.type = cls._schema_local_rulestack_resource_read.type
+        _schema.id = cls._schema_metrics_object_firewall_resource_read.id
+        _schema.name = cls._schema_metrics_object_firewall_resource_read.name
+        _schema.properties = cls._schema_metrics_object_firewall_resource_read.properties
+        _schema.system_data = cls._schema_metrics_object_firewall_resource_read.system_data
+        _schema.type = cls._schema_metrics_object_firewall_resource_read.type
 
 
 __all__ = ["Update"]

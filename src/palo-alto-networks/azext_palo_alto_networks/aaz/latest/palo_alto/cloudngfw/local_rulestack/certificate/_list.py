@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List all certificates linked with the Palo Alto Networks local rulestacks.
 
-    :example: List all certificates linked with the Palo Alto Networks local rulestacks.
+    :example: List CertificateObjectLocalRulestackResource resources by LocalRulestacks
         az palo-alto cloudngfw local-rulestack certificate list -g MyResourceGroup --local-rulestack-name MyLocalRulestacks
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/certificates", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/certificates", "2025-10-08"],
         ]
     }
 
@@ -121,7 +121,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
@@ -197,6 +197,7 @@ class List(AAZCommand):
             properties.etag = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

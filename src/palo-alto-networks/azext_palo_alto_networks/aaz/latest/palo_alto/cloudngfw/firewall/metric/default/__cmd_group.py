@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "palo-alto cloudngfw local-rulestack fqdnlist",
+    "palo-alto cloudngfw firewall metric default",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage local-rulestack fqdnlist resource
+    """Manage default metrics resource for Palo Alto Networks cloudngfw firewall.
     """
     pass
 

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack list-predefined-url-category",
 )
 class ListPredefinedUrlCategory(AAZCommand):
-    """List predefined URL categories for rulestack
+    """List predefined URL categories for for Palo Alto Networks local rulestack.
 
     :example: List predefined URL categories for rulestack
         az palo-alto cloudngfw local-rulestack list-predefined-url-category -g MyResourceGroup -n MyLocalRulestacks
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/listpredefinedurlcategories", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/listpredefinedurlcategories", "2025-10-08"],
         ]
     }
 
@@ -134,7 +134,7 @@ class ListPredefinedUrlCategory(AAZCommand):
                     "top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }

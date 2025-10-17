@@ -12,19 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "palo-alto cloudngfw local-rulestack list-firewall",
+    "palo-alto cloudngfw list-support-info",
 )
-class ListFirewall(AAZCommand):
-    """List of Firewalls associated with for Palo Alto Networks local rulestack.
-
-    :example: List of Firewalls associated with Rulestack
-        az palo-alto cloudngfw local-rulestack list-firewall -g MyResourceGroup -n MyLocalRulestacks
+class ListSupportInfo(AAZCommand):
+    """Retrieve support information
     """
 
     _aaz_info = {
         "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/listfirewalls", "2025-10-08"],
+            ["mgmt-plane", "/subscriptions/{}/providers/paloaltonetworks.cloudngfw/listsupportinfo", "2025-10-08"],
         ]
     }
 
@@ -42,22 +39,11 @@ class ListFirewall(AAZCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
-
-        _args_schema = cls._args_schema
-        _args_schema.local_rulestack_name = AAZStrArg(
-            options=["-n", "--name", "--local-rulestack-name"],
-            help="LocalRulestack resource name",
-            required=True,
-            id_part="name",
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LocalRulestacksListFirewalls(ctx=self.ctx)()
+        self.PaloAltoNetworksCloudngfwOperationsListSupportInfo(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +58,7 @@ class ListFirewall(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class LocalRulestacksListFirewalls(AAZHttpOperation):
+    class PaloAltoNetworksCloudngfwOperationsListSupportInfo(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -86,7 +72,7 @@ class ListFirewall(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}/listFirewalls",
+                "/subscriptions/{subscriptionId}/providers/PaloAltoNetworks.Cloudngfw/listSupportInfo",
                 **self.url_parameters
             )
 
@@ -101,14 +87,6 @@ class ListFirewall(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "localRulestackName", self.ctx.args.local_rulestack_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -153,21 +131,55 @@ class ListFirewall(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
+            _schema_on_200.account_id = AAZStrType(
+                serialized_name="accountId",
             )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
+            _schema_on_200.account_registration_status = AAZStrType(
+                serialized_name="accountRegistrationStatus",
             )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZStrType()
+            _schema_on_200.credits = AAZIntType()
+            _schema_on_200.end_date_for_credits = AAZStrType(
+                serialized_name="endDateForCredits",
+            )
+            _schema_on_200.free_trial = AAZStrType(
+                serialized_name="freeTrial",
+            )
+            _schema_on_200.free_trial_credit_left = AAZIntType(
+                serialized_name="freeTrialCreditLeft",
+            )
+            _schema_on_200.free_trial_days_left = AAZIntType(
+                serialized_name="freeTrialDaysLeft",
+            )
+            _schema_on_200.help_url = AAZStrType(
+                serialized_name="helpURL",
+            )
+            _schema_on_200.hub_url = AAZStrType(
+                serialized_name="hubUrl",
+            )
+            _schema_on_200.monthly_credit_left = AAZIntType(
+                serialized_name="monthlyCreditLeft",
+            )
+            _schema_on_200.product_serial = AAZStrType(
+                serialized_name="productSerial",
+            )
+            _schema_on_200.product_sku = AAZStrType(
+                serialized_name="productSku",
+            )
+            _schema_on_200.register_url = AAZStrType(
+                serialized_name="registerURL",
+            )
+            _schema_on_200.start_date_for_credits = AAZStrType(
+                serialized_name="startDateForCredits",
+            )
+            _schema_on_200.support_url = AAZStrType(
+                serialized_name="supportURL",
+            )
 
             return cls._schema_on_200
 
 
-class _ListFirewallHelper:
-    """Helper class for ListFirewall"""
+class _ListSupportInfoHelper:
+    """Helper class for ListSupportInfo"""
 
 
-__all__ = ["ListFirewall"]
+__all__ = ["ListSupportInfo"]

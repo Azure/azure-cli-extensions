@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "palo-alto cloudngfw local-rulestack certificate show",
+    "palo-alto cloudngfw firewall metric default show",
 )
 class Show(AAZCommand):
-    """Retrieve details of a specific certificate for a Palo Alto Networks local rulestack.
+    """Get a metrics configuration object for a Palo Alto Networks Cloud NGFW
 
-    :example: Get a CertificateObjectLocalRulestackResource
-        az palo-alto cloudngfw local-rulestack certificate show -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyCertificate
+    :example: Show metrics configuration object
+        az palo-alto cloudngfw firewall metric default show --resource-group MyResourceGroup -firewall-name MyCloudngfwFirewall
     """
 
     _aaz_info = {
         "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/certificates/{}", "2025-10-08"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/metrics/default", "2025-10-08"],
         ]
     }
 
@@ -44,17 +44,14 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.local_rulestack_name = AAZStrArg(
-            options=["--local-rulestack-name"],
-            help="LocalRulestack resource name",
+        _args_schema.firewall_name = AAZStrArg(
+            options=["--firewall-name"],
+            help="Firewall resource name",
             required=True,
             id_part="name",
-        )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="certificate name",
-            required=True,
-            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^(?![-_])(?!.*[-_]{2})(?!.*[-_]$)[a-zA-Z0-9][a-zA-Z0-9-]{0,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -63,7 +60,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CertificateObjectLocalRulestackGet(ctx=self.ctx)()
+        self.MetricsObjectFirewallGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -78,7 +75,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class CertificateObjectLocalRulestackGet(AAZHttpOperation):
+    class MetricsObjectFirewallGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,7 +89,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}/certificates/{name}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/firewalls/{firewallName}/metrics/default",
                 **self.url_parameters
             )
 
@@ -108,11 +105,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "localRulestackName", self.ctx.args.local_rulestack_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "name", self.ctx.args.name,
+                    "firewallName", self.ctx.args.firewall_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -181,18 +174,17 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.audit_comment = AAZStrType(
-                serialized_name="auditComment",
-            )
-            properties.certificate_self_signed = AAZStrType(
-                serialized_name="certificateSelfSigned",
+            properties.application_insights_connection_string = AAZStrType(
+                serialized_name="applicationInsightsConnectionString",
                 flags={"required": True},
             )
-            properties.certificate_signer_resource_id = AAZStrType(
-                serialized_name="certificateSignerResourceId",
+            properties.application_insights_resource_id = AAZStrType(
+                serialized_name="applicationInsightsResourceId",
+                flags={"required": True},
             )
-            properties.description = AAZStrType()
-            properties.etag = AAZStrType()
+            properties.pan_etag = AAZStrType(
+                serialized_name="panEtag",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},

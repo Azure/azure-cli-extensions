@@ -12,26 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "palo-alto cloudngfw local-rulestack local-rule refresh-counter",
+    "palo-alto cloudngfw firewall metric default delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
-class RefreshCounter(AAZCommand):
-    """Refresh counters for the local rule associated with a Palo Alto Networks local rulestack.
+class Delete(AAZCommand):
+    """Delete a metrics configuration object for a Palo Alto Networks Cloud NGFW
 
-    :example: Refresh counters
-        az palo-alto cloudngfw local-rulestack local-rule refresh-counter -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --priority "1"
+    :example: Delete a metrics configuration object
+        az palo-alto cloudngfw firewall metric default delete --resource-group MyResourceGroup -firewall-name MyCloudngfwFirewall
     """
 
     _aaz_info = {
         "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/localrules/{}/refreshcounters", "2025-10-08"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/metrics/default", "2025-10-08"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -44,30 +46,23 @@ class RefreshCounter(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.local_rulestack_name = AAZStrArg(
-            options=["--local-rulestack-name"],
-            help="LocalRulestack resource name",
-            required=True,
-            id_part="name",
-        )
-        _args_schema.priority = AAZStrArg(
-            options=["--priority"],
-            help="Local Rule priority",
-            required=True,
-            id_part="child_name_1",
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
         _args_schema.firewall_name = AAZStrArg(
             options=["--firewall-name"],
             help="Firewall resource name",
+            required=True,
+            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^(?![-_])(?!.*[-_]{2})(?!.*[-_]$)[a-zA-Z0-9][a-zA-Z0-9-]{0,127}$",
+            ),
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LocalRulesRefreshCounters(ctx=self.ctx)()
+        yield self.MetricsObjectFirewallDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -78,27 +73,52 @@ class RefreshCounter(AAZCommand):
     def post_operations(self):
         pass
 
-    class LocalRulesRefreshCounters(AAZHttpOperation):
+    class MetricsObjectFirewallDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [204]:
-                return self.on_204(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}/localRules/{priority}/refreshCounters",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/firewalls/{firewallName}/metrics/default",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -108,11 +128,7 @@ class RefreshCounter(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "localRulestackName", self.ctx.args.local_rulestack_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "priority", self.ctx.args.priority,
+                    "firewallName", self.ctx.args.firewall_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -130,9 +146,6 @@ class RefreshCounter(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "firewallName", self.ctx.args.firewall_name,
-                ),
-                **self.serialize_query_param(
                     "api-version", "2025-10-08",
                     required=True,
                 ),
@@ -142,9 +155,12 @@ class RefreshCounter(AAZCommand):
         def on_204(self, session):
             pass
 
+        def on_200_201(self, session):
+            pass
 
-class _RefreshCounterHelper:
-    """Helper class for RefreshCounter"""
+
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
-__all__ = ["RefreshCounter"]
+__all__ = ["Delete"]

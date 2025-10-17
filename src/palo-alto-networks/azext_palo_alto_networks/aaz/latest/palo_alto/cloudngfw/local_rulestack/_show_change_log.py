@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack show-change-log",
 )
 class ShowChangeLog(AAZCommand):
-    """Get the changelog for a Palo Alto Networks local rulestack.
+    """Get the changelog for a Palo Alto networks local rulestack.
 
-    :example: Get the changelog for a Palo Alto Networks local rulestack.
+    :example: Get changelog
         az palo-alto cloudngfw local-rulestack show-change-log -g MyResourceGroup -n MyLocalRulestacks
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/getchangelog", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/getchangelog", "2025-10-08"],
         ]
     }
 
@@ -120,7 +120,7 @@ class ShowChangeLog(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }

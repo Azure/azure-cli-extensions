@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack list-security-service",
 )
 class ListSecurityService(AAZCommand):
-    """List the security services for rulestack
+    """List the security services for for Palo Alto Networks local rulestack.
 
     :example: List the security services for rulestack
         az palo-alto cloudngfw local-rulestack list-security-service -g MyResourceGroup -n MyLocalRulestacks --type antiSpyware
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/listsecurityservices", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/listsecurityservices", "2025-10-08"],
         ]
     }
 
@@ -144,7 +144,7 @@ class ListSecurityService(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
