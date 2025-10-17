@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListSupportInfo(AAZCommand):
     """Retrieve support information
+
+    :example: List support info
+        az palo-alto cloudngfw list-support-info
     """
 
     _aaz_info = {

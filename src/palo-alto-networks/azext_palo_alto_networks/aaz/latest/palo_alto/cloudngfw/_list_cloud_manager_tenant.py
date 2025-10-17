@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListCloudManagerTenant(AAZCommand):
     """List Cloud Manager Tenants
+
+    :example: List cloud manager tenants
+        az palo-alto cloudngfw list-cloud-manager-tenant
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class CreateProductSerialNumber(AAZCommand):
     """Create Product Serial Number
+
+    :example: Create product serial number
+        az palo-alto cloudngfw create-product-serial-number
     """
 
     _aaz_info = {
