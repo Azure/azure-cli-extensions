@@ -9,4 +9,5 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._get_elastic_organization_to_azure_subscription_mapping import *
 from ._get_organization_api_key import *

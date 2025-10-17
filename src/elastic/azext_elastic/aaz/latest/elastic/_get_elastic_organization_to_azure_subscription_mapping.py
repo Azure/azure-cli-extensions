@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic get-organization-api-key",
+    "elastic get-elastic-organization-to-azure-subscription-mapping",
 )
-class GetOrganizationApiKey(AAZCommand):
-    """Fetch the User API Key from the internal database, if it was generated and stored during the creation of the Elasticsearch Organization.
+class GetElasticOrganizationToAzureSubscriptionMapping(AAZCommand):
+    """Retrieve mapping details between the Elastic Organization and Azure Subscription for the logged-in user.
 
-    :example: Organizations_GetApiKey
-        az elastic get-organization-api-key
+    :example: Organizations_GetElasticToAzureSubscriptionMapping
+        az elastic get-elastic-organization-to-azure-subscription-mapping
     """
 
     _aaz_info = {
         "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/getorganizationapikey", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/getelasticorganizationtoazuresubscriptionmapping", "2025-06-01"],
         ]
     }
 
@@ -42,20 +42,11 @@ class GetOrganizationApiKey(AAZCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.email_id = AAZStrArg(
-            options=["--email-id"],
-            arg_group="Body",
-            help="The User email Id",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.OrganizationsGetApiKey(ctx=self.ctx)()
+        self.OrganizationsGetElasticToAzureSubscriptionMapping(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -67,10 +58,10 @@ class GetOrganizationApiKey(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class OrganizationsGetApiKey(AAZHttpOperation):
+    class OrganizationsGetElasticToAzureSubscriptionMapping(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -84,7 +75,7 @@ class GetOrganizationApiKey(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.Elastic/getOrganizationApiKey",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Elastic/getElasticOrganizationToAzureSubscriptionMapping",
                 **self.url_parameters
             )
 
@@ -120,24 +111,10 @@ class GetOrganizationApiKey(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
-            )
-            _builder.set_prop("emailId", AAZStrType, ".email_id")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -160,16 +137,52 @@ class GetOrganizationApiKey(AAZCommand):
             _schema_on_200.properties = AAZObjectType()
 
             properties = cls._schema_on_200.properties
-            properties.api_key = AAZStrType(
-                serialized_name="apiKey",
-                flags={"secret": True},
+            properties.billed_azure_subscription_id = AAZStrType(
+                serialized_name="billedAzureSubscriptionId",
+            )
+            properties.elastic_organization_id = AAZStrType(
+                serialized_name="elasticOrganizationId",
+            )
+            properties.elastic_organization_name = AAZStrType(
+                serialized_name="elasticOrganizationName",
+            )
+            properties.marketplace_saas_info = AAZObjectType(
+                serialized_name="marketplaceSaasInfo",
+                flags={"read_only": True},
+            )
+
+            marketplace_saas_info = cls._schema_on_200.properties.marketplace_saas_info
+            marketplace_saas_info.billed_azure_subscription_id = AAZStrType(
+                serialized_name="billedAzureSubscriptionId",
+            )
+            marketplace_saas_info.marketplace_name = AAZStrType(
+                serialized_name="marketplaceName",
+            )
+            marketplace_saas_info.marketplace_resource_id = AAZStrType(
+                serialized_name="marketplaceResourceId",
+            )
+            marketplace_saas_info.marketplace_status = AAZStrType(
+                serialized_name="marketplaceStatus",
+            )
+            marketplace_saas_info.marketplace_subscription = AAZObjectType(
+                serialized_name="marketplaceSubscription",
+            )
+            marketplace_saas_info.subscribed = AAZBoolType()
+
+            marketplace_subscription = cls._schema_on_200.properties.marketplace_saas_info.marketplace_subscription
+            marketplace_subscription.id = AAZStrType()
+            marketplace_subscription.offer_id = AAZStrType(
+                serialized_name="offerId",
+            )
+            marketplace_subscription.publisher_id = AAZStrType(
+                serialized_name="publisherId",
             )
 
             return cls._schema_on_200
 
 
-class _GetOrganizationApiKeyHelper:
-    """Helper class for GetOrganizationApiKey"""
+class _GetElasticOrganizationToAzureSubscriptionMappingHelper:
+    """Helper class for GetElasticOrganizationToAzureSubscriptionMapping"""
 
 
-__all__ = ["GetOrganizationApiKey"]
+__all__ = ["GetElasticOrganizationToAzureSubscriptionMapping"]
