@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack list-security-service",
 )
 class ListSecurityService(AAZCommand):
-    """List the security services for for Palo Alto Networks local rulestack.
+    """List the security services for Palo Alto Networks local rulestack.
 
     :example: List the security services for rulestack
         az palo-alto cloudngfw local-rulestack list-security-service -g MyResourceGroup -n MyLocalRulestacks --type antiSpyware

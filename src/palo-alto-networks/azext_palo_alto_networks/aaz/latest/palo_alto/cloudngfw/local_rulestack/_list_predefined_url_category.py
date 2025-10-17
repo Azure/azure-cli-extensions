@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack list-predefined-url-category",
 )
 class ListPredefinedUrlCategory(AAZCommand):
-    """List predefined URL categories for for Palo Alto Networks local rulestack.
+    """List predefined URL categories for Palo Alto Networks local rulestack.
 
     :example: List predefined URL categories for rulestack
         az palo-alto cloudngfw local-rulestack list-predefined-url-category -g MyResourceGroup -n MyLocalRulestacks

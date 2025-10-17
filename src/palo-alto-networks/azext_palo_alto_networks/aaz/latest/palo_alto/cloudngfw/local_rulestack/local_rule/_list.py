@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack local-rule list",
 )
 class List(AAZCommand):
-    """List all LocalRulesResource resources linked with the Palo Alto Networds local rulestack.
+    """List all LocalRulesResource resources linked with the Palo Alto Networks local rulestack.
 
     :example: List LocalRulesResource resources by LocalRulestacks
         az palo-alto cloudngfw local-rulestack local-rule list -g MyResourceGroup --local-rulestack-name MyLocalRulestacks

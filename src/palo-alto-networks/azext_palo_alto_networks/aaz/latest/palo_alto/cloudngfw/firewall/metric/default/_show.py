@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get a metrics configuration object for a Palo Alto Networks Cloud NGFW
 
     :example: Show metrics configuration object
-        az palo-alto cloudngfw firewall metric default show --resource-group MyResourceGroup -firewall-name MyCloudngfwFirewall
+        az palo-alto cloudngfw firewall metric default show --resource-group MyResourceGroup --firewall-name MyCloudngfwFirewall
     """
 
     _aaz_info = {

@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete a metrics configuration object for a Palo Alto Networks Cloud NGFW
 
     :example: Delete a metrics configuration object
-        az palo-alto cloudngfw firewall metric default delete --resource-group MyResourceGroup -firewall-name MyCloudngfwFirewall
+        az palo-alto cloudngfw firewall metric default delete --resource-group MyResourceGroup --firewall-name MyCloudngfwFirewall
     """
 
     _aaz_info = {

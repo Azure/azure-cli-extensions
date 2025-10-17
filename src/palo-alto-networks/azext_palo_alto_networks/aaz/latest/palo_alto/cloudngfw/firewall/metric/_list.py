@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List all metrics resources associated with a Palo Alto Networks Firewall
 
     :example: List metrics configuration object for a firewall
-        az palo-alto cloudngfw firewall metric list --resource-group MyResourceGroup -firewall-name MyCloudngfwFirewall
+        az palo-alto cloudngfw firewall metric list --resource-group MyResourceGroup --firewall-name MyCloudngfwFirewall
     """
 
     _aaz_info = {

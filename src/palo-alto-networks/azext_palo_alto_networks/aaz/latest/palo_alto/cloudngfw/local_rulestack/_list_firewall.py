@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack list-firewall",
 )
 class ListFirewall(AAZCommand):
-    """List of Firewalls associated with for Palo Alto Networks local rulestack.
+    """List of Firewalls associated with Palo Alto Networks local rulestack.
 
     :example: List of Firewalls associated with Rulestack
         az palo-alto cloudngfw local-rulestack list-firewall -g MyResourceGroup -n MyLocalRulestacks
