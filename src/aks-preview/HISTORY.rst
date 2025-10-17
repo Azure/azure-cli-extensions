@@ -11,6 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Added `--enable-gateway-api` to `az aks create` to enable managed Gateway API installation
+* Added `--enable-gateway-api` and `--disable-gateway-api` to `az aks update` to enable/disable managed Gateway API installation
 
 19.0.0b3
 +++++++
@@ -39,8 +41,6 @@ Pending
 * [BREAKING CHANGE]: `az aks nodepool add`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
 * [BREAKING CHANGE]: `az aks nodepool update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
 * `az aks update`: Add new parameter `--kms-infrastructure-encryption` to enable KMS infrastructure encryption on an existing cluster.
-* Added `--enable-gateway-api` to `az aks create` to enable managed Gateway API installation
-* Added `--enable-gateway-api` and `--disable-gateway-api` to `az aks update` to enable/disable managed Gateway API installation
 
 18.0.0b44
 +++++++
