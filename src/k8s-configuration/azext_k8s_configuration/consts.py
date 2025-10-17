@@ -255,6 +255,28 @@ AZUREBLOB_VALID_PARAMS = {
     "mi_client_id",
 }
 
+OCI_REPO_REQUIRED_PARAMS = {"url"}
+OCI_REPO_VALID_PARAMS = {
+    "url",
+    "tag",
+    "semver",
+    "digest",
+    "sync_interval",
+    "timeout",
+    "local_auth_ref",
+    "oci_media_type",
+    "oci_operation",
+    "tls_ca_certificate",
+    "tls_client_certificate",
+    "tls_private_key",
+    "service_account_name",
+    "use_workload_identity",
+    "oci_insecure",
+    "verification_provider",
+    "match_oidc_identity",
+    "verification_config",
+}
+
 DEPENDENCY_KEYS = ["dependencies", "depends_on", "dependsOn", "depends"]
 SYNC_INTERVAL_KEYS = ["interval", "sync_interval", "syncInterval"]
 RETRY_INTERVAL_KEYS = ["retryInterval", "retry_interval"]
@@ -266,6 +288,7 @@ VALID_DURATION_REGEX = r"((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d
 VALID_GIT_URL_REGEX = r"^(((http|https|ssh)://)|(git@))"
 VALID_BUCKET_URL_REGEX = r"^(((http|https)://))"
 VALID_AZUREBLOB_URL_REGEX = r"^(((http|https)://))"
+VALID_OCI_URL_REGEX = r"^oci://.*$"
 
 VALID_KUBERNETES_DNS_SUBDOMAIN_NAME_REGEX = r"^[a-z0-9]([\.\-a-z0-9]*[a-z0-9])?$"
 VALID_KUBERNETES_DNS_NAME_REGEX = r"^[a-z0-9]([\-a-z0-9]*[a-z0-9])?$"
@@ -274,8 +297,10 @@ GIT = "git"
 BUCKET = "bucket"
 BUCKET_CAPS = "Bucket"
 AZBLOB = "azblob"
+OCI = "oci"
 AZURE_BLOB = "AzureBlob"
 GIT_REPOSITORY = "GitRepository"
+OCI_REPOSITORY = "OCIRepository"
 
 CONNECTED_CLUSTER_TYPE = "connectedclusters"
 MANAGED_CLUSTER_TYPE = "managedclusters"
