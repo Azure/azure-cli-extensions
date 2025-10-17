@@ -12,28 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic monitor monitored-subscription delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "elastic monitor open-ai-integration get-status",
 )
-class Delete(AAZCommand):
-    """Delete subscriptions being monitored by the Elastic monitor resource, removing their observability and monitoring capabilities.
+class GetStatus(AAZCommand):
+    """Get the status of OpenAI integration for a given Elastic monitor resource, ensuring optimal observability and performance.
 
-    :example: Monitors_DeleteMonitoredSubscriptions
-        az elastic monitor monitored-subscription delete --resource-group myResourceGroup --monitor-name myMonitor --configuration-name default
+    :example: OpenAI_GetStatus
+        az elastic monitor open-ai-integration get-status --resource-group myResourceGroup --monitor-name myMonitor --integration-name default
     """
 
     _aaz_info = {
         "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/monitoredsubscriptions/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/openaiintegrations/{}/getstatus", "2025-06-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -46,13 +44,13 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-name"],
-            help="The configuration name. Only 'default' value is supported.",
+        _args_schema.integration_name = AAZStrArg(
+            options=["--integration-name"],
+            help="OpenAI Integration name",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^.*$",
+                pattern="^[a-z][a-z0-9]*$",
             ),
         )
         _args_schema.monitor_name = AAZStrArg(
@@ -71,7 +69,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.MonitoredSubscriptionsDelete(ctx=self.ctx)()
+        self.OpenAIGetStatus(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,62 +80,41 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class MonitoredSubscriptionsDelete(AAZHttpOperation):
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+    class OpenAIGetStatus(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Elastic/monitors/{monitorName}/monitoredSubscriptions/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Elastic/monitors/{monitorName}/openAIIntegrations/{integrationName}/getStatus",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
-            return "MgmtErrorFormat"
+            return "ODataV4Format"
 
         @property
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
+                    "integrationName", self.ctx.args.integration_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -165,15 +142,43 @@ class Delete(AAZCommand):
             }
             return parameters
 
-        def on_204(self, session):
-            pass
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
 
-        def on_200_201(self, session):
-            pass
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.properties
+            properties.status = AAZStrType()
+
+            return cls._schema_on_200
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _GetStatusHelper:
+    """Helper class for GetStatus"""
 
 
-__all__ = ["Delete"]
+__all__ = ["GetStatus"]
