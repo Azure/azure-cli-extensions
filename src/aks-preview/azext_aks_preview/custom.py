@@ -1777,6 +1777,71 @@ def aks_agentpool_get_upgrade_profile(cmd,   # pylint: disable=unused-argument
     return client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
 
 
+def aks_agentpool_get_rollback_versions(cmd,   # pylint: disable=unused-argument
+                                        client,
+                                        resource_group_name,
+                                        cluster_name,  
+                                        nodepool_name):
+    """Get rollback versions for a nodepool."""
+    upgrade_profile = client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
+    return upgrade_profile.recently_used_versions
+
+
+def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
+                          client,
+                          resource_group_name,
+                          cluster_name,
+                          nodepool_name,
+                          kubernetes_version=None,
+                          node_image_version=None,
+                          aks_custom_headers=None,
+                          if_match=None,
+                          if_none_match=None,
+                          no_wait=False):
+    """Rollback a nodepool to N-1 (previously used configuration)."""
+    
+    # Get the current agent pool
+    current_agentpool = client.get(resource_group_name, cluster_name, nodepool_name)
+    
+    # Get upgrade profile to get recently used versions
+    upgrade_profile = client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
+    
+    # Check if rollback versions are available
+    if not upgrade_profile.recently_used_versions:
+        raise CLIError("No rollback versions are available for this nodepool.")
+    
+    # If no specific versions are provided, use the most recent (N-1) version
+    if not kubernetes_version and not node_image_version:
+        most_recent = upgrade_profile.recently_used_versions[0]
+        kubernetes_version = most_recent.orchestrator_version
+        node_image_version = most_recent.node_image_version
+    
+    # Update the agent pool configuration with rollback versions
+    if kubernetes_version:
+        current_agentpool.orchestrator_version = kubernetes_version
+    if node_image_version:
+        current_agentpool.node_image_version = node_image_version
+    
+    # Set custom headers if provided
+    headers = get_aks_custom_headers(aks_custom_headers)
+    if if_match:
+        headers['If-Match'] = if_match
+    if if_none_match:
+        headers['If-None-Match'] = if_none_match
+    
+    # Perform the rollback by updating the agent pool
+    # Server-side will validate the versions
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        current_agentpool,
+        headers=headers if headers else None
+    )
+
+
 def aks_agentpool_stop(cmd,   # pylint: disable=unused-argument
                        client,
                        resource_group_name,
