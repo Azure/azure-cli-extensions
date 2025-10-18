@@ -2365,16 +2365,21 @@ long-summary: |
     If no specific versions are provided, the nodepool will be rolled back to the most recently used configuration.
 parameters:
   - name: --kubernetes-version
+    type: string
     short-summary: Target Kubernetes version for rollback.
     long-summary: If not specified, uses the most recent available Kubernetes version.
   - name: --node-image-version
+    type: string
     short-summary: Target node image version for rollback.
     long-summary: If not specified, uses the most recent available node image version.
   - name: --aks-custom-headers
+    type: string
     short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.
   - name: --if-match
+    type: string
     short-summary: The revision of the resource being updated. This should match the current revision.
   - name: --if-none-match
+    type: string
     short-summary: Set to '*' to allow a new resource to be created, but to prevent updating an existing resource.
 examples:
   - name: Rollback a nodepool to the most recent configuration.
