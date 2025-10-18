@@ -9,13 +9,40 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
-18.0.0b45
+19.0.0b4
 +++++++
 * `az aks nodepool get-rollback-versions`: Add new command to get available rollback versions for a nodepool.
 * `az aks nodepool rollback`: Add new command to rollback a nodepool to a previously used configuration (N-1).
 
 Pending
 +++++++
+
+19.0.0b3
++++++++
+* Implement platform-managed-keys (PMK) awared validation for KMS customer-managed-key (CMK)
+
+19.0.0b2
++++++++
+* `az aks create`: Add new parameter `--enable-opentelemetry-metrics` to enable OTLP feature for metrics addon.
+* `az aks update`: Add new parameter `--enable-opentelemetry-metrics` to enable OTLP feature for metrics addon.
+* `az aks update`: Add new parameter `--disable-opentelemetry-metrics` to disable OTLP feature for metrics addon.
+* `az aks create`: Add new parameter `--opentelemetry-metrics-port` to change the OTLP port from the default for metrics addon.
+* `az aks update`: Add new parameter `--opentelemetry-metrics-port` to change the OTLP port from the default for metrics addon.
+* `az aks create`: Add new parameter `--enable-opentelemetry-logs` to enable OTLP feature for logs addon.
+* `az aks update`: Add new parameter `--enable-opentelemetry-logs` to enable OTLP feature for logs addon.
+* `az aks update`: Add new parameter `--disable-opentelemetry-logs` to disable OTLP feature for logs addon.
+* `az aks create`: Add new parameter `--opentelemetry-logs-port` to change the OTLP port from the default for logs addon.
+* `az aks update`: Add new parameter `--opentelemetry-logs-port` to change the OTLP port from the default for logs addon.
+* `az aks create`: Add new parameter `--enable-azure-monitor-logs` that is a wrapper to enable-addons -a monitoring.
+* `az aks update`: Add new parameter `--enable-azure-monitor-logs` that is a wrapper to enable-addons -a monitoring.
+* `az aks update`: Add new parameter `--disable-azure-monitor-logs` that is a wrapper to disable-addons -a monitoring.
+
+19.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks nodepool add`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks nodepool update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
 * `az aks update`: Add new parameter `--kms-infrastructure-encryption` to enable KMS infrastructure encryption on an existing cluster.
 
 18.0.0b44

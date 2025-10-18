@@ -2,6 +2,10 @@
 
 Release History
 ===============
+3.3.6
+++++++
+* Some improvements.
+
 3.3.5
 ++++++
 * Update dependencies.

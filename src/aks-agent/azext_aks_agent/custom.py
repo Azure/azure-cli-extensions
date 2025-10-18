@@ -5,7 +5,15 @@
 
 # pylint: disable=too-many-lines, disable=broad-except
 import os
+import sys
+from typing import Dict, Optional
+from azure.cli.core.api import get_config_dir
+from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
 from azext_aks_agent.agent.agent import aks_agent as aks_agent_internal
+from azext_aks_agent.agent.llm_providers import prompt_provider_choice, PROVIDER_REGISTRY
+from azext_aks_agent.agent.llm_config_manager import LLMConfigManager
+
+from azext_aks_agent.agent.agent import init_log
 
 from knack.log import get_logger
 
@@ -14,6 +22,47 @@ logger = get_logger(__name__)
 
 
 # pylint: disable=unused-argument
+def aks_agent_init(cmd):
+    """Initialize AKS agent llm configuration."""
+
+    init_log()
+
+    from rich.console import Console
+    from holmes.utils.colors import HELP_COLOR, ERROR_COLOR
+    from holmes.interactive import SlashCommands
+
+    console = Console()
+    console.print(
+        f"Welcome to AKS Agent LLM configuration setup. Type '{SlashCommands.EXIT.command}' to exit.",
+        style=f"bold {HELP_COLOR}")
+
+    provider = prompt_provider_choice()
+    params = provider.prompt_params()
+
+    llm_config_manager = LLMConfigManager()
+    # If the connection to the model endpoint is valid, save the configuration
+    is_valid, message, action = provider.validate_connection(params)
+
+    if is_valid and action == "save":
+        logger.info("%s", message)
+        llm_config_manager.save(provider.name, params)
+        console.print("LLM configuration setup successfully.", style=f"bold {HELP_COLOR}")
+
+    elif not is_valid and action == "retry_input":
+        logger.warning("%s", message)
+        console.print(
+            "Please re-run [bold]`az aks agent-init`[/bold] to correct the input parameters.", style=f"{ERROR_COLOR}")
+        sys.exit(1)
+
+    else:
+        logger.error("%s", message)
+        console.print(
+            "Please check your deployed model and network connectivity.", style=f"bold {ERROR_COLOR}")
+        sys.exit(1)
+
+
+# pylint: disable=unused-argument
+# pylint: disable=too-many-locals
 def aks_agent(
     cmd,
     prompt,
@@ -34,6 +83,75 @@ def aks_agent(
     if status:
         return aks_agent_status(cmd)
 
+    llm_config_manager = LLMConfigManager()
+    llm_config = None
+    default_llm_config_path = os.path.join(
+        get_config_dir(), CONST_AGENT_CONFIG_FILE_NAME)
+
+    if config_file == default_llm_config_path:
+        if not model:
+            logger.info("Using default configuration file: %s", config_file)
+            llm_config: Optional[Dict] = llm_config_manager.get_latest()
+            if not llm_config:
+                raise ValueError(
+                    "No llm configurations found. "
+                    "Please run `az aks agent init` "
+                    "or provide a config file using --config-file.")
+
+        else:
+            logger.info("Using specified model: %s", model)
+            # parsing model into provider/model
+            if "/" in model:
+                provider_name, model_name = model.split("/", 1)
+            else:
+                provider_name = "openai"
+                model_name = model
+            llm_config = llm_config_manager.get_specific(
+                provider_name, model_name)
+
+    else:
+        if config_file:
+            logger.info("Using user configuration file: %s", config_file)
+            import yaml
+            try:
+                with open(config_file, "r") as f:
+                    llm_config = yaml.safe_load(f)["llms"][0]
+                    if not isinstance(llm_config, Dict):
+                        raise ValueError(
+                            "Configuration file format is invalid. It should be a YAML mapping.")
+            except Exception as e:
+                raise ValueError(f"Failed to load configuration file: {e}")
+
+        else:
+            raise ValueError(
+                "No configuration found. "
+                "Please run `az aks agent-init` or provide a config file using --config-file, "
+                "or specify a model using --model.")
+
+    # Check if the configuration is complete
+    provider_name = llm_config.get("provider")
+    provider_instance = PROVIDER_REGISTRY.get(provider_name)()
+    parameter_schema = provider_instance.parameter_schema
+    if _check_provider(
+            provider_name,
+            parameter_schema,
+            llm_config,
+            llm_config_manager):
+        # get model for holmesgpt/litellm: provider_name/model_name
+        model_name = llm_config.get("MODEL_NAME")
+        if provider_name == "openai":
+            model = model or model_name
+        elif provider_name == "openai_compatiable":
+            model = model or f"openai/{model_name}"
+        else:
+            model = model or f"{provider_name}/{model_name}"
+        # Set environment variables for the model provider
+        for k, v in llm_config.items():
+            if k not in ["provider", "MODEL_NAME"]:
+                os.environ[k] = v
+        logger.info(
+            "Using provider: %s, model: %s, Env vars setup successfully.", provider_name, model_name)
+
     aks_agent_internal(
         cmd,
         resource_group_name,
@@ -51,6 +169,28 @@ def aks_agent(
     )
 
 
+def _check_provider(
+    provider_name: str,
+    parameter_schema: Dict,
+    llm_config: Dict,
+    llm_config_manager: LLMConfigManager
+) -> bool:
+    # Check if provider name is not empty
+    if not provider_name:
+        raise ValueError("No provider name.")
+    # Check if provider is supported
+    if provider_name not in PROVIDER_REGISTRY:
+        supported = list(PROVIDER_REGISTRY.keys())
+        raise ValueError(
+            f"Unsupported provider {provider_name} for LLM initialization."
+            f"Supported llm providers are {supported}. Please refer to doc.")
+    # check if provider config is complete
+    if not llm_config_manager.is_config_complete(llm_config, parameter_schema):
+        raise ValueError(
+            "Incomplete configuration in user config, please run `az aks agent-init` to initialize.")
+    return True
+
+
 def aks_agent_status(cmd):
     """
     Show AKS agent configuration and status.
@@ -61,7 +201,6 @@ def aks_agent_status(cmd):
     try:
         from azext_aks_agent.agent.binary_manager import AksMcpBinaryManager
         from azext_aks_agent.agent.mcp_manager import MCPManager
-        from azure.cli.core.api import get_config_dir
         from azext_aks_agent._consts import CONST_MCP_BINARY_DIR
 
         # Initialize status information
@@ -163,7 +302,8 @@ def _display_agent_status(status_info):
 
     # MCP Binary status
     binary_info = status_info.get("mcp_binary", {})
-    binary_status = "✅ Available" if binary_info.get("available") else "❌ Not available"
+    binary_status = "✅ Available" if binary_info.get(
+        "available") else "❌ Not available"
     binary_details = []
 
     if binary_info.get("version"):
@@ -177,7 +317,8 @@ def _display_agent_status(status_info):
     table.add_row("MCP Binary", binary_status, " | ".join(binary_details))
 
     # Server status (only if binary is available)
-    if binary_info.get("available") and status_info.get("mode") in ["mcp_ready", "mcp"]:
+    if binary_info.get("available") and status_info.get(
+            "mode") in ["mcp_ready", "mcp"]:
         server_info = status_info.get("server", {})
         server_status = ""
         server_details = []
@@ -224,21 +365,25 @@ def _get_recommendations(status_info):
     mode = status_info.get("mode", "unknown")
 
     if not binary_info.get("available"):
-        recommendations.append("Run 'az aks agent' to automatically download the MCP binary for enhanced capabilities")
+        recommendations.append(
+            "Run 'az aks agent' to automatically download the MCP binary for enhanced capabilities")
     elif not binary_info.get("version_valid", True):
-        recommendations.append("Update the MCP binary by running 'az aks agent --refresh-toolsets'")
+        recommendations.append(
+            "Update the MCP binary by running 'az aks agent --refresh-toolsets'")
     elif mode == "mcp_ready" and not server_info.get("running"):
-        recommendations.append("MCP binary is ready - run 'az aks agent' to start using enhanced capabilities")
+        recommendations.append(
+            "MCP binary is ready - run 'az aks agent' to start using enhanced capabilities")
     elif mode == "mcp_ready" and server_info.get("running") and not server_info.get("healthy"):
-        recommendations.append("MCP server is running but unhealthy - it will be automatically restarted on next use")
+        recommendations.append(
+            "MCP server is running but unhealthy - it will be automatically restarted on next use")
     elif mode in ["mcp_ready", "mcp"] and server_info.get("running") and server_info.get("healthy"):
-        recommendations.append("✅ AKS agent is ready with enhanced MCP capabilities")
+        recommendations.append(
+            "✅ AKS agent is ready with enhanced MCP capabilities")
     elif mode == "traditional":
         if binary_info.get("available"):
             recommendations.append(
                 "Consider using MCP mode for enhanced capabilities by running 'az aks agent' "
-                "(run again with --aks-mcp to switch modes)"
-            )
+                "(run again with --aks-mcp to switch modes)")
         else:
             recommendations.append("✅ AKS agent is ready in traditional mode")
     else:
@@ -268,7 +413,8 @@ def _get_health_emoji(status_info):
     if mode == "traditional":
         return "✅"  # Traditional mode is always healthy if working
     if mode in ["mcp_ready", "mcp"]:
-        if binary_info.get("available") and binary_info.get("version_valid", True):
+        if binary_info.get("available") and binary_info.get(
+                "version_valid", True):
             if server_info.get("running") and server_info.get("healthy"):
                 return "✅"  # Fully healthy
             if server_info.get("running"):
