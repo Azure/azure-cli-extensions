@@ -2039,7 +2039,7 @@ def load_arguments(self, _):
             help="Target Kubernetes version for rollback. If not specified, uses the most recent available version."
         )
         c.argument(
-            "node_image_version", 
+            "node_image_version",
             help="Target node image version for rollback. If not specified, uses the most recent available version."
         )
         c.argument("aks_custom_headers", nargs="*")

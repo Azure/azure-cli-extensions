@@ -2361,7 +2361,7 @@ helps['aks nodepool rollback'] = """
 type: command
 short-summary: Rollback an agent pool to a previously used configuration.
 long-summary: |
-    Rollback an agent pool to a previously used Kubernetes version or node image version. 
+    Rollback an agent pool to a previously used Kubernetes version or node image version.
     If no specific versions are provided, the nodepool will be rolled back to the most recently used configuration.
 parameters:
   - name: --kubernetes-version

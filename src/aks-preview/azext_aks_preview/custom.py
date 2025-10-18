@@ -1788,16 +1788,16 @@ def aks_agentpool_get_rollback_versions(cmd,   # pylint: disable=unused-argument
 
 
 def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
-                          client,
-                          resource_group_name,
-                          cluster_name,
-                          nodepool_name,
-                          kubernetes_version=None,
-                          node_image_version=None,
-                          aks_custom_headers=None,
-                          if_match=None,
-                          if_none_match=None,
-                          no_wait=False):
+                           client,
+                           resource_group_name,
+                           cluster_name,
+                           nodepool_name,
+                           kubernetes_version=None,
+                           node_image_version=None,
+                           aks_custom_headers=None,
+                           if_match=None,
+                           if_none_match=None,
+                           no_wait=False):
     """Rollback a nodepool to N-1 (previously used configuration)."""
 
     # Get the current agent pool

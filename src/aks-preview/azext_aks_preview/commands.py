@@ -277,7 +277,7 @@ def load_command_table(self, _):
         g.custom_command("delete", "aks_agentpool_delete", supports_no_wait=True)
         g.custom_command("get-upgrades", "aks_agentpool_get_upgrade_profile")
         g.custom_command(
-            "get-rollback-versions", 
+            "get-rollback-versions",
             "aks_agentpool_get_rollback_versions",
             table_transformer=aks_agentpool_rollback_versions_table_format
         )
