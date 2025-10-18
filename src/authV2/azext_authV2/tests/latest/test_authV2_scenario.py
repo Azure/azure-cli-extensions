@@ -16,6 +16,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class Authv2ScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_authV2')
+    @AllowLargeResponse()
     def test_authV2_clientsecret_param_combinations(self, resource_group):
         webapp_name = self.create_random_name('webapp-authentication-test', 40)
         plan_name = self.create_random_name('webapp-authentication-plan', 40)
@@ -29,13 +30,17 @@ class Authv2ScenarioTest(ScenarioTest):
 
         # testing show command for newly created app and initial fields
         self.cmd('webapp auth show -g {} -n {}'.format(resource_group, webapp_name)).assert_with_checks([
-            JMESPathCheck('properties', {})
+            JMESPathCheck('properties.platform.enabled', False)
         ])
+        
+        # upgrade to v2 before using v2 commands
+        self.cmd('webapp auth config-version upgrade -g {} -n {}'.format(resource_group, webapp_name))
 
         # # update and verify
         self.cmd('webapp auth update -g {} -n {} --enabled true --runtime-version 1.2.8'
                 .format(resource_group, webapp_name)).assert_with_checks([
-                    JMESPathCheck('platform', "{'enabled': True, 'runtimeVersion': '1.2.8'}")
+                    JMESPathCheck('platform.enabled', True),
+                    JMESPathCheck('platform.runtimeVersion', '1.2.8')
         ])
         
         with self.assertRaisesRegex(ArgumentUsageError, 'Usage Error: --client-secret and --client-secret-setting-name cannot both be '
@@ -79,6 +84,7 @@ class Authv2ScenarioTest(ScenarioTest):
                 .format(resource_group, webapp_name))
 
     @ResourceGroupPreparer(name_prefix='cli_test_authV2')
+    @AllowLargeResponse()
     def test_authV2_auth(self, resource_group):
         webapp_name = self.create_random_name('webapp-authentication-test', 40)
         plan_name = self.create_random_name('webapp-authentication-plan', 40)
@@ -92,17 +98,21 @@ class Authv2ScenarioTest(ScenarioTest):
 
         # testing show command for newly created app and initial fields
         self.cmd('webapp auth show -g {} -n {}'.format(resource_group, webapp_name)).assert_with_checks([
-            JMESPathCheck('properties', {})
+            JMESPathCheck('properties.platform.enabled', False)
         ])
+        
+        self.cmd('webapp auth config-version upgrade -g {} -n {}'.format(resource_group, webapp_name))
 
         # # update and verify
         self.cmd('webapp auth update -g {} -n {} --enabled true --runtime-version 1.2.8'
                 .format(resource_group, webapp_name)).assert_with_checks([
-                    JMESPathCheck('platform', "{'enabled': True, 'runtimeVersion': '1.2.8'}")
+                    JMESPathCheck('platform.enabled', True),
+                    JMESPathCheck('platform.runtimeVersion', '1.2.8')
         ])
 
 
     @ResourceGroupPreparer(name_prefix='cli_test_authV2')
+    @AllowLargeResponse()
     def test_authV2_authclassic(self, resource_group):
         webapp_name = self.create_random_name('webapp-authentication-test', 40)
         plan_name = self.create_random_name('webapp-authentication-plan', 40)
