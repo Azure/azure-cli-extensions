@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class DeleteTrafficFilter(AAZCommand):
     """Delete an existing traffic filter associated with your Elastic monitor resource, removing its network traffic control capabilities.
 
-    :example: Delete traffic filter
-        az elastic monitor delete-traffic-filter --monitor-name name -g rg --ruleset-id id
+    :example: TrafficFilters_Delete
+        az elastic monitor delete-traffic-filter --resource-group myResourceGroup --monitor-name myMonitor --ruleset-id 31d91b5afb6f4c2eaaf104c97b1991dd
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/deletetrafficfilter", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/deletetrafficfilter", "2025-06-01"],
         ]
     }
 
@@ -126,7 +126,7 @@ class DeleteTrafficFilter(AAZCommand):
                     "rulesetId", self.ctx.args.ruleset_id,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
