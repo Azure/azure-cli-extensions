@@ -181,8 +181,8 @@ class CheckAvailability(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.is_availiable = AAZBoolType(
-                serialized_name="isAvailiable",
+            _schema_on_200.is_available = AAZBoolType(
+                serialized_name="isAvailable",
             )
             _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
