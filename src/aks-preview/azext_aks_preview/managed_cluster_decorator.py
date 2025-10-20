@@ -3582,7 +3582,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self.raw_param.get("disable_gateway_api", False)
-    
+
     def get_enable_hosted_system(self) -> bool:
         """Obtain the value of enable_hosted_system.
 
