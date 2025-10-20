@@ -20564,7 +20564,7 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_nodepool_get_rollback_versions(self, resource_group, resource_group_location):
         """Test az aks nodepool get-rollback-versions command"""
@@ -20667,7 +20667,7 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_nodepool_rollback(self, resource_group, resource_group_location):
         """Test az aks nodepool rollback command with various scenarios"""
