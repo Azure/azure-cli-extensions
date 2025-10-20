@@ -58,11 +58,15 @@ logger = get_logger(__name__)
 # pylint: disable=bare-except
 
 
-def get_mcr_path(cmd: CLICommand) -> str:
-    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+def get_mcr_path(active_directory_endpoint: str) -> str:
+    active_directory_array = active_directory_endpoint.split(".")
 
-    # default for public, mc, ff clouds
-    mcr_postfix = active_directory_array[2]
+    # For US Government and China clouds, use public mcr
+    if active_directory_endpoint.endswith((".us", ".cn")):
+        return "mcr.microsoft.com"
+
+    # Default MCR postfix
+    mcr_postfix = "com"
     # special cases for USSec, exclude part of suffix
     if len(active_directory_array) == 4 and active_directory_array[2] == "microsoft":
         mcr_postfix = active_directory_array[3]
