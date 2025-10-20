@@ -1535,7 +1535,7 @@ class AzureFirewallScenario(ScenarioTest):
             "public_ip_name": self.create_random_name("public-ip-", 16),
             "m_public_ip_name": self.create_random_name("mpublic-ip-", 16),
             'rg' : resource_group,
-            'sub_id': "020a3f33-bdd2-4ddc-9275-6041363e2876",
+            'sub_id': self.get_subscription_id(),
             'location': "centralus",
             'storageaccountname': self.create_random_name('fwpcap', 20).lower(),
             'expirystring': tomorrow.strftime("%Y-%m-%d"),
@@ -1565,8 +1565,19 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('az network firewall create -g {rg} -n {firewall_name} --location {location} --sku AZFW_VNet --tier Basic --vnet-name {vnet_name} --public-ip {public_ip_name} --conf-name {conf_name} --m-conf-name {m_conf_name} --m-public-ip {m_public_ip_name}')
 
         # Perform Start Packet Capture Operation on the Azure Firewall
-        self.cmd('network firewall packet-capture-operation --resource-group {rg} --azure-firewall-name {firewall_name} --duration-in-seconds 1200 --number-of-packets-to-capture 50000 --sas-url {sas_url} --file-name azureFirewallPacketCapture --protocol Any --flags "[{{type:syn}},{{type:fin}}]" --filters "[{{sources:[20.1.1.0],destinations:[20.1.2.0],destination-ports:[4500]}},{{sources:[10.1.1.0,10.1.1.1],destinations:[10.1.2.0],destination-ports:[123,80]}}]" --operation Start')
-        
+        self.cmd(
+            'network firewall packet-capture-operation'
+            ' --resource-group {rg}'
+            ' --azure-firewall-name {firewall_name}'
+            ' --duration-in-seconds 1200'
+            ' --number-of-packets-to-capture 50000'
+            ' --sas-url {sas_url}'
+            ' --file-name azureFirewallPacketCapture'
+            ' --protocol Any'
+            ' --flags "[{{type:syn}},{{type:fin}}]"'
+            ' --filters "[{{sources:[20.1.1.0],destinations:[20.1.2.0],destination-ports:[4500]}},{{sources:[10.1.1.0,10.1.1.1],destinations:[10.1.2.0],destination-ports:[123,80]}}]"'
+            ' --operation Start'
+        )
         # Perform Status Packet Capture Operation on the Azure Firewall
         self.cmd('network firewall packet-capture-operation --resource-group {rg} --azure-firewall-name {firewall_name} --operation Status')
 
