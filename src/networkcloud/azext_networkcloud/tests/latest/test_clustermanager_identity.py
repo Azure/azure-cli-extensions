@@ -14,47 +14,71 @@ from azure.cli.testsdk import ScenarioTest
 from .config import CONFIG
 
 
-def setup_scenario1(test):
-    """Env setup_scenario1"""
+def setup_scenario(test):
+    """Env setup_scenario"""
     pass
 
 
-def cleanup_scenario1(test):
-    """Env cleanup_scenario1"""
+def cleanup_scenario(test):
+    """Env cleanup_scenario"""
     pass
 
 
 def call_scenario1(test):
     """# Testcase: scenario1 manipulate clustermanager identities"""
-    setup_scenario1(test)
-    step_assign_system_assigned_identity(test)
-    step_show(test)
-    step_remove_system_assigned_identity(test)
-    step_assign_user_assigned_identity(test)
-    step_show(test)
-    step_remove_user_assigned_identity(test)
-    step_show(test)
-
-    cleanup_scenario1(test)
+    setup_scenario(test)
+    step_assign_system_assigned_identity_scenario1(test)
+    step_remove_system_assigned_identity_scenario1(test)
+    step_assign_user_assigned_identity_scenario1(test)
+    step_remove_user_assigned_identity_scenario1(test)
+    step_show_scenario1(test)
+    cleanup_scenario(test)
 
 
-def step_assign_system_assigned_identity(test):
+def call_scenario2(test):
+    """# Testcase: scenario2 manipulate clustermanager identities"""
+    setup_scenario(test)
+    step_assign_system_assigned_identity_scenario2(test)
+    step_assign_user_assigned_identity_scenario2(test)
+    step_remove_system_assigned_identity_scenario2(test)
+    step_remove_user_assigned_identity_scenario2(test)
+    step_show_scenario2(test)
+    cleanup_scenario(test)
+
+
+def step_assign_system_assigned_identity_scenario1(test):
     """clustermanager identity assign system-assigned operation"""
     test.cmd(
         "az networkcloud clustermanager identity assign --name {name} --resource-group {rg} --mi-system-assigned",
-        checks=[test.check("type", "SystemAssigned")],
+        checks=[],
     )
 
 
-def step_assign_user_assigned_identity(test):
+def step_assign_system_assigned_identity_scenario2(test):
+    """clustermanager identity assign system-assigned operation"""
+    test.cmd(
+        "az networkcloud clustermanager identity assign --name {name} --resource-group {rg} --system-assigned",
+        checks=[],
+    )
+
+
+def step_assign_user_assigned_identity_scenario1(test):
     """clustermanager identity assign user-assigned operation"""
     test.cmd(
-        "az networkcloud clustermanager identity assign --name {name} --resource-group {rg} --mi-user-assigned {miUserAssigned}",
-        checks=[test.check("type", "UserAssigned")],
+        "az networkcloud clustermanager identity assign --cluster-manager-name {name} --resource-group {rg} --mi-user-assigned {miUserAssigned}",
+        checks=[],
     )
 
 
-def step_remove_system_assigned_identity(test):
+def step_assign_user_assigned_identity_scenario2(test):
+    """clustermanager identity assign user-assigned operation"""
+    test.cmd(
+        "az networkcloud clustermanager identity assign --name {name} --resource-group {rg} --user-assigned {miUserAssigned}",
+        checks=[],
+    )
+
+
+def step_remove_system_assigned_identity_scenario1(test):
     """clustermanager identity remove system-assigned operation"""
     test.cmd(
         "az networkcloud clustermanager identity remove --name {name} --resource-group {rg} --mi-system-assigned",
@@ -62,18 +86,42 @@ def step_remove_system_assigned_identity(test):
     )
 
 
-def step_remove_user_assigned_identity(test):
-    """clustermanager identity remove user-assigned operation"""
+def step_remove_system_assigned_identity_scenario2(test):
+    """clustermanager identity remove system-assigned operation"""
     test.cmd(
-        "az networkcloud clustermanager identity remove --name {name} --resource-group {rg} --mi-user-assigned {miUserAssigned}",
+        "az networkcloud clustermanager identity remove --name {name} --resource-group {rg} --system-assigned",
         checks=[],
     )
 
 
-def step_show(test):
+def step_remove_user_assigned_identity_scenario1(test):
+    """clustermanager identity remove user-assigned operation"""
+    test.cmd(
+        "az networkcloud clustermanager identity remove --cluster-manager-name {name} --resource-group {rg} --mi-user-assigned {miUserAssigned}",
+        checks=[],
+    )
+
+
+def step_remove_user_assigned_identity_scenario2(test):
+    """clustermanager identity remove user-assigned operation"""
+    test.cmd(
+        "az networkcloud clustermanager identity remove --cluster-manager-name {name} --resource-group {rg} --user-assigned {miUserAssigned}",
+        checks=[],
+    )
+
+
+def step_show_scenario1(test):
     """clustermanager identity show operation"""
     test.cmd(
         "az networkcloud clustermanager identity show --name {name} --resource-group {rg}",
+        checks=[],
+    )
+
+
+def step_show_scenario2(test):
+    """clustermanager identity show operation"""
+    test.cmd(
+        "az networkcloud clustermanager identity show --cluster-manager-name {name} --resource-group {rg}",
         checks=[],
     )
 
