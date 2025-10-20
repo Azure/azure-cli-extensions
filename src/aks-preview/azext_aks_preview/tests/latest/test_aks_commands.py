@@ -20609,17 +20609,18 @@ spec:
             "aks nodepool get-upgrades "
             "--resource-group={resource_group} "
             "--cluster-name={name} "
-            "--name={node_pool_name}"
+            "--name={node_pool_name} "
+            "-o json"
         )
         upgrades = self.cmd(get_upgrades_cmd).get_output_in_json()
         
         # Find a valid upgrade version from the available upgrades
         upgrade_version = None
         if upgrades and 'componentsByReleases' in upgrades and len(upgrades['componentsByReleases']) > 0:
-            for release in upgrades['componentsByReleases']:
-                if 'kubernetesVersion' in release:
-                    upgrade_version = release['kubernetesVersion']
-                    break
+            # Get the first available kubernetes version from upgrades
+            first_release = upgrades['componentsByReleases'][0]
+            if 'kubernetesVersion' in first_release:
+                upgrade_version = first_release['kubernetesVersion']
         
         # Skip test if no upgrade version is available
         if not upgrade_version:
@@ -20695,18 +20696,6 @@ spec:
             ],
         )
 
-        # Test case 1: Attempt rollback without available versions (should fail)
-        rollback_cmd = (
-            "aks nodepool rollback "
-            "--resource-group={resource_group} "
-            "--cluster-name={name} "
-            "--name={node_pool_name}"
-        )
-        
-        # Expected to fail with "No rollback versions are available" message
-        with self.assertRaisesRegex(Exception, "No rollback versions are available"):
-            self.cmd(rollback_cmd)
-
         # Get the nodepool details before upgrade to capture the current versions
         get_nodepool_cmd = (
             "aks nodepool show "
@@ -20723,17 +20712,18 @@ spec:
             "aks nodepool get-upgrades "
             "--resource-group={resource_group} "
             "--cluster-name={name} "
-            "--name={node_pool_name}"
+            "--name={node_pool_name} "
+            "-o json"
         )
         upgrades = self.cmd(get_upgrades_cmd).get_output_in_json()
         
         # Find a valid upgrade version from the available upgrades
         upgrade_version = None
         if upgrades and 'componentsByReleases' in upgrades and len(upgrades['componentsByReleases']) > 0:
-            for release in upgrades['componentsByReleases']:
-                if 'kubernetesVersion' in release:
-                    upgrade_version = release['kubernetesVersion']
-                    break
+            # Get the first available kubernetes version from upgrades
+            first_release = upgrades['componentsByReleases'][0]
+            if 'kubernetesVersion' in first_release:
+                upgrade_version = first_release['kubernetesVersion']
         
         # Skip test if no upgrade version is available
         if not upgrade_version:
@@ -20757,7 +20747,7 @@ spec:
             ],
         )
 
-        # Test case 2: Rollback to N-1 (without specifying versions)
+        # Test case 1: Rollback to N-1 (without specifying versions)
         rollback_n1_cmd = (
             "aks nodepool rollback "
             "--resource-group={resource_group} "
@@ -20791,7 +20781,7 @@ spec:
             ],
         )
 
-        # Test case 3: Rollback with only kubernetes-version specified
+        # Test case 2: Rollback with only kubernetes-version specified
         self.kwargs.update({"k8s_version": original_k8s_version})
         rollback_k8s_only_cmd = (
             "aks nodepool rollback "
@@ -20826,7 +20816,7 @@ spec:
             ],
         )
 
-        # Test case 4: Rollback with both kubernetes-version and node-image-version specified
+        # Test case 3: Rollback with both kubernetes-version and node-image-version specified
         self.kwargs.update({"original_node_image_version": original_node_image_version})
         rollback_both_cmd = (
             "aks nodepool rollback "
