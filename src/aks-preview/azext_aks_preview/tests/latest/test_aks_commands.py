@@ -20567,12 +20567,14 @@ spec:
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
     def test_aks_nodepool_get_rollback_versions(self, resource_group, resource_group_location):
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_nodepool_get_rollback_versions(self, resource_group, resource_group_location):
         """Test az aks nodepool get-rollback-versions command"""
         aks_name = self.create_random_name("cliakstest", 16)
         node_pool_name = self.create_random_name("c", 6)
-        
-        # Get available versions for testing
-        create_version, upgrade_version = self._get_versions(resource_group_location)
         
         self.kwargs.update(
             {
@@ -20580,16 +20582,13 @@ spec:
                 "name": aks_name,
                 "node_pool_name": node_pool_name,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "k8s_version": create_version,
-                "upgrade_version": upgrade_version,
             }
         )
 
-        # Create cluster with a specific Kubernetes version
+        # Create cluster with default Kubernetes version
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--nodepool-name {node_pool_name} -c 1 "
-            "--kubernetes-version={k8s_version} "
             "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
@@ -20609,6 +20608,29 @@ spec:
         nodepool_before_upgrade = self.cmd(get_nodepool_cmd).get_output_in_json()
         original_k8s_version = nodepool_before_upgrade["currentOrchestratorVersion"]
         original_node_image_version = nodepool_before_upgrade["nodeImageVersion"]
+
+        # Get valid upgrade versions from the API
+        get_upgrades_cmd = (
+            "aks nodepool get-upgrades "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name}"
+        )
+        upgrades = self.cmd(get_upgrades_cmd).get_output_in_json()
+        
+        # Find a valid upgrade version from the available upgrades
+        upgrade_version = None
+        if upgrades and 'componentsByReleases' in upgrades and len(upgrades['componentsByReleases']) > 0:
+            for release in upgrades['componentsByReleases']:
+                if 'kubernetesVersion' in release:
+                    upgrade_version = release['kubernetesVersion']
+                    break
+        
+        # Skip test if no upgrade version is available
+        if not upgrade_version:
+            self.skipTest("No upgrade version available for testing")
+        
+        self.kwargs.update({"upgrade_version": upgrade_version})
 
         # Upgrade the nodepool to populate recently used versions
         upgrade_cmd = (
@@ -20656,25 +20678,19 @@ spec:
         aks_name = self.create_random_name("cliakstest", 16)
         node_pool_name = self.create_random_name("c", 6)
         
-        # Get available versions for testing
-        create_version, upgrade_version = self._get_versions(resource_group_location)
-        
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "name": aks_name,
                 "node_pool_name": node_pool_name,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "k8s_version": create_version,
-                "upgrade_version": upgrade_version,
             }
         )
 
-        # Create cluster with a specific Kubernetes version
+        # Create cluster with default Kubernetes version
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--nodepool-name {node_pool_name} -c 1 "
-            "--kubernetes-version={k8s_version} "
             "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
@@ -20706,6 +20722,29 @@ spec:
         nodepool_before_upgrade = self.cmd(get_nodepool_cmd).get_output_in_json()
         original_k8s_version = nodepool_before_upgrade["currentOrchestratorVersion"]
         original_node_image_version = nodepool_before_upgrade["nodeImageVersion"]
+
+        # Get valid upgrade versions from the API
+        get_upgrades_cmd = (
+            "aks nodepool get-upgrades "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name}"
+        )
+        upgrades = self.cmd(get_upgrades_cmd).get_output_in_json()
+        
+        # Find a valid upgrade version from the available upgrades
+        upgrade_version = None
+        if upgrades and 'componentsByReleases' in upgrades and len(upgrades['componentsByReleases']) > 0:
+            for release in upgrades['componentsByReleases']:
+                if 'kubernetesVersion' in release:
+                    upgrade_version = release['kubernetesVersion']
+                    break
+        
+        # Skip test if no upgrade version is available
+        if not upgrade_version:
+            self.skipTest("No upgrade version available for testing")
+        
+        self.kwargs.update({"upgrade_version": upgrade_version})
 
         # Upgrade the nodepool to populate rollback versions
         upgrade_cmd = (
@@ -20758,6 +20797,7 @@ spec:
         )
 
         # Test case 3: Rollback with only kubernetes-version specified
+        self.kwargs.update({"k8s_version": original_k8s_version})
         rollback_k8s_only_cmd = (
             "aks nodepool rollback "
             "--resource-group={resource_group} "
@@ -20792,6 +20832,7 @@ spec:
         )
 
         # Test case 4: Rollback with both kubernetes-version and node-image-version specified
+        self.kwargs.update({"original_node_image_version": original_node_image_version})
         rollback_both_cmd = (
             "aks nodepool rollback "
             "--resource-group={resource_group} "
@@ -20800,7 +20841,6 @@ spec:
             "--kubernetes-version={k8s_version} "
             "--node-image-version={original_node_image_version}"
         )
-        self.kwargs.update({"original_node_image_version": original_node_image_version})
         
         rollback_both_result = self.cmd(
             rollback_both_cmd,
