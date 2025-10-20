@@ -20567,11 +20567,6 @@ spec:
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
     def test_aks_nodepool_get_rollback_versions(self, resource_group, resource_group_location):
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
-    )
-    def test_aks_nodepool_get_rollback_versions(self, resource_group, resource_group_location):
         """Test az aks nodepool get-rollback-versions command"""
         aks_name = self.create_random_name("cliakstest", 16)
         node_pool_name = self.create_random_name("c", 6)
