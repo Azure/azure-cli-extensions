@@ -899,6 +899,16 @@ def convert_backup_instance_show_to_input(backup_instance):
             del backup_instance['properties']['protectionStatus']
         if 'provisioningState' in backup_instance['properties']:
             del backup_instance['properties']['provisioningState']
+        # Cleaning up resourceProperties if objectType is null to avoid schema validation error
+        for datasource_property in ['dataSourceInfo', 'dataSourceSetInfo']:
+            if datasource_property in backup_instance['properties']:
+                datasource_info = backup_instance['properties'][datasource_property]
+                if (isinstance(datasource_info, dict) and
+                    'resourceProperties' in datasource_info and
+                    isinstance(datasource_info['resourceProperties'], dict)):
+                    if datasource_info['resourceProperties'].get('objectType') is None:
+                        # Set resourceProperties to None when objectType is null to avoid schema validation error
+                        del backup_instance['properties'][datasource_property]['resourceProperties']
     return backup_instance
 
 
