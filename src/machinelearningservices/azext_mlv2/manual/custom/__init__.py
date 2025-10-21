@@ -36,6 +36,7 @@ from .compute import *  # pylint: disable=wrong-import-position
 from .connection import *  # pylint: disable=wrong-import-position
 from .data import *  # pylint: disable=wrong-import-position
 from .datastore import *  # pylint: disable=wrong-import-position
+from .deployment_template import *  # pylint: disable=wrong-import-position
 from .environment import *  # pylint: disable=wrong-import-position
 from .feature_set import *  # pylint: disable=wrong-import-position
 from .feature_store import *  # pylint: disable=wrong-import-position,unused-wildcard-import

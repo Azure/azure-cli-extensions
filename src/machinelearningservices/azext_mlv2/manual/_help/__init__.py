@@ -19,6 +19,7 @@ from ._compute_help import get_compute_help
 from ._connection_help import get_connection_help
 from ._data_help import get_data_help
 from ._datastore_help import get_datastore_help
+from ._deployment_template_help import get_deployment_template_help
 from ._environment_help import get_environment_help
 from ._feature_set_help import get_feature_set_help
 from ._feature_store_entity_help import get_feature_store_entity_help
@@ -50,6 +51,7 @@ get_compute_help()
 get_workspace_help()
 get_workspace_outbound_rule_help()
 get_datastore_help()
+get_deployment_template_help()
 get_component_help()
 get_connection_help()
 get_schedule_help()
