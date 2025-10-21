@@ -3243,7 +3243,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         if enable_istio_cni and disable_istio_cni:
             raise MutuallyExclusiveArgumentError(
-                "Cannot both enable and disable Istio CNI at the same time.",
+                "Cannot specify --enable-istio-cni and "
+                "--disable-istio-cni at the same time."
             )
 
         # Check if service mesh is enabled before allowing CNI changes
