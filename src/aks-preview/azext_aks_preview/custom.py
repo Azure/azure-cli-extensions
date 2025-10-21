@@ -132,6 +132,16 @@ from azure.cli.command_modules.acs.addonconfiguration import (
     ensure_container_insights_for_monitoring,
     ensure_default_log_analytics_workspace_for_monitoring,
     sanitize_loganalytics_ws_resource_id,
+    get_existing_container_insights_extension_dcr_tags,
+    validate_data_collection_settings,
+    create_data_collection_endpoint,
+    create_or_delete_dcr_association,
+    create_dce_association,
+    create_ampls_scope,
+    get_resources_client,
+    _get_data_collection_settings,
+    _trim_suffix_if_needed,
+    ContainerInsightsStreams,
 )
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.azclierror import (
@@ -141,6 +151,7 @@ from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
     ValidationError,
+    AzCLIError,
 )
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import (
@@ -151,6 +162,7 @@ from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import (
     in_cloud_console,
     sdk_no_wait,
+    send_raw_request,
     shell_safe_json_parse,
 )
 from azure.core.exceptions import (
@@ -198,6 +210,377 @@ def _ssl_context():
             return ssl.SSLContext(ssl.PROTOCOL_TLSv1)
 
     return ssl.create_default_context()
+
+
+# pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
+def ensure_container_insights_for_monitoring_preview(
+    cmd,
+    addon,
+    cluster_subscription,
+    cluster_resource_group_name,
+    cluster_name,
+    cluster_region,
+    remove_monitoring=False,
+    aad_route=False,
+    create_dcr=False,
+    create_dcra=False,
+    enable_syslog=False,
+    data_collection_settings=None,
+    is_private_cluster=False,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False,
+):
+    """
+    Preview extension version of ensure_container_insights_for_monitoring that uses REST API
+    to avoid large workspace resource objects causing "Request Header Fields Too Large" errors.
+
+    Either adds the ContainerInsights solution to a LA Workspace OR sets up a DCR (Data Collection Rule) and DCRA
+    (Data Collection Rule Association). Both let the monitoring addon send data to a Log Analytics Workspace.
+    """
+    if not addon.enabled:
+        return None
+
+    if (not is_private_cluster or not aad_route) and ampls_resource_id is not None:
+        raise ArgumentUsageError("--ampls-resource-id can only be used with private cluster in MSI mode.")
+
+    is_use_ampls = False
+    if ampls_resource_id is not None:
+        is_use_ampls = True
+
+    # workaround for this addon key which has been seen lowercased in the wild
+    for key in list(addon.config):
+        if (
+            key.lower() == CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID.lower() and
+            key != CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
+        ):
+            addon.config[
+                CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
+            ] = addon.config.pop(key)
+
+    workspace_resource_id = addon.config[
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
+    ]
+    workspace_resource_id = sanitize_loganalytics_ws_resource_id(
+        workspace_resource_id
+    )
+
+    # extract subscription ID and workspace name from workspace_resource_id
+    try:
+        subscription_id = workspace_resource_id.split("/")[2]
+    except IndexError:
+        raise AzCLIError(
+            "Could not locate resource group in workspace-resource-id."
+        )
+
+    # extract workspace name from workspace_resource_id
+    try:
+        workspace_name = workspace_resource_id.split("/")[8]
+    except IndexError:
+        raise AzCLIError(
+            "Could not locate workspace name in --workspace-resource-id."
+        )
+
+    location = ""
+    # region of workspace can be different from region of RG so find the location of the workspace_resource_id
+    if not remove_monitoring:
+        try:
+            # The problem is that the Azure CLI adds many headers that cause "Request Header Fields Too Large" (431)
+            # Let's make a minimal direct HTTP request with only essential headers
+            import requests
+            from azure.cli.core._profile import Profile
+
+            # Get access token manually to avoid CLI headers
+            profile = Profile(cli_ctx=cmd.cli_ctx)
+            creds, _, _ = profile.get_login_credentials()
+
+            # Get the access token for Azure Resource Manager
+            access_token = ""
+            if hasattr(creds, 'get_token'):
+                # For newer Azure Identity credentials
+                token_info = creds.get_token('https://management.azure.com/.default')
+                access_token = token_info.token
+
+            # Build minimal request
+            url = f"https://management.azure.com{workspace_resource_id}?api-version=2015-11-01-preview&$select=location,id"
+
+            headers = {
+                'Authorization': f'Bearer {access_token}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+
+            response = requests.get(url, headers=headers, timeout=30)
+
+            if response.status_code == 200:
+                resource_data = response.json()
+
+                # Create a minimal resource object with just what we need
+                # pylint: disable=too-few-public-methods
+                class MinimalResource:
+                    def __init__(self, location, resource_id):
+                        self.location = location
+                        self.id = resource_id  # pylint: disable=invalid-name
+
+                resource = MinimalResource(
+                    location=resource_data.get('location'),
+                    resource_id=resource_data.get('id')
+                )
+            else:
+                # Fallback to original approach
+                resources = get_resources_client(cmd.cli_ctx, subscription_id)
+                resource = resources.get_by_id(workspace_resource_id, "2015-11-01-preview")
+
+            location = resource.location
+            # location can have spaces for example 'East US' hence remove the spaces
+            location = location.replace(" ", "").lower()
+
+        except Exception as ex:
+            # If all methods fail, fall back to a reasonable default or let the original function handle it
+            raise ex
+
+    # Limit data_collection_settings size to prevent header overflow
+    if data_collection_settings is not None:
+        data_collection_size = len(str(data_collection_settings))
+        if data_collection_size > 10240:  # 10KB threshold
+            data_collection_settings = None
+
+    if aad_route:  # pylint: disable=too-many-nested-blocks
+        cluster_resource_id = (
+            f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/"
+            f"providers/Microsoft.ContainerService/managedClusters/{cluster_name}"
+        )
+        dataCollectionRuleName = f"MSCI-{location}-{cluster_name}"
+        # Max length of the DCR name is 64 chars
+        dataCollectionRuleName = _trim_suffix_if_needed(dataCollectionRuleName[0:64])
+        dcr_resource_id = (
+            f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/"
+            f"providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+        )
+
+        # ingestion DCE MUST be in workspace region
+        ingestionDataCollectionEndpointName = f"MSCI-ingest-{location}-{cluster_name}"
+        # Max length of the DCE name is 44 chars
+        ingestionDataCollectionEndpointName = _trim_suffix_if_needed(ingestionDataCollectionEndpointName[0:43])
+        ingestion_dce_resource_id = None
+
+        # config DCE MUST be in cluster region
+        configDataCollectionEndpointName = f"MSCI-config-{cluster_region}-{cluster_name}"
+        # Max length of the DCE name is 44 chars
+        configDataCollectionEndpointName = _trim_suffix_if_needed(configDataCollectionEndpointName[0:43])
+        config_dce_resource_id = None
+
+        # create ingestion DCE if high log scale mode enabled
+        if enable_high_log_scale_mode:
+            ingestion_dce_resource_id = create_data_collection_endpoint(cmd, cluster_subscription, cluster_resource_group_name, location, ingestionDataCollectionEndpointName, is_use_ampls)
+
+        # create config DCE if AMPLS resource specified
+        if is_use_ampls:
+            config_dce_resource_id = create_data_collection_endpoint(cmd, cluster_subscription, cluster_resource_group_name, cluster_region, configDataCollectionEndpointName, is_use_ampls)
+
+        if create_dcr:
+            # first get the association between region display names and region IDs (because for some reason
+            # the "which RPs are available in which regions" check returns region display names)
+            region_names_to_id = {}
+            # retry the request up to two times
+            for _ in range(3):
+                try:
+                    location_list_url = cmd.cli_ctx.cloud.endpoints.resource_manager + \
+                        f"/subscriptions/{cluster_subscription}/locations?api-version=2019-11-01"
+                    r = send_raw_request(cmd.cli_ctx, "GET", location_list_url)
+                    # this is required to fool the static analyzer. The else statement will only run if an exception
+                    # is thrown, but flake8 will complain that e is undefined if we don't also define it here.
+                    error = None
+                    break
+                except AzCLIError as e:
+                    error = e
+            else:
+                # This will run if the above for loop was not broken out of. This means all three requests failed
+                raise error
+            json_response = json.loads(r.text)
+            for region_data in json_response["value"]:
+                region_names_to_id[region_data["displayName"]] = region_data[
+                    "name"
+                ]
+
+            dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + \
+                f"{dcr_resource_id}?api-version=2022-06-01"
+            # get existing tags on the container insights extension DCR if the customer added any
+            existing_tags = get_existing_container_insights_extension_dcr_tags(
+                cmd, dcr_url)
+            # get data collection settings
+            extensionSettings = {}
+            cistreams = ["Microsoft-ContainerInsights-Group-Default"]
+            if enable_high_log_scale_mode:
+                cistreams = ContainerInsightsStreams
+            if data_collection_settings is not None:
+                dataCollectionSettings = _get_data_collection_settings(data_collection_settings)
+                validate_data_collection_settings(dataCollectionSettings)
+                dataCollectionSettings.setdefault("enableContainerLogV2", True)
+                extensionSettings["dataCollectionSettings"] = dataCollectionSettings
+                cistreams = dataCollectionSettings["streams"]
+            else:
+                # If data_collection_settings is None, set default dataCollectionSettings
+                dataCollectionSettings = {
+                    "enableContainerLogV2": True
+                }
+                extensionSettings["dataCollectionSettings"] = dataCollectionSettings
+
+            if enable_high_log_scale_mode:
+                for i, v in enumerate(cistreams):
+                    if v == "Microsoft-ContainerLogV2":
+                        cistreams[i] = "Microsoft-ContainerLogV2-HighScale"
+            # create the DCR
+            dcr_creation_body_without_syslog = json.dumps(
+                {
+                    "location": location,
+                    "tags": existing_tags,
+                    "kind": "Linux",
+                    "properties": {
+                        "dataSources": {
+                            "extensions": [
+                                {
+                                    "name": "ContainerInsightsExtension",
+                                    "streams": cistreams,
+                                    "extensionName": "ContainerInsights",
+                                    "extensionSettings": extensionSettings,
+                                }
+                            ]
+                        },
+                        "dataFlows": [
+                            {
+                                "streams": cistreams,
+                                "destinations": ["la-workspace"],
+                            }
+                        ],
+                        "destinations": {
+                            "logAnalytics": [
+                                {
+                                    "workspaceResourceId": workspace_resource_id,
+                                    "name": "la-workspace",
+                                }
+                            ]
+                        },
+                        "dataCollectionEndpointId": ingestion_dce_resource_id
+                    },
+                }
+            )
+
+            dcr_creation_body_with_syslog = json.dumps(
+                {
+                    "location": location,
+                    "tags": existing_tags,
+                    "kind": "Linux",
+                    "properties": {
+                        "dataSources": {
+                            "syslog": [
+                                {
+                                    "streams": [
+                                        "Microsoft-Syslog"
+                                    ],
+                                    "facilityNames": [
+                                        "auth",
+                                        "authpriv",
+                                        "cron",
+                                        "daemon",
+                                        "mark",
+                                        "kern",
+                                        "local0",
+                                        "local1",
+                                        "local2",
+                                        "local3",
+                                        "local4",
+                                        "local5",
+                                        "local6",
+                                        "local7",
+                                        "lpr",
+                                        "mail",
+                                        "news",
+                                        "syslog",
+                                        "user",
+                                        "uucp"
+                                    ],
+                                    "logLevels": [
+                                        "Debug",
+                                        "Info",
+                                        "Notice",
+                                        "Warning",
+                                        "Error",
+                                        "Critical",
+                                        "Alert",
+                                        "Emergency"
+                                    ],
+                                    "name": "sysLogsDataSource"
+                                }
+                            ],
+                            "extensions": [
+                                {
+                                    "name": "ContainerInsightsExtension",
+                                    "streams": cistreams,
+                                    "extensionName": "ContainerInsights",
+                                    "extensionSettings": extensionSettings,
+                                }
+                            ]
+                        },
+                        "dataFlows": [
+                            {
+                                "streams": cistreams,
+                                "destinations": ["la-workspace"],
+                            },
+                            {
+                                "streams": [
+                                    "Microsoft-Syslog"
+                                ],
+                                "destinations": ["la-workspace"],
+                            }
+                        ],
+                        "destinations": {
+                            "logAnalytics": [
+                                {
+                                    "workspaceResourceId": workspace_resource_id,
+                                    "name": "la-workspace",
+                                }
+                            ]
+                        },
+                        "dataCollectionEndpointId": ingestion_dce_resource_id
+                    },
+                }
+            )
+
+            resources = get_resources_client(cmd.cli_ctx, cluster_subscription)
+            for _ in range(3):
+                try:
+                    if enable_syslog:
+                        resources.begin_create_or_update_by_id(
+                            dcr_resource_id,
+                            "2022-06-01",
+                            json.loads(dcr_creation_body_with_syslog)
+                        )
+                    else:
+                        resources.begin_create_or_update_by_id(
+                            dcr_resource_id,
+                            "2022-06-01",
+                            json.loads(dcr_creation_body_without_syslog)
+                        )
+                    error = None
+                    break
+                except CLIError as e:
+                    error = e
+            else:
+                raise error
+
+        if create_dcra:
+            # only create or delete the association between the DCR and cluster
+            create_or_delete_dcr_association(cmd, cluster_region, remove_monitoring, cluster_resource_id, dcr_resource_id)
+            if is_use_ampls:
+                # associate config DCE to the cluster
+                create_dce_association(cmd, cluster_region, cluster_resource_id, config_dce_resource_id)
+                # link config DCE to AMPLS
+                create_ampls_scope(cmd, ampls_resource_id, configDataCollectionEndpointName, config_dce_resource_id)
+                # link workspace to AMPLS
+                create_ampls_scope(cmd, ampls_resource_id, workspace_name, workspace_resource_id)
+                # link ingest DCE to AMPLS
+                if enable_high_log_scale_mode:
+                    create_ampls_scope(cmd, ampls_resource_id, ingestionDataCollectionEndpointName, ingestion_dce_resource_id)
 
 
 # pylint: disable=too-many-locals
@@ -622,6 +1005,7 @@ def aks_create(
     bootstrap_container_registry_resource_id=None,
     # addons
     enable_addons=None,  # pylint: disable=redefined-outer-name
+    enable_azure_monitor_logs=False,
     workspace_resource_id=None,
     enable_msi_auth_for_monitoring=True,
     enable_syslog=False,
@@ -709,7 +1093,6 @@ def aks_create(
     crg_id=None,
     message_of_the_day=None,
     workload_runtime=None,
-    enable_custom_ca_trust=False,
     nodepool_allowed_host_ports=None,
     nodepool_asg_ids=None,
     node_public_ip_tags=None,
@@ -730,6 +1113,13 @@ def aks_create(
     enable_windows_recording_rules=False,
     # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
+    # opentelemetry parameters
+    enable_opentelemetry_metrics=False,
+    opentelemetry_metrics_port=None,
+    disable_opentelemetry_metrics=False,
+    enable_opentelemetry_logs=False,
+    opentelemetry_logs_port=None,
+    disable_opentelemetry_logs=False,
     # metrics profile
     enable_cost_analysis=False,
     # AI toolchain operator
@@ -761,6 +1151,8 @@ def aks_create(
     # managed system pool
     enable_managed_system_pool=False,
     enable_upstream_kubescheduler_user_configuration=False,
+    # managed gateway installation
+    enable_gateway_api=False
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -865,12 +1257,21 @@ def aks_update(
     azure_keyvault_kms_key_id=None,
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
+    kms_infrastructure_encryption=None,
     http_proxy_config=None,
     disable_http_proxy=False,
     enable_http_proxy=False,
     bootstrap_artifact_source=None,
     bootstrap_container_registry_resource_id=None,
     # addons
+    enable_azure_monitor_logs=False,
+    disable_azure_monitor_logs=False,
+    workspace_resource_id=None,
+    enable_msi_auth_for_monitoring=None,
+    enable_syslog=False,
+    data_collection_settings=None,
+    enable_high_log_scale_mode=False,
+    ampls_resource_id=None,
     enable_secret_rotation=False,
     disable_secret_rotation=False,
     rotation_poll_interval=None,
@@ -927,6 +1328,13 @@ def aks_update(
     # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
     disable_azure_monitor_app_monitoring=False,
+    # opentelemetry parameters
+    enable_opentelemetry_metrics=False,
+    opentelemetry_metrics_port=None,
+    disable_opentelemetry_metrics=False,
+    enable_opentelemetry_logs=False,
+    opentelemetry_logs_port=None,
+    disable_opentelemetry_logs=False,
     enable_vpa=False,
     disable_vpa=False,
     enable_optimized_addon_scaling=False,
@@ -980,6 +1388,9 @@ def aks_update(
     migrate_vmas_to_vms=False,
     enable_upstream_kubescheduler_user_configuration=False,
     disable_upstream_kubescheduler_user_configuration=False,
+    # managed gateway installation
+    enable_gateway_api=False,
+    disable_gateway_api=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1439,7 +1850,6 @@ def aks_agentpool_add(
     crg_id=None,
     message_of_the_day=None,
     workload_runtime=None,
-    enable_custom_ca_trust=False,
     disable_windows_outbound_nat=False,
     allowed_host_ports=None,
     asg_ids=None,
@@ -1516,8 +1926,6 @@ def aks_agentpool_update(
     no_wait=False,
     aks_custom_headers=None,
     # extensions
-    enable_custom_ca_trust=False,
-    disable_custom_ca_trust=False,
     allowed_host_ports=None,
     asg_ids=None,
     enable_artifact_streaming=False,

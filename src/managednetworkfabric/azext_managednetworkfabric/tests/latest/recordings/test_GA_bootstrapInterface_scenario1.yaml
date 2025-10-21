@@ -1,0 +1,97 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric bootstrapinterface show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --bootstrap-device
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/networkBootstrapInterfaces/example-interface?api-version=2025-07-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/networkBootstrapInterfaces/example-interface","name":"example-interface","type":"Microsoft.ManagedNetworkFabric/networkBootstrapDevices/networkBootstrapInterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2024-02-12T09:32:41.2764291Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2024-02-12T09:32:41.2764291Z"},"properties":{"annotation":null,"interfaceType":"Physical","physicalIdentifier":"Ethernet1/1","connectedTo":"Server1","neighbor":"server1.example.com","neighborPort":"eth0","ipv4Address":"192.168.1.10/24","ipv6Address":"2001:db8::1/64","macAddress":"aa:bb:cc:dd:ee:ff","speed":"10Gbps","mtu":1500,"administrativeState":"Enabled","operationalState":"Up","provisioningState":"Succeeded","configurationState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1024'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:51:30 GMT
+      etag:
+      - '"00001300-0000-3400-0000-65c9e5b90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 2DCCD9B97FCA46E99BB59030E241699D Ref B: MAA201060516021 Ref C: 2024-02-12T09:51:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric bootstrapinterface list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --bootstrap-device
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/networkBootstrapInterfaces?api-version=2025-07-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/networkBootstrapInterfaces/example-interface","name":"example-interface","type":"Microsoft.ManagedNetworkFabric/networkBootstrapDevices/networkBootstrapInterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2024-02-12T09:32:41.2764291Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2024-02-12T09:32:41.2764291Z"},"properties":{"annotation":null,"interfaceType":"Physical","physicalIdentifier":"Ethernet1/1","connectedTo":"Server1","neighbor":"server1.example.com","neighborPort":"eth0","ipv4Address":"192.168.1.10/24","ipv6Address":"2001:db8::1/64","macAddress":"aa:bb:cc:dd:ee:ff","speed":"10Gbps","mtu":1500,"administrativeState":"Enabled","operationalState":"Up","provisioningState":"Succeeded","configurationState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/networkBootstrapInterfaces/Ethernet1/2","name":"Ethernet1/2","type":"Microsoft.ManagedNetworkFabric/networkBootstrapDevices/networkBootstrapInterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2024-02-12T09:32:41.3764291Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2024-02-12T09:32:41.3764291Z"},"properties":{"annotation":null,"interfaceType":"Physical","physicalIdentifier":"Ethernet1/2","connectedTo":"Server2","neighbor":"server2.example.com","neighborPort":"eth0","ipv4Address":"192.168.1.11/24","ipv6Address":"2001:db8::2/64","macAddress":"aa:bb:cc:dd:ee:f0","speed":"10Gbps","mtu":1500,"administrativeState":"Enabled","operationalState":"Up","provisioningState":"Succeeded","configurationState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2048'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:51:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 7926a30e-e199-492f-87dc-40560dd1d1ed
+      - a370bc2e-bf02-42d6-a350-2ef45f953eb8
+      x-msedge-ref:
+      - 'Ref A: A17FC499168146489E54A558FBBEA198 Ref B: MAA201060516029 Ref C: 2024-02-12T09:51:31Z'
+    status:
+      code: 200
+      message: OK
+version: 1

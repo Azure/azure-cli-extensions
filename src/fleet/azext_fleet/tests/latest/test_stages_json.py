@@ -9,7 +9,7 @@ import tempfile
 import os
 from unittest.mock import MagicMock, patch
 from azext_fleet.custom import get_update_run_strategy
-from azext_fleet.vendored_sdks.v2025_04_01_preview.models import UpdateRunStrategy, UpdateStage, UpdateGroup
+from azext_fleet.vendored_sdks.v2025_08_01_preview.models import UpdateRunStrategy, UpdateStage, UpdateGroup
 from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
