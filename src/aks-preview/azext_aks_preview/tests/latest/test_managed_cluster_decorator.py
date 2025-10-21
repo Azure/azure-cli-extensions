@@ -11145,13 +11145,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
 
 
-    def test_enable_retina_network_flow_logs(self):
-        # Case 1: enable_acns, enable monitoring addons_profile, enable retina_network_flow_logs
+    def test_enable_container_network_logs(self):
+        # Case 1: enable_acns, enable monitoring addons_profile, enable container_network_logs
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {
-                "enable_retina_flow_logs": True,
+                "enable_container_network_logs": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -11201,7 +11201,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "disable_retina_flow_logs": True,
+                "disable_container_network_logs": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -11253,7 +11253,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_acns": True,
-                "enable_retina_flow_logs": True,
+                "enable_container_network_logs": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -11287,7 +11287,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 "workspace_resource_id": "test_workspace_resource_id",
                 "enable_msi_auth_for_monitoring": True,
                 "enable_acns": True,
-                "enable_retina_flow_logs": True,
+                "enable_container_network_logs": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -11330,7 +11330,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 "enable_addons": "",
                 "workspace_resource_id": "test_workspace_resource_id",
                 "enable_acns": True,
-                "enable_retina_flow_logs": True,
+                "enable_container_network_logs": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -11363,7 +11363,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 "enable_addons": "monitoring",
                 "workspace_resource_id": "test_workspace_resource_id",
                 "enable_msi_auth_for_monitoring": True,
-                "enable_retina_flow_logs": True,
+                "enable_container_network_logs": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -11383,6 +11383,58 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             external_functions = dec_6.context.external_functions
             with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
                 dec_6.set_up_addon_profiles(mc_6)
+
+        # Case 7: acns is enabled, monitoring is enabled, enable retina network flow logs
+        # Confirms deprecated flag still works
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_retina_flow_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "True"}
+                )
+            },
+        )
+        dec_7.context.attach_mc(mc_7)
+        dec_mc_7 = dec_7.update_monitoring_profile_flow_logs(mc_7)
+        ground_truth_mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "True"}
+                )
+            },
+        )
+        self.assertEqual(dec_mc_7, ground_truth_mc_7)
 
     def test_update_node_provisioning_profile(self):
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(

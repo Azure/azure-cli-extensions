@@ -17484,7 +17484,7 @@ spec:
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
             "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay "
-            "--enable-acns --enable-retina-flow-logs --enable-addons monitoring --enable-high-log-scale-mode "
+            "--enable-acns --enable-container-network-logs --enable-addons monitoring --enable-high-log-scale-mode "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingFlowLogsPreview "
         )
 
@@ -17516,26 +17516,24 @@ spec:
             self.check('properties.dataFlows[0].streams[-1]', 'Microsoft-RetinaNetworkFlowLogs'),
         ])
 
-        # Below steps are disabled for now. Confirmed working with local build of cli-extensions, however live recordings are not working properly
-        # # update to disable pfl
-        # disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-retina-flow-logs -o json"
-        # self.cmd(
-        #     disable_cmd,
-        #     checks=[
-        #         self.check("provisioningState", "Succeeded"),
-        #         self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "False"),
-        #     ],
-        # )
+        disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-container-network-logs -o json"
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "False"),
+            ],
+        )
 
-        # # enable update command for pfl
-        # enable_cmd_update = "aks update --resource-group={resource_group} --name={name} --enable-retina-flow-logs -o json"
-        # self.cmd(
-        #     enable_cmd_update,
-        #     checks=[
-        #         self.check("provisioningState", "Succeeded"),
-        #         self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
-        #     ],
-        # )
+        # enable update command for pfl
+        enable_cmd_update = "aks update --resource-group={resource_group} --name={name} --enable-container-network-logs -o json"
+        self.cmd(
+            enable_cmd_update,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
+            ],
+        )
 
         # delete
         self.cmd(
