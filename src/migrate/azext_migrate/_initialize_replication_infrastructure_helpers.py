@@ -7,7 +7,7 @@
 import time
 from knack.util import CLIError
 from knack.log import get_logger
-from azure.cli.command_modules.migrate._helpers import (
+from azext_migrate._helpers import (
     send_get_request,
     get_resource_by_id,
     delete_resource,

@@ -4,9 +4,10 @@
 # for license information.
 # -----------------------------------------------------------------------
 
+import time
 from knack.util import CLIError
 from knack.log import get_logger
-from azure.cli.command_modules.migrate._helpers import (
+from azext_migrate._helpers import (
     send_get_request,
 )
 
@@ -46,9 +47,8 @@ def get_discovered_server(cmd,
         CLIError: If required parameters are missing or the API request
             fails
     """
-    from azure.cli.command_modules.migrate._helpers import APIVersion
-    from azure.cli.command_modules.migrate.\
-        _get_discovered_server_helpers import (
+    from azext_migrate._helpers import APIVersion
+    from azext_migrate._get_discovered_server_helpers import (
             validate_get_discovered_server_params,
             build_base_uri,
             fetch_all_servers,
@@ -148,8 +148,7 @@ def initialize_replication_infrastructure(cmd,
     """
     from azure.cli.core.commands.client_factory import \
         get_subscription_id
-    from azure.cli.command_modules.migrate.\
-        _initialize_replication_infrastructure_helpers import (
+    from azext_migrate._initialize_replication_infrastructure_helpers import (
             validate_required_parameters,
             execute_replication_infrastructure_setup
         )
@@ -257,9 +256,8 @@ def new_local_server_replication(cmd,
     Raises:
         CLIError: If required parameters are missing or validation fails
     """
-    from azure.cli.command_modules.migrate._helpers import SiteTypes
-    from azure.cli.command_modules.migrate.\
-        _new_local_server_replication_helpers import (
+    from azext_migrate._helpers import SiteTypes
+    from azext_migrate._new_local_server_replication_helpers import (
             validate_server_parameters,
             validate_required_parameters,
             validate_ARM_id_formats,

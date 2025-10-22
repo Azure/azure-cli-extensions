@@ -14,7 +14,7 @@ class MigrateCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
 
         migrate_custom = CliCommandType(
-            operations_tmpl='azure.cli.command_modules.migrate.custom#{}',
+            operations_tmpl='azext_migrate.custom#{}',
         )
 
         super().__init__(
@@ -24,13 +24,13 @@ class MigrateCommandsLoader(AzCommandsLoader):
         )
 
     def load_command_table(self, args):
-        from azure.cli.command_modules.migrate.commands \
+        from azext_migrate.commands \
             import load_command_table
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        from azure.cli.command_modules.migrate._params import load_arguments
+        from azext_migrate._params import load_arguments
         load_arguments(self, command)
 
 

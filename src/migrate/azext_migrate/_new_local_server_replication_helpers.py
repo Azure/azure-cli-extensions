@@ -1,5 +1,5 @@
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.command_modules.migrate._helpers import (
+from azext_migrate._helpers import (
     send_get_request,
     get_resource_by_id,
     create_or_update_resource,

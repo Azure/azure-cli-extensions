@@ -3,7 +3,6 @@
 # Licensed under the MIT License.
 # See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=E501
 import hashlib
 from enum import Enum
 from knack.util import CLIError
