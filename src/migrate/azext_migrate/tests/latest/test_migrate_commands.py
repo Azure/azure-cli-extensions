@@ -1,7 +1,6 @@
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See License.txt in the project root for
-# license information.
+# Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
 import unittest
@@ -442,7 +441,7 @@ class MigrateReplicationInitTests(ScenarioTest):
         'azext_migrate._helpers.get_resource_by_id')
     @mock.patch(
         'azure.cli.core.commands.client_factory.get_subscription_id')
-    @mock.patch('azext_migrate.custom.time.sleep')
+    @mock.patch('time.sleep')
     def test_initialize_replication_infrastructure_success(
             self, mock_sleep, mock_get_sub_id,
             mock_get_resource, mock_fetch_servers,

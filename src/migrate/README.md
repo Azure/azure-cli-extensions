@@ -2,7 +2,7 @@
 
 This module provides server discovery and replication capabilities for Azure resources and workloads through Azure CLI commands, with special focus on Azure Local (Azure Stack HCI) migrations.
 
-# Azure CLI MCC Extension #
+# Azure CLI Migrate Extension #
 The Azure CLI extension for managing [Azure Migrate](https://aka.ms/azure-migrate) resources. 
 
 ## Install ##
