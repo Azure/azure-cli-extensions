@@ -1233,7 +1233,7 @@ def construct_disk_and_nic_mapping(is_power_user_mode,
                 "Exactly one disk must be designated as the OS disk.")
 
         # Process disks
-        for i, disk in enumerate(disk_to_include):
+        for disk in disk_to_include:
             disk_obj = {
                 'diskId': disk.get('diskId'),
                 'diskSizeGb': disk.get('diskSizeGb'),
