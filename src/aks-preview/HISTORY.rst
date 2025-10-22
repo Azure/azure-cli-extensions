@@ -11,6 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks get-credentials`: Convert device code mode kubeconfig to Azure CLI token format to bypass conditional access login blocks.
+
+19.0.0b4
++++++++
+* `az aks create`: Add new parameter `--enable-hosted-system` to enable hosted system components for automatic clusters.
 * Added `--enable-gateway-api` to `az aks create` to enable managed Gateway API installation
 * Added `--enable-gateway-api` and `--disable-gateway-api` to `az aks update` to enable/disable managed Gateway API installation
 
