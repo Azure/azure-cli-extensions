@@ -21,7 +21,7 @@ class Authv2ScenarioTest(ScenarioTest):
         webapp_name = self.create_random_name('webapp-authentication-test', 40)
         plan_name = self.create_random_name('webapp-authentication-plan', 40)
         self.cmd(
-            'appservice plan create -g {} -n {} --sku S1'.format(resource_group, plan_name))
+            'appservice plan create -g {} -n {} --sku S1 --location westus2'.format(resource_group, plan_name))
         self.cmd(
             'webapp create -g {} -n {} --plan {}'.format(resource_group, webapp_name, plan_name))
         self.cmd('webapp auth config-version show -g {} -n {}'.format(resource_group, webapp_name)).assert_with_checks([
@@ -87,7 +87,7 @@ class Authv2ScenarioTest(ScenarioTest):
         webapp_name = self.create_random_name('webapp-authentication-test', 40)
         plan_name = self.create_random_name('webapp-authentication-plan', 40)
         self.cmd(
-            'appservice plan create -g {} -n {} --sku S1'.format(resource_group, plan_name))
+            'appservice plan create -g {} -n {} --sku S1 --location westus2'.format(resource_group, plan_name))
         self.cmd(
             'webapp create -g {} -n {} --plan {}'.format(resource_group, webapp_name, plan_name))
         self.cmd('webapp auth config-version show -g {} -n {}'.format(resource_group, webapp_name)).assert_with_checks([
@@ -115,7 +115,7 @@ class Authv2ScenarioTest(ScenarioTest):
         webapp_name = self.create_random_name('webapp-authentication-test', 40)
         plan_name = self.create_random_name('webapp-authentication-plan', 40)
         self.cmd(
-            'appservice plan create -g {} -n {} --sku S1'.format(resource_group, plan_name))
+            'appservice plan create -g {} -n {} --sku S1 --location westus2'.format(resource_group, plan_name))
         self.cmd(
             'webapp create -g {} -n {} --plan {}'.format(resource_group, webapp_name, plan_name))
         self.cmd('webapp auth config-version show -g {} -n {}'.format(resource_group, webapp_name)).assert_with_checks([
@@ -169,7 +169,7 @@ class Authv2ScenarioTest(ScenarioTest):
         webapp_name = self.create_random_name('webapp-authentication-test', 40)
         plan_name = self.create_random_name('webapp-authentication-plan', 40)
         self.cmd(
-            'appservice plan create -g {} -n {} --sku S1'.format(resource_group, plan_name))
+            'appservice plan create -g {} -n {} --sku S1 --location westus2'.format(resource_group, plan_name))
         self.cmd(
             'webapp create -g {} -n {} --plan {}'.format(resource_group, webapp_name, plan_name))
         self.cmd('webapp auth config-version show -g {} -n {}'.format(resource_group, webapp_name)).assert_with_checks([
