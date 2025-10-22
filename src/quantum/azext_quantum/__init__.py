@@ -6,15 +6,13 @@
 # pylint: disable=line-too-long
 
 from azure.cli.core import AzCommandsLoader
-
-import azext_quantum._help  # pylint: disable=unused-import
-
+from azure.cli.core.extension import get_extension
 
 # This is the version reported by the CLI to the service when submitting requests.
-# This should be in sync with the extension version in 'setup.py', unless we need to
-# submit using a different version.
-CLI_REPORTED_VERSION = "1.0.0b8"
-
+# This will be the version of the quantum extension that is currently installed
+# This does not work for `azdev extension add` for local dev; install wheel file to mimic real extension installation.
+ext = get_extension("quantum")
+CLI_REPORTED_VERSION = ext.version if ext else "unknown"
 
 class QuantumCommandsLoader(AzCommandsLoader):
 

@@ -36,6 +36,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace.')
     target_id_type = CLIArgumentType(options_list=['--target-id', '-t'], help='Execution engine for quantum computing jobs. When a workspace is configured with a set of providers, they each enable one or more targets. You can configure the default target using `az quantum target set`.', configured_default='target_id')
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
+    job_name_filter_type = CLIArgumentType(help='Job name to be listed (search by prefix), example "My Job".')
     job_id_type = CLIArgumentType(options_list=['--job-id', '-j'], help='Job unique identifier in GUID format.')
     job_params_type = CLIArgumentType(options_list=['--job-params'], help='Job parameters passed to the target as a list of key=value pairs, json string, or `@{file}` with json content.', action=JobParamsAction, nargs='+')
     target_capability_type = CLIArgumentType(options_list=['--target-capability'], help='Target-capability parameter passed to the compiler.')
@@ -94,6 +95,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
 
     with self.argument_context('quantum job list') as c:
         c.argument('job_type', job_type_type)
+        c.argument('job_name', job_name_filter_type)
         c.argument('item_type', item_type_type)
         c.argument('provider_id', provider_id_type)
         c.argument('job_status', job_status_type)

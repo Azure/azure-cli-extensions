@@ -18,7 +18,7 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
 from ..vendored_sdks.azure_quantum_python.workspace import Workspace
 from ..vendored_sdks.azure_quantum_python.storage import upload_blob
 from ..vendored_sdks.azure_storage_blob import BlobClient, ContainerClient
-from .._client_factory import cf_jobs
+from .._client_factory import cf_jobs, _get_data_credentials
 from .._list_helper import repack_response_json
 from .workspace import WorkspaceInfo
 from .target import TargetInfo, get_provider
@@ -250,14 +250,13 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     # Prepare for input file upload according to job type
     if job_type == QIR_JOB:
         if content_type is None:
-            if provider_id.lower() == "rigetti":
-                content_type = "application/octet-stream"
-            else:
-                # MAINTENANCE NOTE: The following value is valid for QCI and Quantinuum.
-                # Make sure it's correct for new providers when they are added. If not,
-                # modify this logic.
-                content_type = "application/x-qir.v1"
+            content_type = "qir.v1"   # Default content type for QIR jobs
         content_encoding = None
+    elif job_type == PASS_THROUGH_JOB:
+        if content_type is None:
+            content_type = "text/plain"   # Default content type for pass-through jobs
+        content_encoding = None
+
     try:
         with open(job_input_file, "rb") as input_file:
             blob_data = input_file.read()
@@ -267,7 +266,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     # Upload the input file to the workspace's storage account
     if storage is None:
         from .workspace import get as ws_get
-        ws = ws_get(cmd)
+        ws = ws_get(cmd, resource_group_name, workspace_name)
         if ws.properties.storage_account is None:
             raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
         storage = ws.properties.storage_account.split('/')[-1]
@@ -275,9 +274,9 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     blob_name = "inputData"
 
     resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
-    workspace = Workspace(resource_id=resource_id, location=location)
+    credential = _get_data_credentials(cmd.cli_ctx, ws_info.subscription)
+    workspace = Workspace(resource_id=resource_id, location=location, credential=credential)
 
-    knack_logger.warning("Getting Azure credential token...")
     container_uri = workspace.get_container_uri(job_id=job_id)
     container_client = ContainerClient.from_container_url(container_uri)
 
