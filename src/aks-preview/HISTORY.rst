@@ -15,7 +15,7 @@ Pending
 19.0.0b5
 +++++++
 * `az aks get-credentials`: Convert device code mode kubeconfig to Azure CLI token format to bypass conditional access login blocks.
-* Add `enable-istio-cni`` and `disable-istio-cni`` commands under `az aks mesh`.
+* Add `enable-istio-cni` and `disable-istio-cni` commands under `az aks mesh`.
 
 19.0.0b4
 +++++++
