@@ -441,6 +441,16 @@ def load_command_table(self, _):
             "aks_mesh_get_upgrades",
             table_transformer=aks_mesh_upgrades_table_format,
         )
+        g.custom_command(
+            "enable-istio-cni",
+            "aks_mesh_enable_istio_cni",
+            supports_no_wait=True,
+        )
+        g.custom_command(
+            "disable-istio-cni",
+            "aks_mesh_disable_istio_cni",
+            supports_no_wait=True,
+        )
 
     # AKS mesh upgrade commands
     with self.command_group(

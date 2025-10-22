@@ -11,7 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+19.0.0b5
++++++++
 * `az aks get-credentials`: Convert device code mode kubeconfig to Azure CLI token format to bypass conditional access login blocks.
+* Add `enable-istio-cni` and `disable-istio-cni` commands under `az aks mesh`.
 
 19.0.0b4
 +++++++
