@@ -9,9 +9,9 @@ TEST_WORKSPACE_DEFAULT = "qw-e2e-tests-eus"
 TEST_WORKSPACE_DEFAULT_LOCATION = "eastus"
 TEST_WORKSPACE_DEFAULT_STORAGE = "qwe2etestswus2"
 TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "qwe2etestsgrswus2"
-TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "quantinuum/credits1"
+TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "quantinuum/basic1"
 TEST_CAPABILITIES_DEFAULT = "new.quantinuum;submit.quantinuum"
-TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "quantinuum/credits1"
+TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "quantinuum/basic1"
 TEST_TARGET_DEFAULT_PROVIDER = "quantinuum"
 TEST_TARGET_DEFAULT_TARGET = "quantinuum.sim.h1-1sc"
 
@@ -35,17 +35,6 @@ def get_test_workspace():
 
 def get_test_workspace_location():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_LOCATION", TEST_WORKSPACE_DEFAULT_LOCATION)
-
-
-def get_test_workspace_location_for_dft():
-    """ TODO: Currently, "microsoft.dft" target is not available in WestUS2 region,
-        therefore we need to specify the region to WestUS. At the same time,
-        we need to preserve functionality of setting the region via environment variable
-        so that we could override it in E2E tests.
-
-        Remove this method once/if "microsoft.dft" target is available in WestUS2.
-    """
-    return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_LOCATION", "westus")
 
 
 def get_test_workspace_storage():
