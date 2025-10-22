@@ -20562,6 +20562,7 @@ spec:
         jwt_list_after_delete = self.cmd(list_after_delete_cmd).get_output_in_json()
         assert len(jwt_list_after_delete) == 0
 
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
@@ -20652,8 +20653,9 @@ spec:
             "--nodepool-name={node_pool_name}"
         )
         rollback_versions = self.cmd(get_rollback_cmd).get_output_in_json()
+        
         # Verify that we have at least one rollback version available
-        assert len(rollback_versions) > 0
+        assert len(rollback_versions) > 0, "Expected rollback versions after upgrade but found none"
         
         # Verify that the rollback versions contain the original versions from before the upgrade
         assert rollback_versions[0]["kubernetesVersion"] == original_k8s_version
