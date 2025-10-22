@@ -30,7 +30,7 @@ class MigrateCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azure.cli.command_modules.migrate._params import load_arguments
+        from azext_migrate._params import load_arguments
         load_arguments(self, command)
 
 
