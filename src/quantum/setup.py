@@ -17,7 +17,7 @@ except ImportError:
 # This version should match the latest entry in HISTORY.rst
 # Also, when updating this, please review the version used by the extension to
 # submit requests, which can be found at './azext_quantum/__init__.py'
-VERSION = '1.0.0b9'
+VERSION = '1.0.0b10'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -27,9 +27,9 @@ CLASSIFIERS = [
     'Intended Audience :: System Administrators',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.6',
-    'Programming Language :: Python :: 3.7',
-    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
     'License :: OSI Approved :: MIT License',
 ]
 

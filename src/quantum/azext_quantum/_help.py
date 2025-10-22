@@ -68,12 +68,12 @@ helps['quantum job list'] = """
       - name: Get the list of jobs from an Azure Quantum workspace.
         text: |-
             az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation
-      - name: List jobs that used the microsoft-elements provider.
+      - name: List jobs that used the quantinuum provider.
         text: |-
-            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --provider-id microsoft-elements
-      - name: List jobs that ran on the microsoft.dft target.
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --provider-id quantinuum
+      - name: List jobs that ran on the ionq.simulator target.
         text: |-
-            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --target-id microsoft.dft
+            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --target-id ionq.simulator
       - name: List jobs that completed successfully.
         text: |-
             az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --status Succeeded
@@ -128,7 +128,7 @@ helps['quantum job submit'] = """
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
                --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1
-      - name: Submit a Qiskit circuit to the IonQ simulator with job params.
+      - name: Submit a IonQ JSON circuit to the IonQ simulator with job params.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                -t ionq.simulator --job-name MyJobName --job-input-file MyCircuit.json \\
