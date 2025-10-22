@@ -607,7 +607,7 @@ def process_replication_policy(cmd,
         raise CLIError(
             f"The replication policy '{policy_name}' not found. "
             "The replication infrastructure is not initialized. "
-            "Run the 'az migrate local-replication-infrastructure "
+            "Run the 'az migrate local replication init "
             "initialize' command."
         )
     prov_state = policy.get('properties', {}).get('provisioningState')
@@ -616,7 +616,7 @@ def process_replication_policy(cmd,
             f"The replication policy '{policy_name}' is not in a valid "
             f"state. "
             f"The provisioning state is '{prov_state}'. "
-            "Re-run the 'az migrate local-replication-infrastructure "
+            "Re-run the 'az migrate local replication init "
             "initialize' command."
         )
     return policy_name
@@ -1244,11 +1244,7 @@ def construct_disk_and_nic_mapping(is_power_user_mode,
             disks.append(disk_obj)
 
         # Process NICs
-        print(f"DEBUG: Processing {len(nic_to_include)} NICs in "
-              f"power user mode")
-        for i, nic in enumerate(nic_to_include):
-            print(f"DEBUG: Processing NIC {i + 1}: ID={nic.get('nicId')}, "
-                  f"Target={nic.get('targetNetworkId')}")
+        for nic in nic_to_include:
             nic_obj = {
                 'nicId': nic.get('nicId'),
                 'targetNetworkId': nic.get('targetNetworkId'),
