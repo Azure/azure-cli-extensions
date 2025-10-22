@@ -1305,8 +1305,7 @@ def _handle_extension_creation_error(cmd, extension_uri, create_error):
         if replication_extension:
             print(
                 f"Extension exists despite error, "
-                f"state: {replication_extension.get('properties', {}).get(
-                    'provisioningState')}"
+                f"state: {replication_extension.get('properties', {}).get('provisioningState')}"
             )
     except CLIError:
         replication_extension = None
