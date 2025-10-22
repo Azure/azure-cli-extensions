@@ -161,6 +161,12 @@ def validate_bucket_url(url: str):
         raise InvalidArgumentValueError(
             consts.INVALID_URL_ERROR, consts.INVALID_URL_HELP
         )
+    
+def validate_oci_url(url: str):
+    if not re.match(consts.VALID_OCI_URL_REGEX, url):
+        raise InvalidArgumentValueError(
+            consts.INVALID_URL_ERROR, consts.INVALID_URL_HELP
+        )
 
 
 # Helper
