@@ -416,6 +416,7 @@ def process_site_type_hyperV(cmd,
                 f"site '{cluster_site_name}'.")
 
         run_as_account_id = hyperv_cluster.get('properties', {}).get('runAsAccountId')
+
     return run_as_account_id, machine, site_object, AzLocalInstanceTypes.HyperVToAzLocal.value
 
 
@@ -477,6 +478,7 @@ def process_site_type_vmware(cmd,
                 f"site '{vcenter_site_name}'.")
 
         run_as_account_id = vmware_vcenter.get('properties', {}).get('runAsAccountId')
+
     return run_as_account_id, machine, site_object, AzLocalInstanceTypes.VMwareToAzLocal.value
 
 

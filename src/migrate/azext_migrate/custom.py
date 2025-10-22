@@ -49,13 +49,12 @@ def get_discovered_server(cmd,
     """
     from azext_migrate._helpers import APIVersion
     from azext_migrate._get_discovered_server_helpers import (
-            validate_get_discovered_server_params,
-            build_base_uri,
-            fetch_all_servers,
-            filter_servers_by_display_name,
-            extract_server_info,
-            print_server_info
-        )
+        validate_get_discovered_server_params,
+        build_base_uri,
+        fetch_all_servers,
+        filter_servers_by_display_name,
+        extract_server_info,
+        print_server_info)
 
     # Validate required parameters
     validate_get_discovered_server_params(
@@ -149,9 +148,8 @@ def initialize_replication_infrastructure(cmd,
     from azure.cli.core.commands.client_factory import \
         get_subscription_id
     from azext_migrate._initialize_replication_infrastructure_helpers import (
-            validate_required_parameters,
-            execute_replication_infrastructure_setup
-        )
+        validate_required_parameters,
+        execute_replication_infrastructure_setup)
 
     # Validate required parameters
     validate_required_parameters(resource_group_name,
@@ -258,23 +256,22 @@ def new_local_server_replication(cmd,
     """
     from azext_migrate._helpers import SiteTypes
     from azext_migrate._new_local_server_replication_helpers import (
-            validate_server_parameters,
-            validate_required_parameters,
-            validate_ARM_id_formats,
-            process_site_type_hyperV,
-            process_site_type_vmware,
-            process_amh_solution,
-            process_replication_vault,
-            process_replication_policy,
-            process_appliance_map,
-            process_source_fabric,
-            process_target_fabric,
-            validate_replication_extension,
-            get_ARC_resource_bridge_info,
-            validate_target_VM_name,
-            construct_disk_and_nic_mapping,
-            create_protected_item
-        )
+        validate_server_parameters,
+        validate_required_parameters,
+        validate_ARM_id_formats,
+        process_site_type_hyperV,
+        process_site_type_vmware,
+        process_amh_solution,
+        process_replication_vault,
+        process_replication_policy,
+        process_appliance_map,
+        process_source_fabric,
+        process_target_fabric,
+        validate_replication_extension,
+        get_ARC_resource_bridge_info,
+        validate_target_VM_name,
+        construct_disk_and_nic_mapping,
+        create_protected_item)
 
     rg_uri = validate_server_parameters(
         cmd,
