@@ -924,17 +924,23 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """Get the enablement of container network logs
 
         :return: bool or None"""
-        enable_container_network_logs = self.raw_param.get("enable_container_network_logs") or self.raw_param.get("enable_retina_flow_logs")
-        disable_container_network_logs = self.raw_param.get("disable_container_network_logs") or self.raw_param.get("disable_retina_flow_logs")
-        if enable_container_network_logs is None and disable_container_network_logs is None:
+        enable_cnl = (
+            self.raw_param.get("enable_container_network_logs") or
+            self.raw_param.get("enable_retina_flow_logs")
+        )
+        disable_cnl = (
+            self.raw_param.get("disable_container_network_logs") or
+            self.raw_param.get("disable_retina_flow_logs")
+        )
+        if enable_cnl is None and disable_cnl is None:
             return None
-        if enable_container_network_logs and disable_container_network_logs:
+        if enable_cnl and disable_cnl:
             raise MutuallyExclusiveArgumentError(
                 "Cannot specify --enable-container-network-logs and "
                 "--disable-container-network-logs at the same time."
             )
         if (
-            enable_container_network_logs and
+            enable_cnl and
             (not self.raw_param.get("enable_acns", False) and
                 not (mc.network_profile and mc.network_profile.advanced_networking and
                      mc.network_profile.advanced_networking.enabled)) or
@@ -944,9 +950,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "Container network logs requires '--enable-acns', advanced networking "
                 "to be enabled, and the monitoring addon to be enabled."
             )
-        enable_container_network_logs = bool(enable_container_network_logs) if enable_container_network_logs is not None else False
-        disable_container_network_logs = bool(disable_container_network_logs) if disable_container_network_logs is not None else False
-        return enable_container_network_logs or not disable_container_network_logs
+        enable_cnl = bool(enable_cnl) if enable_cnl is not None else False
+        disable_cnl = bool(disable_cnl) if disable_cnl is not None else False
+        return enable_cnl or not disable_cnl
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of load_balancer_managed_outbound_ip_count.
