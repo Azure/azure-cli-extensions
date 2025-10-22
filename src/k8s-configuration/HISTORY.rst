@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.3.0
+++++++++++++++++++
+* Added support for using OCIRepository as a source type in Flux configurations.
+
 2.2.0
 ++++++++++++++++++
 * Introduce a new feature to add provider authentication for git repositories.
