@@ -4,7 +4,6 @@
 # for license information.
 # -----------------------------------------------------------------------
 
-import time
 from knack.util import CLIError
 from knack.log import get_logger
 from azext_migrate._helpers import (
