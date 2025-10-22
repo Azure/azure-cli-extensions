@@ -9,6 +9,7 @@ import semver
 import subprocess
 import tempfile
 import time
+import unittest
 
 from azext_aks_preview._consts import CONST_CUSTOM_CA_TEST_CERT
 from azext_aks_preview._format import aks_machine_list_table_format
