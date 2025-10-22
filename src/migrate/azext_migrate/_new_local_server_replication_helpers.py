@@ -415,10 +415,8 @@ def process_site_type_hyperV(cmd,
                 f"resource group '{cluster_resource_group}' and "
                 f"site '{cluster_site_name}'.")
 
-        run_as_account_id = (
-            hyperv_cluster.get('properties', {}).get('runAsAccountId'))
-    return (run_as_account_id, machine, site_object,
-            AzLocalInstanceTypes.HyperVToAzLocal.value)
+        run_as_account_id = hyperv_cluster.get('properties', {}).get('runAsAccountId')
+    return run_as_account_id, machine, site_object, AzLocalInstanceTypes.HyperVToAzLocal.value
 
 
 def process_site_type_vmware(cmd,
@@ -478,10 +476,8 @@ def process_site_type_vmware(cmd,
                 f"resource group '{vcenter_resource_group}' and "
                 f"site '{vcenter_site_name}'.")
 
-        run_as_account_id = (
-            vmware_vcenter.get('properties', {}).get('runAsAccountId'))
-    return (run_as_account_id, machine, site_object,
-            AzLocalInstanceTypes.VMwareToAzLocal.value)
+        run_as_account_id = vmware_vcenter.get('properties', {}).get('runAsAccountId')
+    return run_as_account_id, machine, site_object, AzLocalInstanceTypes.VMwareToAzLocal.value
 
 
 def process_amh_solution(cmd,
