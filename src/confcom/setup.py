@@ -41,7 +41,7 @@ DEPENDENCIES = [
     "docker>=6.1.0",
     "tqdm==4.65.0",
     "deepdiff~=8.6.1",
-    "PyYAML>=6.0.1",
+    "PyYAML>=6.0.1"
 ]
 
 SecurityPolicyProxy.download_binaries()
