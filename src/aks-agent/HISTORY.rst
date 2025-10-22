@@ -12,6 +12,14 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b7
++++++++
+* Bump aks-mcp to v0.0.10 - here are the notable changes:
+  * Fix: Improved server health check endpoints /health for both HTTP and SSE connections for http, sse
+  * Fix: enforce json output for az monitor metrics and aks tools
+  * Fix: Build the resource URL with correct MCP endpoint path based on transport
+* Fix feedback slash command
+
 1.0.0b6
 +++++++
 * Introduce the new `az aks agent-init` command for better cli interaction.
