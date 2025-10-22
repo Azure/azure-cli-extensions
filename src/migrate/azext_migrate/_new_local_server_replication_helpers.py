@@ -1260,7 +1260,7 @@ def construct_disk_and_nic_mapping(is_power_user_mode,
         machine_nics = machine_props.get('networkAdapters', [])
 
         # Find OS disk
-        for i, disk in enumerate(machine_disks):
+        for disk in machine_disks:
             if site_type == SiteTypes.HyperVSites.value:
                 disk_id = disk.get('instanceId')
                 disk_size = disk.get('maxSizeInBytes', 0)
@@ -1280,7 +1280,7 @@ def construct_disk_and_nic_mapping(is_power_user_mode,
             }
             disks.append(disk_obj)
 
-        for i, nic in enumerate(machine_nics):
+        for nic in machine_nics:
             nic_id = nic.get('nicId')
             test_network_id = (target_test_virtual_switch_id or
                                target_virtual_switch_id)
