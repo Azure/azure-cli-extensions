@@ -27,16 +27,16 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='managementpartner',
+    name='migrate',
     version=VERSION,
-    description='Support for Management Partner preview',
-    long_description='Support for Management Partner preview',
+    description='Support for Azure Migrate preview',
+    long_description='Support for Azure Migrate preview',
     license='MIT',
     author='Jeffrey Li',
     author_email='jefl@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/managementpartner',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/migrate',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES,
-    package_data={'azext_managementpartner': ['azext_metadata.json']}
+    package_data={'azext_migrate': ['azext_metadata.json']}
 )
