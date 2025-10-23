@@ -18786,6 +18786,57 @@ spec:
         # delete
         self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
+    def test_aks_entraid_ssh(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'resource_group_location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} -c 1 ' \
+                     '--ssh-key-value={ssh_key_value} --location={resource_group_location} ' \
+                     '--ssh-access entraid ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EntraIDSSHPreview'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('agentPoolProfiles[0].securityProfile.sshAccess', 'EntraId'),
+        ])
+
+        # update nodepool to localuser
+        update_nodepool_cmd = 'aks nodepool update --resource-group={resource_group} --cluster-name={name} ' \
+                              '--name=nodepool1 --ssh-access localuser --yes ' \
+                              '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EntraIDSSHPreview'
+        self.cmd(update_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.sshAccess', 'LocalUser'),
+        ])
+
+        # update nodepool back to entraid
+        update_nodepool_cmd_entraid = 'aks nodepool update --resource-group={resource_group} --cluster-name={name} ' \
+                                       '--name=nodepool1 --ssh-access entraid --yes ' \
+                                       '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EntraIDSSHPreview'
+        self.cmd(update_nodepool_cmd_entraid, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.sshAccess', 'EntraId'),
+        ])
+
+        # create new nodepool with entraid
+        add_nodepool_cmd = 'aks nodepool add -g {resource_group} --cluster-name {name} -n nodepool2 ' \
+                           '--ssh-access entraid ' \
+                           '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EntraIDSSHPreview'
+        self.cmd(add_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.sshAccess', 'EntraId'),
+        ])
+
+        # delete
+        self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
     # live only due to the case is likely to fail in playback mode
     @live_only()
     @AllowLargeResponse()
