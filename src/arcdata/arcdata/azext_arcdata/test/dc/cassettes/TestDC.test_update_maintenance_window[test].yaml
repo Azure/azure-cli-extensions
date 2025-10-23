@@ -1,0 +1,479 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":1,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:37:54Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:37:54Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:41:53Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"2224","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:41:53.908357Z","observedGeneration":1,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3461"}}
+
+        '
+    headers:
+      Audit-Id:
+      - ffb31c2f-9155-4f5f-9963-faad521598e6
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:58:33 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"spec": {"settings": {"maintenance": {"start": "2022-01-01T23:00", "duration":
+      "3:00", "recurrence": "Saturday", "timeZone": "US/Pacific"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers/datacontroller-sachaga-8d71c8658
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:37:54Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:41:53Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3462","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:41:53.908357Z","observedGeneration":1,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"Ready"}}
+
+        '
+    headers:
+      Audit-Id:
+      - 6b99a5e0-bb35-4ea1-809b-29bacf881c89
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:58:34 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:37:54Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:41:53Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3462","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:41:53.908357Z","observedGeneration":1,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3462"}}
+
+        '
+    headers:
+      Audit-Id:
+      - 60159dea-c80d-4925-a441-2b351c674812
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:58:34 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:41:53Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{},"f:state":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:58:34Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3494","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:41:53.908357Z","observedGeneration":2,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"Updating"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3511"}}
+
+        '
+    headers:
+      Audit-Id:
+      - a3c419d9-8953-4ecc-b804-14cfaad4fe69
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:58:39 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:41:53Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{},"f:state":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:58:34Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3494","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:41:53.908357Z","observedGeneration":2,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"Updating"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3547"}}
+
+        '
+    headers:
+      Audit-Id:
+      - 5ae36870-e2dc-4504-9a85-3855f725cc9f
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:58:44 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:41:53Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{},"f:state":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:58:34Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3494","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:41:53.908357Z","observedGeneration":2,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"Updating"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3553"}}
+
+        '
+    headers:
+      Audit-Id:
+      - 139f76c5-8a35-4a45-9c49-f5e79f4fee05
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:58:49 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:41:53Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{},"f:state":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:58:34Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3494","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:41:53.908357Z","observedGeneration":2,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"Updating"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3559"}}
+
+        '
+    headers:
+      Audit-Id:
+      - ee387579-701d-4600-b090-d78c857259c9
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:58:54 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:41:53Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{},"f:state":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:58:34Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3494","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:41:53.908357Z","observedGeneration":2,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"Updating"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3565"}}
+
+        '
+    headers:
+      Audit-Id:
+      - 25a45976-6936-4231-a5a5-2480e2b33d8c
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:58:59 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:41:53Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{},"f:state":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:58:34Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3494","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:41:53.908357Z","observedGeneration":2,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"Updating"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3571"}}
+
+        '
+    headers:
+      Audit-Id:
+      - 505d581e-96b5-4965-8de7-51b0561ad3d9
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:59:04 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:41:53Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{},"f:state":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:58:34Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3494","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:41:53.908357Z","observedGeneration":2,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"Updating"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3577"}}
+
+        '
+    headers:
+      Audit-Id:
+      - 6900b825-a5b5-4859-aa46-97b3805d2c96
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:59:09 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:41:53Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{},"f:state":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:58:34Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3494","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:41:53.908357Z","observedGeneration":2,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"Updating"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3583"}}
+
+        '
+    headers:
+      Audit-Id:
+      - c98447b4-45af-4cf8-88d8-d58908a25b76
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:59:14 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:58:34Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:59:14Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3586","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:59:14.61411Z","observedGeneration":2,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"UpdatingDependentResources"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3594"}}
+
+        '
+    headers:
+      Audit-Id:
+      - e6f0ebe7-5aa8-4388-9b41-5bb1423f99e7
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:59:19 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:58:34Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:59:14Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3586","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:59:14.61411Z","observedGeneration":2,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"UpdatingDependentResources"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3602"}}
+
+        '
+    headers:
+      Audit-Id:
+      - 5051d307-f732-454b-be50-6e83b9c6fa74
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:59:24 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2024-03-21T19:37:54Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:resources":{".":{},"f:controller":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:controllerDb":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}}},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2024-03-21T19:58:33Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","subresource":"status","time":"2024-03-21T19:58:34Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:arcDataServicesK8sExtensionLatestVersion":{},"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2024-03-21T19:59:26Z"}],"name":"datacontroller-sachaga-8d71c8658","namespace":"test","resourceVersion":"3606","uid":"80c9528e-0c25-407c-95e4-1676444a9b5b"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.28.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","resources":{"controller":{"limits":{"cpu":"1800m","memory":"2Gi"},"requests":{"cpu":"400m","memory":"2Gi"}},"controllerDb":{"limits":{"cpu":"800m","memory":"6Gi"},"requests":{"cpu":"200m","memory":"4Gi"}}},"security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-8d71c8658","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"arcDataServicesK8sExtensionLatestVersion":"1.28.0","lastUpdateTime":"2024-03-21T19:59:26.913633Z","observedGeneration":2,"runningVersion":"v1.28.0_ubuntu2004-sachaga","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"3610"}}
+
+        '
+    headers:
+      Audit-Id:
+      - 6696243b-73f0-4cf1-9e3f-d135fe5b8b6b
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 21 Mar 2024 19:59:29 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c620aabc-ba57-40ab-a7a3-a6ce90926842
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bf46d6f-0b24-4e4e-bcba-ee46e1e9021c
+    status:
+      code: 200
+      message: OK
+version: 1
