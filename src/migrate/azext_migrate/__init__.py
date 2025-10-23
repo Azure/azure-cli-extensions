@@ -19,6 +19,7 @@ class MigrateCommandsLoader(AzCommandsLoader):
         super().__init__(
             cli_ctx=cli_ctx,
             custom_command_type=migrate_custom,
+            resource_type=ResourceType.MGMT_MIGRATE
         )
 
     def load_command_table(self, args):
