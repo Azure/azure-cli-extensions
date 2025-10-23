@@ -157,7 +157,7 @@ def _validate_ou_distinguished_name(
                     ACCOUNT_PROVISIONING_MODE_AUTOMATIC
                 )
             )
-        
+
         return
 
     if not ou_distinguished_name.startswith("OU="):

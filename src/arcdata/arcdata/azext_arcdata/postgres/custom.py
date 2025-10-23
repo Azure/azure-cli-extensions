@@ -194,28 +194,8 @@ def postgres_server_arc_restore(
 
 def postgres_server_arc_update(
     client,
-    name,
-    namespace=None,
-    path=None,
-    certificate_private_key_file=None,
-    certificate_public_key_file=None,
-    cores_limit=None,
-    cores_request=None,
-    log_level=None,
-    memory_limit=None,
-    memory_request=None,
-    no_external_endpoint=None,
-    service_annotations=None,
-    service_certificate_secret=None,
-    service_labels=None,
-    service_type=None,
-    dev=None,
-    port=None,
-    nowait=False,
     use_k8s=None,
-    keytab_secret=None,
-    retention_days=None,
-    extensions=None,
+    **kwargs
 ):
     """
     Update the configuration of an Azure Arc enabled PostgreSQL server.
@@ -260,6 +240,9 @@ def postgres_server_arc_update(
     """
     if not use_k8s:
         raise ValueError(USE_K8S_EXCEPTION_TEXT)
+    
+    if not kwargs.get("name"):
+        raise ValueError("Please provide a name for the PostgreSQL server.")
 
     cvo = client.args_to_command_value_object(locals())
     try:

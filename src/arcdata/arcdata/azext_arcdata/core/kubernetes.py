@@ -4,26 +4,25 @@
 # license information.
 # ------------------------------------------------------------------------------
 
-from azext_arcdata.core.http_codes import http_status_codes
-from azext_arcdata.core.util import (
-    display,
-    retry,
-)
-from knack.log import get_logger
 from azext_arcdata.core.constants import (
     DOCKER_USERNAME,
     DOCKER_PASSWORD,
     REGISTRY_USERNAME,
     REGISTRY_PASSWORD,
 )
-from kubernetes.client.exceptions import ApiException
-from urllib3.exceptions import NewConnectionError, MaxRetryError
+from azext_arcdata.core.http_codes import http_status_codes
+from azext_arcdata.core.util import (
+    display,
+    retry,
+)
 from http import HTTPStatus
-from kubernetes import client as k8sClient
-from kubernetes.client.rest import ApiException as K8sApiException
 from knack.log import get_logger
+from kubernetes import client as k8sClient
 from kubernetes import client, config
+from kubernetes.client.exceptions import ApiException
+from kubernetes.client.rest import ApiException as K8sApiException
 from kubernetes.config.config_exception import ConfigException
+from urllib3.exceptions import NewConnectionError, MaxRetryError
 
 import base64
 import json
@@ -114,65 +113,31 @@ def namespace_is_empty(cluster_name, label=None):
 
         if (
             len(
-                k8sClient.AppsV1Api()
-                .list_namespaced_stateful_set(namespace=cluster_name, **kwargs)
-                .items
+                k8sClient.AppsV1Api().list_namespaced_stateful_set(namespace=cluster_name, **kwargs).items
             )
-            > 0
-        ):
-            return False
-        elif (
+            > 0 or
             len(
-                k8sClient.AppsV1Api()
-                .list_namespaced_daemon_set(namespace=cluster_name, **kwargs)
-                .items
+                k8sClient.AppsV1Api().list_namespaced_daemon_set(namespace=cluster_name, **kwargs).items
             )
-            > 0
-        ):
-            return False
-        elif (
+            > 0 or
             len(
-                k8sClient.AppsV1Api()
-                .list_namespaced_deployment(namespace=cluster_name, **kwargs)
-                .items
+                k8sClient.AppsV1Api().list_namespaced_deployment(namespace=cluster_name, **kwargs).items
             )
-            > 0
-        ):
-            return False
-        elif (
+            > 0 or
             len(
-                k8sClient.AppsV1Api()
-                .list_namespaced_replica_set(namespace=cluster_name, **kwargs)
-                .items
+                k8sClient.AppsV1Api().list_namespaced_replica_set(namespace=cluster_name, **kwargs).items
             )
-            > 0
-        ):
-            return False
-        elif (
+            > 0 or
             len(
-                k8sClient.CoreV1Api()
-                .list_namespaced_service(namespace=cluster_name, **kwargs)
-                .items
+                k8sClient.CoreV1Api().list_namespaced_service(namespace=cluster_name, **kwargs).items
             )
-            > 0
-        ):
-            return False
-        elif (
+            > 0 or
             len(
-                k8sClient.CoreV1Api()
-                .list_namespaced_persistent_volume_claim(
-                    namespace=cluster_name, **kwargs
-                )
-                .items
+                k8sClient.CoreV1Api().list_namespaced_persistent_volume_claim(namespace=cluster_name, **kwargs).items
             )
-            > 0
-        ):
-            return False
-        elif (
+            > 0 or
             len(
-                k8sClient.CoreV1Api()
-                .list_namespaced_pod(namespace=cluster_name, **kwargs)
-                .items
+                k8sClient.CoreV1Api().list_namespaced_pod(namespace=cluster_name, **kwargs).items
             )
             > 0
         ):
@@ -507,9 +472,8 @@ def delete_service_account(name, namespace):
             pass
         else:
             logger.error(
-                "Could not delete ServiceAccount {0} in namespace {1}.  Please delete manually.".format(
-                    name, namespace
-                )
+                "Could not delete ServiceAccount %s in namespace %s.  Please delete manually.",
+                name, namespace
             )
             raise
 
@@ -528,9 +492,8 @@ def delete_cluster_role(cluster_role_name):
             pass
         else:
             logger.error(
-                "Could not delete ClusterRole {0}.  Please delete manually.".format(
-                    cluster_role_name
-                )
+                "Could not delete ClusterRole %s.  Please delete manually.",
+                cluster_role_name
             )
             raise
 
@@ -549,9 +512,8 @@ def delete_cluster_role_binding(cluster_role_binding_name):
             pass
         else:
             logger.error(
-                "Could not delete ClusterRoleBinding {0}.  Please delete manually.".format(
-                    cluster_role_binding_name
-                )
+                "Could not delete ClusterRoleBinding %s.  Please delete manually.",
+                cluster_role_binding_name
             )
             raise
 
@@ -860,7 +822,8 @@ def validate_rwx_storage_class(name: str, type: str, instanceType: str):
 
     if storageClass is None:
         raise Exception("Storage class '{}' does not exist".format(name))
-    # A generic expression to match storage from list https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes and usage examples.
+    # A generic expression to match storage from list 
+    # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes and usage examples.
     #
     # example references for storage class names:
     # csi-filestore (https://github.com/kubernetes-sigs/gcp-filestore-csi-driver/blob/45661732bea386a0275851fa5c5364a0486e6467/examples/kubernetes/demo-sc.yaml )
@@ -901,7 +864,8 @@ def validate_rwx_storage_class(name: str, type: str, instanceType: str):
                 )
             ) is None:
                 logger.warning(
-                    "{1} creation will fail if the storage class specified for the '{0}' volume does not support the ReadWriteMany (RWX) access mode. Please check if the {0} storage class supports ReadWriteMany (RWX) access mode. Please see https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes".format(
-                        type, instanceType
-                    )
+                    f"{instanceType} creation will fail if the storage class specified for the '{type}' volume ",
+                    "does not support the ReadWriteMany (RWX) access mode. Please check if the {type} storage class ",
+                    "supports ReadWriteMany (RWX) access mode. ",
+                    "Please see https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes"
                 )
