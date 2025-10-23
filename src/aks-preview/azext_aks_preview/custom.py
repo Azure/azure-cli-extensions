@@ -2200,23 +2200,17 @@ def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
                            if_match=None,
                            if_none_match=None,
                            no_wait=False):
-    """Rollback a nodepool to N-1 (previously used configuration)."""
+    """Rollback a nodepool to a previously used configuration."""
+
+    # Require at least one version to be specified
+    if not kubernetes_version and not node_image_version:
+        raise RequiredArgumentMissingError(
+            "Please specify at least one of --kubernetes-version or --node-image-version. "
+            "Use 'az aks nodepool get-rollback-versions' to see available rollback versions."
+        )
 
     # Get the current agent pool
     current_agentpool = client.get(resource_group_name, cluster_name, nodepool_name)
-
-    # Get upgrade profile to get recently used versions
-    upgrade_profile = client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
-
-    # Check if rollback versions are available
-    if not upgrade_profile.recently_used_versions:
-        raise CLIError("No rollback versions are available for this nodepool.")
-
-    # If no specific versions are provided, use the most recent (N-1) version
-    if not kubernetes_version and not node_image_version:
-        most_recent = upgrade_profile.recently_used_versions[0]
-        kubernetes_version = most_recent.orchestrator_version
-        node_image_version = most_recent.node_image_version
 
     # Update the agent pool configuration with rollback versions
     if kubernetes_version:

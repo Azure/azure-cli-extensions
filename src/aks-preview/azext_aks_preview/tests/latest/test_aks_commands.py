@@ -20734,7 +20734,7 @@ spec:
         
         self.kwargs.update({"upgrade_version": upgrade_version})
 
-        # Upgrade the nodepool to populate rollback versions
+        # Upgrade the nodepool to create rollback history
         upgrade_cmd = (
             "aks nodepool upgrade "
             "--resource-group={resource_group} "
@@ -20750,41 +20750,7 @@ spec:
             ],
         )
 
-        # Test case 1: Rollback to N-1 (without specifying versions)
-        rollback_n1_cmd = (
-            "aks nodepool rollback "
-            "--resource-group={resource_group} "
-            "--cluster-name={name} "
-            "--name={node_pool_name}"
-        )
-        rollback_result = self.cmd(
-            rollback_n1_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-            ],
-        ).get_output_in_json()
-        
-        # Verify that the nodepool rolled back to the original versions
-        assert rollback_result["currentOrchestratorVersion"] == original_k8s_version
-        assert rollback_result["nodeImageVersion"] == original_node_image_version
-
-        # Upgrade again for testing specific version rollback scenarios
-        upgrade_cmd_2 = (
-            "aks nodepool upgrade "
-            "--resource-group={resource_group} "
-            "--cluster-name={name} "
-            "--name={node_pool_name} "
-            "--kubernetes-version={upgrade_version} "
-            "--yes"
-        )
-        self.cmd(
-            upgrade_cmd_2,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-            ],
-        )
-
-        # Test case 2: Rollback with only kubernetes-version specified
+        # Test case 1: Rollback with only kubernetes-version specified
         self.kwargs.update({"k8s_version": original_k8s_version})
         rollback_k8s_only_cmd = (
             "aks nodepool rollback "
@@ -20800,10 +20766,45 @@ spec:
             ],
         ).get_output_in_json()
         
-        # Verify that only kubernetes version was rolled back
+        # Verify that kubernetes version was rolled back
         assert rollback_k8s_result["currentOrchestratorVersion"] == original_k8s_version
 
-        # Upgrade once more for testing both versions specified
+        # Upgrade again for testing node image only rollback
+        upgrade_cmd_2 = (
+            "aks nodepool upgrade "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name} "
+            "--kubernetes-version={upgrade_version} "
+            "--yes"
+        )
+        self.cmd(
+            upgrade_cmd_2,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # Test case 2: Rollback with only node-image-version specified
+        self.kwargs.update({"original_node_image_version": original_node_image_version})
+        rollback_node_image_only_cmd = (
+            "aks nodepool rollback "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name} "
+            "--node-image-version={original_node_image_version}"
+        )
+        rollback_node_image_result = self.cmd(
+            rollback_node_image_only_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        ).get_output_in_json()
+        
+        # Verify that node image version was rolled back
+        assert rollback_node_image_result["nodeImageVersion"] == original_node_image_version
+
+        # Upgrade again for testing both versions specified
         upgrade_cmd_3 = (
             "aks nodepool upgrade "
             "--resource-group={resource_group} "
