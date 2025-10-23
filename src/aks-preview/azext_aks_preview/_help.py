@@ -686,6 +686,12 @@ helps['aks create'] = f"""
         - name: --enable-upstream-kubescheduler-user-configuration
           type: bool
           short-summary: Enable user-defined scheduler configuration for kube-scheduler upstream on the cluster
+        - name: --enable-gateway-api
+          type: bool
+          short-summary: Enable managed installation of Gateway API CRDs from the standard release channel. Requires at least one managed Gateway API ingress provider to be enabled.
+        - name: --enable-hosted-system
+          type: bool
+          short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -775,6 +781,10 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --vm-set-type VirtualMachines --vm-sizes "VMSize1,VMSize2" --node-count 3
         - name: Create a kubernetes cluster with a fully managed system node pool
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-managed-system-pool
+        - name: Create a kubernetes cluster with the Azure Service Mesh addon enabled with a managed installation of Gateway API CRDs from the standard release channel.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-service-mesh --enable-gateway-api
+        - name: Create an automatic cluster with hosted system components enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system
 
 """
 
@@ -1392,6 +1402,12 @@ helps['aks update'] = """
         - name: --disable-upstream-kubescheduler-user-configuration
           type: bool
           short-summary: Disable user-defined scheduler configuration for kube-scheduler upstream on the cluster
+        - name: --enable-gateway-api
+          type: bool
+          short-summary: Enable managed installation of Gateway API CRDs from the standard release channel. Requires at least one managed Gateway API ingress provider to be enabled.
+        - name: --disable-gateway-api
+          type: bool
+          short-summary: Disable managed installation of Gateway API CRDs.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1461,6 +1477,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-azure-monitor-logs
       - name: Update a kubernetes cluster to clear any namespaces excluded from safeguards. Assumes azure policy addon is already enabled
         text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-excluded-ns ""
+      - name: Update a kubernetes cluster to enable a managed installation of Gateway API CRDs from the standard release channel.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-gateway-api
+      - name: Update a kubernetes cluster to disable the managed installation of Gateway API CRDs.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-gateway-api
       - name: Enable OpenTelemetry metrics collection on an existing cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics
       - name: Enable OpenTelemetry logs collection on an existing cluster
@@ -3581,6 +3601,30 @@ helps['aks mesh upgrade rollback'] = """
         text: az aks mesh upgrade rollback --resource-group MyResourceGroup --name MyManagedCluster
 """
 
+helps['aks mesh enable-istio-cni'] = """
+    type: command
+    short-summary: Enable Istio CNI chaining for Azure Service Mesh proxy redirection mechanism.
+    long-summary: >
+      This command enables Istio CNI chaining as the proxy redirection mechanism
+      for Azure Service Mesh. CNI chaining provides better security and performance
+      compared to init containers by using CNI plugins to set up traffic redirection.
+    examples:
+      - name: Enable Istio CNI chaining for Azure Service Mesh.
+        text: az aks mesh enable-istio-cni --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks mesh disable-istio-cni'] = """
+    type: command
+    short-summary: Disable Istio CNI chaining for Azure Service Mesh proxy redirection mechanism.
+    long-summary: >
+      This command disables Istio CNI chaining and reverts to using init
+      containers as the proxy redirection mechanism for Azure Service Mesh. This
+      is the traditional method using privileged init containers to set up
+      iptables rules.
+    examples:
+      - name: Disable Istio CNI chaining for Azure Service Mesh.
+        text: az aks mesh disable-istio-cni --resource-group MyResourceGroup --name MyManagedCluster
+"""
 
 helps['aks approuting'] = """
     type: group

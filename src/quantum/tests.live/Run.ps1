@@ -25,7 +25,7 @@ function Invoke-SASTokenObfuscation {
     }
 }
 
-function Invoke-APIKeyObfuscation {
+function Invoke-ObjectIdObfuscation {
     param (
         [Parameter(mandatory=$true)]
         $RecordingsFolderPath
@@ -35,8 +35,19 @@ function Invoke-APIKeyObfuscation {
     Foreach-Object {
         $RecordingFileName = $_.Name
         $PathToRecording = "$RecordingsFolderPath\$RecordingFileName"
-        Write-Verbose -Message "Searching for API Keys in ""$PathToRecording"" and obfuscating it..."
-        (Get-Content $PathToRecording) -replace 'api_key=[\w%\-+=/_]+','api_key=REDACTED' | Set-Content $PathToRecording
+        Write-Verbose -Message "Searching for Object IDs in ""$PathToRecording"" and obfuscating it..."
+        
+        # Read full content
+        $content = Get-Content $PathToRecording -Raw
+        
+        # Obfuscate objectId in JSON - matches GUID format (8-4-4-4-12 hex digits)
+        $content = $content -replace '"objectId"\s*:\s*"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"', '"objectId":"REDACTED"'
+        
+        # Obfuscate object_id in query parameters or form data
+        $content = $content -replace 'objectId=[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}', 'objectId=REDACTED'
+        
+        # Save the modified content
+        Set-Content -Path $PathToRecording -Value $content
     }
 }
 
@@ -100,6 +111,14 @@ function Invoke-QuantumWorkspaceDataObfuscation {
         $content = $content -replace 'ARRAffinitySameSite=[\w-]+;', 'ARRAffinitySameSite=REDACTED;'
         Write-Host "Obfuscated sensitive Set-Cookie headers."
 
+        # Obfuscate c= query parameter in URLs and headers
+        $content = $content -replace '&c=[\w%\-+=/_\.]+', '&c=REDACTED'
+        Write-Host "Obfuscated 'c=' query parameters."
+
+        # Obfuscate s= query parameter in URLs and headers
+        $content = $content -replace '&s=[\w%\-+=/_\.]+', '&s=REDACTED'
+        Write-Host "Obfuscated 's=' query parameters."
+
         # Save the modified content
         Set-Content -Path $PathToRecording -Value $content
         Write-Host "Finished obfuscation. Changes saved to: $PathToRecording"
@@ -127,6 +146,9 @@ azdev test quantum --live --verbose --xml-path $RecordingsFolderPath
 
 # Make sure we don't check-in SAS-tokens
 Invoke-SASTokenObfuscation -RecordingsFolderPath $RecordingsFolderPath
+
+# Make sure we don't check-in Object IDs
+Invoke-ObjectIdObfuscation -RecordingsFolderPath $RecordingsFolderPath
 
 # Make sure we don't check-in API keys, Connection strings and quantum workspace data
 Invoke-QuantumWorkspaceDataObfuscation -RecordingsFolderPath $RecordingsFolderPath

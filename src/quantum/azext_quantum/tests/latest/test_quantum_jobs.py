@@ -12,13 +12,9 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, AzureInternalError
 
-from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_location_for_dft, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name, get_test_capabilities
-from ..._client_factory import _get_data_credentials
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
 from ...commands import transform_output
-from ...operations.workspace import WorkspaceInfo, DEPLOYMENT_NAME_PREFIX
-from ...operations.target import TargetInfo
 from ...operations.job import (
-    _parse_blob_url,
     _validate_max_poll_wait_secs,
     _convert_numeric_params,
     _construct_filter_query,
@@ -50,16 +46,6 @@ class QuantumJobsScenarioTest(ScenarioTest):
         issue_cmd_with_param_missing(self, "az quantum job output", "az quantum job output -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table\nPrint the results of a successful Azure Quantum job.")
         issue_cmd_with_param_missing(self, "az quantum job show", "az quantum job show -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status\nGet the status of an Azure Quantum job.")
         issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
-
-    def test_parse_blob_url(self):
-        sas = "sv=2018-03-28&sr=c&sig=some-sig&sp=racwl"
-        url = f"https://accountname.blob.core.windows.net/containername/rawOutputData?{sas}"
-        args = _parse_blob_url(url)
-
-        self.assertEqual(args['account_name'], "accountname")
-        self.assertEqual(args['container'], "containername")
-        self.assertEqual(args['blob'], "rawOutputData")
-        self.assertEqual(args['sas_token'], sas)
 
     def test_transform_output(self):
         # Call with a good histogram
@@ -247,8 +233,8 @@ class QuantumJobsScenarioTest(ScenarioTest):
         results = self.cmd("az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
         self.assertIn("ro", results)
 
-        # Run a Qiskit pass-through job on IonQ
-        results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params count=100 content-type=application/json -o json").get_output_in_json()
+        # Run an IonQ Circuit pass-through job on IonQ
+        results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params shots=100 content-type=application/json -o json").get_output_in_json()
         self.assertIn("histogram", results)
 
         # Test "az quantum job list" output, for filter-params, --skip, --top, and --orderby
@@ -271,48 +257,6 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
 
-    @live_only()
-    def test_submit_dft(self):
-        elements_provider_name = "microsoft-elements"
-        elements_capability_name = f"submit.{elements_provider_name}"
-
-        test_capabilities = get_test_capabilities()
-
-        if elements_capability_name not in test_capabilities.split(";"):
-            self.skipTest(f"Skipping test_submit_dft: \"{elements_capability_name}\" capability was not found in \"AZURE_QUANTUM_CAPABILITIES\" env variable.")
-
-        test_location = get_test_workspace_location_for_dft()
-        test_resource_group = get_test_resource_group()
-        test_workspace_temp = get_test_workspace_random_name()
-        test_provider_sku_list = f"{elements_provider_name}/elements-internal-testing"
-        test_storage = get_test_workspace_storage()
-
-        self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r \"{test_provider_sku_list}\" --skip-autoadd")
-        self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
-
-        # Run a "microsoft.dft" job to test that successful job returns proper output
-        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.qc-schema.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_success.json -o json").get_output_in_json()
-        self.assertIsNotNone(results["results"])
-        self.assertTrue(len(results["results"]) == 1)
-        self.assertTrue(results["results"][0]["success"])
-
-        # Run a "microsoft.dft" job to test that failed run returns "Job"-object if job didn't produce any output
-        # In the test case below the run doesn't produce any output since the job fails on input parameter validation (i.e. taskType: "invalidTask")
-        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.qc-schema.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_failure_bad_params.json  -o json").get_output_in_json()
-        self.assertIsNotNone(results["results"])
-        self.assertTrue(len(results["results"]) == 1)
-        self.assertFalse(results["results"][0]["success"])
-        self.assertTrue(results["results"][0]["error"]["error_type"] == "input_error")
-
-        # Run a "microsoft.dft" job to test that failed run returns output if it was produced by the job
-        # In the test case below the job fails to converge in "maxSteps", but it still produces the output with a detailed message
-        results = self.cmd("az quantum run -t microsoft.dft --job-input-format microsoft.qc-schema.v1 --job-output-format microsoft.dft-results.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/dft_molecule_failure_no_convergence.json  -o json").get_output_in_json()
-        self.assertIsNotNone(results["results"])
-        self.assertTrue(len(results["results"]) == 1)
-        self.assertFalse(results["results"][0]["success"])
-        self.assertTrue(results["results"][0]["error"]["error_type"] == "convergence_error")
-
-        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
 
     def test_job_list_param_formating(self):
         # Validate filter query formatting for each param

@@ -19,6 +19,8 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
+    CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_CNI_CHAINING,
+    CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_INIT_CONTAINERS,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
@@ -44,6 +46,8 @@ from azext_aks_preview._consts import (
     CONST_IMDS_RESTRICTION_DISABLED,
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
+    CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD,
+    CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE
 )
@@ -3231,6 +3235,45 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return new_profile, updated
 
+    def _handle_istio_cni_asm(self, new_profile: ServiceMeshProfile) -> Tuple[ServiceMeshProfile, bool]:
+        """Handle enable/disable Istio CNI proxy redirection mechanism."""
+        updated = False
+        enable_istio_cni = self.raw_param.get("enable_istio_cni", False)
+        disable_istio_cni = self.raw_param.get("disable_istio_cni", False)
+
+        if enable_istio_cni and disable_istio_cni:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-istio-cni and "
+                "--disable-istio-cni at the same time."
+            )
+
+        # Check if service mesh is enabled before allowing CNI changes
+        if enable_istio_cni or disable_istio_cni:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
+
+            # Ensure istio profile exists
+            if new_profile.istio is None:
+                new_profile.istio = self.models.IstioServiceMesh()  # pylint: disable=no-member
+
+            # Ensure components exist
+            if new_profile.istio.components is None:
+                new_profile.istio.components = self.models.IstioComponents()  # pylint: disable=no-member
+
+            if enable_istio_cni:
+                new_profile.istio.components.proxy_redirection_mechanism = \
+                    CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_CNI_CHAINING
+                updated = True
+            elif disable_istio_cni:
+                new_profile.istio.components.proxy_redirection_mechanism = \
+                    CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_INIT_CONTAINERS
+                updated = True
+
+        return new_profile, updated
+
     # pylint: disable=too-many-branches,too-many-locals,too-many-statements
     def update_azure_service_mesh_profile(self) -> ServiceMeshProfile:
         """ Update azure service mesh profile.
@@ -3264,6 +3307,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         new_profile, updated_upgrade_asm = self._handle_upgrade_asm(new_profile)
         updated |= updated_upgrade_asm
+
+        new_profile, updated_istio_cni = self._handle_istio_cni_asm(new_profile)
+        updated |= updated_istio_cni
 
         if updated:
             return new_profile
@@ -3566,6 +3612,30 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "--disable-upstream-kubescheduler-user-configuration at the same time."
             )
         return disable_upstream_kubescheduler_user_configuration
+
+    def get_enable_gateway_api(self) -> bool:
+        """Obtain the value of enable_gateway_api.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_gateway_api", False)
+
+    def get_disable_gateway_api(self) -> bool:
+        """Obtain the value of disable_gateway_api.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_gateway_api", False)
+
+    def get_enable_hosted_system(self) -> bool:
+        """Obtain the value of enable_hosted_system.
+
+        :return: bool
+        """
+        enable_hosted_system = self.raw_param.get("enable_hosted_system")
+        if enable_hosted_system and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
+        return enable_hosted_system
 
 
 # pylint: disable=too-many-public-methods
@@ -3950,6 +4020,25 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if "web_application_routing" in addons:
                 dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
                 mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
+
+        return mc
+
+    def set_up_ingress_profile_gateway_api(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up Gateway API configuration in ingress profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_gateway_api():
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            if mc.ingress_profile.gateway_api is None:
+                mc.ingress_profile.gateway_api = (
+                    self.models.ManagedClusterIngressProfileGatewayConfiguration(  # pylint: disable=no-member
+                        installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+                    )
+                )
 
         return mc
 
@@ -4574,6 +4663,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_enable_hosted_components(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        enable_hosted_components = self.context.get_enable_hosted_system()
+        if enable_hosted_components:
+            if mc.hosted_system_profile is None:
+                mc.hosted_system_profile = self.models.ManagedClusterHostedSystemProfile()  # pylint: disable=no-member
+            mc.hosted_system_profile.enabled = True
+
+        return mc
+
     # pylint: disable=unused-argument
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
@@ -4600,6 +4700,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
         # set up app routing profile
         mc = self.set_up_ingress_web_app_routing(mc)
+        # set up gateway api profile
+        mc = self.set_up_ingress_profile_gateway_api(mc)
         # set up workload auto scaler profile
         mc = self.set_up_workload_auto_scaler_profile(mc)
         # set up vpa
@@ -4638,6 +4740,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_imds_restriction(mc)
         # set up user-defined scheduler configuration for kube-scheduler upstream
         mc = self.set_up_upstream_kubescheduler_user_configuration(mc)
+        # set up enable hosted components
+        mc = self.set_up_enable_hosted_components(mc)
 
         # validate the azure cli core version
         self.verify_cli_core_version()
@@ -6608,6 +6712,36 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         else:
             raise CLIError('App Routing must be enabled to modify DNS zone resource IDs.\n')
 
+    def update_ingress_profile_gateway_api(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update Gateway API configuration in ingress profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        enable_gateway_api = self.context.get_enable_gateway_api()
+        disable_gateway_api = self.context.get_disable_gateway_api()
+
+        # Check for mutually exclusive arguments
+        if enable_gateway_api and disable_gateway_api:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-gateway-api and --disable-gateway-api at the same time."
+            )
+
+        if enable_gateway_api or disable_gateway_api:
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            if mc.ingress_profile.gateway_api is None:
+                mc.ingress_profile.gateway_api = (
+                    self.models.ManagedClusterIngressProfileGatewayConfiguration()  # pylint: disable=no-member
+                )
+            if enable_gateway_api:
+                mc.ingress_profile.gateway_api.installation = CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
+            elif disable_gateway_api:
+                mc.ingress_profile.gateway_api.installation = CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED
+
+        return mc
+
     def update_node_provisioning_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Updates the nodeProvisioningProfile field of the managed cluster
 
@@ -7069,6 +7203,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nat_gateway_profile(mc)
         # update kube proxy config
         mc = self.update_kube_proxy_config(mc)
+        # update ingress profile gateway api
+        mc = self.update_ingress_profile_gateway_api(mc)
         # update custom ca trust certificates
         mc = self.update_custom_ca_trust_certificates(mc)
         # update run command

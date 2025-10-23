@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.0
+++++++
+* `az network firewall packet-capture-operation`: Add packet capture operation support for the azure firewall
+
 1.5.0
 ++++++
 * `az network firewall create`: Add parameter `--enable-dnstap-logging`
