@@ -24,7 +24,6 @@ class MigrateCommandsLoader(AzCommandsLoader):
     def load_command_table(self, args):
         from azext_migrate.commands \
             import load_command_table
-        
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
