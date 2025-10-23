@@ -1,0 +1,168 @@
+# Comprehensive Azure CLI Script Example
+# This script demonstrates various Azure resource deployments with intentional anti-patterns
+# for testing the best practices analyzer
+
+# Missing shebang line - should have #!/bin/bash
+
+# Direct az commands without error handling
+echo "Starting Azure resource deployment..."
+
+# Login without service principal (not suitable for automation)
+az login
+
+# Set subscription without combining with login
+az account set --subscription "12345678-1234-1234-1234-123456789012"
+
+# === RESOURCE GROUP MANAGEMENT ===
+# Create resource groups with poor naming
+az group create --name MyResourceGroup --location eastus
+az group create --name TempRG --location westus2
+az group create --name TEST_GROUP --location centralus
+
+# Duplicate resource group creation (redundant API call)
+az group create --name MyResourceGroup --location eastus
+
+# === VIRTUAL MACHINE DEPLOYMENT ===
+# VM creation with multiple anti-patterns
+az vm create --resource-group MyResourceGroup --name MyVM_01 --image UbuntuLTS --size Standard_D4s_v3 --admin-username azureuser --generate-ssh-keys --public-ip-address-allocation static
+
+# Multiple VMs created synchronously (should use --no-wait)
+az vm create --resource-group MyResourceGroup --name ProductionVM1 --image UbuntuLTS --size Standard_D2s_v3 --admin-username azureuser --generate-ssh-keys
+az vm create --resource-group MyResourceGroup --name ProductionVM2 --image UbuntuLTS --size Standard_D2s_v3 --admin-username azureuser --generate-ssh-keys
+az vm create --resource-group MyResourceGroup --name ProductionVM3 --image UbuntuLTS --size Standard_D2s_v3 --admin-username azureuser --generate-ssh-keys
+
+# VM with poor naming
+az vm create \
+    --resource-group TempRG \
+    --name VM_TESTING_123 \
+    --image Win2019Datacenter \
+    --size Standard_D8s_v3 \
+    --admin-username administrator \
+    --admin-password "ComplexPassword123!" \
+    --public-ip-address-allocation static
+
+# === VIRTUAL MACHINE SCALE SETS ===
+# VMSS without auto-scaling configuration
+az vmss create --resource-group MyResourceGroup --name MyVMSS --image UbuntuLTS --instance-count 5 --admin-username azureuser --generate-ssh-keys
+
+# === NETWORKING ===
+# Create virtual network with poor naming
+az network vnet create --resource-group MyResourceGroup --name MyVNet --address-prefix 10.0.0.0/16
+
+# Create subnet separately (inefficient - could be combined)
+az network subnet create --resource-group MyResourceGroup --vnet-name MyVNet --name MySubnet --address-prefix 10.0.0.0/24
+az network subnet create --resource-group MyResourceGroup --vnet-name MyVNet --name AnotherSubnet --address-prefix 10.0.1.0/24
+
+# NSG creation without detailed rules
+az network nsg create --resource-group MyResourceGroup --name MyNSG
+
+# === STORAGE ACCOUNTS ===
+# Storage account without access tier specification
+az storage account create --resource-group MyResourceGroup --name stdemostorage001 --sku Standard_LRS
+
+# Storage account with poor naming (too long, mixed case)
+az storage account create \
+    --resource-group TempRG \
+    --name MyVeryLongStorageAccountName123 \
+    --location eastus \
+    --sku Premium_LRS
+
+# Storage account without lifecycle management
+az storage account create --resource-group MyResourceGroup --name mystorageacct --sku Standard_GRS --location westus2
+
+# === WEB APPLICATIONS ===
+# App Service Plan creation
+az appservice plan create --resource-group MyResourceGroup --name MyAppServicePlan --sku B1
+
+# Web app without managed identity or proper naming
+az webapp create --resource-group MyResourceGroup --plan MyAppServicePlan --name MyWebApplication
+
+# Function app without proper configuration
+az functionapp create --resource-group TempRG --plan MyAppServicePlan --name MyFunctionApp --storage-account stdemostorage001
+
+# === DATABASES ===
+# SQL Server with poor naming
+az sql server create --resource-group MyResourceGroup --name MySQLServer --admin-user sqladmin --admin-password "VeryComplexPassword123!"
+
+# SQL Database without backup policy
+az sql db create --resource-group MyResourceGroup --server MySQLServer --name MyDatabase --service-objective S0
+
+# Cosmos DB without free tier for testing
+az cosmosdb create --resource-group TempRG --name MyCosmosDBAccount --kind GlobalDocumentDB
+
+# === KEY VAULT ===
+# Key Vault with poor naming
+az keyvault create --resource-group MyResourceGroup --name MyKeyVault123456789 --location eastus
+
+# === CONTAINER REGISTRY ===
+# ACR without proper naming convention
+az acr create --resource-group MyResourceGroup --name MyContainerRegistry --sku Basic
+
+# === KUBERNETES ===
+# AKS cluster without cluster autoscaler
+az aks create --resource-group MyResourceGroup --name MyAKSCluster --node-count 3 --generate-ssh-keys
+
+# === ROLE ASSIGNMENTS ===
+# Overly broad role assignment
+az role assignment create --assignee user@contoso.com --role Owner --scope /subscriptions/12345678-1234-1234-1234-123456789012
+
+# Role assignment without specific scope
+az role assignment create --assignee user@contoso.com --role Contributor
+
+# === INEFFICIENT OPERATIONS ===
+# Repeated API calls (should store in variable)
+echo "VM 1 Status: $(az vm show --resource-group MyResourceGroup --name ProductionVM1 --query powerState -o tsv)"
+echo "VM 2 Status: $(az vm show --resource-group MyResourceGroup --name ProductionVM2 --query powerState -o tsv)"
+echo "VM 3 Status: $(az vm show --resource-group MyResourceGroup --name ProductionVM3 --query powerState -o tsv)"
+
+# Loop through VMs with individual show commands (inefficient)
+for vm in $(az vm list --resource-group MyResourceGroup --query "[].name" -o tsv); do
+    az vm show --resource-group MyResourceGroup --name $vm
+    az vm get-instance-view --resource-group MyResourceGroup --name $vm
+done
+
+# Multiple list commands with grep instead of JMESPath
+az vm list --resource-group MyResourceGroup | grep "productionvm"
+az vm list --resource-group TempRG | grep "running"
+
+# === RESOURCE OPERATIONS WITHOUT PROPER FLAGS ===
+# VM operations without --no-wait
+az vm start --resource-group MyResourceGroup --name ProductionVM1
+az vm start --resource-group MyResourceGroup --name ProductionVM2
+az vm start --resource-group MyResourceGroup --name ProductionVM3
+
+# Extension installations without --upgrade
+az extension add --name azure-cli-ml
+az extension add --name aks-preview
+
+# === MISSING CONFIGURATIONS ===
+# Resources created without tags
+# Resources created without diagnostic settings
+# Resources created without monitoring
+# No budget alerts configured
+# No Azure Policy implementations
+# No resource locks for critical resources
+
+# === POOR ERROR HANDLING ===
+# Commands that could fail without proper error checking
+az vm delete --resource-group MyResourceGroup --name NonExistentVM --yes
+az group delete --name NonExistentRG --yes
+
+# Polling with sleep instead of az resource wait
+az vm start --resource-group MyResourceGroup --name ProductionVM1
+sleep 60
+echo "Assuming VM is started..."
+
+# === OUTPUT FORMATTING ISSUES ===
+# Commands without explicit output format
+az vm list --resource-group MyResourceGroup
+az storage account list
+
+# === NESTED LOOPS (PERFORMANCE ISSUE) ===
+for rg in $(az group list --query "[].name" -o tsv); do
+    for vm in $(az vm list --resource-group $rg --query "[].name" -o tsv); do
+        echo "VM $vm in RG $rg"
+    done
+done
+
+echo "Deployment completed with multiple anti-patterns for testing purposes"
