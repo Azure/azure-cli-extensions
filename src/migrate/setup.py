@@ -5,10 +5,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "1.0.0"
+VERSION = "2.0.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -32,8 +31,8 @@ setup(
     description='Support for Azure Migrate preview',
     long_description='Support for Azure Migrate preview',
     license='MIT',
-    author='Jeffrey Li',
-    author_email='jefl@microsoft.com',
+    author='Saif Al-Din Ali',
+    author_email='saifaldinali@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/migrate',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
