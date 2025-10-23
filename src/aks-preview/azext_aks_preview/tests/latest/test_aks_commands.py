@@ -17517,6 +17517,7 @@ spec:
         ])
 
         disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-container-network-logs -o json"
+        self.cmd(disable_cmd, checks=[self.check("provisioningState", "Succeeded")])
         self.cmd(
             disable_cmd,
             checks=[
