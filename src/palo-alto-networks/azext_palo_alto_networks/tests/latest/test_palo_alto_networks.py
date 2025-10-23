@@ -17,7 +17,7 @@ class PaloAltoNetworksScenario(ScenarioTest):
     def test_palo_alto_networks_cloudngfw_firewall(self, resource_group):
         self.kwargs.update({
             'cloudngfw_firewall_name': self.create_random_name('firewall', 15),
-            'public_ip_name': 'fw0718-public-ip',
+            'public_ip_name': 'clients-test-public-ip-DO-NOT-DELETE',
             'local_rulestack_name': 'test-local-rulestack',
             'prefix': 'test-publicip-prefix',
             'nsg': self.create_random_name('nsg', 10),
@@ -30,9 +30,9 @@ class PaloAltoNetworksScenario(ScenarioTest):
         self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet} -n {subnet2} --address-prefixes 10.0.1.0/26 --delegations PaloAltoNetworks.Cloudngfw/firewalls')
         self.cmd('az network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet1} --delegations PaloAltoNetworks.Cloudngfw/firewalls')
         vnet = self.cmd('az network vnet show -g {rg} -n {vnet}').get_output_in_json()
-        local_rulestack = self.cmd('az palo-alto cloudngfw local-rulestack create --local-rulestack-name testlrs -g {rg} -l eastus --default-mode "IPS" --scope "LOCAL" --pan-etag "9fa4e2c6-1b0c-11ee-b587-3e4c117c6534" --min-app-id-version "8595-7473" --security-services {{"vulnerability-profile":"BestPractice","anti-spyware-profile":"BestPractice","anti-virus-profile":"BestPractice","url-filtering-profile":"BestPractice","file-blocking-profile":"BestPractice","dns-subscription":"BestPractice"}}').get_output_in_json()
+        local_rulestack = self.cmd('az palo-alto cloudngfw local-rulestack create --local-rulestack-name testlrs -g {rg} -l eastus --default-mode "IPS" --scope "LOCAL" --min-app-id-version "8595-7473" --security-services {{"vulnerability-profile":"BestPractice","anti-spyware-profile":"BestPractice","anti-virus-profile":"BestPractice","url-filtering-profile":"BestPractice","file-blocking-profile":"BestPractice","dns-subscription":"BestPractice"}}').get_output_in_json()
         self.kwargs.update({
-            'public_ip_id': "/subscriptions/2bf4a339-294d-4c25-b0b2-ef649e9f5c27/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/publicIPAddresses/fw0718-public-ip",
+            'public_ip_id': "/subscriptions/2bf4a339-294d-4c25-b0b2-ef649e9f5c27/resourceGroups/clients-test-rg-DO-NOT-DELETE/providers/Microsoft.Network/publicIPAddresses/clients-test-public-ip-DO-NOT-DELETE",
             'vnet_id': vnet['id'],
             'rulestack_id': local_rulestack['id'],
             'trust_subnet': vnet['subnets'][0]['id'],
@@ -46,9 +46,9 @@ class PaloAltoNetworksScenario(ScenarioTest):
                  '--dns-settings {{"enable-dns-proxy":DISABLED,"enabled-dns-type":CUSTOM}} '
                  '--is-panorama-managed FALSE '
                  '--marketplace-details {{"marketplace-subscription-status":Subscribed,"offer-id":pan_swfw_cloud_ngfw,"publisher-id":paloaltonetworks}} '
-                 '--network-profile {{"egress-nat-ip":[],"enable-egress-nat":DISABLED,"network-type":VNET,"public-ips":[{{"address":"20.112.141.94","resource-id":{public_ip_id}}}],'
+                 '--network-profile {{"egress-nat-ip":[],"enable-egress-nat":DISABLED,"network-type":VNET,"public-ips":[{{"address":"52.191.205.108","resource-id":{public_ip_id}}}],"trusted-ranges":["11.0.0.0/8","190.168.0.0/16"],"private-source-nat-rules-destination":["11.0.0.0/16"],'
                  '"vnet-configuration":{{"ip-of-trust-subnet-for-udr":{{"address":10.0.0.0/16}},"trust-subnet":{{"resource-id":{trust_subnet}}},"un-trust-subnet":{{"resource-id":{un_trust_subnet}}},"vnet":{{"resource-id":{vnet_id}}}}}}} '
-                 '--plan-data {{"billing-cycle":MONTHLY,"plan-id":panw-cloud-ngfw-payg,"usage-type":PAYG}} --no-wait')
+                 '--plan-data {{"billing-cycle":MONTHLY,"plan-id":cloud-ngfw-payg-test,"usage-type":PAYG}} --no-wait')
         self.cmd('az palo-alto cloudngfw firewall list --resource-group {rg}',
                  checks=[
                      self.check('length(@)', 1),
@@ -58,41 +58,55 @@ class PaloAltoNetworksScenario(ScenarioTest):
                      self.check('associatedRulestack.resourceId', '{rulestack_id}'),
                      self.check('dnsSettings.enableDnsProxy', 'DISABLED'),
                      self.check('isPanoramaManaged', "FALSE"),
+                     self.check('isStrataCloudManaged', "FALSE"),
                      self.check('location', "eastus"),
                      self.check('marketplaceDetails.marketplaceSubscriptionStatus', "Subscribed"),
                      self.check('marketplaceDetails.offerId', "pan_swfw_cloud_ngfw"),
                      self.check('marketplaceDetails.publisherId', "paloaltonetworks"),
                      self.check('name', '{cloudngfw_firewall_name}'),
                      self.check('networkProfile.enableEgressNat', "DISABLED"),
+                     self.check('networkProfile.privateSourceNatRulesDestination', ["11.0.0.0/16"]),
+                     self.check('networkProfile.trustedRanges', ["11.0.0.0/8","190.168.0.0/16"]),
                      self.check('planData.billingCycle', "MONTHLY")
                  ])
         self.cmd('az palo-alto cloudngfw firewall delete --resource-group {rg} -n {cloudngfw_firewall_name}')
 
     @AllowLargeResponse(size_kb=10240)
-    def test_palo_alto_firewall_update(self):
+    def test_palo_alto_firewall_update_metrics(self):
         self.kwargs.update({
-            'resource_group': 'rheaTerraformTest',
-            'firewall_name': 'prodStabilityTest',
+            'resource_group': 'clients-test-rg-DO-NOT-DELETE',
+            'firewall_name': 'clients-test-fw2-DO-NOT-DELETE',
+            'metric_name': self.create_random_name('metric', 15),
         })
         self.cmd('az palo-alto cloudngfw firewall update --name {firewall_name} -g {resource_group} --tags {{"tagName":"value"}}')
         self.cmd('az palo-alto cloudngfw firewall show --name {firewall_name} -g {resource_group}', self.check('tags.tagName', "value"))
+        
+        # Test metrics operations
+        self.cmd('az palo-alto cloudngfw firewall metric default create --resource-group {resource_group} --firewall-name {firewall_name} --application-insights-connection-string "InstrumentationKey=7cc33e85-d205-472f-895f-7dbd38014bf8;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/;ApplicationId=a71d8a2d-4e90-4570-ab00-a0ac304df23b" --application-insights-resource-id "/subscriptions/2bf4a339-294d-4c25-b0b2-ef649e9f5c27/resourcegroups/clients-test-rg-DO-NOT-DELETE/providers/microsoft.insights/components/clients-test-ai-DO-NOT-DELETE"')
+        self.cmd('az palo-alto cloudngfw firewall metric list --resource-group {resource_group} --firewall-name {firewall_name} ')
+        self.cmd('az palo-alto cloudngfw firewall metric default show --resource-group {resource_group} --firewall-name {firewall_name}')
+        self.cmd('az palo-alto cloudngfw firewall metric default delete --resource-group {resource_group} --firewall-name {firewall_name} --yes')
 
     @AllowLargeResponse(size_kb=10240)
     def test_palo_alto_firewall_v2(self):
         self.kwargs.update({
             'loc': 'eastus',
-            'resource_group': 'rheaTerraformTest',
-            'firewall_name': 'prodStabilityTest',
+            'resource_group': 'clients-test-rg-DO-NOT-DELETE',
+            'firewall_name': 'clients-test-fw-DO-NOT-DELETE',
             'workspace': self.create_random_name('workspace', 15),
         })
         self.cmd('az palo-alto cloudngfw firewall save-log-profile --resource-group {resource_group} -n {firewall_name} '
                  '--log-option "SAME_DESTINATION" --log-type "TRAFFIC" '
-                 '--common-destination {{"monitor-configurations":{{"id":"/subscriptions/2bf4a339-294d-4c25-b0b2-ef649e9f5c27/resourceGroups/sudh_fire_test/providers/Microsoft.OperationalInsights/workspaces/testAnalyticsX","primary-key":"7R5uguOLkTF6zByLV9ef5402y4dQnhiSlNMTKNSpEbjZoBrGrNnM2rD4E7+0v1yFg5y6h3RlrIa7th7qJnoHcQ==","secondary-key":"7lmsLYTVizgkstJpno4fY6u36qmVw4rkaIfzhx82ymLIdYDy0wbq7Tdydkje3z50KbKsQnzhg8KAPFpEki/Buw==","subscription-id":"2bf4a339-294d-4c25-b0b2-ef649e9f5c27","workspace":"63e674d3-cc87-48c6-94cb-2d28a0b245fc"}}}}')
+                 '--common-destination {{"monitor-configurations":{{"id":"/subscriptions/2bf4a339-294d-4c25-b0b2-ef649e9f5c27/resourcegroups/clients-test-rg-do-not-delete/providers/microsoft.operationalinsights/workspaces/clients-test-law-do-not-delete","primary-key":"/R2h2lsY6xNNqqwuxkTWk/0cx8hCaC6NFqMQ8nh5j/eCkQWipjjYHkphYLt/x1ZkHfp4p6xf6M4oy32W0Y0I1w==","secondary-key":"JoGVZQcofZOGm0vnZbomgjJp2fMSSl6xc7B8eI0mGKNPGbGPVFeeqtIl55s71EEyWxk81iFa/Pf1fiFC9VZCjg==","subscription-id":"2bf4a339-294d-4c25-b0b2-ef649e9f5c27","workspace":"0482e8e7-6645-4a10-bf67-fc91c845b44e"}}}}')
         self.cmd('az palo-alto cloudngfw firewall show-log-profile --resource-group {resource_group} -n {firewall_name} ', self.check('type(@)', 'object'))
         self.cmd('az palo-alto cloudngfw firewall show-support-info --resource-group {resource_group} -n {firewall_name}')
 
         self.cmd('az palo-alto cloudngfw firewall status list --resource-group {resource_group} -n {firewall_name}')
         self.cmd('az palo-alto cloudngfw firewall status default show --resource-group {resource_group} -n {firewall_name}')
+
+        self.cmd('az palo-alto cloudngfw list-cloud-manager-tenant')
+        self.cmd('az palo-alto cloudngfw list-support-info')
+        self.cmd('az palo-alto cloudngfw create-product-serial-number')
 
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_palo_alto_networks_cloudngfw_local_rulestack')
@@ -176,8 +190,8 @@ class PaloAltoNetworksScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_palo_alto_cloudngfw_local_rulestack_with_counter')
     def test_palo_alto_cloudngfw_local_rulestack_with_counter(self, resource_group):
         self.kwargs.update({
-            'resource_group': "rheaTerraformTest",
-            'local_rulestack_name': "fw0718-lrs",
+            'resource_group': "clients-test-rg-DO-NOT-DELETE",
+            'local_rulestack_name': "fw0718-DO-NOT-DELETE-lrs",
             'priority': "1000000"
             })
         self.cmd('az palo-alto cloudngfw local-rulestack local-rule show-counter -g {resource_group} --local-rulestack-name {local_rulestack_name} --priority {priority}')
