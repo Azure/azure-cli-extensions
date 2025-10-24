@@ -47,19 +47,19 @@ aks create:
         - option_length_too_long
     data_collection_settings:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     enable_high_log_scale_mode:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     node_os_upgrade_channel:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     nrg_lockdown_restriction_level:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     enable_azure_monitor_metrics:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     enable_azure_container_storage:
       rule_exclusions:
         - option_length_too_long
@@ -118,7 +118,7 @@ aks create:
       rule_exclusions:
         - option_length_too_long
     disable_acns_observability:
-      rule_exclusions:  
+      rule_exclusions:
         - option_length_too_long
     acns_advanced_networkpolicies:
       rule_exclusions:
@@ -130,10 +130,13 @@ aks create:
       rule_exclusions:
         - option_length_too_long
     enable_retina_flow_logs:
-      rule_exclusions:  
+      rule_exclusions:
+        - option_length_too_long
+    enable_container_network_logs:
+      rule_exclusions:
         - option_length_too_long
     node_provisioning_default_pools:
-      rule_exclusions:  
+      rule_exclusions:
         - option_length_too_long
     enable_managed_system_pool:
       rule_exclusions:
@@ -208,22 +211,22 @@ aks update:
         - option_length_too_long
     data_collection_settings:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     enable_high_log_scale_mode:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     node_os_upgrade_channel:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     nrg_lockdown_restriction_level:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     enable_azure_monitor_metrics:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     disable_azure_monitor_metrics:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     enable_azure_container_storage:
       rule_exclusions:
         - option_length_too_long
@@ -300,7 +303,7 @@ aks update:
       rule_exclusions:
         - option_length_too_long
     disable_acns_observability:
-      rule_exclusions:  
+      rule_exclusions:
         - option_length_too_long
     acns_advanced_networkpolicies:
       rule_exclusions:
@@ -312,19 +315,25 @@ aks update:
       rule_exclusions:
         - option_length_too_long
     enable_retina_flow_logs:
-      rule_exclusions:  
+      rule_exclusions:
         - option_length_too_long
     disable_retina_flow_logs:
-      rule_exclusions:  
+      rule_exclusions:
+        - option_length_too_long
+    enable_container_network_logs:
+      rule_exclusions:
+        - option_length_too_long
+    disable_container_network_logs:
+      rule_exclusions:
         - option_length_too_long
     disable_http_proxy:
-      rule_exclusions:  
+      rule_exclusions:
         - option_length_too_long
     enable_http_proxy:
-      rule_exclusions:  
+      rule_exclusions:
         - option_length_too_long
     node_provisioning_default_pools:
-      rule_exclusions:  
+      rule_exclusions:
         - option_length_too_long
     enable_upstream_kubescheduler_user_configuration:
       rule_exclusions:
@@ -341,36 +350,36 @@ aks addon enable:
   parameters:
     appgw_watch_namespace:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     workspace_resource_id:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     enable_msi_auth_for_monitoring:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     data_collection_settings:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     enable_high_log_scale_mode:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
 aks addon update:
   parameters:
     appgw_watch_namespace:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     workspace_resource_id:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     enable_msi_auth_for_monitoring:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     data_collection_settings:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     enable_high_log_scale_mode:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
 aks enable-addons:
   parameters:
     enable_sgxquotehelper:
@@ -378,19 +387,19 @@ aks enable-addons:
         - option_length_too_long
     appgw_watch_namespace:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     workspace_resource_id:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     enable_msi_auth_for_monitoring:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     data_collection_settings:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     enable_high_log_scale_mode:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
 aks nodepool add:
   parameters:
     disable_windows_outbound_nat:
@@ -398,13 +407,13 @@ aks nodepool add:
         - option_length_too_long
     enable_node_public_ip:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     node_public_ip_prefix_id:
       rule_exclusions:
         - option_length_too_long
     enable_encryption_at_host:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
     node_public_ip_tags:
       rule_exclusions:
         - option_length_too_long

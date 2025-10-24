@@ -1091,6 +1091,7 @@ def aks_create(
     acns_advanced_networkpolicies=None,
     acns_transit_encryption_type=None,
     enable_retina_flow_logs=None,
+    enable_container_network_logs=None,
     acns_datapath_acceleration_mode=None,
     # nodepool
     crg_id=None,
@@ -1360,6 +1361,8 @@ def aks_update(
     acns_transit_encryption_type=None,
     enable_retina_flow_logs=None,
     disable_retina_flow_logs=None,
+    enable_container_network_logs=None,
+    disable_container_network_logs=None,
     acns_datapath_acceleration_mode=None,
     # metrics profile
     enable_cost_analysis=False,

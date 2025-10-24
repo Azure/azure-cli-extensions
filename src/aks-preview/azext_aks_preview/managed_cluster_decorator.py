@@ -921,34 +921,40 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
         return self.raw_param.get("acns_transit_encryption_type")
 
-    def get_retina_flow_logs(self, mc: ManagedCluster) -> Union[bool, None]:
-        """Get the enablement of retina flow logs
+    # Container network logs is the new name for retina flow logs.
+    def get_container_network_logs(self, mc: ManagedCluster) -> Union[bool, None]:
+        """Get the enablement of container network logs
 
         :return: bool or None"""
-        enable_retina_flow_logs = self.raw_param.get("enable_retina_flow_logs")
-        disable_retina_flow_logs = self.raw_param.get("disable_retina_flow_logs")
-        if enable_retina_flow_logs is None and disable_retina_flow_logs is None:
+        enable_cnl = (
+            self.raw_param.get("enable_container_network_logs") or
+            self.raw_param.get("enable_retina_flow_logs")
+        )
+        disable_cnl = (
+            self.raw_param.get("disable_container_network_logs") or
+            self.raw_param.get("disable_retina_flow_logs")
+        )
+        if enable_cnl is None and disable_cnl is None:
             return None
-        if enable_retina_flow_logs and disable_retina_flow_logs:
+        if enable_cnl and disable_cnl:
             raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-retina-flow-logs and "
-                "--disable-retina-flow-logs at the same time."
+                "Cannot specify --enable-container-network-logs and "
+                "--disable-container-network-logs at the same time."
             )
         if (
-            enable_retina_flow_logs and
+            enable_cnl and
             (not self.raw_param.get("enable_acns", False) and
                 not (mc.network_profile and mc.network_profile.advanced_networking and
                      mc.network_profile.advanced_networking.enabled)) or
             not (mc.addon_profiles and mc.addon_profiles.get("omsagent") and mc.addon_profiles["omsagent"].enabled)
         ):
             raise InvalidArgumentValueError(
-                "Flow logs requires '--enable-acns', advanced networking "
+                "Container network logs requires '--enable-acns', advanced networking "
                 "to be enabled, and the monitoring addon to be enabled."
             )
-        enable_retina_flow_logs = bool(enable_retina_flow_logs) if enable_retina_flow_logs is not None else False
-        disable_retina_flow_logs = bool(disable_retina_flow_logs) if disable_retina_flow_logs is not None else False
-        retina_flow_logs = enable_retina_flow_logs or not disable_retina_flow_logs
-        return retina_flow_logs
+        enable_cnl = bool(enable_cnl) if enable_cnl is not None else False
+        disable_cnl = bool(disable_cnl) if disable_cnl is not None else False
+        return enable_cnl or not disable_cnl
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of load_balancer_managed_outbound_ip_count.
@@ -3879,12 +3885,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
 
-        retina_flow_logs_enabled = self.context.get_retina_flow_logs(mc)
-        if retina_flow_logs_enabled is not None:
+        container_network_logs_enabled = self.context.get_container_network_logs(mc)
+        if container_network_logs_enabled is not None:
             monitoring_addon_profile = addon_profiles.get(addon_consts.get("CONST_MONITORING_ADDON_NAME"))
             if monitoring_addon_profile:
                 config = monitoring_addon_profile.config or {}
-                config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
+                config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
                 monitoring_addon_profile.config = config
 
         mc.addon_profiles = addon_profiles
@@ -5282,15 +5288,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        retina_flow_logs_enabled = self.context.get_retina_flow_logs(mc)
-        if retina_flow_logs_enabled is not None:
+        container_network_logs_enabled = self.context.get_container_network_logs(mc)
+        if container_network_logs_enabled is not None:
             if mc.addon_profiles:
                 addon_consts = self.context.get_addon_consts()
                 CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
                 monitoring_addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
                 if monitoring_addon_profile:
                     config = monitoring_addon_profile.config or {}
-                    config["enableRetinaNetworkFlags"] = str(retina_flow_logs_enabled)
+                    config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
                     mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = config
         return mc
 

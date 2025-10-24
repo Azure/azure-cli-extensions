@@ -969,6 +969,15 @@ def load_arguments(self, _):
         c.argument(
             "enable_retina_flow_logs",
             action="store_true",
+            deprecate_info=c.deprecate(
+                target="--enable-retina-flow-logs",
+                redirect="--enable-container-network-logs",
+                hide=True,
+            ),
+        )
+        c.argument(
+            "enable_container_network_logs",
+            action="store_true",
         )
         c.argument(
             "custom_ca_trust_certificates",
@@ -1625,9 +1634,27 @@ def load_arguments(self, _):
         c.argument(
             "enable_retina_flow_logs",
             action="store_true",
+            deprecate_info=c.deprecate(
+                target="--enable-retina-flow-logs",
+                redirect="--enable-container-network-logs",
+                hide=True,
+            ),
+        )
+        c.argument(
+            "enable_container_network_logs",
+            action="store_true",
         )
         c.argument(
             "disable_retina_flow_logs",
+            action="store_true",
+            deprecate_info=c.deprecate(
+                target="--disable-retina-flow-logs",
+                redirect="--disable-container-network-logs",
+                hide=True,
+            ),
+        )
+        c.argument(
+            "disable_container_network_logs",
             action="store_true",
         )
         c.argument("enable_cost_analysis", action="store_true")
