@@ -450,3 +450,442 @@ def new_local_server_replication(cmd,
     except Exception as e:
         logger.error("Error creating replication: %s", str(e))
         raise
+
+def get_local_replication_job(cmd,
+                              job_id=None,
+                              resource_group_name=None,
+                              project_name=None,
+                              job_name=None,
+                              subscription_id=None):
+    """
+    Retrieve the status of an Azure Migrate job.
+
+    This cmdlet is based on a preview API version and may experience
+    breaking changes in future releases.
+
+    Args:
+        cmd: The CLI command context
+        job_id (str, optional): Specifies the job ARM ID for which
+            the details need to be retrieved
+        resource_group_name (str, optional): The name of the resource
+            group where the recovery services vault is present
+        project_name (str, optional): The name of the migrate project
+        job_name (str, optional): Job identifier/name
+        subscription_id (str, optional): Azure Subscription ID. Uses
+            current subscription if not provided
+
+    Returns:
+        dict or list: Job details (single job or list of jobs)
+
+    Raises:
+        CLIError: If required parameters are missing or the job is not found
+    """
+    from azure.cli.core.commands.client_factory import \
+        get_subscription_id
+    from azext_migrate._helpers import (
+        get_resource_by_id,
+        send_get_request,
+        APIVersion
+    )
+
+    # Use current subscription if not provided
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Determine the operation mode based on provided parameters
+    if job_id:
+        # Mode: Get job by ID
+        vault_name, resource_group_name, job_name = \
+            _parse_job_id(job_id)
+    elif resource_group_name and project_name:
+        # Mode: Get job by name or list jobs
+        vault_name = _get_vault_name_from_project(
+            cmd, resource_group_name, project_name, subscription_id)
+    else:
+        raise CLIError(
+            "Either --job-id or both --resource-group-name and "
+            "--project-name must be provided.")
+
+    # Build the job URI
+    if job_name:
+        # Get a specific job
+        job_uri = (
+            f"/subscriptions/{subscription_id}/"
+            f"resourceGroups/{resource_group_name}/"
+            f"providers/Microsoft.DataReplication/"
+            f"replicationVaults/{vault_name}/"
+            f"jobs/{job_name}"
+        )
+
+        logger.info(
+            "Retrieving job '%s' from vault '%s'",
+            job_name, vault_name)
+
+        try:
+            job_details = get_resource_by_id(
+                cmd,
+                job_uri,
+                APIVersion.Microsoft_DataReplication.value
+            )
+
+            if not job_details:
+                raise CLIError(
+                    f"Job '{job_name}' not found in vault '{vault_name}'.")
+
+            return job_details
+
+        except CLIError:
+            raise
+        except Exception as e:
+            logger.error(
+                "Error retrieving job '%s': %s", job_name, str(e))
+            raise CLIError(f"Failed to retrieve job: {str(e)}")
+    else:
+        # List all jobs in the vault
+        jobs_uri = (
+            f"/subscriptions/{subscription_id}/"
+            f"resourceGroups/{resource_group_name}/"
+            f"providers/Microsoft.DataReplication/"
+            f"replicationVaults/{vault_name}/"
+            f"jobs?api-version={APIVersion.Microsoft_DataReplication.value}"
+        )
+
+        request_uri = (
+            f"{cmd.cli_ctx.cloud.endpoints.resource_manager}{jobs_uri}")
+
+        logger.info(
+            "Listing jobs from vault '%s'", vault_name)
+
+        try:
+            response = send_get_request(cmd, request_uri)
+            response_data = response.json()
+
+            jobs = response_data.get('value', [])
+
+            # Handle pagination if nextLink is present
+            while 'nextLink' in response_data:
+                next_link = response_data['nextLink']
+                response = send_get_request(cmd, next_link)
+                response_data = response.json()
+                jobs.extend(response_data.get('value', []))
+
+            return jobs
+
+        except Exception as e:
+            logger.error("Error listing jobs: %s", str(e))
+            raise CLIError(f"Failed to list jobs: {str(e)}")
+
+
+def _parse_job_id(job_id):
+    """
+    Parse a job ARM ID to extract vault name, resource group, and job name.
+
+    Args:
+        job_id (str): The job ARM ID
+
+    Returns:
+        tuple: (vault_name, resource_group_name, job_name)
+
+    Raises:
+        CLIError: If the job ID format is invalid
+    """
+    try:
+        job_id_parts = job_id.split("/")
+        if len(job_id_parts) < 11:
+            raise ValueError("Invalid job ID format")
+
+        resource_group_name = job_id_parts[4]
+        vault_name = job_id_parts[8]
+        job_name = job_id_parts[10]
+
+        return vault_name, resource_group_name, job_name
+
+    except (IndexError, ValueError) as e:
+        raise CLIError(
+            f"Invalid job ID format: {job_id}. "
+            "Expected format: /subscriptions/{{subscription-id}}/"
+            "resourceGroups/{{resource-group}}/providers/"
+            "Microsoft.DataReplication/replicationVaults/{{vault-name}}/"
+            f"jobs/{{job-name}}. Error: {str(e)}"
+        )
+
+
+def _get_vault_name_from_project(cmd, resource_group_name,
+                                 project_name, subscription_id):
+    """
+    Get the vault name from the Azure Migrate project solution.
+
+    Args:
+        cmd: The CLI command context
+        resource_group_name (str): Resource group name
+        project_name (str): Migrate project name
+        subscription_id (str): Subscription ID
+
+    Returns:
+        str: The vault name
+
+    Raises:
+        CLIError: If the solution or vault is not found
+    """
+    from azext_migrate._helpers import get_resource_by_id, APIVersion
+
+    # Get the migration solution
+    solution_name = "Servers-Migration-ServerMigration_DataReplication"
+    solution_uri = (
+        f"/subscriptions/{subscription_id}/"
+        f"resourceGroups/{resource_group_name}/"
+        f"providers/Microsoft.Migrate/migrateProjects/{project_name}/"
+        f"solutions/{solution_name}"
+    )
+
+    logger.info(
+        "Retrieving solution '%s' from project '%s'",
+        solution_name, project_name)
+
+    try:
+        solution = get_resource_by_id(
+            cmd,
+            solution_uri,
+            APIVersion.Microsoft_Migrate.value
+        )
+
+        if not solution:
+            raise CLIError(
+                f"Solution '{solution_name}' not found in project "
+                f"'{project_name}'.")
+
+        # Extract vault ID from solution extended details
+        properties = solution.get('properties', {})
+        details = properties.get('details', {})
+        extended_details = details.get('extendedDetails', {})
+        vault_id = extended_details.get('vaultId')
+
+        if not vault_id:
+            raise CLIError(
+                "Vault ID not found in solution. The replication "
+                "infrastructure may not be initialized.")
+
+        # Parse vault name from vault ID
+        vault_id_parts = vault_id.split("/")
+        if len(vault_id_parts) < 9:
+            raise CLIError(f"Invalid vault ID format: {vault_id}")
+
+        vault_name = vault_id_parts[8]
+        return vault_name
+
+    except CLIError:
+        raise
+    except Exception as e:
+        logger.error(
+            "Error retrieving vault from project '%s': %s",
+            project_name, str(e))
+        raise CLIError(
+            f"Failed to retrieve vault information: {str(e)}")
+
+def remove_local_server_replication(cmd,
+                                    target_object_id,
+                                    force_remove=False,
+                                    subscription_id=None):
+    """
+    Stop replication for a migrated server.
+
+    This cmdlet is based on a preview API version and may experience
+    breaking changes in future releases.
+
+    Args:
+        cmd: The CLI command context
+        target_object_id (str): Specifies the replicating server ARM ID
+            for which replication needs to be disabled (required)
+        force_remove (bool, optional): Specifies whether the replication
+            needs to be force removed. Default is False
+        subscription_id (str, optional): Azure Subscription ID. Uses
+            current subscription if not provided
+
+    Returns:
+        dict: The job model from the API response
+
+    Raises:
+        CLIError: If the protected item is not found or cannot be
+            removed in its current state
+    """
+    from azure.cli.core.commands.client_factory import \
+        get_subscription_id
+    from azext_migrate._helpers import (
+        get_resource_by_id,
+        APIVersion
+    )
+
+    # Use current subscription if not provided
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Validate target_object_id
+    if not target_object_id:
+        raise CLIError(
+            "The --target-object-id parameter is required.")
+
+    # Parse the protected item ID to extract components
+    # Expected format: /subscriptions/{sub}/resourceGroups/{rg}/providers/
+    # Microsoft.DataReplication/replicationVaults/{vault}/
+    # protectedItems/{item}
+    try:
+        protected_item_id_parts = target_object_id.split("/")
+        if len(protected_item_id_parts) < 11:
+            raise ValueError("Invalid protected item ID format")
+
+        resource_group_name = protected_item_id_parts[4]
+        vault_name = protected_item_id_parts[8]
+        protected_item_name = protected_item_id_parts[10]
+    except (IndexError, ValueError) as e:
+        raise CLIError(
+            f"Invalid target object ID format: {target_object_id}. "
+            "Expected format: /subscriptions/{{subscription-id}}/"
+            "resourceGroups/{{resource-group}}/providers/"
+            "Microsoft.DataReplication/replicationVaults/{{vault-name}}/"
+            f"protectedItems/{{item-name}}. Error: {str(e)}"
+        )
+
+    logger.info(
+        "Attempting to remove replication for protected item '%s' "
+        "in vault '%s'",
+        protected_item_name, vault_name)
+
+    # Get the protected item to validate it exists and check its state
+    try:
+        protected_item = get_resource_by_id(
+            cmd,
+            target_object_id,
+            APIVersion.Microsoft_DataReplication.value
+        )
+
+        if not protected_item:
+            raise CLIError(
+                f"Replication item is not found with Id "
+                f"'{target_object_id}'.")
+
+        # Check if the protected item allows DisableProtection operation
+        properties = protected_item.get('properties', {})
+        allowed_jobs = properties.get('allowedJobs', [])
+
+        if "DisableProtection" not in allowed_jobs:
+            protection_state = properties.get(
+                'protectionStateDescription', 'Unknown')
+            raise CLIError(
+                f"Replication item with Id '{target_object_id}' cannot "
+                f"be removed at this moment. Current protection state is "
+                f"'{protection_state}'.")
+
+    except CLIError:
+        raise
+    except Exception as e:
+        logger.error(
+            "Error retrieving protected item '%s': %s",
+            target_object_id, str(e))
+        raise CLIError(
+            f"Failed to retrieve replication item: {str(e)}")
+
+    # Construct the DELETE request URI with forceDelete parameter
+    force_delete_param = "true" if force_remove else "false"
+    delete_uri = (
+        f"{target_object_id}?"
+        f"api-version={APIVersion.Microsoft_DataReplication.value}&"
+        f"forceDelete={force_delete_param}"
+    )
+
+    # Send the delete request
+    try:
+        from azure.cli.core.util import send_raw_request
+
+        full_uri = cmd.cli_ctx.cloud.endpoints.resource_manager + delete_uri
+
+        logger.info(
+            "Sending DELETE request to remove protected item '%s' "
+            "(force=%s)",
+            protected_item_name, force_delete_param)
+
+        response = send_raw_request(
+            cmd.cli_ctx,
+            method='DELETE',
+            url=full_uri,
+        )
+
+        if response.status_code >= 400:
+            error_message = (
+                f"Failed to remove replication. "
+                f"Status: {response.status_code}")
+            try:
+                error_body = response.json()
+                if 'error' in error_body:
+                    error_details = error_body['error']
+                    error_code = error_details.get('code', 'Unknown')
+                    error_msg = error_details.get(
+                        'message', 'No message provided')
+                    raise CLIError(f"{error_code}: {error_msg}")
+            except (ValueError, KeyError):
+                error_message += f", Response: {response.text}"
+            raise CLIError(error_message)
+
+        # The DELETE operation returns a job reference in the response
+        # Extract the job name from the response headers or body
+        operation_location = response.headers.get(
+            'Azure-AsyncOperation') or response.headers.get('Location')
+
+        if operation_location:
+            # Extract job name from the operation location
+            # Format: .../jobs/{jobName}?... or .../jobs/{jobName}
+            job_parts = operation_location.split('/')
+            job_name = None
+            for i, part in enumerate(job_parts):
+                if part == 'jobs' and i + 1 < len(job_parts):
+                    # Get the job name and remove query string if present
+                    job_name = job_parts[i + 1].split('?')[0]
+                    break
+
+            if job_name:
+                # Get and return the job details
+                job_uri = (
+                    f"/subscriptions/{subscription_id}/"
+                    f"resourceGroups/{resource_group_name}/"
+                    f"providers/Microsoft.DataReplication/"
+                    f"replicationVaults/{vault_name}/"
+                    f"jobs/{job_name}"
+                )
+
+                try:
+                    job_details = get_resource_by_id(
+                        cmd,
+                        job_uri,
+                        APIVersion.Microsoft_DataReplication.value
+                    )
+
+                    if job_details:
+                        logger.info(
+                            "Successfully initiated removal of replication "
+                            "for '%s'. Job: %s",
+                            protected_item_name, job_name)
+                        return job_details
+                except Exception as job_error:
+                    logger.warning(
+                        "Could not retrieve job details: %s. "
+                        "Replication removal was initiated.",
+                        str(job_error))
+
+        # If we can't get job details, return success message
+        logger.info(
+            "Successfully initiated removal of replication for '%s'",
+            protected_item_name)
+        return {
+            "status": "Accepted",
+            "message": f"Replication removal initiated for "
+                      f"{protected_item_name}"
+        }
+
+    except CLIError:
+        raise
+    except Exception as e:
+        logger.error(
+            "Error removing replication for '%s': %s",
+            protected_item_name, str(e))
+        raise CLIError(
+            f"Failed to remove replication: {str(e)}")
+
