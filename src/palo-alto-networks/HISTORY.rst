@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.0.0
+1.1.2
 ++++++
 * Updated API version from 2022-08-29 to 2025-10-08 across all commands
 * Added new firewall metrics configuration support and commands
