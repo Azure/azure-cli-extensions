@@ -11,6 +11,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+19.0.0b6
++++++++
+* `az aks create --enable-hosted-system`: no longer provision default system node pool when creating an automatic cluster with hosted system enabled.
 
 19.0.0b5
 +++++++
