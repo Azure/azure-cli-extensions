@@ -72,6 +72,58 @@ class PaloAltoNetworksScenario(ScenarioTest):
         self.cmd('az palo-alto cloudngfw firewall delete --resource-group {rg} -n {cloudngfw_firewall_name}')
 
     @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_palo_alto_networks_cloudngfw_firewall', location='eastus' )
+    def test_palo_alto_networks_cloudngfw_firewall_scm(self, resource_group):
+        self.kwargs.update({
+            'cloudngfw_firewall_name': self.create_random_name('firewall', 15),
+            'nsg': self.create_random_name('nsg', 10),
+            'vnet': self.create_random_name('vnet', 10),
+            'subnet1': self.create_random_name('subnet1', 12),
+            'subnet2': self.create_random_name('subnet2', 12)
+        })
+        self.cmd('az network nsg create -g {rg} -n {nsg} --location northcentralus')
+        self.cmd('az network vnet create -g {rg} -n {vnet} --address-prefix 10.0.0.0/16 --nsg {nsg} --subnet-name {subnet1} --subnet-prefixes 10.0.0.0/26 --location northcentralus')
+        self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet} -n {subnet2} --address-prefixes 10.0.1.0/26 --delegations PaloAltoNetworks.Cloudngfw/firewalls')
+        self.cmd('az network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet1} --delegations PaloAltoNetworks.Cloudngfw/firewalls')
+        vnet = self.cmd('az network vnet show -g {rg} -n {vnet}').get_output_in_json()
+        self.kwargs.update({
+            'public_ip_id': "/subscriptions/2bf4a339-294d-4c25-b0b2-ef649e9f5c27/resourceGroups/clients-test-rg-DO-NOT-DELETE/providers/Microsoft.Network/publicIPAddresses/scm-clients-test-fw-DO-NOT-DELETE-public-ip",
+            'vnet_id': vnet['id'],
+            'trust_subnet': vnet['subnets'][0]['id'],
+            'un_trust_subnet': vnet['subnets'][1]['id']
+        })
+        self.cmd('az palo-alto cloudngfw firewall create '
+                 '--name {cloudngfw_firewall_name} '
+                 '-g {rg} '
+                 '--location northcentralus '
+                 '--dns-settings {{"enable-dns-proxy":DISABLED,"enabled-dns-type":CUSTOM}} '
+                 '--is-scm TRUE '
+                 '--scm-config {{"cloud-manager-name":"\'BrownfieldAutomation - Prisma Access (1983641518)\'"}} '
+                 '--marketplace-details {{"marketplace-subscription-status":Subscribed,"offer-id":pan_swfw_cloud_ngfw,"publisher-id":paloaltonetworks}} '
+                 '--network-profile {{"egress-nat-ip":[],"enable-egress-nat":DISABLED,"network-type":VNET,"public-ips":[{{"address":"20.169.255.244","resource-id":{public_ip_id}}}],'
+                 '"vnet-configuration":{{"ip-of-trust-subnet-for-udr":{{"address":10.0.0.0/16}},"trust-subnet":{{"resource-id":{trust_subnet}}},"un-trust-subnet":{{"resource-id":{un_trust_subnet}}},"vnet":{{"resource-id":{vnet_id}}}}}}} '
+                 '--plan-data {{"billing-cycle":MONTHLY,"plan-id":cloud-ngfw-payg-test,"usage-type":PAYG}} --no-wait')
+        self.cmd('az palo-alto cloudngfw firewall list --resource-group {rg}',
+                 checks=[
+                     self.check('length(@)', 1),
+                 ])
+        self.cmd('az palo-alto cloudngfw firewall show --resource-group {rg} -n {cloudngfw_firewall_name}',
+                 checks=[
+                     self.check('dnsSettings.enableDnsProxy', 'DISABLED'),
+                     self.check('isPanoramaManaged', "FALSE"),
+                     self.check('isStrataCloudManaged', "TRUE"),
+                     self.check('location', "northcentralus"),
+                     self.check('marketplaceDetails.marketplaceSubscriptionStatus', "Subscribed"),
+                     self.check('marketplaceDetails.offerId', "pan_swfw_cloud_ngfw"),
+                     self.check('marketplaceDetails.publisherId', "paloaltonetworks"),
+                     self.check('name', '{cloudngfw_firewall_name}'),
+                     self.check('networkProfile.enableEgressNat', "DISABLED"),
+                     self.check('strataCloudManagerConfig.cloudManagerName', "BrownfieldAutomation - Prisma Access (1983641518)"),
+                     self.check('planData.billingCycle', "MONTHLY")
+                 ])
+        self.cmd('az palo-alto cloudngfw firewall delete --resource-group {rg} -n {cloudngfw_firewall_name}')
+
+    @AllowLargeResponse(size_kb=10240)
     def test_palo_alto_firewall_update_metrics(self):
         self.kwargs.update({
             'resource_group': 'clients-test-rg-DO-NOT-DELETE',
