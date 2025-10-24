@@ -11,9 +11,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* `az aks get-credentials`: Convert device code mode kubeconfig to Azure CLI token format to bypass conditional access login blocks.
 * `az aks create`: Add new parameter `--enable-container-network-logs` to enable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs`.
 * `az aks update`: Add new parameter `--enable-container-network-logs` and `--disable-container-network-logs` to enable/disable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs` and `--disable-retina-flow-logs`.
+
+19.0.0b5
++++++++
+* `az aks get-credentials`: Convert device code mode kubeconfig to Azure CLI token format to bypass conditional access login blocks.
+* Add `enable-istio-cni` and `disable-istio-cni` commands under `az aks mesh`.
 
 19.0.0b4
 +++++++
