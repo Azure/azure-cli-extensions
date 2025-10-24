@@ -11,6 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks nodepool get-rollback-versions`: Add new command to get available rollback versions for a nodepool.
+* `az aks nodepool rollback`: Add new command to rollback a nodepool to a previously used configuration (N-1).
 
 19.0.0b5
 +++++++
