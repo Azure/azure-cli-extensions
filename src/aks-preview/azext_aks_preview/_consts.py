@@ -354,6 +354,7 @@ CONST_MIN_NODE_IMAGE_VERSION = "202403.13.0"
 # SSH Access Consts
 CONST_SSH_ACCESS_DISABLED = "disabled"
 CONST_SSH_ACCESS_LOCALUSER = "localuser"
+CONST_SSH_ACCESS_ENTRAID = "entraid"
 
 # Dns zone contributor role
 CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE = "Private DNS Zone Contributor"

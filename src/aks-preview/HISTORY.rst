@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b6
++++++++
+* Support `entraid` for parameter `--ssh-access` to support EntraID feature.
+
 19.0.0b5
 +++++++
 * `az aks get-credentials`: Convert device code mode kubeconfig to Azure CLI token format to bypass conditional access login blocks.
