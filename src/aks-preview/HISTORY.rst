@@ -11,10 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Support `entraid` for parameter `--ssh-access` to support EntraID feature.
 
 19.0.0b6
 +++++++
-* Support `entraid` for parameter `--ssh-access` to support EntraID feature.
+* Update the minimum required cli core version to `2.73.0` (actually since `18.0.0b35`).
 
 19.0.0b5
 +++++++
