@@ -2444,6 +2444,53 @@ examples:
     crafted: true
 """
 
+helps['aks nodepool get-rollback-versions'] = """
+type: command
+short-summary: Get the available rollback versions for an agent pool of the managed Kubernetes cluster.
+long-summary: |
+    Get the list of historically used Kubernetes and node image versions that can be used for rollback operations.
+examples:
+  - name: Get the available rollback versions for an agent pool.
+    text: az aks nodepool get-rollback-versions --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool
+    crafted: true
+"""
+
+helps['aks nodepool rollback'] = """
+type: command
+short-summary: Rollback an agent pool to a previously used configuration.
+long-summary: |
+    Rollback an agent pool to a previously used Kubernetes version or node image version.
+    If no specific versions are provided, the nodepool will be rolled back to the most recently used configuration.
+parameters:
+  - name: --kubernetes-version
+    type: string
+    short-summary: Target Kubernetes version for rollback.
+    long-summary: If not specified, uses the most recent available Kubernetes version.
+  - name: --node-image-version
+    type: string
+    short-summary: Target node image version for rollback.
+    long-summary: If not specified, uses the most recent available node image version.
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.
+  - name: --if-match
+    type: string
+    short-summary: The revision of the resource being updated. This should match the current revision.
+  - name: --if-none-match
+    type: string
+    short-summary: Set to '*' to allow a new resource to be created, but to prevent updating an existing resource.
+examples:
+  - name: Rollback a nodepool to the most recent configuration.
+    text: az aks nodepool rollback --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool
+    crafted: true
+  - name: Rollback a nodepool to a specific Kubernetes version.
+    text: az aks nodepool rollback --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool --kubernetes-version 1.28.5
+    crafted: true
+  - name: Rollback a nodepool to specific Kubernetes and node image versions.
+    text: az aks nodepool rollback --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool --kubernetes-version 1.28.5 --node-image-version AKSUbuntu-1804gen2containerd-2024.01.15
+    crafted: true
+"""
+
 helps['aks nodepool stop'] = """
     type: command
     short-summary: Stop running agent pool in the managed Kubernetes cluster.
