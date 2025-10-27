@@ -20940,6 +20940,7 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
+    @live_only()
     def test_aks_nodepool_rollback(self, resource_group, resource_group_location):
         """Test az aks nodepool rollback command with various scenarios"""
         aks_name = self.create_random_name("cliakstest", 16)
