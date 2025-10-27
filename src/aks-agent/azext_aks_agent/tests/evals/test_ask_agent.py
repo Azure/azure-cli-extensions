@@ -8,7 +8,12 @@ from __future__ import annotations
 import os
 import shlex
 import subprocess
+import textwrap
+import sys
+import threading
+from datetime import datetime, timezone
 from pathlib import Path
+from time import perf_counter
 from typing import Iterable
 
 
@@ -39,6 +44,26 @@ RUN_LIVE = os.environ.get("RUN_LIVE", "").lower() == "true"
 GENERATE_MOCKS = os.environ.get("GENERATE_MOCKS", "").lower() == "true"
 ITERATIONS = int(os.environ.get("ITERATIONS", "1"))
 BRAINTRUST_UPLOADER = BraintrustUploader(os.environ)
+
+
+def _log(message: str) -> None:
+    """Emit a timestamped log line that pytest `-s` will surface immediately."""
+    timestamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    print(f"[{timestamp}] {message}", flush=True)
+
+
+def _summarise_command(parts: Iterable[str]) -> str:
+    """Return a shell-style command string for debugging output."""
+    sequence = parts if isinstance(parts, list) else list(parts)
+    if hasattr(shlex, "join"):
+        return shlex.join(sequence)
+    # ``shlex.join`` was added in Python 3.8; keep a safe fallback just in case.
+    return " ".join(shlex.quote(part) for part in sequence)
+
+
+def _preview_output(output: str, *, limit: int = 400) -> str:
+    """Provide a trimmed preview of command output for quick debugging."""
+    return textwrap.shorten(output.strip(), width=limit, placeholder=" …")
 
 pytestmark = [
     pytest.mark.skipif(
@@ -90,13 +115,58 @@ def _build_command(prompt: str, model: str, resource_group: str, cluster_name: s
 
 
 def _run_cli(command: Iterable[str], env: dict[str, str]) -> str:
+    command_list = list(command)
+    command_display = _summarise_command(command_list)
+    _log(f"Invoking AKS Agent CLI: {command_display}")
+    start = perf_counter()
+
+    timeout_seconds = 600  # 10 minutes timeout
+
     try:
-        result = subprocess.run(  # noqa: S603
-            list(command),
-            check=True,
-            capture_output=True,
+        # Use Popen for real-time output visibility
+        process = subprocess.Popen(  # noqa: S603
+            command_list,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             text=True,
             env=env,
+        )
+
+        # Thread to print stderr in real-time
+        stderr_lines = []
+        def print_stderr():
+            for line in iter(process.stderr.readline, ''):
+                if line:
+                    print(f"[STDERR] {line.rstrip()}", file=sys.stderr, flush=True)
+                    stderr_lines.append(line)
+
+        stderr_thread = threading.Thread(target=print_stderr, daemon=True)
+        stderr_thread.start()
+
+        # Wait with timeout
+        try:
+            stdout, _ = process.communicate(timeout=timeout_seconds)
+            stderr_thread.join(timeout=1)
+            stderr = ''.join(stderr_lines)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            stdout, stderr_remainder = process.communicate()
+            stderr = ''.join(stderr_lines) + (stderr_remainder or '')
+            _log(f"[ERROR] CLI command timed out after {timeout_seconds}s")
+            pytest.fail(
+                f"AKS Agent CLI call timed out after {timeout_seconds}s\n"
+                f"Command: {command_display}\n"
+                f"Stdout: {stdout}\n"
+                f"Stderr: {stderr}"
+            )
+
+        if process.returncode != 0:
+            raise subprocess.CalledProcessError(
+                process.returncode, command_list, stdout, stderr
+            )
+
+        result = subprocess.CompletedProcess(
+            command_list, process.returncode, stdout, stderr
         )
     except subprocess.CalledProcessError as exc:  # pragma: no cover - live failure path
         output = exc.stdout or ""
@@ -109,13 +179,28 @@ def _run_cli(command: Iterable[str], env: dict[str, str]) -> str:
             f"Stdout: {output}\n"
             f"Stderr: {stderr}"
         )
+    duration = perf_counter() - start
+    stdout_preview = _preview_output(result.stdout)
+    stderr_preview = _preview_output(result.stderr) if result.stderr else None
+    _log(
+        f"AKS Agent CLI completed in {duration:.1f}s with stdout preview: {stdout_preview}"
+    )
+    if stderr_preview:
+        _log(
+            f"AKS Agent CLI stderr preview: {stderr_preview}"
+        )
     return result.stdout
 
 
 def _run_commands(
     commands: list[str], env: dict[str, str], label: str, scenario: Scenario
 ) -> None:
+    if not commands:
+        _log(f"[{label}] {scenario.name}: no commands to run")
+        return
     for cmd in commands:
+        _log(f"[{label}] {scenario.name}: running shell command: {cmd}")
+        start = perf_counter()
         try:
             completed = subprocess.run(  # noqa: S603
                 cmd,
@@ -137,9 +222,25 @@ def _run_commands(
                 f"Stderr: {stderr}"
             )
         else:
+            duration = perf_counter() - start
             # Provide quick visibility into command results when debugging failures.
             if completed.stdout:
-                print(f"[{label}] {scenario.name}: {completed.stdout.strip()}")
+                stdout_preview = _preview_output(completed.stdout)
+                _log(
+                    f"[{label}] {scenario.name}: succeeded in {duration:.1f}s; stdout preview: {stdout_preview}"
+                )
+            else:
+                _log(
+                    f"[{label}] {scenario.name}: succeeded in {duration:.1f}s; no stdout produced"
+                )
+            if completed.stderr:
+                stderr_preview = _preview_output(completed.stderr)
+                _log(
+                    f"[{label}] {scenario.name}: stderr preview: {stderr_preview}"
+                )
+    _log(
+        f"[{label}] {scenario.name}: completed {len(commands)} command(s)"
+    )
 
 
 def _scenario_params() -> list:
@@ -165,6 +266,7 @@ def test_ask_agent_live(
     request: pytest.FixtureRequest,
 ) -> None:
     iteration_label = f"[iteration {iteration + 1}/{ITERATIONS}]"
+    _log(f"{iteration_label} starting scenario {scenario.name}")
     if RUN_LIVE:
         env = _load_env()
 
@@ -178,7 +280,7 @@ def test_ask_agent_live(
             env.update(scenario.env_overrides)
 
         if iteration == 0 and scenario.before_commands and not aks_skip_setup:
-            print(f"{iteration_label} running setup commands for {scenario.name}")
+            _log(f"{iteration_label} running setup commands for {scenario.name}")
             _run_commands(scenario.before_commands, env, "setup", scenario)
 
         command = _build_command(
@@ -188,7 +290,7 @@ def test_ask_agent_live(
             cluster_name=cluster_name,
         )
 
-        print(f"{iteration_label} invoking AKS Agent CLI for {scenario.name}")
+        _log(f"{iteration_label} invoking AKS Agent CLI for {scenario.name}")
         try:
             raw_output = _run_cli(command, env)
             answer = ""
@@ -216,11 +318,11 @@ def test_ask_agent_live(
                     classifier_rationale = classifier_result.metadata.get(
                         "rationale", ""
                     )
-                    print(
+                    _log(
                         f"{iteration_label} classifier score for {scenario.name}: {classifier_score}"
                     )
                     if classifier_score is None:
-                        print(
+                        _log(
                             f"{iteration_label} classifier returned no score for {scenario.name}; falling back to substring checks"
                         )
                     else:
@@ -230,7 +332,7 @@ def test_ask_agent_live(
                             if not error_message:
                                 error_message = "Classifier judged answer incorrect"
                 else:
-                    print(
+                    _log(
                         f"{iteration_label} classifier unavailable for {scenario.name}; falling back to substring checks"
                     )
 
@@ -280,21 +382,21 @@ def test_ask_agent_live(
 
             if GENERATE_MOCKS:
                 mock_path = save_mock_answer(scenario.mock_path, answer)
-                print(f"{iteration_label} [mock] wrote response to {mock_path}")
+                _log(f"{iteration_label} [mock] wrote response to {mock_path}")
         finally:
             if (
                 iteration == ITERATIONS - 1
                 and scenario.after_commands
                 and not aks_skip_cleanup
             ):
-                print(f"{iteration_label} running cleanup commands for {scenario.name}")
+                _log(f"{iteration_label} running cleanup commands for {scenario.name}")
                 _run_commands(scenario.after_commands, env, "cleanup", scenario)
     else:
         if GENERATE_MOCKS:
             pytest.fail("GENERATE_MOCKS requires RUN_LIVE=true")
         try:
             answer = load_mock_answer(scenario.mock_path)
-            print(f"{iteration_label} replayed mock response for {scenario.name}")
+            _log(f"{iteration_label} replayed mock response for {scenario.name}")
         except FileNotFoundError:
             pytest.skip(f"Mock response missing for scenario {scenario.name}; rerun with RUN_LIVE=true GENERATE_MOCKS=true")
 
@@ -328,5 +430,6 @@ def test_ask_agent_live(
                 _set_user_property(request, 'braintrust_root_span_id', str(root_span_id))
             if url:
                 _set_user_property(request, 'braintrust_experiment_url', str(url))
+        _log(f"{iteration_label} completed scenario {scenario.name} (passed={passed})")
         if not passed:
             pytest.fail(f"Scenario {scenario.name}: {error}\nAI answer:\n{answer}")
