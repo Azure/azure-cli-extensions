@@ -63,7 +63,7 @@ class Update(AAZCommand):
         _args_schema.key_encryption_key_url = AAZStrArg(
             options=["--key-encryption-key-url"],
             arg_group="Encryption",
-            help="Key encryption key Url, versioned only. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78",
+            help="Key encryption key Url, versioned only. Ex: `https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78`",
             nullable=True,
         )
 
@@ -102,7 +102,7 @@ class Update(AAZCommand):
         _args_schema.user_assigned_identity_resource_id = AAZStrArg(
             options=["--identity-resource-id", "--user-assigned-identity-resource-id"],
             arg_group="KeyEncryptionKeyIdentity",
-            help="User assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.",
+            help="User assigned identity to use for accessing key encryption key Url. Ex: `/subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId`.",
             nullable=True,
         )
 
