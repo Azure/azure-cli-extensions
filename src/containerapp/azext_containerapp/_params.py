@@ -31,7 +31,7 @@ def load_arguments(self, _):
         c.argument('revisions_mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
 
     with self.argument_context('containerapp') as c:
-        c.argument('kind', arg_type=get_enum_type(['functionapp']), help="Set to 'functionapp' to enable built-in support and autoscaling for Azure Functions on Azure Container Apps.", is_preview=True)
+        c.argument('kind', arg_type=get_enum_type(['functionapp']), help="Set to 'functionapp' to enable built-in support and autoscaling for Azure Functions on Container Apps.", is_preview=True)
 
     with self.argument_context('containerapp create') as c:
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://aka.ms/SourceToCloudSupportedVersions.", is_preview=True)
@@ -507,6 +507,8 @@ def load_arguments(self, _):
         c.argument('all', help="The flag to indicate all logger settings.", action="store_true")
 
     with self.argument_context('containerapp debug') as c:
+        c.argument('debug_command', options_list=['--command'],
+                   help="The command to run inside the debug container and exit. If specified, the command is run and the session ends. If not specified, an interactive bash shell is started.")
         c.argument('container',
                    help="The container name that the debug console will connect to. Default to the first container of first replica.")
         c.argument('replica',
@@ -536,3 +538,43 @@ def load_arguments(self, _):
         c.argument('termination_grace_period', options_list=['--termination-grace-period', '-t'], type=int, help="Time in seconds to drain requests during ingress shutdown. Default 500, minimum 0, maximum 3600.")
         c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 4, maximum 30.")
         c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")
+
+    with self.argument_context('containerapp function') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('name', name_type, id_part=None, options_list=['--name', '-n'], help="The name of the Container App.")
+
+    with self.argument_context('containerapp function list') as c:
+        c.argument('revision_name', options_list=['--revision', '-r'], help="The name of the revision to list functions from. It is required if container app is running in multiple or labels revision mode.")
+
+    with self.argument_context('containerapp function show') as c:
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function to show details for.")
+        c.argument('revision_name', options_list=['--revision', '-r'], help="The name of the revision to get the function from. It is required if container app is running in multiple or labels revision mode.")
+
+    with self.argument_context('containerapp function keys show') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKey', 'hostKey', 'masterKey', 'systemKey']), help="The type of the key to show.", required=True)
+        c.argument('key_name', options_list=['--key-name'], help="The name of the key to show.", required=True)
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")
+
+    with self.argument_context('containerapp function keys list') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKey', 'hostKey', 'masterKey', 'systemKey']), help="The type of the keys to list.", required=True)
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")
+
+    with self.argument_context('containerapp function keys set') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKey', 'hostKey', 'masterKey', 'systemKey']), help="The type of the key to set/update.", required=True)
+        c.argument('key_name', options_list=['--key-name'], help="The name of the key to create or update.", required=True)
+        c.argument('key_value', options_list=['--key-value'], help="The value of the key to create or update. Do not provide this argument to regenerate the key with a new value.", required=False)
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")
+
+    with self.argument_context('containerapp function invocations summary') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function.", required=True)
+        c.argument('timespan', options_list=['--timespan'], help="The timespan for which to query the invocation data (e.g., '30d', '7d', '24h', '1h'). Default is '30d'.")
+
+    with self.argument_context('containerapp function invocations traces') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function.", required=True)
+        c.argument('timespan', options_list=['--timespan'], help="The timespan for which to query the invocation traces (e.g., '30d', '7d', '24h', '1h'). Default is '30d'.")
+        c.argument('limit', options_list=['--limit'], help="The maximum number of traces to return. Default is 20", type=int, default=20)
