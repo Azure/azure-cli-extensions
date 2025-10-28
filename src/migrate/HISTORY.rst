@@ -11,6 +11,6 @@ Release History
 +++++++++++++++
 * New version.
 
-2.0.0b1
+2.0.1b1
 +++++++++++++++
 * Switch to experimental version.
