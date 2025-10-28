@@ -174,7 +174,6 @@ def assign_network_contributor_role_to_subnet(cmd, object_id, subnet_id):
     interval = 3
     for _ in range(max_attempts):
         if _is_assignment_present(auth_client, subnet_id, object_id):
-            logger.warning("Role assignment for Network Contributor on subnet %s was detected.", subnet_id)
             return
         time.sleep(interval)
     logger.warning(
@@ -189,8 +188,6 @@ def _is_assignment_present(auth_client, subnet_id, object_id):
         if assignment.role_definition_id.lower().endswith(NETWORK_CONTRIBUTOR_ROLE_ID) and \
            assignment.scope.lower() == subnet_id.lower():
             return True
-        logger.warning("No matching role assignment found for scope %s and subnet %s",
-                       assignment.scope.lower(), subnet_id.lower())
     return False
 
 
