@@ -10,6 +10,7 @@ from azure.cli.core.azclierror import RequiredArgumentMissingError
 
 from azure.cli.core.util import sdk_no_wait
 
+
 def parse_key_value_list(pairs):
     result = {}
     if pairs is None:
@@ -154,11 +155,13 @@ def set_machine_kubernetes_profile(cmd, raw_parameters):
     )
     return machineKubernetesProfile
 
+
 def update_machine_tags(raw_parameters, existedMachine):
     tags = raw_parameters.get("tags")
     if tags is not None and len(tags) != 0:
         existedMachine.properties.tags = tags
     return existedMachine
+
 
 def update_machine_kubernetes_profile_taints_labels(raw_parameters, existedMachine):
     taints_raw = raw_parameters.get("node_taints")

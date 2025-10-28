@@ -2608,6 +2608,7 @@ def aks_machine_add(
     raw_parameters = locals()
     return add_machine(cmd, client, raw_parameters, no_wait)
 
+
 # pylint: disable=unused-argument
 def aks_machine_update(
     cmd,
