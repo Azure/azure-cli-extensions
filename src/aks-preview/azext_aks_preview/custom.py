@@ -2632,7 +2632,7 @@ def aks_machine_update(
     if existedMachine:
         # DO NOT MOVE: get all the original parameters and save them as a dictionary
         raw_parameters = locals()
-        return update_machine(cmd, client, raw_parameters, existedMachine,no_wait)
+        return update_machine(client, raw_parameters, existedMachine,no_wait)
 
 
 def aks_addon_list_available():
