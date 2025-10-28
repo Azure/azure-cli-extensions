@@ -30,7 +30,7 @@ from azext_arcdata.failover_group.constants import (
 )
 from azext_arcdata.failover_group.models.fog_cr import FogCustomResource
 from azext_arcdata.vendored_sdks.kubernetes_sdk.util import is_valid_connectivity_mode
-from azext_arcdata.sqlmi.models.sqlmi_cr_model import SqlmiCustomResource
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.sqlmi_cr_model import SqlmiCustomResource
 from azext_arcdata.sqlmi.sqlmi_utilities import get_sqlmi_custom_resource
 from azext_arcdata.failover_group.util import (
     CONNECTION_RETRY_ATTEMPTS,

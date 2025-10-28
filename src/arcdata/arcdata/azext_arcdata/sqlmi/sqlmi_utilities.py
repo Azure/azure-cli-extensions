@@ -7,7 +7,7 @@ from azext_arcdata.sqlmi.constants import (
     RESOURCE_KIND_PLURAL,
 )
 from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
-from azext_arcdata.sqlmi.models.sqlmi_cr_model import SqlmiCustomResource
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.sqlmi_cr_model import SqlmiCustomResource
 from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     CONNECTION_RETRY_ATTEMPTS,
     RETRY_INTERVAL,
@@ -37,13 +37,6 @@ def upgrade_sqlmi_instances(
         namespace, name, field_filter, label_filter
     )
 
-    if name and not instances:
-        raise ValueError(
-            "Instance {0} does not exist in namespace {1}.".format(
-                name, namespace
-            )
-        )
-
     (datacontroller, _) = KubernetesClient.get_arc_datacontroller(
         namespace, use_k8s
     )
@@ -52,18 +45,8 @@ def upgrade_sqlmi_instances(
     if not desired_version:
         desired_version = datacontrollerVersion
 
-    if (
-        desired_version != "auto"
-        and ArcDataImageService.compare_version_tag(
-            desired_version, datacontrollerVersion, ignore_label=True
-        )
-        == 1
-    ):
-        raise ValueError(
-            "Arc-enabled SQL managed instance(s) cannot be upgraded beyond the data controller version {}".format(
-                datacontrollerVersion
-            )
-        )
+    _validate_upgrade_sqlmi_args(
+        name, namespace, instances, desired_version, datacontrollerVersion)
 
     # - Filter to find instances that can upgrade to desired_version
     upgrade_instances = []
@@ -176,7 +159,6 @@ def resolve_sqlmi_instances(
     name=None,
     field_filter=None,
     label_filter=None,
-    desired_version=None,
 ) -> list:
 
     client = KubernetesClient.resolve_k8s_client().CustomObjectsApi()
@@ -255,3 +237,25 @@ def get_sqlmi_custom_resource(client, name, namespace):
                     name, namespace
                 )
             )
+
+
+def _validate_upgrade_sqlmi_args(name, namespace, instances, desired_version, datacontrollerVersion):
+    if name and not instances:
+        raise ValueError(
+            "Instance {0} does not exist in namespace {1}.".format(
+                name, namespace
+            )
+        )
+
+    if (
+        desired_version != "auto"
+        and ArcDataImageService.compare_version_tag(
+            desired_version, datacontrollerVersion, ignore_label=True
+        )
+        == 1
+    ):
+        raise ValueError(
+            "Arc-enabled SQL managed instance(s) cannot be upgraded beyond the data controller version {}".format(
+                datacontrollerVersion
+            )
+        )

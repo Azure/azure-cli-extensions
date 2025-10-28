@@ -27,7 +27,6 @@ from azext_arcdata.sqlmi.constants import (
     SQLMI_LICENSE_TYPES,
     SQLMI_TIERS,
 )
-from azext_arcdata.sqlmi.exceptions import SqlmiError
 from knack.cli import CLIError
 from urllib3.exceptions import MaxRetryError, NewConnectionError
 
@@ -126,23 +125,18 @@ def hierarchical_output(command_result):
     """
     from azext_arcdata.core.layout import BoxLayout
 
-    try:
-
-        result = command_result
-        return BoxLayout(
-            result,
-            config={
-                "headers": {
-                    "left": {"label": "", "id": None},
-                    "right": {"label": "", "id": None},
-                },
-                "identifiers": [],
+    result = command_result
+    return BoxLayout(
+        result,
+        config={
+            "headers": {
+                "left": {"label": "", "id": None},
+                "right": {"label": "", "id": None},
             },
-            bdc_config=True,
-        )
-    except Exception:  # -- fallback --
-        from knack.output import format_json
-    return format_json(command_result)
+            "identifiers": [],
+        },
+        bdc_config=True,
+    )
 
 
 def get_valid_sql_license_types():
@@ -341,7 +335,8 @@ def validate_ad_connector(
 ):
     if not name or not namespace:
         raise ValueError(
-            "To enable Active Directory (AD) authentication, both the resource name and namespace of the AD connector are required."
+            "To enable Active Directory (AD) authentication, both the resource name and ",
+            "namespace of the AD connector are required."
         )
 
     check_and_set_kubectl_context()
@@ -424,8 +419,7 @@ def resolve_old_dag_items(
     except K8sApiException as e:
         if e.status == http_status_codes.not_found:
             return []
-        else:
-            raise e
+        raise e
 
 
 def _parse_supported_ad_encryption_types(types_string):

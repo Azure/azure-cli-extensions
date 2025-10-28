@@ -9,7 +9,7 @@ import pytest
 from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
 from azext_arcdata.vendored_sdks.kubernetes_sdk.models.kube_quantity import KubeQuantity
 from azext_arcdata.vendored_sdks.kubernetes_sdk.models.volume_claim import VolumeClaim
-from azext_arcdata.sqlmi.models.sqlmi_cr_model import SqlmiCustomResource
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.sqlmi_cr_model import SqlmiCustomResource
 
 VCR_RECORD_MODE = "once"  # options: None, once, all, rerecord
 NAMESPACE = "test"

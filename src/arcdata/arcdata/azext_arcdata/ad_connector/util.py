@@ -12,7 +12,7 @@ from azext_arcdata.ad_connector.constants import (
     AD_CONNECTOR_API_GROUP,
     ACCOUNT_PROVISIONING_MODE_MANUAL,
 )
-from azext_arcdata.ad_connector.models.ad_connector_cr_model import (
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.ad_connector_cr_model import (
     ActiveDirectoryConnectorCustomResource,
 )
 from azext_arcdata.ad_connector.validators import (

@@ -73,10 +73,10 @@ from azext_arcdata.sqlmi.constants import (
     TASK_API_GROUP,
 )
 from azext_arcdata.sqlmi.exceptions import SqlmiError
-from azext_arcdata.sqlmi.models.reprovision_replica_cr_model import (
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.reprovision_replica_cr_model import (
     SqlmiReprovisionReplicaTaskCustomResource,
 )
-from azext_arcdata.sqlmi.models.sqlmi_cr_model import SqlmiCustomResource
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.sqlmi_cr_model import SqlmiCustomResource
 from azext_arcdata.sqlmi.sqlmi_utilities import (
     get_sqlmi_custom_resource,
     upgrade_sqlmi_instances,

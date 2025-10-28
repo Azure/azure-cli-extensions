@@ -29,7 +29,7 @@ from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     KubernetesError,
 )
 from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
-from azext_arcdata.ad_connector.models.ad_connector_cr_model import (
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.ad_connector_cr_model import (
     ActiveDirectoryConnectorCustomResource,
 )
 from azext_arcdata.ad_connector.constants import (
