@@ -13,6 +13,11 @@ Pending
 +++++++
 * `az aks create`: Add new parameter `--enable-container-network-logs` to enable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs`.
 * `az aks update`: Add new parameter `--enable-container-network-logs` and `--disable-container-network-logs` to enable/disable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs` and `--disable-retina-flow-logs`.
+* Support `entraid` for parameter `--ssh-access` to support EntraID feature.
+
+19.0.0b6
++++++++
+* Update the minimum required cli core version to `2.73.0` (actually since `18.0.0b35`).
 
 19.0.0b5
 +++++++
