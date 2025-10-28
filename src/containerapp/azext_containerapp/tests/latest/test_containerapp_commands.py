@@ -3029,7 +3029,7 @@ properties:
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.activeRevisionsMode", "Labels"),
             JMESPathCheck("properties.configuration.ingress.external", True),
-            JMESPathCheck("properties.configuration.ingress.traffic[0].weight", "100"),
+            JMESPathCheck("properties.configuration.ingress.traffic[0].weight", 100),
             JMESPathCheck("properties.configuration.ingress.traffic[0].label", "label1"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
