@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.4.0
+++++++
+* restored the behaviour of --upload-fragment in acifragmentgen to attach to first image in input
+* added `fragment push` command to allow explicit uploading of standalone fragments
+* added `fragment attach` command to allow explicit uploading of image attached fragments
+
 1.3.0
 ++++++
 * Add a new --enable-stdio flag, with a warning if neither this or --disable-stdio is set
