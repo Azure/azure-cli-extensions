@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.3.1
+++++++
+* Define a clear specification for acipolicygen input and use this when parsing ARM templates
+
 1.3.0
 ++++++
 * Add a new --enable-stdio flag, with a warning if neither this or --disable-stdio is set
