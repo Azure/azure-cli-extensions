@@ -12,20 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog monitor delete",
+    "datadog monitor monitored-subscription delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Deletes an existing Datadog monitor resource from your Azure subscription, removing the integration and stopping the observability of your Azure resources through Datadog.
-
-    :example: Monitors_Delete
-        az datadog monitor delete --resource-group myResourceGroup --monitor-name myMonitor
+    """Delete the subscriptions that are being monitored by the Datadog monitor resource
     """
 
     _aaz_info = {
         "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/monitoredsubscriptions/{}", "2025-06-11"],
         ]
     }
 
@@ -46,8 +43,14 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.configuration_name = AAZStrArg(
+            options=["-n", "--name", "--configuration-name"],
+            help="Configuration name",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.monitor_name = AAZStrArg(
-            options=["-n", "--name", "--monitor-name"],
+            options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
             id_part="name",
@@ -64,7 +67,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.MonitorsDelete(ctx=self.ctx)()
+        yield self.MonitoredSubscriptionsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,7 +78,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class MonitorsDelete(AAZHttpOperation):
+    class MonitoredSubscriptionsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -114,7 +117,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/monitoredSubscriptions/{configurationName}",
                 **self.url_parameters
             )
 
@@ -129,6 +132,10 @@ class Delete(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "configurationName", self.ctx.args.configuration_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "monitorName", self.ctx.args.monitor_name,
                     required=True,

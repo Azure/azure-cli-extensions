@@ -12,19 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog monitor list-monitored-resource",
+    "datadog subscription-status list",
 )
-class ListMonitoredResource(AAZCommand):
-    """Lists all Azure resources that are currently being monitored by the specified Datadog monitor resource, providing insight into the coverage of your observability setup.
-
-    :example: Monitors_ListMonitoredResources
-        az datadog monitor list-monitored-resource --resource-group myResourceGroup --monitor-name myMonitor
+class List(AAZCommand):
+    """List if the current subscription is being already monitored for selected Datadog organization.
     """
 
     _aaz_info = {
         "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/listmonitoredresources", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.datadog/subscriptionstatuses", "2025-06-11"],
         ]
     }
 
@@ -45,24 +42,16 @@ class ListMonitoredResource(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.monitor_name = AAZStrArg(
-            options=["-n", "--name", "--monitor-name"],
-            help="Monitor resource name",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
-                max_length=32,
-                min_length=2,
-            ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.datadog_organization_id = AAZStrArg(
+            options=["--datadog-organization-id"],
+            help="Datadog Organization Id",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsListMonitoredResources(ctx=self.ctx)()
+        self.CreationSupportedList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -78,7 +67,7 @@ class ListMonitoredResource(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class MonitorsListMonitoredResources(AAZHttpOperation):
+    class CreationSupportedList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,13 +81,13 @@ class ListMonitoredResource(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/listMonitoredResources",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Datadog/subscriptionStatuses",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -107,14 +96,6 @@ class ListMonitoredResource(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "monitorName", self.ctx.args.monitor_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -125,6 +106,10 @@ class ListMonitoredResource(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "datadogOrganizationId", self.ctx.args.datadog_organization_id,
+                    required=True,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2025-06-11",
                     required=True,
@@ -168,25 +153,22 @@ class ListMonitoredResource(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType()
-            _element.reason_for_logs_status = AAZStrType(
-                serialized_name="reasonForLogsStatus",
+            _element.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.creation_supported = AAZBoolType(
+                serialized_name="creationSupported",
+                flags={"read_only": True},
             )
-            _element.reason_for_metrics_status = AAZStrType(
-                serialized_name="reasonForMetricsStatus",
-            )
-            _element.sending_logs = AAZBoolType(
-                serialized_name="sendingLogs",
-            )
-            _element.sending_metrics = AAZBoolType(
-                serialized_name="sendingMetrics",
+            properties.name = AAZStrType(
+                flags={"read_only": True},
             )
 
             return cls._schema_on_200
 
 
-class _ListMonitoredResourceHelper:
-    """Helper class for ListMonitoredResource"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["ListMonitoredResource"]
+__all__ = ["List"]

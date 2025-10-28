@@ -23,9 +23,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-03-01",
+        "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.datadog/agreements", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.datadog/agreements", "2025-06-11"],
         ]
     }
 
@@ -104,7 +104,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-03-01",
+                    "api-version", "2025-06-11",
                     required=True,
                 ),
             }

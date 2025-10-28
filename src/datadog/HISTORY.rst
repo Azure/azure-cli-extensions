@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.1
+++++++
+* added api version 2025-06-11
+
 2.0.0
 ++++++
 * Fix resource creation issue

@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-20",
+        "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2023-10-20"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-06-11"],
         ]
     }
 
@@ -52,6 +52,11 @@ class Create(AAZCommand):
             options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
+                max_length=32,
+                min_length=2,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -153,6 +158,10 @@ class Create(AAZCommand):
         org_properties.redirect_uri = AAZStrArg(
             options=["redirect-uri"],
             help="The redirect uri for linking.",
+        )
+        org_properties.resource_collection = AAZBoolArg(
+            options=["resource-collection"],
+            help="The configuration which describes the state of resource collection. This collects configuration information for all resources in a subscription.",
         )
 
         user_info = cls._args_schema.user_info
@@ -260,7 +269,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-20",
+                    "api-version", "2025-06-11",
                     required=True,
                 ),
             }
@@ -312,6 +321,7 @@ class Create(AAZCommand):
                 datadog_organization_properties.set_prop("linkingClientId", AAZStrType, ".linking_client_id", typ_kwargs={"flags": {"secret": True}})
                 datadog_organization_properties.set_prop("name", AAZStrType, ".name")
                 datadog_organization_properties.set_prop("redirectUri", AAZStrType, ".redirect_uri")
+                datadog_organization_properties.set_prop("resourceCollection", AAZBoolType, ".resource_collection")
 
             user_info = _builder.get(".properties.userInfo")
             if user_info is not None:
@@ -411,6 +421,9 @@ class Create(AAZCommand):
             datadog_organization_properties.cspm = AAZBoolType()
             datadog_organization_properties.id = AAZStrType()
             datadog_organization_properties.name = AAZStrType()
+            datadog_organization_properties.resource_collection = AAZBoolType(
+                serialized_name="resourceCollection",
+            )
 
             user_info = cls._schema_on_200_201.properties.user_info
             user_info.email_address = AAZStrType(

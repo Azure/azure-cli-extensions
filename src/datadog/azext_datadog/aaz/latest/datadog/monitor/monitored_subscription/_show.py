@@ -12,19 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog tag-rule show",
+    "datadog monitor monitored-subscription show",
 )
 class Show(AAZCommand):
-    """Retrieves the details of the tag rules for a specific Datadog monitor resource, providing insight into its setup and status.
-
-    :example: TagRules_Get
-        az datadog tag-rule show --resource-group myResourceGroup --monitor-name myMonitor --rule-set-name default
+    """Get the subscriptions currently being monitored by the Datadog monitor resource.
     """
 
     _aaz_info = {
         "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/tagrules/{}", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/monitoredsubscriptions/{}", "2025-06-11"],
         ]
     }
 
@@ -44,8 +41,14 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.configuration_name = AAZStrArg(
+            options=["-n", "--name", "--configuration-name"],
+            help="The configuration name. Only 'default' value is supported.",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.monitor_name = AAZStrArg(
-            options=["-n", "--name", "--monitor-name"],
+            options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
             id_part="name",
@@ -58,17 +61,11 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.rule_set_name = AAZStrArg(
-            options=["--rule-set-name"],
-            help="Rule set name",
-            required=True,
-            id_part="child_name_1",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.TagRulesGet(ctx=self.ctx)()
+        self.MonitoredSubscriptionsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,7 +80,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TagRulesGet(AAZHttpOperation):
+    class MonitoredSubscriptionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -97,7 +94,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/tagRules/{ruleSetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/monitoredSubscriptions/{configurationName}",
                 **self.url_parameters
             )
 
@@ -113,15 +110,15 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "configurationName", self.ctx.args.configuration_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "monitorName", self.ctx.args.monitor_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "ruleSetName", self.ctx.args.rule_set_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -175,34 +172,48 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.agent_rules = AAZObjectType(
+            properties.monitored_subscription_list = AAZListType(
+                serialized_name="monitoredSubscriptionList",
+            )
+
+            monitored_subscription_list = cls._schema_on_200.properties.monitored_subscription_list
+            monitored_subscription_list.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.monitored_subscription_list.Element
+            _element.error = AAZStrType()
+            _element.status = AAZStrType()
+            _element.subscription_id = AAZStrType(
+                serialized_name="subscriptionId",
+            )
+            _element.tag_rules = AAZObjectType(
+                serialized_name="tagRules",
+            )
+
+            tag_rules = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules
+            tag_rules.agent_rules = AAZObjectType(
                 serialized_name="agentRules",
             )
-            properties.automuting = AAZBoolType()
-            properties.custom_metrics = AAZBoolType(
+            tag_rules.automuting = AAZBoolType()
+            tag_rules.custom_metrics = AAZBoolType(
                 serialized_name="customMetrics",
             )
-            properties.log_rules = AAZObjectType(
+            tag_rules.log_rules = AAZObjectType(
                 serialized_name="logRules",
             )
-            properties.metric_rules = AAZObjectType(
+            tag_rules.metric_rules = AAZObjectType(
                 serialized_name="metricRules",
             )
-            properties.provisioning_state = AAZStrType(
+            tag_rules.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
 
-            agent_rules = cls._schema_on_200.properties.agent_rules
+            agent_rules = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.agent_rules
             agent_rules.enable_agent_monitoring = AAZBoolType(
                 serialized_name="enableAgentMonitoring",
             )
@@ -210,11 +221,11 @@ class Show(AAZCommand):
                 serialized_name="filteringTags",
             )
 
-            filtering_tags = cls._schema_on_200.properties.agent_rules.filtering_tags
+            filtering_tags = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.agent_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
             _ShowHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
-            log_rules = cls._schema_on_200.properties.log_rules
+            log_rules = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.log_rules
             log_rules.filtering_tags = AAZListType(
                 serialized_name="filteringTags",
             )
@@ -228,38 +239,18 @@ class Show(AAZCommand):
                 serialized_name="sendSubscriptionLogs",
             )
 
-            filtering_tags = cls._schema_on_200.properties.log_rules.filtering_tags
+            filtering_tags = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.log_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
             _ShowHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
-            metric_rules = cls._schema_on_200.properties.metric_rules
+            metric_rules = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.metric_rules
             metric_rules.filtering_tags = AAZListType(
                 serialized_name="filteringTags",
             )
 
-            filtering_tags = cls._schema_on_200.properties.metric_rules.filtering_tags
+            filtering_tags = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.metric_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
             _ShowHelper._build_schema_filtering_tag_read(filtering_tags.Element)
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
 
             return cls._schema_on_200
 
