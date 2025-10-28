@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Support `entraid` for parameter `--ssh-access` to support EntraID feature.
 
 19.0.0b6
 +++++++
