@@ -50,7 +50,7 @@ from azext_arcdata.sqlmidb.constants import (
     TASK_API_VERSION,
 )
 from azext_arcdata.sqlmidb.exceptions import SqlmidbError
-from azext_arcdata.sqlmidb.models.restore_cr_model import (
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.restore_cr_model import (
     SqlmiRestoreTaskCustomResource,
 )
 from azext_arcdata.sqlmidb.util import parse_restore_time

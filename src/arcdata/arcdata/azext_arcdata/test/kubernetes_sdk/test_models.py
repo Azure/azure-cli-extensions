@@ -3,7 +3,7 @@ from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource_update im
     PolicyValue,
     Update,
 )
-from azext_arcdata.core.json_serialization import jsonProperty, tags, to_json
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.json_serialization import jsonProperty, tags, to_json
 
 
 class TestUpdateModelDeserialization:

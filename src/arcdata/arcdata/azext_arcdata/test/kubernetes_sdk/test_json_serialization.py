@@ -1,6 +1,6 @@
 from datetime import datetime
 import json
-from azext_arcdata.core.json_serialization import (
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.json_serialization import (
     jsonSerializable,
     jsonType,
     to_json,

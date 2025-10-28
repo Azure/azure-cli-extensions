@@ -10,7 +10,7 @@ from azext_arcdata.vendored_sdks.arm_sdk.azure.export_util import (
     ExportType,
     check_prompt_export_output_file,
 )
-from azext_arcdata.core.json_serialization import ExtendedJsonEncoder
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.json_serialization import ExtendedJsonEncoder
 
 from azext_arcdata.core.prompt import (
     prompt_for_input,

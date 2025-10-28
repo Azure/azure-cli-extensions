@@ -12,7 +12,7 @@ import shutil
 import sys
 import time
 from datetime import datetime
-from azext_arcdata.core.json_serialization import ExtendedJsonEncoder
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.json_serialization import ExtendedJsonEncoder
 
 import azext_arcdata.core.kubernetes as kubernetes_util
 import yaml
