@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-05-01-preview",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2025-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2025-07-01"],
         ]
     }
 
@@ -60,7 +60,7 @@ class Create(AAZCommand):
         _args_schema.key_encryption_key_url = AAZStrArg(
             options=["--key-encryption-key-url"],
             arg_group="Encryption",
-            help="Key encryption key Url, versioned only. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78",
+            help="Key encryption key Url, versioned only. Ex: `https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78`",
         )
 
         # define Arg Group "Identity"
@@ -110,7 +110,7 @@ class Create(AAZCommand):
         _args_schema.user_assigned_identity_resource_id = AAZStrArg(
             options=["--identity-resource-id", "--user-assigned-identity-resource-id"],
             arg_group="KeyEncryptionKeyIdentity",
-            help="User assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.",
+            help="User assigned identity to use for accessing key encryption key Url. Ex: `/subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId`.",
         )
 
         # define Arg Group "Parameters"
@@ -155,6 +155,13 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The minimum TLS version for the cluster to support, e.g. '1.2'",
             enum={"1.0": "1.0", "1.1": "1.1", "1.2": "1.2"},
+        )
+        _args_schema.public_network_access = AAZStrArg(
+            options=["--public-network-access"],
+            arg_group="Properties",
+            help="Whether or not public network traffic can access the Redis cluster. Only 'Enabled' or 'Disabled' can be set. null is returned only for clusters created using an old API version which do not have this property and cannot be set.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
         # define Arg Group "Sku"
@@ -255,7 +262,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-05-01-preview",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -307,6 +314,7 @@ class Create(AAZCommand):
                 properties.set_prop("encryption", AAZObjectType)
                 properties.set_prop("highAvailability", AAZStrType, ".high_availability")
                 properties.set_prop("minimumTlsVersion", AAZStrType, ".minimum_tls_version")
+                properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access", typ_kwargs={"flags": {"required": True}, "nullable": True})
 
             encryption = _builder.get(".properties.encryption")
             if encryption is not None:
@@ -428,6 +436,11 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.public_network_access = AAZStrType(
+                serialized_name="publicNetworkAccess",
+                flags={"required": True},
+                nullable=True,
             )
             properties.redis_version = AAZStrType(
                 serialized_name="redisVersion",
