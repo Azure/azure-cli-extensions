@@ -2613,7 +2613,7 @@ helps['aks machine add'] = """
 
 helps['aks machine update'] = """
    type: command
-   short-summary: update the specified machine in an agentpool
+   short-summary: Update the specified machine in an agentpool
    parameters:
        - name: --cluster-name
          type: string

@@ -2223,9 +2223,9 @@ def load_arguments(self, _):
         c.argument(
             "machine_name", help="The machine name."
         )
-        c.argument("tags", tags_type, help="The tags to set to the machine")
+        c.argument("tags", tags_type, help="The tags to set on the machine.")
         c.argument("node_taints", validator=validate_nodepool_taints)
-        c.argument("labels", nargs="*", help="Labels set to the managed namespace")
+        c.argument("labels", nargs="*", help="Labels to set on the machine.")
 
     with self.argument_context("aks operation") as c:
         c.argument(
