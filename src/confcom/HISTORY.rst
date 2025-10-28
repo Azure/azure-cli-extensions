@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.3.1
+1.3.2
 ++++++
 * Define a clear specification for acipolicygen input and use this when parsing ARM templates
 
