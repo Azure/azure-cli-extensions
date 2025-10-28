@@ -17,7 +17,7 @@ setupVenv(){
     # create new venv
     python"${PYTHON_VERSION}" -m venv azEnv
     source azEnv/bin/activate
-    python -m pip install -U pip
+    python -m pip install pip==25.2  # fix to 25.2 to avoid the "No module named 'azure.cli.__main__'" issue with pip 25.3+
 }
 
 # need to be executed in a venv
