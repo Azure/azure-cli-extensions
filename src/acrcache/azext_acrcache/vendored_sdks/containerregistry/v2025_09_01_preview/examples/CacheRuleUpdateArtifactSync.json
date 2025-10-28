@@ -1,0 +1,137 @@
+{
+  "parameters": {
+    "api-version": "2025-09-01-preview",
+    "subscriptionId": "00000000-0000-0000-0000-000000000000",
+    "resourceGroupName": "myResourceGroup",
+    "registryName": "myRegistry",
+    "cacheRuleName": "myCacheRule",
+    "cacheRuleUpdateParameters": {
+      "properties": {
+        "syncMode": "ActiveSync",
+        "artifactSyncFilters": {
+          "tags": {
+            "type": "KQL",
+            "query": "Tags | where Name startswith '2';"
+          },
+          "platforms": {
+            "type": "array",
+            "values": [
+              "linux/amd64",
+              "linux/arm64"
+            ]
+          },
+          "imageTypes": {
+            "type": "include",
+            "values": [
+              "application/vnd.oci.image.manifest.v1+json",
+              "application/vnd.oci.image.index.v1+json",
+              "application/vnd.docker.distribution.manifest.v2+json",
+              "application/vnd.docker.distribution.manifest.list.v2+json"
+            ]
+          },
+          "artifactTypes": {
+            "type": "include",
+            "values": [
+              "application/vnd.cncf.notary.signature",
+              "application/vnd.aquasec.trivy.report+json",
+              "application/vnd.cncf.helm.chart.v1.tar+gzip"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "type": "Microsoft.ContainerRegistry/registries/cacheRules",
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ContainerRegistry/registries/myRegistry/cacheRules/myCacheRule",
+        "name": "myCacheRule",
+        "properties": {
+          "sourceRepository": "mcr.microsoft.com/azure-cli",
+          "targetRepository": "cached-mar/azure-cli",
+          "syncMode": "ActiveSync",
+          "artifactSyncFilters": {
+            "tags": {
+              "type": "KQL",
+              "query": "Tags | where Name startswith '2';"
+            },
+            "platforms": {
+              "type": "array",
+              "values": [
+                "linux/amd64",
+                "linux/arm64"
+              ]
+            },
+            "imageTypes": {
+              "type": "include",
+              "values": [
+                "application/vnd.oci.image.manifest.v1+json",
+                "application/vnd.oci.image.index.v1+json",
+                "application/vnd.docker.distribution.manifest.v2+json",
+                "application/vnd.docker.distribution.manifest.list.v2+json"
+              ]
+            },
+            "artifactTypes": {
+              "type": "include",
+              "values": [
+                "application/vnd.cncf.notary.signature",
+                "application/vnd.aquasec.trivy.report+json",
+                "application/vnd.cncf.helm.chart.v1.tar+gzip"
+              ]
+            }
+          },
+          "creationDate": "2025-09-01T00:00:00.0000000+00:00",
+          "provisioningState": "Succeeded"
+        }
+      }
+    },
+    "201": {
+      "headers": {
+        "Azure-AsyncOperation": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ContainerRegistry/registries/myRegistry/cacheRules/myCacheRule/operationStatuses/cacherules-00000000-0000-0000-0000-000000000000?api-version=2025-09-01-preview"
+      },
+      "body": {
+        "type": "Microsoft.ContainerRegistry/registries/cacheRules",
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ContainerRegistry/registries/myRegistry/cacheRules/myCacheRule",
+        "name": "myCacheRule",
+        "properties": {
+          "sourceRepository": "mcr.microsoft.com/azure-cli",
+          "targetRepository": "cached-mar/azure-cli",
+          "syncMode": "ActiveSync",
+          "artifactSyncFilters": {
+            "tags": {
+              "type": "KQL",
+              "query": "Tags | where Name startswith '2';"
+            },
+            "platforms": {
+              "type": "array",
+              "values": [
+                "linux/amd64",
+                "linux/arm64"
+              ]
+            },
+            "imageTypes": {
+              "type": "include",
+              "values": [
+                "application/vnd.oci.image.manifest.v1+json",
+                "application/vnd.oci.image.index.v1+json",
+                "application/vnd.docker.distribution.manifest.v2+json",
+                "application/vnd.docker.distribution.manifest.list.v2+json"
+              ]
+            },
+            "artifactTypes": {
+              "type": "include",
+              "values": [
+                "application/vnd.cncf.notary.signature",
+                "application/vnd.aquasec.trivy.report+json",
+                "application/vnd.cncf.helm.chart.v1.tar+gzip"
+              ]
+            }
+          },
+          "creationDate": "2025-09-01T00:00:00.0000000+00:00",
+          "provisioningState": "Updating"
+        }
+      }
+    }
+  }
+}
