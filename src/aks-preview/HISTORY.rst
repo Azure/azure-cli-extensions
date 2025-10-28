@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b7
++++++++
+* `az aks machine update`: Add support for updating machine tags, node taints and node labels.
+
 19.0.0b6
 +++++++
 * Update the minimum required cli core version to `2.73.0` (actually since `18.0.0b35`).

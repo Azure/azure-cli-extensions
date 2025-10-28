@@ -302,6 +302,7 @@ def load_command_table(self, _):
             "show", "aks_machine_show", table_transformer=aks_machine_show_table_format
         )
         g.custom_command("add", "aks_machine_add", supports_no_wait=True)
+        g.custom_command("update", "aks_machine_update", supports_no_wait=True)
 
     with self.command_group(
         "aks operation", operations_sdk, client_factory=cf_operations

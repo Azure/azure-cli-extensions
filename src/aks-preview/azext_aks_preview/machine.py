@@ -10,6 +10,16 @@ from azure.cli.core.azclierror import RequiredArgumentMissingError
 
 from azure.cli.core.util import sdk_no_wait
 
+def parse_key_value_list(pairs):
+    result = {}
+    if pairs is None:
+        return result
+    for pair in pairs:
+        if "=" not in pair:
+            raise ValueError(f"Invalid format '{pair}'. Expected format key=value.")
+        key, value = pair.split("=", 1)
+        result[key.strip()] = value.strip()
+    return result
 
 def add_machine(cmd, client, raw_parameters, no_wait):
     resource_group_name = raw_parameters.get("resource_group_name")
@@ -28,6 +38,30 @@ def add_machine(cmd, client, raw_parameters, no_wait):
         machine_name,
         machine,
     )
+
+def update_machine(cmd, client, raw_parameters, existedMachine, no_wait):
+    resource_group_name = raw_parameters.get("resource_group_name")
+    cluster_name = raw_parameters.get("cluster_name")
+    nodepool_name = raw_parameters.get("nodepool_name")
+    machine_name = raw_parameters.get("machine_name")
+
+    updated_machine = updateMachine(cmd, raw_parameters, existedMachine)
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        machine_name,
+        updated_machine,
+    )
+
+def updateMachine(cmd, raw_parameters, existedMachine):
+    existedMachine = update_machine_tags(cmd, raw_parameters, existedMachine)
+    existedMachine.properties.kubernetes = update_machine_kubernetes_profile_taints_labels(cmd, raw_parameters, existedMachine)
+
+    return existedMachine
 
 
 def constructMachine(cmd, raw_parameters, machine_name):
@@ -113,6 +147,25 @@ def set_machine_kubernetes_profile(cmd, raw_parameters):
         orchestrator_version=kubernetes_version
     )
     return machineKubernetesProfile
+
+def update_machine_tags(cmd, raw_parameters, existedMachine):
+    tags = raw_parameters.get("tags")
+    if tags is not None and len(tags) != 0:
+        existedMachine.properties.tags = tags
+    return existedMachine
+
+def update_machine_kubernetes_profile_taints_labels(cmd, raw_parameters, existedMachine):
+    taints_raw = raw_parameters.get("node_taints")
+    if taints_raw is not None:
+        node_taints = [x.strip() for x in (taints_raw.split(",") if taints_raw else [])]
+        existedMachine.properties.kubernetes.node_taints = node_taints
+
+    labels_raw = raw_parameters.get("labels")
+    labels = parse_key_value_list(labels_raw)
+    if labels is not None and len(labels) != 0:
+        existedMachine.properties.kubernetes.node_labels = labels
+
+    return existedMachine.properties.kubernetes
 
 
 def set_machine_os_profile(cmd, raw_parameters):
