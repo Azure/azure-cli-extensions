@@ -4,9 +4,7 @@
 # license information.
 # -----------------------------------------------------------------------------
 
-from azext_arcdata.core.constants import DIRECT
 from collections import OrderedDict
-from knack.output import format_json
 
 
 def order_endpoints():
@@ -81,20 +79,17 @@ def hierarchical_output(command_result):
     """
     from azext_arcdata.core.layout import BoxLayout
 
-    try:
-        raw_result = command_result.result
-        result = order_endpoints()(raw_result)
+    raw_result = command_result.result
+    result = order_endpoints()(raw_result)
 
-        return BoxLayout(
-            result,
-            config={
-                "headers": {
-                    "left": {"label": "", "id": None},
-                    "right": {"label": "", "id": None},
-                },
-                "identifiers": [],
+    return BoxLayout(
+        result,
+        config={
+            "headers": {
+                "left": {"label": "", "id": None},
+                "right": {"label": "", "id": None},
             },
-            bdc_config=True,
-        )
-    except Exception:  # -- fallback --
-        return format_json(command_result)
+            "identifiers": [],
+        },
+        bdc_config=True,
+    )

@@ -240,7 +240,7 @@ def postgres_server_arc_update(
     """
     if not use_k8s:
         raise ValueError(USE_K8S_EXCEPTION_TEXT)
-    
+
     if not kwargs.get("name"):
         raise ValueError("Please provide a name for the PostgreSQL server.")
 
@@ -254,7 +254,7 @@ def postgres_server_arc_update(
 
 
 def postgres_server_arc_delete(
-    client, name, namespace=None, force=False, use_k8s=None
+    client, use_k8s=None, **kwargs
 ):
     """
     Delete an Azure Arc enabled PostgreSQL server.
@@ -267,6 +267,8 @@ def postgres_server_arc_delete(
     """
     if not use_k8s:
         raise ValueError(USE_K8S_EXCEPTION_TEXT)
+    if not kwargs.get("name"):
+        raise ValueError("Please provide a name for the PostgreSQL server.")
 
     cvo = client.args_to_command_value_object(locals())
     try:
@@ -292,6 +294,10 @@ def postgres_server_arc_show(
     """
     if not use_k8s:
         raise ValueError(USE_K8S_EXCEPTION_TEXT)
+    if not name:
+        raise ValueError("Please provide a name for the PostgreSQL server.")
+    if not namespace:
+        raise ValueError("Please provide a namespace for the PostgreSQL server.")
 
     cvo = client.args_to_command_value_object(locals())
     try:

@@ -1,9 +1,9 @@
+import pydash as _
 import re
 from azext_arcdata.postgres.constants import (
     API_GROUP,
     RESOURCE_KIND_PLURAL,
 )
-import pydash as _
 from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesClient
 from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import POSTGRES_CRD_NAME
 from azext_arcdata.vendored_sdks.kubernetes_sdk.models._models import (
@@ -31,7 +31,7 @@ def resolve_postgres_instances(
 
     items = response.get("items")
 
-    instances = _.map_(items, lambda cr: PostgresCustomResource.from_dict(cr))
+    instances = _.map_(items, PostgresCustomResource.from_dict)
 
     if name is not None:
         def name_matches(instance):
