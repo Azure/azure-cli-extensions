@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get if the current subscription is being already monitored for selected Datadog organization.
+
+    :example: CreationSupported_Get
+        az datadog subscription-status default show --datadog-org-id 00000000-0000-0000-0000
     """
 
     _aaz_info = {

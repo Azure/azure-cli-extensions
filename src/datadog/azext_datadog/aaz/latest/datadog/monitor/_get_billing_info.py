@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetBillingInfo(AAZCommand):
     """Get marketplace and organization info mapped to the given monitor.
+
+    :example: BillingInfo_Get
+        az datadog monitor get-billing-info --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {

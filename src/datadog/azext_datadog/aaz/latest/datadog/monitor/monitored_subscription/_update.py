@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the subscriptions that should be monitored by the Datadog monitor resource.
+
+    :example: Monitors_AddMonitoredSubscriptions
+        az datadog monitor monitored-subscription update --resource-group myResourceGroup --monitor-name myMonitor --configuration-name default --mon-sub-list "[{status:Active,subscription-id:/subscriptions/00000000-0000-0000-0000-000000000000}]" --operation AddBegin
     """
 
     _aaz_info = {
