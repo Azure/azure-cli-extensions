@@ -12,7 +12,8 @@ from knack.log import get_logger
 from azure.cli.core.aaz import has_value, AAZAnyType, AAZListArg, AAZStrArg
 from azure.cli.core.aaz._arg_action import AAZArgActionOperations, AAZPromptInputOperation, _ELEMENT_APPEND_KEY
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azext_change_state.aaz.latest.change_safety.change_state import Create as _ChangeStateCreate, Update as _ChangeStateUpdate
+from azext_change_state.aaz.latest.change_safety.change_state import Create as _ChangeStateCreate, Update as _ChangeStateUpdate, Show as _ChangeStateShow, Delete as _ChangeStateDelete
+from azure.cli.core.aaz import AAZObjectType, AAZStrType, AAZListType
 
 
 logger = get_logger(__name__)
@@ -110,6 +111,27 @@ def _inject_targets_into_result(data, targets):
             process(entry)
     else:
         process(data)
+
+def _custom_show_schema_builder():
+    # Import the generated Show class
+    from azext_change_state.aaz.latest.change_safety.change_state._show import Show as GeneratedShow
+
+    # Get the base schema from the generated code
+    base_schema = GeneratedShow.ChangeStatesGet._build_schema_on_200()
+
+    # Inject/override the targets schema
+    change_definition = base_schema.properties.change_definition
+    details = change_definition.details
+    details.targets = AAZListType(flags={"read_only": True})
+    details.targets.Element = AAZObjectType()
+    details.targets.Element.resourceId = AAZStrType()
+    details.targets.Element.subscriptionId = AAZStrType()
+    details.targets.Element.resourceGroupName = AAZStrType()
+    details.targets.Element.resourceType = AAZStrType()
+    details.targets.Element.resourceName = AAZStrType()
+    details.targets.Element.httpMethod = AAZStrType()
+
+    return base_schema
 
 
 class ChangeStateCreate(_ChangeStateCreate):
@@ -376,3 +398,30 @@ class ChangeStateUpdate(_ChangeStateUpdate):
         def content(self):
             content = super().content
             return _inject_change_definition_into_content(content, self.ctx)
+
+class ChangeStateShow(_ChangeStateShow):
+    def _output(self, *args, **kwargs):
+        result = super()._output(*args, **kwargs)
+        # Optionally inject targets schema into result if needed
+        return result
+
+    class ChangeStatesGetAtSubscriptionLevel(_ChangeStateShow.ChangeStatesGetAtSubscriptionLevel):
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=_custom_show_schema_builder
+            )
+
+    class ChangeStatesGet(_ChangeStateShow.ChangeStatesGet):
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=_custom_show_schema_builder
+            )
+
+class ChangeStateDelete(_ChangeStateDelete):
+    pass
