@@ -119,7 +119,8 @@ class TestAksAgentInit(unittest.TestCase):
 
         with self.assertRaises(AzCLIError) as cm:
             aks_agent_init(cmd=None)
-        self.assertEqual(str(cm.exception), "Please re-run `az aks agent-init` to correct the input parameters.")
+        self.assertEqual(str(cm.exception),
+                         "Please re-run `az aks agent-init` to correct the input parameters. Invalid input")
 
     @patch('holmes.interactive.SlashCommands')
     @patch('holmes.utils.colors.ERROR_COLOR')
@@ -153,7 +154,7 @@ class TestAksAgentInit(unittest.TestCase):
 
         with self.assertRaises(AzCLIError) as cm:
             aks_agent_init(cmd=None)
-        self.assertEqual(str(cm.exception), "Please check your deployed model and network connectivity.")
+        self.assertEqual(str(cm.exception), "Please check your deployed model and network connectivity. Connection failed")
 
 
 if __name__ == '__main__':

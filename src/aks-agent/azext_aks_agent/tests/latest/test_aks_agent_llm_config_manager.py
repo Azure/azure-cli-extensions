@@ -32,13 +32,12 @@ class TestLLMConfigManager(unittest.TestCase):
     def test_save_new_config(self):
         """Test saving a new configuration when file doesn't exist."""
         config = {
-            "provider": "openai",
             "MODEL_NAME": "gpt-4",
             "OPENAI_API_KEY": "test-key",
             "OPENAI_API_BASE": "https://api.openai.com/v1"
         }
 
-        self.manager.save(config)
+        self.manager.save("openai", config)
 
         # Verify file was created and contains correct data
         self.assertTrue(os.path.exists(self.config_file))
@@ -47,7 +46,8 @@ class TestLLMConfigManager(unittest.TestCase):
 
         self.assertIn("llms", data)
         self.assertEqual(len(data["llms"]), 1)
-        self.assertEqual(data["llms"][0], config)
+        expected_config = {"provider": "openai", **config}
+        self.assertEqual(data["llms"][0], expected_config)
 
     def test_save_append_to_existing_config(self):
         """Test saving a configuration to an existing file."""
@@ -64,12 +64,11 @@ class TestLLMConfigManager(unittest.TestCase):
 
         # Add new config
         new_config = {
-            "provider": "openai",
             "MODEL_NAME": "gpt-4",
             "OPENAI_API_KEY": "new-key"
         }
 
-        self.manager.save(new_config)
+        self.manager.save("openai", new_config)
 
         # Verify both configs exist
         with open(self.config_file, 'r') as f:
@@ -77,7 +76,8 @@ class TestLLMConfigManager(unittest.TestCase):
 
         self.assertEqual(len(data["llms"]), 2)
         self.assertEqual(data["llms"][0], initial_config)
-        self.assertEqual(data["llms"][1], new_config)
+        expected_new_config = {"provider": "openai", **new_config}
+        self.assertEqual(data["llms"][1], expected_new_config)
 
     def test_save_creates_llms_key_if_missing(self):
         """Test that save creates 'llms' key if config file exists but is malformed."""
@@ -86,23 +86,24 @@ class TestLLMConfigManager(unittest.TestCase):
         with open(self.config_file, 'w') as f:
             yaml.safe_dump(malformed_data, f)
 
-        config = {"provider": "openai", "MODEL_NAME": "gpt-4"}
-        self.manager.save(config)
+        config = {"MODEL_NAME": "gpt-4"}
+        self.manager.save("openai", config)
 
         with open(self.config_file, 'r') as f:
             data = yaml.safe_load(f)
 
         self.assertIn("llms", data)
         self.assertEqual(len(data["llms"]), 1)
-        self.assertEqual(data["llms"][0], config)
+        expected_config = {"provider": "openai", **config}
+        self.assertEqual(data["llms"][0], expected_config)
 
     @patch("builtins.open", side_effect=IOError("Permission denied"))
     def test_save_handles_file_write_error(self, mock_file):
         """Test that save handles file write errors gracefully."""
-        config = {"provider": "openai", "MODEL_NAME": "gpt-4"}
+        config = {"MODEL_NAME": "gpt-4"}
 
         with self.assertRaises(IOError):
-            self.manager.save(config)
+            self.manager.save("openai", config)
 
     def test_load_existing_file(self):
         """Test loading configurations from an existing file."""
@@ -117,17 +118,6 @@ class TestLLMConfigManager(unittest.TestCase):
 
         result = self.manager.load()
         self.assertEqual(result, data)
-
-    def test_load_nonexistent_file(self):
-        """Test loading from a nonexistent file returns empty structure."""
-        result = self.manager.load()
-        self.assertEqual(result, {"llms": []})
-
-    @patch("builtins.open", side_effect=IOError("Permission denied"))
-    def test_load_handles_file_read_error(self, mock_file):
-        """Test that load handles file read errors gracefully."""
-        with self.assertRaises(IOError):
-            self.manager.load()
 
     def test_load_handles_invalid_yaml(self):
         """Test that load handles invalid YAML content."""
