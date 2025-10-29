@@ -8,8 +8,12 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-# from azure.cli.core.commands import CliCommandType
+from azext_change_state import custom
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    """Apply custom command overrides after the AAZ-generated command table is loaded."""
+    if 'change-safety change-state create' in self.command_table:
+        self.command_table['change-safety change-state create'] = custom.ChangeStateCreate(loader=self)
+    if 'change-safety change-state update' in self.command_table:
+        self.command_table['change-safety change-state update'] = custom.ChangeStateUpdate(loader=self)
