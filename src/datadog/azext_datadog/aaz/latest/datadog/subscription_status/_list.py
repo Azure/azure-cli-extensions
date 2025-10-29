@@ -12,19 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog sso-config list",
+    "datadog subscription-status list",
 )
 class List(AAZCommand):
-    """Lists all Single Sign-On (SSO) configurations associated with a specific Datadog monitor resource, helping you manage and audit access settings.
-
-    :example: SingleSignOnConfigurations_List
-        az datadog sso-config list --resource-group myResourceGroup --monitor-name myMonitor
+    """List if the current subscription is being already monitored for selected Datadog organization.
     """
 
     _aaz_info = {
         "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/singlesignonconfigurations", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.datadog/subscriptionstatuses", "2025-06-11"],
         ]
     }
 
@@ -45,24 +42,16 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.monitor_name = AAZStrArg(
-            options=["-n", "--name", "--monitor-name"],
-            help="Monitor resource name",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
-                max_length=32,
-                min_length=2,
-            ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.datadog_org_id = AAZStrArg(
+            options=["--datadog-org-id"],
+            help="Datadog Organization Id",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SingleSignOnConfigurationsList(ctx=self.ctx)()
+        self.CreationSupportedList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -78,7 +67,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class SingleSignOnConfigurationsList(AAZHttpOperation):
+    class CreationSupportedList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,7 +81,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/singleSignOnConfigurations",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Datadog/subscriptionStatuses",
                 **self.url_parameters
             )
 
@@ -108,14 +97,6 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "monitorName", self.ctx.args.monitor_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -125,6 +106,10 @@ class List(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "datadogOrganizationId", self.ctx.args.datadog_org_id,
+                    required=True,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2025-06-11",
                     required=True,
@@ -170,55 +155,15 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
             _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.enterprise_app_id = AAZStrType(
-                serialized_name="enterpriseAppId",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
+            properties.creation_supported = AAZBoolType(
+                serialized_name="creationSupported",
                 flags={"read_only": True},
             )
-            properties.single_sign_on_state = AAZStrType(
-                serialized_name="singleSignOnState",
-            )
-            properties.single_sign_on_url = AAZStrType(
-                serialized_name="singleSignOnUrl",
+            properties.name = AAZStrType(
                 flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200

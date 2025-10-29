@@ -12,26 +12,25 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog monitor set-default-key",
+    "datadog monitor monitored-subscription delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
-class SetDefaultKey(AAZCommand):
-    """Sets the default Datadog API key for the specified monitor resource, which will be used for authenticating and sending telemetry data from Azure to Datadog.
-
-    :example: Monitors_SetDefaultKey
-        az datadog monitor set-default-key --resource-group myResourceGroup --monitor-name myMonitor --key 1111111111111111aaaaaaaaaaaaaaaa
+class Delete(AAZCommand):
+    """Delete the subscriptions that are being monitored by the Datadog monitor resource
     """
 
     _aaz_info = {
         "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/setdefaultkey", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/monitoredsubscriptions/{}", "2025-06-11"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -44,8 +43,14 @@ class SetDefaultKey(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.configuration_name = AAZStrArg(
+            options=["-n", "--name", "--configuration-name"],
+            help="The configuration name. Only 'default' value is supported.",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.monitor_name = AAZStrArg(
-            options=["-n", "--name", "--monitor-name"],
+            options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
             id_part="name",
@@ -58,35 +63,11 @@ class SetDefaultKey(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.created = AAZStrArg(
-            options=["--created"],
-            arg_group="Body",
-            help="The time of creation of the API key.",
-        )
-        _args_schema.created_by = AAZStrArg(
-            options=["--created-by"],
-            arg_group="Body",
-            help="The user that created the API key.",
-        )
-        _args_schema.key = AAZStrArg(
-            options=["--key"],
-            arg_group="Body",
-            help="The value of the API key.",
-        )
-        _args_schema.key_name = AAZStrArg(
-            options=["--key-name"],
-            arg_group="Body",
-            help="The name of the API key.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsSetDefaultKey(ctx=self.ctx)()
+        yield self.MonitoredSubscriptionsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -97,27 +78,52 @@ class SetDefaultKey(AAZCommand):
     def post_operations(self):
         pass
 
-    class MonitorsSetDefaultKey(AAZHttpOperation):
+    class MonitoredSubscriptionsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [204]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/setDefaultKey",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/monitoredSubscriptions/{configurationName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -126,6 +132,10 @@ class SetDefaultKey(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "configurationName", self.ctx.args.configuration_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "monitorName", self.ctx.args.monitor_name,
                     required=True,
@@ -151,35 +161,15 @@ class SetDefaultKey(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-            }
-            return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
-            )
-            _builder.set_prop("created", AAZStrType, ".created")
-            _builder.set_prop("createdBy", AAZStrType, ".created_by")
-            _builder.set_prop("key", AAZStrType, ".key", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("name", AAZStrType, ".key_name")
-
-            return self.serialize_content(_content_value)
-
         def on_200(self, session):
             pass
 
+        def on_204(self, session):
+            pass
 
-class _SetDefaultKeyHelper:
-    """Helper class for SetDefaultKey"""
+
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
-__all__ = ["SetDefaultKey"]
+__all__ = ["Delete"]
