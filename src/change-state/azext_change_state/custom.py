@@ -9,6 +9,355 @@
 # pylint: disable=too-many-statements
 
 from knack.log import get_logger
+from azure.cli.core.aaz import has_value, AAZAnyType, AAZListArg, AAZStrArg
+from azure.cli.core.aaz._arg_action import AAZArgActionOperations, AAZPromptInputOperation, _ELEMENT_APPEND_KEY
+from azure.cli.core.azclierror import InvalidArgumentValueError
+from azext_change_state.aaz.latest.change_safety.change_state import Create as _ChangeStateCreate, Update as _ChangeStateUpdate
 
 
 logger = get_logger(__name__)
+
+
+def _inject_change_definition_into_content(content, ctx):
+    """Attach the computed changeDefinition payload to the serialized request content."""
+    change_definition_value = getattr(ctx.vars, "change_definition", None)
+    if change_definition_value is None:
+        return content
+
+    change_definition = change_definition_value.to_serialized_data()
+    if not change_definition:
+        return content
+
+    if content is None:
+        content = {}
+    properties = content.setdefault("properties", {})
+    properties["changeDefinition"] = change_definition
+    return content
+
+
+class ChangeStateCreate(_ChangeStateCreate):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._raw_targets = []
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        schema = super()._build_arguments_schema(*args, **kwargs)
+        if not hasattr(schema, "targets"):
+            schema.targets = AAZListArg(
+                options=["--targets"],
+                help=(
+                    "Target definitions expressed as key=value pairs separated by commas or semicolons. "
+                    "Example: --targets \"resourceId=<id>,operation=delete\""
+                ),
+            )
+            schema.targets.Element = AAZStrArg()
+        return schema
+
+    def _handler(self, command_args):
+        # Extract targets before calling parent handler so we can accept flexible input formats.
+        command_args = dict(command_args) if command_args else {}
+        raw_targets = command_args.pop('targets', None)
+        if raw_targets is not None:
+            self._raw_targets = self._extract_targets_from_arg(raw_targets)
+        return super()._handler(command_args)
+
+    def _extract_targets_from_arg(self, raw_targets):
+        """Extract target values from the raw argument."""
+        if raw_targets is None:
+            return []
+
+        if isinstance(raw_targets, AAZArgActionOperations):
+            elements = []
+            for keys, data in raw_targets._ops:
+                if isinstance(data, AAZPromptInputOperation):
+                    data = data()
+                normalized_value = ''
+                if isinstance(data, (list, tuple)):
+                    normalized_value = ','.join(str(v) for v in data if v is not None)
+                elif data is not None:
+                    normalized_value = str(data)
+
+                idx = None
+                key_name = None
+                for key in keys:
+                    if key == _ELEMENT_APPEND_KEY:
+                        idx = len(elements)
+                    elif isinstance(key, int):
+                        idx = key
+                    elif isinstance(key, str):
+                        key_name = key
+
+                if idx is None:
+                    idx = len(elements) - 1 if elements else 0
+                while len(elements) <= idx:
+                    elements.append('')
+
+                if key_name:
+                    combined = f"{key_name}={normalized_value}" if normalized_value else key_name
+                    elements[idx] = f"{elements[idx]},{combined}" if elements[idx] else combined
+                else:
+                    elements[idx] = normalized_value
+
+            return [value for value in elements if value]
+
+        if hasattr(raw_targets, 'to_serialized_data'):
+            values = raw_targets.to_serialized_data()
+        elif isinstance(raw_targets, list):
+            values = raw_targets
+        else:
+            values = [raw_targets]
+
+        return [str(v) for v in values if v is not None]
+
+    def pre_operations(self):
+        super().pre_operations()
+
+        if not self._raw_targets:
+            raise InvalidArgumentValueError('--targets is required and must include key=value pairs.')
+
+        # Build and set the changeDefinition with targets
+        change_definition = self._build_change_definition()
+        self.ctx.set_var('change_definition', change_definition, schema_builder=lambda: AAZAnyType())
+
+    def _build_change_definition(self):
+        """Build the changeDefinition object with targets"""
+        targets = self._parse_targets(self._raw_targets)
+        change_name = self.ctx.args.change_state_name.to_serialized_data() if has_value(self.ctx.args.change_state_name) else "Change Definition"
+
+        return {
+            'kind': 'Targets',
+            'name': change_name,
+            'details': {
+                'targets': targets
+            }
+        }
+
+    @staticmethod
+    def _parse_targets(raw_targets):
+        if raw_targets is None:
+            raise InvalidArgumentValueError('--targets is required and must include key=value pairs.')
+        if not raw_targets:
+            raise InvalidArgumentValueError('--targets is required and must include key=value pairs.')
+        parsed_targets = []
+        for token in raw_targets:
+            if token is None:
+                continue
+            segments = []
+            for part in str(token).split(';'):
+                segments.extend(segment.strip() for segment in part.split(',') if segment.strip())
+            print("segments:", segments)
+            if not segments:
+                continue
+            target_entry = {}
+            for segment in segments:
+                if '=' not in segment:
+                    raise InvalidArgumentValueError('Each --targets entry must be in key=value format.')
+                key, value = segment.split('=', 1)
+                key = key.strip()
+                value = value.strip()
+                if not key or not value:
+                    raise InvalidArgumentValueError('Each --targets entry must include a non-empty key and value.')
+                target_entry[key] = value
+            if not target_entry:
+                continue
+            parsed_targets.append(target_entry)
+        if not parsed_targets:
+            raise InvalidArgumentValueError('--targets must include at least one key=value pair.')
+        return parsed_targets
+
+    def pre_instance_create(self):
+        """Set the changeDefinition in the request body before creating the instance"""
+        change_definition = getattr(self.ctx.vars, 'change_definition', None)
+        if change_definition is not None:
+            # The changeDefinition will be set in the content property of the HTTP operations
+            pass
+
+    class ChangeStatesCreateOrUpdateAtSubscriptionLevel(_ChangeStateCreate.ChangeStatesCreateOrUpdateAtSubscriptionLevel):
+        @property
+        def content(self):
+            content = super().content
+            return _inject_change_definition_into_content(content, self.ctx)
+
+    class ChangeStatesCreateOrUpdate(_ChangeStateCreate.ChangeStatesCreateOrUpdate):
+        @property
+        def content(self):
+            content = super().content
+            return _inject_change_definition_into_content(content, self.ctx)
+
+
+class ChangeStateUpdate(_ChangeStateUpdate):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._raw_targets = []
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        schema = super()._build_arguments_schema(*args, **kwargs)
+        if not hasattr(schema, "targets"):
+            schema.targets = AAZListArg(
+                options=["--targets"],
+                help=(
+                    "Optional target definitions expressed as key=value pairs separated by commas or semicolons. "
+                    "Example: --targets \"resourceId=<id>,operation=delete\""
+                ),
+            )
+            schema.targets.Element = AAZStrArg()
+        return schema
+
+    def _handler(self, command_args):
+        # Extract targets before calling parent handler so we can accept flexible input formats.
+        command_args = dict(command_args) if command_args else {}
+        raw_targets = command_args.pop('targets', None)
+        if raw_targets is not None:
+            self._raw_targets = self._extract_targets_from_arg(raw_targets)
+        return super()._handler(command_args)
+
+    def _extract_targets_from_arg(self, raw_targets):
+        """Extract target values from the raw argument."""
+        if raw_targets is None:
+            return []
+
+        if isinstance(raw_targets, AAZArgActionOperations):
+            elements = []
+            for keys, data in raw_targets._ops:
+                if isinstance(data, AAZPromptInputOperation):
+                    data = data()
+                normalized_value = ''
+                if isinstance(data, (list, tuple)):
+                    normalized_value = ','.join(str(v) for v in data if v is not None)
+                elif data is not None:
+                    normalized_value = str(data)
+
+                idx = None
+                key_name = None
+                for key in keys:
+                    if key == _ELEMENT_APPEND_KEY:
+                        idx = len(elements)
+                    elif isinstance(key, int):
+                        idx = key
+                    elif isinstance(key, str):
+                        key_name = key
+
+                if idx is None:
+                    idx = len(elements) - 1 if elements else 0
+                while len(elements) <= idx:
+                    elements.append('')
+
+                if key_name:
+                    combined = f"{key_name}={normalized_value}" if normalized_value else key_name
+                    elements[idx] = f"{elements[idx]},{combined}" if elements[idx] else combined
+                else:
+                    elements[idx] = normalized_value
+
+            return [value for value in elements if value]
+
+        if hasattr(raw_targets, 'to_serialized_data'):
+            values = raw_targets.to_serialized_data()
+        elif isinstance(raw_targets, list):
+            values = raw_targets
+        else:
+            values = [raw_targets]
+
+        return [str(v) for v in values if v is not None]
+
+    def pre_operations(self):
+        super().pre_operations()
+
+        # Build and set the changeDefinition with targets if targets are provided
+        if self._raw_targets:
+            change_definition = self._build_change_definition()
+            self.ctx.set_var('change_definition', change_definition, schema_builder=lambda: AAZAnyType())
+
+    def _build_change_definition(self):
+        """Build the changeDefinition object with targets"""
+        targets = self._parse_targets(self._raw_targets)
+        change_name = self.ctx.args.change_state_name.to_serialized_data() if has_value(self.ctx.args.change_state_name) else "Change Definition"
+
+        return {
+            'kind': 'Targets',
+            'name': change_name,
+            'details': {
+                'targets': targets
+            }
+        }
+
+    def _parse_targets(self, raw_targets):
+        """Parse target strings into structured objects"""
+        if not raw_targets:
+            return None  # For update, targets may be optional
+
+        parsed_targets = []
+        for token in raw_targets:
+            if not token:
+                continue
+
+            # Split by semicolon or comma to handle multiple key-value pairs in one token
+            segments = []
+            for part in str(token).replace(';', ',').split(','):
+                segment = part.strip()
+                if segment:
+                    segments.append(segment)
+
+            if not segments:
+                continue
+
+            target_entry = {}
+            for segment in segments:
+                if '=' not in segment:
+                    raise InvalidArgumentValueError(f"Each --targets entry must be in key=value format. Invalid: '{segment}'")
+
+                key, value = segment.split('=', 1)
+                key = key.strip()
+                value = value.strip()
+
+                if not key or not value:
+                    raise InvalidArgumentValueError('Each --targets entry must include a non-empty key and value.')
+
+                # Map keys to the correct property names
+                key_mapping = {
+                    'resourceid': 'resourceId',
+                    'subscriptionid': 'subscriptionId',
+                    'resourcegroupname': 'resourceGroupName',
+                    'resourcegroup': 'resourceGroupName',  # Allow shorter alias
+                    'rg': 'resourceGroupName',  # Allow shorter alias
+                    'resourcetype': 'resourceType',
+                    'resourcename': 'resourceName',
+                    'httpmethod': 'httpMethod',
+                    'method': 'httpMethod',  # Allow shorter alias
+                    'operation': 'httpMethod'  # Allow 'operation' as alias for httpMethod
+                }
+
+                normalized_key = key.lower()
+                if normalized_key in key_mapping:
+                    mapped_key = key_mapping[normalized_key]
+                    # Normalize HTTP method values to uppercase
+                    if mapped_key == 'httpMethod' and value:
+                        value = value.upper()
+                    target_entry[mapped_key] = value
+                else:
+                    target_entry[key] = value
+
+            if target_entry:
+                parsed_targets.append(target_entry)
+
+        return parsed_targets if parsed_targets else None
+
+    def pre_instance_update(self):
+        """Set the changeDefinition in the request body before updating the instance"""
+        change_definition = getattr(self.ctx.vars, 'change_definition', None)
+        if change_definition is not None:
+            # The changeDefinition will be set in the content property of the HTTP operations
+            pass
+
+    class ChangeStatesCreateOrUpdateAtSubscriptionLevel(_ChangeStateUpdate.ChangeStatesCreateOrUpdateAtSubscriptionLevel):
+        @property
+        def content(self):
+            content = super().content
+            return _inject_change_definition_into_content(content, self.ctx)
+
+    class ChangeStatesCreateOrUpdate(_ChangeStateUpdate.ChangeStatesCreateOrUpdate):
+        @property
+        def content(self):
+            content = super().content
+            return _inject_change_definition_into_content(content, self.ctx)
