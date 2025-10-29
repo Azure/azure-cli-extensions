@@ -1,4 +1,7 @@
-"""Tests for LLMConfigManager."""
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 
 import os
 import tempfile
@@ -18,7 +21,7 @@ class TestLLMConfigManager(unittest.TestCase):
         self.temp_dir = tempfile.mkdtemp()
         self.config_file = os.path.join(self.temp_dir, "test_config.yaml")
         self.manager = LLMConfigManager()
-        self.manager.config_file = self.config_file
+        self.manager.config_path = self.config_file
 
     def tearDown(self):
         """Clean up test fixtures."""
@@ -344,8 +347,12 @@ class TestLLMConfigManager(unittest.TestCase):
             ]
         }
 
+        # Write valid config to file
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(valid_config, f)
+
         # Should not raise any exception
-        self.manager.validate_config(valid_config)
+        self.manager.validate_config()
 
     def test_validate_config_missing_llms_key(self):
         """Test validate_config raises error when 'llms' key is missing."""
@@ -353,11 +360,14 @@ class TestLLMConfigManager(unittest.TestCase):
             "other_key": "value"
         }
 
-        with self.assertRaises(AzCLIError) as cm:
-            self.manager.validate_config(invalid_config)
+        # Write invalid config to file
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(invalid_config, f)
 
-        self.assertIn("Configuration file is invalid", str(cm.exception))
-        self.assertIn("missing 'llms' key", str(cm.exception))
+        with self.assertRaises(ValueError) as cm:
+            self.manager.validate_config()
+
+        self.assertIn("must contain an 'llms' key", str(cm.exception))
 
     def test_validate_config_llms_not_list(self):
         """Test validate_config raises error when 'llms' is not a list."""
@@ -365,20 +375,91 @@ class TestLLMConfigManager(unittest.TestCase):
             "llms": "not a list"
         }
 
-        with self.assertRaises(AzCLIError) as cm:
-            self.manager.validate_config(invalid_config)
+        # Write invalid config to file
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(invalid_config, f)
 
-        self.assertIn("Configuration file is invalid", str(cm.exception))
+        with self.assertRaises(ValueError) as cm:
+            self.manager.validate_config()
+
         self.assertIn("'llms' must be a list", str(cm.exception))
 
     def test_validate_config_empty_llms_list(self):
-        """Test validate_config with empty llms list (should be valid)."""
-        valid_config = {
+        """Test validate_config raises error when llms list is empty."""
+        invalid_config = {
             "llms": []
         }
 
+        # Write config with empty llms list to file
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(invalid_config, f)
+
+        with self.assertRaises(ValueError) as cm:
+            self.manager.validate_config()
+
+        self.assertIn("'llms' list cannot be empty", str(cm.exception))
+
+    def test_validate_config_file_not_found(self):
+        """Test validate_config raises error when config file doesn't exist."""
+        # Don't create the config file, so it doesn't exist
+        with self.assertRaises(ValueError) as cm:
+            self.manager.validate_config()
+
+        self.assertIn("Configuration file", str(cm.exception))
+        self.assertIn("not found", str(cm.exception))
+
+    def test_validate_config_invalid_yaml(self):
+        """Test validate_config raises error for invalid YAML syntax."""
+        # Write invalid YAML to file
+        with open(self.config_file, 'w') as f:
+            f.write("invalid: yaml: content: {\n")
+
+        with self.assertRaises(ValueError) as cm:
+            self.manager.validate_config()
+
+        self.assertIn("Invalid YAML syntax", str(cm.exception))
+
+    def test_validate_config_not_dict(self):
+        """Test validate_config raises error when config is not a dictionary."""
+        # Write a list instead of dict to file
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(["not", "a", "dict"], f)
+
+        with self.assertRaises(ValueError) as cm:
+            self.manager.validate_config()
+
+        self.assertIn("must contain a YAML dictionary/mapping", str(cm.exception))
+
+    def test_validate_config_llm_not_dict(self):
+        """Test validate_config raises error when LLM config is not a dictionary."""
+        invalid_config = {
+            "llms": ["not a dict"]
+        }
+
+        # Write config with non-dict LLM config to file
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(invalid_config, f)
+
+        with self.assertRaises(ValueError) as cm:
+            self.manager.validate_config()
+
+        self.assertIn("each LLM configuration must be a dictionary/mapping", str(cm.exception))
+
+    @patch("azext_aks_agent.agent.llm_config_manager.get_config_dir")
+    def test_validate_config_skips_default_config_path(self, mock_get_config_dir):
+        """Test validate_config skips validation for default config path."""
+        from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
+
+        # Mock the config directory to match our test setup
+        mock_get_config_dir.return_value = self.temp_dir
+
+        # Set the manager to use the default config path
+        default_config_path = os.path.join(self.temp_dir, CONST_AGENT_CONFIG_FILE_NAME)
+        self.manager.config_path = default_config_path
+
+        # Don't create the file - validation should be skipped for default path
         # Should not raise any exception
-        self.manager.validate_config(valid_config)
+        self.manager.validate_config()
 
 
 if __name__ == '__main__':
