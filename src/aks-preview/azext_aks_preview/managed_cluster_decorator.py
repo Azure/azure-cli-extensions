@@ -1382,6 +1382,38 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_enable_azure_keyvault_kms(enable_validation=True)
 
+    def _get_disable_azure_keyvault_kms(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_azure_keyvault_kms.
+
+        This function supports the option of enable_validation. When enabled,
+        if both enable_azure_keyvault_kms and disable_azure_keyvault_kms are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_azure_keyvault_kms = self.raw_param.get("disable_azure_keyvault_kms")
+
+        # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if disable_azure_keyvault_kms and self._get_enable_azure_keyvault_kms(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-azure-keyvault-kms and --disable-azure-keyvault-kms at the same time."
+                )
+
+        return disable_azure_keyvault_kms
+
+    def get_disable_azure_keyvault_kms(self) -> bool:
+        """Obtain the value of disable_azure_keyvault_kms.
+
+        This function will verify the parameter by default. If both enable_azure_keyvault_kms and
+        disable_azure_keyvault_kms are specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        return self._get_disable_azure_keyvault_kms(enable_validation=True)
+
     def _get_azure_keyvault_kms_key_id(self, enable_validation: bool = False) -> Union[str, None]:
         """Internal function to obtain the value of azure_keyvault_kms_key_id according to the context.
 
@@ -6004,6 +6036,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     key_id=key_id,
                     key_vault_resource_id=self.context.get_azure_keyvault_kms_key_vault_resource_id(),
                 )
+
+        if self.context.get_disable_azure_keyvault_kms():
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            mc.security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms()
+            # set enabled to False
+            mc.security_profile.azure_key_vault_kms.enabled = False
 
         return mc
 
