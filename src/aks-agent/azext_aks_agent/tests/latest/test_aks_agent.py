@@ -8,7 +8,8 @@ import sys
 import unittest
 from unittest.mock import Mock, patch
 
-from azext_aks_agent.agent.agent import aks_agent, init_log
+from azext_aks_agent.agent.agent import aks_agent
+from azext_aks_agent.agent.logging import init_log
 from azure.cli.core.util import CLIError
 
 # Mock the holmes modules before any imports that might trigger holmes imports
