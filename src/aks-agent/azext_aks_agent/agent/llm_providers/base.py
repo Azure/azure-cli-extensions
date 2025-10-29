@@ -107,13 +107,15 @@ class LLMProvider(ABC):
                 if secret:
                     # For password input, we'll handle the display differently
                     value = console.input(prompt, password=secret)
-                    # Calculate the masked display value
+                    # Calculate the masked display value following OpenAI pattern
                     if len(value) <= 8:
+                        # For short passwords, show all as asterisks
                         display_value = '*' * len(value)
                     else:
-                        asterisks = '*' * (len(value) - 4)
+                        # Show first 3 chars + 3 dots + last 4 chars (OpenAI pattern)
+                        first_chars = value[:3]
                         last_chars = value[-4:]
-                        display_value = f"{asterisks}{last_chars}"
+                        display_value = f"{first_chars}...{last_chars}"
                     # It seems rich renders the cursor up as plain text not a control sequence,
                     # so when we combine the cursor up and re-print, console prints extra "[1A" unexpectedly.
                     # To avoid that, we use a workaround by printing the cursor up separately.

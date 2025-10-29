@@ -37,7 +37,7 @@ def aks_agent_init(cmd):
 
         llm_config_manager = LLMConfigManager()
         # If the connection to the model endpoint is valid, save the configuration
-        is_valid, _, action = provider.validate_connection(params)
+        is_valid, msg, action = provider.validate_connection(params)
 
         if is_valid and action == "save":
             llm_config_manager.save(provider.model_route if provider.model_route else "openai", params)
@@ -45,9 +45,9 @@ def aks_agent_init(cmd):
                 f"LLM configuration setup successfully and is saved to {llm_config_manager.config_path}.",
                 style=f"bold {HELP_COLOR}")
         elif not is_valid and action == "retry_input":
-            raise AzCLIError("Please re-run `az aks agent-init` to correct the input parameters.")
+            raise AzCLIError(f"Please re-run `az aks agent-init` to correct the input parameters. {str(msg)}")
         else:
-            raise AzCLIError("Please check your deployed model and network connectivity.")
+            raise AzCLIError(f"Please check your deployed model and network connectivity. {str(msg)}")
 
 
 # pylint: disable=unused-argument

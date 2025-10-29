@@ -60,12 +60,16 @@ class AzureProvider(LLMProvider):
             return False, "Missing required Azure parameters.", "retry_input"
 
         # REST API reference: https://learn.microsoft.com/en-us/azure/ai-foundry/openai/api-version-lifecycle?tabs=rest
-        url = urljoin(api_base, "openai/responses")
+        url = urljoin(api_base, f"openai/deployments/{model_name}/chat/completions")
+
         query = {"api-version": api_version}
         full_url = f"{url}?{urlencode(query)}"
-        headers = {"api-key": api_key, "Content-Type": "application/json"}
-        payload = {"model": model_name,
-                   "input": "ping", "max_output_tokens": 16}
+        headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+        payload = {
+            "model": model_name,
+            "messages": [{"role": "user", "content": "ping"}],
+            "max_tokens": 16
+        }
 
         try:
             resp = requests.post(full_url, headers=headers,
