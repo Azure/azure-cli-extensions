@@ -263,7 +263,7 @@ def main():
     logger.info('azdev type: %s', azdev_type)
     modified_files = find_modified_files_against_master_branch()
 
-    if len(modified_files) == 2 and contain_index_json(modified_files):
+    if len(modified_files) == 1 and contain_index_json(modified_files):
         # Scenario 1.
         # This scenarios is for modify index.json only.
         # If the modified metadata items refer to the extension code exits in this repo, PR is be created via Pipeline.
