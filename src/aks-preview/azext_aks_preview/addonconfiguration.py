@@ -58,7 +58,7 @@ azure.cli.command_modules.acs.addonconfiguration.ContainerInsightsStreams = [
     "Microsoft-ContainerInventory",
     "Microsoft-ContainerNodeInventory",
     "Microsoft-Perf",
-    "Microsoft-RetinaNetworkFlowLogs",
+    "Microsoft-ContainerNetworkLogs",
 ]
 
 
