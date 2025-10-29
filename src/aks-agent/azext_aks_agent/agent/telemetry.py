@@ -92,7 +92,7 @@ class CLITelemetryClient:
         feedback_filtered = Feedback()
         feedback_filtered.user_feedback = feedback.user_feedback
         feedback_metadata = FeedbackMetadata()
-        feedback_metadata.model = feedback.metadata.model
+        feedback_metadata.llm = feedback.metadata.llm
         feedback_filtered.metadata = feedback_metadata
         self.track("AgentCLIFeedback", properties={"feedback": json.dumps(feedback_filtered.to_dict())})
         # Flush the telemetry data immediately to avoid too much data being sent at once

@@ -12,6 +12,28 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b7
++++++++
+* `az aks create`: Add new parameter `--enable-container-network-logs` to enable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs`.
+* `az aks update`: Add new parameter `--enable-container-network-logs` and `--disable-container-network-logs` to enable/disable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs` and `--disable-retina-flow-logs`.
+* Support `entraid` for parameter `--ssh-access` to support EntraID feature.
+* `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when "--disable-azure-keyvault-kms" is specified
+
+19.0.0b6
++++++++
+* Update the minimum required cli core version to `2.73.0` (actually since `18.0.0b35`).
+
+19.0.0b5
++++++++
+* `az aks get-credentials`: Convert device code mode kubeconfig to Azure CLI token format to bypass conditional access login blocks.
+* Add `enable-istio-cni` and `disable-istio-cni` commands under `az aks mesh`.
+
+19.0.0b4
++++++++
+* `az aks create`: Add new parameter `--enable-hosted-system` to enable hosted system components for automatic clusters.
+* Added `--enable-gateway-api` to `az aks create` to enable managed Gateway API installation
+* Added `--enable-gateway-api` and `--disable-gateway-api` to `az aks update` to enable/disable managed Gateway API installation
+
 19.0.0b3
 +++++++
 * Implement platform-managed-keys (PMK) awared validation for KMS customer-managed-key (CMK)

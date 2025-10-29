@@ -14,6 +14,7 @@ import sys
 import threading
 import time
 import webbrowser
+import subprocess
 
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
@@ -72,6 +73,8 @@ from azext_aks_preview._helpers import (
     get_all_extensions_in_allow_list,
     raise_validation_error_if_extension_type_not_in_allow_list,
     get_extension_in_allow_list,
+    uses_kubelogin_devicecode,
+    which,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -1088,6 +1091,7 @@ def aks_create(
     acns_advanced_networkpolicies=None,
     acns_transit_encryption_type=None,
     enable_retina_flow_logs=None,
+    enable_container_network_logs=None,
     acns_datapath_acceleration_mode=None,
     # nodepool
     crg_id=None,
@@ -1151,6 +1155,9 @@ def aks_create(
     # managed system pool
     enable_managed_system_pool=False,
     enable_upstream_kubescheduler_user_configuration=False,
+    # managed gateway installation
+    enable_gateway_api=False,
+    enable_hosted_system=False
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1354,6 +1361,8 @@ def aks_update(
     acns_transit_encryption_type=None,
     enable_retina_flow_logs=None,
     disable_retina_flow_logs=None,
+    enable_container_network_logs=None,
+    disable_container_network_logs=None,
     acns_datapath_acceleration_mode=None,
     # metrics profile
     enable_cost_analysis=False,
@@ -1386,6 +1395,9 @@ def aks_update(
     migrate_vmas_to_vms=False,
     enable_upstream_kubescheduler_user_configuration=False,
     disable_upstream_kubescheduler_user_configuration=False,
+    # managed gateway installation
+    enable_gateway_api=False,
+    disable_gateway_api=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1520,6 +1532,29 @@ def aks_get_credentials(
             encoding='UTF-8')
         print_or_merge_credentials(
             path, kubeconfig, overwrite_existing, context_name)
+        # Check if kubeconfig requires kubelogin with devicecode and convert it
+        if uses_kubelogin_devicecode(kubeconfig):
+            if which("kubelogin"):
+                try:
+                    # Run kubelogin convert-kubeconfig -l azurecli
+                    subprocess.run(
+                        ["kubelogin", "convert-kubeconfig", "-l", "azurecli"],
+                        cwd=os.path.dirname(path),
+                        check=True,
+                    )
+                    logger.warning("Converted kubeconfig to use Azure CLI authentication.")
+                except subprocess.CalledProcessError as e:
+                    logger.warning("Failed to convert kubeconfig with kubelogin: %s", str(e))
+                except Exception as e:  # pylint: disable=broad-except
+                    logger.warning("Error running kubelogin: %s", str(e))
+            else:
+                logger.warning(
+                    "The kubeconfig uses devicecode authentication which requires kubelogin. "
+                    "Please install kubelogin from https://github.com/Azure/kubelogin or run "
+                    "'az aks install-cli' to install both kubectl and kubelogin. "
+                    "If devicecode login fails, try running "
+                    "'kubelogin convert-kubeconfig -l azurecli' to unblock yourself."
+                )
     except (IndexError, ValueError) as exc:
         raise CLIError("Fail to find kubeconfig file.") from exc
 
@@ -3940,6 +3975,38 @@ def aks_mesh_upgrade_rollback(
         mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK)
 
 
+def aks_mesh_enable_istio_cni(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+):
+    """Enable Istio CNI chaining for the Azure Service Mesh proxy redirection mechanism."""
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_istio_cni=True,
+    )
+
+
+def aks_mesh_disable_istio_cni(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+):
+    """Disable Istio CNI chaining for the Azure Service Mesh proxy redirection mechanism."""
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        disable_istio_cni=True,
+    )
+
+
 def _aks_mesh_get_supported_revisions(
         cmd,
         client,
@@ -3974,6 +4041,8 @@ def _aks_mesh_update(
         revision=None,
         yes=False,
         mesh_upgrade_command=None,
+        enable_istio_cni=None,
+        disable_istio_cni=None,
 ):
     raw_parameters = locals()
 
