@@ -35,10 +35,88 @@ def _inject_change_definition_into_content(content, ctx):
     return content
 
 
+def _normalize_targets_arg(raw_targets):
+    """Return a list of raw target strings from the parsed CLI argument."""
+    if raw_targets is None:
+        return []
+
+    if isinstance(raw_targets, AAZArgActionOperations):
+        elements = []
+        for keys, data in raw_targets._ops:
+            logger.debug("Processing target op keys=%s data=%s", keys, data)
+            if isinstance(data, AAZPromptInputOperation):
+                data = data()
+
+            normalized_value = ''
+            if isinstance(data, (list, tuple)):
+                normalized_value = ','.join(str(v) for v in data if v is not None)
+            elif data is not None:
+                normalized_value = str(data)
+
+            idx = None
+            key_name = None
+            for key in keys:
+                if key == _ELEMENT_APPEND_KEY:
+                    idx = len(elements)
+                elif isinstance(key, int):
+                    idx = key
+                elif isinstance(key, str):
+                    key_name = key
+
+            if idx is None:
+                idx = len(elements) - 1 if elements else 0
+            while len(elements) <= idx:
+                elements.append('')
+
+            if key_name:
+                combined = f"{key_name}={normalized_value}" if normalized_value else key_name
+                elements[idx] = f"{elements[idx]},{combined}" if elements[idx] else combined
+            else:
+                elements[idx] = normalized_value
+
+        return [value for value in elements if value]
+
+    if hasattr(raw_targets, 'to_serialized_data'):
+        values = raw_targets.to_serialized_data()
+    elif isinstance(raw_targets, list):
+        values = raw_targets
+    else:
+        values = [raw_targets]
+
+    return [str(v) for v in values if v is not None]
+
+
+def _inject_targets_into_result(data, targets):
+    """Ensure changeDefinition.details.targets is present in the command output."""
+    if not targets or data is None:
+        return
+
+    def process(item):
+        if not isinstance(item, dict):
+            return
+        containers = []
+        if isinstance(item.get('properties'), dict):
+            containers.append(item['properties'])
+        containers.append(item)
+        for container in containers:
+            change_def = container.get('changeDefinition')
+            if isinstance(change_def, dict):
+                details = change_def.setdefault('details', {})
+                if isinstance(details, dict) and not details.get('targets'):
+                    details['targets'] = targets
+
+    if isinstance(data, list):
+        for entry in data:
+            process(entry)
+    else:
+        process(data)
+
+
 class ChangeStateCreate(_ChangeStateCreate):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._raw_targets = []
+        self._parsed_targets = None
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -59,56 +137,8 @@ class ChangeStateCreate(_ChangeStateCreate):
         command_args = dict(command_args) if command_args else {}
         raw_targets = command_args.pop('targets', None)
         if raw_targets is not None:
-            self._raw_targets = self._extract_targets_from_arg(raw_targets)
+            self._raw_targets = _normalize_targets_arg(raw_targets)
         return super()._handler(command_args)
-
-    def _extract_targets_from_arg(self, raw_targets):
-        """Extract target values from the raw argument."""
-        if raw_targets is None:
-            return []
-
-        if isinstance(raw_targets, AAZArgActionOperations):
-            elements = []
-            for keys, data in raw_targets._ops:
-                if isinstance(data, AAZPromptInputOperation):
-                    data = data()
-                normalized_value = ''
-                if isinstance(data, (list, tuple)):
-                    normalized_value = ','.join(str(v) for v in data if v is not None)
-                elif data is not None:
-                    normalized_value = str(data)
-
-                idx = None
-                key_name = None
-                for key in keys:
-                    if key == _ELEMENT_APPEND_KEY:
-                        idx = len(elements)
-                    elif isinstance(key, int):
-                        idx = key
-                    elif isinstance(key, str):
-                        key_name = key
-
-                if idx is None:
-                    idx = len(elements) - 1 if elements else 0
-                while len(elements) <= idx:
-                    elements.append('')
-
-                if key_name:
-                    combined = f"{key_name}={normalized_value}" if normalized_value else key_name
-                    elements[idx] = f"{elements[idx]},{combined}" if elements[idx] else combined
-                else:
-                    elements[idx] = normalized_value
-
-            return [value for value in elements if value]
-
-        if hasattr(raw_targets, 'to_serialized_data'):
-            values = raw_targets.to_serialized_data()
-        elif isinstance(raw_targets, list):
-            values = raw_targets
-        else:
-            values = [raw_targets]
-
-        return [str(v) for v in values if v is not None]
 
     def pre_operations(self):
         super().pre_operations()
@@ -118,11 +148,13 @@ class ChangeStateCreate(_ChangeStateCreate):
 
         # Build and set the changeDefinition with targets
         change_definition = self._build_change_definition()
+        logger.debug("Final changeDefinition for create: %s", change_definition)
         self.ctx.set_var('change_definition', change_definition, schema_builder=lambda: AAZAnyType())
 
     def _build_change_definition(self):
         """Build the changeDefinition object with targets"""
         targets = self._parse_targets(self._raw_targets)
+        self._parsed_targets = targets
         change_name = self.ctx.args.change_state_name.to_serialized_data() if has_value(self.ctx.args.change_state_name) else "Change Definition"
 
         return {
@@ -146,7 +178,6 @@ class ChangeStateCreate(_ChangeStateCreate):
             segments = []
             for part in str(token).split(';'):
                 segments.extend(segment.strip() for segment in part.split(',') if segment.strip())
-            print("segments:", segments)
             if not segments:
                 continue
             target_entry = {}
@@ -158,13 +189,37 @@ class ChangeStateCreate(_ChangeStateCreate):
                 value = value.strip()
                 if not key or not value:
                     raise InvalidArgumentValueError('Each --targets entry must include a non-empty key and value.')
-                target_entry[key] = value
+                key_mapping = {
+                    'resourceid': 'resourceId',
+                    'subscriptionid': 'subscriptionId',
+                    'resourcegroupname': 'resourceGroupName',
+                    'resourcegroup': 'resourceGroupName',
+                    'rg': 'resourceGroupName',
+                    'resourcetype': 'resourceType',
+                    'resourcename': 'resourceName',
+                    'httpmethod': 'httpMethod',
+                    'method': 'httpMethod',
+                    'operation': 'httpMethod'
+                }
+                normalized_key = key.lower()
+                if normalized_key in key_mapping:
+                    mapped_key = key_mapping[normalized_key]
+                    if mapped_key == 'httpMethod' and value:
+                        value = value.upper()
+                    target_entry[mapped_key] = value
+                else:
+                    target_entry[key] = value
             if not target_entry:
                 continue
             parsed_targets.append(target_entry)
         if not parsed_targets:
             raise InvalidArgumentValueError('--targets must include at least one key=value pair.')
         return parsed_targets
+
+    def _output(self, *args, **kwargs):
+        result = super()._output(*args, **kwargs)
+        _inject_targets_into_result(result, self._parsed_targets)
+        return result
 
     def pre_instance_create(self):
         """Set the changeDefinition in the request body before creating the instance"""
@@ -190,6 +245,7 @@ class ChangeStateUpdate(_ChangeStateUpdate):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._raw_targets = []
+        self._parsed_targets = None
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -210,56 +266,8 @@ class ChangeStateUpdate(_ChangeStateUpdate):
         command_args = dict(command_args) if command_args else {}
         raw_targets = command_args.pop('targets', None)
         if raw_targets is not None:
-            self._raw_targets = self._extract_targets_from_arg(raw_targets)
+            self._raw_targets = _normalize_targets_arg(raw_targets)
         return super()._handler(command_args)
-
-    def _extract_targets_from_arg(self, raw_targets):
-        """Extract target values from the raw argument."""
-        if raw_targets is None:
-            return []
-
-        if isinstance(raw_targets, AAZArgActionOperations):
-            elements = []
-            for keys, data in raw_targets._ops:
-                if isinstance(data, AAZPromptInputOperation):
-                    data = data()
-                normalized_value = ''
-                if isinstance(data, (list, tuple)):
-                    normalized_value = ','.join(str(v) for v in data if v is not None)
-                elif data is not None:
-                    normalized_value = str(data)
-
-                idx = None
-                key_name = None
-                for key in keys:
-                    if key == _ELEMENT_APPEND_KEY:
-                        idx = len(elements)
-                    elif isinstance(key, int):
-                        idx = key
-                    elif isinstance(key, str):
-                        key_name = key
-
-                if idx is None:
-                    idx = len(elements) - 1 if elements else 0
-                while len(elements) <= idx:
-                    elements.append('')
-
-                if key_name:
-                    combined = f"{key_name}={normalized_value}" if normalized_value else key_name
-                    elements[idx] = f"{elements[idx]},{combined}" if elements[idx] else combined
-                else:
-                    elements[idx] = normalized_value
-
-            return [value for value in elements if value]
-
-        if hasattr(raw_targets, 'to_serialized_data'):
-            values = raw_targets.to_serialized_data()
-        elif isinstance(raw_targets, list):
-            values = raw_targets
-        else:
-            values = [raw_targets]
-
-        return [str(v) for v in values if v is not None]
 
     def pre_operations(self):
         super().pre_operations()
@@ -267,11 +275,13 @@ class ChangeStateUpdate(_ChangeStateUpdate):
         # Build and set the changeDefinition with targets if targets are provided
         if self._raw_targets:
             change_definition = self._build_change_definition()
+            logger.debug("Final changeDefinition for update: %s", change_definition)
             self.ctx.set_var('change_definition', change_definition, schema_builder=lambda: AAZAnyType())
 
     def _build_change_definition(self):
         """Build the changeDefinition object with targets"""
         targets = self._parse_targets(self._raw_targets)
+        self._parsed_targets = targets
         change_name = self.ctx.args.change_state_name.to_serialized_data() if has_value(self.ctx.args.change_state_name) else "Change Definition"
 
         return {
@@ -342,6 +352,11 @@ class ChangeStateUpdate(_ChangeStateUpdate):
                 parsed_targets.append(target_entry)
 
         return parsed_targets if parsed_targets else None
+
+    def _output(self, *args, **kwargs):
+        result = super()._output(*args, **kwargs)
+        _inject_targets_into_result(result, self._parsed_targets)
+        return result
 
     def pre_instance_update(self):
         """Set the changeDefinition in the request body before updating the instance"""
