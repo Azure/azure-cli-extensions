@@ -66,6 +66,7 @@ Field Explanations
     * ``openai`` - OpenAI API and OpenAI-compatible APIs (e.g., local models, other services)
     * ``anthropic`` - Anthropic Claude
     * ``gemini`` - Google's Gemini
+    * ``openai_compatible`` - OpenAI-compatible APIs (e.g., local models, other services)
 
 **MODEL_NAME**
     The specific model or deployment name to use. This varies by provider:
@@ -93,7 +94,7 @@ The remaining fields are environment variables required by each provider. These 
 **Anthropic (provider: anthropic)**
     * ``ANTHROPIC_API_KEY`` - Your Anthropic API key
 
-**OpenAI Compatible (provider: openai)**
+**OpenAI Compatible (provider: openai_compatible)**
     * ``OPENAI_API_BASE`` - Base URL for the API endpoint
     * ``OPENAI_API_KEY`` - API key (if required by the service)
 

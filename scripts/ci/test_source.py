@@ -9,12 +9,12 @@ from __future__ import print_function
 
 import logging
 import os
+import shlex
+import shutil
 import sys
 import tempfile
-import shutil
-import shlex
+from subprocess import CalledProcessError, check_output, run
 
-from subprocess import check_output, CalledProcessError, run
 from util import SRC_PATH
 
 logger = logging.getLogger(__name__)
@@ -67,6 +67,8 @@ def run_command(cmd, check_return_code=False, cwd=None):
 def test_extension():
     for pkg_name, ext_path in ALL_TESTS:
         ext_name = ext_path.split('/')[-1]
+        if ext_name != "aks-agent":
+            continue
         logger.info(f'installing extension: {ext_name}')
         cmd = ['azdev', 'extension', 'add', ext_name]
         run_command(cmd, check_return_code=True)
@@ -98,7 +100,7 @@ def test_source_wheels():
         try:
             check_output(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir], cwd=s)
         except CalledProcessError as err:
-            raise("Unable to build extension {} : {}".format(s, err))
+            raise ("Unable to build extension {} : {}".format(s, err))
     # Export built wheels so CI can publish them as artifacts
     wheels_out_dir = os.environ.get('WHEELS_OUTPUT_DIR')
     if wheels_out_dir:

@@ -5,9 +5,10 @@
 
 import types
 import unittest
-from unittest.mock import patch, MagicMock
-from azext_aks_agent.custom import aks_agent_init
+from unittest.mock import MagicMock, patch
 
+from azext_aks_agent.custom import aks_agent_init
+from azure.cli.core.azclierror import AzCLIError
 
 mock_logging = MagicMock(name="init_logging")
 mock_console_mod = types.SimpleNamespace(logging=types.SimpleNamespace(init_logging=mock_logging))
@@ -73,6 +74,7 @@ class TestAksAgentInit(unittest.TestCase):
         mock_provider.prompt_params.return_value = {'MODEL_NAME': 'test-model', 'param': 'value'}
         mock_provider.validate_connection.return_value = (True, 'Valid', 'save')
         mock_provider.name = 'openai'
+        mock_provider.model_route = 'openai'
         mock_prompt_provider_choice.return_value = mock_provider
 
         mock_config_manager = MagicMock()
@@ -84,7 +86,6 @@ class TestAksAgentInit(unittest.TestCase):
 
         aks_agent_init(cmd=None)
         mock_config_manager.save.assert_called_once_with('openai', {'MODEL_NAME': 'test-model', 'param': 'value'})
-        mock_console.print.assert_any_call("LLM configuration setup successfully.", style=unittest.mock.ANY)
 
     @patch('holmes.interactive.SlashCommands')
     @patch('holmes.utils.colors.ERROR_COLOR')
@@ -116,13 +117,9 @@ class TestAksAgentInit(unittest.TestCase):
         mock_error_color.__str__.return_value = "red"
         mock_slash_commands.EXIT.command = "exit"
 
-        with self.assertRaises(SystemExit) as cm:
+        with self.assertRaises(AzCLIError) as cm:
             aks_agent_init(cmd=None)
-        self.assertEqual(cm.exception.code, 1)
-        mock_console.print.assert_any_call(
-            "Please re-run [bold]`az aks agent-init`[/bold] to correct the input parameters.",
-            style=unittest.mock.ANY,
-        )
+        self.assertEqual(str(cm.exception), "Please re-run `az aks agent-init` to correct the input parameters.")
 
     @patch('holmes.interactive.SlashCommands')
     @patch('holmes.utils.colors.ERROR_COLOR')
@@ -154,13 +151,9 @@ class TestAksAgentInit(unittest.TestCase):
         mock_error_color.__str__.return_value = "red"
         mock_slash_commands.EXIT.command = "exit"
 
-        with self.assertRaises(SystemExit) as cm:
+        with self.assertRaises(AzCLIError) as cm:
             aks_agent_init(cmd=None)
-        self.assertEqual(cm.exception.code, 1)
-        mock_console.print.assert_any_call(
-            "Please check your deployed model and network connectivity.",
-            style=unittest.mock.ANY,
-        )
+        self.assertEqual(str(cm.exception), "Please check your deployed model and network connectivity.")
 
 
 if __name__ == '__main__':

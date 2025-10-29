@@ -135,6 +135,7 @@ class LLMConfigManager:
         if not llm_config:
             raise AzCLIError(
                 f"No configuration found for model '{model}'. {prompt_for_init}")
+        return llm_config
 
     def is_config_complete(self, config, provider_schema):
         """

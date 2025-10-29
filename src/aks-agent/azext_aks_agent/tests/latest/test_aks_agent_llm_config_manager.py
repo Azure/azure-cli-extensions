@@ -1,68 +1,384 @@
-# --------------------------------------------------------------------------------------------
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See License.txt in the project root for license information.
-# --------------------------------------------------------------------------------------------
+"""Tests for LLMConfigManager."""
 
 import os
 import tempfile
 import unittest
+from unittest.mock import patch
+
+import yaml
 from azext_aks_agent.agent.llm_config_manager import LLMConfigManager
+from azure.cli.core.azclierror import AzCLIError
 
 
 class TestLLMConfigManager(unittest.TestCase):
+    """Test cases for LLMConfigManager class."""
+
     def setUp(self):
-        # Create a temporary config file for testing
-        self.temp_file = tempfile.NamedTemporaryFile(delete=False)
-        self.config_path = self.temp_file.name
-        self.manager = LLMConfigManager(config_path=self.config_path)
+        """Set up test fixtures."""
+        self.temp_dir = tempfile.mkdtemp()
+        self.config_file = os.path.join(self.temp_dir, "test_config.yaml")
+        self.manager = LLMConfigManager()
+        self.manager.config_file = self.config_file
 
     def tearDown(self):
-        # Remove the temporary file after each test
-        if os.path.exists(self.config_path):
-            os.unlink(self.config_path)
+        """Clean up test fixtures."""
+        if os.path.exists(self.config_file):
+            os.unlink(self.config_file)
+        os.rmdir(self.temp_dir)
 
-    def test_save_and_load(self):
-        params = {"MODEL_NAME": "test-model", "param1": "value1"}
-        self.manager.save("openai", params)
-        loaded = self.manager.load()
-        self.assertIn("llms", loaded)
-        self.assertEqual(loaded["llms"][0]["MODEL_NAME"], "test-model")
-        self.assertEqual(loaded["llms"][0]["provider"], "openai")
-
-    def test_get_list_and_latest(self):
-        params1 = {"MODEL_NAME": "model1", "param": "v1"}
-        params2 = {"MODEL_NAME": "model2", "param": "v2"}
-        self.manager.save("openai", params1)
-        self.manager.save("openai", params2)
-        model_list = self.manager.get_list()
-        self.assertEqual(len(model_list), 2)
-        latest = self.manager.get_latest()
-        self.assertEqual(latest["MODEL_NAME"], "model2")
-
-    def test_get_specific(self):
-        params1 = {"MODEL_NAME": "modelA", "param": "foo"}
-        params2 = {"MODEL_NAME": "modelB", "param": "bar"}
-        self.manager.save("openai", params1)
-        self.manager.save("openai", params2)
-        specific = self.manager.get_specific("openai", "modelA")
-        self.assertEqual(specific["param"], "foo")
-        with self.assertRaises(ValueError):
-            self.manager.get_specific("openai", "not_exist")
-
-    def test_is_config_complete(self):
-        config = {"key1": "val1", "key2": "val2"}
-        schema = {
-            "key1": {"validator": lambda v: v == "val1"},
-            "key2": {"validator": lambda v: v == "val2"}
+    def test_save_new_config(self):
+        """Test saving a new configuration when file doesn't exist."""
+        config = {
+            "provider": "openai",
+            "MODEL_NAME": "gpt-4",
+            "OPENAI_API_KEY": "test-key",
+            "OPENAI_API_BASE": "https://api.openai.com/v1"
         }
-        self.assertTrue(self.manager.is_config_complete(config, schema))
-        config["key2"] = "wrong"
-        self.assertFalse(self.manager.is_config_complete(config, schema))
 
-    def test_load_returns_empty_when_file_missing(self):
-        # Remove file and test load fallback
-        os.unlink(self.config_path)
-        self.assertEqual(self.manager.load(), {})
+        self.manager.save(config)
+
+        # Verify file was created and contains correct data
+        self.assertTrue(os.path.exists(self.config_file))
+        with open(self.config_file, 'r') as f:
+            data = yaml.safe_load(f)
+
+        self.assertIn("llms", data)
+        self.assertEqual(len(data["llms"]), 1)
+        self.assertEqual(data["llms"][0], config)
+
+    def test_save_append_to_existing_config(self):
+        """Test saving a configuration to an existing file."""
+        # Create initial config
+        initial_config = {
+            "provider": "azure",
+            "MODEL_NAME": "gpt-3.5",
+            "AZURE_OPENAI_API_KEY": "initial-key"
+        }
+        initial_data = {"llms": [initial_config]}
+
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(initial_data, f)
+
+        # Add new config
+        new_config = {
+            "provider": "openai",
+            "MODEL_NAME": "gpt-4",
+            "OPENAI_API_KEY": "new-key"
+        }
+
+        self.manager.save(new_config)
+
+        # Verify both configs exist
+        with open(self.config_file, 'r') as f:
+            data = yaml.safe_load(f)
+
+        self.assertEqual(len(data["llms"]), 2)
+        self.assertEqual(data["llms"][0], initial_config)
+        self.assertEqual(data["llms"][1], new_config)
+
+    def test_save_creates_llms_key_if_missing(self):
+        """Test that save creates 'llms' key if config file exists but is malformed."""
+        # Create config file without 'llms' key
+        malformed_data = {"other_key": "value"}
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(malformed_data, f)
+
+        config = {"provider": "openai", "MODEL_NAME": "gpt-4"}
+        self.manager.save(config)
+
+        with open(self.config_file, 'r') as f:
+            data = yaml.safe_load(f)
+
+        self.assertIn("llms", data)
+        self.assertEqual(len(data["llms"]), 1)
+        self.assertEqual(data["llms"][0], config)
+
+    @patch("builtins.open", side_effect=IOError("Permission denied"))
+    def test_save_handles_file_write_error(self, mock_file):
+        """Test that save handles file write errors gracefully."""
+        config = {"provider": "openai", "MODEL_NAME": "gpt-4"}
+
+        with self.assertRaises(IOError):
+            self.manager.save(config)
+
+    def test_load_existing_file(self):
+        """Test loading configurations from an existing file."""
+        configs = [
+            {"provider": "openai", "MODEL_NAME": "gpt-4"},
+            {"provider": "azure", "MODEL_NAME": "gpt-3.5"}
+        ]
+        data = {"llms": configs}
+
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(data, f)
+
+        result = self.manager.load()
+        self.assertEqual(result, data)
+
+    def test_load_nonexistent_file(self):
+        """Test loading from a nonexistent file returns empty structure."""
+        result = self.manager.load()
+        self.assertEqual(result, {"llms": []})
+
+    @patch("builtins.open", side_effect=IOError("Permission denied"))
+    def test_load_handles_file_read_error(self, mock_file):
+        """Test that load handles file read errors gracefully."""
+        with self.assertRaises(IOError):
+            self.manager.load()
+
+    def test_load_handles_invalid_yaml(self):
+        """Test that load handles invalid YAML content."""
+        # Write invalid YAML
+        with open(self.config_file, 'w') as f:
+            f.write("invalid: yaml: content: {\n")
+
+        with self.assertRaises(yaml.YAMLError):
+            self.manager.load()
+
+    def test_get_list_with_configs(self):
+        """Test get_list returns list of configurations."""
+        configs = [
+            {"provider": "openai", "MODEL_NAME": "gpt-4"},
+            {"provider": "azure", "MODEL_NAME": "gpt-3.5"}
+        ]
+        data = {"llms": configs}
+
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(data, f)
+
+        result = self.manager.get_list()
+        self.assertEqual(result, configs)
+
+    def test_get_list_empty_file(self):
+        """Test get_list returns empty list when no configs exist."""
+        result = self.manager.get_list()
+        self.assertEqual(result, [])
+
+    def test_get_list_missing_llms_key(self):
+        """Test get_list handles missing 'llms' key gracefully."""
+        data = {"other_key": "value"}
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(data, f)
+
+        result = self.manager.get_list()
+        self.assertEqual(result, [])
+
+    def test_get_latest_with_configs(self):
+        """Test get_latest returns the most recent configuration."""
+        configs = [
+            {"provider": "openai", "MODEL_NAME": "gpt-3.5"},
+            {"provider": "azure", "MODEL_NAME": "gpt-4"}
+        ]
+        data = {"llms": configs}
+
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(data, f)
+
+        result = self.manager.get_latest()
+        self.assertEqual(result, configs[-1])  # Should return last config
+
+    def test_get_latest_no_configs(self):
+        """Test get_latest returns None when no configurations exist."""
+        result = self.manager.get_latest()
+        self.assertIsNone(result)
+
+    def test_get_specific_found(self):
+        """Test get_specific returns correct config when found."""
+        configs = [
+            {"provider": "openai", "MODEL_NAME": "gpt-3.5"},
+            {"provider": "azure", "MODEL_NAME": "gpt-4"},
+            {"provider": "openai", "MODEL_NAME": "gpt-4"}
+        ]
+        data = {"llms": configs}
+
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(data, f)
+
+        result = self.manager.get_specific("openai", "gpt-4")
+        self.assertEqual(result, configs[2])
+
+    def test_get_specific_not_found(self):
+        """Test get_specific returns None when config not found."""
+        configs = [
+            {"provider": "openai", "MODEL_NAME": "gpt-3.5"},
+            {"provider": "azure", "MODEL_NAME": "gpt-4"}
+        ]
+        data = {"llms": configs}
+
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(data, f)
+
+        result = self.manager.get_specific("openai", "gpt-4")
+        self.assertIsNone(result)
+
+    def test_get_model_config_no_model_param_with_configs(self):
+        """Test get_model_config returns latest when no model specified."""
+        configs = [
+            {"provider": "openai", "MODEL_NAME": "gpt-3.5"},
+            {"provider": "azure", "MODEL_NAME": "gpt-4"}
+        ]
+        data = {"llms": configs}
+
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(data, f)
+
+        result = self.manager.get_model_config(None)
+        self.assertEqual(result, configs[-1])
+
+    def test_get_model_config_no_model_param_no_configs(self):
+        """Test get_model_config raises error when no model and no configs."""
+        with self.assertRaises(AzCLIError) as cm:
+            self.manager.get_model_config(None)
+
+        self.assertIn("No LLM configurations found", str(cm.exception))
+        self.assertIn("az aks agent-init", str(cm.exception))
+
+    def test_get_model_config_with_provider_model(self):
+        """Test get_model_config with provider/model format."""
+        configs = [
+            {"provider": "openai", "MODEL_NAME": "gpt-3.5"},
+            {"provider": "azure", "MODEL_NAME": "gpt-4"}
+        ]
+        data = {"llms": configs}
+
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(data, f)
+
+        result = self.manager.get_model_config("azure/gpt-4")
+        self.assertEqual(result, configs[1])
+
+    def test_get_model_config_with_model_only(self):
+        """Test get_model_config with model only (defaults to openai)."""
+        configs = [
+            {"provider": "openai", "MODEL_NAME": "gpt-4"},
+            {"provider": "azure", "MODEL_NAME": "gpt-4"}
+        ]
+        data = {"llms": configs}
+
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(data, f)
+
+        result = self.manager.get_model_config("gpt-4")
+        self.assertEqual(result, configs[0])  # Should find openai provider
+
+    def test_get_model_config_model_not_found(self):
+        """Test get_model_config raises error when specified model not found."""
+        configs = [
+            {"provider": "openai", "MODEL_NAME": "gpt-3.5"}
+        ]
+        data = {"llms": configs}
+
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(data, f)
+
+        with self.assertRaises(AzCLIError) as cm:
+            self.manager.get_model_config("azure/gpt-4")
+
+        self.assertIn("No configuration found for model 'azure/gpt-4'", str(cm.exception))
+
+    def test_is_config_complete_all_valid(self):
+        """Test is_config_complete returns True when all validations pass."""
+        config = {
+            "OPENAI_API_KEY": "test-key",
+            "MODEL_NAME": "gpt-4"
+        }
+
+        provider_schema = {
+            "OPENAI_API_KEY": {"validator": lambda x: x and len(x) > 0},
+            "MODEL_NAME": {"validator": lambda x: x and len(x) > 0}
+        }
+
+        result = self.manager.is_config_complete(config, provider_schema)
+        self.assertTrue(result)
+
+    def test_is_config_complete_missing_key(self):
+        """Test is_config_complete returns False when required key is missing."""
+        config = {
+            "OPENAI_API_KEY": "test-key"
+            # Missing MODEL_NAME
+        }
+
+        provider_schema = {
+            "OPENAI_API_KEY": {"validator": lambda x: x and len(x) > 0},
+            "MODEL_NAME": {"validator": lambda x: x and len(x) > 0}
+        }
+
+        result = self.manager.is_config_complete(config, provider_schema)
+        self.assertFalse(result)
+
+    def test_is_config_complete_invalid_value(self):
+        """Test is_config_complete returns False when validation fails."""
+        config = {
+            "OPENAI_API_KEY": "",  # Empty string should fail validation
+            "MODEL_NAME": "gpt-4"
+        }
+
+        provider_schema = {
+            "OPENAI_API_KEY": {"validator": lambda x: x and len(x) > 0},
+            "MODEL_NAME": {"validator": lambda x: x and len(x) > 0}
+        }
+
+        result = self.manager.is_config_complete(config, provider_schema)
+        self.assertFalse(result)
+
+    def test_is_config_complete_no_validator(self):
+        """Test is_config_complete skips keys without validators."""
+        config = {
+            "OPENAI_API_KEY": "test-key",
+            "MODEL_NAME": "gpt-4"
+        }
+
+        provider_schema = {
+            "OPENAI_API_KEY": {},  # No validator
+            "MODEL_NAME": {"validator": lambda x: x and len(x) > 0}
+        }
+
+        result = self.manager.is_config_complete(config, provider_schema)
+        self.assertTrue(result)
+
+    def test_validate_config_valid_structure(self):
+        """Test validate_config with valid YAML structure."""
+        valid_config = {
+            "llms": [
+                {"provider": "openai", "MODEL_NAME": "gpt-4"}
+            ]
+        }
+
+        # Should not raise any exception
+        self.manager.validate_config(valid_config)
+
+    def test_validate_config_missing_llms_key(self):
+        """Test validate_config raises error when 'llms' key is missing."""
+        invalid_config = {
+            "other_key": "value"
+        }
+
+        with self.assertRaises(AzCLIError) as cm:
+            self.manager.validate_config(invalid_config)
+
+        self.assertIn("Configuration file is invalid", str(cm.exception))
+        self.assertIn("missing 'llms' key", str(cm.exception))
+
+    def test_validate_config_llms_not_list(self):
+        """Test validate_config raises error when 'llms' is not a list."""
+        invalid_config = {
+            "llms": "not a list"
+        }
+
+        with self.assertRaises(AzCLIError) as cm:
+            self.manager.validate_config(invalid_config)
+
+        self.assertIn("Configuration file is invalid", str(cm.exception))
+        self.assertIn("'llms' must be a list", str(cm.exception))
+
+    def test_validate_config_empty_llms_list(self):
+        """Test validate_config with empty llms list (should be valid)."""
+        valid_config = {
+            "llms": []
+        }
+
+        # Should not raise any exception
+        self.manager.validate_config(valid_config)
 
 
 if __name__ == '__main__':
