@@ -10,14 +10,17 @@ If there is no rush to release a new version, please just add a description of t
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
 Pending
+
+19.0.0b10
 +++++++
 * Vendor new SDK and bump API version to 2025-08-02-preview.
+* `az aks update`: Fix `--azure-keyvault-kms-key-vault-network-access` parameter not being correctly applied during cluster creation and updates.
 
 19.0.0b9
 +++++++
 * `az aks create --enable-hosted-system`: no longer provision default system node pool when creating an automatic cluster with hosted system enabled.
 * `az aks machine update`: Add support for updating machine tags, node taints and node labels.
-* Fix `az aks bastion` subshell defaulting to cmd on Windows when invoked from PowerShell by implementing grandparent process detection to identify the actual user shell. 
+* Fix `az aks bastion` subshell defaulting to cmd on Windows when invoked from PowerShell by implementing grandparent process detection to identify the actual user shell.
 
 19.0.0b8
 +++++++

@@ -5362,6 +5362,53 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
+        # Test 4: Verify network access parameter is correctly passed through for Public access
+        dec_4 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.set_up_azure_keyvault_kms(mc_4)
+
+        # Verify that the network access is set to Public (not the default)
+        self.assertIsNotNone(dec_mc_4.security_profile)
+        self.assertIsNotNone(dec_mc_4.security_profile.azure_key_vault_kms)
+        self.assertEqual(
+            dec_mc_4.security_profile.azure_key_vault_kms.key_vault_network_access,
+            "Public"
+        )
+
+        # Test 5: Verify network access parameter is correctly passed through for Private access
+        dec_5 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(location="test_location")
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.set_up_azure_keyvault_kms(mc_5)
+
+        # Verify that the network access is set to Private
+        self.assertIsNotNone(dec_mc_5.security_profile)
+        self.assertIsNotNone(dec_mc_5.security_profile.azure_key_vault_kms)
+        self.assertEqual(
+            dec_mc_5.security_profile.azure_key_vault_kms.key_vault_network_access,
+            "Private"
+        )
+
     def test_set_up_kms_pmk_and_cmk(self):
         # test default (no infrastructure encryption)
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
@@ -8348,6 +8395,65 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
+        # Test 3: Verify network access parameter is correctly passed through during update for Public access
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_azure_keyvault_kms(mc_3)
+
+        # Verify that the network access is set to Public during update
+        self.assertIsNotNone(dec_mc_3.security_profile)
+        self.assertIsNotNone(dec_mc_3.security_profile.azure_key_vault_kms)
+        self.assertEqual(
+            dec_mc_3.security_profile.azure_key_vault_kms.key_vault_network_access,
+            "Public"
+        )
+
+        # Test 4: Verify updating from one network access type to another works correctly
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Start with a cluster that has Public access
+        existing_security_profile = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=self.models.AzureKeyVaultKms(
+                enabled=True,
+                key_id=key_id_1,
+                key_vault_network_access="Public",
+            )
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=existing_security_profile,
+        )
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_azure_keyvault_kms(mc_4)
+
+        # Verify that the network access was updated from Public to Private
+        self.assertIsNotNone(dec_mc_4.security_profile)
+        self.assertIsNotNone(dec_mc_4.security_profile.azure_key_vault_kms)
+        self.assertEqual(
+            dec_mc_4.security_profile.azure_key_vault_kms.key_vault_network_access,
+            "Private"
+        )
+
         dec_5 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -8582,7 +8688,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_azure_key_vault_kms_6 = self.models.AzureKeyVaultKms(
             enabled=True,
             key_id="https://test-keyvault.vault.azure.net/keys/test-key",
-            key_vault_network_access="Public",
+            key_vault_network_access=None,
             key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
         )
         ground_truth_kube_resource_encryption_profile_6 = self.models.KubernetesResourceObjectEncryptionProfile(
@@ -8623,7 +8729,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_azure_key_vault_kms_7 = self.models.AzureKeyVaultKms(
             enabled=True,
             key_id="https://test-keyvault.vault.azure.net/keys/test-key",
-            key_vault_network_access="Public",
             key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
         )
         ground_truth_kube_resource_encryption_profile_7 = self.models.KubernetesResourceObjectEncryptionProfile(
@@ -8672,7 +8777,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             azure_key_vault_kms=self.models.AzureKeyVaultKms(
                 enabled=True,
                 key_id="https://test-keyvault.vault.azure.net/keys/test-key",
-                key_vault_network_access="Public",
                 key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
             ),
             kubernetes_resource_object_encryption_profile=self.models.KubernetesResourceObjectEncryptionProfile(
@@ -8710,6 +8814,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 "kms_infrastructure_encryption": "Enabled",
                 "enable_azure_keyvault_kms": True,
                 "azure_keyvault_kms_key_id": "https://test-keyvault.vault.azure.net/keys/test-key",
+                "azure_keyvault_kms_key_vault_network_access": "Public",
                 "azure_keyvault_kms_key_vault_resource_id": "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
@@ -12629,6 +12734,127 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs)
         self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
         self.assertEqual(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 8081)
+
+    def test_azure_keyvault_kms_network_access_parameter_fix(self):
+        """Test that azure_keyvault_kms_key_vault_network_access parameter is correctly passed through.
+
+        This test verifies the fix for the issue where --azure-keyvault-kms-key-vault-network-access
+        was always being set to "Public" regardless of user input.
+        """
+        key_id = "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
+
+        # Test CREATE scenario with Private network access
+        dec_create_private = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": "/subscriptions/test/resourceGroups/test/providers/Microsoft.KeyVault/vaults/test",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_create_private = self.models.ManagedCluster(location="test_location")
+        dec_create_private.context.attach_mc(mc_create_private)
+        result_create_private = dec_create_private.set_up_azure_keyvault_kms(mc_create_private)
+
+        # Verify Private network access is correctly set during CREATE
+        self.assertEqual(
+            result_create_private.security_profile.azure_key_vault_kms.key_vault_network_access,
+            "Private"
+        )
+
+        # Test CREATE scenario with Public network access
+        dec_create_public = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_create_public = self.models.ManagedCluster(location="test_location")
+        dec_create_public.context.attach_mc(mc_create_public)
+        result_create_public = dec_create_public.set_up_azure_keyvault_kms(mc_create_public)
+
+        # Verify Public network access is correctly set during CREATE
+        self.assertEqual(
+            result_create_public.security_profile.azure_key_vault_kms.key_vault_network_access,
+            "Public"
+        )
+
+        # Test UPDATE scenario - changing from Public to Private
+        dec_update_to_private = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": "/subscriptions/test/resourceGroups/test/providers/Microsoft.KeyVault/vaults/test",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Start with existing cluster that has Public access
+        existing_kms_profile = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id=key_id,
+            key_vault_network_access="Public",
+        )
+        existing_security_profile = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=existing_kms_profile
+        )
+        mc_update_to_private = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=existing_security_profile,
+        )
+        dec_update_to_private.context.attach_mc(mc_update_to_private)
+        result_update_to_private = dec_update_to_private.update_azure_keyvault_kms(mc_update_to_private)
+
+        # Verify network access was updated from Public to Private
+        self.assertEqual(
+            result_update_to_private.security_profile.azure_key_vault_kms.key_vault_network_access,
+            "Private"
+        )
+
+        # Test UPDATE scenario - changing from Private to Public
+        dec_update_to_public = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Start with existing cluster that has Private access
+        existing_kms_profile_private = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id=key_id,
+            key_vault_network_access="Private",
+            key_vault_resource_id="/subscriptions/test/resourceGroups/test/providers/Microsoft.KeyVault/vaults/test",
+        )
+        existing_security_profile_private = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=existing_kms_profile_private
+        )
+        mc_update_to_public = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=existing_security_profile_private,
+        )
+        dec_update_to_public.context.attach_mc(mc_update_to_public)
+        result_update_to_public = dec_update_to_public.update_azure_keyvault_kms(mc_update_to_public)
+
+        # Verify network access was updated from Private to Public
+        self.assertEqual(
+            result_update_to_public.security_profile.azure_key_vault_kms.key_vault_network_access,
+            "Public"
+        )
 
 if __name__ == "__main__":
     unittest.main()
