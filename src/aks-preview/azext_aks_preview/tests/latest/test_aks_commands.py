@@ -12241,6 +12241,24 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        # disable CMK
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--disable-azure-keyvault-kms "
+            "-o json"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.azureKeyVaultKms.enabled", False),
+                self.check(
+                    "securityProfile.kubernetesResourceObjectEncryptionProfile.infrastructureEncryption",
+                    "Enabled"
+                ),
+            ],
+        )
+
         # delete
         cmd = (
             "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
@@ -12259,7 +12277,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         name_prefix="clitest",
         location="eastus2euap",
     )
-    def test_aks_create_with_kms_pmk_and_cmk(
+    def test_aks_create_with_kms_pmk_and_cmk_and_disable_cmk(
         self, resource_group, resource_group_location
     ):
         """Test PMK-enabled cluster creation with versionless key ID"""
@@ -12363,6 +12381,24 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("securityProfile.azureKeyVaultKms.enabled", True),
                 self.check("securityProfile.azureKeyVaultKms.keyId", key_id_versionless),
+                self.check(
+                    "securityProfile.kubernetesResourceObjectEncryptionProfile.infrastructureEncryption",
+                    "Enabled"
+                ),
+            ],
+        )
+
+        # disable CMK
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--disable-azure-keyvault-kms "
+            "-o json"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.azureKeyVaultKms.enabled", False),
                 self.check(
                     "securityProfile.kubernetesResourceObjectEncryptionProfile.infrastructureEncryption",
                     "Enabled"
@@ -17667,7 +17703,7 @@ spec:
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
             "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay "
-            "--enable-acns --enable-retina-flow-logs --enable-addons monitoring --enable-high-log-scale-mode "
+            "--enable-acns --enable-container-network-logs --enable-addons monitoring --enable-high-log-scale-mode "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingFlowLogsPreview "
         )
 
@@ -17699,26 +17735,25 @@ spec:
             self.check('properties.dataFlows[0].streams[-1]', 'Microsoft-RetinaNetworkFlowLogs'),
         ])
 
-        # Below steps are disabled for now. Confirmed working with local build of cli-extensions, however live recordings are not working properly
-        # # update to disable pfl
-        # disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-retina-flow-logs -o json"
-        # self.cmd(
-        #     disable_cmd,
-        #     checks=[
-        #         self.check("provisioningState", "Succeeded"),
-        #         self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "False"),
-        #     ],
-        # )
+        disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-container-network-logs -o json"
+        self.cmd(disable_cmd, checks=[self.check("provisioningState", "Succeeded")])
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "False"),
+            ],
+        )
 
-        # # enable update command for pfl
-        # enable_cmd_update = "aks update --resource-group={resource_group} --name={name} --enable-retina-flow-logs -o json"
-        # self.cmd(
-        #     enable_cmd_update,
-        #     checks=[
-        #         self.check("provisioningState", "Succeeded"),
-        #         self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
-        #     ],
-        # )
+        # enable update command for pfl
+        enable_cmd_update = "aks update --resource-group={resource_group} --name={name} --enable-container-network-logs -o json"
+        self.cmd(
+            enable_cmd_update,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
+            ],
+        )
 
         # delete
         self.cmd(
@@ -18884,6 +18919,57 @@ spec:
         self.cmd(add_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.sshAccess', 'LocalUser'),
+        ])
+
+        # delete
+        self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
+    def test_aks_entraid_ssh(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'resource_group_location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} -c 1 ' \
+                     '--ssh-key-value={ssh_key_value} --location={resource_group_location} ' \
+                     '--ssh-access entraid ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EntraIDSSHPreview'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('agentPoolProfiles[0].securityProfile.sshAccess', 'EntraId'),
+        ])
+
+        # update nodepool to localuser
+        update_nodepool_cmd = 'aks nodepool update --resource-group={resource_group} --cluster-name={name} ' \
+                              '--name=nodepool1 --ssh-access localuser --yes ' \
+                              '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EntraIDSSHPreview'
+        self.cmd(update_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.sshAccess', 'LocalUser'),
+        ])
+
+        # update nodepool back to entraid
+        update_nodepool_cmd_entraid = 'aks nodepool update --resource-group={resource_group} --cluster-name={name} ' \
+                                       '--name=nodepool1 --ssh-access entraid --yes ' \
+                                       '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EntraIDSSHPreview'
+        self.cmd(update_nodepool_cmd_entraid, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.sshAccess', 'EntraId'),
+        ])
+
+        # create new nodepool with entraid
+        add_nodepool_cmd = 'aks nodepool add -g {resource_group} --cluster-name {name} -n nodepool2 ' \
+                           '--ssh-access entraid ' \
+                           '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EntraIDSSHPreview'
+        self.cmd(add_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.sshAccess', 'EntraId'),
         ])
 
         # delete

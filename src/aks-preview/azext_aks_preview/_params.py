@@ -139,6 +139,7 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_SSH_ACCESS_DISABLED,
+    CONST_SSH_ACCESS_ENTRAID,
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT,
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
     CONST_ARTIFACT_SOURCE_DIRECT,
@@ -511,6 +512,7 @@ node_provisioning_default_pools = [
 ssh_accesses = [
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_SSH_ACCESS_DISABLED,
+    CONST_SSH_ACCESS_ENTRAID,
 ]
 
 health_probe_modes = [
@@ -968,6 +970,15 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_retina_flow_logs",
+            action="store_true",
+            deprecate_info=c.deprecate(
+                target="--enable-retina-flow-logs",
+                redirect="--enable-container-network-logs",
+                hide=True,
+            ),
+        )
+        c.argument(
+            "enable_container_network_logs",
             action="store_true",
         )
         c.argument(
@@ -1625,9 +1636,27 @@ def load_arguments(self, _):
         c.argument(
             "enable_retina_flow_logs",
             action="store_true",
+            deprecate_info=c.deprecate(
+                target="--enable-retina-flow-logs",
+                redirect="--enable-container-network-logs",
+                hide=True,
+            ),
+        )
+        c.argument(
+            "enable_container_network_logs",
+            action="store_true",
         )
         c.argument(
             "disable_retina_flow_logs",
+            action="store_true",
+            deprecate_info=c.deprecate(
+                target="--disable-retina-flow-logs",
+                redirect="--disable-container-network-logs",
+                hide=True,
+            ),
+        )
+        c.argument(
+            "disable_container_network_logs",
             action="store_true",
         )
         c.argument("enable_cost_analysis", action="store_true")
