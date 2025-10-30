@@ -5,6 +5,7 @@
 
 import asyncio
 import os
+import shutil
 import socket
 import subprocess
 import sys
@@ -239,7 +240,95 @@ def _aks_bastion_get_current_shell_cmd():
 
     ppid = os.getppid()
     parent = psutil.Process(ppid)
-    return parent.name()
+    parent_name = parent.name()
+    logger.debug("Immediate parent process: %s (PID: %s)", parent_name, ppid)
+
+    # On Windows, Azure CLI is often invoked as az.cmd, which means the immediate parent
+    # is cmd.exe but the actual user shell (PowerShell) is the grandparent process
+    if not sys.platform.startswith("win"):
+        logger.debug("Using parent process name as shell: %s", parent_name)
+        return parent_name
+
+    return _get_windows_shell_cmd(parent, parent_name)
+
+
+def _get_windows_shell_cmd(parent, parent_name):
+    """Get the shell command on Windows, handling az.cmd wrapper scenarios."""
+    try:
+        parent_exe = parent.exe()
+        logger.debug("Parent executable path: %s", parent_exe)
+
+        # If the immediate parent is cmd.exe, check if it's wrapping az.cmd for PowerShell
+        if "cmd" in parent_name.lower():
+            return _handle_cmd_parent(parent)
+
+        # For direct PowerShell processes (not wrapped by cmd)
+        if "pwsh" in parent_name.lower() or "powershell" in parent_name.lower():
+            return _handle_powershell_parent(parent_exe, parent_name)
+
+        logger.debug("Other Windows shell detected: %s", parent_name)
+        return parent_exe if parent_exe else parent_name
+
+    except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
+        logger.debug("Cannot access parent process details: %s", e)
+        return parent_name
+
+
+def _handle_cmd_parent(parent):
+    """Handle case where immediate parent is cmd.exe - check for PowerShell grandparent."""
+    try:
+        # Get the grandparent process (parent of cmd.exe)
+        grandparent = parent.parent()
+        if not grandparent:
+            return "cmd"
+
+        grandparent_name = grandparent.name()
+        logger.debug("Detected grandparent process: %s (PID: %s)", grandparent_name, grandparent.pid)
+
+        # If grandparent is PowerShell, that's the actual user shell
+        if "pwsh" in grandparent_name.lower() or "powershell" in grandparent_name.lower():
+            return _get_powershell_executable(grandparent)
+
+        logger.debug("Grandparent is not PowerShell - using cmd as target shell")
+        return "cmd"
+
+    except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
+        # If we can't access grandparent, assume cmd is the actual shell
+        logger.debug("Cannot access grandparent process: %s - using cmd as target shell", e)
+        return "cmd"
+
+
+def _handle_powershell_parent(parent_exe, parent_name):
+    """Handle direct PowerShell parent process."""
+    logger.debug("Direct PowerShell parent detected")
+    return _get_powershell_executable_from_path() or parent_exe or parent_name
+
+
+def _get_powershell_executable(grandparent):
+    """Get PowerShell executable, preferring pwsh over powershell."""
+    logger.debug("Grandparent is PowerShell - using PowerShell as target shell")
+    powershell_cmd = _get_powershell_executable_from_path()
+    if powershell_cmd:
+        return powershell_cmd
+
+    # If we can't find pwsh/powershell in PATH, use the detected grandparent
+    logger.debug("PowerShell not found in PATH, using detected grandparent executable")
+    return grandparent.exe() if grandparent.exe() else grandparent.name()
+
+
+def _get_powershell_executable_from_path():
+    """Try to find PowerShell executable in PATH, preferring pwsh over powershell."""
+    pwsh_path = shutil.which("pwsh")
+    if pwsh_path:
+        logger.debug("Found pwsh at: %s", pwsh_path)
+        return "pwsh"
+
+    powershell_path = shutil.which("powershell")
+    if powershell_path:
+        logger.debug("Found powershell at: %s", powershell_path)
+        return "powershell"
+
+    return None
 
 
 def _aks_bastion_prepare_shell_cmd(kubeconfig_path):
@@ -247,11 +336,25 @@ def _aks_bastion_prepare_shell_cmd(kubeconfig_path):
 
     shell_cmd = _aks_bastion_get_current_shell_cmd()
     updated_shell_cmd = shell_cmd
+
+    # Handle different shell types
     if shell_cmd.endswith("bash") and os.path.exists(os.path.expanduser("~/.bashrc")):
         updated_shell_cmd = (
             f"""{shell_cmd} -c '{shell_cmd} --rcfile <(cat ~/.bashrc; """
             f"""echo "export KUBECONFIG={kubeconfig_path}")'"""
         )
+    elif shell_cmd in ["pwsh", "powershell"] or "pwsh" in shell_cmd.lower() or "powershell" in shell_cmd.lower():
+        # PowerShell: Set environment variable and start new session
+        # Use proper PowerShell syntax for setting environment variables
+        escaped_path = kubeconfig_path.replace("'", "''")  # Escape single quotes for PowerShell
+        if shell_cmd == "pwsh" or "pwsh" in shell_cmd.lower():
+            updated_shell_cmd = f'pwsh -NoExit -Command "$env:KUBECONFIG=\'{escaped_path}\'"'
+        else:
+            updated_shell_cmd = f'powershell -NoExit -Command "$env:KUBECONFIG=\'{escaped_path}\'"'
+    elif shell_cmd == "cmd" or "cmd" in shell_cmd.lower():
+        # CMD: Set environment variable and keep session open
+        updated_shell_cmd = f'cmd /k "set KUBECONFIG={kubeconfig_path}"'
+
     return shell_cmd, updated_shell_cmd
 
 
@@ -260,6 +363,8 @@ def _aks_bastion_restore_shell(shell_cmd):
 
     if shell_cmd.endswith("bash"):
         subprocess.run(["stty", "sane"], stdin=sys.stdin)
+    # PowerShell and CMD on Windows typically don't need special restoration
+    # as they handle terminal state management internally
 
 
 async def _aks_bastion_launch_subshell(kubeconfig_path, port):
