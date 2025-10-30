@@ -179,8 +179,27 @@ def azdev_on_external_extension(index_json, azdev_type):
     with open(index_json, 'r') as fd:
         current_extensions = json.loads(fd.read()).get("extensions")
 
+    def entry_equals_ignore_url(entry1, entry2):
+        """Compare two entries ignoring downloadUrl field"""
+        entry1_copy = entry1.copy()
+        entry2_copy = entry2.copy()
+        entry1_copy.pop('downloadUrl', None)
+        entry2_copy.pop('downloadUrl', None)
+        return entry1_copy == entry2_copy
+
     for name in current_extensions:
-        modified_entries = [entry for entry in current_extensions[name] if entry not in public_extensions.get(name, [])]
+        public_entries = public_extensions.get(name, [])
+
+        # Find modified entries by comparing without downloadUrl
+        modified_entries = []
+        for entry in current_extensions[name]:
+            is_modified = True
+            for public_entry in public_entries:
+                if entry_equals_ignore_url(entry, public_entry):
+                    is_modified = False
+                    break
+            if is_modified:
+                modified_entries.append(entry)
 
         if not modified_entries:
             continue
@@ -205,8 +224,7 @@ def azdev_on_external_extension(index_json, azdev_type):
         # azdev_extension.style()
 
         logger.info('Checking service name for external extensions: %s', name)
-        if name != 'deploy-to-azure':
-            service_name.check()
+        service_name.check()
 
         az_extension.remove()
 
