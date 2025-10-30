@@ -9333,8 +9333,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_namespace_cmd = (
             "aks namespace add --resource-group={resource_group} --cluster-name={resource_name} --name={namespace_name} "
-            "--cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi "
-            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview"
+            "--cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi"
         )
 
         self.cmd(create_namespace_cmd, checks=[
@@ -9387,8 +9386,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         update_namespace_cmd = (
             "aks namespace update --resource-group={resource_group} --cluster-name={resource_name} --name={namespace_name} "
-            "--cpu-request 700m --cpu-limit 800m --memory-request 3Gi --memory-limit 5Gi --labels x=y "
-            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview"
+            "--cpu-request 700m --cpu-limit 800m --memory-request 3Gi --memory-limit 5Gi --labels x=y"
         )
 
         self.cmd(update_namespace_cmd, checks=[

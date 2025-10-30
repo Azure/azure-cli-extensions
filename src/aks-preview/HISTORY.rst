@@ -12,6 +12,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * `az aks machine update`: Add support for updating machine tags, node taints and node labels.
+* Fix `az aks bastion` subshell defaulting to cmd on Windows when invoked from PowerShell by implementing grandparent process detection to identify the actual user shell. 
+
+19.0.0b8
++++++++
+* Remove the preview flag from `az aks namespace` add/update help command.
+* Remove the feature preview flag AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview from managed namespace e2e test.
 
 19.0.0b7
 +++++++
