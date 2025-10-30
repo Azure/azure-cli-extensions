@@ -1,9 +1,9 @@
 interactions:
 - request:
-    body: '{"commonDestination": {"monitorConfigurations": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sudh_fire_test/providers/Microsoft.OperationalInsights/workspaces/testAnalyticsX",
-      "primaryKey": "7R5uguOLkTF6zByLV9ef5402y4dQnhiSlNMTKNSpEbjZoBrGrNnM2rD4E7+0v1yFg5y6h3RlrIa7th7qJnoHcQ==",
-      "secondaryKey": "7lmsLYTVizgkstJpno4fY6u36qmVw4rkaIfzhx82ymLIdYDy0wbq7Tdydkje3z50KbKsQnzhg8KAPFpEki/Buw==",
-      "subscriptionId": "2bf4a339-294d-4c25-b0b2-ef649e9f5c27", "workspace": "63e674d3-cc87-48c6-94cb-2d28a0b245fc"}},
+    body: '{"commonDestination": {"monitorConfigurations": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clients-test-rg-do-not-delete/providers/microsoft.operationalinsights/workspaces/clients-test-law-do-not-delete",
+      "primaryKey": "/R2h2lsY6xNNqqwuxkTWk/0cx8hCaC6NFqMQ8nh5j/eCkQWipjjYHkphYLt/x1ZkHfp4p6xf6M4oy32W0Y0I1w==",
+      "secondaryKey": "JoGVZQcofZOGm0vnZbomgjJp2fMSSl6xc7B8eI0mGKNPGbGPVFeeqtIl55s71EEyWxk81iFa/Pf1fiFC9VZCjg==",
+      "subscriptionId": "2bf4a339-294d-4c25-b0b2-ef649e9f5c27", "workspace": "0482e8e7-6645-4a10-bf67-fc91c845b44e"}},
       "logOption": "SAME_DESTINATION", "logType": "TRAFFIC"}'
     headers:
       Accept:
@@ -15,15 +15,15 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '587'
+      - '618'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group -n --log-option --log-type --common-destination
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest/saveLogProfile?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clients-test-rg-DO-NOT-DELETE/providers/PaloAltoNetworks.Cloudngfw/firewalls/clients-test-fw-DO-NOT-DELETE/saveLogProfile?api-version=2025-10-08
   response:
     body:
       string: ''
@@ -33,23 +33,31 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 03:01:19 GMT
+      - Thu, 23 Oct 2025 09:53:47 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - c20e1369-8f7e-4d1d-ad1d-5e812bd06cf7
+      - 19b46279-66b4-4241-9e54-ad85763f697c
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=182c644e-b9cf-4c15-b42c-07d1afd8c10b/centralindia/d34c6ecb-71d8-42b5-9c44-17d403288920
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: B6DE1F2E00B24ADB944A13B4E8C0C3A2 Ref B: PNQ231110909023 Ref C: 2025-10-23T09:53:44Z'
     status:
       code: 204
       message: No Content
@@ -69,41 +77,45 @@ interactions:
       ParameterSetName:
       - --resource-group -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest/getLogProfile?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clients-test-rg-DO-NOT-DELETE/providers/PaloAltoNetworks.Cloudngfw/firewalls/clients-test-fw-DO-NOT-DELETE/getLogProfile?api-version=2025-10-08
   response:
     body:
-      string: '{"logType":"TRAFFIC","logOption":"SAME_DESTINATION","applicationInsights":{"id":null,"key":null},"commonDestination":{"storageConfigurations":null,"eventHubConfigurations":null,"monitorConfigurations":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sudh_fire_test/providers/Microsoft.OperationalInsights/workspaces/testAnalyticsX","subscriptionId":null,"workspace":"63e674d3-cc87-48c6-94cb-2d28a0b245fc","primaryKey":"7R5uguOLkTF6zByLV9ef5402y4dQnhiSlNMTKNSpEbjZoBrGrNnM2rD4E7+0v1yFg5y6h3RlrIa7th7qJnoHcQ==","secondaryKey":"7lmsLYTVizgkstJpno4fY6u36qmVw4rkaIfzhx82ymLIdYDy0wbq7Tdydkje3z50KbKsQnzhg8KAPFpEki/Buw=="}},"trafficLogDestination":null,"threatLogDestination":null,"decryptLogDestination":null}'
+      string: '{"logType":"TRAFFIC","logOption":"SAME_DESTINATION","applicationInsights":{"id":null,"key":null},"commonDestination":{"storageConfigurations":null,"eventHubConfigurations":null,"monitorConfigurations":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clients-test-rg-do-not-delete/providers/microsoft.operationalinsights/workspaces/clients-test-law-do-not-delete","subscriptionId":null,"workspace":"0482e8e7-6645-4a10-bf67-fc91c845b44e","primaryKey":"/R2h2lsY6xNNqqwuxkTWk/0cx8hCaC6NFqMQ8nh5j/eCkQWipjjYHkphYLt/x1ZkHfp4p6xf6M4oy32W0Y0I1w==","secondaryKey":"JoGVZQcofZOGm0vnZbomgjJp2fMSSl6xc7B8eI0mGKNPGbGPVFeeqtIl55s71EEyWxk81iFa/Pf1fiFC9VZCjg=="}},"trafficLogDestination":null,"threatLogDestination":null,"decryptLogDestination":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '728'
+      - '759'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 03:01:35 GMT
+      - Thu, 23 Oct 2025 09:53:48 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - f68a43d4-6701-436f-9f81-baff072f2538
+      - 0898ec4d-c7ca-4ea6-966c-428efe6705fa
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=182c644e-b9cf-4c15-b42c-07d1afd8c10b/eastus/9861ef7c-3adb-4911-95f9-7aebe3d84c9a
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 161AECB38F9D4B37BD2E54BB814D8E17 Ref B: PNQ231110906062 Ref C: 2025-10-23T09:53:47Z'
     status:
       code: 200
       message: OK
@@ -123,41 +135,45 @@ interactions:
       ParameterSetName:
       - --resource-group -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest/getSupportInfo?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clients-test-rg-DO-NOT-DELETE/providers/PaloAltoNetworks.Cloudngfw/firewalls/clients-test-fw-DO-NOT-DELETE/getSupportInfo?api-version=2025-10-08
   response:
     body:
-      string: '{"productSku":"PAN-CLOUD-NGFW-AZURE-PAYG","productSerial":null,"accountRegistered":"FALSE","accountId":null,"userDomainSupported":"TRUE","userRegistered":"FALSE","freeTrial":"TRUE","freeTrialDaysLeft":30,"freeTrialCreditLeft":0,"helpURL":"https://live.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG","supportURL":"https://support.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG&userEmail=v-taoxuzeng@microsoft.com","registerURL":"https://support.paloaltonetworks.com/Home/Register?tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7&productSku=PAN-CLOUD-NGFW-AZURE-PAYG&userEmail=v-taoxuzeng@microsoft.com"}'
+      string: '{"productSku":"PAN-CLOUD-NGFW-AZURE-PAYG","productSerial":"001990770730","accountRegistered":"TRUE","accountId":"1768331","userDomainSupported":"TRUE","userRegistered":"FALSE","freeTrial":"FALSE","freeTrialDaysLeft":0,"freeTrialCreditLeft":0,"helpURL":"https://live.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG","supportURL":"https://support.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG&cspAccount=1768331&userEmail=test@example.com","registerURL":"https://support.paloaltonetworks.com/Home/Register?tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7&productSku=PAN-CLOUD-NGFW-AZURE-PAYG&productSerial=001990770730&userEmail=test@example.com"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '622'
+      - '664'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 03:01:45 GMT
+      - Thu, 23 Oct 2025 09:53:49 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 6d1a120f-0a29-4db1-a51e-b03df23c18bf
+      - 92ec3b22-1efd-472e-912d-8c1363917583
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=182c644e-b9cf-4c15-b42c-07d1afd8c10b/eastus/06bd5adb-0790-462a-b014-ee574819635e
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 67BAAB351569451AA47A3E0BC1E53D53 Ref B: PNQ231110909031 Ref C: 2025-10-23T09:53:49Z'
     status:
       code: 200
       message: OK
@@ -175,39 +191,43 @@ interactions:
       ParameterSetName:
       - --resource-group -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest/statuses?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clients-test-rg-DO-NOT-DELETE/providers/PaloAltoNetworks.Cloudngfw/firewalls/clients-test-fw-DO-NOT-DELETE/statuses?api-version=2025-10-08
   response:
     body:
-      string: '{"value":[{"properties":{"isPanoramaManaged":"FALSE","healthStatus":"GREEN","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"properties":{"healthStatus":"GREEN","isPanoramaManaged":"FALSE","isStrataCloudManaged":"FALSE","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '111'
+      - '142'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 03:01:51 GMT
+      - Thu, 23 Oct 2025 09:53:51 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - a94a273b-f18f-42d8-9934-73fc590e06c3
+      - 3f872d27-2073-4de0-9527-e3fb52c5a7dc
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=182c644e-b9cf-4c15-b42c-07d1afd8c10b/eastus/af021944-9be9-4513-808f-7816ce4395b8
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: EF791A5D3708480DB715EB1071F57640 Ref B: PNQ231110906029 Ref C: 2025-10-23T09:53:50Z'
     status:
       code: 200
       message: OK
@@ -225,39 +245,232 @@ interactions:
       ParameterSetName:
       - --resource-group -n
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest/statuses/default?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clients-test-rg-DO-NOT-DELETE/providers/PaloAltoNetworks.Cloudngfw/firewalls/clients-test-fw-DO-NOT-DELETE/statuses/default?api-version=2025-10-08
   response:
     body:
-      string: '{"properties":{"isPanoramaManaged":"FALSE","healthStatus":"GREEN","provisioningState":"Succeeded"}}'
+      string: '{"properties":{"healthStatus":"GREEN","isPanoramaManaged":"FALSE","isStrataCloudManaged":"FALSE","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '99'
+      - '130'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 03:01:58 GMT
+      - Thu, 23 Oct 2025 09:53:52 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 3bce174d-949f-4df9-a4ce-6292183246a0
+      - 003c317b-1658-49d5-a42f-721f2849be55
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=182c644e-b9cf-4c15-b42c-07d1afd8c10b/eastus/5b195139-3ea1-41a9-86f8-65ad34aa4339
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: A035A99A5427432E9D513AF8F25BAB7D Ref B: PNQ231110909060 Ref C: 2025-10-23T09:53:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw list-cloud-manager-tenant
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/PaloAltoNetworks.Cloudngfw/listCloudManagerTenants?api-version=2025-10-08
+  response:
+    body:
+      string: '{"value":["dbr-ess-3849213-tenant - Prisma Access (1157428280)","AWS-CNGFW-SO-V2-API-TESTING-5
+        - Prisma Access (1292604180)","3849213 - fwaasqadevclient - Prisma Access
+        (1623817188)","scm-ess-demo - Prisma Access (1903043489)","AWS-CNGFW-SO-V2-API-TESTING-4
+        - Prisma Access (1128794313)","3849213 - fwaasqadevclient - 1 - Prisma Access
+        (1605050033)","tsg-3849213 - Prisma Access (1075568041)","3849213 - fwaasqadevclient
+        - 1 - Prisma Access (1749251292)","AWS-CNGFW-SO-V2-API-TESTING - Prisma Access
+        (1576050749)","cNGFW-FUN-Azure_CSP3849213 - Prisma Access (1228258003)","PASLS_CNGFWAutomation
+        - Prisma Access (1246880478)","dbr-ess-3849213-tenant - Prisma Access (1423354763)","SCMEssentialswithSLS-CNGFWAutomation
+        - Prisma Access (1458605471)","SLS_CNFW_Automation - Prisma Access (1855302132)","AWS-CNGFW-SO-V2-API-TESTING-3
+        - Prisma Access (1532259055)","BrownfieldAutomation - Prisma Access (1983641518)","AWS-CNGFW-SO-V2-API-TESTING-2
+        - Prisma Access (1053540296)","3849213 - fwaasqadevclient - 1 - Prisma Access
+        (1032369262)","3849213 - fwaasqadevclient - 1 - Prisma Access (1114848443)","CASB-X-AI
+        - Prisma Access (1339734017)","3849213 - fwaasqadevclient - Prisma Access
+        (1796790368)","3849213 - fwaasqadevclient - Prisma Access (1432024275)","CNGFW
+        DAS automation - Prisma Access (1331636865)","CNGFW-SCM-PRA-3849213-tenant
+        - Prisma Access (1308953227)","PASCMPro_SCMCGFW_Automation - Prisma Access
+        (1266529716)","SCM-ess-3849213-0127 - Prisma Access (1764321744)","3849213
+        - fwaasqadevclient - Prisma Access (1625663320)","SCMEssentialsCNGFW - Prisma
+        Access (1914458642)","3849213 - fwaasqadevclient - 1 - Prisma Access (1841445409)","SCM_CNGFW_AutomationwithCDL
+        - Prisma Access (1580810747)","CNGFW_SCM Pro - Prisma Access (1988630009)","CNGFW-SCM-PRA-3849213-Europe-tenant
+        - Prisma Access (1040274969)","3849213 - fwaasqadevclient - Prisma Access
+        (1369703717)","3849213 - fwaasqadevclient - 1 - Prisma Access (1092786364)"]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1938'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Oct 2025 09:53:56 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d81f7c1c-f38b-4921-9efc-cf3e5e2f8bd6
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=182c644e-b9cf-4c15-b42c-07d1afd8c10b/eastus/908d92d8-e19a-4ede-ba47-0520461b7358
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 5B6E6426AB1047AEBFAF5CB127DC0BFD Ref B: PNQ231110907023 Ref C: 2025-10-23T09:53:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw list-support-info
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/PaloAltoNetworks.Cloudngfw/listSupportInfo?api-version=2025-10-08
+  response:
+    body:
+      string: '{"productSku":"PAN-CLOUD-NGFW-AZURE-PAYG","productSerial":"001990770730","accountRegistrationStatus":"Registered","accountId":"1768331","freeTrial":"Disabled","freeTrialDaysLeft":0,"freeTrialCreditLeft":0,"helpURL":"https://live.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG","supportURL":"https://support.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG&cspAccount=1768331&userEmail=test@example.com","registerURL":"https://support.paloaltonetworks.com/Home/Register?tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7&productSku=PAN-CLOUD-NGFW-AZURE-PAYG&productSerial=001990770730&userEmail=test@example.com","credits":0,"monthlyCreditLeft":0}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '661'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Oct 2025 09:53:59 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 6c8a525a-ecfe-40cc-9733-e2d178b1820a
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=182c644e-b9cf-4c15-b42c-07d1afd8c10b/southindia/c013bbf2-1762-4e5b-b0b6-9bca194e2da4
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 3935BE9F94DE4E66854AF1D313F1970B Ref B: PNQ231110907023 Ref C: 2025-10-23T09:53:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw create-product-serial-number
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/PaloAltoNetworks.Cloudngfw/createProductSerialNumber?api-version=2025-10-08
+  response:
+    body:
+      string: '{"status":"Product Serial Number is already created."}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '54'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Oct 2025 09:54:00 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - f219f3d4-c501-4388-975c-faa9d455bf13
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=182c644e-b9cf-4c15-b42c-07d1afd8c10b/eastus/f6ecf3ef-ab48-4b1f-bca4-fd28d77210e4
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: CDA06FA0FE4D41F5BDD0853500BA209F Ref B: PNQ231110907036 Ref C: 2025-10-23T09:54:00Z'
     status:
       code: 200
       message: OK
