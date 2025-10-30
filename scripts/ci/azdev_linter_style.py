@@ -175,51 +175,42 @@ def azdev_on_external_extension(index_json, azdev_type):
     """
 
     public_extensions = json.loads(check_output('az extension list-available -d', shell=True))
-    logger.info(f"Loaded {len(public_extensions)} public extensions")
 
     with open(index_json, 'r') as fd:
         current_extensions = json.loads(fd.read()).get("extensions")
-    logger.info(f"Loaded {len(current_extensions)} current extensions from {index_json}")
+
+    def entry_equals_ignore_url(entry1, entry2):
+        """Compare two entries ignoring downloadUrl field"""
+        entry1_copy = entry1.copy()
+        entry2_copy = entry2.copy()
+        entry1_copy.pop('downloadUrl', None)
+        entry2_copy.pop('downloadUrl', None)
+        return entry1_copy == entry2_copy
 
     for name in current_extensions:
-        logger.info(f"Processing extension: {name}")
-        
-        # Log the comparison process
-        current_entries = current_extensions[name]
         public_entries = public_extensions.get(name, [])
-        logger.info(f"  Current entries: {len(current_entries)}, Public entries: {len(public_entries)}")
         
-        modified_entries = [entry for entry in current_extensions[name] if entry not in public_extensions.get(name, [])]
-        logger.info(f"  Modified entries found: {len(modified_entries)}")
-        
-        # Log which entries are considered modified
-        for entry in modified_entries:
-            version = entry.get('metadata', {}).get('version', 'unknown')
-            url = entry.get('downloadUrl', 'unknown')
-            logger.info(f"    Modified entry: version={version}, url={url}")
+        # Find modified entries by comparing without downloadUrl
+        modified_entries = []
+        for entry in current_extensions[name]:
+            is_modified = True
+            for public_entry in public_entries:
+                if entry_equals_ignore_url(entry, public_entry):
+                    is_modified = False
+                    break
+            if is_modified:
+                modified_entries.append(entry)
 
         if not modified_entries:
-            logger.info(f"  No modified entries for {name}, skipping")
             continue
 
         # check if source code exists, if so, skip
-        src_path = 'src/{}'.format(name)
-        if os.path.isdir(src_path):
-            logger.info(f"  Source code exists at {src_path}, skipping")
+        if os.path.isdir('src/{}'.format(name)):
             continue
 
         separator_line()
 
-        # Log the version selection process
-        logger.info(f"Selecting latest from {len(modified_entries)} modified entries:")
-        for entry in modified_entries:
-            version = entry.get('metadata', {}).get('version', 'unknown')
-            logger.info(f"  Candidate version: {version}")
-        
         latest_entry = max(modified_entries, key=lambda c: parse_version(c['metadata']['version']))
-        selected_version = latest_entry.get('metadata', {}).get('version', 'unknown')
-        selected_url = latest_entry.get('downloadUrl', 'unknown')
-        logger.info(f"Selected version: {selected_version} from {selected_url}")
 
         az_extension = AzExtensionHelper(name)
         az_extension.add_from_url(latest_entry['downloadUrl'])
@@ -233,11 +224,9 @@ def azdev_on_external_extension(index_json, azdev_type):
         # azdev_extension.style()
 
         logger.info('Checking service name for external extensions: %s', name)
-        if name != 'deploy-to-azure':
-            service_name.check()
+        service_name.check()
 
         az_extension.remove()
-        logger.info(f"Completed processing {name}")
 
 
 def azdev_on_internal_extension(modified_files, azdev_type):
