@@ -8,9 +8,6 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from azext_change_state import custom
-
-
 def load_command_table(self, _):  # pylint: disable=unused-argument
     from .custom import ChangeStateCreate, ChangeStateUpdate, ChangeStateDelete, ChangeStateShow
 
