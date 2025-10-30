@@ -120,6 +120,7 @@ from azext_aks_preview.managednamespace import (
 )
 from azext_aks_preview.machine import (
     add_machine,
+    update_machine,
 )
 from azext_aks_preview.jwtauthenticator import (
     aks_jwtauthenticator_add_internal,
@@ -2609,6 +2610,33 @@ def aks_machine_add(
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
     return add_machine(cmd, client, raw_parameters, no_wait)
+
+
+# pylint: disable=unused-argument
+def aks_machine_update(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    nodepool_name,
+    machine_name=None,
+    tags=None,
+    node_taints=None,
+    labels=None,
+    no_wait=False,
+):
+    existedMachine = None
+    try:
+        existedMachine = client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+    except ResourceNotFoundError:
+        raise ClientRequestError(
+            f"Machine '{machine_name}' does not exist. Please use 'az aks machine list' to get current list of machines."
+        )
+
+    if existedMachine:
+        # DO NOT MOVE: get all the original parameters and save them as a dictionary
+        raw_parameters = locals()
+        return update_machine(client, raw_parameters, existedMachine, no_wait)
 
 
 def aks_addon_list_available():
