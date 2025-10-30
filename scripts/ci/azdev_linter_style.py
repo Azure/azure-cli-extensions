@@ -264,7 +264,7 @@ def azdev_on_internal_extension(modified_files, azdev_type):
                 logger.error(statement_msg)
                 exit(1)
 
-        logger.info('Checking service name for internal extensions')
+        logger.info('Checking service name for internal extensions: %s', name)
         service_name.check()
 
         azdev_extension.remove()

@@ -8562,6 +8562,181 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
+        # test enable Azure Key Vault KMS with key ID
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "kms_infrastructure_encryption": "Enabled",
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": "https://test-keyvault.vault.azure.net/keys/test-key",
+                "azure_keyvault_kms_key_vault_resource_id": "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(location="test_location")
+        dec_6.context.attach_mc(mc_6)
+        dec_mc_6 = dec_6.update_kms_pmk_cmk(mc_6)
+
+        # expected security profile with Azure Key Vault KMS
+        ground_truth_azure_key_vault_kms_6 = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+            key_vault_network_access="Public",
+            key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+        )
+        ground_truth_kube_resource_encryption_profile_6 = self.models.KubernetesResourceObjectEncryptionProfile(
+            infrastructure_encryption="Enabled"
+        )
+        ground_truth_security_profile_6 = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=ground_truth_azure_key_vault_kms_6,
+            kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_6,
+        )
+        ground_truth_mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_6,
+        )
+        self.assertEqual(dec_mc_6, ground_truth_mc_6)
+
+        # test enable Azure Key Vault KMS on cluster with existing security profile
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "kms_infrastructure_encryption": "Enabled",
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": "https://test-keyvault.vault.azure.net/keys/test-key",
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+                "azure_keyvault_kms_key_vault_resource_id": "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        existing_security_profile = self.models.ManagedClusterSecurityProfile()
+        mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=existing_security_profile,
+        )
+        dec_7.context.attach_mc(mc_7)
+        dec_mc_7 = dec_7.update_kms_pmk_cmk(mc_7)
+
+        # should add to existing security profile
+        ground_truth_azure_key_vault_kms_7 = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+            key_vault_network_access="Public",
+            key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+        )
+        ground_truth_kube_resource_encryption_profile_7 = self.models.KubernetesResourceObjectEncryptionProfile(
+            infrastructure_encryption="Enabled"
+        )
+        ground_truth_security_profile_7 = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=ground_truth_azure_key_vault_kms_7,
+            kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_7,
+        )
+        ground_truth_mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_7,
+        )
+        self.assertEqual(dec_mc_7, ground_truth_mc_7)
+
+        # test disable Azure Key Vault KMS
+        dec_8 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_keyvault_kms": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_8 = self.models.ManagedCluster(location="test_location")
+        dec_8.context.attach_mc(mc_8)
+        dec_mc_8 = dec_8.update_kms_pmk_cmk(mc_8)
+
+        # expected security profile with disabled Azure Key Vault KMS
+        ground_truth_mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=None,
+        )
+        self.assertEqual(dec_mc_8, ground_truth_mc_8)
+
+        # test disable Azure Key Vault KMS on cluster with existing security profile
+        dec_9 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_keyvault_kms": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        existing_security_profile = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=self.models.AzureKeyVaultKms(
+                enabled=True,
+                key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+                key_vault_network_access="Public",
+                key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+            ),
+            kubernetes_resource_object_encryption_profile=self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            ),
+        )
+        mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=existing_security_profile,
+        )
+        dec_9.context.attach_mc(mc_9)
+        dec_mc_9 = dec_9.update_kms_pmk_cmk(mc_9)
+
+        # should disable existing Azure Key Vault KMS
+        ground_truth_azure_key_vault_kms_9 = self.models.AzureKeyVaultKms()
+        ground_truth_azure_key_vault_kms_9.enabled = False
+        ground_truth_kube_resource_encryption_profile_9 = self.models.KubernetesResourceObjectEncryptionProfile(
+            infrastructure_encryption="Enabled"
+        )
+        ground_truth_security_profile_9 = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=ground_truth_azure_key_vault_kms_9,
+            kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_9,
+        )
+        ground_truth_mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_9,
+        )
+        self.assertEqual(dec_mc_9, ground_truth_mc_9)
+
+        # test combined infrastructure encryption and Azure Key Vault KMS enable
+        dec_10 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "kms_infrastructure_encryption": "Enabled",
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": "https://test-keyvault.vault.azure.net/keys/test-key",
+                "azure_keyvault_kms_key_vault_resource_id": "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_10 = self.models.ManagedCluster(location="test_location")
+        dec_10.context.attach_mc(mc_10)
+        dec_mc_10 = dec_10.update_kms_pmk_cmk(mc_10)
+
+        # expected security profile with both infrastructure encryption and Azure Key Vault KMS
+        ground_truth_kube_resource_encryption_profile_10 = self.models.KubernetesResourceObjectEncryptionProfile(
+            infrastructure_encryption="Enabled"
+        )
+        ground_truth_azure_key_vault_kms_10 = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+            key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+        )
+        ground_truth_security_profile_10 = self.models.ManagedClusterSecurityProfile(
+            kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_10,
+            azure_key_vault_kms=ground_truth_azure_key_vault_kms_10,
+        )
+        ground_truth_mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_10,
+        )
+        self.assertEqual(dec_mc_10, ground_truth_mc_10)
+
     def test_update_workload_auto_scaler_profile(self):
         # Throws exception when incorrect mc object is passed.
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
