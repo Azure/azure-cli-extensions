@@ -7,16 +7,38 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=protected-access
 
 from knack.log import get_logger
-from azure.cli.core.aaz import has_value, AAZAnyType, AAZListArg, AAZStrArg
-from azure.cli.core.aaz._arg_action import AAZArgActionOperations, AAZPromptInputOperation, _ELEMENT_APPEND_KEY
+from azure.cli.core.aaz import (
+    has_value,
+    AAZAnyType,
+    AAZListArg,
+    AAZStrArg,
+    AAZObjectType,
+    AAZStrType,
+    AAZListType,
+)
+from azure.cli.core.aaz._arg_action import (
+    AAZArgActionOperations,
+    AAZPromptInputOperation,
+    _ELEMENT_APPEND_KEY,
+)
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azext_change_state.aaz.latest.change_safety.change_state import Create as _ChangeStateCreate, Update as _ChangeStateUpdate, Show as _ChangeStateShow, Delete as _ChangeStateDelete
-from azure.cli.core.aaz import AAZObjectType, AAZStrType, AAZListType
+from azext_change_state.aaz.latest.change_safety.change_state import (
+    Create as _ChangeStateCreate,
+    Update as _ChangeStateUpdate,
+    Show as _ChangeStateShow,
+    Delete as _ChangeStateDelete,
+)
 
 
 logger = get_logger(__name__)
+
+
+def _build_any_type():
+    """Utility to satisfy schema_builder callsites while keeping lint happy."""
+    return AAZAnyType()
 
 
 def _inject_change_definition_into_content(content, ctx):
@@ -112,6 +134,7 @@ def _inject_targets_into_result(data, targets):
     else:
         process(data)
 
+
 def _custom_show_schema_builder():
     # Import the generated Show class
     from azext_change_state.aaz.latest.change_safety.change_state._show import Show as GeneratedShow
@@ -171,13 +194,22 @@ class ChangeStateCreate(_ChangeStateCreate):
         # Build and set the changeDefinition with targets
         change_definition = self._build_change_definition()
         logger.debug("Final changeDefinition for create: %s", change_definition)
-        self.ctx.set_var('change_definition', change_definition, schema_builder=lambda: AAZAnyType())
+        self.ctx.set_var(
+            'change_definition',
+            change_definition,
+            schema_builder=_build_any_type,
+        )
 
     def _build_change_definition(self):
         """Build the changeDefinition object with targets"""
         targets = self._parse_targets(self._raw_targets)
         self._parsed_targets = targets
-        change_name = self.ctx.args.change_state_name.to_serialized_data() if has_value(self.ctx.args.change_state_name) else "Change Definition"
+        change_arg = self.ctx.args.change_state_name
+        change_name = (
+            change_arg.to_serialized_data()
+            if has_value(change_arg)
+            else "Change Definition"
+        )
 
         return {
             'kind': 'Targets',
@@ -250,13 +282,15 @@ class ChangeStateCreate(_ChangeStateCreate):
             # The changeDefinition will be set in the content property of the HTTP operations
             pass
 
-    class ChangeStatesCreateOrUpdateAtSubscriptionLevel(_ChangeStateCreate.ChangeStatesCreateOrUpdateAtSubscriptionLevel):
+    class ChangeStatesCreateOrUpdateAtSubscriptionLevel(
+            _ChangeStateCreate.ChangeStatesCreateOrUpdateAtSubscriptionLevel):
         @property
         def content(self):
             content = super().content
             return _inject_change_definition_into_content(content, self.ctx)
 
-    class ChangeStatesCreateOrUpdate(_ChangeStateCreate.ChangeStatesCreateOrUpdate):
+    class ChangeStatesCreateOrUpdate(
+            _ChangeStateCreate.ChangeStatesCreateOrUpdate):
         @property
         def content(self):
             content = super().content
@@ -298,13 +332,22 @@ class ChangeStateUpdate(_ChangeStateUpdate):
         if self._raw_targets:
             change_definition = self._build_change_definition()
             logger.debug("Final changeDefinition for update: %s", change_definition)
-            self.ctx.set_var('change_definition', change_definition, schema_builder=lambda: AAZAnyType())
+            self.ctx.set_var(
+                'change_definition',
+                change_definition,
+                schema_builder=_build_any_type,
+            )
 
     def _build_change_definition(self):
         """Build the changeDefinition object with targets"""
         targets = self._parse_targets(self._raw_targets)
         self._parsed_targets = targets
-        change_name = self.ctx.args.change_state_name.to_serialized_data() if has_value(self.ctx.args.change_state_name) else "Change Definition"
+        change_arg = self.ctx.args.change_state_name
+        change_name = (
+            change_arg.to_serialized_data()
+            if has_value(change_arg)
+            else "Change Definition"
+        )
 
         return {
             'kind': 'Targets',
@@ -337,7 +380,11 @@ class ChangeStateUpdate(_ChangeStateUpdate):
             target_entry = {}
             for segment in segments:
                 if '=' not in segment:
-                    raise InvalidArgumentValueError(f"Each --targets entry must be in key=value format. Invalid: '{segment}'")
+                    error_message = (
+                        "Each --targets entry must be in key=value format. "
+                        f"Invalid: '{segment}'"
+                    )
+                    raise InvalidArgumentValueError(error_message)
 
                 key, value = segment.split('=', 1)
                 key = key.strip()
@@ -380,24 +427,28 @@ class ChangeStateUpdate(_ChangeStateUpdate):
         _inject_targets_into_result(result, self._parsed_targets)
         return result
 
-    def pre_instance_update(self):
+    def pre_instance_update(self, instance):
         """Set the changeDefinition in the request body before updating the instance"""
+        del instance
         change_definition = getattr(self.ctx.vars, 'change_definition', None)
         if change_definition is not None:
             # The changeDefinition will be set in the content property of the HTTP operations
             pass
 
-    class ChangeStatesCreateOrUpdateAtSubscriptionLevel(_ChangeStateUpdate.ChangeStatesCreateOrUpdateAtSubscriptionLevel):
+    class ChangeStatesCreateOrUpdateAtSubscriptionLevel(
+            _ChangeStateUpdate.ChangeStatesCreateOrUpdateAtSubscriptionLevel):
         @property
         def content(self):
             content = super().content
             return _inject_change_definition_into_content(content, self.ctx)
 
-    class ChangeStatesCreateOrUpdate(_ChangeStateUpdate.ChangeStatesCreateOrUpdate):
+    class ChangeStatesCreateOrUpdate(
+            _ChangeStateUpdate.ChangeStatesCreateOrUpdate):
         @property
         def content(self):
             content = super().content
             return _inject_change_definition_into_content(content, self.ctx)
+
 
 class ChangeStateShow(_ChangeStateShow):
     def _output(self, *args, **kwargs):
@@ -422,6 +473,7 @@ class ChangeStateShow(_ChangeStateShow):
                 data,
                 schema_builder=_custom_show_schema_builder
             )
+
 
 class ChangeStateDelete(_ChangeStateDelete):
     pass
