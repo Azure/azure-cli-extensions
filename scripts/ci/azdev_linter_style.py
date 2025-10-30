@@ -204,8 +204,9 @@ def azdev_on_external_extension(index_json, azdev_type):
         # azdev test support external extension
         # azdev_extension.style()
 
-        logger.info('Checking service name for external extensions')
-        service_name.check()
+        logger.info('Checking service name for external extensions: %s', name)
+        if name != 'deploy-to-azure':
+            service_name.check()
 
         az_extension.remove()
 
@@ -245,7 +246,7 @@ def azdev_on_internal_extension(modified_files, azdev_type):
                 logger.error(statement_msg)
                 exit(1)
 
-        logger.info('Checking service name for internal extensions')
+        logger.info('Checking service name for internal extensions: %s', name)
         service_name.check()
 
         azdev_extension.remove()
