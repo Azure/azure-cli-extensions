@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b8
++++++++
+* Remove the preview flag from `az aks namespace` add/update help command.
+* Remove the feature preview flag AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview from managed namespace e2e test.
+
 19.0.0b7
 +++++++
 * `az aks create`: Add new parameter `--enable-container-network-logs` to enable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs`.
