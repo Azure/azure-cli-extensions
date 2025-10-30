@@ -12,14 +12,14 @@ from azext_change_state import custom
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    """Apply custom command overrides after the AAZ-generated command table is loaded."""
-    # Register custom commands for both 'change-state' and 'change-safety change-state'
-    for prefix in ["change-state", "change-safety change-state"]:
-        if f"{prefix} create" in self.command_table:
-            self.command_table[f"{prefix} create"] = custom.ChangeStateCreate(loader=self)
-        if f"{prefix} update" in self.command_table:
-            self.command_table[f"{prefix} update"] = custom.ChangeStateUpdate(loader=self)
-        if f"{prefix} show" in self.command_table:
-            self.command_table[f"{prefix} show"] = custom.ChangeStateShow(loader=self)
-        if f"{prefix} delete" in self.command_table:
-            self.command_table[f"{prefix} delete"] = custom.ChangeStateDelete(loader=self)
+    from .custom import ChangeStateCreate, ChangeStateUpdate, ChangeStateDelete, ChangeStateShow
+
+    create_command = ChangeStateCreate(loader=self)
+    update_command = ChangeStateUpdate(loader=self)
+    delete_command = ChangeStateDelete(loader=self)
+    show_command = ChangeStateShow(loader=self)
+
+    self.command_table['change-state create'] = create_command
+    self.command_table['change-state update'] = update_command
+    self.command_table['change-state delete'] = delete_command
+    self.command_table['change-state show'] = show_command
