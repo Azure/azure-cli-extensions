@@ -233,7 +233,7 @@ def azdev_on_external_extension(index_json, azdev_type):
         # azdev_extension.style()
 
         logger.info('Checking service name for external extensions: %s', name)
-        if service_name != 'deploy-to-azure':
+        if name != 'deploy-to-azure':
             service_name.check()
 
         az_extension.remove()
