@@ -57,7 +57,6 @@ class DatadogMonitorsTestScenario(ScenarioTest):
         self.cmd('datadog monitor list-api-key -g {rg} --monitor-name {monitor}')
         self.cmd('datadog monitor list-host -g {rg} --monitor-name {monitor}')
         self.cmd('datadog monitor list-linked-resource -g {rg} --monitor-name {monitor}')
-        self.cmd('datadog monitor list-host -g {rg} --monitor-name {monitor}')
         self.cmd('datadog monitor list-monitored-resource -g {rg} --monitor-name {monitor}')
 
         self.cmd('datadog monitor delete --name {monitor} --resource-group {rg} -y')

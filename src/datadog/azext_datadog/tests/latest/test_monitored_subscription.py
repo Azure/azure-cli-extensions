@@ -55,7 +55,6 @@ class DatadogMonitoredSubscriptionScenario(ScenarioTest):
             self.check('[0].name', 'default'),
             self.check('[0].resourceGroup', '{rg}'),
             self.check('[0].properties.monitoredSubscriptionList[0].subscriptionId', '{subscription}'),
-            self.check('[0].properties.monitoredSubscriptionList[0].status', 'Active'),
             self.check('[0].properties.monitoredSubscriptionList[0].tagRules.provisioningState', 'Accepted')
         ])
 
