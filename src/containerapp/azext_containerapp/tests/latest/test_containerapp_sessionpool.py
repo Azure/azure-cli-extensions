@@ -47,6 +47,17 @@ class ContainerappSessionPoolTests(ScenarioTest):
             JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.cooldownPeriodInSeconds', 300),
         ])
 
+        # Create Shell SessionPool
+        sessionpool_name_shell = self.create_random_name(prefix='spshell', length=24)
+        self.cmd('containerapp sessionpool create -g {} -n {} --container-type Shell --cooldown-period {}'.format(
+            resource_group, sessionpool_name_shell, 300), checks=[
+            JMESPathCheck('name', sessionpool_name_shell),
+            JMESPathCheck('properties.containerType', "Shell"),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.lifecycleType', "Timed"),
+            JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.cooldownPeriodInSeconds', 300),
+        ])
+
         # Create GpuBase SessionPool
         sessionpool_name_gpu = self.create_random_name(prefix='spgpu', length=24)
         self.cmd('containerapp sessionpool create -g {} -n {} --container-type GpuBase --cooldown-period {}'.format(
@@ -95,7 +106,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
         # List Session Pools
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
-        self.assertTrue(len(sessionpool_list) == 3)
+        self.assertTrue(len(sessionpool_list) == 4)
 
         # Update Session Pool
         max_concurrent_session = 12
@@ -143,6 +154,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
         self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_python))
         self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
+        self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_shell))
         self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_gpu))
 
         # List Session Pools
