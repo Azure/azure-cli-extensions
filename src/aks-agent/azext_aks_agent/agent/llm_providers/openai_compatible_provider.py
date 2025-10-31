@@ -3,13 +3,27 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import requests
 from urllib.parse import urljoin
-from .base import LLMProvider, non_empty, is_valid_url
+
+import requests
+
+from .base import LLMProvider, is_valid_url, non_empty
 
 
 class OpenAICompatibleProvider(LLMProvider):
-    name = "openai_compatible"
+    @property
+    def readable_name(self) -> str:
+        return "OpenAI Compatible"
+
+    @property
+    def name(self) -> str:
+        return "openai_compatible"
+
+    @property
+    def model_route(self) -> str:
+        # LiteLLM uses "openai" as the provider to route the request to an OpenAI-compatible endpoint
+        # https://docs.litellm.ai/docs/providers/openai_compatible
+        return "openai"
 
     @property
     def parameter_schema(self):
@@ -22,7 +36,7 @@ class OpenAICompatibleProvider(LLMProvider):
             },
             "API_KEY": {
                 "secret": True,
-                "default": "ollama",
+                "default": None,
                 "hint": None,
                 "validator": non_empty
             },

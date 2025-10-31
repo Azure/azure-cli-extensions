@@ -37,6 +37,98 @@ For more details about supported model providers and required
 variables, see: https://docs.litellm.ai/docs/providers
 
 
+LLM Configuration Explained
+---------------------------
+
+The AKS Agent uses YAML configuration files to define LLM connections. Each configuration contains a provider specification and the required environment variables for that provider.
+
+Configuration Structure
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: yaml
+
+    llms:
+    - provider: azure
+      MODEL_NAME: gpt-4.1
+      AZURE_API_KEY: *******
+      AZURE_API_BASE: https://{azure-openai-service}.openai.azure.com/
+      AZURE_API_VERSION: 2025-04-01-preview
+
+Field Explanations
+^^^^^^^^^^^^^^^^^^
+
+**provider**
+    The LiteLLM provider route that determines which LLM service to use. This follows the LiteLLM provider specification from https://docs.litellm.ai/docs/providers.
+
+    Common values:
+
+    * ``azure`` - Azure OpenAI Service
+    * ``openai`` - OpenAI API and OpenAI-compatible APIs (e.g., local models, other services)
+    * ``anthropic`` - Anthropic Claude
+    * ``gemini`` - Google's Gemini
+    * ``openai_compatible`` - OpenAI-compatible APIs (e.g., local models, other services)
+
+**MODEL_NAME**
+    The specific model or deployment name to use. This varies by provider:
+
+    * For Azure OpenAI: Your deployment name (e.g., ``gpt-4.1``, ``gpt-35-turbo``)
+    * For OpenAI: Model name (e.g., ``gpt-4``, ``gpt-3.5-turbo``)
+    * For other providers: Check the specific model names in LiteLLM documentation
+
+**Environment Variables by Provider**
+
+The remaining fields are environment variables required by each provider. These correspond to the authentication and configuration requirements of each LLM service:
+
+**Azure OpenAI (provider: azure)**
+    * ``AZURE_API_KEY`` - Your Azure OpenAI API key
+    * ``AZURE_API_BASE`` - Your Azure OpenAI endpoint URL (e.g., https://your-resource.openai.azure.com/)
+    * ``AZURE_API_VERSION`` - API version (e.g., 2024-02-01, 2025-04-01-preview)
+
+**OpenAI (provider: openai)**
+    * ``OPENAI_API_KEY`` - Your OpenAI API key (starts with sk-)
+
+**Gemini (provider: gemini)**
+    * ``GOOGLE_API_KEY`` - Your Google Cloud API key
+    * ``GOOGLE_API_ENDPOINT`` - Base URL for the Gemini API endpoint
+
+**Anthropic (provider: anthropic)**
+    * ``ANTHROPIC_API_KEY`` - Your Anthropic API key
+
+**OpenAI Compatible (provider: openai_compatible)**
+    * ``OPENAI_API_BASE`` - Base URL for the API endpoint
+    * ``OPENAI_API_KEY`` - API key (if required by the service)
+
+Multiple Model Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You can configure multiple models in a single file:
+
+.. code-block:: yaml
+
+    llms:
+    - provider: azure
+      MODEL_NAME: gpt-4
+      AZURE_API_KEY: your-azure-key
+      AZURE_API_BASE: https://your-azure-endpoint.openai.azure.com/
+      AZURE_API_VERSION: 2024-02-01
+    - provider: openai
+      MODEL_NAME: gpt-4
+      OPENAI_API_KEY: your-openai-key
+    - provider: anthropic
+      MODEL_NAME: claude-3-sonnet-20240229
+      ANTHROPIC_API_KEY: your-anthropic-key
+
+When using ``--model``, specify the provider and model as ``provider/model_name`` (e.g., ``azure/gpt-4``, ``openai/gpt-4``).
+
+Security Note
+^^^^^^^^^^^^^
+
+API keys and credentials in configuration files should be kept secure. Consider using:
+
+* Restricted file permissions (``chmod 600 config.yaml``)
+* Environment variable substitution where supported
+* Separate configuration files for different environments (dev/prod)
+
 Quick start and examples
 =========================
 
