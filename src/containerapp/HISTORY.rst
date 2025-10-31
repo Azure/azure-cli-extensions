@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp sessionpool create': Add `Shell` container type
 
 1.2.0b4
 ++++++
