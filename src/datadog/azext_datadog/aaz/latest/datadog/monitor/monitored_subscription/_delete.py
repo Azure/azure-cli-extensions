@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the subscriptions that are being monitored by the Datadog monitor resource
+
+    :example: Monitors_DeleteMonitoredSubscriptions
+        az datadog monitor monitored-subscription delete --resource-group myResourceGroup --monitor-name myMonitor --configuration-name default
     """
 
     _aaz_info = {

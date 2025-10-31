@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the subscriptions currently being monitored by the Datadog monitor resource.
+
+    :example: Monitors_GetMonitoredSubscriptions
+        az datadog monitor monitored-subscription list --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
