@@ -23,7 +23,7 @@ def is_valid_api_base(v: str) -> bool:
 class AzureProvider(LLMProvider):
     @property
     def readable_name(self) -> str:
-        return "Azure Open AI"
+        return "Azure OpenAI"
 
     @property
     def model_route(self) -> str:
