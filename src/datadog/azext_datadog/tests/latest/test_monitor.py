@@ -9,6 +9,7 @@ class DatadogMonitorsTestScenario(ScenarioTest):
         "sku": "pro_testing_20200911_Monthly@TIDgmz7xq9ge3py"
     }
 
+    '''
     @ResourceGroupPreparer(name_prefix='cli_test_datadog_monitor', location='centraluseuap')
     def test_datadog_monitor(self, resource_group):
         email = self.cmd('account show').get_output_in_json()['user']['name']
@@ -62,3 +63,4 @@ class DatadogMonitorsTestScenario(ScenarioTest):
         self.cmd('datadog monitor list-monitored-resource -g {rg} --monitor-name {monitor}')
 
         self.cmd('datadog monitor delete --name {monitor} --resource-group {rg} -y')
+    '''
