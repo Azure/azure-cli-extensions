@@ -17,7 +17,7 @@ setupVenv(){
     # create new venv
     python"${PYTHON_VERSION}" -m venv azEnv
     source azEnv/bin/activate
-    python -m pip install -U pip
+    python -m pip install pip==25.2  # fix to 25.2 to avoid the "No module named 'azure.cli.__main__'" issue with pip 25.3+
 }
 
 # need to be executed in a venv
@@ -32,7 +32,7 @@ setupAZ(){
     ext_repo=${2:-""}
 
     # install azdev, used later to install azcli and extension
-    pip install azdev==0.1.60
+    pip install azdev==0.2.8
 
     # fix setuptools to 77.0.3 as a workaround for "No module named azure.cli.__main__; 'azure.cli' is a package and cannot be directly executed"
     pip install setuptools==77.0.3

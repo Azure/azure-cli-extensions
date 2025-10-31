@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkracks/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkracks/{}", "2025-07-15"],
         ]
     }
 
@@ -123,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -179,6 +179,10 @@ class Show(AAZCommand):
 
             properties = cls._schema_on_200.properties
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.last_operation = AAZObjectType(
                 serialized_name="lastOperation",
                 flags={"read_only": True},
@@ -190,6 +194,7 @@ class Show(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.network_rack_type = AAZStrType(
                 serialized_name="networkRackType",
@@ -205,7 +210,9 @@ class Show(AAZCommand):
             )
 
             network_devices = cls._schema_on_200.properties.network_devices
-            network_devices.Element = AAZStrType()
+            network_devices.Element = AAZStrType(
+                nullable=True,
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

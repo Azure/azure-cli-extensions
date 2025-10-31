@@ -2,6 +2,9 @@
 
 Release History
 ===============
+3.0.1
++++++
+* Add NG of type Subnet support for routing config
 
 3.0.0
 +++++

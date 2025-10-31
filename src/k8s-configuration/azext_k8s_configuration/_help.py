@@ -85,6 +85,13 @@ helps[
           --kind azblob --url https://mystorageaccount.blob.core.windows.net \\
           --container-name my-container --kustomization name=my-kustomization \\
           --account-key my-account-key
+      - name: Create a Kubernetes v2 Flux Configuration with OCI Source Kind
+        text: |-
+          az k8s-configuration flux create --resource-group my-resource-group \\
+          --cluster-name mycluster --cluster-type connectedClusters \\
+          --name myconfig --scope cluster --namespace my-namespace \\
+          --kind oci --url oci://ghcr.io/owner/repo/manifests/podinfo \\
+          --kustomization name=my-kustomization --use-workload-identity
 """
 
 helps[
@@ -109,6 +116,11 @@ helps[
           az k8s-configuration flux update --resource-group my-resource-group \\
           --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
           --container-name other-container
+      - name: Update a Flux v2 Kubernetes configuration with OCI Source Kind to use connect insecurely
+        text: |-
+          az k8s-configuration flux update --resource-group my-resource-group \\
+          --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
+          --oci-insecure
 """
 
 helps[

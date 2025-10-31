@@ -9,6 +9,7 @@ import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 from azext_connectedk8s._utils import (
+    get_mcr_path,
     process_helm_error_detail,
     redact_sensitive_fields_from_string,
     remove_rsa_private_key,
@@ -74,6 +75,28 @@ def test_redact_sensitive_fields_from_string():
         redact_sensitive_fields_from_string(input_text_partial)
         == expected_output_partial
     )
+
+
+def test_get_mcr_path():
+    input_active_directory = "login.microsoftonline.com"
+    expected_output = "mcr.microsoft.com"
+    assert get_mcr_path(input_active_directory) == expected_output
+
+    input_active_directory = "login.microsoftonline.us"
+    expected_output = "mcr.microsoft.com"
+    assert get_mcr_path(input_active_directory) == expected_output
+
+    input_active_directory = "login.chinacloudapi.cn"
+    expected_output = "mcr.microsoft.com"
+    assert get_mcr_path(input_active_directory) == expected_output
+
+    input_active_directory = "https://login.microsoftonline.microsoft.foo"
+    expected_output = "mcr.microsoft.foo"
+    assert get_mcr_path(input_active_directory) == expected_output
+
+    input_active_directory = "https://login.microsoftonline.some.cloud.bar"
+    expected_output = "mcr.microsoft.some.cloud.bar"
+    assert get_mcr_path(input_active_directory) == expected_output
 
 
 if __name__ == "__main__":
