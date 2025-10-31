@@ -148,36 +148,12 @@ def _ml_deployment_template_update(
     )
 
     try:
-        # Filter out internal/computed fields that cause validation errors
-        # The generic_update_command passes all fields from the existing entity,
-        # but many of these are internal fields that shouldn't be in a YAML template
-        filtered_parameters = {}
-        
-        # Core fields that are typically in YAML templates
-        core_fields = ['name', 'version', 'description', 'tags', 'endpoints', 'schema']
-        for field in core_fields:
-            if field in parameters:
-                filtered_parameters[field] = parameters[field]
-        
-        # Add other fields that don't cause validation errors
-        # Exclude fields that are typically computed/internal (both camelCase and snake_case variants)
-        excluded_fields = {
-            'requestSettings', 'request_settings', 'allowedInstanceType', 'allowed_instance_type', 
-            'scoringPath', 'scoring_path', 'livenessProbe', 'liveness_probe',
-            'environmentId', 'environment_id', 'scoringPort', 'scoring_port', 
-            'modelMountPath', 'model_mount_path', 'defaultInstanceType', 'default_instance_type',
-            'instanceCount', 'instance_count', 'environmentVariables', 'environment_variables', 
-            'stage', 'deploymentTemplateType', 'deployment_template_type',
-            'readinessProbe', 'readiness_probe', 'id', 'resourceGroup', 'resource_group', 
-            'subscriptionId', 'subscription_id', 'createdTime', 'created_time',
-            'modifiedTime', 'modified_time', 'createdBy', 'created_by', 'modifiedBy', 'modified_by'
-        }
-        
-        for field, value in parameters.items():
-            if field not in filtered_parameters:
-                filtered_parameters[field] = value
-        
-        deployment_template_result = ml_client.deployment_templates.create_or_update(parameters)
+        deployment_template = ml_client.deployment_templates.get(name=parameters["name"], version=parameters["version"])
+
+        deployment_template.description = parameters["description"]
+        deployment_template.tags = parameters["tags"]
+
+        deployment_template_result = ml_client.deployment_templates.create_or_update(deployment_template)
 
         # Handle serialization
         if hasattr(deployment_template_result, 'as_dict'):
