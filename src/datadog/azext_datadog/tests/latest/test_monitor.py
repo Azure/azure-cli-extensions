@@ -1,7 +1,6 @@
 import unittest
 from azure.cli.testsdk import *
 
-# resource creation is failing due to which tests whave been skipped. Will be fixed in the next release.
 class DatadogMonitorsTestScenario(ScenarioTest):
     test_options = {
         "subscription": "00000000-0000-0000-0000-000000000000",
