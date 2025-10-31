@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp sessionpool create': Add `Shell` container type
 
 1.2.0b4
 ++++++
@@ -14,7 +15,6 @@ upcoming
 * 'az containerapp env premium-ingress': Deprecate `--min-replicas` and `--max-replicas` parameters, use workload profile scale instead.
 * 'az containerapp sessionpool create/update': Support `--probe-yaml`
 * 'az containerapp session stop': Support stop session for custom container sessions
-* 'az containerapp sessionpool create': Add `Shell` and `GpuBase` container types
 
 1.2.0b3
 ++++++
