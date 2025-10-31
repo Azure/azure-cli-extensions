@@ -4710,6 +4710,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.hosted_system_profile = self.models.ManagedClusterHostedSystemProfile()  # pylint: disable=no-member
             mc.hosted_system_profile.enabled = True
 
+            # Remove default agent pool profiles when hosted system profile is enabled
+            if mc.agent_pool_profiles is not None:
+                mc.agent_pool_profiles = None
+
         return mc
 
     # pylint: disable=unused-argument
@@ -4779,6 +4783,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # set up user-defined scheduler configuration for kube-scheduler upstream
         mc = self.set_up_upstream_kubescheduler_user_configuration(mc)
         # set up enable hosted components
+        # enabling hosted components will remove the default agent pool profiles from the mc object
         mc = self.set_up_enable_hosted_components(mc)
 
         # validate the azure cli core version

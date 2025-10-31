@@ -5518,6 +5518,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
+        # verify that hosted system profile is enabled and agent pool profiles are None/empty
+        show_cmd = 'aks show --resource-group={resource_group} --name={name}'
+        self.cmd(show_cmd, checks=[
+            self.check("hostedSystemProfile.enabled", True),
+            self.check("agentPoolProfiles", None),
+        ])
+
         # delete the cluster
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
