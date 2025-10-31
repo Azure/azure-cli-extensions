@@ -4,10 +4,8 @@ from azure.cli.testsdk import *
 # resource creation is failing due to which tests whave been skipped. Will be fixed in the next release.
 class DatadogTagRulesTestScenario(ScenarioTest):
     test_options = {
-        "subscription": "b9aad304-baa9-4d2a-9404-dbdd3ab55ac5",
         "rg": "bhanu-rg",
-        "monitor": "datadogtestresource",
-        "sku": "pro_testing_20200911_Monthly@TIDgmz7xq9ge3py"
+        "monitor": "datadogtestresource"
     }
 
     @ResourceGroupPreparer(name_prefix='cli_test_datadog_tagrules', location='centraluseuap')

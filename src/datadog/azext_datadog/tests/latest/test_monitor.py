@@ -4,7 +4,7 @@ from azure.cli.testsdk import *
 # resource creation is failing due to which tests whave been skipped. Will be fixed in the next release.
 class DatadogMonitorsTestScenario(ScenarioTest):
     test_options = {
-        "subscription": "b9aad304-baa9-4d2a-9404-dbdd3ab55ac5",
+        "subscription": "00000000-0000-0000-0000-000000000000",
         "rg": "bhanu-test",
         "sku": "pro_testing_20200911_Monthly@TIDgmz7xq9ge3py"
     }

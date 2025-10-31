@@ -3,7 +3,7 @@ from azure.cli.testsdk import *
 
 class DatadogTermsTestScenario(ScenarioTest):
     test_options = {
-        "subscription": "b9aad304-baa9-4d2a-9404-dbdd3ab55ac5",
+        "subscription": "00000000-0000-0000-0000-000000000000",
         "rg": "bhanu-rg",
         "monitor": "datadogtestresource",
         "terms_name": "default"

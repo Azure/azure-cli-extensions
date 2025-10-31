@@ -5,7 +5,7 @@ from azure.cli.testsdk import *
 class DatadogMonitoredSubscriptionScenario(ScenarioTest):
     test_options = {
         "rg": "bhanu-rg",
-        "subscription": "/SUBSCRIPTIONS/B16E4B4E-2ED8-4F32-BAC1-0E3EB56BEF5C",
+        "subscription": "/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000",
         "monitor": "datadogtestresource",
     }
 
