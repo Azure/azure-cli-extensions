@@ -35,7 +35,7 @@ class LLMProvider(ABC):
     @abstractmethod
     def readable_name(self) -> str:
         """Return the provider name for this provider.
-        The provider name is a human-readable string, e.g., "Azure Open AI", "OpenAI", etc.
+        The provider name is a human-readable string, e.g., "Azure OpenAI", "OpenAI", etc.
         """
         return "Base Provider"
 
