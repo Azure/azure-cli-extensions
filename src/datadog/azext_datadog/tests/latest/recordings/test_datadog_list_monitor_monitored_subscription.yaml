@@ -1,0 +1,56 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor monitored-subscription list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --monitor-name
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogbhanuresource/monitoredSubscriptions?api-version=2025-06-11
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogbhanuresource/monitoredSubscriptions/default","name":"default","type":"Microsoft.Datadog/monitors/monitoredSubscriptions","properties":{"operation":"AddBegin","monitoredSubscriptionList":[]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '330'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 30 Oct 2025 17:26:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4d0539d6-78cd-40c9-8a7e-f38384344c8f
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0b211baa-00db-496b-b625-0e3961b2c5bd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/centraluseuap/335c7820-7321-4841-8ba2-d36307aa26f8
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: A140D7DB149545A7B5C2CB92F5B4D905 Ref B: MAA201060515047 Ref C: 2025-10-30T17:26:41Z'
+    status:
+      code: 200
+      message: OK
+version: 1

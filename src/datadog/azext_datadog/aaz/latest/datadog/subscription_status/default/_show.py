@@ -12,15 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog sso-config wait",
+    "datadog subscription-status default show",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Show(AAZCommand):
+    """Get if the current subscription is being already monitored for selected Datadog organization.
+
+    :example: CreationSupported_Get
+        az datadog subscription-status default show --datadog-org-id 00000000-0000-0000-0000
     """
 
     _aaz_info = {
+        "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/singlesignonconfigurations/{}", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.datadog/subscriptionstatuses/default", "2025-06-11"],
         ]
     }
 
@@ -40,31 +44,16 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
-            help="Configuration name",
-            required=True,
-            id_part="child_name_1",
-        )
-        _args_schema.monitor_name = AAZStrArg(
-            options=["-n", "--name", "--monitor-name"],
-            help="Monitor resource name",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
-                max_length=32,
-                min_length=2,
-            ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.datadog_org_id = AAZStrArg(
+            options=["--datadog-org-id"],
+            help="Datadog Organization Id",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SingleSignOnConfigurationsGet(ctx=self.ctx)()
+        self.CreationSupportedGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,10 +65,10 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SingleSignOnConfigurationsGet(AAZHttpOperation):
+    class CreationSupportedGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -93,7 +82,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/singleSignOnConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Datadog/subscriptionStatuses/default",
                 **self.url_parameters
             )
 
@@ -109,18 +98,6 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "monitorName", self.ctx.args.monitor_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -130,6 +107,10 @@ class Wait(AAZWaitCommand):
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "datadogOrganizationId", self.ctx.args.datadog_org_id,
+                    required=True,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2025-06-11",
                     required=True,
@@ -164,62 +145,22 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
             _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
 
             properties = cls._schema_on_200.properties
-            properties.enterprise_app_id = AAZStrType(
-                serialized_name="enterpriseAppId",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
+            properties.creation_supported = AAZBoolType(
+                serialized_name="creationSupported",
                 flags={"read_only": True},
             )
-            properties.single_sign_on_state = AAZStrType(
-                serialized_name="singleSignOnState",
-            )
-            properties.single_sign_on_url = AAZStrType(
-                serialized_name="singleSignOnUrl",
+            properties.name = AAZStrType(
                 flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["Wait"]
+__all__ = ["Show"]
