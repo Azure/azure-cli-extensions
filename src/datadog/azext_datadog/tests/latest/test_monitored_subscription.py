@@ -9,7 +9,6 @@ class DatadogMonitoredSubscriptionScenario(ScenarioTest):
         "monitor": "datadogtestresource",
     }
 
-    '''
     @ResourceGroupPreparer(name_prefix='cli_test_datadog_monitored_subscription', location='centraluseuap')
     def test_datadog_monitor_monitored_subscription(self, resource_group):
         self.kwargs.update({
@@ -62,4 +61,3 @@ class DatadogMonitoredSubscriptionScenario(ScenarioTest):
         ])
 
         self.cmd('datadog monitor monitored-subscription delete --resource-group {rg} --monitor-name {monitor} --configuration-name default -y')
-    '''
