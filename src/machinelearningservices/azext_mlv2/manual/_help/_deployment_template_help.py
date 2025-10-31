@@ -40,8 +40,6 @@ long-summary: |
 examples:
   - name: Get a specific version of a deployment template
     text: az ml deployment-template get --name my-template --version 1 --registry-name myregistry
-  - name: Get the latest version of a deployment template
-    text: az ml deployment-template get --name my-template --registry-name myregistry
 """
 
 helps['ml deployment-template create'] = """
@@ -72,13 +70,11 @@ long-summary: |
     use the 'create' command with a YAML file.
 examples:
   - name: Update deployment template description
-    text: az ml deployment-template update --name my-template --version 1 --registry-name myregistry --description "Updated description"
+    text: az ml deployment-template update --name my-template --version 1 --registry-name myregistry --set "description=Updated description"
   - name: Update deployment template tags
-    text: az ml deployment-template update --name my-template --version 1 --registry-name myregistry --tags environment=production owner=ml-team
+    text: az ml deployment-template update --name my-template --version 1 --registry-name myregistry --set "tags=environment=production owner=ml-team"
   - name: Update both description and tags
-    text: az ml deployment-template update --name my-template --registry-name myregistry --description "Production template" --tags status=active
-  - name: Update latest version without specifying version
-    text: az ml deployment-template update --name my-template --registry-name myregistry --description "Updated latest version"
+    text: az ml deployment-template update --name my-template --version 1 --registry-name myregistry --set "description=Production template" --set "tags=status=active"
 """
 
 helps['ml deployment-template archive'] = """
@@ -91,8 +87,6 @@ long-summary: |
 examples:
   - name: Archive a specific version
     text: az ml deployment-template archive --name my-template --version 1 --registry-name myregistry
-  - name: Archive all versions of a template
-    text: az ml deployment-template archive --name my-template --registry-name myregistry
   - name: Archive without waiting for completion
     text: az ml deployment-template archive --name my-template --version 1 --registry-name myregistry --no-wait
 """
@@ -107,8 +101,6 @@ long-summary: |
 examples:
   - name: Restore a specific version
     text: az ml deployment-template restore --name my-template --version 1 --registry-name myregistry
-  - name: Restore all versions of a template
-    text: az ml deployment-template restore --name my-template --registry-name myregistry
   - name: Restore without waiting for completion
     text: az ml deployment-template restore --name my-template --version 1 --registry-name myregistry --no-wait
 """
