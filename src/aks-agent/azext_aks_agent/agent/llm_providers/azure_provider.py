@@ -12,6 +12,14 @@ import requests
 from .base import LLMProvider, is_valid_url, non_empty
 
 
+def is_valid_api_base(v: str) -> bool:
+    # validate the v follows the pattern https://{azure-openai-service-name}.openai.azure.com/
+    if not v.startswith("https://") or not v.endswith(".openai.azure.com/"):
+        return False
+
+    return is_valid_url(v)
+
+
 class AzureProvider(LLMProvider):
     @property
     def readable_name(self) -> str:
@@ -40,7 +48,7 @@ class AzureProvider(LLMProvider):
                 "secret": False,
                 "default": None,
                 "hint": "https://{azure-openai-service-name}.openai.azure.com/",
-                "validator": is_valid_url
+                "validator": is_valid_api_base
             },
             "AZURE_API_VERSION": {
                 "secret": False,
