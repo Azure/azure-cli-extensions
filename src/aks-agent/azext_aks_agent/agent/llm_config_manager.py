@@ -52,7 +52,8 @@ class LLMConfigManager:
                 for llm_config in config_data["llms"]:
                     if not isinstance(llm_config, dict):
                         raise ValueError(
-                            f"Configuration file {self.config_path}: each LLM configuration must be a dictionary/mapping.")
+                            f"Configuration file {self.config_path}: "
+                            "each LLM configuration must be a dictionary/mapping.")
         except FileNotFoundError:
             raise ValueError(f"Configuration file {self.config_path} not found.")
         except yaml.YAMLError as e:
