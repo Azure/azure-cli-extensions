@@ -15,16 +15,13 @@ from azure.cli.core.aaz import *
     "durabletask retention-policy create",
 )
 class Create(AAZCommand):
-    """Create a Retention Policy on a Durabletask Scheduler.
-
-    :example: Create a new retention policy for a scheduler with a default retention period of 30 days.
-        az durabletask retention-policy create -g "example-rg" --scheduler-name "example-scheduler" --retention-days 30
+    """Create a Retention Policy
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/retentionpolicies/default", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/retentionpolicies/default", "2025-11-01"],
         ]
     }
 
@@ -60,7 +57,11 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.retention_policies = AAZListArg()
+        _args_schema.retention_policies = AAZListArg(
+            options=["--retention-policies"],
+            arg_group="Properties",
+            help="The orchestration retention policies",
+        )
 
         retention_policies = cls._args_schema.retention_policies
         retention_policies.Element = AAZObjectArg()
@@ -76,7 +77,6 @@ class Create(AAZCommand):
             help="The retention period in days after which the orchestration will be purged automatically",
             required=True,
         )
-
         return cls._args_schema
 
     def _execute_operations(self):
@@ -160,7 +160,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-11-01",
                     required=True,
                 ),
             }

@@ -16,16 +16,13 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a Retention Policy on a Durabletask Scheduler.
-
-        :example: Delete a Retention Policy on a Scheduler
-        az durabletask retention-policy delete -g "example-rg" --scheduler-name "example-scheduler"
+    """Delete a Retention Policy
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/retentionpolicies/default", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/retentionpolicies/default", "2025-11-01"],
         ]
     }
 
@@ -146,7 +143,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-11-01",
                     required=True,
                 ),
             }
