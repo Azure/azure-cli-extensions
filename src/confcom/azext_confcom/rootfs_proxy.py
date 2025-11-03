@@ -115,7 +115,10 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             arg_list += ["-b"]
 
         # add the image to the end of the parameter list
-        arg_list += ["roothash", "-i", f"{image_name}", "--platform", platform]
+        arg_list += ["roothash", "-i", f"{image_name}"]
+
+        if platform.startswith("windows"):
+            arg_list += ["--platform", platform]
 
         item = subprocess.run(
             arg_list,
