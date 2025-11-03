@@ -4163,6 +4163,19 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if "web_application_routing" in addons:
                 dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
                 mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
+        
+        if self.context.get_enable_default_domain():
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            if mc.ingress_profile.web_app_routing is None:
+                mc.ingress_profile.web_app_routing = (
+                    self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)  # pylint: disable=no-member
+                )
+            mc.ingress_profile.web_app_routing.default_domain = (
+                self.models.ManagedClusterIngressDefaultDomainProfile(
+                    enabled=True
+                )
+            )
 
         return mc
 

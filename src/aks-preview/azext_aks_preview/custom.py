@@ -1028,6 +1028,7 @@ def aks_create(
     enable_application_load_balancer=False,
     enable_app_routing=False,
     app_routing_default_nginx_controller=None,
+    enable_default_domain=False,
     # nodepool paramerters
     nodepool_name="nodepool1",
     node_vm_size=None,
@@ -4314,6 +4315,7 @@ def aks_approuting_enable(
         enable_kv=False,
         keyvault_id=None,
         nginx=None,
+        enable_default_domain=False
 ):
     return _aks_approuting_update(
         cmd,
@@ -4347,7 +4349,9 @@ def aks_approuting_update(
         name,
         keyvault_id=None,
         enable_kv=False,
-        nginx=None
+        nginx=None,
+        enable_default_domain=False,
+        disable_default_domain=False
 ):
     return _aks_approuting_update(
         cmd,
