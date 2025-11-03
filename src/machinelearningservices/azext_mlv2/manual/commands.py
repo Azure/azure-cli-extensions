@@ -226,6 +226,22 @@ def load_command_table(self, _):
             supports_no_wait=True,
         )
 
+    with self.command_group("ml deployment-template", client_factory=cf_ml_cl) as g:
+        custom_tmpl = "azext_mlv2.manual.custom.deployment_template#{}"
+        custom_deployment_template = CliCommandType(operations_tmpl=custom_tmpl)
+        g.custom_command("list", "ml_deployment_template_list", command_type=custom_deployment_template)
+        g.custom_command("get", "ml_deployment_template_get", command_type=custom_deployment_template)
+        g.custom_command("create", "ml_deployment_template_create", supports_no_wait=True, command_type=custom_deployment_template)
+        g.generic_update_command(
+            "update",
+            getter_name="ml_deployment_template_get",
+            getter_type=custom_deployment_template,
+            setter_name="_ml_deployment_template_update",
+            setter_type=custom_deployment_template,
+        )
+        g.custom_command("archive", "ml_deployment_template_archive", supports_no_wait=True, command_type=custom_deployment_template)
+        g.custom_command("restore", "ml_deployment_template_restore", supports_no_wait=True, command_type=custom_deployment_template)
+
     with self.command_group("ml compute", client_factory=cf_ml_cl) as g:
         custom_tmpl = "azext_mlv2.manual.custom.compute#{}"
         custom_compute = CliCommandType(operations_tmpl=custom_tmpl)
