@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_SSH_ACCESS_LOCALUSER, CONST_VIRTUAL_MACHINES
+from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION, CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION, CONST_SSH_ACCESS_LOCALUSER, CONST_VIRTUAL_MACHINES
 from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
     AKSPreviewAgentPoolContext,
@@ -618,6 +618,24 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_1.attach_agentpool(agentpool_1)
         self.assertEqual(ctx_1.get_disable_fips_image(), True)
 
+    def common_get_enable_kata_image(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({
+                "workload_runtime": CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION,
+            }),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_workload_runtime(), CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
+        agentpool = self.create_initialized_agentpool_instance(workload_runtime=CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION)
+        ctx_1.attach_agentpool(agentpool)
+        # self.assertEqual(ctx_1.get_enable_fips_image(), True)
+        self.assertEqual(ctx_1.get_workload_runtime, CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION)
+
+
     def common_get_agentpool_windows_profile(self):
         ctx_1 = AKSPreviewAgentPoolContext(
             self.cmd,
@@ -1040,6 +1058,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def common_get_disable_fips_image(self):
         self.common_get_disable_fips_image()
 
+    def common_get_enable_kata_image(self):
+        self.common_get_enable_kata_image()
+
     def test_get_agentpool_windows_profile(self):
         self.common_get_agentpool_windows_profile()
 
@@ -1118,6 +1139,9 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def common_get_enable_fips_image(self):
         self.common_get_enable_fips_image()
+
+    def common_get_enable_kata_image(self):
+        self.common_get_enable_kata_image()
 
     def test_get_agentpool_windows_profile(self):
         self.common_get_agentpool_windows_profile()
