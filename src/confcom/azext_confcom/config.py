@@ -211,6 +211,7 @@ DEFAULT_MOUNT_POLICY = _config["mount"]["default_policy"]
 DEFAULT_REGO_FRAGMENTS = _config["default_rego_fragments"]
 # things that need to be set for debug mode
 DEBUG_MODE_SETTINGS = _config["debugMode"]
+DEBUG_MODE_SETTINGS_WINDOWS = _config["debugModeWindows"]
 # reserved fragment names for existing pieces of Rego
 RESERVED_FRAGMENT_NAMES = _config["reserved_fragment_namespaces"]
 # fragment artifact type

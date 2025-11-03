@@ -193,6 +193,29 @@
         "allowCapabilityDropping": true,
         "allowUnencryptedScratch": false
     },
+    "debugModeWindows": {
+        "environmentVariables": [
+            {
+                "name": ".+",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            }
+        ],
+        "execProcesses": [
+            {
+                "command": [
+                    "cmd.exe"
+                ],
+                "signals": [],
+                "allow_stdio_access": true
+            }
+        ],
+        "allowPropertiesAccess": true,
+        "allowDumpStacks": true,
+        "allowRuntimeLogging": true,
+        "allowEnvironmentVariableDropping": true
+    },
     "containerd": {
         "defaultWorkingDir": "/"
     },

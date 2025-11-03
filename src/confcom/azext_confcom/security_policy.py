@@ -41,6 +41,7 @@ from azext_confcom.template_util import (case_insensitive_dict_get,
                                          process_mounts_from_config,
                                          readable_diff)
 from azext_confcom.lib.images import get_image_platform
+from azext_confcom.lib.defaults import get_debug_mode_exec_procs
 from knack.log import get_logger
 from tqdm import tqdm
 
@@ -795,6 +796,8 @@ def load_policy_from_arm_template_str(
             extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
             extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE)
 
+            platform = get_image_platform(image_name)
+
             containers.append(
                 {
                     config.ACI_FIELD_CONTAINERS_ID: image_name,
@@ -808,16 +811,13 @@ def load_policy_from_arm_template_str(
                     or [],
                     config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts(image_properties, volumes)
                     + process_configmap(image_properties),
-                    config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
-                    + config.DEBUG_MODE_SETTINGS.get(config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES)
-                    if debug_mode
-                    else exec_processes,
+                    config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes + get_debug_mode_exec_procs(debug_mode, platform),
                     config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
                     config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
                     config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
                         image_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
                     ),
-                    "platform": get_image_platform(image_name),
+                    "platform": platform,
                 }
             )
 
@@ -1038,6 +1038,8 @@ def load_policy_from_json(
 
         envs += process_env_vars_from_config(container_properties)
 
+        platform = get_image_platform(image_name)
+
         output_containers.append(
             {
                 config.ACI_FIELD_CONTAINERS_ID: image_name,
@@ -1049,16 +1051,13 @@ def load_policy_from_json(
                     container_properties, config.ACI_FIELD_TEMPLATE_COMMAND
                 ) or [],
                 config.ACI_FIELD_CONTAINERS_MOUNTS: mounts,
-                config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
-                + config.DEBUG_MODE_SETTINGS.get(config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES)
-                if debug_mode
-                else exec_processes,
+                config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes + get_debug_mode_exec_procs(debug_mode, platform),
                 config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
                 config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
                 config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
                     container_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
                 ),
-                "platform": get_image_platform(image_name),
+                "platform": platform,
             }
         )
 
