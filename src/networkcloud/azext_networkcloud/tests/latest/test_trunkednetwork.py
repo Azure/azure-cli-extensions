@@ -57,7 +57,7 @@ def step_create(test, checks=None):
         ' name={extendedLocation} type="CustomLocation" --location {location} '
         '--interface-name "{interfaceName}" '
         "--isolation-domain-ids  {isolationDomainIds} --vlans {vlans} "
-        "--tags {tags} --resource-group {rg} --debug",
+        "--tags {tags} --resource-group {rg}",
         checks=checks,
     )
 

@@ -79,18 +79,20 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd(
             "network firewall create -n {firewall_name} -g {rg} "
-            "--enable-fat-flow-logging --enable-udp-log-optimization",
+            "--enable-fat-flow-logging --enable-udp-log-optimization --enable-dnstap-logging",
             checks=[
                 self.check('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"', "true"),
-                self.check('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"', "true")
+                self.check('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"', "true"),
+                self.check('additionalProperties."Network.AdditionalLogs.EnableDnstapLogging"', "true")
             ]
         )
         self.cmd(
             "network firewall update -n {firewall_name} -g {rg} "
-            "--enable-fat-flow-logging false --enable-udp-log-optimization false",
+            "--enable-fat-flow-logging false --enable-udp-log-optimization false --enable-dnstap-logging false",
             checks=[
                 self.not_exists('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"'),
-                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"')
+                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"'),
+                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableDnstapLogging"')
             ]
         )
 
@@ -1519,3 +1521,68 @@ class AzureFirewallScenario(ScenarioTest):
 
         # delete policy 2
         self.cmd('network firewall policy delete -g {rg} --name {policy_name_2}')
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_capture', location='centralus')
+    def test_azure_firewall_packet_capture(self, resource_group, resource_group_location):
+        from datetime import date, timedelta
+        tomorrow = date.today() + timedelta(days=1)
+        self.kwargs.update({
+            "firewall_name": self.create_random_name("firewall-", 16),
+            "vnet_name": self.create_random_name("vnet-", 12),
+            "conf_name": self.create_random_name("ipconfig-", 16),
+            "m_conf_name": self.create_random_name("ipconfig-", 16),
+            "public_ip_name": self.create_random_name("public-ip-", 16),
+            "m_public_ip_name": self.create_random_name("mpublic-ip-", 16),
+            'rg' : resource_group,
+            'sub_id': self.get_subscription_id(),
+            'location': "centralus",
+            'storageaccountname': self.create_random_name('fwpcap', 20).lower(),
+            'expirystring': tomorrow.strftime("%Y-%m-%d"),
+            'containername': 'packetcapturecontainer',
+        })
+
+        self.cmd('storage account create -g {rg} -n {storageaccountname} --sku Standard_LRS --https-only true --kind StorageV2 --access-tier Hot')
+        self.cmd('storage container create -n {containername} --account-name {storageaccountname} --public-access off')
+        storage_account = self.cmd('az storage account show -g {rg} -n {storageaccountname}').get_output_in_json()
+        sas_response = self.cmd('az storage container generate-sas --account-name {storageaccountname} --name {containername} --permissions acdlrw --expiry {expirystring}').get_output_in_json()
+        blob_endpoint = storage_account['primaryEndpoints']['blob']
+        sas_url = f"{blob_endpoint}{self.kwargs['containername']}?{sas_response}"
+        self.kwargs.update({
+            'sas_url': sas_url
+        })
+
+        # Create virtual network with firewall and management subnets
+        self.cmd('az network vnet create -g {rg} -n {vnet_name} --location {location} --address-prefixes 10.0.0.0/16')
+        self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name AzureFirewallSubnet --address-prefixes 10.0.0.0/24')
+        self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name AzureFirewallManagementSubnet --address-prefixes 10.0.1.0/24')
+
+        # Create public IPs
+        self.cmd('az network public-ip create -g {rg} -n {public_ip_name} --sku Standard --location {location} --allocation-method Static')
+        self.cmd('az network public-ip create -g {rg} -n {m_public_ip_name} --sku Standard --location {location} --allocation-method Static')
+
+        # Create Azure Firewall with management IP
+        self.cmd('az network firewall create -g {rg} -n {firewall_name} --location {location} --sku AZFW_VNet --tier Basic --vnet-name {vnet_name} --public-ip {public_ip_name} --conf-name {conf_name} --m-conf-name {m_conf_name} --m-public-ip {m_public_ip_name}')
+
+        # Perform Start Packet Capture Operation on the Azure Firewall
+        self.cmd(
+            'network firewall packet-capture-operation'
+            ' --resource-group {rg}'
+            ' --azure-firewall-name {firewall_name}'
+            ' --duration-in-seconds 1200'
+            ' --number-of-packets-to-capture 50000'
+            ' --sas-url {sas_url}'
+            ' --file-name azureFirewallPacketCapture'
+            ' --protocol Any'
+            ' --flags "[{{type:syn}},{{type:fin}}]"'
+            ' --filters "[{{sources:[20.1.1.0],destinations:[20.1.2.0],destination-ports:[4500]}},{{sources:[10.1.1.0,10.1.1.1],destinations:[10.1.2.0],destination-ports:[123,80]}}]"'
+            ' --operation Start'
+        )
+        # Perform Status Packet Capture Operation on the Azure Firewall
+        self.cmd('network firewall packet-capture-operation --resource-group {rg} --azure-firewall-name {firewall_name} --operation Status')
+
+        # Perform Stop Packet Capture Operation on the Azure Firewall
+        self.cmd('network firewall packet-capture-operation --resource-group {rg} --azure-firewall-name {firewall_name} --operation Stop')
+
+        #Delete firewall
+        self.cmd('network firewall delete -n {firewall_name} -g {rg}')

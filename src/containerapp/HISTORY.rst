@@ -4,6 +4,10 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env premium-ingress add/update': remove `--min-replicas` and `--max-replicas`
+
+1.2.0b4
+++++++
 * 'az containerapp update/up': Disallow changing `--revisions-mode` to Labels.
 * 'az containerapp session code-interpreter': Fix `--path` in examples
 * 'az containerapp sessionpool create/update': Support `--lifecycle-type` and `--max-alive-period`

@@ -3,17 +3,55 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=too-many-lines, disable=broad-except
 import os
+
+from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
+
+# pylint: disable=too-many-lines, disable=broad-except
 from azext_aks_agent.agent.agent import aks_agent as aks_agent_internal
-
+from azext_aks_agent.agent.llm_config_manager import LLMConfigManager
+from azext_aks_agent.agent.llm_providers import (
+    PROVIDER_REGISTRY,
+    prompt_provider_choice,
+)
+from azext_aks_agent.agent.logging import rich_logging
+from azure.cli.core.api import get_config_dir
+from azure.cli.core.azclierror import AzCLIError
 from knack.log import get_logger
-
 
 logger = get_logger(__name__)
 
 
 # pylint: disable=unused-argument
+def aks_agent_init(cmd):
+    """Initialize AKS agent llm configuration."""
+
+    with rich_logging() as console:
+        from holmes.utils.colors import HELP_COLOR
+        console.print(
+            "Welcome to AKS Agent LLM configuration setup. Type '/exit' to exit.",
+            style=f"bold {HELP_COLOR}")
+
+        provider = prompt_provider_choice()
+        params = provider.prompt_params()
+
+        llm_config_manager = LLMConfigManager()
+        # If the connection to the model endpoint is valid, save the configuration
+        is_valid, msg, action = provider.validate_connection(params)
+
+        if is_valid and action == "save":
+            llm_config_manager.save(provider.model_route if provider.model_route else "openai", params)
+            console.print(
+                f"LLM configuration setup successfully and is saved to {llm_config_manager.config_path}.",
+                style=f"bold {HELP_COLOR}")
+        elif not is_valid and action == "retry_input":
+            raise AzCLIError(f"Please re-run `az aks agent-init` to correct the input parameters. {str(msg)}")
+        else:
+            raise AzCLIError(f"Please check your deployed model and network connectivity. {str(msg)}")
+
+
+# pylint: disable=unused-argument
+# pylint: disable=too-many-locals
 def aks_agent(
     cmd,
     prompt,
@@ -34,21 +72,44 @@ def aks_agent(
     if status:
         return aks_agent_status(cmd)
 
-    aks_agent_internal(
-        cmd,
-        resource_group_name,
-        name,
-        prompt,
-        model,
-        api_key,
-        max_steps,
-        config_file,
-        no_interactive,
-        no_echo_request,
-        show_tool_output,
-        refresh_toolsets,
-        use_aks_mcp=use_aks_mcp,
-    )
+    if not config_file:
+        config_file = os.path.join(
+            get_config_dir(), CONST_AGENT_CONFIG_FILE_NAME)
+        logger.info("Using default configuration file: %s", config_file)
+    else:
+        logger.info("Using user configuration file: %s", config_file)
+    llm_config_manager = LLMConfigManager(config_file)
+    llm_config_manager.validate_config()
+    llm_config = llm_config_manager.get_model_config(model)
+
+    # Check if the configuration is complete
+    provider_name = llm_config.get("provider")
+    provider_instance = PROVIDER_REGISTRY.get(provider_name)()
+    model = provider_instance.model_name(llm_config.get("MODEL_NAME"))
+
+    # Set environment variables for the model provider
+    for k, v in llm_config.items():
+        if k not in ["provider", "MODEL_NAME"]:
+            os.environ[k] = v
+    logger.info(
+        "Using provider: %s, model: %s, Env vars setup successfully.", provider_name, llm_config.get("MODEL_NAME"))
+
+    with rich_logging():
+        aks_agent_internal(
+            cmd,
+            resource_group_name,
+            name,
+            prompt,
+            model,
+            api_key,
+            max_steps,
+            config_file,
+            no_interactive,
+            no_echo_request,
+            show_tool_output,
+            refresh_toolsets,
+            use_aks_mcp=use_aks_mcp,
+        )
 
 
 def aks_agent_status(cmd):
@@ -59,10 +120,9 @@ def aks_agent_status(cmd):
     :return: None (displays status via console output)
     """
     try:
+        from azext_aks_agent._consts import CONST_MCP_BINARY_DIR
         from azext_aks_agent.agent.binary_manager import AksMcpBinaryManager
         from azext_aks_agent.agent.mcp_manager import MCPManager
-        from azure.cli.core.api import get_config_dir
-        from azext_aks_agent._consts import CONST_MCP_BINARY_DIR
 
         # Initialize status information
         status_info = {
@@ -139,8 +199,8 @@ def aks_agent_status(cmd):
 def _display_agent_status(status_info):
     """Display formatted status with rich console output."""
     from rich.console import Console
-    from rich.table import Table
     from rich.panel import Panel
+    from rich.table import Table
 
     console = Console()
 
@@ -163,7 +223,8 @@ def _display_agent_status(status_info):
 
     # MCP Binary status
     binary_info = status_info.get("mcp_binary", {})
-    binary_status = "✅ Available" if binary_info.get("available") else "❌ Not available"
+    binary_status = "✅ Available" if binary_info.get(
+        "available") else "❌ Not available"
     binary_details = []
 
     if binary_info.get("version"):
@@ -177,7 +238,8 @@ def _display_agent_status(status_info):
     table.add_row("MCP Binary", binary_status, " | ".join(binary_details))
 
     # Server status (only if binary is available)
-    if binary_info.get("available") and status_info.get("mode") in ["mcp_ready", "mcp"]:
+    if binary_info.get("available") and status_info.get(
+            "mode") in ["mcp_ready", "mcp"]:
         server_info = status_info.get("server", {})
         server_status = ""
         server_details = []
@@ -224,21 +286,25 @@ def _get_recommendations(status_info):
     mode = status_info.get("mode", "unknown")
 
     if not binary_info.get("available"):
-        recommendations.append("Run 'az aks agent' to automatically download the MCP binary for enhanced capabilities")
+        recommendations.append(
+            "Run 'az aks agent' to automatically download the MCP binary for enhanced capabilities")
     elif not binary_info.get("version_valid", True):
-        recommendations.append("Update the MCP binary by running 'az aks agent --refresh-toolsets'")
+        recommendations.append(
+            "Update the MCP binary by running 'az aks agent --refresh-toolsets'")
     elif mode == "mcp_ready" and not server_info.get("running"):
-        recommendations.append("MCP binary is ready - run 'az aks agent' to start using enhanced capabilities")
+        recommendations.append(
+            "MCP binary is ready - run 'az aks agent' to start using enhanced capabilities")
     elif mode == "mcp_ready" and server_info.get("running") and not server_info.get("healthy"):
-        recommendations.append("MCP server is running but unhealthy - it will be automatically restarted on next use")
+        recommendations.append(
+            "MCP server is running but unhealthy - it will be automatically restarted on next use")
     elif mode in ["mcp_ready", "mcp"] and server_info.get("running") and server_info.get("healthy"):
-        recommendations.append("✅ AKS agent is ready with enhanced MCP capabilities")
+        recommendations.append(
+            "✅ AKS agent is ready with enhanced MCP capabilities")
     elif mode == "traditional":
         if binary_info.get("available"):
             recommendations.append(
                 "Consider using MCP mode for enhanced capabilities by running 'az aks agent' "
-                "(run again with --aks-mcp to switch modes)"
-            )
+                "(run again with --aks-mcp to switch modes)")
         else:
             recommendations.append("✅ AKS agent is ready in traditional mode")
     else:
@@ -268,7 +334,8 @@ def _get_health_emoji(status_info):
     if mode == "traditional":
         return "✅"  # Traditional mode is always healthy if working
     if mode in ["mcp_ready", "mcp"]:
-        if binary_info.get("available") and binary_info.get("version_valid", True):
+        if binary_info.get("available") and binary_info.get(
+                "version_valid", True):
             if server_info.get("running") and server_info.get("healthy"):
                 return "✅"  # Fully healthy
             if server_info.get("running"):

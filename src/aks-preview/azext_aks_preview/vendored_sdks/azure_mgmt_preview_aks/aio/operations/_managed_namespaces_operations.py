@@ -45,6 +45,7 @@ from .._configuration import ContainerServiceClientConfiguration
 
 T = TypeVar("T")
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 
 class ManagedNamespacesOperations:
@@ -146,7 +147,10 @@ class ManagedNamespacesOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
@@ -206,7 +210,10 @@ class ManagedNamespacesOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("ManagedNamespace", pipeline_response.http_response)
@@ -275,7 +282,10 @@ class ManagedNamespacesOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
@@ -301,9 +311,13 @@ class ManagedNamespacesOperations:
         content_type: str = "application/json",
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ManagedNamespace]:
-        """Creates or updates a managed namespace in the specified managed cluster.
+        """Creates or updates a namespace managed by ARM for the specified managed cluster. Users can
+        configure aspects like resource quotas, network ingress/egress policies, and more. See
+        aka.ms/aks/managed-namespaces for more details.
 
-        Creates or updates a managed namespace in the specified managed cluster.
+        Creates or updates a namespace managed by ARM for the specified managed cluster. Users can
+        configure aspects like resource quotas, network ingress/egress policies, and more. See
+        aka.ms/aks/managed-namespaces for more details.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -335,9 +349,13 @@ class ManagedNamespacesOperations:
         content_type: str = "application/json",
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ManagedNamespace]:
-        """Creates or updates a managed namespace in the specified managed cluster.
+        """Creates or updates a namespace managed by ARM for the specified managed cluster. Users can
+        configure aspects like resource quotas, network ingress/egress policies, and more. See
+        aka.ms/aks/managed-namespaces for more details.
 
-        Creates or updates a managed namespace in the specified managed cluster.
+        Creates or updates a namespace managed by ARM for the specified managed cluster. Users can
+        configure aspects like resource quotas, network ingress/egress policies, and more. See
+        aka.ms/aks/managed-namespaces for more details.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -367,9 +385,13 @@ class ManagedNamespacesOperations:
         parameters: Union[_models.ManagedNamespace, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ManagedNamespace]:
-        """Creates or updates a managed namespace in the specified managed cluster.
+        """Creates or updates a namespace managed by ARM for the specified managed cluster. Users can
+        configure aspects like resource quotas, network ingress/egress policies, and more. See
+        aka.ms/aks/managed-namespaces for more details.
 
-        Creates or updates a managed namespace in the specified managed cluster.
+        Creates or updates a namespace managed by ARM for the specified managed cluster. Users can
+        configure aspects like resource quotas, network ingress/egress policies, and more. See
+        aka.ms/aks/managed-namespaces for more details.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -483,7 +505,10 @@ class ManagedNamespacesOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
@@ -704,7 +729,10 @@ class ManagedNamespacesOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("ManagedNamespace", pipeline_response.http_response)
@@ -767,7 +795,10 @@ class ManagedNamespacesOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("CredentialResults", pipeline_response.http_response)

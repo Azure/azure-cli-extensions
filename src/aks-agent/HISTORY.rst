@@ -12,6 +12,38 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b8
++++++++
+* Error handling: dont raise traceback for init prompt and holmesgpt interaction.
+* Improve aks agent-init user experience
+* Improve the user holmesgpt interaction error handling
+* Fix stdin reading hang in CI/CD pipelines by using select with timeout for non-interactive mode.
+* Update pytest marker registration and fix datetime.utcnow() deprecation warning in tests.
+* Improve test framework with real-time stderr output visibility and subprocess timeout.
+
+1.0.0b7
++++++++
+* Bump aks-mcp to v0.0.10 - here are the notable changes:
+  * Fix: Improved server health check endpoints /health for both HTTP and SSE connections for http, sse
+  * Fix: enforce json output for az monitor metrics and aks tools
+  * Fix: Build the resource URL with correct MCP endpoint path based on transport
+* Fix feedback slash command
+
+1.0.0b6
++++++++
+* Introduce the new `az aks agent-init` command for better cli interaction.
+* Separate llm configuration from main agent command for improved clarity and extensibility.
+
+1.0.0b5
++++++++
+* Bump holmesgpt to 0.15.0 - Enhanced AI debugging experience and bug fixes
+  * Added TODO list feature to allows holmes to reliably answers questions it wasn't able to answer before due to early-stopping
+  * Fixed mcp server http connection fails when using socks proxy by adding the missing socks dependency
+  * Fixed gpt-5 temperature bug by upgrading litellm and dropping non-1 values for temperature
+  * Improved the installation time by removing unnecessary dependencies and move test dependencies to dev dependency group
+* Added Feedback slash command Feature to allow users to provide feedback on their experience with the agent performance
+* Disable prometheus toolset loading by default to workaround the libbz2-dev missing issue in Azure CLI python environment.
+
 1.0.0b4
 +++++++
 * Fix the --aks-mcp flag to allow true/false values.

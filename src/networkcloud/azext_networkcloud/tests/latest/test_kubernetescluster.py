@@ -5,6 +5,9 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
+# customizations-ignore-removed={"kubernetescluster_create": ["--ssh-public-keys"], "kubernetescluster_update": ["--ssh-public-keys"]}
+# customizations-custom-params={"kubernetescluster_create":["--ssh-key-values"],"kubernetescluster_update":["--ssh-key-values"]}
+
 """
 Kubernetescluster tests scenarios
 """
@@ -25,16 +28,23 @@ def cleanup_scenario1(test):
     pass
 
 
-def call_scenario1(test):
+def call_scenario1a(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test)
+    step_create_scenario1(test)
     step_update(test)
     step_show(test)
     step_list(test)
     step_list_subscription(test)
     step_restart_node(test)
     step_delete(test)
+    cleanup_scenario1(test)
+
+
+def call_scenario1b(test):
+    """# Testcase: scenario1"""
+    setup_scenario1(test)
+    step_create_scenario2(test)
     cleanup_scenario1(test)
 
 
@@ -48,15 +58,22 @@ def cleanup_scenario2(test):
     pass
 
 
-def call_scenario2(test):
+def call_scenario2a(test):
     """# Testcase: scenario2"""
     setup_scenario2(test)
     step_update_admin_cred(test)
-    step_update_control_plane_ssh_key(test)
+    step_update_control_plane_ssh_key_scenario1(test)
     cleanup_scenario2(test)
 
 
-def step_create(test, checks=None):
+def call_scenario2b(test):
+    """# Testcase: scenario2"""
+    setup_scenario2(test)
+    step_update_control_plane_ssh_key_scenario2(test)
+    cleanup_scenario2(test)
+
+
+def step_create_scenario1(test, checks=None):
     """Kubernetescluster create operation"""
     if checks is None:
         checks = []
@@ -71,7 +88,26 @@ def step_create(test, checks=None):
         "--network-configuration cloud-services-network-id={csnId} cni-network-id={cniId} pod-cidrs={podCidrs} service-cidrs={serviceCidrs} dns-service-ip={dnsServiceIp} "
         "bgp-service-load-balancer-configuration.fabric-peering-enabled={fabricPeeringEnabled} "
         "bgp-service-load-balancer-configuration.ip-address-pools={ipAddressPools} "
-        "--tags {tags}"
+        "--tags {tags} --mrg name={mrgGroupName} location={mrgGroupLocation}"
+    )
+
+
+def step_create_scenario2(test, checks=None):
+    """Kubernetescluster create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud kubernetescluster create --kubernetes-cluster-name {name} --resource-group {rg} "
+        "--location {location} --extended-location name={extendedLocation} type={extendedLocationType} "
+        "--kubernetes-version {kubernetesVersion} "
+        "--admin-username {adminUsername} --ssh-key-values {sshKey} "
+        "--aad-configuration admin-group-object-ids={adminGroupObjectIds} "
+        "--initial-ap-config {initialNodeConfiguration} "
+        "--cp-node-config count={count} vmSkuName={vmSkuName} adminUsername={cpAdminUsername} sshKeyValues={cpSshKeyList} "
+        "--network-configuration cloud-services-network-id={csnId} cni-network-id={cniId} pod-cidrs={podCidrs} service-cidrs={serviceCidrs} dns-service-ip={dnsServiceIp} "
+        "bgp-service-load-balancer-configuration.fabric-peering-enabled={fabricPeeringEnabled} "
+        "bgp-service-load-balancer-configuration.ip-address-pools={ipAddressPools} "
+        "--tags {tags} --managed-resource-group-configuration name={mrgGroupName} location={mrgGroupLocation}"
     )
 
 
@@ -136,12 +172,21 @@ def step_update_admin_cred(test, checks=None):
     )
 
 
-def step_update_control_plane_ssh_key(test, checks=None):
+def step_update_control_plane_ssh_key_scenario1(test, checks=None):
     """Kubernetescluster update control plane admin credentials operation"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud kubernetescluster update --name {nameUpdate} --resource-group {rgUpdate} --control-plane-node-configuration ssh-key-values={cpSshKeyListUpdate}"
+        "az networkcloud kubernetescluster update --kubernetes-cluster-name {nameUpdate} --resource-group {rgUpdate} --cp-node-config ssh-key-values={cpSshKeyListUpdate}"
+    )
+
+
+def step_update_control_plane_ssh_key_scenario2(test, checks=None):
+    """Kubernetescluster update control plane admin credentials operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud kubernetescluster update --kubernetes-cluster-name {nameUpdate} --resource-group {rgUpdate} --cp-node-config ssh-key-values={cpSshKeyListUpdate}"
     )
 
 
@@ -154,6 +199,7 @@ class KubernetesClusterScenarioTest(ScenarioTest):
             {
                 "name": self.create_random_name(prefix="cli-test-naks-", length=24),
                 "location": CONFIG.get("KUBERNETESCLUSTER", "location"),
+                "rg": CONFIG.get("KUBERNETESCLUSTER", "resource_group"),
                 "extendedLocation": CONFIG.get(
                     "KUBERNETESCLUSTER", "extended_location"
                 ),
@@ -199,6 +245,8 @@ class KubernetesClusterScenarioTest(ScenarioTest):
                 "cpSshKeyListUpdate": CONFIG.get(
                     "KUBERNETESCLUSTER", "cp_ssh_key_list_update"
                 ),
+                "mrgGroupName": CONFIG.get("KUBERNETESCLUSTER", "mrg_name"),
+                "mrgGroupLocation": CONFIG.get("KUBERNETESCLUSTER", "mrg_location"),
             }
         )
 
@@ -209,11 +257,20 @@ class KubernetesClusterScenarioTest(ScenarioTest):
         parameter_name="rg",
         random_name_length=16,
     )
-    def test_kubernetescluster_scenario(self):
+    def test_kubernetescluster_scenario1a(self):
         """test scenario for kubernetes cluster CRUD operations"""
-        call_scenario1(self)
+        call_scenario1a(self)
+
+    def test_kubernetescluster_scenario1b(self):
+        """test scenario for kubernetes cluster CRUD operations"""
+        call_scenario1b(self)
 
     @AllowLargeResponse()
-    def test_kubernetescluster_scenario2(self):
+    def test_kubernetescluster_scenario2a(self):
         """test scenario for kubernetes cluster administrator credentials update operations"""
-        call_scenario2(self)
+        call_scenario2a(self)
+
+    @AllowLargeResponse()
+    def test_kubernetescluster_scenario2b(self):
+        """test scenario for kubernetes cluster administrator credentials update operations"""
+        call_scenario2b(self)
