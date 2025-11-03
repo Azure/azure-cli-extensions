@@ -3632,6 +3632,7 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
                 conn.send(SSH_CTRL_C_MSG)
 
+
 def list_label_history(cmd, resource_group_name, name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
