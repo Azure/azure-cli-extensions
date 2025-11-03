@@ -459,120 +459,6 @@ def new_local_server_replication(cmd,
         raise
 
 
-def _format_job_output(job_details):
-    """
-    Format job details into a clean, user-friendly output.
-    
-    Args:
-        job_details (dict): Raw job details from the API
-        
-    Returns:
-        dict: Formatted job information
-    """
-    props = job_details.get('properties', {})
-    
-    # Extract key information
-    formatted = {
-        'jobName': job_details.get('name'),
-        'displayName': props.get('displayName'),
-        'state': props.get('state'),
-        'vmName': props.get('objectInternalName'),
-        'startTime': props.get('startTime'),
-        'endTime': props.get('endTime'),
-        'duration': _calculate_duration(props.get('startTime'), props.get('endTime'))
-    }
-    
-    # Add error information if present
-    errors = props.get('errors', [])
-    if errors:
-        formatted['errors'] = [
-            {
-                'message': err.get('message'),
-                'code': err.get('code'),
-                'recommendation': err.get('recommendation')
-            }
-            for err in errors
-        ]
-    
-    # Add task progress
-    tasks = props.get('tasks', [])
-    if tasks:
-        formatted['tasks'] = [
-            {
-                'name': task.get('taskName'),
-                'state': task.get('state'),
-                'duration': _calculate_duration(task.get('startTime'), task.get('endTime'))
-            }
-            for task in tasks
-        ]
-    
-    return formatted
-
-
-def _calculate_duration(start_time, end_time):
-    """Calculate duration between two timestamps."""
-    if not start_time:
-        return None
-    
-    from datetime import datetime
-    try:
-        start = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
-        if end_time:
-            end = datetime.fromisoformat(end_time.replace('Z', '+00:00'))
-            duration = end - start
-            total_seconds = int(duration.total_seconds())
-            minutes, seconds = divmod(total_seconds, 60)
-            hours, minutes = divmod(minutes, 60)
-            
-            if hours > 0:
-                return f"{hours}h {minutes}m {seconds}s"
-            elif minutes > 0:
-                return f"{minutes}m {seconds}s"
-            else:
-                return f"{seconds}s"
-        else:
-            # Job still running
-            now = datetime.utcnow()
-            duration = now - start
-            total_seconds = int(duration.total_seconds())
-            minutes, seconds = divmod(total_seconds, 60)
-            hours, minutes = divmod(minutes, 60)
-            
-            if hours > 0:
-                return f"{hours}h {minutes}m (in progress)"
-            elif minutes > 0:
-                return f"{minutes}m {seconds}s (in progress)"
-            else:
-                return f"{seconds}s (in progress)"
-    except Exception:
-        return None
-
-
-def _format_job_summary(job_details):
-    """
-    Format job details into a summary for list output.
-    
-    Args:
-        job_details (dict): Raw job details from the API
-        
-    Returns:
-        dict: Formatted job summary
-    """
-    props = job_details.get('properties', {})
-    errors = props.get('errors') or []
-    
-    return {
-        'jobName': job_details.get('name'),
-        'displayName': props.get('displayName'),
-        'state': props.get('state'),
-        'vmName': props.get('objectInternalName'),
-        'startTime': props.get('startTime'),
-        'endTime': props.get('endTime'),
-        'duration': _calculate_duration(props.get('startTime'), props.get('endTime')),
-        'hasErrors': len(errors) > 0
-    }
-
-
 def get_local_replication_job(cmd,
                               job_id=None,
                               resource_group_name=None,
@@ -604,10 +490,17 @@ def get_local_replication_job(cmd,
     """
     from azure.cli.core.commands.client_factory import \
         get_subscription_id
-    from azext_migrate.helpers._utils import (
-        get_resource_by_id,
-        send_get_request,
-        APIVersion
+    from azext_migrate.helpers.replication.job._parse import (
+        parse_job_id,
+        get_vault_name_from_project
+    )
+    from azext_migrate.helpers.replication.job._retrieve import (
+        get_single_job,
+        list_all_jobs
+    )
+    from azext_migrate.helpers.replication.job._format import (
+        format_job_output,
+        format_job_summary
     )
 
     # Use current subscription if not provided
@@ -618,220 +511,26 @@ def get_local_replication_job(cmd,
     if job_id:
         # Mode: Get job by ID
         vault_name, resource_group_name, job_name = \
-            _parse_job_id(job_id)
+            parse_job_id(job_id)
     elif resource_group_name and project_name:
         # Mode: Get job by name or list jobs
-        vault_name = _get_vault_name_from_project(
+        vault_name = get_vault_name_from_project(
             cmd, resource_group_name, project_name, subscription_id)
     else:
         raise CLIError(
             "Either --job-id or both --resource-group-name and "
             "--project-name must be provided.")
 
-    # Build the job URI
+    # Get a specific job or list all jobs
     if job_name:
-        # Get a specific job
-        job_uri = (
-            f"/subscriptions/{subscription_id}/"
-            f"resourceGroups/{resource_group_name}/"
-            f"providers/Microsoft.DataReplication/"
-            f"replicationVaults/{vault_name}/"
-            f"jobs/{job_name}"
-        )
-
-        logger.info(
-            "Retrieving job '%s' from vault '%s'",
-            job_name, vault_name)
-
-        try:
-            job_details = get_resource_by_id(
-                cmd,
-                job_uri,
-                APIVersion.Microsoft_DataReplication.value
-            )
-
-            if not job_details:
-                raise CLIError(
-                    f"Job '{job_name}' not found in vault '{vault_name}'.")
-
-            return _format_job_output(job_details)
-
-        except CLIError:
-            raise
-        except Exception as e:
-            logger.error(
-                "Error retrieving job '%s': %s", job_name, str(e))
-            raise CLIError(f"Failed to retrieve job: {str(e)}")
+        return get_single_job(
+            cmd, subscription_id, resource_group_name,
+            vault_name, job_name, format_job_output)
     else:
-        # List all jobs in the vault
-        if not vault_name:
-            raise CLIError("Unable to determine vault name. Please check your project configuration.")
-            
-        jobs_uri = (
-            f"/subscriptions/{subscription_id}/"
-            f"resourceGroups/{resource_group_name}/"
-            f"providers/Microsoft.DataReplication/"
-            f"replicationVaults/{vault_name}/"
-            f"jobs?api-version={APIVersion.Microsoft_DataReplication.value}"
-        )
+        return list_all_jobs(
+            cmd, subscription_id, resource_group_name,
+            vault_name, format_job_summary)
 
-        request_uri = (
-            f"{cmd.cli_ctx.cloud.endpoints.resource_manager}{jobs_uri}")
-
-        logger.info(
-            "Listing jobs from vault '%s'", vault_name)
-
-        try:
-            response = send_get_request(cmd, request_uri)
-            
-            if not response:
-                logger.warning("Empty response received when listing jobs")
-                return []
-            
-            response_data = response.json() if hasattr(response, 'json') else {}
-            
-            if not response_data:
-                logger.warning("No data in response when listing jobs")
-                return []
-
-            jobs = response_data.get('value', [])
-            
-            if not jobs:
-                logger.info("No jobs found in vault '%s'", vault_name)
-                return []
-
-            # Handle pagination if nextLink is present
-            while response_data and response_data.get('nextLink'):
-                next_link = response_data['nextLink']
-                response = send_get_request(cmd, next_link)
-                response_data = response.json() if (response and hasattr(response, 'json')) else {}
-                if response_data and response_data.get('value'):
-                    jobs.extend(response_data['value'])
-
-            logger.info("Retrieved %d jobs from vault '%s'", len(jobs), vault_name)
-            
-            # Format the jobs for cleaner output
-            formatted_jobs = []
-            for job in jobs:
-                try:
-                    formatted_jobs.append(_format_job_summary(job))
-                except Exception as format_error:
-                    logger.warning("Error formatting job: %s", str(format_error))
-                    # Skip jobs that fail to format
-                    continue
-            
-            return formatted_jobs
-
-        except Exception as e:
-            logger.error("Error listing jobs: %s", str(e))
-            raise CLIError(f"Failed to list jobs: {str(e)}")
-
-
-def _parse_job_id(job_id):
-    """
-    Parse a job ARM ID to extract vault name, resource group, and job name.
-
-    Args:
-        job_id (str): The job ARM ID
-
-    Returns:
-        tuple: (vault_name, resource_group_name, job_name)
-
-    Raises:
-        CLIError: If the job ID format is invalid
-    """
-    try:
-        job_id_parts = job_id.split("/")
-        if len(job_id_parts) < 11:
-            raise ValueError("Invalid job ID format")
-
-        resource_group_name = job_id_parts[4]
-        vault_name = job_id_parts[8]
-        job_name = job_id_parts[10]
-
-        return vault_name, resource_group_name, job_name
-
-    except (IndexError, ValueError) as e:
-        raise CLIError(
-            f"Invalid job ID format: {job_id}. "
-            "Expected format: /subscriptions/{{subscription-id}}/"
-            "resourceGroups/{{resource-group}}/providers/"
-            "Microsoft.DataReplication/replicationVaults/{{vault-name}}/"
-            f"jobs/{{job-name}}. Error: {str(e)}"
-        )
-
-
-def _get_vault_name_from_project(cmd, resource_group_name,
-                                 project_name, subscription_id):
-    """
-    Get the vault name from the Azure Migrate project solution.
-
-    Args:
-        cmd: The CLI command context
-        resource_group_name (str): Resource group name
-        project_name (str): Migrate project name
-        subscription_id (str): Subscription ID
-
-    Returns:
-        str: The vault name
-
-    Raises:
-        CLIError: If the solution or vault is not found
-    """
-    from azext_migrate.helpers._utils import get_resource_by_id, APIVersion
-
-    # Get the migration solution
-    solution_name = "Servers-Migration-ServerMigration_DataReplication"
-    solution_uri = (
-        f"/subscriptions/{subscription_id}/"
-        f"resourceGroups/{resource_group_name}/"
-        f"providers/Microsoft.Migrate/migrateProjects/{project_name}/"
-        f"solutions/{solution_name}"
-    )
-
-    logger.info(
-        "Retrieving solution '%s' from project '%s'",
-        solution_name, project_name)
-
-    try:
-        solution = get_resource_by_id(
-            cmd,
-            solution_uri,
-            APIVersion.Microsoft_Migrate.value
-        )
-
-        if not solution:
-            raise CLIError(
-                f"Solution '{solution_name}' not found in project "
-                f"'{project_name}'.")
-
-        # Extract vault ID from solution extended details
-        properties = solution.get('properties', {})
-        details = properties.get('details', {})
-        extended_details = details.get('extendedDetails', {})
-        vault_id = extended_details.get('vaultId')
-
-        if not vault_id:
-            raise CLIError(
-                "Vault ID not found in solution. The replication "
-                "infrastructure may not be initialized.")
-
-        # Parse vault name from vault ID
-        vault_id_parts = vault_id.split("/")
-        if len(vault_id_parts) < 9:
-            raise CLIError(f"Invalid vault ID format: {vault_id}")
-
-        vault_name = vault_id_parts[8]
-        return vault_name
-
-    except CLIError:
-        raise
-    except Exception as e:
-        logger.error(
-            "Error retrieving vault from project '%s': %s",
-            project_name, str(e))
-        raise CLIError(
-            f"Failed to retrieve vault information: {str(e)}")
 
 def remove_local_server_replication(cmd,
                                     target_object_id,
