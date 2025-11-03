@@ -312,7 +312,7 @@ def arc_sql_mi_create(
 
         if storage_class_backups is not None:
             kubernetes_util.validate_rwx_storage_class(
-                name=storage_class_backups, type="backup", instanceType="SQLMI"
+                name=storage_class_backups, storage_type="backup", instance_type="SQLMI"
             )
 
         # if readable_secondaries is not set. use default value

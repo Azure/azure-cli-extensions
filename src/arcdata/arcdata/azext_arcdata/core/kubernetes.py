@@ -18,7 +18,7 @@ from azext_arcdata.core.util import (
 from http import HTTPStatus
 from knack.log import get_logger
 from kubernetes import client as k8sClient
-from kubernetes import client, config
+from kubernetes import config
 from kubernetes.client.exceptions import ApiException
 from kubernetes.client.rest import ApiException as K8sApiException
 from kubernetes.config.config_exception import ConfigException
@@ -43,10 +43,10 @@ def validate_namespace(cluster_name):
     namespaces = ["default", "kube-system"]
 
     if cluster_name.lower() in namespaces:
-        raise Exception("Cluster name can not be '%s'." % cluster_name)
+        raise ValueError("Cluster name can not be '%s'." % cluster_name)
 
     if not re.match(r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$", cluster_name):
-        raise Exception(
+        raise ValueError(
             "Cluster name '"
             + cluster_name
             + "' is invalid. The name must consist of lowercase alphanumeric "
@@ -347,8 +347,8 @@ def update_private_registry_secret(
                 k8sClient.CoreV1Api().create_namespaced_secret(
                     namespace=cluster_name, body=body
                 )
-            except K8sApiException as e:
-                logger.error(e.body)
+            except K8sApiException as e2:
+                logger.error(e2.body)
                 raise
         else:
             logger.error(e.body)
@@ -586,13 +586,13 @@ def patch_config_map(cluster_name, config_map_name, patch):
         raise
 
 
-def create_secret(cluster_name, config):
+def create_secret(cluster_name, secret_config):
     """
     Creates a secret in Kubernetes
     """
 
     try:
-        body = yaml.safe_load(config)
+        body = yaml.safe_load(secret_config)
         k8sClient.CoreV1Api().create_namespaced_secret(
             namespace=cluster_name, body=body
         )
@@ -801,7 +801,7 @@ def create_namespace_with_retry(
                 retry_on_exceptions=(NewConnectionError, MaxRetryError),
             )
     else:
-        raise Exception(
+        raise RuntimeError(
             "Cluster creation not initiated because the existing "
             "namespace %s "
             'is not empty. Run "kubectl get all -n %s "'
@@ -810,39 +810,53 @@ def create_namespace_with_retry(
         )
 
 
-def validate_rwx_storage_class(name: str, type: str, instanceType: str):
+def validate_rwx_storage_class(name: str, storage_type: str, instance_type: str):
     try:
         config.load_incluster_config()
     except ConfigException:
         config.load_kube_config()
     storageClass = None
-    for s in client.StorageV1Api().list_storage_class().items:
+    for s in k8sClient.StorageV1Api().list_storage_class().items:
         if s.metadata.name == name:
             storageClass = s
 
     if storageClass is None:
-        raise Exception("Storage class '{}' does not exist".format(name))
-    # A generic expression to match storage from list 
+        raise ValueError("Storage class '{}' does not exist".format(name))
+    # A generic expression to match storage from list
     # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes and usage examples.
     #
     # example references for storage class names:
-    # csi-filestore (https://github.com/kubernetes-sigs/gcp-filestore-csi-driver/blob/45661732bea386a0275851fa5c5364a0486e6467/examples/kubernetes/demo-sc.yaml )
-    # efs-sc (https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html , https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html )
-    # quobyte-csi ( https://github.com/quobyte/quobyte-csi/blob/master/example/StorageClass.yaml ) <-- Should update this one in the list from 'quobyte'.
-    # px-shared-sc (https://github.com/portworx/helm/blob/master/charts/portworx/templates/portworx-storageclasses.yaml  and many other places for 'portworx'.)
+    # csi-filestore (
+    #   https://github.com/kubernetes-sigs/gcp-filestore-csi-driver/blob/master/examples/kubernetes/demo-sc.yaml)
+    # efs-sc (https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html,
+    #         https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html)
+    # quobyte-csi (https://github.com/quobyte/quobyte-csi/blob/master/example/StorageClass.yaml)
+    #       <-- Should update this one in the list from 'quobyte'.
+    # px-shared-sc (
+    #   https://github.com/portworx/helm/blob/master/charts/portworx/templates/portworx-storageclasses.yaml
+    #   and many other places for 'portworx'.)
     # csi-rbd-sc - (https://docs.ceph.com/en/latest/rbd/rbd-kubernetes/ ) for'ceph'.
-    # glusterfs - (https://docs.openshift.com/container-platform/3.11/install_config/persistent_storage/persistent_storage_glusterfs.html )
+    # glusterfs - (
+    #   https://docs.openshift.com/container-platform/3.11/install_config/
+    #   persistent_storage/persistent_storage_glusterfs.html)
     #
     # example references for volume provisoner names:
-    # vsphere - (https://docs.openshift.com/container-platform/3.11/install_config/persistent_storage/persistent_storage_vsphere.html)
-    # portworx - (https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/kubernetes-storage-101/volumes/)
+    # vsphere - (
+    #   https://docs.openshift.com/container-platform/3.11/install_config/
+    #   persistent_storage/persistent_storage_vsphere.html)
+    # portworx - (
+    #   https://docs.portworx.com/portworx-install-with-kubernetes/
+    #   storage-operations/kubernetes-storage-101/volumes/)
     # nfs - (https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner),
     # quobyte - (https://www.quobyte.com/kubernetes-storage/connect-k8s-storage-classes-with-quobyte-policy-engine),
-    # gluster - (https://docs.openshift.com/container-platform/3.11/install_config/storage_examples/gluster_dynamic_example.html)
+    # gluster - (
+    #   https://docs.openshift.com/container-platform/3.11/install_config/
+    #   storage_examples/gluster_dynamic_example.html)
     # ceph - (https://docs.ceph.com/en/latest/rbd/rbd-kubernetes/)
     if (
         re.match(
-            r".*(csi-filestore|efs-sc|quobyte-csi|px-shared-sc|csi-rbd-sc|azurefile|azurefile-csi|azurefile-csi-premium|azurefile-premium|nfs).*",
+            r".*(csi-filestore|efs-sc|quobyte-csi|px-shared-sc|csi-rbd-sc|azurefile|"
+            r"azurefile-csi|azurefile-csi-premium|azurefile-premium|nfs).*",
             storageClass.metadata.name,
         )
     ) is None:
@@ -850,7 +864,7 @@ def validate_rwx_storage_class(name: str, type: str, instanceType: str):
             storageClass.provisioner is None
             or storageClass.provisioner == "kubernetes.io/no-provisioner"
         ):
-            raise Exception(
+            raise RuntimeError(
                 "Storage class '{}' doesn't have a dynamic provisioner configured.".format(
                     name
                 )
@@ -864,8 +878,11 @@ def validate_rwx_storage_class(name: str, type: str, instanceType: str):
                 )
             ) is None:
                 logger.warning(
-                    f"{instanceType} creation will fail if the storage class specified for the '{type}' volume ",
-                    "does not support the ReadWriteMany (RWX) access mode. Please check if the {type} storage class ",
-                    "supports ReadWriteMany (RWX) access mode. ",
-                    "Please see https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes"
+                    "%s creation will fail if the storage class specified for the '%s' volume does not support the "
+                    "ReadWriteMany (RWX) access mode. Please check if the %s storage class supports ReadWriteMany "
+                    "(RWX) access mode. "
+                    "Please see https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes",
+                    instance_type,
+                    storage_type,
+                    storage_type
                 )

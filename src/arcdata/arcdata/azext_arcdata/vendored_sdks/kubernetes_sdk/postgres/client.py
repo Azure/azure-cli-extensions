@@ -1785,8 +1785,8 @@ def _validate_backup_storage(
                 try:
                     validate_rwx_storage_class(
                         name=v.class_name,
-                        type="backup",
-                        instanceType="Postgres",
+                        storage_type="backup",
+                        instance_type="Postgres",
                     )
                 except Exception as e:
                     raise CLIError(

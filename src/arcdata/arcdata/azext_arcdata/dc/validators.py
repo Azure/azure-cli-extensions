@@ -6,17 +6,14 @@
 
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
-    MutuallyExclusiveArgumentError,
     ValidationError,
 )
-import azext_arcdata.core.common_validators as validators
-import os
-from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import CONFIG_DIR
-import json
-import pydash as _
 from azext_arcdata.vendored_sdks.kubernetes_sdk.arc_docker_image_service import (
     ArcDataImageService,
 )
+import azext_arcdata.core.common_validators as validators
+import os
+import pydash as _
 
 
 def force_indirect(namespace):
@@ -87,11 +84,11 @@ def validate_delete(namespace):
 
 
 def validate_controldb_cdc_retention(namespace):
-    min = 1
-    max = 24
-    if not (min <= namespace.retention_hours <= max):
+    min_hrs = 1
+    max_hrs = 24
+    if not (min_hrs <= namespace.retention_hours <= max_hrs):
         raise ArgumentUsageError(
-            f"ControlDB Change Data Capture retention hours must be between {min} and {max}."
+            f"ControlDB Change Data Capture retention hours must be between {min_hrs} and {max_hrs}."
         )
     force_indirect(namespace)
 
@@ -222,7 +219,7 @@ def validate_client_version_for_upgrade(command_values):
         command_values.desired_version
     ):
         raise ValueError(
-            f"The desired version {command_values.desired_version} is not supported by this version of the ArcData CLI extension. "
-            "Please upgrade the extension using the following command and try again: "
+            f"The desired version {command_values.desired_version} is not supported by this version of the "
+            "ArcData CLI extension. Please upgrade the extension using the following command and try again: "
             "\naz extension update -n arcdata"
         )

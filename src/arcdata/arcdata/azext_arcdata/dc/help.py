@@ -7,7 +7,7 @@
 from knack.help_files import helps
 from azext_arcdata.core.util import get_environment_list_by_target
 
-"""Help documentation for `control` commands."""
+# Help documentation for `control` commands.
 
 
 helps["arcdata"] = (
@@ -76,8 +76,10 @@ helps["arcdata dc upgrade"] = (
             az arcdata dc upgrade --k8s-namespace arc --use-k8s
 """.format(
         short="Upgrade data controller.",
-        long="Upgrade data controller to the desired-version specified.  If desired-version is not specified, an attempt to upgrade to the latest version will be made. "
-        "If you are unsure of the desired version, you may use the list-upgrades command to view available versions, or use the --dry-run argument to show which version would be used",
+        long="Upgrade data controller to the desired-version specified. If desired-version is not specified, "
+        "an attempt to upgrade to the latest version will be made. If you are unsure of the desired version, "
+        "you may use the list-upgrades command to view available versions, "
+        "or use the --dry-run argument to show which version would be used",
         ex1="Data controller upgrade.",
     )
 )
@@ -403,7 +405,8 @@ helps["arcdata dc debug dump"] = (
     long-summary: {long}
 """.format(
         short="Trigger memory dump.",
-        long="Trigger memory dump and copy it out from container - Kubernetes configuration is required on your system.",
+        long="Trigger memory dump and copy it out from container - "
+        "Kubernetes configuration is required on your system.",
     )
 )
 
@@ -415,13 +418,16 @@ helps["arcdata dc debug restore-controldb-snapshot"] = (
     examples:
         - name: {ex1}
           text: >
-            az arcdata dc debug restore-controldb-snapshot -k arc-data-services -f /path/to/backup/controller-1675653451.bak
+            az arcdata dc debug restore-controldb-snapshot -k arc-data-services
+            -f /path/to/backup/controller-1675653451.bak
         - name: {ex2}
           text: >
-            az arcdata dc debug restore-controldb-snapshot -k arc-data-services -f C:\\path\\to\\backup\\controller-1675653451.bak
+            az arcdata dc debug restore-controldb-snapshot -k arc-data-services
+            -f C:\\path\\to\\backup\\controller-1675653451.bak
 """.format(
         short="Restores a unique copy of ControlDB from backup - for troubleshooting purposes only.",
-        long="Restores a COPY_ONLY backup of ControlDB under a unique name for troubleshooting - Kubernetes configuration is required on your system.",
+        long="Restores a COPY_ONLY backup of ControlDB under a unique name for troubleshooting - "
+        "Kubernetes configuration is required on your system.",
         ex1="Linux - Restore a backup taken from a previously run 'arcdata dc debug copy-logs' command.",
         ex2="Windows - Restore a backup taken from a previously run 'arcdata dc debug copy-logs' command.",
     )
@@ -441,7 +447,8 @@ helps["arcdata dc debug controldb-cdc"] = (
             az arcdata dc debug controldb-cdc -k arc-data-services --enable false
 """.format(
         short="Enable/disable CDC on Data Controller Database and Tables - for troubleshooting purposes only.",
-        long="Enable/Disable Change Data Capture for 'controller' Database and supported tables with configurable retention hours.",
+        long="Enable/Disable Change Data Capture for 'controller' Database and "
+        "supported tables with configurable retention hours.",
         ex1="Enables Change Data Capture with 4 hours of retention.",
         ex2="Disables Change Data Capture.",
     )

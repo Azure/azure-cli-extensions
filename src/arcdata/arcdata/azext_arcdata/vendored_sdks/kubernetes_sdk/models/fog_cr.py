@@ -8,7 +8,7 @@ from typing import List
 from azext_arcdata.vendored_sdks.kubernetes_sdk.models import (
     CustomResource,
 )
-from azext_arcdata.failover_group.models.fog_replica import FogReplica
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.fog_replica import FogReplica
 
 
 class FogCustomResource(CustomResource):

@@ -28,7 +28,7 @@ from azext_arcdata.failover_group.constants import (
     FOG_RESOURCE_KIND,
     FOG_RESOURCE_KIND_PLURAL,
 )
-from azext_arcdata.failover_group.models.fog_cr import FogCustomResource
+from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.fog_cr import FogCustomResource
 from azext_arcdata.vendored_sdks.kubernetes_sdk.util import is_valid_connectivity_mode
 from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.sqlmi_cr_model import SqlmiCustomResource
 from azext_arcdata.sqlmi.sqlmi_utilities import get_sqlmi_custom_resource
