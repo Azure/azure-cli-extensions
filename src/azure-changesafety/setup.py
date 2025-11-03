@@ -44,6 +44,6 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/change-state',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_change_state': ['azext_metadata.json']},
+    package_data={'azext_changesafety': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )

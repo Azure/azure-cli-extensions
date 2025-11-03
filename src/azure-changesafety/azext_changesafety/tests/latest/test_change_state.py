@@ -10,7 +10,7 @@ from types import SimpleNamespace
 import pytest
 from azure.cli.testsdk import *
 
-from azext_change_state.custom import (
+from azext_changesafety.custom import (
     ChangeStateCreate,
     ChangeStateUpdate,
     _inject_change_definition_into_content,
