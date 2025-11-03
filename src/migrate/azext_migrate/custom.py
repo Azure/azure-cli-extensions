@@ -46,7 +46,7 @@ def get_discovered_server(cmd,
             fails
     """
     from azext_migrate.helpers._utils import APIVersion
-    from azext_migrate._get_discovered_server_helpers import (
+    from azext_migrate.helpers._server import (
         validate_get_discovered_server_params,
         build_base_uri,
         fetch_all_servers,

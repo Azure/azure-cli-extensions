@@ -63,7 +63,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         return mock_cmd
 
     @mock.patch(
-        'azext_migrate._get_discovered_server_helpers.fetch_all_servers')
+        'azext_migrate.helpers._server.fetch_all_servers')
     @mock.patch(
         'azure.cli.core.commands.client_factory.get_subscription_id')
     def test_get_discovered_server_list_all(self, mock_get_sub_id,
@@ -100,7 +100,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         self.assertIn('/machines?', request_uri)
 
     @mock.patch(
-        'azext_migrate._get_discovered_server_helpers.fetch_all_servers')
+        'azext_migrate.helpers._server.fetch_all_servers')
     @mock.patch(
         'azure.cli.core.commands.client_factory.get_subscription_id')
     def test_get_discovered_server_with_display_name_filter(
@@ -130,7 +130,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         self.assertIn(target_display_name, call_args[0][1])
 
     @mock.patch(
-        'azext_migrate._get_discovered_server_helpers.fetch_all_servers')
+        'azext_migrate.helpers._server.fetch_all_servers')
     @mock.patch(
         'azure.cli.core.commands.client_factory.get_subscription_id')
     def test_get_discovered_server_with_appliance_vmware(
@@ -158,7 +158,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         self.assertIn(self.mock_appliance_name, call_args[0][1])
 
     @mock.patch(
-        'azext_migrate._get_discovered_server_helpers.fetch_all_servers')
+        'azext_migrate.helpers._server.fetch_all_servers')
     @mock.patch(
         'azure.cli.core.commands.client_factory.get_subscription_id')
     def test_get_discovered_server_with_appliance_hyperv(
@@ -186,7 +186,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         self.assertIn(self.mock_appliance_name, call_args[0][1])
 
     @mock.patch(
-        'azext_migrate._get_discovered_server_helpers.fetch_all_servers')
+        'azext_migrate.helpers._server.fetch_all_servers')
     @mock.patch(
         'azure.cli.core.commands.client_factory.get_subscription_id')
     def test_get_discovered_server_specific_machine(
@@ -213,7 +213,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         self.assertIn(f"/machines/{specific_name}?", call_args[0][1])
 
     @mock.patch(
-        'azext_migrate._get_discovered_server_helpers.fetch_all_servers')
+        'azext_migrate.helpers._server.fetch_all_servers')
     @mock.patch(
         'azure.cli.core.commands.client_factory.get_subscription_id')
     def test_get_discovered_server_with_pagination(self, mock_get_sub_id,
@@ -436,7 +436,7 @@ class MigrateReplicationInitTests(ScenarioTest):
         'azext_migrate.helpers._utils.'
         'create_or_update_resource')
     @mock.patch(
-        'azext_migrate._get_discovered_server_helpers.fetch_all_servers')
+        'azext_migrate.helpers._server.fetch_all_servers')
     @mock.patch(
         'azext_migrate.helpers._utils.get_resource_by_id')
     @mock.patch(
