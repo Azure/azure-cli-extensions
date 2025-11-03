@@ -42,6 +42,9 @@ helps['changesafety changestate create'] = """
       - name: --links
         short-summary: Add supporting links by repeating --links name=NAME uri=URL [description=TEXT].
     examples:
+      - name: Create with stage map reference and status link
+        text: |-
+          az changesafety changestate create -g MyResourceGroup -n deploy-002 --change-type ManualTouch --rollout-type Normal --stage-map "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ChangeSafety/stageMaps/rollout-stage-map" --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH" --links name=status uri=https://contoso.com/change/rollout-002
       - name: Create a change state for a VM rollout
         text: |-
           az changesafety changestate create -g MyResourceGroup -n deploy-001 --change-type AppDeployment --rollout-type Normal --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PUT"
@@ -72,6 +75,9 @@ helps['changesafety changestate update'] = """
       - name: Adjust rollout type and add a comment
         text: |-
           az changesafety changestate update -g MyResourceGroup -n deploy-001 --rollout-type Emergency --comments "Escalated to emergency rollout"
+      - name: Update scheduling window
+        text: |-
+          az changesafety changestate update -g MyResourceGroup -n deploy-001 --anticipated-start-time "2024-09-01T08:00:00Z" --anticipated-end-time "2024-09-01T12:00:00Z"
       - name: Replace the target definition
         text: |-
           az changesafety changestate update -g MyResourceGroup -n deploy-001 --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/myServer,operation=PATCH"
