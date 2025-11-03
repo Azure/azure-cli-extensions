@@ -3,54 +3,19 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import logging
 import os
 import select
 import sys
 
-from azext_aks_agent._consts import (
-    CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY,
-    CONST_AGENT_NAME,
-    CONST_AGENT_NAME_ENV_KEY,
-    CONST_DISABLE_PROMETHEUS_TOOLSET_ENV_KEY,
-    CONST_PRIVACY_NOTICE_BANNER,
-    CONST_PRIVACY_NOTICE_BANNER_ENV_KEY,
-)
+from azext_aks_agent.agent.logging import init_log
 from azure.cli.core.api import get_config_dir
+from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.util import CLIError
 
 from .error_handler import MCPError
 from .prompt import AKS_CONTEXT_PROMPT_MCP, AKS_CONTEXT_PROMPT_TRADITIONAL
 from .telemetry import CLITelemetryClient
-
-
-# NOTE(mainred): environment variables to disable prometheus toolset loading should be set before importing holmes.
-def customize_holmesgpt():
-    os.environ[CONST_DISABLE_PROMETHEUS_TOOLSET_ENV_KEY] = "true"
-    os.environ[CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY] = get_config_dir()
-    os.environ[CONST_AGENT_NAME_ENV_KEY] = CONST_AGENT_NAME
-    os.environ[CONST_PRIVACY_NOTICE_BANNER_ENV_KEY] = CONST_PRIVACY_NOTICE_BANNER
-
-
-# NOTE(mainred): holmes leverage the log handler RichHandler to provide colorful, readable and well-formatted logs
-# making the interactive mode more user-friendly.
-# And we removed exising log handlers to avoid duplicate logs.
-# Also make the console log consistent, we remove the telemetry and data logger to skip redundant logs.
-def init_log():
-    # NOTE(mainred): we need to disable INFO logs from LiteLLM before LiteLLM library is loaded, to avoid logging the
-    # debug logs from heading of LiteLLM.
-    logging.getLogger("LiteLLM").setLevel(logging.WARNING)
-    logging.getLogger("telemetry.main").setLevel(logging.WARNING)
-    logging.getLogger("telemetry.process").setLevel(logging.WARNING)
-    logging.getLogger("telemetry.save").setLevel(logging.WARNING)
-    logging.getLogger("telemetry.client").setLevel(logging.WARNING)
-    logging.getLogger("az_command_data_logger").setLevel(logging.WARNING)
-
-    from holmes.utils.console.logging import init_logging
-
-    # TODO: make log verbose configurable, currently disabled by [].
-    return init_logging([])
 
 
 def _get_mode_state_file() -> str:
@@ -168,8 +133,6 @@ def aks_agent(
             raise CLIError(
                 "Please upgrade the python version to 3.10 or above to use aks agent."
             )
-        # customizing holmesgpt should called before importing holmes
-        customize_holmesgpt()
 
         # Initialize variables
         interactive = not no_interactive
@@ -213,85 +176,88 @@ def aks_agent(
         # MCP Lifecycle Manager
         mcp_lifecycle = MCPLifecycleManager()
 
-        try:
-            config = None
+        config = None
 
-            if use_aks_mcp:
-                try:
-                    config_params = {
-                        'config_file': config_file,
-                        'model': model,
-                        'api_key': api_key,
-                        'max_steps': max_steps,
-                        'verbose': show_tool_output
-                    }
-                    mcp_info = mcp_lifecycle.setup_mcp_sync(config_params)
-                    config = mcp_info['config']
+        if use_aks_mcp:
+            try:
+                config_params = {
+                    'config_file': config_file,
+                    'model': model,
+                    'api_key': api_key,
+                    'max_steps': max_steps,
+                    'verbose': show_tool_output
+                }
+                mcp_info = mcp_lifecycle.setup_mcp_sync(config_params)
+                config = mcp_info['config']
 
-                    if show_tool_output:
-                        from .user_feedback import ProgressReporter
-                        ProgressReporter.show_status_message("MCP mode active - enhanced capabilities enabled", "info")
-
-                except Exception as e:  # pylint: disable=broad-exception-caught
-                    # Fallback to traditional mode on any MCP setup failure
-                    from .error_handler import AgentErrorHandler
-                    mcp_error = AgentErrorHandler.handle_mcp_setup_error(e, "MCP initialization")
-                    if show_tool_output:
-                        console.print(f"[yellow]MCP setup failed, using traditional mode: {mcp_error.message}[/yellow]")
-                        if mcp_error.suggestions:
-                            console.print("[dim]Suggestions for next time:[/dim]")
-                            for suggestion in mcp_error.suggestions[:3]:  # Show only first 3 suggestions
-                                console.print(f"[dim]  • {suggestion}[/dim]")
-                    use_aks_mcp = False
-                    current_mode = "traditional"
-
-            # Fallback to traditional mode if MCP setup failed or was disabled
-            if not config:
-                config = _setup_traditional_mode_sync(config_file, model, api_key, max_steps, show_tool_output)
                 if show_tool_output:
-                    console.print("[yellow]Traditional mode active (MCP disabled)[/yellow]")
+                    from .user_feedback import ProgressReporter
+                    ProgressReporter.show_status_message("MCP mode active - enhanced capabilities enabled", "info")
 
-            # Save the current mode to state file for next run
-            _save_current_mode(current_mode)
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                # Fallback to traditional mode on any MCP setup failure
+                from .error_handler import AgentErrorHandler
+                mcp_error = AgentErrorHandler.handle_mcp_setup_error(e, "MCP initialization")
+                if show_tool_output:
+                    console.print(f"[yellow]MCP setup failed, using traditional mode: {mcp_error.message}[/yellow]")
+                    if mcp_error.suggestions:
+                        console.print("[dim]Suggestions for next time:[/dim]")
+                        for suggestion in mcp_error.suggestions[:3]:  # Show only first 3 suggestions
+                            console.print(f"[dim]  • {suggestion}[/dim]")
+                use_aks_mcp = False
+                current_mode = "traditional"
 
-            # Use smart refresh logic
-            effective_refresh_toolsets = smart_refresh
+        # Fallback to traditional mode if MCP setup failed or was disabled
+        if not config:
+            config = _setup_traditional_mode_sync(config_file, model, api_key, max_steps, show_tool_output)
             if show_tool_output:
-                from .user_feedback import ProgressReporter
-                ProgressReporter.show_status_message(
-                    f"Toolset refresh: {effective_refresh_toolsets} (Mode: {current_mode})", "info"
-                )
+                console.print("[yellow]Traditional mode active (MCP disabled)[/yellow]")
 
-            # Create AI client once with proper refresh settings
+        # Save the current mode to state file for next run
+        _save_current_mode(current_mode)
+
+        # Use smart refresh logic
+        effective_refresh_toolsets = smart_refresh
+        if show_tool_output:
+            from .user_feedback import ProgressReporter
+            ProgressReporter.show_status_message(
+                f"Toolset refresh: {effective_refresh_toolsets} (Mode: {current_mode})", "info"
+            )
+
+        # Validate inputs
+        if not prompt and not interactive and not piped_data:
+            raise CLIError(
+                "Either the 'prompt' argument must be provided (unless using --interactive mode)."
+            )
+        try:
+            # prepare the toolsets
             ai = config.create_console_toolcalling_llm(
                 dal=None,
                 refresh_toolsets=effective_refresh_toolsets,
             )
+        except Exception as e:
+            raise CLIError(f"Failed to create AI executor: {str(e)}")
 
-            # Validate inputs
-            if not prompt and not interactive and not piped_data:
-                raise CLIError(
-                    "Either the 'prompt' argument must be provided (unless using --interactive mode)."
-                )
+        # Handle piped data
+        if piped_data:
+            if prompt:
+                # User provided both piped data and a prompt
+                prompt = f"Here's some piped output:\n\n{piped_data}\n\n{prompt}"
+            else:
+                # Only piped data, no prompt - ask what to do with it
+                prompt = f"Here's some piped output:\n\n{piped_data}\n\nWhat can you tell me about this output?"
 
-            # Handle piped data
-            if piped_data:
-                if prompt:
-                    # User provided both piped data and a prompt
-                    prompt = f"Here's some piped output:\n\n{piped_data}\n\n{prompt}"
-                else:
-                    # Only piped data, no prompt - ask what to do with it
-                    prompt = f"Here's some piped output:\n\n{piped_data}\n\nWhat can you tell me about this output?"
-
-            # Phase 2: Holmes Execution (synchronous - no event loop conflicts)
-            is_mcp_mode = current_mode == "mcp"
+        # Phase 2: Holmes Execution (synchronous - no event loop conflicts)
+        is_mcp_mode = current_mode == "mcp"
+        try:
             if interactive:
                 _run_interactive_mode_sync(ai, cmd, resource_group_name, name,
                                            prompt, console, show_tool_output, is_mcp_mode, telemetry)
             else:
                 _run_noninteractive_mode_sync(ai, config, cmd, resource_group_name, name,
                                               prompt, console, echo, show_tool_output, is_mcp_mode)
-
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            raise CLIInternalError(f"Error occurred during execution: {str(e)}")
         finally:
             # Phase 3: MCP Cleanup (isolated async if needed)
             mcp_lifecycle.cleanup_mcp_sync()
