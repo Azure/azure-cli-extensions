@@ -4325,7 +4325,8 @@ def aks_approuting_enable(
         enable_app_routing=True,
         keyvault_id=keyvault_id,
         enable_kv=enable_kv,
-        nginx=nginx)
+        nginx=nginx,
+        enable_default_domain=enable_default_domain)
 
 
 def aks_approuting_disable(
@@ -4364,7 +4365,9 @@ def aks_approuting_update(
         name,
         keyvault_id=keyvault_id,
         enable_kv=enable_kv,
-        nginx=nginx)
+        nginx=nginx,
+        enable_default_domain=enable_default_domain,
+        disable_default_domain=disable_default_domain)
 
 
 def aks_approuting_zone_add(
@@ -4490,7 +4493,9 @@ def _aks_approuting_update(
         update_dns_zone=None,
         dns_zone_resource_ids=None,
         attach_zones=None,
-        nginx=None
+        nginx=None,
+        enable_default_domain=None,
+        disable_default_domain=None,
 ):
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
