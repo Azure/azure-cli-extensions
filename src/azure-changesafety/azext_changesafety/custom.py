@@ -25,7 +25,7 @@ from azure.cli.core.aaz._arg_action import (
     _ELEMENT_APPEND_KEY,
 )
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azext_change_state.aaz.latest.change_safety.change_state import (
+from azext_changesafety.aaz.latest.change_safety.change_state import (
     Create as _ChangeStateCreate,
     Update as _ChangeStateUpdate,
     Show as _ChangeStateShow,
@@ -144,7 +144,7 @@ def _inject_targets_into_result(data, targets):
 
 def _custom_show_schema_builder():
     # Import the generated Show class
-    from azext_change_state.aaz.latest.change_safety.change_state._show import Show as GeneratedShow
+    from azext_changesafety.aaz.latest.change_safety.change_state._show import Show as GeneratedShow
 
     # Get the base schema from the generated code
     base_schema = GeneratedShow.ChangeStatesGet._build_schema_on_200()

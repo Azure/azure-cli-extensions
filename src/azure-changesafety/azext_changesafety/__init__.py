@@ -6,7 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_change_state._help import helps  # pylint: disable=unused-import
+from azext_changesafety._help import helps  # pylint: disable=unused-import
 
 
 class ChangeStateCommandsLoader(AzCommandsLoader):
@@ -14,12 +14,12 @@ class ChangeStateCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(
-            operations_tmpl='azext_change_state.custom#{}')
+            operations_tmpl='azext_changesafety.custom#{}')
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=custom_command_type)
 
     def load_command_table(self, args):
-        from azext_change_state.commands import load_command_table
+        from azext_changesafety.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -35,7 +35,7 @@ class ChangeStateCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_change_state._params import load_arguments
+        from azext_changesafety._params import load_arguments
         load_arguments(self, command)
 
 
