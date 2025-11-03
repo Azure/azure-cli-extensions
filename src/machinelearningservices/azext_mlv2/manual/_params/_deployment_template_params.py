@@ -2,7 +2,14 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # ---------------------------------------------------------
 
-from ._common_params import add_common_params, add_description_param, add_file_param, add_lro_param, add_override_param, add_tags_param
+from ._common_params import (
+    add_common_params,
+    add_description_param,
+    add_file_param,
+    add_lro_param,
+    add_override_param,
+    add_tags_param,
+)
 
 
 def add_deployment_template_common_param(
@@ -23,7 +30,10 @@ def load_deployment_template_params(self):
             "registry_name",
             options_list=["--registry-name", "-r"],
             required=True,
-            help="Name of the registry. This is required since deployment templates only support registry-name and not workspace.",
+            help=(
+                "Name of the registry. This is required since deployment templates "
+                "only support registry-name and not workspace."
+            ),
         )
 
     with self.argument_context("ml deployment-template get") as c:
@@ -33,12 +43,16 @@ def load_deployment_template_params(self):
             "registry_name",
             options_list=["--registry-name", "-r"],
             required=True,
-            help="Name of the registry. This is required since deployment templates only support registry-name and not workspace.",
+            help=(
+                "Name of the registry. This is required since deployment templates "
+                "only support registry-name and not workspace."
+            ),
         )
 
     with self.argument_context("ml deployment-template create") as c:
         add_common_params(c)
-        add_deployment_template_common_param(c, name_required=False, version_required=False)  # Optional for create since they can come from file
+        # Optional for create since they can come from file
+        add_deployment_template_common_param(c, name_required=False, version_required=False)
         add_lro_param(c)
         add_file_param(c, "deployment-template", "https://aka.ms/ml-cli-v2-deployment-template-yaml")
         add_override_param(c)
@@ -46,7 +60,10 @@ def load_deployment_template_params(self):
             "registry_name",
             options_list=["--registry-name", "-r"],
             required=True,
-            help="Name of the registry. This is required since deployment templates only support registry-name and not workspace.",
+            help=(
+                "Name of the registry. This is required since deployment templates "
+                "only support registry-name and not workspace."
+            ),
         )
 
     with self.argument_context("ml deployment-template update") as c:
@@ -59,7 +76,10 @@ def load_deployment_template_params(self):
             "registry_name",
             options_list=["--registry-name", "-r"],
             required=True,
-            help="Name of the registry. This is required since deployment templates only support registry-name and not workspace.",
+            help=(
+                "Name of the registry. This is required since deployment templates "
+                "only support registry-name and not workspace."
+            ),
         )
 
     with self.argument_context("ml deployment-template archive") as c:
@@ -70,7 +90,10 @@ def load_deployment_template_params(self):
             "registry_name",
             options_list=["--registry-name", "-r"],
             required=True,
-            help="Name of the registry. This is required since deployment templates only support registry-name and not workspace.",
+            help=(
+                "Name of the registry. This is required since deployment templates "
+                "only support registry-name and not workspace."
+            ),
         )
 
     with self.argument_context("ml deployment-template restore") as c:
@@ -81,5 +104,8 @@ def load_deployment_template_params(self):
             "registry_name",
             options_list=["--registry-name", "-r"],
             required=True,
-            help="Name of the registry. This is required since deployment templates only support registry-name and not workspace.",
+            help=(
+                "Name of the registry. This is required since deployment templates "
+                "only support registry-name and not workspace."
+            ),
         )
