@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Retention Policy
+
+    :example: Create a new retention policy for a scheduler with a default retention period of 30 days
+        az durabletask retention-policy create -g "example-rg" --scheduler-name "example-scheduler" --default-days 30
     """
 
     _aaz_info = {

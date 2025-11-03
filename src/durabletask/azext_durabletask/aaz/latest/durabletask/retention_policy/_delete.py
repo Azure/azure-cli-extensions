@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Retention Policy
+
+    :example: Delete a Retention Policy on a Scheduler
+        az durabletask retention-policy delete -g "example-rg" --scheduler-name "example-scheduler"
     """
 
     _aaz_info = {
