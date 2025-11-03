@@ -7,16 +7,15 @@
 import base64
 import json
 import os
-import re
 import shutil
 import sys
 import time
-from datetime import datetime
-from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.json_serialization import ExtendedJsonEncoder
-
-import azext_arcdata.core.kubernetes as kubernetes_util
 import yaml
+import azext_arcdata.core.kubernetes as kubernetes_util
 
+from datetime import datetime
+from azext_arcdata.vendored_sdks.arm_sdk._arm_client import arm_clients
+from azext_arcdata.vendored_sdks.kubernetes_sdk.json_serialization import ExtendedJsonEncoder
 from azext_arcdata.core.identity import ArcDataCliCredential
 from azext_arcdata.core.constants import (
     ARC_GROUP,
@@ -35,7 +34,6 @@ from azext_arcdata.core.util import (
     is_windows,
     retry,
     parse_cert_files,
-    get_private_key_from_data,
     get_private_key_from_file,
 )
 from azext_arcdata.vendored_sdks.kubernetes_sdk.util import (
@@ -73,10 +71,10 @@ from azext_arcdata.sqlmi.constants import (
     TASK_API_GROUP,
 )
 from azext_arcdata.sqlmi.exceptions import SqlmiError
-from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.reprovision_replica_cr_model import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.reprovision_replica_cr_model import (
     SqlmiReprovisionReplicaTaskCustomResource,
 )
-from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.sqlmi_cr_model import SqlmiCustomResource
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.sqlmi_cr_model import SqlmiCustomResource
 from azext_arcdata.sqlmi.sqlmi_utilities import (
     get_sqlmi_custom_resource,
     upgrade_sqlmi_instances,
@@ -103,92 +101,38 @@ logger = get_logger(__name__)
 def arc_sql_mi_create(
     client,
     name,
-    path=None,
-    replicas=None,
-    orchestrator_replicas=None,
-    readable_secondaries=None,
-    sync_secondary_to_commit=None,
-    cores_limit=None,
-    cores_request=None,
-    memory_limit=None,
-    memory_request=None,
-    storage_class_data=None,
-    storage_class_logs=None,
-    storage_class_datalogs=None,
-    storage_class_backups=None,
-    storage_class_orchestrator_logs=None,
-    volume_size_data=None,
-    volume_size_logs=None,
-    volume_size_datalogs=None,
-    volume_size_backups=None,
-    volume_size_orchestrator_logs=None,
     no_wait=False,
-    license_type=None,
-    tier=None,
-    dev=None,
-    time_zone=None,
-    retention_days=None,
-    service_type=None,
-    primary_dns_name=None,
-    primary_port_number=None,
-    secondary_dns_name=None,
-    secondary_port_number=None,
-    # -- indirect --
-    namespace=None,
-    use_k8s=None,
-    noexternal_endpoint=None,
-    certificate_public_key_file=None,
-    certificate_private_key_file=None,
-    service_certificate_secret=None,
-    admin_login_secret=None,
-    labels=None,
-    annotations=None,
-    service_labels=None,
-    service_annotations=None,
-    storage_labels=None,
-    storage_annotations=None,
-    collation=None,
-    language=None,
-    agent_enabled=None,
-    trace_flags=None,
-    private_key_file=None,
-    # -- direct --
-    custom_location=None,
-    resource_group=None,
-    # -- Active Directory --
-    ad_connector_name=None,
-    ad_account_name=None,
-    keytab_secret=None,
-    ad_encryption_types=None,
-    # -- Transparent Data Encryption --
-    tde_mode=None,
-    tde_protector_secret=None,
-    tde_protector_public_key_file=None,
-    tde_protector_private_key_file=None,
+    **kwargs
 ):
     """
     Create a SQL managed instance.
     """
-
-    args = locals()
+    use_k8s = kwargs.get("use_k8s", False)
+    path = kwargs.get("path")
+    replicas = kwargs.get("replicas")
+    readable_secondaries = kwargs.get("readable_secondaries")
+    storage_class_backups = kwargs.get("storage_class_backups")
+    tier = kwargs.get("tier")
+    retention_days = kwargs.get("retention_days")
 
     try:
         if not use_k8s:
-            validate_sqlmi_name(name)
+            validate_sqlmi_name(kwargs.get("name"))
 
             from azext_arcdata.vendored_sdks.arm_sdk.client import ArmClient
 
             cred = ArcDataCliCredential()
             subscription = client.subscription
             armclient = ArmClient(cred, subscription)
+            armclients = arm_clients(cred, subscription)
             sqlmi_namespace = (
-                armclient._arm_clients.dc.get_custom_location_namespace(
-                    custom_location, resource_group
+                armclients.dc.get_custom_location_namespace(
+                    kwargs.get("custom_location"), kwargs.get("resource_group")
                 )
             )
             azure_location = (
-                armclient._arm_clients.dc.get_custom_location_region(
-                    custom_location, resource_group
+                armclients.dc.get_custom_location_region(
+                    kwargs.get("custom_location"), kwargs.get("resource_group")
                 )
             )
 
@@ -200,46 +144,46 @@ def arc_sql_mi_create(
                 name=name,
                 path=path,
                 replicas=replicas,
-                orchestrator_replicas=orchestrator_replicas,
+                orchestrator_replicas=kwargs.get("orchestrator_replicas"),
                 readable_secondaries=readable_secondaries,
-                sync_secondary_to_commit=sync_secondary_to_commit,
-                cores_limit=cores_limit,
-                cores_request=cores_request,
-                memory_limit=memory_limit,
-                memory_request=memory_request,
-                storage_class_data=storage_class_data,
-                storage_class_logs=storage_class_logs,
-                storage_class_datalogs=storage_class_datalogs,
+                sync_secondary_to_commit=kwargs.get("sync_secondary_to_commit"),
+                cores_limit=kwargs.get("cores_limit"),
+                cores_request=kwargs.get("cores_request"),
+                memory_limit=kwargs.get("memory_limit"),
+                memory_request=kwargs.get("memory_request"),
+                storage_class_data=kwargs.get("storage_class_data"),
+                storage_class_logs=kwargs.get("storage_class_logs"),
+                storage_class_datalogs=kwargs.get("storage_class_datalogs"),
                 storage_class_backups=storage_class_backups,
-                storage_class_orchestrator_logs=storage_class_orchestrator_logs,
-                volume_size_data=volume_size_data,
-                volume_size_logs=volume_size_logs,
-                volume_size_datalogs=volume_size_datalogs,
-                volume_size_backups=volume_size_backups,
-                volume_size_orchestrator_logs=volume_size_orchestrator_logs,
-                license_type=license_type,
+                storage_class_orchestrator_logs=kwargs.get("storage_class_orchestrator_logs"),
+                volume_size_data=kwargs.get("volume_size_data"),
+                volume_size_logs=kwargs.get("volume_size_logs"),
+                volume_size_datalogs=kwargs.get("volume_size_datalogs"),
+                volume_size_backups=kwargs.get("volume_size_backups"),
+                volume_size_orchestrator_logs=kwargs.get("volume_size_orchestrator_logs"),
+                license_type=kwargs.get("license_type"),
                 tier=tier,
-                dev=dev,
+                dev=kwargs.get("dev"),
                 location=azure_location,
-                custom_location=custom_location,
-                resource_group=resource_group,
-                ad_connector_name=ad_connector_name,
+                custom_location=kwargs.get("custom_location"),
+                resource_group=kwargs.get("resource_group"),
+                ad_connector_name=kwargs.get("ad_connector_name"),
                 ad_connector_namespace=ad_connector_namespace,
-                ad_account_name=ad_account_name,
-                keytab_secret=keytab_secret,
-                ad_encryption_types=ad_encryption_types,
-                tde_mode=tde_mode,
-                tde_protector_secret=tde_protector_secret,
-                primary_dns_name=primary_dns_name,
-                primary_port_number=primary_port_number,
-                secondary_dns_name=secondary_dns_name,
-                secondary_port_number=secondary_port_number,
+                ad_account_name=kwargs.get("ad_account_name"),
+                keytab_secret=kwargs.get("keytab_secret"),
+                ad_encryption_types=kwargs.get("ad_encryption_types"),
+                tde_mode=kwargs.get("tde_mode"),
+                tde_protector_secret=kwargs.get("tde_protector_secret"),
+                primary_dns_name=kwargs.get("primary_dns_name"),
+                primary_port_number=kwargs.get("primary_port_number"),
+                secondary_dns_name=kwargs.get("secondary_dns_name"),
+                secondary_port_number=kwargs.get("secondary_port_number"),
                 polling=not no_wait,
                 retention_days=retention_days,
-                time_zone=time_zone,
-                service_type=service_type,
-                trace_flags=trace_flags,
-                private_key_file=private_key_file,
+                time_zone=kwargs.get("time_zone"),
+                service_type=kwargs.get("service_type"),
+                trace_flags=kwargs.get("trace_flags"),
+                private_key_file=kwargs.get("private_key_file"),
             )
 
         check_and_set_kubectl_context()
@@ -279,7 +223,7 @@ def arc_sql_mi_create(
         # since it's not parameterized in this func
         cr = CustomResource.decode(SqlmiCustomResource, spec_object)
         cr.metadata.namespace = namespace
-        cr.apply_args(**args)
+        cr.apply_args(**kwargs)
         cr.validate(client.apis.kubernetes)
 
         logger.debug("Using --dev == '%s'", cr.spec.dev)
@@ -321,12 +265,12 @@ def arc_sql_mi_create(
             cr.spec.readableSecondaries = min(cr.spec.replicas - 1, 1)
 
         validate_labels_and_annotations(
-            labels,
-            annotations,
-            service_labels,
-            service_annotations,
-            storage_labels,
-            storage_annotations,
+            kwargs.get("labels"),
+            kwargs.get("annotations"),
+            kwargs.get("service_labels"),
+            kwargs.get("service_annotations"),
+            kwargs.get("storage_labels"),
+            kwargs.get("storage_annotations"),
         )
 
         custom_object_exists = retry(
@@ -354,6 +298,7 @@ def arc_sql_mi_create(
 
         # Validate Active Directory args if enabling AD auth
         #
+        ad_connector_name = kwargs.get("ad_connector_name")
         if ad_connector_name:
             # Note: might not be equal in a cross-namespace scenario
             #
@@ -364,14 +309,17 @@ def arc_sql_mi_create(
                 ad_connector_name,
                 ad_connector_namespace,
                 namespace,
-                keytab_secret,
+                kwargs.get("keytab_secret"),
             )
 
+            ad_encryption_types = kwargs.get("ad_encryption_types")
             if ad_encryption_types:
                 cr.spec.security.activeDirectory.encryption_types = (
                     _parse_supported_ad_encryption_types(ad_encryption_types)
                 )
 
+        noexternal_endpoint = kwargs.get("noexternal_endpoint")
+        service_type = kwargs.get("service_type")
         if not noexternal_endpoint:
             if not service_type:
                 response = retry(
@@ -410,6 +358,7 @@ def arc_sql_mi_create(
 
         # Create admin login secret
         #
+        admin_login_secret = kwargs.get("admin_login_secret")
         if not admin_login_secret:
             # Use default secret name when the user does not provide one.
             #
@@ -442,7 +391,7 @@ def arc_sql_mi_create(
                 bytes(pw, encoding)
             ).decode(encoding)
 
-            machineId = _get_sql_mi_id(private_key_file)
+            machineId = _get_sql_mi_id(kwargs.get("private_key_file"))
             if machineId:
                 secrets["base64MachineId"] = machineId
 
@@ -477,6 +426,7 @@ def arc_sql_mi_create(
                 if e.status != http_status_codes.conflict:
                     raise
 
+        tde_mode = kwargs.get("tde_mode")
         if tde_mode:
             cr.spec.security.transparentDataEncryption.mode = tde_mode
             if tde_mode.lower() == "customermanaged":
@@ -484,12 +434,12 @@ def arc_sql_mi_create(
                     client,
                     cr,
                     name,
-                    tde_protector_public_key_file,
-                    tde_protector_private_key_file,
-                    tde_protector_secret,
+                    kwargs.get("tde_protector_public_key_file"),
+                    kwargs.get("tde_protector_private_key_file"),
+                    kwargs.get("tde_protector_secret"),
                     is_tde_protector=True,
                 )
-            elif not tde_protector_secret:
+            elif not kwargs.get("tde_protector_secret"):
                 cr.spec.security.transparentDataEncryption.protectorSecret = (
                     ClearField()
                 )
@@ -505,9 +455,9 @@ def arc_sql_mi_create(
             client,
             cr,
             name,
-            certificate_public_key_file,
-            certificate_private_key_file,
-            service_certificate_secret,
+            kwargs.get("certificate_public_key_file"),
+            kwargs.get("certificate_private_key_file"),
+            kwargs.get("service_certificate_secret"),
         )
 
         # Create custom resource.
@@ -1386,7 +1336,6 @@ def arc_sql_mi_reprovision_replica(
     """
     reprovision a SQL managed instance replica.
     """
-    args = locals()
 
     try:
         if not use_k8s:

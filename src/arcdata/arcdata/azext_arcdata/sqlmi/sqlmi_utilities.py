@@ -1,13 +1,14 @@
 import pydash as _
 import re
 import sys
+from urllib3.exceptions import MaxRetryError, NewConnectionError
 from azext_arcdata.core.util import retry
 from azext_arcdata.sqlmi.constants import (
     API_GROUP,
     RESOURCE_KIND_PLURAL,
 )
 from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
-from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.sqlmi_cr_model import SqlmiCustomResource
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.sqlmi_cr_model import SqlmiCustomResource
 from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     CONNECTION_RETRY_ATTEMPTS,
     RETRY_INTERVAL,
@@ -20,7 +21,6 @@ from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import SQLMI_CRD_NA
 from azext_arcdata.vendored_sdks.kubernetes_sdk.arc_docker_image_service import (
     ArcDataImageService,
 )
-from urllib3.exceptions import MaxRetryError, NewConnectionError
 
 
 def upgrade_sqlmi_instances(
