@@ -560,200 +560,32 @@ def remove_local_server_replication(cmd,
     """
     from azure.cli.core.commands.client_factory import \
         get_subscription_id
-    from azext_migrate.helpers._utils import (
-        get_resource_by_id,
-        APIVersion
+    from azext_migrate.helpers.replication.remove._parse import (
+        parse_protected_item_id
+    )
+    from azext_migrate.helpers.replication.remove._validate import (
+        validate_protected_item
+    )
+    from azext_migrate.helpers.replication.remove._execute_delete \
+    import (
+        execute_removal
     )
 
     # Use current subscription if not provided
     if not subscription_id:
         subscription_id = get_subscription_id(cmd.cli_ctx)
 
-    # Validate target_object_id
-    if not target_object_id:
-        raise CLIError(
-            "The --target-object-id parameter is required.")
-
     # Parse the protected item ID to extract components
-    # Expected format: /subscriptions/{sub}/resourceGroups/{rg}/providers/
-    # Microsoft.DataReplication/replicationVaults/{vault}/
-    # protectedItems/{item}
-    try:
-        protected_item_id_parts = target_object_id.split("/")
-        if len(protected_item_id_parts) < 11:
-            raise ValueError("Invalid protected item ID format")
+    resource_group_name, vault_name, protected_item_name = \
+        parse_protected_item_id(target_object_id)
 
-        resource_group_name = protected_item_id_parts[4]
-        vault_name = protected_item_id_parts[8]
-        protected_item_name = protected_item_id_parts[10]
-    except (IndexError, ValueError) as e:
-        raise CLIError(
-            f"Invalid target object ID format: {target_object_id}. "
-            "Expected format: /subscriptions/{{subscription-id}}/"
-            "resourceGroups/{{resource-group}}/providers/"
-            "Microsoft.DataReplication/replicationVaults/{{vault-name}}/"
-            f"protectedItems/{{item-name}}. Error: {str(e)}"
-        )
+    # Validate the protected item exists and can be removed
+    validate_protected_item(cmd, target_object_id)
 
-    logger.info(
-        "Attempting to remove replication for protected item '%s' "
-        "in vault '%s'",
-        protected_item_name, vault_name)
-
-    # Get the protected item to validate it exists and check its state
-    try:
-        protected_item = get_resource_by_id(
-            cmd,
-            target_object_id,
-            APIVersion.Microsoft_DataReplication.value
-        )
-
-        if not protected_item:
-            raise CLIError(
-                f"Replication item is not found with Id "
-                f"'{target_object_id}'.")
-
-        # Check if the protected item allows DisableProtection operation
-        properties = protected_item.get('properties', {})
-        allowed_jobs = properties.get('allowedJobs', [])
-
-        if "DisableProtection" not in allowed_jobs:
-            protection_state = properties.get(
-                'protectionStateDescription', 'Unknown')
-            raise CLIError(
-                f"Replication item with Id '{target_object_id}' cannot "
-                f"be removed at this moment. Current protection state is "
-                f"'{protection_state}'.")
-
-    except CLIError:
-        raise
-    except Exception as e:
-        logger.error(
-            "Error retrieving protected item '%s': %s",
-            target_object_id, str(e))
-        raise CLIError(
-            f"Failed to retrieve replication item: {str(e)}")
-
-    # Construct the DELETE request URI with forceDelete parameter
-    force_delete_param = "true" if force_remove else "false"
-    delete_uri = (
-        f"{target_object_id}?"
-        f"api-version={APIVersion.Microsoft_DataReplication.value}&"
-        f"forceDelete={force_delete_param}"
+    # Execute the removal workflow
+    return execute_removal(
+        cmd, subscription_id, target_object_id,
+        resource_group_name, vault_name,
+        protected_item_name, force_remove
     )
-
-    # Send the delete request
-    try:
-        from azure.cli.core.util import send_raw_request
-
-        full_uri = cmd.cli_ctx.cloud.endpoints.resource_manager + delete_uri
-
-        logger.info(
-            "Sending DELETE request to remove protected item '%s' "
-            "(force=%s)",
-            protected_item_name, force_delete_param)
-
-        response = send_raw_request(
-            cmd.cli_ctx,
-            method='DELETE',
-            url=full_uri,
-        )
-
-        if response.status_code >= 400:
-            error_message = (
-                f"Failed to remove replication. "
-                f"Status: {response.status_code}")
-            try:
-                error_body = response.json()
-                if 'error' in error_body:
-                    error_details = error_body['error']
-                    error_code = error_details.get('code', 'Unknown')
-                    error_msg = error_details.get(
-                        'message', 'No message provided')
-                    raise CLIError(f"{error_code}: {error_msg}")
-            except (ValueError, KeyError):
-                error_message += f", Response: {response.text}"
-            raise CLIError(error_message)
-
-        # The DELETE operation returns a job reference in the response
-        # Extract the job name from the response headers or body
-        operation_location = response.headers.get(
-            'Azure-AsyncOperation') or response.headers.get('Location')
-
-        if operation_location:
-            # Extract job name from the operation location
-            # Format: .../jobs/{jobName}?... or .../jobs/{jobName}
-            job_parts = operation_location.split('/')
-            job_name = None
-            for i, part in enumerate(job_parts):
-                if part == 'jobs' and i + 1 < len(job_parts):
-                    # Get the job name and remove query string if present
-                    job_name = job_parts[i + 1].split('?')[0]
-                    break
-
-            if job_name:
-                # Get and return the job details
-                job_uri = (
-                    f"/subscriptions/{subscription_id}/"
-                    f"resourceGroups/{resource_group_name}/"
-                    f"providers/Microsoft.DataReplication/"
-                    f"replicationVaults/{vault_name}/"
-                    f"jobs/{job_name}"
-                )
-
-                try:
-                    job_details = get_resource_by_id(
-                        cmd,
-                        job_uri,
-                        APIVersion.Microsoft_DataReplication.value
-                    )
-
-                    if job_details:
-                        logger.info(
-                            "Successfully initiated removal of replication "
-                            "for '%s'. Job: %s",
-                            protected_item_name, job_name)
-                        
-                        # Display job ID and helpful command for user
-                        print(f"Successfully initiated removal of replication for "
-                              f"'{protected_item_name}'.")
-                        print(f"Job ID: {job_name}")
-                        print(f"\nTo check removal job status, run:")
-                        print(f"  az migrate local replication get-job "
-                              f"--job-name {job_name} "
-                              f"--resource-group {resource_group_name} "
-                              f"--project-name <project-name>")
-                        
-                        return job_details
-                except Exception as job_error:
-                    logger.warning(
-                        "Could not retrieve job details: %s. "
-                        "Replication removal was initiated.",
-                        str(job_error))
-                    # Still show the job name even if we can't get details
-                    print(f"Successfully initiated removal of replication for "
-                          f"'{protected_item_name}'.")
-                    print(f"Job ID: {job_name}")
-                    print(f"\nTo check removal job status, run:")
-                    print(f"  az migrate local replication get-job "
-                          f"--job-name {job_name} "
-                          f"--resource-group {resource_group_name} "
-                          f"--project-name <project-name>")
-
-        # If we can't get job details, return success message
-        logger.info(
-            "Successfully initiated removal of replication for '%s'",
-            protected_item_name)
-        
-        print(f"Successfully initiated removal of replication for "
-              f"'{protected_item_name}'.")
-
-    except CLIError:
-        raise
-    except Exception as e:
-        logger.error(
-            "Error removing replication for '%s': %s",
-            protected_item_name, str(e))
-        raise CLIError(
-            f"Failed to remove replication: {str(e)}")
 
