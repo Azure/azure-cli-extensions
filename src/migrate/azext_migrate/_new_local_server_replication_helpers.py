@@ -107,6 +107,9 @@ def validate_server_parameters(
     if not subscription_id:
         subscription_id = get_subscription_id(cmd.cli_ctx)
 
+    # Initialize rg_uri - will be set based on machine_id or resource_group_name
+    rg_uri = None
+
     if machine_index:
         if not project_name:
             raise CLIError(
@@ -204,7 +207,62 @@ def validate_server_parameters(
         # Get the machine at the specified index (convert 1-based to 0-based)
         selected_machine = machines[machine_index - 1]
         machine_id = selected_machine.get('id')
-    return rg_uri
+    else:
+        # machine_id was provided directly
+        # Check if it's in Microsoft.Migrate format and needs to be resolved
+        if "/Microsoft.Migrate/MigrateProjects/" in machine_id or "/Microsoft.Migrate/migrateprojects/" in machine_id:
+            # This is a Migrate Project machine ID, need to resolve to OffAzure machine ID
+            migrate_machine = get_resource_by_id(
+                cmd, machine_id, APIVersion.Microsoft_Migrate.value)
+            
+            if not migrate_machine:
+                raise CLIError(
+                    f"Machine not found with ID '{machine_id}'.")
+            
+            # Get the actual OffAzure machine ID from properties
+            machine_props = migrate_machine.get('properties', {})
+            discovery_data = machine_props.get('discoveryData', [])
+            
+            # Find the OS discovery data entry which contains the actual machine reference
+            offazure_machine_id = None
+            for data in discovery_data:
+                if data.get('osType'):
+                    # The extended data should contain the actual machine ARM ID
+                    extended_data = data.get('extendedInfo', {})
+                    # Try different possible field names for the OffAzure machine ID
+                    offazure_machine_id = (
+                        extended_data.get('sdsArmId') or 
+                        extended_data.get('machineArmId') or 
+                        extended_data.get('machineId')
+                    )
+                    if offazure_machine_id:
+                        break
+            
+            # If not found in discoveryData, check other properties
+            if not offazure_machine_id:
+                offazure_machine_id = machine_props.get('machineId') or machine_props.get('machineArmId')
+            
+            if not offazure_machine_id:
+                raise CLIError(
+                    f"Could not resolve the OffAzure machine ID from Migrate machine '{machine_id}'. "
+                    "Please provide the machine ID in the format "
+                    "'/subscriptions/.../Microsoft.OffAzure/{{HyperVSites|VMwareSites}}/.../machines/...'")
+            
+            machine_id = offazure_machine_id
+        
+        # Extract resource_group_name from machine_id if not provided
+        if not resource_group_name:
+            machine_id_parts = machine_id.split("/")
+            if len(machine_id_parts) >= 5:
+                resource_group_name = machine_id_parts[4]
+            else:
+                raise CLIError(f"Invalid machine ARM ID format: '{machine_id}'")
+        
+        rg_uri = (
+            f"/subscriptions/{subscription_id}/"
+            f"resourceGroups/{resource_group_name}")
+    
+    return rg_uri, machine_id
 
 
 def validate_required_parameters(machine_id,
@@ -1259,7 +1317,8 @@ def construct_disk_and_nic_mapping(is_power_user_mode,
         machine_disks = machine_props.get('disks', [])
         machine_nics = machine_props.get('networkAdapters', [])
 
-        # Find OS disk
+        # Find OS disk and validate
+        os_disk_found = False
         for disk in machine_disks:
             if site_type == SiteTypes.HyperVSites.value:
                 disk_id = disk.get('instanceId')
@@ -1269,6 +1328,8 @@ def construct_disk_and_nic_mapping(is_power_user_mode,
                 disk_size = disk.get('maxSizeInBytes', 0)
 
             is_os_disk = disk_id == os_disk_id
+            if is_os_disk:
+                os_disk_found = True
             # Round up to GB
             disk_size_gb = (disk_size + (1024 ** 3 - 1)) // (1024 ** 3)
             disk_obj = {
@@ -1279,6 +1340,14 @@ def construct_disk_and_nic_mapping(is_power_user_mode,
                 'isOSDisk': is_os_disk
             }
             disks.append(disk_obj)
+
+        # Validate that the specified OS disk was found
+        if not os_disk_found:
+            available_disks = [d['diskId'] for d in disks]
+            raise CLIError(
+                f"The specified OS disk ID '{os_disk_id}' was not found in the machine's disks. "
+                f"Available disk IDs: {', '.join(available_disks)}"
+            )
 
         for nic in machine_nics:
             nic_id = nic.get('nicId')
@@ -1306,7 +1375,7 @@ def _handle_configuration_validation(cmd,
                                      site_type):
     protected_item_name = machine_name
     protected_item_uri = (
-        f"subscriptions/{subscription_id}/resourceGroups"
+        f"/subscriptions/{subscription_id}/resourceGroups"
         f"/{resource_group_name}/providers/Microsoft.DataReplication"
         f"/replicationVaults/{replication_vault_name}"
         f"/protectedItems/{protected_item_name}"
@@ -1318,13 +1387,24 @@ def _handle_configuration_validation(cmd,
             protected_item_uri,
             APIVersion.Microsoft_DataReplication.value)
         if existing_item:
-            raise CLIError(
-                f"A replication already exists for machine "
-                f"'{machine_name}'. "
-                "Remove it first before creating a new one.")
+            protection_state = existing_item.get('properties', {}).get('protectionState')
+            logger.warning(f"Found existing protected item: {existing_item.get('id', 'unknown')}, state: {protection_state}")
+            
+            # If in failed state, offer helpful guidance
+            if protection_state in ['EnablingFailed', 'DisablingFailed', 'Failed']:
+                raise CLIError(
+                    f"A failed replication exists for machine '{machine_name}' (state: {protection_state}). "
+                    f"Please delete it first using Azure Portal or contact Azure Support. "
+                    f"Protected item ID: {protected_item_uri}"
+                )
+            else:
+                raise CLIError(
+                    f"A replication already exists for machine '{machine_name}' (state: {protection_state}). "
+                    "Remove it first before creating a new one.")
     except (CLIError, ValueError, KeyError, TypeError) as e:
         # Check if it's a 404 Not Found error - that's expected and fine
         error_str = str(e)
+        logger.info(f"Exception during protected item check: {error_str}")
         if ("ResourceNotFound" in error_str or "404" in error_str or
                 "Not Found" in error_str):
             existing_item = None
@@ -1367,7 +1447,8 @@ def _handle_configuration_validation(cmd,
                 "(12 TB) for Generation 2 VMs.")
 
     return (hyperv_generation, source_cpu_cores, is_source_dynamic_memory,
-            source_memory_mb, protected_item_uri)
+            source_memory_mb, protected_item_uri, target_vm_cpu_core, 
+            target_vm_ram)
 
 
 def _build_custom_properties(instance_type, custom_location_id,
@@ -1469,7 +1550,8 @@ def create_protected_item(cmd,
         site_type
     )
     (hyperv_generation, source_cpu_cores, is_source_dynamic_memory,
-     source_memory_mb, protected_item_uri) = config_result
+     source_memory_mb, protected_item_uri, target_vm_cpu_core,
+     target_vm_ram) = config_result
 
     # Construct protected item properties with only the essential properties
     custom_properties = _build_custom_properties(

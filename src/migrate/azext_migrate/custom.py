@@ -271,7 +271,7 @@ def new_local_server_replication(cmd,
         construct_disk_and_nic_mapping,
         create_protected_item)
 
-    rg_uri = validate_server_parameters(
+    rg_uri, machine_id = validate_server_parameters(
         cmd,
         machine_id,
         machine_index,
@@ -451,6 +451,120 @@ def new_local_server_replication(cmd,
         logger.error("Error creating replication: %s", str(e))
         raise
 
+
+def _format_job_output(job_details):
+    """
+    Format job details into a clean, user-friendly output.
+    
+    Args:
+        job_details (dict): Raw job details from the API
+        
+    Returns:
+        dict: Formatted job information
+    """
+    props = job_details.get('properties', {})
+    
+    # Extract key information
+    formatted = {
+        'jobName': job_details.get('name'),
+        'displayName': props.get('displayName'),
+        'state': props.get('state'),
+        'vmName': props.get('objectInternalName'),
+        'startTime': props.get('startTime'),
+        'endTime': props.get('endTime'),
+        'duration': _calculate_duration(props.get('startTime'), props.get('endTime'))
+    }
+    
+    # Add error information if present
+    errors = props.get('errors', [])
+    if errors:
+        formatted['errors'] = [
+            {
+                'message': err.get('message'),
+                'code': err.get('code'),
+                'recommendation': err.get('recommendation')
+            }
+            for err in errors
+        ]
+    
+    # Add task progress
+    tasks = props.get('tasks', [])
+    if tasks:
+        formatted['tasks'] = [
+            {
+                'name': task.get('taskName'),
+                'state': task.get('state'),
+                'duration': _calculate_duration(task.get('startTime'), task.get('endTime'))
+            }
+            for task in tasks
+        ]
+    
+    return formatted
+
+
+def _calculate_duration(start_time, end_time):
+    """Calculate duration between two timestamps."""
+    if not start_time:
+        return None
+    
+    from datetime import datetime
+    try:
+        start = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
+        if end_time:
+            end = datetime.fromisoformat(end_time.replace('Z', '+00:00'))
+            duration = end - start
+            total_seconds = int(duration.total_seconds())
+            minutes, seconds = divmod(total_seconds, 60)
+            hours, minutes = divmod(minutes, 60)
+            
+            if hours > 0:
+                return f"{hours}h {minutes}m {seconds}s"
+            elif minutes > 0:
+                return f"{minutes}m {seconds}s"
+            else:
+                return f"{seconds}s"
+        else:
+            # Job still running
+            now = datetime.utcnow()
+            duration = now - start
+            total_seconds = int(duration.total_seconds())
+            minutes, seconds = divmod(total_seconds, 60)
+            hours, minutes = divmod(minutes, 60)
+            
+            if hours > 0:
+                return f"{hours}h {minutes}m (in progress)"
+            elif minutes > 0:
+                return f"{minutes}m {seconds}s (in progress)"
+            else:
+                return f"{seconds}s (in progress)"
+    except Exception:
+        return None
+
+
+def _format_job_summary(job_details):
+    """
+    Format job details into a summary for list output.
+    
+    Args:
+        job_details (dict): Raw job details from the API
+        
+    Returns:
+        dict: Formatted job summary
+    """
+    props = job_details.get('properties', {})
+    
+    return {
+        'jobName': job_details.get('name'),
+        'displayName': props.get('displayName'),
+        'state': props.get('state'),
+        'vmName': props.get('objectInternalName'),
+        'startTime': props.get('startTime'),
+        'endTime': props.get('endTime'),
+        'duration': _calculate_duration(props.get('startTime'), props.get('endTime')),
+        'hasErrors': len(props.get('errors', [])) > 0
+    }
+
+
 def get_local_replication_job(cmd,
                               job_id=None,
                               resource_group_name=None,
@@ -532,7 +646,7 @@ def get_local_replication_job(cmd,
                 raise CLIError(
                     f"Job '{job_name}' not found in vault '{vault_name}'.")
 
-            return job_details
+            return _format_job_output(job_details)
 
         except CLIError:
             raise
@@ -542,6 +656,9 @@ def get_local_replication_job(cmd,
             raise CLIError(f"Failed to retrieve job: {str(e)}")
     else:
         # List all jobs in the vault
+        if not vault_name:
+            raise CLIError("Unable to determine vault name. Please check your project configuration.")
+            
         jobs_uri = (
             f"/subscriptions/{subscription_id}/"
             f"resourceGroups/{resource_group_name}/"
@@ -558,18 +675,19 @@ def get_local_replication_job(cmd,
 
         try:
             response = send_get_request(cmd, request_uri)
-            response_data = response.json()
+            response_data = response.json() if response else {}
 
             jobs = response_data.get('value', [])
 
             # Handle pagination if nextLink is present
-            while 'nextLink' in response_data:
+            while response_data and 'nextLink' in response_data:
                 next_link = response_data['nextLink']
                 response = send_get_request(cmd, next_link)
-                response_data = response.json()
+                response_data = response.json() if response else {}
                 jobs.extend(response_data.get('value', []))
 
-            return jobs
+            # Format the jobs for cleaner output
+            return [_format_job_summary(job) for job in jobs]
 
         except Exception as e:
             logger.error("Error listing jobs: %s", str(e))
