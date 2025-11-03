@@ -106,7 +106,14 @@ def _normalize_targets_arg(raw_targets):
     else:
         values = [raw_targets]
 
-    return [str(v) for v in values if v is not None]
+    normalized_values = []
+    for value in values:
+        if value is None:
+            continue
+        text = str(value).strip()
+        if text:
+            normalized_values.append(text)
+    return normalized_values
 
 
 def _inject_targets_into_result(data, targets):
@@ -171,7 +178,7 @@ class ChangeStateCreate(_ChangeStateCreate):
                 options=["--targets"],
                 help=(
                     "Target definitions expressed as key=value pairs separated by commas or semicolons. "
-                    "Example: --targets \"resourceId=<id>,operation=delete\""
+                    "Example: --targets \"resourceId=RESOURCE_ID,operation=delete\""
                 ),
             )
             schema.targets.Element = AAZStrArg()
@@ -311,7 +318,7 @@ class ChangeStateUpdate(_ChangeStateUpdate):
                 options=["--targets"],
                 help=(
                     "Optional target definitions expressed as key=value pairs separated by commas or semicolons. "
-                    "Example: --targets \"resourceId=<id>,operation=delete\""
+                    "Example: --targets \"resourceId=RESOURCE_ID,operation=delete\""
                 ),
             )
             schema.targets.Element = AAZStrArg()
