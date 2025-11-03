@@ -11,6 +11,19 @@ from enum import Enum
 from azure.core import CaseInsensitiveEnumMeta
 
 
+class AccelerationMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Enable advanced network acceleration options. This allows users to configure acceleration using
+    BPF host routing. This can be enabled only with Cilium dataplane. If not specified, the default
+    value is None (no acceleration). The acceleration mode can be changed on a pre-existing
+    cluster. See https://aka.ms/acnsperformance for a detailed explanation.
+    """
+
+    BPF_VETH = "BpfVeth"
+    """Enable eBPF host routing with veth device mode."""
+    NONE = "None"
+    """Disable acceleration options."""
+
+
 class AddonAutoscaling(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Whether VPA add-on is enabled and configured to scale AKS-managed add-ons."""
 
@@ -82,7 +95,11 @@ class AgentPoolSSHAccess(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     LOCAL_USER = "LocalUser"
     """Can SSH onto the node as a local user using private key."""
     DISABLED = "Disabled"
-    """SSH service will be turned off on the node."""
+    """SSH service will be turned off on the node. More information can be found under
+    https://aka.ms/aks/ssh/disable"""
+    ENTRA_ID = "EntraId"
+    """SSH to node with EntraId integration. More information can be found under
+    https://aka.ms/aks/ssh/aad"""
 
 
 class AgentPoolType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -321,6 +338,23 @@ class IstioIngressGatewayMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The ingress gateway is assigned an internal IP address and cannot is accessed publicly."""
 
 
+class JWTAuthenticatorProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The provisioning state of the last accepted operation."""
+
+    SUCCEEDED = "Succeeded"
+    """Resource has been created."""
+    FAILED = "Failed"
+    """Resource creation failed."""
+    CANCELED = "Canceled"
+    """Resource creation was canceled."""
+    CREATING = "Creating"
+    """The JWT authenticator is being created."""
+    UPDATING = "Updating"
+    """The JWT authenticator is being updated."""
+    DELETING = "Deleting"
+    """The JWT authenticator is being deleted."""
+
+
 class KeyVaultNetworkAccessTypes(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Network access of the key vault. Network access of key vault. The possible values are
     ``Public`` and ``Private``. ``Public`` means the key vault allows public access from all
@@ -516,13 +550,32 @@ class ManagedGatewayType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     https://gateway-api.sigs.k8s.io/concepts/versioning/ for more details."""
 
 
+class MeshMembershipProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The provisioning state of the last accepted operation."""
+
+    CANCELED = "Canceled"
+    """Resource creation was canceled."""
+    CREATING = "Creating"
+    """The Mesh Membership is being created."""
+    DELETING = "Deleting"
+    """The Mesh Membership is being deleted."""
+    FAILED = "Failed"
+    """Resource creation failed."""
+    SUCCEEDED = "Succeeded"
+    """Resource has been created."""
+    UPDATING = "Updating"
+    """The Mesh Membership is being updated."""
+
+
 class Mode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Specify which proxy mode to use ('IPTABLES' or 'IPVS')."""
+    """Specify which proxy mode to use ('IPTABLES', 'IPVS' or 'NFTABLES')."""
 
     IPTABLES = "IPTABLES"
     """IPTables proxy mode"""
     IPVS = "IPVS"
     """IPVS proxy mode. Must be using Kubernetes version >= 1.22."""
+    NFTABLES = "NFTABLES"
+    """NFTables proxy mode. Must be using Kubernetes version >= 1.33."""
 
 
 class NamespaceProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -722,6 +775,16 @@ class OSSKU(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     AZURE_LINUX = "AzureLinux"
     """Use AzureLinux as the OS for node images. Azure Linux is a container-optimized Linux distro
     built by Microsoft, visit https://aka.ms/azurelinux for more information."""
+    AZURE_LINUX3 = "AzureLinux3"
+    """Use AzureLinux3 as the OS for node images. Azure Linux is a container-optimized Linux distro
+    built by Microsoft, visit https://aka.ms/azurelinux for more information. For limitations,
+    visit https://aka.ms/aks/node-images. For OS migration guidance, see
+    https://aka.ms/aks/upgrade-os-version."""
+    FLATCAR = "Flatcar"
+    """Use Flatcar Container Linux as the OS for node images. Flatcar is a container-optimized,
+    security-focused Linux OS, with an immutable filesystem and part of the Cloud Native Computing
+    Foundation (CNCF). For more information about Flatcar Container Linux for AKS, see
+    aka.ms/aks/flatcar-container-linux-for-aks"""
     CBL_MARINER = "CBLMariner"
     """Deprecated OSSKU. Microsoft recommends that new deployments choose 'AzureLinux' instead."""
     WINDOWS2019 = "Windows2019"
@@ -841,6 +904,16 @@ class Protocol(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """TCP protocol."""
     UDP = "UDP"
     """UDP protocol."""
+
+
+class ProxyRedirectionMechanism(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Mode of traffic redirection."""
+
+    INIT_CONTAINERS = "InitContainers"
+    """Istio will inject an init container into each pod to redirect traffic (requires NET_ADMIN and
+    NET_RAW)."""
+    CNI_CHAINING = "CNIChaining"
+    """Istio will install a chained CNI plugin to redirect traffic (recommended)."""
 
 
 class PublicNetworkAccess(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -1058,6 +1131,16 @@ class UpgradeChannel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Disables auto-upgrades and keeps the cluster at its current version of Kubernetes."""
 
 
+class UpgradeStrategy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Defines the upgrade strategy for the agent pool. The default is Rolling."""
+
+    ROLLING = "Rolling"
+    """Specifies that the agent pool will conduct rolling upgrade. This is the default upgrade
+    strategy."""
+    BLUE_GREEN = "BlueGreen"
+    """Specifies that the agent pool will conduct blue-green upgrade."""
+
+
 class VmState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Virtual machine state. Indicates the current state of the underlying virtual machine."""
 
@@ -1089,4 +1172,9 @@ class WorkloadRuntime(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     KATA_MSHV_VM_ISOLATION = "KataMshvVmIsolation"
     """Nodes can use (Kata + Cloud Hypervisor + Hyper-V) to enable Nested VM-based pods (Preview). Due
     to the use Hyper-V, AKS node OS itself is a nested VM (the root OS) of Hyper-V. Thus it can
-    only be used with VM series that support Nested Virtualization such as Dv3 series."""
+    only be used with VM series that support Nested Virtualization such as Dv3 series. This naming
+    convention will be deprecated in future releases in favor of KataVmIsolation."""
+    KATA_VM_ISOLATION = "KataVmIsolation"
+    """Nodes can use (Kata + Cloud Hypervisor + Hyper-V) to enable Nested VM-based pods. Due to the
+    use Hyper-V, AKS node OS itself is a nested VM (the root OS) of Hyper-V. Thus it can only be
+    used with VM series that support Nested Virtualization such as Dv3 series."""

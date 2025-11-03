@@ -1,4 +1,4 @@
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines,too-many-statements
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -7,7 +7,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from io import IOBase
-from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
+import sys
+from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, IO, Optional, Type, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
@@ -17,6 +18,8 @@ from azure.core.exceptions import (
     ResourceExistsError,
     ResourceNotFoundError,
     ResourceNotModifiedError,
+    StreamClosedError,
+    StreamConsumedError,
     map_error,
 )
 from azure.core.pipeline import PipelineResponse
@@ -37,10 +40,16 @@ from ...operations._operations import (
     build_artifact_manifests_list_credential_request,
     build_artifact_manifests_update_request,
     build_artifact_manifests_update_state_request,
+    build_artifact_stores_add_network_fabric_controller_end_points_request,
+    build_artifact_stores_approve_private_end_points_request,
     build_artifact_stores_create_or_update_request,
+    build_artifact_stores_delete_network_fabric_controller_end_points_request,
     build_artifact_stores_delete_request,
     build_artifact_stores_get_request,
     build_artifact_stores_list_by_publisher_request,
+    build_artifact_stores_list_network_fabric_controller_private_end_points_request,
+    build_artifact_stores_list_private_end_points_request,
+    build_artifact_stores_remove_private_end_points_request,
     build_artifact_stores_update_request,
     build_components_get_request,
     build_components_list_by_network_function_request,
@@ -109,6 +118,10 @@ from ...operations._operations import (
     build_sites_update_tags_request,
 )
 
+if sys.version_info >= (3, 9):
+    from collections.abc import MutableMapping
+else:
+    from typing import MutableMapping  # type: ignore  # pylint: disable=ungrouped-imports
 T = TypeVar("T")
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
@@ -151,13 +164,11 @@ class ConfigurationGroupSchemasOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[
-            _models._models.ConfigurationGroupSchemaListResult
-        ] = kwargs.pop(  # pylint: disable=protected-access
+        cls: ClsType[_models._models.ConfigurationGroupSchemaListResult] = kwargs.pop(
             "cls", None
-        )
+        )  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -168,7 +179,7 @@ class ConfigurationGroupSchemasOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_configuration_group_schemas_list_by_publisher_request(
+                _request = build_configuration_group_schemas_list_by_publisher_request(
                     resource_group_name=resource_group_name,
                     publisher_name=publisher_name,
                     subscription_id=self._config.subscription_id,
@@ -176,7 +187,7 @@ class ConfigurationGroupSchemasOperations:
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -188,12 +199,12 @@ class ConfigurationGroupSchemasOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -206,17 +217,15 @@ class ConfigurationGroupSchemasOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -225,10 +234,10 @@ class ConfigurationGroupSchemasOperations:
 
         return AsyncItemPaged(get_next, extract_data)
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+    async def _delete_initial(
         self, resource_group_name: str, publisher_name: str, configuration_group_schema_name: str, **kwargs: Any
-    ) -> None:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -239,9 +248,9 @@ class ConfigurationGroupSchemasOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        request = build_configuration_group_schemas_delete_request(
+        _request = build_configuration_group_schemas_delete_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             configuration_group_schema_name=configuration_group_schema_name,
@@ -250,18 +259,20 @@ class ConfigurationGroupSchemasOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
-            if _stream:
+        if response.status_code not in [202, 204]:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -270,8 +281,12 @@ class ConfigurationGroupSchemasOperations:
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(
@@ -286,13 +301,6 @@ class ConfigurationGroupSchemasOperations:
         :type publisher_name: str
         :param configuration_group_schema_name: The name of the configuration group schema. Required.
         :type configuration_group_schema_name: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -305,7 +313,7 @@ class ConfigurationGroupSchemasOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
                 configuration_group_schema_name=configuration_group_schema_name,
@@ -314,11 +322,12 @@ class ConfigurationGroupSchemasOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -329,23 +338,23 @@ class ConfigurationGroupSchemasOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _create_or_update_initial(
         self,
         resource_group_name: str,
         publisher_name: str,
         configuration_group_schema_name: str,
-        parameters: Union[_models.ConfigurationGroupSchema, IO],
+        parameters: Union[_models.ConfigurationGroupSchema, IO[bytes]],
         **kwargs: Any
-    ) -> _models.ConfigurationGroupSchema:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -357,7 +366,7 @@ class ConfigurationGroupSchemasOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ConfigurationGroupSchema] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -367,7 +376,7 @@ class ConfigurationGroupSchemasOperations:
         else:
             _json = self._serialize.body(parameters, "ConfigurationGroupSchema")
 
-        request = build_configuration_group_schemas_create_or_update_request(
+        _request = build_configuration_group_schemas_create_or_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             configuration_group_schema_name=configuration_group_schema_name,
@@ -379,27 +388,25 @@ class ConfigurationGroupSchemasOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("ConfigurationGroupSchema", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("ConfigurationGroupSchema", pipeline_response)
+        deserialized = response.iter_bytes()
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -432,13 +439,6 @@ class ConfigurationGroupSchemasOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ConfigurationGroupSchema
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ConfigurationGroupSchema]
@@ -451,7 +451,7 @@ class ConfigurationGroupSchemasOperations:
         resource_group_name: str,
         publisher_name: str,
         configuration_group_schema_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -467,17 +467,10 @@ class ConfigurationGroupSchemasOperations:
         :type configuration_group_schema_name: str
         :param parameters: Parameters supplied to the create or update configuration group schema
          resource. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ConfigurationGroupSchema
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ConfigurationGroupSchema]
@@ -490,7 +483,7 @@ class ConfigurationGroupSchemasOperations:
         resource_group_name: str,
         publisher_name: str,
         configuration_group_schema_name: str,
-        parameters: Union[_models.ConfigurationGroupSchema, IO],
+        parameters: Union[_models.ConfigurationGroupSchema, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ConfigurationGroupSchema]:
         """Creates or updates a configuration group schema.
@@ -503,18 +496,8 @@ class ConfigurationGroupSchemasOperations:
         :param configuration_group_schema_name: The name of the configuration group schema. Required.
         :type configuration_group_schema_name: str
         :param parameters: Parameters supplied to the create or update configuration group schema
-         resource. Is either a ConfigurationGroupSchema type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.ConfigurationGroupSchema or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         resource. Is either a ConfigurationGroupSchema type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ConfigurationGroupSchema or IO[bytes]
         :return: An instance of AsyncLROPoller that returns ConfigurationGroupSchema
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ConfigurationGroupSchema]
@@ -540,12 +523,13 @@ class ConfigurationGroupSchemasOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ConfigurationGroupSchema", pipeline_response)
+            deserialized = self._deserialize("ConfigurationGroupSchema", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -558,13 +542,15 @@ class ConfigurationGroupSchemasOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.ConfigurationGroupSchema].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.ConfigurationGroupSchema](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @distributed_trace_async
     async def get(
@@ -583,7 +569,7 @@ class ConfigurationGroupSchemasOperations:
         :rtype: ~Microsoft.HybridNetwork.models.ConfigurationGroupSchema
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -596,7 +582,7 @@ class ConfigurationGroupSchemasOperations:
 
         cls: ClsType[_models.ConfigurationGroupSchema] = kwargs.pop("cls", None)
 
-        request = build_configuration_group_schemas_get_request(
+        _request = build_configuration_group_schemas_get_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             configuration_group_schema_name=configuration_group_schema_name,
@@ -605,28 +591,26 @@ class ConfigurationGroupSchemasOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ConfigurationGroupSchema", pipeline_response)
+        deserialized = self._deserialize("ConfigurationGroupSchema", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @overload
     async def update(
@@ -665,7 +649,7 @@ class ConfigurationGroupSchemasOperations:
         resource_group_name: str,
         publisher_name: str,
         configuration_group_schema_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -681,7 +665,7 @@ class ConfigurationGroupSchemasOperations:
         :type configuration_group_schema_name: str
         :param parameters: Parameters supplied to the create or update network service design version
          operation. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -696,7 +680,7 @@ class ConfigurationGroupSchemasOperations:
         resource_group_name: str,
         publisher_name: str,
         configuration_group_schema_name: str,
-        parameters: Union[_models.TagsObject, IO],
+        parameters: Union[_models.TagsObject, IO[bytes]],
         **kwargs: Any
     ) -> _models.ConfigurationGroupSchema:
         """Updates a configuration group schema resource.
@@ -709,16 +693,13 @@ class ConfigurationGroupSchemasOperations:
         :param configuration_group_schema_name: The name of the configuration group schema. Required.
         :type configuration_group_schema_name: str
         :param parameters: Parameters supplied to the create or update network service design version
-         operation. Is either a TagsObject type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
+         operation. Is either a TagsObject type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO[bytes]
         :return: ConfigurationGroupSchema
         :rtype: ~Microsoft.HybridNetwork.models.ConfigurationGroupSchema
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -740,7 +721,7 @@ class ConfigurationGroupSchemasOperations:
         else:
             _json = self._serialize.body(parameters, "TagsObject")
 
-        request = build_configuration_group_schemas_update_request(
+        _request = build_configuration_group_schemas_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             configuration_group_schema_name=configuration_group_schema_name,
@@ -752,38 +733,36 @@ class ConfigurationGroupSchemasOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ConfigurationGroupSchema", pipeline_response)
+        deserialized = self._deserialize("ConfigurationGroupSchema", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     async def _update_state_initial(
         self,
         resource_group_name: str,
         publisher_name: str,
         configuration_group_schema_name: str,
-        parameters: Union[_models.ConfigurationGroupSchemaVersionUpdateState, IO],
+        parameters: Union[_models.ConfigurationGroupSchemaVersionUpdateState, IO[bytes]],
         **kwargs: Any
-    ) -> Optional[_models.ConfigurationGroupSchemaVersionUpdateState]:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -795,7 +774,7 @@ class ConfigurationGroupSchemasOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[Optional[_models.ConfigurationGroupSchemaVersionUpdateState]] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -805,7 +784,7 @@ class ConfigurationGroupSchemasOperations:
         else:
             _json = self._serialize.body(parameters, "ConfigurationGroupSchemaVersionUpdateState")
 
-        request = build_configuration_group_schemas_update_state_request(
+        _request = build_configuration_group_schemas_update_state_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             configuration_group_schema_name=configuration_group_schema_name,
@@ -817,34 +796,34 @@ class ConfigurationGroupSchemasOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         response_headers = {}
-        if response.status_code == 200:
-            deserialized = self._deserialize("ConfigurationGroupSchemaVersionUpdateState", pipeline_response)
-
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)
+        deserialized = response.iter_bytes()
 
-        return deserialized
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @overload
     async def begin_update_state(
@@ -872,13 +851,6 @@ class ConfigurationGroupSchemasOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ConfigurationGroupSchemaVersionUpdateState
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ConfigurationGroupSchemaVersionUpdateState]
@@ -891,7 +863,7 @@ class ConfigurationGroupSchemasOperations:
         resource_group_name: str,
         publisher_name: str,
         configuration_group_schema_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -907,17 +879,10 @@ class ConfigurationGroupSchemasOperations:
         :type configuration_group_schema_name: str
         :param parameters: Parameters supplied to update the state of configuration group schema.
          Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ConfigurationGroupSchemaVersionUpdateState
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ConfigurationGroupSchemaVersionUpdateState]
@@ -930,7 +895,7 @@ class ConfigurationGroupSchemasOperations:
         resource_group_name: str,
         publisher_name: str,
         configuration_group_schema_name: str,
-        parameters: Union[_models.ConfigurationGroupSchemaVersionUpdateState, IO],
+        parameters: Union[_models.ConfigurationGroupSchemaVersionUpdateState, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ConfigurationGroupSchemaVersionUpdateState]:
         """Update configuration group schema state.
@@ -943,19 +908,9 @@ class ConfigurationGroupSchemasOperations:
         :param configuration_group_schema_name: The name of the configuration group schema. Required.
         :type configuration_group_schema_name: str
         :param parameters: Parameters supplied to update the state of configuration group schema. Is
-         either a ConfigurationGroupSchemaVersionUpdateState type or a IO type. Required.
+         either a ConfigurationGroupSchemaVersionUpdateState type or a IO[bytes] type. Required.
         :type parameters: ~Microsoft.HybridNetwork.models.ConfigurationGroupSchemaVersionUpdateState or
-         IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         IO[bytes]
         :return: An instance of AsyncLROPoller that returns ConfigurationGroupSchemaVersionUpdateState
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ConfigurationGroupSchemaVersionUpdateState]
@@ -981,12 +936,15 @@ class ConfigurationGroupSchemasOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ConfigurationGroupSchemaVersionUpdateState", pipeline_response)
+            deserialized = self._deserialize(
+                "ConfigurationGroupSchemaVersionUpdateState", pipeline_response.http_response
+            )
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -998,13 +956,15 @@ class ConfigurationGroupSchemasOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.ConfigurationGroupSchemaVersionUpdateState].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.ConfigurationGroupSchemaVersionUpdateState](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
 
 class ConfigurationGroupValuesOperations:
@@ -1026,10 +986,10 @@ class ConfigurationGroupValuesOperations:
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+    async def _delete_initial(
         self, resource_group_name: str, configuration_group_value_name: str, **kwargs: Any
-    ) -> None:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1040,9 +1000,9 @@ class ConfigurationGroupValuesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        request = build_configuration_group_values_delete_request(
+        _request = build_configuration_group_values_delete_request(
             resource_group_name=resource_group_name,
             configuration_group_value_name=configuration_group_value_name,
             subscription_id=self._config.subscription_id,
@@ -1050,18 +1010,20 @@ class ConfigurationGroupValuesOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
-            if _stream:
+        if response.status_code not in [202, 204]:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -1070,8 +1032,12 @@ class ConfigurationGroupValuesOperations:
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(
@@ -1084,13 +1050,6 @@ class ConfigurationGroupValuesOperations:
         :type resource_group_name: str
         :param configuration_group_value_name: The name of the configuration group value. Required.
         :type configuration_group_value_name: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -1103,7 +1062,7 @@ class ConfigurationGroupValuesOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 configuration_group_value_name=configuration_group_value_name,
                 cls=lambda x, y, z: x,
@@ -1111,11 +1070,12 @@ class ConfigurationGroupValuesOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -1126,13 +1086,13 @@ class ConfigurationGroupValuesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     @distributed_trace_async
     async def get(
@@ -1149,7 +1109,7 @@ class ConfigurationGroupValuesOperations:
         :rtype: ~Microsoft.HybridNetwork.models.ConfigurationGroupValue
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1162,7 +1122,7 @@ class ConfigurationGroupValuesOperations:
 
         cls: ClsType[_models.ConfigurationGroupValue] = kwargs.pop("cls", None)
 
-        request = build_configuration_group_values_get_request(
+        _request = build_configuration_group_values_get_request(
             resource_group_name=resource_group_name,
             configuration_group_value_name=configuration_group_value_name,
             subscription_id=self._config.subscription_id,
@@ -1170,37 +1130,35 @@ class ConfigurationGroupValuesOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ConfigurationGroupValue", pipeline_response)
+        deserialized = self._deserialize("ConfigurationGroupValue", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     async def _create_or_update_initial(
         self,
         resource_group_name: str,
         configuration_group_value_name: str,
-        parameters: Union[_models.ConfigurationGroupValue, IO],
+        parameters: Union[_models.ConfigurationGroupValue, IO[bytes]],
         **kwargs: Any
-    ) -> _models.ConfigurationGroupValue:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1212,7 +1170,7 @@ class ConfigurationGroupValuesOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ConfigurationGroupValue] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -1222,7 +1180,7 @@ class ConfigurationGroupValuesOperations:
         else:
             _json = self._serialize.body(parameters, "ConfigurationGroupValue")
 
-        request = build_configuration_group_values_create_or_update_request(
+        _request = build_configuration_group_values_create_or_update_request(
             resource_group_name=resource_group_name,
             configuration_group_value_name=configuration_group_value_name,
             subscription_id=self._config.subscription_id,
@@ -1233,27 +1191,25 @@ class ConfigurationGroupValuesOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("ConfigurationGroupValue", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("ConfigurationGroupValue", pipeline_response)
+        deserialized = response.iter_bytes()
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -1283,13 +1239,6 @@ class ConfigurationGroupValuesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ConfigurationGroupValue
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ConfigurationGroupValue]
@@ -1301,7 +1250,7 @@ class ConfigurationGroupValuesOperations:
         self,
         resource_group_name: str,
         configuration_group_value_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -1315,17 +1264,10 @@ class ConfigurationGroupValuesOperations:
         :type configuration_group_value_name: str
         :param parameters: Parameters supplied to the create or update configuration group value
          resource. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ConfigurationGroupValue
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ConfigurationGroupValue]
@@ -1337,7 +1279,7 @@ class ConfigurationGroupValuesOperations:
         self,
         resource_group_name: str,
         configuration_group_value_name: str,
-        parameters: Union[_models.ConfigurationGroupValue, IO],
+        parameters: Union[_models.ConfigurationGroupValue, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ConfigurationGroupValue]:
         """Creates or updates a hybrid configuration group value.
@@ -1348,18 +1290,8 @@ class ConfigurationGroupValuesOperations:
         :param configuration_group_value_name: The name of the configuration group value. Required.
         :type configuration_group_value_name: str
         :param parameters: Parameters supplied to the create or update configuration group value
-         resource. Is either a ConfigurationGroupValue type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.ConfigurationGroupValue or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         resource. Is either a ConfigurationGroupValue type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ConfigurationGroupValue or IO[bytes]
         :return: An instance of AsyncLROPoller that returns ConfigurationGroupValue
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ConfigurationGroupValue]
@@ -1384,12 +1316,13 @@ class ConfigurationGroupValuesOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ConfigurationGroupValue", pipeline_response)
+            deserialized = self._deserialize("ConfigurationGroupValue", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -1402,13 +1335,15 @@ class ConfigurationGroupValuesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.ConfigurationGroupValue].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.ConfigurationGroupValue](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @overload
     async def update_tags(
@@ -1442,7 +1377,7 @@ class ConfigurationGroupValuesOperations:
         self,
         resource_group_name: str,
         configuration_group_value_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -1455,7 +1390,7 @@ class ConfigurationGroupValuesOperations:
         :param configuration_group_value_name: The name of the configuration group value. Required.
         :type configuration_group_value_name: str
         :param parameters: Parameters supplied to update configuration group values tags. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -1469,7 +1404,7 @@ class ConfigurationGroupValuesOperations:
         self,
         resource_group_name: str,
         configuration_group_value_name: str,
-        parameters: Union[_models.TagsObject, IO],
+        parameters: Union[_models.TagsObject, IO[bytes]],
         **kwargs: Any
     ) -> _models.ConfigurationGroupValue:
         """Updates a hybrid configuration group tags.
@@ -1480,16 +1415,13 @@ class ConfigurationGroupValuesOperations:
         :param configuration_group_value_name: The name of the configuration group value. Required.
         :type configuration_group_value_name: str
         :param parameters: Parameters supplied to update configuration group values tags. Is either a
-         TagsObject type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
+         TagsObject type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO[bytes]
         :return: ConfigurationGroupValue
         :rtype: ~Microsoft.HybridNetwork.models.ConfigurationGroupValue
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1511,7 +1443,7 @@ class ConfigurationGroupValuesOperations:
         else:
             _json = self._serialize.body(parameters, "TagsObject")
 
-        request = build_configuration_group_values_update_tags_request(
+        _request = build_configuration_group_values_update_tags_request(
             resource_group_name=resource_group_name,
             configuration_group_value_name=configuration_group_value_name,
             subscription_id=self._config.subscription_id,
@@ -1522,28 +1454,26 @@ class ConfigurationGroupValuesOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ConfigurationGroupValue", pipeline_response)
+        deserialized = self._deserialize("ConfigurationGroupValue", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @distributed_trace
     def list_by_subscription(self, **kwargs: Any) -> AsyncIterable["_models.ConfigurationGroupValue"]:
@@ -1557,13 +1487,11 @@ class ConfigurationGroupValuesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[
-            _models._models.ConfigurationGroupValueListResult
-        ] = kwargs.pop(  # pylint: disable=protected-access
+        cls: ClsType[_models._models.ConfigurationGroupValueListResult] = kwargs.pop(
             "cls", None
-        )
+        )  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1574,13 +1502,13 @@ class ConfigurationGroupValuesOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_configuration_group_values_list_by_subscription_request(
+                _request = build_configuration_group_values_list_by_subscription_request(
                     subscription_id=self._config.subscription_id,
                     api_version=self._config.api_version,
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -1592,12 +1520,12 @@ class ConfigurationGroupValuesOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -1609,17 +1537,15 @@ class ConfigurationGroupValuesOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -1645,13 +1571,11 @@ class ConfigurationGroupValuesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[
-            _models._models.ConfigurationGroupValueListResult
-        ] = kwargs.pop(  # pylint: disable=protected-access
+        cls: ClsType[_models._models.ConfigurationGroupValueListResult] = kwargs.pop(
             "cls", None
-        )
+        )  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1662,14 +1586,14 @@ class ConfigurationGroupValuesOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_configuration_group_values_list_by_resource_group_request(
+                _request = build_configuration_group_values_list_by_resource_group_request(
                     resource_group_name=resource_group_name,
                     subscription_id=self._config.subscription_id,
                     api_version=self._config.api_version,
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -1681,12 +1605,12 @@ class ConfigurationGroupValuesOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -1698,17 +1622,15 @@ class ConfigurationGroupValuesOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -1737,10 +1659,10 @@ class NetworkFunctionsOperations:
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+    async def _delete_initial(
         self, resource_group_name: str, network_function_name: str, **kwargs: Any
-    ) -> None:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1751,9 +1673,9 @@ class NetworkFunctionsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        request = build_network_functions_delete_request(
+        _request = build_network_functions_delete_request(
             resource_group_name=resource_group_name,
             network_function_name=network_function_name,
             subscription_id=self._config.subscription_id,
@@ -1761,18 +1683,20 @@ class NetworkFunctionsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202, 204]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -1781,8 +1705,12 @@ class NetworkFunctionsOperations:
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(
@@ -1795,13 +1723,6 @@ class NetworkFunctionsOperations:
         :type resource_group_name: str
         :param network_function_name: The name of the network function. Required.
         :type network_function_name: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -1814,7 +1735,7 @@ class NetworkFunctionsOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 network_function_name=network_function_name,
                 cls=lambda x, y, z: x,
@@ -1822,11 +1743,12 @@ class NetworkFunctionsOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -1837,13 +1759,13 @@ class NetworkFunctionsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     @distributed_trace_async
     async def get(self, resource_group_name: str, network_function_name: str, **kwargs: Any) -> _models.NetworkFunction:
@@ -1858,7 +1780,7 @@ class NetworkFunctionsOperations:
         :rtype: ~Microsoft.HybridNetwork.models.NetworkFunction
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1871,7 +1793,7 @@ class NetworkFunctionsOperations:
 
         cls: ClsType[_models.NetworkFunction] = kwargs.pop("cls", None)
 
-        request = build_network_functions_get_request(
+        _request = build_network_functions_get_request(
             resource_group_name=resource_group_name,
             network_function_name=network_function_name,
             subscription_id=self._config.subscription_id,
@@ -1879,37 +1801,35 @@ class NetworkFunctionsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("NetworkFunction", pipeline_response)
+        deserialized = self._deserialize("NetworkFunction", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     async def _create_or_update_initial(
         self,
         resource_group_name: str,
         network_function_name: str,
-        parameters: Union[_models.NetworkFunction, IO],
+        parameters: Union[_models.NetworkFunction, IO[bytes]],
         **kwargs: Any
-    ) -> _models.NetworkFunction:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -1921,7 +1841,7 @@ class NetworkFunctionsOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.NetworkFunction] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -1931,7 +1851,7 @@ class NetworkFunctionsOperations:
         else:
             _json = self._serialize.body(parameters, "NetworkFunction")
 
-        request = build_network_functions_create_or_update_request(
+        _request = build_network_functions_create_or_update_request(
             resource_group_name=resource_group_name,
             network_function_name=network_function_name,
             subscription_id=self._config.subscription_id,
@@ -1942,27 +1862,25 @@ class NetworkFunctionsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("NetworkFunction", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("NetworkFunction", pipeline_response)
+        deserialized = response.iter_bytes()
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -1992,13 +1910,6 @@ class NetworkFunctionsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkFunction
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkFunction]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -2009,7 +1920,7 @@ class NetworkFunctionsOperations:
         self,
         resource_group_name: str,
         network_function_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -2023,17 +1934,10 @@ class NetworkFunctionsOperations:
         :type network_function_name: str
         :param parameters: Parameters supplied in the body to the create or update network function
          operation. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkFunction
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkFunction]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -2044,7 +1948,7 @@ class NetworkFunctionsOperations:
         self,
         resource_group_name: str,
         network_function_name: str,
-        parameters: Union[_models.NetworkFunction, IO],
+        parameters: Union[_models.NetworkFunction, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.NetworkFunction]:
         """Creates or updates a network function resource.
@@ -2055,18 +1959,8 @@ class NetworkFunctionsOperations:
         :param network_function_name: Resource name for the network function resource. Required.
         :type network_function_name: str
         :param parameters: Parameters supplied in the body to the create or update network function
-         operation. Is either a NetworkFunction type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.NetworkFunction or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         operation. Is either a NetworkFunction type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.NetworkFunction or IO[bytes]
         :return: An instance of AsyncLROPoller that returns NetworkFunction
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkFunction]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -2090,12 +1984,13 @@ class NetworkFunctionsOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("NetworkFunction", pipeline_response)
+            deserialized = self._deserialize("NetworkFunction", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -2108,13 +2003,15 @@ class NetworkFunctionsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.NetworkFunction].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.NetworkFunction](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @overload
     async def update_tags(
@@ -2148,7 +2045,7 @@ class NetworkFunctionsOperations:
         self,
         resource_group_name: str,
         network_function_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -2161,7 +2058,7 @@ class NetworkFunctionsOperations:
         :param network_function_name: Resource name for the network function resource. Required.
         :type network_function_name: str
         :param parameters: Parameters supplied to the update network function tags operation. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -2175,7 +2072,7 @@ class NetworkFunctionsOperations:
         self,
         resource_group_name: str,
         network_function_name: str,
-        parameters: Union[_models.TagsObject, IO],
+        parameters: Union[_models.TagsObject, IO[bytes]],
         **kwargs: Any
     ) -> _models.NetworkFunction:
         """Updates the tags for the network function resource.
@@ -2186,16 +2083,13 @@ class NetworkFunctionsOperations:
         :param network_function_name: Resource name for the network function resource. Required.
         :type network_function_name: str
         :param parameters: Parameters supplied to the update network function tags operation. Is either
-         a TagsObject type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
+         a TagsObject type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO[bytes]
         :return: NetworkFunction
         :rtype: ~Microsoft.HybridNetwork.models.NetworkFunction
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -2217,7 +2111,7 @@ class NetworkFunctionsOperations:
         else:
             _json = self._serialize.body(parameters, "TagsObject")
 
-        request = build_network_functions_update_tags_request(
+        _request = build_network_functions_update_tags_request(
             resource_group_name=resource_group_name,
             network_function_name=network_function_name,
             subscription_id=self._config.subscription_id,
@@ -2228,28 +2122,26 @@ class NetworkFunctionsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("NetworkFunction", pipeline_response)
+        deserialized = self._deserialize("NetworkFunction", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @distributed_trace
     def list_by_subscription(self, **kwargs: Any) -> AsyncIterable["_models.NetworkFunction"]:
@@ -2267,7 +2159,7 @@ class NetworkFunctionsOperations:
             "cls", None
         )
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -2278,13 +2170,13 @@ class NetworkFunctionsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_network_functions_list_by_subscription_request(
+                _request = build_network_functions_list_by_subscription_request(
                     subscription_id=self._config.subscription_id,
                     api_version=self._config.api_version,
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -2296,12 +2188,12 @@ class NetworkFunctionsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -2313,17 +2205,15 @@ class NetworkFunctionsOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -2353,7 +2243,7 @@ class NetworkFunctionsOperations:
             "cls", None
         )
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -2364,14 +2254,14 @@ class NetworkFunctionsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_network_functions_list_by_resource_group_request(
+                _request = build_network_functions_list_by_resource_group_request(
                     resource_group_name=resource_group_name,
                     subscription_id=self._config.subscription_id,
                     api_version=self._config.api_version,
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -2383,12 +2273,12 @@ class NetworkFunctionsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -2400,17 +2290,15 @@ class NetworkFunctionsOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -2419,14 +2307,14 @@ class NetworkFunctionsOperations:
 
         return AsyncItemPaged(get_next, extract_data)
 
-    async def _execute_request_initial(  # pylint: disable=inconsistent-return-statements
+    async def _execute_request_initial(
         self,
         resource_group_name: str,
         network_function_name: str,
-        parameters: Union[_models.ExecuteRequestParameters, IO],
+        parameters: Union[_models.ExecuteRequestParameters, IO[bytes]],
         **kwargs: Any
-    ) -> None:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -2438,7 +2326,7 @@ class NetworkFunctionsOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -2448,7 +2336,7 @@ class NetworkFunctionsOperations:
         else:
             _json = self._serialize.body(parameters, "ExecuteRequestParameters")
 
-        request = build_network_functions_execute_request_request(
+        _request = build_network_functions_execute_request_request(
             resource_group_name=resource_group_name,
             network_function_name=network_function_name,
             subscription_id=self._config.subscription_id,
@@ -2459,18 +2347,20 @@ class NetworkFunctionsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -2479,8 +2369,12 @@ class NetworkFunctionsOperations:
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @overload
     async def begin_execute_request(
@@ -2504,13 +2398,6 @@ class NetworkFunctionsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -2521,7 +2408,7 @@ class NetworkFunctionsOperations:
         self,
         resource_group_name: str,
         network_function_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -2534,17 +2421,10 @@ class NetworkFunctionsOperations:
         :param network_function_name: The name of the network function. Required.
         :type network_function_name: str
         :param parameters: Payload for execute request post call. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -2555,7 +2435,7 @@ class NetworkFunctionsOperations:
         self,
         resource_group_name: str,
         network_function_name: str,
-        parameters: Union[_models.ExecuteRequestParameters, IO],
+        parameters: Union[_models.ExecuteRequestParameters, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Execute a request to services on a containerized network function.
@@ -2566,18 +2446,8 @@ class NetworkFunctionsOperations:
         :param network_function_name: The name of the network function. Required.
         :type network_function_name: str
         :param parameters: Payload for execute request post call. Is either a ExecuteRequestParameters
-         type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.ExecuteRequestParameters or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ExecuteRequestParameters or IO[bytes]
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -2591,7 +2461,7 @@ class NetworkFunctionsOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._execute_request_initial(  # type: ignore
+            raw_result = await self._execute_request_initial(
                 resource_group_name=resource_group_name,
                 network_function_name=network_function_name,
                 parameters=parameters,
@@ -2601,11 +2471,12 @@ class NetworkFunctionsOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -2616,13 +2487,13 @@ class NetworkFunctionsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
 
 class ComponentsOperations:
@@ -2661,7 +2532,7 @@ class ComponentsOperations:
         :rtype: ~Microsoft.HybridNetwork.models.Component
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -2674,7 +2545,7 @@ class ComponentsOperations:
 
         cls: ClsType[_models.Component] = kwargs.pop("cls", None)
 
-        request = build_components_get_request(
+        _request = build_components_get_request(
             resource_group_name=resource_group_name,
             network_function_name=network_function_name,
             component_name=component_name,
@@ -2683,28 +2554,26 @@ class ComponentsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("Component", pipeline_response)
+        deserialized = self._deserialize("Component", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @distributed_trace
     def list_by_network_function(
@@ -2726,7 +2595,7 @@ class ComponentsOperations:
 
         cls: ClsType[_models._models.ComponentListResult] = kwargs.pop("cls", None)  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -2737,7 +2606,7 @@ class ComponentsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_components_list_by_network_function_request(
+                _request = build_components_list_by_network_function_request(
                     resource_group_name=resource_group_name,
                     network_function_name=network_function_name,
                     subscription_id=self._config.subscription_id,
@@ -2745,7 +2614,7 @@ class ComponentsOperations:
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -2757,12 +2626,12 @@ class ComponentsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -2774,17 +2643,15 @@ class ComponentsOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -2832,13 +2699,11 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[
-            _models._models.NetworkFunctionDefinitionGroupListResult
-        ] = kwargs.pop(  # pylint: disable=protected-access
+        cls: ClsType[_models._models.NetworkFunctionDefinitionGroupListResult] = kwargs.pop(
             "cls", None
-        )
+        )  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -2849,7 +2714,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_network_function_definition_groups_list_by_publisher_request(
+                _request = build_network_function_definition_groups_list_by_publisher_request(
                     resource_group_name=resource_group_name,
                     publisher_name=publisher_name,
                     subscription_id=self._config.subscription_id,
@@ -2857,7 +2722,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -2869,12 +2734,12 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -2887,17 +2752,15 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -2906,10 +2769,10 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
 
         return AsyncItemPaged(get_next, extract_data)
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+    async def _delete_initial(
         self, resource_group_name: str, publisher_name: str, network_function_definition_group_name: str, **kwargs: Any
-    ) -> None:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -2920,9 +2783,9 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        request = build_network_function_definition_groups_delete_request(
+        _request = build_network_function_definition_groups_delete_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_function_definition_group_name=network_function_definition_group_name,
@@ -2931,18 +2794,20 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
-            if _stream:
+        if response.status_code not in [202, 204]:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -2951,8 +2816,12 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(
@@ -2968,13 +2837,6 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         :param network_function_definition_group_name: The name of the network function definition
          group. Required.
         :type network_function_definition_group_name: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -2987,7 +2849,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
                 network_function_definition_group_name=network_function_definition_group_name,
@@ -2996,11 +2858,12 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -3011,23 +2874,23 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _create_or_update_initial(
         self,
         resource_group_name: str,
         publisher_name: str,
         network_function_definition_group_name: str,
-        parameters: Union[_models.NetworkFunctionDefinitionGroup, IO],
+        parameters: Union[_models.NetworkFunctionDefinitionGroup, IO[bytes]],
         **kwargs: Any
-    ) -> _models.NetworkFunctionDefinitionGroup:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -3039,7 +2902,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.NetworkFunctionDefinitionGroup] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -3049,7 +2912,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         else:
             _json = self._serialize.body(parameters, "NetworkFunctionDefinitionGroup")
 
-        request = build_network_function_definition_groups_create_or_update_request(
+        _request = build_network_function_definition_groups_create_or_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_function_definition_group_name=network_function_definition_group_name,
@@ -3061,27 +2924,25 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("NetworkFunctionDefinitionGroup", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("NetworkFunctionDefinitionGroup", pipeline_response)
+        deserialized = response.iter_bytes()
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -3115,13 +2976,6 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkFunctionDefinitionGroup
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionGroup]
@@ -3134,7 +2988,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         resource_group_name: str,
         publisher_name: str,
         network_function_definition_group_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -3151,17 +3005,10 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         :type network_function_definition_group_name: str
         :param parameters: Parameters supplied to the create or update publisher network function
          definition group operation. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkFunctionDefinitionGroup
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionGroup]
@@ -3174,7 +3021,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         resource_group_name: str,
         publisher_name: str,
         network_function_definition_group_name: str,
-        parameters: Union[_models.NetworkFunctionDefinitionGroup, IO],
+        parameters: Union[_models.NetworkFunctionDefinitionGroup, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.NetworkFunctionDefinitionGroup]:
         """Creates or updates a network function definition group.
@@ -3188,19 +3035,9 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
          group. Required.
         :type network_function_definition_group_name: str
         :param parameters: Parameters supplied to the create or update publisher network function
-         definition group operation. Is either a NetworkFunctionDefinitionGroup type or a IO type.
-         Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionGroup or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         definition group operation. Is either a NetworkFunctionDefinitionGroup type or a IO[bytes]
+         type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionGroup or IO[bytes]
         :return: An instance of AsyncLROPoller that returns NetworkFunctionDefinitionGroup
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionGroup]
@@ -3226,12 +3063,13 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("NetworkFunctionDefinitionGroup", pipeline_response)
+            deserialized = self._deserialize("NetworkFunctionDefinitionGroup", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -3244,13 +3082,15 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.NetworkFunctionDefinitionGroup].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.NetworkFunctionDefinitionGroup](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @distributed_trace_async
     async def get(
@@ -3270,7 +3110,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         :rtype: ~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionGroup
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -3283,7 +3123,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
 
         cls: ClsType[_models.NetworkFunctionDefinitionGroup] = kwargs.pop("cls", None)
 
-        request = build_network_function_definition_groups_get_request(
+        _request = build_network_function_definition_groups_get_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_function_definition_group_name=network_function_definition_group_name,
@@ -3292,28 +3132,26 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("NetworkFunctionDefinitionGroup", pipeline_response)
+        deserialized = self._deserialize("NetworkFunctionDefinitionGroup", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @overload
     async def update(
@@ -3353,7 +3191,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         resource_group_name: str,
         publisher_name: str,
         network_function_definition_group_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -3370,7 +3208,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         :type network_function_definition_group_name: str
         :param parameters: Parameters supplied to the create or update publisher network function
          definition group operation. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -3385,7 +3223,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         resource_group_name: str,
         publisher_name: str,
         network_function_definition_group_name: str,
-        parameters: Union[_models.TagsObject, IO],
+        parameters: Union[_models.TagsObject, IO[bytes]],
         **kwargs: Any
     ) -> _models.NetworkFunctionDefinitionGroup:
         """Updates a network function definition group resource.
@@ -3399,16 +3237,13 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
          group. Required.
         :type network_function_definition_group_name: str
         :param parameters: Parameters supplied to the create or update publisher network function
-         definition group operation. Is either a TagsObject type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
+         definition group operation. Is either a TagsObject type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO[bytes]
         :return: NetworkFunctionDefinitionGroup
         :rtype: ~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionGroup
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -3430,7 +3265,7 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
         else:
             _json = self._serialize.body(parameters, "TagsObject")
 
-        request = build_network_function_definition_groups_update_request(
+        _request = build_network_function_definition_groups_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_function_definition_group_name=network_function_definition_group_name,
@@ -3442,28 +3277,26 @@ class NetworkFunctionDefinitionGroupsOperations:  # pylint: disable=name-too-lon
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("NetworkFunctionDefinitionGroup", pipeline_response)
+        deserialized = self._deserialize("NetworkFunctionDefinitionGroup", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
 
 class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-long
@@ -3485,15 +3318,15 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+    async def _delete_initial(
         self,
         resource_group_name: str,
         publisher_name: str,
         network_function_definition_group_name: str,
         network_function_definition_version_name: str,
         **kwargs: Any
-    ) -> None:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -3504,9 +3337,9 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        request = build_network_function_definition_versions_delete_request(
+        _request = build_network_function_definition_versions_delete_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_function_definition_group_name=network_function_definition_group_name,
@@ -3516,18 +3349,20 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
-            if _stream:
+        if response.status_code not in [202, 204]:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -3536,8 +3371,12 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(
@@ -3562,13 +3401,6 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
          version. The name should conform to the SemVer 2.0.0 specification:
          https://semver.org/spec/v2.0.0.html. Required.
         :type network_function_definition_version_name: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -3581,7 +3413,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
                 network_function_definition_group_name=network_function_definition_group_name,
@@ -3591,11 +3423,12 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -3606,13 +3439,13 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _create_or_update_initial(
         self,
@@ -3620,10 +3453,10 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         publisher_name: str,
         network_function_definition_group_name: str,
         network_function_definition_version_name: str,
-        parameters: Union[_models.NetworkFunctionDefinitionVersion, IO],
+        parameters: Union[_models.NetworkFunctionDefinitionVersion, IO[bytes]],
         **kwargs: Any
-    ) -> _models.NetworkFunctionDefinitionVersion:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -3635,7 +3468,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.NetworkFunctionDefinitionVersion] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -3645,7 +3478,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         else:
             _json = self._serialize.body(parameters, "NetworkFunctionDefinitionVersion")
 
-        request = build_network_function_definition_versions_create_or_update_request(
+        _request = build_network_function_definition_versions_create_or_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_function_definition_group_name=network_function_definition_group_name,
@@ -3658,27 +3491,25 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("NetworkFunctionDefinitionVersion", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("NetworkFunctionDefinitionVersion", pipeline_response)
+        deserialized = response.iter_bytes()
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -3717,13 +3548,6 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkFunctionDefinitionVersion
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionVersion]
@@ -3737,7 +3561,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         publisher_name: str,
         network_function_definition_group_name: str,
         network_function_definition_version_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -3758,17 +3582,10 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         :type network_function_definition_version_name: str
         :param parameters: Parameters supplied to the create or update network function definition
          version operation. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkFunctionDefinitionVersion
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionVersion]
@@ -3782,7 +3599,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         publisher_name: str,
         network_function_definition_group_name: str,
         network_function_definition_version_name: str,
-        parameters: Union[_models.NetworkFunctionDefinitionVersion, IO],
+        parameters: Union[_models.NetworkFunctionDefinitionVersion, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.NetworkFunctionDefinitionVersion]:
         """Creates or updates a network function definition version.
@@ -3800,18 +3617,9 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
          https://semver.org/spec/v2.0.0.html. Required.
         :type network_function_definition_version_name: str
         :param parameters: Parameters supplied to the create or update network function definition
-         version operation. Is either a NetworkFunctionDefinitionVersion type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionVersion or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         version operation. Is either a NetworkFunctionDefinitionVersion type or a IO[bytes] type.
+         Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionVersion or IO[bytes]
         :return: An instance of AsyncLROPoller that returns NetworkFunctionDefinitionVersion
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionVersion]
@@ -3838,12 +3646,13 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("NetworkFunctionDefinitionVersion", pipeline_response)
+            deserialized = self._deserialize("NetworkFunctionDefinitionVersion", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -3856,13 +3665,15 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.NetworkFunctionDefinitionVersion].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.NetworkFunctionDefinitionVersion](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @distributed_trace_async
     async def get(
@@ -3891,7 +3702,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         :rtype: ~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionVersion
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -3904,7 +3715,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
 
         cls: ClsType[_models.NetworkFunctionDefinitionVersion] = kwargs.pop("cls", None)
 
-        request = build_network_function_definition_versions_get_request(
+        _request = build_network_function_definition_versions_get_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_function_definition_group_name=network_function_definition_group_name,
@@ -3914,28 +3725,26 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("NetworkFunctionDefinitionVersion", pipeline_response)
+        deserialized = self._deserialize("NetworkFunctionDefinitionVersion", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @overload
     async def update(
@@ -3981,7 +3790,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         publisher_name: str,
         network_function_definition_group_name: str,
         network_function_definition_version_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -4002,7 +3811,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         :type network_function_definition_version_name: str
         :param parameters: Parameters supplied to the create or update network function definition
          version operation. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -4018,7 +3827,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         publisher_name: str,
         network_function_definition_group_name: str,
         network_function_definition_version_name: str,
-        parameters: Union[_models.TagsObject, IO],
+        parameters: Union[_models.TagsObject, IO[bytes]],
         **kwargs: Any
     ) -> _models.NetworkFunctionDefinitionVersion:
         """Updates a network function definition version resource.
@@ -4036,16 +3845,13 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
          https://semver.org/spec/v2.0.0.html. Required.
         :type network_function_definition_version_name: str
         :param parameters: Parameters supplied to the create or update network function definition
-         version operation. Is either a TagsObject type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
+         version operation. Is either a TagsObject type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO[bytes]
         :return: NetworkFunctionDefinitionVersion
         :rtype: ~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionVersion
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -4067,7 +3873,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         else:
             _json = self._serialize.body(parameters, "TagsObject")
 
-        request = build_network_function_definition_versions_update_request(
+        _request = build_network_function_definition_versions_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_function_definition_group_name=network_function_definition_group_name,
@@ -4080,28 +3886,26 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("NetworkFunctionDefinitionVersion", pipeline_response)
+        deserialized = self._deserialize("NetworkFunctionDefinitionVersion", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @distributed_trace
     def list_by_network_function_definition_group(  # pylint: disable=name-too-long
@@ -4126,13 +3930,11 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[
-            _models._models.NetworkFunctionDefinitionVersionListResult
-        ] = kwargs.pop(  # pylint: disable=protected-access
+        cls: ClsType[_models._models.NetworkFunctionDefinitionVersionListResult] = kwargs.pop(
             "cls", None
-        )
+        )  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -4143,7 +3945,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_network_function_definition_versions_list_by_network_function_definition_group_request(
+                _request = build_network_function_definition_versions_list_by_network_function_definition_group_request(
                     resource_group_name=resource_group_name,
                     publisher_name=publisher_name,
                     network_function_definition_group_name=network_function_definition_group_name,
@@ -4152,7 +3954,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -4164,12 +3966,12 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -4182,17 +3984,15 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -4207,10 +4007,10 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         publisher_name: str,
         network_function_definition_group_name: str,
         network_function_definition_version_name: str,
-        parameters: Union[_models.NetworkFunctionDefinitionVersionUpdateState, IO],
+        parameters: Union[_models.NetworkFunctionDefinitionVersionUpdateState, IO[bytes]],
         **kwargs: Any
-    ) -> Optional[_models.NetworkFunctionDefinitionVersionUpdateState]:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -4222,7 +4022,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[Optional[_models.NetworkFunctionDefinitionVersionUpdateState]] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -4232,7 +4032,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         else:
             _json = self._serialize.body(parameters, "NetworkFunctionDefinitionVersionUpdateState")
 
-        request = build_network_function_definition_versions_update_state_request(
+        _request = build_network_function_definition_versions_update_state_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_function_definition_group_name=network_function_definition_group_name,
@@ -4245,34 +4045,34 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         response_headers = {}
-        if response.status_code == 200:
-            deserialized = self._deserialize("NetworkFunctionDefinitionVersionUpdateState", pipeline_response)
-
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)
+        deserialized = response.iter_bytes()
 
-        return deserialized
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @overload
     async def begin_update_state(
@@ -4306,13 +4106,6 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkFunctionDefinitionVersionUpdateState
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionVersionUpdateState]
@@ -4326,7 +4119,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         publisher_name: str,
         network_function_definition_group_name: str,
         network_function_definition_version_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -4347,17 +4140,10 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         :type network_function_definition_version_name: str
         :param parameters: Parameters supplied to update the state of network function definition
          version. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkFunctionDefinitionVersionUpdateState
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionVersionUpdateState]
@@ -4371,7 +4157,7 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         publisher_name: str,
         network_function_definition_group_name: str,
         network_function_definition_version_name: str,
-        parameters: Union[_models.NetworkFunctionDefinitionVersionUpdateState, IO],
+        parameters: Union[_models.NetworkFunctionDefinitionVersionUpdateState, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.NetworkFunctionDefinitionVersionUpdateState]:
         """Update network function definition version state.
@@ -4389,19 +4175,10 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
          https://semver.org/spec/v2.0.0.html. Required.
         :type network_function_definition_version_name: str
         :param parameters: Parameters supplied to update the state of network function definition
-         version. Is either a NetworkFunctionDefinitionVersionUpdateState type or a IO type. Required.
+         version. Is either a NetworkFunctionDefinitionVersionUpdateState type or a IO[bytes] type.
+         Required.
         :type parameters: ~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionVersionUpdateState
-         or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         or IO[bytes]
         :return: An instance of AsyncLROPoller that returns NetworkFunctionDefinitionVersionUpdateState
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkFunctionDefinitionVersionUpdateState]
@@ -4428,12 +4205,15 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("NetworkFunctionDefinitionVersionUpdateState", pipeline_response)
+            deserialized = self._deserialize(
+                "NetworkFunctionDefinitionVersionUpdateState", pipeline_response.http_response
+            )
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -4445,13 +4225,15 @@ class NetworkFunctionDefinitionVersionsOperations:  # pylint: disable=name-too-l
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.NetworkFunctionDefinitionVersionUpdateState].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.NetworkFunctionDefinitionVersionUpdateState](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
 
 class NetworkServiceDesignGroupsOperations:
@@ -4492,13 +4274,11 @@ class NetworkServiceDesignGroupsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[
-            _models._models.NetworkServiceDesignGroupListResult
-        ] = kwargs.pop(  # pylint: disable=protected-access
+        cls: ClsType[_models._models.NetworkServiceDesignGroupListResult] = kwargs.pop(
             "cls", None
-        )
+        )  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -4509,7 +4289,7 @@ class NetworkServiceDesignGroupsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_network_service_design_groups_list_by_publisher_request(
+                _request = build_network_service_design_groups_list_by_publisher_request(
                     resource_group_name=resource_group_name,
                     publisher_name=publisher_name,
                     subscription_id=self._config.subscription_id,
@@ -4517,7 +4297,7 @@ class NetworkServiceDesignGroupsOperations:
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -4529,12 +4309,12 @@ class NetworkServiceDesignGroupsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -4547,17 +4327,15 @@ class NetworkServiceDesignGroupsOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -4566,10 +4344,10 @@ class NetworkServiceDesignGroupsOperations:
 
         return AsyncItemPaged(get_next, extract_data)
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+    async def _delete_initial(
         self, resource_group_name: str, publisher_name: str, network_service_design_group_name: str, **kwargs: Any
-    ) -> None:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -4580,9 +4358,9 @@ class NetworkServiceDesignGroupsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        request = build_network_service_design_groups_delete_request(
+        _request = build_network_service_design_groups_delete_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_service_design_group_name=network_service_design_group_name,
@@ -4591,18 +4369,20 @@ class NetworkServiceDesignGroupsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
-            if _stream:
+        if response.status_code not in [202, 204]:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -4611,8 +4391,12 @@ class NetworkServiceDesignGroupsOperations:
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(
@@ -4628,13 +4412,6 @@ class NetworkServiceDesignGroupsOperations:
         :param network_service_design_group_name: The name of the network service design group.
          Required.
         :type network_service_design_group_name: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -4647,7 +4424,7 @@ class NetworkServiceDesignGroupsOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
                 network_service_design_group_name=network_service_design_group_name,
@@ -4656,11 +4433,12 @@ class NetworkServiceDesignGroupsOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -4671,23 +4449,23 @@ class NetworkServiceDesignGroupsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _create_or_update_initial(
         self,
         resource_group_name: str,
         publisher_name: str,
         network_service_design_group_name: str,
-        parameters: Union[_models.NetworkServiceDesignGroup, IO],
+        parameters: Union[_models.NetworkServiceDesignGroup, IO[bytes]],
         **kwargs: Any
-    ) -> _models.NetworkServiceDesignGroup:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -4699,7 +4477,7 @@ class NetworkServiceDesignGroupsOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.NetworkServiceDesignGroup] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -4709,7 +4487,7 @@ class NetworkServiceDesignGroupsOperations:
         else:
             _json = self._serialize.body(parameters, "NetworkServiceDesignGroup")
 
-        request = build_network_service_design_groups_create_or_update_request(
+        _request = build_network_service_design_groups_create_or_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_service_design_group_name=network_service_design_group_name,
@@ -4721,27 +4499,25 @@ class NetworkServiceDesignGroupsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("NetworkServiceDesignGroup", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("NetworkServiceDesignGroup", pipeline_response)
+        deserialized = response.iter_bytes()
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -4775,13 +4551,6 @@ class NetworkServiceDesignGroupsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkServiceDesignGroup
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkServiceDesignGroup]
@@ -4794,7 +4563,7 @@ class NetworkServiceDesignGroupsOperations:
         resource_group_name: str,
         publisher_name: str,
         network_service_design_group_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -4811,17 +4580,10 @@ class NetworkServiceDesignGroupsOperations:
         :type network_service_design_group_name: str
         :param parameters: Parameters supplied to the create or update publisher network service design
          group operation. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkServiceDesignGroup
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkServiceDesignGroup]
@@ -4834,7 +4596,7 @@ class NetworkServiceDesignGroupsOperations:
         resource_group_name: str,
         publisher_name: str,
         network_service_design_group_name: str,
-        parameters: Union[_models.NetworkServiceDesignGroup, IO],
+        parameters: Union[_models.NetworkServiceDesignGroup, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.NetworkServiceDesignGroup]:
         """Creates or updates a network service design group.
@@ -4848,18 +4610,8 @@ class NetworkServiceDesignGroupsOperations:
          Required.
         :type network_service_design_group_name: str
         :param parameters: Parameters supplied to the create or update publisher network service design
-         group operation. Is either a NetworkServiceDesignGroup type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.NetworkServiceDesignGroup or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         group operation. Is either a NetworkServiceDesignGroup type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.NetworkServiceDesignGroup or IO[bytes]
         :return: An instance of AsyncLROPoller that returns NetworkServiceDesignGroup
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkServiceDesignGroup]
@@ -4885,12 +4637,13 @@ class NetworkServiceDesignGroupsOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("NetworkServiceDesignGroup", pipeline_response)
+            deserialized = self._deserialize("NetworkServiceDesignGroup", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -4903,13 +4656,15 @@ class NetworkServiceDesignGroupsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.NetworkServiceDesignGroup].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.NetworkServiceDesignGroup](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @distributed_trace_async
     async def get(
@@ -4929,7 +4684,7 @@ class NetworkServiceDesignGroupsOperations:
         :rtype: ~Microsoft.HybridNetwork.models.NetworkServiceDesignGroup
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -4942,7 +4697,7 @@ class NetworkServiceDesignGroupsOperations:
 
         cls: ClsType[_models.NetworkServiceDesignGroup] = kwargs.pop("cls", None)
 
-        request = build_network_service_design_groups_get_request(
+        _request = build_network_service_design_groups_get_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_service_design_group_name=network_service_design_group_name,
@@ -4951,28 +4706,26 @@ class NetworkServiceDesignGroupsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("NetworkServiceDesignGroup", pipeline_response)
+        deserialized = self._deserialize("NetworkServiceDesignGroup", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @overload
     async def update(
@@ -5012,7 +4765,7 @@ class NetworkServiceDesignGroupsOperations:
         resource_group_name: str,
         publisher_name: str,
         network_service_design_group_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -5029,7 +4782,7 @@ class NetworkServiceDesignGroupsOperations:
         :type network_service_design_group_name: str
         :param parameters: Parameters supplied to the create or update publisher network service design
          group operation. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -5044,7 +4797,7 @@ class NetworkServiceDesignGroupsOperations:
         resource_group_name: str,
         publisher_name: str,
         network_service_design_group_name: str,
-        parameters: Union[_models.TagsObject, IO],
+        parameters: Union[_models.TagsObject, IO[bytes]],
         **kwargs: Any
     ) -> _models.NetworkServiceDesignGroup:
         """Updates a network service design groups resource.
@@ -5058,16 +4811,13 @@ class NetworkServiceDesignGroupsOperations:
          Required.
         :type network_service_design_group_name: str
         :param parameters: Parameters supplied to the create or update publisher network service design
-         group operation. Is either a TagsObject type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
+         group operation. Is either a TagsObject type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO[bytes]
         :return: NetworkServiceDesignGroup
         :rtype: ~Microsoft.HybridNetwork.models.NetworkServiceDesignGroup
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -5089,7 +4839,7 @@ class NetworkServiceDesignGroupsOperations:
         else:
             _json = self._serialize.body(parameters, "TagsObject")
 
-        request = build_network_service_design_groups_update_request(
+        _request = build_network_service_design_groups_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_service_design_group_name=network_service_design_group_name,
@@ -5101,28 +4851,26 @@ class NetworkServiceDesignGroupsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("NetworkServiceDesignGroup", pipeline_response)
+        deserialized = self._deserialize("NetworkServiceDesignGroup", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
 
 class NetworkServiceDesignVersionsOperations:
@@ -5144,15 +4892,15 @@ class NetworkServiceDesignVersionsOperations:
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+    async def _delete_initial(
         self,
         resource_group_name: str,
         publisher_name: str,
         network_service_design_group_name: str,
         network_service_design_version_name: str,
         **kwargs: Any
-    ) -> None:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -5163,9 +4911,9 @@ class NetworkServiceDesignVersionsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        request = build_network_service_design_versions_delete_request(
+        _request = build_network_service_design_versions_delete_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_service_design_group_name=network_service_design_group_name,
@@ -5175,18 +4923,20 @@ class NetworkServiceDesignVersionsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
-            if _stream:
+        if response.status_code not in [202, 204]:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -5195,8 +4945,12 @@ class NetworkServiceDesignVersionsOperations:
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(
@@ -5221,13 +4975,6 @@ class NetworkServiceDesignVersionsOperations:
          name should conform to the SemVer 2.0.0 specification: https://semver.org/spec/v2.0.0.html.
          Required.
         :type network_service_design_version_name: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -5240,7 +4987,7 @@ class NetworkServiceDesignVersionsOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
                 network_service_design_group_name=network_service_design_group_name,
@@ -5250,11 +4997,12 @@ class NetworkServiceDesignVersionsOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -5265,13 +5013,13 @@ class NetworkServiceDesignVersionsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _create_or_update_initial(
         self,
@@ -5279,10 +5027,10 @@ class NetworkServiceDesignVersionsOperations:
         publisher_name: str,
         network_service_design_group_name: str,
         network_service_design_version_name: str,
-        parameters: Union[_models.NetworkServiceDesignVersion, IO],
+        parameters: Union[_models.NetworkServiceDesignVersion, IO[bytes]],
         **kwargs: Any
-    ) -> _models.NetworkServiceDesignVersion:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -5294,7 +5042,7 @@ class NetworkServiceDesignVersionsOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.NetworkServiceDesignVersion] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -5304,7 +5052,7 @@ class NetworkServiceDesignVersionsOperations:
         else:
             _json = self._serialize.body(parameters, "NetworkServiceDesignVersion")
 
-        request = build_network_service_design_versions_create_or_update_request(
+        _request = build_network_service_design_versions_create_or_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_service_design_group_name=network_service_design_group_name,
@@ -5317,27 +5065,25 @@ class NetworkServiceDesignVersionsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("NetworkServiceDesignVersion", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("NetworkServiceDesignVersion", pipeline_response)
+        deserialized = response.iter_bytes()
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -5376,13 +5122,6 @@ class NetworkServiceDesignVersionsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkServiceDesignVersion
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkServiceDesignVersion]
@@ -5396,7 +5135,7 @@ class NetworkServiceDesignVersionsOperations:
         publisher_name: str,
         network_service_design_group_name: str,
         network_service_design_version_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -5417,17 +5156,10 @@ class NetworkServiceDesignVersionsOperations:
         :type network_service_design_version_name: str
         :param parameters: Parameters supplied to the create or update network service design version
          operation. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkServiceDesignVersion
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkServiceDesignVersion]
@@ -5441,7 +5173,7 @@ class NetworkServiceDesignVersionsOperations:
         publisher_name: str,
         network_service_design_group_name: str,
         network_service_design_version_name: str,
-        parameters: Union[_models.NetworkServiceDesignVersion, IO],
+        parameters: Union[_models.NetworkServiceDesignVersion, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.NetworkServiceDesignVersion]:
         """Creates or updates a network service design version.
@@ -5459,18 +5191,8 @@ class NetworkServiceDesignVersionsOperations:
          Required.
         :type network_service_design_version_name: str
         :param parameters: Parameters supplied to the create or update network service design version
-         operation. Is either a NetworkServiceDesignVersion type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.NetworkServiceDesignVersion or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         operation. Is either a NetworkServiceDesignVersion type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.NetworkServiceDesignVersion or IO[bytes]
         :return: An instance of AsyncLROPoller that returns NetworkServiceDesignVersion
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkServiceDesignVersion]
@@ -5497,12 +5219,13 @@ class NetworkServiceDesignVersionsOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("NetworkServiceDesignVersion", pipeline_response)
+            deserialized = self._deserialize("NetworkServiceDesignVersion", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -5515,13 +5238,15 @@ class NetworkServiceDesignVersionsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.NetworkServiceDesignVersion].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.NetworkServiceDesignVersion](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @distributed_trace_async
     async def get(
@@ -5550,7 +5275,7 @@ class NetworkServiceDesignVersionsOperations:
         :rtype: ~Microsoft.HybridNetwork.models.NetworkServiceDesignVersion
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -5563,7 +5288,7 @@ class NetworkServiceDesignVersionsOperations:
 
         cls: ClsType[_models.NetworkServiceDesignVersion] = kwargs.pop("cls", None)
 
-        request = build_network_service_design_versions_get_request(
+        _request = build_network_service_design_versions_get_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_service_design_group_name=network_service_design_group_name,
@@ -5573,28 +5298,26 @@ class NetworkServiceDesignVersionsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("NetworkServiceDesignVersion", pipeline_response)
+        deserialized = self._deserialize("NetworkServiceDesignVersion", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @overload
     async def update(
@@ -5640,7 +5363,7 @@ class NetworkServiceDesignVersionsOperations:
         publisher_name: str,
         network_service_design_group_name: str,
         network_service_design_version_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -5661,7 +5384,7 @@ class NetworkServiceDesignVersionsOperations:
         :type network_service_design_version_name: str
         :param parameters: Parameters supplied to the create or update network service design version
          operation. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -5677,7 +5400,7 @@ class NetworkServiceDesignVersionsOperations:
         publisher_name: str,
         network_service_design_group_name: str,
         network_service_design_version_name: str,
-        parameters: Union[_models.TagsObject, IO],
+        parameters: Union[_models.TagsObject, IO[bytes]],
         **kwargs: Any
     ) -> _models.NetworkServiceDesignVersion:
         """Updates a network service design version resource.
@@ -5695,16 +5418,13 @@ class NetworkServiceDesignVersionsOperations:
          Required.
         :type network_service_design_version_name: str
         :param parameters: Parameters supplied to the create or update network service design version
-         operation. Is either a TagsObject type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
+         operation. Is either a TagsObject type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO[bytes]
         :return: NetworkServiceDesignVersion
         :rtype: ~Microsoft.HybridNetwork.models.NetworkServiceDesignVersion
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -5726,7 +5446,7 @@ class NetworkServiceDesignVersionsOperations:
         else:
             _json = self._serialize.body(parameters, "TagsObject")
 
-        request = build_network_service_design_versions_update_request(
+        _request = build_network_service_design_versions_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_service_design_group_name=network_service_design_group_name,
@@ -5739,28 +5459,26 @@ class NetworkServiceDesignVersionsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("NetworkServiceDesignVersion", pipeline_response)
+        deserialized = self._deserialize("NetworkServiceDesignVersion", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @distributed_trace
     def list_by_network_service_design_group(
@@ -5785,13 +5503,11 @@ class NetworkServiceDesignVersionsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[
-            _models._models.NetworkServiceDesignVersionListResult
-        ] = kwargs.pop(  # pylint: disable=protected-access
+        cls: ClsType[_models._models.NetworkServiceDesignVersionListResult] = kwargs.pop(
             "cls", None
-        )
+        )  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -5802,7 +5518,7 @@ class NetworkServiceDesignVersionsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_network_service_design_versions_list_by_network_service_design_group_request(
+                _request = build_network_service_design_versions_list_by_network_service_design_group_request(
                     resource_group_name=resource_group_name,
                     publisher_name=publisher_name,
                     network_service_design_group_name=network_service_design_group_name,
@@ -5811,7 +5527,7 @@ class NetworkServiceDesignVersionsOperations:
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -5823,12 +5539,12 @@ class NetworkServiceDesignVersionsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -5841,17 +5557,15 @@ class NetworkServiceDesignVersionsOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -5866,10 +5580,10 @@ class NetworkServiceDesignVersionsOperations:
         publisher_name: str,
         network_service_design_group_name: str,
         network_service_design_version_name: str,
-        parameters: Union[_models.NetworkServiceDesignVersionUpdateState, IO],
+        parameters: Union[_models.NetworkServiceDesignVersionUpdateState, IO[bytes]],
         **kwargs: Any
-    ) -> Optional[_models.NetworkServiceDesignVersionUpdateState]:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -5881,7 +5595,7 @@ class NetworkServiceDesignVersionsOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[Optional[_models.NetworkServiceDesignVersionUpdateState]] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -5891,7 +5605,7 @@ class NetworkServiceDesignVersionsOperations:
         else:
             _json = self._serialize.body(parameters, "NetworkServiceDesignVersionUpdateState")
 
-        request = build_network_service_design_versions_update_state_request(
+        _request = build_network_service_design_versions_update_state_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_service_design_group_name=network_service_design_group_name,
@@ -5904,34 +5618,34 @@ class NetworkServiceDesignVersionsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         response_headers = {}
-        if response.status_code == 200:
-            deserialized = self._deserialize("NetworkServiceDesignVersionUpdateState", pipeline_response)
-
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)
+        deserialized = response.iter_bytes()
 
-        return deserialized
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @overload
     async def begin_update_state(
@@ -5965,13 +5679,6 @@ class NetworkServiceDesignVersionsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkServiceDesignVersionUpdateState
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkServiceDesignVersionUpdateState]
@@ -5985,7 +5692,7 @@ class NetworkServiceDesignVersionsOperations:
         publisher_name: str,
         network_service_design_group_name: str,
         network_service_design_version_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -6006,17 +5713,10 @@ class NetworkServiceDesignVersionsOperations:
         :type network_service_design_version_name: str
         :param parameters: Parameters supplied to update the state of network service design version.
          Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns NetworkServiceDesignVersionUpdateState
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkServiceDesignVersionUpdateState]
@@ -6030,7 +5730,7 @@ class NetworkServiceDesignVersionsOperations:
         publisher_name: str,
         network_service_design_group_name: str,
         network_service_design_version_name: str,
-        parameters: Union[_models.NetworkServiceDesignVersionUpdateState, IO],
+        parameters: Union[_models.NetworkServiceDesignVersionUpdateState, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.NetworkServiceDesignVersionUpdateState]:
         """Update network service design version state.
@@ -6048,18 +5748,9 @@ class NetworkServiceDesignVersionsOperations:
          Required.
         :type network_service_design_version_name: str
         :param parameters: Parameters supplied to update the state of network service design version.
-         Is either a NetworkServiceDesignVersionUpdateState type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.NetworkServiceDesignVersionUpdateState or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         Is either a NetworkServiceDesignVersionUpdateState type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.NetworkServiceDesignVersionUpdateState or
+         IO[bytes]
         :return: An instance of AsyncLROPoller that returns NetworkServiceDesignVersionUpdateState
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.NetworkServiceDesignVersionUpdateState]
@@ -6086,12 +5777,13 @@ class NetworkServiceDesignVersionsOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("NetworkServiceDesignVersionUpdateState", pipeline_response)
+            deserialized = self._deserialize("NetworkServiceDesignVersionUpdateState", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -6103,13 +5795,15 @@ class NetworkServiceDesignVersionsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.NetworkServiceDesignVersionUpdateState].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.NetworkServiceDesignVersionUpdateState](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
 
 class Operations:
@@ -6144,7 +5838,7 @@ class Operations:
 
         cls: ClsType[_models._models.OperationListResult] = kwargs.pop("cls", None)  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -6155,12 +5849,12 @@ class Operations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_operations_list_request(
+                _request = build_operations_list_request(
                     api_version=self._config.api_version,
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -6172,12 +5866,12 @@ class Operations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -6189,17 +5883,15 @@ class Operations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -6241,7 +5933,7 @@ class PublishersOperations:
 
         cls: ClsType[_models._models.PublisherListResult] = kwargs.pop("cls", None)  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -6252,13 +5944,13 @@ class PublishersOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_publishers_list_by_subscription_request(
+                _request = build_publishers_list_by_subscription_request(
                     subscription_id=self._config.subscription_id,
                     api_version=self._config.api_version,
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -6270,12 +5962,12 @@ class PublishersOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -6287,17 +5979,15 @@ class PublishersOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -6322,7 +6012,7 @@ class PublishersOperations:
 
         cls: ClsType[_models._models.PublisherListResult] = kwargs.pop("cls", None)  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -6333,14 +6023,14 @@ class PublishersOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_publishers_list_by_resource_group_request(
+                _request = build_publishers_list_by_resource_group_request(
                     resource_group_name=resource_group_name,
                     subscription_id=self._config.subscription_id,
                     api_version=self._config.api_version,
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -6352,12 +6042,12 @@ class PublishersOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -6369,17 +6059,15 @@ class PublishersOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -6388,10 +6076,10 @@ class PublishersOperations:
 
         return AsyncItemPaged(get_next, extract_data)
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+    async def _delete_initial(
         self, resource_group_name: str, publisher_name: str, **kwargs: Any
-    ) -> None:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -6402,9 +6090,9 @@ class PublishersOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        request = build_publishers_delete_request(
+        _request = build_publishers_delete_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             subscription_id=self._config.subscription_id,
@@ -6412,18 +6100,20 @@ class PublishersOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
-            if _stream:
+        if response.status_code not in [202, 204]:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -6432,8 +6122,12 @@ class PublishersOperations:
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(self, resource_group_name: str, publisher_name: str, **kwargs: Any) -> AsyncLROPoller[None]:
@@ -6444,13 +6138,6 @@ class PublishersOperations:
         :type resource_group_name: str
         :param publisher_name: The name of the publisher. Required.
         :type publisher_name: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -6463,7 +6150,7 @@ class PublishersOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
                 cls=lambda x, y, z: x,
@@ -6471,11 +6158,12 @@ class PublishersOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -6486,13 +6174,13 @@ class PublishersOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     @distributed_trace_async
     async def get(self, resource_group_name: str, publisher_name: str, **kwargs: Any) -> _models.Publisher:
@@ -6507,7 +6195,7 @@ class PublishersOperations:
         :rtype: ~Microsoft.HybridNetwork.models.Publisher
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -6520,7 +6208,7 @@ class PublishersOperations:
 
         cls: ClsType[_models.Publisher] = kwargs.pop("cls", None)
 
-        request = build_publishers_get_request(
+        _request = build_publishers_get_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             subscription_id=self._config.subscription_id,
@@ -6528,37 +6216,35 @@ class PublishersOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("Publisher", pipeline_response)
+        deserialized = self._deserialize("Publisher", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     async def _create_or_update_initial(
         self,
         resource_group_name: str,
         publisher_name: str,
-        parameters: Optional[Union[_models.Publisher, IO]] = None,
+        parameters: Optional[Union[_models.Publisher, IO[bytes]]] = None,
         **kwargs: Any
-    ) -> _models.Publisher:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -6570,7 +6256,7 @@ class PublishersOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.Publisher] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -6583,7 +6269,7 @@ class PublishersOperations:
             else:
                 _json = None
 
-        request = build_publishers_create_or_update_request(
+        _request = build_publishers_create_or_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             subscription_id=self._config.subscription_id,
@@ -6594,27 +6280,25 @@ class PublishersOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("Publisher", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("Publisher", pipeline_response)
+        deserialized = response.iter_bytes()
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -6644,13 +6328,6 @@ class PublishersOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns Publisher
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.Publisher]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -6661,7 +6338,7 @@ class PublishersOperations:
         self,
         resource_group_name: str,
         publisher_name: str,
-        parameters: Optional[IO] = None,
+        parameters: Optional[IO[bytes]] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -6675,17 +6352,10 @@ class PublishersOperations:
         :type publisher_name: str
         :param parameters: Parameters supplied to the create publisher operation. Default value is
          None.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns Publisher
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.Publisher]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -6696,7 +6366,7 @@ class PublishersOperations:
         self,
         resource_group_name: str,
         publisher_name: str,
-        parameters: Optional[Union[_models.Publisher, IO]] = None,
+        parameters: Optional[Union[_models.Publisher, IO[bytes]]] = None,
         **kwargs: Any
     ) -> AsyncLROPoller[_models.Publisher]:
         """Creates or updates a publisher.
@@ -6707,18 +6377,8 @@ class PublishersOperations:
         :param publisher_name: The name of the publisher. Required.
         :type publisher_name: str
         :param parameters: Parameters supplied to the create publisher operation. Is either a Publisher
-         type or a IO type. Default value is None.
-        :type parameters: ~Microsoft.HybridNetwork.models.Publisher or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         type or a IO[bytes] type. Default value is None.
+        :type parameters: ~Microsoft.HybridNetwork.models.Publisher or IO[bytes]
         :return: An instance of AsyncLROPoller that returns Publisher
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.Publisher]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -6742,12 +6402,13 @@ class PublishersOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("Publisher", pipeline_response)
+            deserialized = self._deserialize("Publisher", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -6760,13 +6421,15 @@ class PublishersOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.Publisher].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.Publisher](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @overload
     async def update(
@@ -6801,7 +6464,7 @@ class PublishersOperations:
         self,
         resource_group_name: str,
         publisher_name: str,
-        parameters: Optional[IO] = None,
+        parameters: Optional[IO[bytes]] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -6815,7 +6478,7 @@ class PublishersOperations:
         :type publisher_name: str
         :param parameters: Parameters supplied to the create publisher operation. Default value is
          None.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -6829,7 +6492,7 @@ class PublishersOperations:
         self,
         resource_group_name: str,
         publisher_name: str,
-        parameters: Optional[Union[_models.TagsObject, IO]] = None,
+        parameters: Optional[Union[_models.TagsObject, IO[bytes]]] = None,
         **kwargs: Any
     ) -> _models.Publisher:
         """Update a publisher resource.
@@ -6840,16 +6503,13 @@ class PublishersOperations:
         :param publisher_name: The name of the publisher. Required.
         :type publisher_name: str
         :param parameters: Parameters supplied to the create publisher operation. Is either a
-         TagsObject type or a IO type. Default value is None.
-        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
+         TagsObject type or a IO[bytes] type. Default value is None.
+        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO[bytes]
         :return: Publisher
         :rtype: ~Microsoft.HybridNetwork.models.Publisher
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -6874,7 +6534,7 @@ class PublishersOperations:
             else:
                 _json = None
 
-        request = build_publishers_update_request(
+        _request = build_publishers_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             subscription_id=self._config.subscription_id,
@@ -6885,28 +6545,26 @@ class PublishersOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("Publisher", pipeline_response)
+        deserialized = self._deserialize("Publisher", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
 
 class ArtifactStoresOperations:
@@ -6950,7 +6608,7 @@ class ArtifactStoresOperations:
             "cls", None
         )
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -6961,7 +6619,7 @@ class ArtifactStoresOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_artifact_stores_list_by_publisher_request(
+                _request = build_artifact_stores_list_by_publisher_request(
                     resource_group_name=resource_group_name,
                     publisher_name=publisher_name,
                     subscription_id=self._config.subscription_id,
@@ -6969,7 +6627,7 @@ class ArtifactStoresOperations:
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -6981,12 +6639,12 @@ class ArtifactStoresOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -6998,17 +6656,15 @@ class ArtifactStoresOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -7017,10 +6673,10 @@ class ArtifactStoresOperations:
 
         return AsyncItemPaged(get_next, extract_data)
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+    async def _delete_initial(
         self, resource_group_name: str, publisher_name: str, artifact_store_name: str, **kwargs: Any
-    ) -> None:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -7031,9 +6687,9 @@ class ArtifactStoresOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        request = build_artifact_stores_delete_request(
+        _request = build_artifact_stores_delete_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             artifact_store_name=artifact_store_name,
@@ -7042,18 +6698,20 @@ class ArtifactStoresOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
-            if _stream:
+        if response.status_code not in [202, 204]:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -7062,8 +6720,12 @@ class ArtifactStoresOperations:
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(
@@ -7078,13 +6740,6 @@ class ArtifactStoresOperations:
         :type publisher_name: str
         :param artifact_store_name: The name of the artifact store. Required.
         :type artifact_store_name: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -7097,7 +6752,7 @@ class ArtifactStoresOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
                 artifact_store_name=artifact_store_name,
@@ -7106,11 +6761,12 @@ class ArtifactStoresOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -7121,23 +6777,23 @@ class ArtifactStoresOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _create_or_update_initial(
         self,
         resource_group_name: str,
         publisher_name: str,
         artifact_store_name: str,
-        parameters: Union[_models.ArtifactStore, IO],
+        parameters: Union[_models.ArtifactStore, IO[bytes]],
         **kwargs: Any
-    ) -> _models.ArtifactStore:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -7149,7 +6805,7 @@ class ArtifactStoresOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ArtifactStore] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -7159,7 +6815,7 @@ class ArtifactStoresOperations:
         else:
             _json = self._serialize.body(parameters, "ArtifactStore")
 
-        request = build_artifact_stores_create_or_update_request(
+        _request = build_artifact_stores_create_or_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             artifact_store_name=artifact_store_name,
@@ -7171,27 +6827,25 @@ class ArtifactStoresOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("ArtifactStore", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("ArtifactStore", pipeline_response)
+        deserialized = response.iter_bytes()
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -7224,13 +6878,6 @@ class ArtifactStoresOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ArtifactStore
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ArtifactStore]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -7242,7 +6889,7 @@ class ArtifactStoresOperations:
         resource_group_name: str,
         publisher_name: str,
         artifact_store_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -7258,17 +6905,10 @@ class ArtifactStoresOperations:
         :type artifact_store_name: str
         :param parameters: Parameters supplied to the create or update application group operation.
          Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ArtifactStore
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ArtifactStore]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -7280,7 +6920,7 @@ class ArtifactStoresOperations:
         resource_group_name: str,
         publisher_name: str,
         artifact_store_name: str,
-        parameters: Union[_models.ArtifactStore, IO],
+        parameters: Union[_models.ArtifactStore, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ArtifactStore]:
         """Creates or updates a artifact store.
@@ -7293,18 +6933,8 @@ class ArtifactStoresOperations:
         :param artifact_store_name: The name of the artifact store. Required.
         :type artifact_store_name: str
         :param parameters: Parameters supplied to the create or update application group operation. Is
-         either a ArtifactStore type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactStore or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         either a ArtifactStore type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactStore or IO[bytes]
         :return: An instance of AsyncLROPoller that returns ArtifactStore
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ArtifactStore]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -7329,12 +6959,13 @@ class ArtifactStoresOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ArtifactStore", pipeline_response)
+            deserialized = self._deserialize("ArtifactStore", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -7347,13 +6978,15 @@ class ArtifactStoresOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.ArtifactStore].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.ArtifactStore](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @distributed_trace_async
     async def get(
@@ -7372,7 +7005,7 @@ class ArtifactStoresOperations:
         :rtype: ~Microsoft.HybridNetwork.models.ArtifactStore
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -7385,7 +7018,7 @@ class ArtifactStoresOperations:
 
         cls: ClsType[_models.ArtifactStore] = kwargs.pop("cls", None)
 
-        request = build_artifact_stores_get_request(
+        _request = build_artifact_stores_get_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             artifact_store_name=artifact_store_name,
@@ -7394,28 +7027,26 @@ class ArtifactStoresOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ArtifactStore", pipeline_response)
+        deserialized = self._deserialize("ArtifactStore", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @overload
     async def update(
@@ -7454,7 +7085,7 @@ class ArtifactStoresOperations:
         resource_group_name: str,
         publisher_name: str,
         artifact_store_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -7470,7 +7101,7 @@ class ArtifactStoresOperations:
         :type artifact_store_name: str
         :param parameters: Parameters supplied to the create or update application group operation.
          Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -7485,7 +7116,7 @@ class ArtifactStoresOperations:
         resource_group_name: str,
         publisher_name: str,
         artifact_store_name: str,
-        parameters: Union[_models.TagsObject, IO],
+        parameters: Union[_models.TagsObject, IO[bytes]],
         **kwargs: Any
     ) -> _models.ArtifactStore:
         """Update artifact store resource.
@@ -7498,16 +7129,13 @@ class ArtifactStoresOperations:
         :param artifact_store_name: The name of the artifact store. Required.
         :type artifact_store_name: str
         :param parameters: Parameters supplied to the create or update application group operation. Is
-         either a TagsObject type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
+         either a TagsObject type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO[bytes]
         :return: ArtifactStore
         :rtype: ~Microsoft.HybridNetwork.models.ArtifactStore
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -7529,7 +7157,7 @@ class ArtifactStoresOperations:
         else:
             _json = self._serialize.body(parameters, "TagsObject")
 
-        request = build_artifact_stores_update_request(
+        _request = build_artifact_stores_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             artifact_store_name=artifact_store_name,
@@ -7541,28 +7169,1212 @@ class ArtifactStoresOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ArtifactStore", pipeline_response)
+        deserialized = self._deserialize("ArtifactStore", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
+
+    async def _add_network_fabric_controller_end_points_initial(  # pylint: disable=name-too-long
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: Union[_models.ArtifactStoreNetworkFabricControllerEndPoints, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(parameters, (IOBase, bytes)):
+            _content = parameters
+        else:
+            _json = self._serialize.body(parameters, "ArtifactStoreNetworkFabricControllerEndPoints")
+
+        _request = build_artifact_stores_add_network_fabric_controller_end_points_request(
+            resource_group_name=resource_group_name,
+            publisher_name=publisher_name,
+            artifact_store_name=artifact_store_name,
+            subscription_id=self._config.subscription_id,
+            content_type=content_type,
+            api_version=self._config.api_version,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    async def begin_add_network_fabric_controller_end_points(  # pylint: disable=name-too-long
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: _models.ArtifactStoreNetworkFabricControllerEndPoints,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Add network fabric controllers to artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :param parameters: Parameters supplied to the create or update application group operation.
+         Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactStoreNetworkFabricControllerEndPoints
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    async def begin_add_network_fabric_controller_end_points(  # pylint: disable=name-too-long
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: IO[bytes],
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Add network fabric controllers to artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :param parameters: Parameters supplied to the create or update application group operation.
+         Required.
+        :type parameters: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def begin_add_network_fabric_controller_end_points(  # pylint: disable=name-too-long
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: Union[_models.ArtifactStoreNetworkFabricControllerEndPoints, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Add network fabric controllers to artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :param parameters: Parameters supplied to the create or update application group operation. Is
+         either a ArtifactStoreNetworkFabricControllerEndPoints type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactStoreNetworkFabricControllerEndPoints
+         or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._add_network_fabric_controller_end_points_initial(
+                resource_group_name=resource_group_name,
+                publisher_name=publisher_name,
+                artifact_store_name=artifact_store_name,
+                parameters=parameters,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    async def _delete_network_fabric_controller_end_points_initial(  # pylint: disable=name-too-long
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: Union[_models.ArtifactStoreNetworkFabricControllerEndPoints, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(parameters, (IOBase, bytes)):
+            _content = parameters
+        else:
+            _json = self._serialize.body(parameters, "ArtifactStoreNetworkFabricControllerEndPoints")
+
+        _request = build_artifact_stores_delete_network_fabric_controller_end_points_request(
+            resource_group_name=resource_group_name,
+            publisher_name=publisher_name,
+            artifact_store_name=artifact_store_name,
+            subscription_id=self._config.subscription_id,
+            content_type=content_type,
+            api_version=self._config.api_version,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    async def begin_delete_network_fabric_controller_end_points(  # pylint: disable=name-too-long
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: _models.ArtifactStoreNetworkFabricControllerEndPoints,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Delete network fabric controllers on artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :param parameters: Parameters supplied to the create or update application group operation.
+         Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactStoreNetworkFabricControllerEndPoints
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    async def begin_delete_network_fabric_controller_end_points(  # pylint: disable=name-too-long
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: IO[bytes],
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Delete network fabric controllers on artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :param parameters: Parameters supplied to the create or update application group operation.
+         Required.
+        :type parameters: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def begin_delete_network_fabric_controller_end_points(  # pylint: disable=name-too-long
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: Union[_models.ArtifactStoreNetworkFabricControllerEndPoints, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Delete network fabric controllers on artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :param parameters: Parameters supplied to the create or update application group operation. Is
+         either a ArtifactStoreNetworkFabricControllerEndPoints type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactStoreNetworkFabricControllerEndPoints
+         or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._delete_network_fabric_controller_end_points_initial(
+                resource_group_name=resource_group_name,
+                publisher_name=publisher_name,
+                artifact_store_name=artifact_store_name,
+                parameters=parameters,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    async def _list_network_fabric_controller_private_end_points_initial(  # pylint: disable=name-too-long
+        self, resource_group_name: str, publisher_name: str, artifact_store_name: str, **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_artifact_stores_list_network_fabric_controller_private_end_points_request(
+            resource_group_name=resource_group_name,
+            publisher_name=publisher_name,
+            artifact_store_name=artifact_store_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_list_network_fabric_controller_private_end_points(  # pylint: disable=name-too-long
+        self, resource_group_name: str, publisher_name: str, artifact_store_name: str, **kwargs: Any
+    ) -> AsyncLROPoller[AsyncIterable["_models.ArtifactStoreNetworkFabricControllerEndPoints"]]:
+        """List network fabric controllers to artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :return: An instance of LROPoller that returns an iterator like instance of
+         ArtifactStoreNetworkFabricControllerEndPointsList
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.core.async_paging.AsyncItemPaged[~Microsoft.HybridNetwork.models.ArtifactStoreNetworkFabricControllerEndPoints]]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models._models.ArtifactStoreNetworkFabricControllerEndPointsList] = kwargs.pop(
+            "cls", None
+        )  # pylint: disable=protected-access
+
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        def prepare_request(next_link=None):
+            if not next_link:
+
+                _request = build_artifact_stores_list_network_fabric_controller_private_end_points_request(
+                    resource_group_name=resource_group_name,
+                    publisher_name=publisher_name,
+                    artifact_store_name=artifact_store_name,
+                    subscription_id=self._config.subscription_id,
+                    api_version=self._config.api_version,
+                    headers=_headers,
+                    params=_params,
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            else:
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                _request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            return _request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize(
+                _models._models.ArtifactStoreNetworkFabricControllerEndPointsList,  # pylint: disable=protected-access
+                pipeline_response.http_response,
+            )
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)  # type: ignore
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            _request = prepare_request(next_link)
+
+            _stream = False
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+                _request, stream=_stream, **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._list_network_fabric_controller_private_end_points_initial(
+                resource_group_name=resource_group_name,
+                publisher_name=publisher_name,
+                artifact_store_name=artifact_store_name,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            async def internal_get_next(next_link=None):
+                if next_link is None:
+                    return pipeline_response
+                return await get_next(next_link)
+
+            return AsyncItemPaged(internal_get_next, extract_data)
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[
+                AsyncIterable["_models.ArtifactStoreNetworkFabricControllerEndPoints"]
+            ].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[AsyncIterable["_models.ArtifactStoreNetworkFabricControllerEndPoints"]](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
+
+    async def _approve_private_end_points_initial(
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: Union[_models.ArtifactStorePrivateEndPointsFormat, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(parameters, (IOBase, bytes)):
+            _content = parameters
+        else:
+            _json = self._serialize.body(parameters, "ArtifactStorePrivateEndPointsFormat")
+
+        _request = build_artifact_stores_approve_private_end_points_request(
+            resource_group_name=resource_group_name,
+            publisher_name=publisher_name,
+            artifact_store_name=artifact_store_name,
+            subscription_id=self._config.subscription_id,
+            content_type=content_type,
+            api_version=self._config.api_version,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    async def begin_approve_private_end_points(
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: _models.ArtifactStorePrivateEndPointsFormat,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Approve manual private endpoints on artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :param parameters: Parameters supplied to approve private endpoints. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactStorePrivateEndPointsFormat
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    async def begin_approve_private_end_points(
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: IO[bytes],
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Approve manual private endpoints on artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :param parameters: Parameters supplied to approve private endpoints. Required.
+        :type parameters: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def begin_approve_private_end_points(
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: Union[_models.ArtifactStorePrivateEndPointsFormat, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Approve manual private endpoints on artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :param parameters: Parameters supplied to approve private endpoints. Is either a
+         ArtifactStorePrivateEndPointsFormat type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactStorePrivateEndPointsFormat or
+         IO[bytes]
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._approve_private_end_points_initial(
+                resource_group_name=resource_group_name,
+                publisher_name=publisher_name,
+                artifact_store_name=artifact_store_name,
+                parameters=parameters,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    async def _remove_private_end_points_initial(
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: Union[_models.ArtifactStorePrivateEndPointsFormat, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(parameters, (IOBase, bytes)):
+            _content = parameters
+        else:
+            _json = self._serialize.body(parameters, "ArtifactStorePrivateEndPointsFormat")
+
+        _request = build_artifact_stores_remove_private_end_points_request(
+            resource_group_name=resource_group_name,
+            publisher_name=publisher_name,
+            artifact_store_name=artifact_store_name,
+            subscription_id=self._config.subscription_id,
+            content_type=content_type,
+            api_version=self._config.api_version,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    async def begin_remove_private_end_points(
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: _models.ArtifactStorePrivateEndPointsFormat,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Remove manual private endpoints on artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :param parameters: Parameters supplied to the create or update application group operation.
+         Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactStorePrivateEndPointsFormat
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    async def begin_remove_private_end_points(
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: IO[bytes],
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Remove manual private endpoints on artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :param parameters: Parameters supplied to the create or update application group operation.
+         Required.
+        :type parameters: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def begin_remove_private_end_points(
+        self,
+        resource_group_name: str,
+        publisher_name: str,
+        artifact_store_name: str,
+        parameters: Union[_models.ArtifactStorePrivateEndPointsFormat, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Remove manual private endpoints on artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :param parameters: Parameters supplied to the create or update application group operation. Is
+         either a ArtifactStorePrivateEndPointsFormat type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactStorePrivateEndPointsFormat or
+         IO[bytes]
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._remove_private_end_points_initial(
+                resource_group_name=resource_group_name,
+                publisher_name=publisher_name,
+                artifact_store_name=artifact_store_name,
+                parameters=parameters,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    async def _list_private_end_points_initial(
+        self, resource_group_name: str, publisher_name: str, artifact_store_name: str, **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_artifact_stores_list_private_end_points_request(
+            resource_group_name=resource_group_name,
+            publisher_name=publisher_name,
+            artifact_store_name=artifact_store_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_list_private_end_points(
+        self, resource_group_name: str, publisher_name: str, artifact_store_name: str, **kwargs: Any
+    ) -> AsyncLROPoller[AsyncIterable["_models.ArtifactStorePrivateEndPointsFormat"]]:
+        """List manual private endpoints on artifact stores.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param publisher_name: The name of the publisher. Required.
+        :type publisher_name: str
+        :param artifact_store_name: The name of the artifact store. Required.
+        :type artifact_store_name: str
+        :return: An instance of LROPoller that returns an iterator like instance of
+         ArtifactStorePrivateEndPointsListResult
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.core.async_paging.AsyncItemPaged[~Microsoft.HybridNetwork.models.ArtifactStorePrivateEndPointsFormat]]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models._models.ArtifactStorePrivateEndPointsListResult] = kwargs.pop(
+            "cls", None
+        )  # pylint: disable=protected-access
+
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        def prepare_request(next_link=None):
+            if not next_link:
+
+                _request = build_artifact_stores_list_private_end_points_request(
+                    resource_group_name=resource_group_name,
+                    publisher_name=publisher_name,
+                    artifact_store_name=artifact_store_name,
+                    subscription_id=self._config.subscription_id,
+                    api_version=self._config.api_version,
+                    headers=_headers,
+                    params=_params,
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            else:
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                _request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            return _request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize(
+                _models._models.ArtifactStorePrivateEndPointsListResult,  # pylint: disable=protected-access
+                pipeline_response.http_response,
+            )
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)  # type: ignore
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            _request = prepare_request(next_link)
+
+            _stream = False
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+                _request, stream=_stream, **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._list_private_end_points_initial(
+                resource_group_name=resource_group_name,
+                publisher_name=publisher_name,
+                artifact_store_name=artifact_store_name,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            async def internal_get_next(next_link=None):
+                if next_link is None:
+                    return pipeline_response
+                return await get_next(next_link)
+
+            return AsyncItemPaged(internal_get_next, extract_data)
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[AsyncIterable["_models.ArtifactStorePrivateEndPointsFormat"]].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[AsyncIterable["_models.ArtifactStorePrivateEndPointsFormat"]](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
 
 class ArtifactManifestsOperations:
@@ -7609,7 +8421,7 @@ class ArtifactManifestsOperations:
             "cls", None
         )
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -7620,7 +8432,7 @@ class ArtifactManifestsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_artifact_manifests_list_by_artifact_store_request(
+                _request = build_artifact_manifests_list_by_artifact_store_request(
                     resource_group_name=resource_group_name,
                     publisher_name=publisher_name,
                     artifact_store_name=artifact_store_name,
@@ -7629,7 +8441,7 @@ class ArtifactManifestsOperations:
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -7641,12 +8453,12 @@ class ArtifactManifestsOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -7658,17 +8470,15 @@ class ArtifactManifestsOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -7677,15 +8487,15 @@ class ArtifactManifestsOperations:
 
         return AsyncItemPaged(get_next, extract_data)
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+    async def _delete_initial(
         self,
         resource_group_name: str,
         publisher_name: str,
         artifact_store_name: str,
         artifact_manifest_name: str,
         **kwargs: Any
-    ) -> None:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -7696,9 +8506,9 @@ class ArtifactManifestsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        request = build_artifact_manifests_delete_request(
+        _request = build_artifact_manifests_delete_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             artifact_store_name=artifact_store_name,
@@ -7708,18 +8518,20 @@ class ArtifactManifestsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
-            if _stream:
+        if response.status_code not in [202, 204]:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -7728,8 +8540,12 @@ class ArtifactManifestsOperations:
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(
@@ -7751,13 +8567,6 @@ class ArtifactManifestsOperations:
         :type artifact_store_name: str
         :param artifact_manifest_name: The name of the artifact manifest. Required.
         :type artifact_manifest_name: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -7770,7 +8579,7 @@ class ArtifactManifestsOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
                 artifact_store_name=artifact_store_name,
@@ -7780,11 +8589,12 @@ class ArtifactManifestsOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -7795,13 +8605,13 @@ class ArtifactManifestsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     async def _create_or_update_initial(
         self,
@@ -7809,10 +8619,10 @@ class ArtifactManifestsOperations:
         publisher_name: str,
         artifact_store_name: str,
         artifact_manifest_name: str,
-        parameters: Union[_models.ArtifactManifest, IO],
+        parameters: Union[_models.ArtifactManifest, IO[bytes]],
         **kwargs: Any
-    ) -> _models.ArtifactManifest:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -7824,7 +8634,7 @@ class ArtifactManifestsOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ArtifactManifest] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -7834,7 +8644,7 @@ class ArtifactManifestsOperations:
         else:
             _json = self._serialize.body(parameters, "ArtifactManifest")
 
-        request = build_artifact_manifests_create_or_update_request(
+        _request = build_artifact_manifests_create_or_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             artifact_store_name=artifact_store_name,
@@ -7847,27 +8657,25 @@ class ArtifactManifestsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("ArtifactManifest", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("ArtifactManifest", pipeline_response)
+        deserialized = response.iter_bytes()
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -7903,13 +8711,6 @@ class ArtifactManifestsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ArtifactManifest
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ArtifactManifest]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -7922,7 +8723,7 @@ class ArtifactManifestsOperations:
         publisher_name: str,
         artifact_store_name: str,
         artifact_manifest_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -7940,17 +8741,10 @@ class ArtifactManifestsOperations:
         :type artifact_manifest_name: str
         :param parameters: Parameters supplied to the create or update artifact manifest operation.
          Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ArtifactManifest
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ArtifactManifest]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -7963,7 +8757,7 @@ class ArtifactManifestsOperations:
         publisher_name: str,
         artifact_store_name: str,
         artifact_manifest_name: str,
-        parameters: Union[_models.ArtifactManifest, IO],
+        parameters: Union[_models.ArtifactManifest, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ArtifactManifest]:
         """Creates or updates a artifact manifest.
@@ -7978,18 +8772,8 @@ class ArtifactManifestsOperations:
         :param artifact_manifest_name: The name of the artifact manifest. Required.
         :type artifact_manifest_name: str
         :param parameters: Parameters supplied to the create or update artifact manifest operation. Is
-         either a ArtifactManifest type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactManifest or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         either a ArtifactManifest type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactManifest or IO[bytes]
         :return: An instance of AsyncLROPoller that returns ArtifactManifest
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ArtifactManifest]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -8015,12 +8799,13 @@ class ArtifactManifestsOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ArtifactManifest", pipeline_response)
+            deserialized = self._deserialize("ArtifactManifest", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -8033,13 +8818,15 @@ class ArtifactManifestsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.ArtifactManifest].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.ArtifactManifest](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @distributed_trace_async
     async def get(
@@ -8065,7 +8852,7 @@ class ArtifactManifestsOperations:
         :rtype: ~Microsoft.HybridNetwork.models.ArtifactManifest
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -8078,7 +8865,7 @@ class ArtifactManifestsOperations:
 
         cls: ClsType[_models.ArtifactManifest] = kwargs.pop("cls", None)
 
-        request = build_artifact_manifests_get_request(
+        _request = build_artifact_manifests_get_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             artifact_store_name=artifact_store_name,
@@ -8088,28 +8875,26 @@ class ArtifactManifestsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ArtifactManifest", pipeline_response)
+        deserialized = self._deserialize("ArtifactManifest", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @overload
     async def update(
@@ -8152,7 +8937,7 @@ class ArtifactManifestsOperations:
         publisher_name: str,
         artifact_store_name: str,
         artifact_manifest_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -8170,7 +8955,7 @@ class ArtifactManifestsOperations:
         :type artifact_manifest_name: str
         :param parameters: Parameters supplied to the create or update artifact manifest operation.
          Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -8186,7 +8971,7 @@ class ArtifactManifestsOperations:
         publisher_name: str,
         artifact_store_name: str,
         artifact_manifest_name: str,
-        parameters: Union[_models.TagsObject, IO],
+        parameters: Union[_models.TagsObject, IO[bytes]],
         **kwargs: Any
     ) -> _models.ArtifactManifest:
         """Updates a artifact manifest resource.
@@ -8201,16 +8986,13 @@ class ArtifactManifestsOperations:
         :param artifact_manifest_name: The name of the artifact manifest. Required.
         :type artifact_manifest_name: str
         :param parameters: Parameters supplied to the create or update artifact manifest operation. Is
-         either a TagsObject type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
+         either a TagsObject type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO[bytes]
         :return: ArtifactManifest
         :rtype: ~Microsoft.HybridNetwork.models.ArtifactManifest
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -8232,7 +9014,7 @@ class ArtifactManifestsOperations:
         else:
             _json = self._serialize.body(parameters, "TagsObject")
 
-        request = build_artifact_manifests_update_request(
+        _request = build_artifact_manifests_update_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             artifact_store_name=artifact_store_name,
@@ -8245,28 +9027,26 @@ class ArtifactManifestsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ArtifactManifest", pipeline_response)
+        deserialized = self._deserialize("ArtifactManifest", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def list_credential(
@@ -8292,7 +9072,7 @@ class ArtifactManifestsOperations:
         :rtype: ~Microsoft.HybridNetwork.models.ArtifactAccessCredential
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -8305,7 +9085,7 @@ class ArtifactManifestsOperations:
 
         cls: ClsType[_models.ArtifactAccessCredential] = kwargs.pop("cls", None)
 
-        request = build_artifact_manifests_list_credential_request(
+        _request = build_artifact_manifests_list_credential_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             artifact_store_name=artifact_store_name,
@@ -8315,28 +9095,26 @@ class ArtifactManifestsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ArtifactAccessCredential", pipeline_response)
+        deserialized = self._deserialize("ArtifactAccessCredential", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     async def _update_state_initial(
         self,
@@ -8344,10 +9122,10 @@ class ArtifactManifestsOperations:
         publisher_name: str,
         artifact_store_name: str,
         artifact_manifest_name: str,
-        parameters: Union[_models.ArtifactManifestUpdateState, IO],
+        parameters: Union[_models.ArtifactManifestUpdateState, IO[bytes]],
         **kwargs: Any
-    ) -> Optional[_models.ArtifactManifestUpdateState]:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -8359,7 +9137,7 @@ class ArtifactManifestsOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[Optional[_models.ArtifactManifestUpdateState]] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -8369,7 +9147,7 @@ class ArtifactManifestsOperations:
         else:
             _json = self._serialize.body(parameters, "ArtifactManifestUpdateState")
 
-        request = build_artifact_manifests_update_state_request(
+        _request = build_artifact_manifests_update_state_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             artifact_store_name=artifact_store_name,
@@ -8382,34 +9160,34 @@ class ArtifactManifestsOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         response_headers = {}
-        if response.status_code == 200:
-            deserialized = self._deserialize("ArtifactManifestUpdateState", pipeline_response)
-
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)
+        deserialized = response.iter_bytes()
 
-        return deserialized
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @overload
     async def begin_update_state(
@@ -8439,13 +9217,6 @@ class ArtifactManifestsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ArtifactManifestUpdateState
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ArtifactManifestUpdateState]
@@ -8459,7 +9230,7 @@ class ArtifactManifestsOperations:
         publisher_name: str,
         artifact_store_name: str,
         artifact_manifest_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -8476,17 +9247,10 @@ class ArtifactManifestsOperations:
         :param artifact_manifest_name: The name of the artifact manifest. Required.
         :type artifact_manifest_name: str
         :param parameters: Parameters supplied to update the state of artifact manifest. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ArtifactManifestUpdateState
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ArtifactManifestUpdateState]
@@ -8500,7 +9264,7 @@ class ArtifactManifestsOperations:
         publisher_name: str,
         artifact_store_name: str,
         artifact_manifest_name: str,
-        parameters: Union[_models.ArtifactManifestUpdateState, IO],
+        parameters: Union[_models.ArtifactManifestUpdateState, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ArtifactManifestUpdateState]:
         """Update state for artifact manifest.
@@ -8515,18 +9279,8 @@ class ArtifactManifestsOperations:
         :param artifact_manifest_name: The name of the artifact manifest. Required.
         :type artifact_manifest_name: str
         :param parameters: Parameters supplied to update the state of artifact manifest. Is either a
-         ArtifactManifestUpdateState type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactManifestUpdateState or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         ArtifactManifestUpdateState type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactManifestUpdateState or IO[bytes]
         :return: An instance of AsyncLROPoller that returns ArtifactManifestUpdateState
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ArtifactManifestUpdateState]
@@ -8553,12 +9307,13 @@ class ArtifactManifestsOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ArtifactManifestUpdateState", pipeline_response)
+            deserialized = self._deserialize("ArtifactManifestUpdateState", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -8570,13 +9325,15 @@ class ArtifactManifestsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.ArtifactManifestUpdateState].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.ArtifactManifestUpdateState](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
 
 class ProxyArtifactOperations:
@@ -8623,7 +9380,7 @@ class ProxyArtifactOperations:
             "cls", None
         )
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -8634,7 +9391,7 @@ class ProxyArtifactOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_proxy_artifact_list_request(
+                _request = build_proxy_artifact_list_request(
                     resource_group_name=resource_group_name,
                     publisher_name=publisher_name,
                     artifact_store_name=artifact_store_name,
@@ -8643,7 +9400,7 @@ class ProxyArtifactOperations:
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -8655,12 +9412,12 @@ class ProxyArtifactOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -8672,17 +9429,15 @@ class ProxyArtifactOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -8720,13 +9475,11 @@ class ProxyArtifactOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[
-            _models._models.ProxyArtifactVersionsOverviewListResult
-        ] = kwargs.pop(  # pylint: disable=protected-access
+        cls: ClsType[_models._models.ProxyArtifactVersionsOverviewListResult] = kwargs.pop(
             "cls", None
-        )
+        )  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -8737,7 +9490,7 @@ class ProxyArtifactOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_proxy_artifact_get_request(
+                _request = build_proxy_artifact_get_request(
                     resource_group_name=resource_group_name,
                     publisher_name=publisher_name,
                     artifact_store_name=artifact_store_name,
@@ -8747,7 +9500,7 @@ class ProxyArtifactOperations:
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -8759,12 +9512,12 @@ class ProxyArtifactOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -8777,17 +9530,15 @@ class ProxyArtifactOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -8802,12 +9553,12 @@ class ProxyArtifactOperations:
         publisher_name: str,
         artifact_store_name: str,
         artifact_version_name: str,
-        parameters: Union[_models.ArtifactChangeState, IO],
+        parameters: Union[_models.ArtifactChangeState, IO[bytes]],
         *,
         artifact_name: str,
         **kwargs: Any
-    ) -> Optional[_models.ProxyArtifactVersionsListOverview]:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -8819,7 +9570,7 @@ class ProxyArtifactOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[Optional[_models.ProxyArtifactVersionsListOverview]] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -8829,7 +9580,7 @@ class ProxyArtifactOperations:
         else:
             _json = self._serialize.body(parameters, "ArtifactChangeState")
 
-        request = build_proxy_artifact_update_state_request(
+        _request = build_proxy_artifact_update_state_request(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             artifact_store_name=artifact_store_name,
@@ -8843,34 +9594,34 @@ class ProxyArtifactOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         response_headers = {}
-        if response.status_code == 200:
-            deserialized = self._deserialize("ProxyArtifactVersionsListOverview", pipeline_response)
-
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)
+        deserialized = response.iter_bytes()
 
-        return deserialized
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @overload
     async def begin_update_state(
@@ -8903,13 +9654,6 @@ class ProxyArtifactOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ProxyArtifactVersionsListOverview
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ProxyArtifactVersionsListOverview]
@@ -8923,7 +9667,7 @@ class ProxyArtifactOperations:
         publisher_name: str,
         artifact_store_name: str,
         artifact_version_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         artifact_name: str,
         content_type: str = "application/json",
@@ -8941,19 +9685,12 @@ class ProxyArtifactOperations:
         :param artifact_version_name: The name of the artifact version. Required.
         :type artifact_version_name: str
         :param parameters: Parameters supplied to update the state of artifact manifest. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword artifact_name: The name of the artifact. Required.
         :paramtype artifact_name: str
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ProxyArtifactVersionsListOverview
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ProxyArtifactVersionsListOverview]
@@ -8967,7 +9704,7 @@ class ProxyArtifactOperations:
         publisher_name: str,
         artifact_store_name: str,
         artifact_version_name: str,
-        parameters: Union[_models.ArtifactChangeState, IO],
+        parameters: Union[_models.ArtifactChangeState, IO[bytes]],
         *,
         artifact_name: str,
         **kwargs: Any
@@ -8984,20 +9721,10 @@ class ProxyArtifactOperations:
         :param artifact_version_name: The name of the artifact version. Required.
         :type artifact_version_name: str
         :param parameters: Parameters supplied to update the state of artifact manifest. Is either a
-         ArtifactChangeState type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactChangeState or IO
+         ArtifactChangeState type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.ArtifactChangeState or IO[bytes]
         :keyword artifact_name: The name of the artifact. Required.
         :paramtype artifact_name: str
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns ProxyArtifactVersionsListOverview
         :rtype:
          ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.ProxyArtifactVersionsListOverview]
@@ -9025,12 +9752,13 @@ class ProxyArtifactOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ProxyArtifactVersionsListOverview", pipeline_response)
+            deserialized = self._deserialize("ProxyArtifactVersionsListOverview", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -9042,13 +9770,15 @@ class ProxyArtifactOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.ProxyArtifactVersionsListOverview].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.ProxyArtifactVersionsListOverview](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
 
 class SitesOperations:
@@ -9070,10 +9800,8 @@ class SitesOperations:
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, site_name: str, **kwargs: Any
-    ) -> None:
-        error_map = {
+    async def _delete_initial(self, resource_group_name: str, site_name: str, **kwargs: Any) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -9084,9 +9812,9 @@ class SitesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        request = build_sites_delete_request(
+        _request = build_sites_delete_request(
             resource_group_name=resource_group_name,
             site_name=site_name,
             subscription_id=self._config.subscription_id,
@@ -9094,18 +9822,20 @@ class SitesOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
-            if _stream:
+        if response.status_code not in [202, 204]:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -9114,8 +9844,12 @@ class SitesOperations:
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(self, resource_group_name: str, site_name: str, **kwargs: Any) -> AsyncLROPoller[None]:
@@ -9126,13 +9860,6 @@ class SitesOperations:
         :type resource_group_name: str
         :param site_name: The name of the network service site. Required.
         :type site_name: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -9145,7 +9872,7 @@ class SitesOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 site_name=site_name,
                 cls=lambda x, y, z: x,
@@ -9153,11 +9880,12 @@ class SitesOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -9168,13 +9896,13 @@ class SitesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     @distributed_trace_async
     async def get(self, resource_group_name: str, site_name: str, **kwargs: Any) -> _models.Site:
@@ -9189,7 +9917,7 @@ class SitesOperations:
         :rtype: ~Microsoft.HybridNetwork.models.Site
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -9202,7 +9930,7 @@ class SitesOperations:
 
         cls: ClsType[_models.Site] = kwargs.pop("cls", None)
 
-        request = build_sites_get_request(
+        _request = build_sites_get_request(
             resource_group_name=resource_group_name,
             site_name=site_name,
             subscription_id=self._config.subscription_id,
@@ -9210,33 +9938,31 @@ class SitesOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("Site", pipeline_response)
+        deserialized = self._deserialize("Site", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     async def _create_or_update_initial(
-        self, resource_group_name: str, site_name: str, parameters: Union[_models.Site, IO], **kwargs: Any
-    ) -> _models.Site:
-        error_map = {
+        self, resource_group_name: str, site_name: str, parameters: Union[_models.Site, IO[bytes]], **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -9248,7 +9974,7 @@ class SitesOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.Site] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -9258,7 +9984,7 @@ class SitesOperations:
         else:
             _json = self._serialize.body(parameters, "Site")
 
-        request = build_sites_create_or_update_request(
+        _request = build_sites_create_or_update_request(
             resource_group_name=resource_group_name,
             site_name=site_name,
             subscription_id=self._config.subscription_id,
@@ -9269,27 +9995,25 @@ class SitesOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("Site", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("Site", pipeline_response)
+        deserialized = response.iter_bytes()
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -9319,13 +10043,6 @@ class SitesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns Site
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.Site]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -9336,7 +10053,7 @@ class SitesOperations:
         self,
         resource_group_name: str,
         site_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -9350,17 +10067,10 @@ class SitesOperations:
         :type site_name: str
         :param parameters: Parameters supplied to the create or update network site operation.
          Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns Site
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.Site]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -9368,7 +10078,7 @@ class SitesOperations:
 
     @distributed_trace_async
     async def begin_create_or_update(
-        self, resource_group_name: str, site_name: str, parameters: Union[_models.Site, IO], **kwargs: Any
+        self, resource_group_name: str, site_name: str, parameters: Union[_models.Site, IO[bytes]], **kwargs: Any
     ) -> AsyncLROPoller[_models.Site]:
         """Creates or updates a network site.
 
@@ -9378,18 +10088,8 @@ class SitesOperations:
         :param site_name: The name of the network service site. Required.
         :type site_name: str
         :param parameters: Parameters supplied to the create or update network site operation. Is
-         either a Site type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.Site or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         either a Site type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.Site or IO[bytes]
         :return: An instance of AsyncLROPoller that returns Site
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.Site]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -9413,12 +10113,13 @@ class SitesOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("Site", pipeline_response)
+            deserialized = self._deserialize("Site", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -9431,13 +10132,15 @@ class SitesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.Site].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.Site](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @overload
     async def update_tags(
@@ -9471,7 +10174,7 @@ class SitesOperations:
         self,
         resource_group_name: str,
         site_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -9484,7 +10187,7 @@ class SitesOperations:
         :param site_name: The name of the network service site. Required.
         :type site_name: str
         :param parameters: Parameters supplied to update network site tags. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -9495,7 +10198,7 @@ class SitesOperations:
 
     @distributed_trace_async
     async def update_tags(
-        self, resource_group_name: str, site_name: str, parameters: Union[_models.TagsObject, IO], **kwargs: Any
+        self, resource_group_name: str, site_name: str, parameters: Union[_models.TagsObject, IO[bytes]], **kwargs: Any
     ) -> _models.Site:
         """Updates a site update tags.
 
@@ -9505,16 +10208,13 @@ class SitesOperations:
         :param site_name: The name of the network service site. Required.
         :type site_name: str
         :param parameters: Parameters supplied to update network site tags. Is either a TagsObject type
-         or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
+         or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO[bytes]
         :return: Site
         :rtype: ~Microsoft.HybridNetwork.models.Site
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -9536,7 +10236,7 @@ class SitesOperations:
         else:
             _json = self._serialize.body(parameters, "TagsObject")
 
-        request = build_sites_update_tags_request(
+        _request = build_sites_update_tags_request(
             resource_group_name=resource_group_name,
             site_name=site_name,
             subscription_id=self._config.subscription_id,
@@ -9547,28 +10247,26 @@ class SitesOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("Site", pipeline_response)
+        deserialized = self._deserialize("Site", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @distributed_trace
     def list_by_subscription(self, **kwargs: Any) -> AsyncIterable["_models.Site"]:
@@ -9583,7 +10281,7 @@ class SitesOperations:
 
         cls: ClsType[_models._models.SiteListResult] = kwargs.pop("cls", None)  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -9594,13 +10292,13 @@ class SitesOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_sites_list_by_subscription_request(
+                _request = build_sites_list_by_subscription_request(
                     subscription_id=self._config.subscription_id,
                     api_version=self._config.api_version,
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -9612,12 +10310,12 @@ class SitesOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -9629,17 +10327,15 @@ class SitesOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -9664,7 +10360,7 @@ class SitesOperations:
 
         cls: ClsType[_models._models.SiteListResult] = kwargs.pop("cls", None)  # pylint: disable=protected-access
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -9675,14 +10371,14 @@ class SitesOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_sites_list_by_resource_group_request(
+                _request = build_sites_list_by_resource_group_request(
                     resource_group_name=resource_group_name,
                     subscription_id=self._config.subscription_id,
                     api_version=self._config.api_version,
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -9694,12 +10390,12 @@ class SitesOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -9711,17 +10407,15 @@ class SitesOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -9750,10 +10444,10 @@ class SiteNetworkServicesOperations:
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
-    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+    async def _delete_initial(
         self, resource_group_name: str, site_network_service_name: str, **kwargs: Any
-    ) -> None:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -9764,9 +10458,9 @@ class SiteNetworkServicesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        request = build_site_network_services_delete_request(
+        _request = build_site_network_services_delete_request(
             resource_group_name=resource_group_name,
             site_network_service_name=site_network_service_name,
             subscription_id=self._config.subscription_id,
@@ -9774,18 +10468,20 @@ class SiteNetworkServicesOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
-            if _stream:
+        if response.status_code not in [202, 204]:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -9794,8 +10490,12 @@ class SiteNetworkServicesOperations:
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
+        deserialized = response.iter_bytes()
+
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(
@@ -9808,13 +10508,6 @@ class SiteNetworkServicesOperations:
         :type resource_group_name: str
         :param site_network_service_name: The name of the site network service. Required.
         :type site_network_service_name: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -9827,7 +10520,7 @@ class SiteNetworkServicesOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(  # type: ignore
+            raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 site_network_service_name=site_network_service_name,
                 cls=lambda x, y, z: x,
@@ -9835,11 +10528,12 @@ class SiteNetworkServicesOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -9850,13 +10544,13 @@ class SiteNetworkServicesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     @distributed_trace_async
     async def get(
@@ -9873,7 +10567,7 @@ class SiteNetworkServicesOperations:
         :rtype: ~Microsoft.HybridNetwork.models.SiteNetworkService
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -9886,7 +10580,7 @@ class SiteNetworkServicesOperations:
 
         cls: ClsType[_models.SiteNetworkService] = kwargs.pop("cls", None)
 
-        request = build_site_network_services_get_request(
+        _request = build_site_network_services_get_request(
             resource_group_name=resource_group_name,
             site_network_service_name=site_network_service_name,
             subscription_id=self._config.subscription_id,
@@ -9894,37 +10588,35 @@ class SiteNetworkServicesOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("SiteNetworkService", pipeline_response)
+        deserialized = self._deserialize("SiteNetworkService", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     async def _create_or_update_initial(
         self,
         resource_group_name: str,
         site_network_service_name: str,
-        parameters: Union[_models.SiteNetworkService, IO],
+        parameters: Union[_models.SiteNetworkService, IO[bytes]],
         **kwargs: Any
-    ) -> _models.SiteNetworkService:
-        error_map = {
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -9936,7 +10628,7 @@ class SiteNetworkServicesOperations:
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.SiteNetworkService] = kwargs.pop("cls", None)
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -9946,7 +10638,7 @@ class SiteNetworkServicesOperations:
         else:
             _json = self._serialize.body(parameters, "SiteNetworkService")
 
-        request = build_site_network_services_create_or_update_request(
+        _request = build_site_network_services_create_or_update_request(
             resource_group_name=resource_group_name,
             site_network_service_name=site_network_service_name,
             subscription_id=self._config.subscription_id,
@@ -9957,27 +10649,25 @@ class SiteNetworkServicesOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _stream = True
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            if _stream:
+            try:
                 await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize("SiteNetworkService", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("SiteNetworkService", pipeline_response)
+        deserialized = response.iter_bytes()
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -10007,13 +10697,6 @@ class SiteNetworkServicesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns SiteNetworkService
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.SiteNetworkService]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -10024,7 +10707,7 @@ class SiteNetworkServicesOperations:
         self,
         resource_group_name: str,
         site_network_service_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -10038,17 +10721,10 @@ class SiteNetworkServicesOperations:
         :type site_network_service_name: str
         :param parameters: Parameters supplied to the create or update site network service operation.
          Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns SiteNetworkService
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.SiteNetworkService]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -10059,7 +10735,7 @@ class SiteNetworkServicesOperations:
         self,
         resource_group_name: str,
         site_network_service_name: str,
-        parameters: Union[_models.SiteNetworkService, IO],
+        parameters: Union[_models.SiteNetworkService, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.SiteNetworkService]:
         """Creates or updates a network site.
@@ -10070,18 +10746,8 @@ class SiteNetworkServicesOperations:
         :param site_network_service_name: The name of the site network service. Required.
         :type site_network_service_name: str
         :param parameters: Parameters supplied to the create or update site network service operation.
-         Is either a SiteNetworkService type or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.SiteNetworkService or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         Is either a SiteNetworkService type or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.SiteNetworkService or IO[bytes]
         :return: An instance of AsyncLROPoller that returns SiteNetworkService
         :rtype: ~azure.core.polling.AsyncLROPoller[~Microsoft.HybridNetwork.models.SiteNetworkService]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -10105,12 +10771,13 @@ class SiteNetworkServicesOperations:
                 params=_params,
                 **kwargs
             )
+            await raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("SiteNetworkService", pipeline_response)
+            deserialized = self._deserialize("SiteNetworkService", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -10123,13 +10790,15 @@ class SiteNetworkServicesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.SiteNetworkService].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return AsyncLROPoller[_models.SiteNetworkService](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @overload
     async def update_tags(
@@ -10163,7 +10832,7 @@ class SiteNetworkServicesOperations:
         self,
         resource_group_name: str,
         site_network_service_name: str,
-        parameters: IO,
+        parameters: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -10176,7 +10845,7 @@ class SiteNetworkServicesOperations:
         :param site_network_service_name: The name of the site network service. Required.
         :type site_network_service_name: str
         :param parameters: Parameters supplied to update network site tags. Required.
-        :type parameters: IO
+        :type parameters: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -10190,7 +10859,7 @@ class SiteNetworkServicesOperations:
         self,
         resource_group_name: str,
         site_network_service_name: str,
-        parameters: Union[_models.TagsObject, IO],
+        parameters: Union[_models.TagsObject, IO[bytes]],
         **kwargs: Any
     ) -> _models.SiteNetworkService:
         """Updates a site update tags.
@@ -10201,16 +10870,13 @@ class SiteNetworkServicesOperations:
         :param site_network_service_name: The name of the site network service. Required.
         :type site_network_service_name: str
         :param parameters: Parameters supplied to update network site tags. Is either a TagsObject type
-         or a IO type. Required.
-        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
+         or a IO[bytes] type. Required.
+        :type parameters: ~Microsoft.HybridNetwork.models.TagsObject or IO[bytes]
         :return: SiteNetworkService
         :rtype: ~Microsoft.HybridNetwork.models.SiteNetworkService
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -10232,7 +10898,7 @@ class SiteNetworkServicesOperations:
         else:
             _json = self._serialize.body(parameters, "TagsObject")
 
-        request = build_site_network_services_update_tags_request(
+        _request = build_site_network_services_update_tags_request(
             resource_group_name=resource_group_name,
             site_network_service_name=site_network_service_name,
             subscription_id=self._config.subscription_id,
@@ -10243,28 +10909,26 @@ class SiteNetworkServicesOperations:
             headers=_headers,
             params=_params,
         )
-        request.url = self._client.format_url(request.url)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            if _stream:
-                await response.read()  # Load the body in memory and close the socket
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("SiteNetworkService", pipeline_response)
+        deserialized = self._deserialize("SiteNetworkService", pipeline_response.http_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
     @distributed_trace
     def list_by_subscription(self, **kwargs: Any) -> AsyncIterable["_models.SiteNetworkService"]:
@@ -10282,7 +10946,7 @@ class SiteNetworkServicesOperations:
             "cls", None
         )
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -10293,13 +10957,13 @@ class SiteNetworkServicesOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_site_network_services_list_by_subscription_request(
+                _request = build_site_network_services_list_by_subscription_request(
                     subscription_id=self._config.subscription_id,
                     api_version=self._config.api_version,
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -10311,12 +10975,12 @@ class SiteNetworkServicesOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -10328,17 +10992,15 @@ class SiteNetworkServicesOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -10368,7 +11030,7 @@ class SiteNetworkServicesOperations:
             "cls", None
         )
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -10379,14 +11041,14 @@ class SiteNetworkServicesOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_site_network_services_list_by_resource_group_request(
+                _request = build_site_network_services_list_by_resource_group_request(
                     resource_group_name=resource_group_name,
                     subscription_id=self._config.subscription_id,
                     api_version=self._config.api_version,
                     headers=_headers,
                     params=_params,
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -10398,12 +11060,12 @@ class SiteNetworkServicesOperations:
                     }
                 )
                 _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request.url = self._client.format_url(request.url)
+                _request.url = self._client.format_url(_request.url)
 
-            return request
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
@@ -10415,17 +11077,15 @@ class SiteNetworkServicesOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                if _stream:
-                    await response.read()  # Load the body in memory and close the socket
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)

@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2025-07-15"],
         ]
     }
 
@@ -98,7 +98,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.layer2_configuration = AAZObjectArg(
-            options=["--layer2-configuration"],
+            options=["--l2-config", "--layer2-configuration"],
             arg_group="Properties",
             help="Common properties for Layer2Configuration.",
             nullable=True,
@@ -111,19 +111,19 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.npb_static_route_configuration = AAZObjectArg(
-            options=["--npb-static-route-configuration"],
+            options=["--npb-static-route-conf", "--npb-static-route-configuration"],
             arg_group="Properties",
             help="NPB Static Route Configuration properties.",
             nullable=True,
         )
         _args_schema.option_b_layer3_configuration = AAZObjectArg(
-            options=["--option-b-layer3-configuration"],
+            options=["--option-b-l3-config", "--option-b-layer3-configuration"],
             arg_group="Properties",
             help="Common properties for Layer3Configuration.",
             nullable=True,
         )
         _args_schema.static_route_configuration = AAZObjectArg(
-            options=["--static-route-configuration"],
+            options=["--static-route-config", "--static-route-configuration"],
             arg_group="Properties",
             help="Static Route Configuration.",
             nullable=True,
@@ -133,20 +133,24 @@ class Update(AAZCommand):
         export_route_policy.export_ipv4_route_policy_id = AAZResourceIdArg(
             options=["export-ipv4-route-policy-id"],
             help="Export IPv4 Route Policy Id.",
+            nullable=True,
         )
         export_route_policy.export_ipv6_route_policy_id = AAZResourceIdArg(
             options=["export-ipv6-route-policy-id"],
             help="Export IPv6 Route Policy Id.",
+            nullable=True,
         )
 
         import_route_policy = cls._args_schema.import_route_policy
         import_route_policy.import_ipv4_route_policy_id = AAZResourceIdArg(
             options=["import-ipv4-route-policy-id"],
             help="Import IPv4 Route Policy Id.",
+            nullable=True,
         )
         import_route_policy.import_ipv6_route_policy_id = AAZResourceIdArg(
             options=["import-ipv6-route-policy-id"],
             help="Import IPv6 Route Policy Id.",
+            nullable=True,
         )
 
         layer2_configuration = cls._args_schema.layer2_configuration
@@ -167,7 +171,9 @@ class Update(AAZCommand):
         )
 
         interfaces = cls._args_schema.layer2_configuration.interfaces
-        interfaces.Element = AAZResourceIdArg()
+        interfaces.Element = AAZResourceIdArg(
+            nullable=True,
+        )
 
         npb_static_route_configuration = cls._args_schema.npb_static_route_configuration
         npb_static_route_configuration.bfd_configuration = AAZObjectArg(
@@ -177,16 +183,10 @@ class Update(AAZCommand):
         npb_static_route_configuration.ipv4_routes = AAZListArg(
             options=["ipv4-routes"],
             help="List of IPv4 Routes.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         npb_static_route_configuration.ipv6_routes = AAZListArg(
             options=["ipv6-routes"],
             help="List of IPv6 Routes.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
 
         bfd_configuration = cls._args_schema.npb_static_route_configuration.bfd_configuration
@@ -227,9 +227,6 @@ class Update(AAZCommand):
         option_b_layer3_configuration.prefix_limits = AAZListArg(
             options=["prefix-limits"],
             help="OptionB Layer3 prefix limit configuration.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         option_b_layer3_configuration.primary_ipv4_prefix = AAZStrArg(
             options=["primary-ipv4-prefix"],
@@ -443,7 +440,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -484,13 +481,13 @@ class Update(AAZCommand):
 
             export_route_policy = _builder.get(".properties.exportRoutePolicy")
             if export_route_policy is not None:
-                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id")
-                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id")
+                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id", typ_kwargs={"nullable": True})
+                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id", typ_kwargs={"nullable": True})
 
             import_route_policy = _builder.get(".properties.importRoutePolicy")
             if import_route_policy is not None:
-                import_route_policy.set_prop("importIpv4RoutePolicyId", AAZStrType, ".import_ipv4_route_policy_id")
-                import_route_policy.set_prop("importIpv6RoutePolicyId", AAZStrType, ".import_ipv6_route_policy_id")
+                import_route_policy.set_prop("importIpv4RoutePolicyId", AAZStrType, ".import_ipv4_route_policy_id", typ_kwargs={"nullable": True})
+                import_route_policy.set_prop("importIpv6RoutePolicyId", AAZStrType, ".import_ipv6_route_policy_id", typ_kwargs={"nullable": True})
 
             layer2_configuration = _builder.get(".properties.layer2Configuration")
             if layer2_configuration is not None:
@@ -499,7 +496,7 @@ class Update(AAZCommand):
 
             interfaces = _builder.get(".properties.layer2Configuration.interfaces")
             if interfaces is not None:
-                interfaces.set_elements(AAZStrType, ".")
+                interfaces.set_elements(AAZStrType, ".", typ_kwargs={"nullable": True})
 
             npb_static_route_configuration = _builder.get(".properties.npbStaticRouteConfiguration")
             if npb_static_route_configuration is not None:
@@ -613,6 +610,7 @@ class Update(AAZCommand):
             )
             properties.egress_acl_id = AAZStrType(
                 serialized_name="egressAclId",
+                nullable=True,
             )
             properties.export_route_policy = AAZObjectType(
                 serialized_name="exportRoutePolicy",
@@ -622,6 +620,7 @@ class Update(AAZCommand):
             )
             properties.ingress_acl_id = AAZStrType(
                 serialized_name="ingressAclId",
+                nullable=True,
             )
             properties.is_management_type = AAZStrType(
                 serialized_name="isManagementType",
@@ -676,17 +675,21 @@ class Update(AAZCommand):
             export_route_policy = cls._schema_on_200.properties.export_route_policy
             export_route_policy.export_ipv4_route_policy_id = AAZStrType(
                 serialized_name="exportIpv4RoutePolicyId",
+                nullable=True,
             )
             export_route_policy.export_ipv6_route_policy_id = AAZStrType(
                 serialized_name="exportIpv6RoutePolicyId",
+                nullable=True,
             )
 
             import_route_policy = cls._schema_on_200.properties.import_route_policy
             import_route_policy.import_ipv4_route_policy_id = AAZStrType(
                 serialized_name="importIpv4RoutePolicyId",
+                nullable=True,
             )
             import_route_policy.import_ipv6_route_policy_id = AAZStrType(
                 serialized_name="importIpv6RoutePolicyId",
+                nullable=True,
             )
 
             last_operation = cls._schema_on_200.properties.last_operation
@@ -699,7 +702,9 @@ class Update(AAZCommand):
             layer2_configuration.mtu = AAZIntType()
 
             interfaces = cls._schema_on_200.properties.layer2_configuration.interfaces
-            interfaces.Element = AAZStrType()
+            interfaces.Element = AAZStrType(
+                nullable=True,
+            )
 
             npb_static_route_configuration = cls._schema_on_200.properties.npb_static_route_configuration
             npb_static_route_configuration.bfd_configuration = AAZObjectType(

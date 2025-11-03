@@ -11,7 +11,7 @@ from azure.cli.core import telemetry
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s.clientproxyhelper._utils as clientproxyutils
 
-from ..vendored_sdks.models import (
+from ..vendored_sdks.preview_2025_08_01.models import (
     ListClusterUserCredentialProperties,
 )
 
@@ -21,10 +21,10 @@ if TYPE_CHECKING:
     from knack.commands import CLICommand
     from requests.models import Response
 
-    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.models import (
+    from azext_connectedk8s.vendored_sdks.preview_2025_08_01.models import (
         CredentialResults,
     )
-    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.operations import (
+    from azext_connectedk8s.vendored_sdks.preview_2025_08_01.operations import (
         ConnectedClusterOperations,
     )
 
@@ -83,7 +83,7 @@ def get_cluster_user_credentials(
         authentication_method=auth_method, client_proxy=True
     )
 
-    result: CredentialResults = client.list_cluster_user_credential(  # type: ignore[call-overload]
+    result: CredentialResults = client.list_cluster_user_credential(
         resource_group_name,
         cluster_name,
         list_prop,

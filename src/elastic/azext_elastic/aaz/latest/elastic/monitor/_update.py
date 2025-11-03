@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor update",
 )
 class Update(AAZCommand):
-    """Update an existing Elastic monitor resource in your Azure subscription, ensuring optimal observability and performance.
+    """Update a new Elastic monitor resource in your Azure subscription, enabling observability and monitoring of your Azure resources through Elastic.
 
-    :example: Update monitor
-        az elastic monitor update -n monitor -g rg --tags "{tag:test,tag1:test1}"
+    :example: Monitors_Create
+        az elastic monitor update --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2025-06-01"],
         ]
     }
 
@@ -69,6 +69,12 @@ class Update(AAZCommand):
             help="Identity properties of the monitor resource.",
             nullable=True,
         )
+        _args_schema.kind = AAZStrArg(
+            options=["--kind"],
+            arg_group="Body",
+            help="The kind of the Elastic resource - observability, security, search etc.",
+            nullable=True,
+        )
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
             arg_group="Body",
@@ -110,6 +116,13 @@ class Update(AAZCommand):
             help="Flag to determine if User API Key has to be generated and shared.",
             nullable=True,
         )
+        _args_schema.hosting_type = AAZStrArg(
+            options=["--hosting-type"],
+            arg_group="Properties",
+            help="Hosting type of the monitor resource - either Hosted deployments OR Serverless Projects.",
+            nullable=True,
+            enum={"Hosted": "Hosted", "Serverless": "Serverless"},
+        )
         _args_schema.monitoring_status = AAZStrArg(
             options=["--monitoring-status"],
             arg_group="Properties",
@@ -123,8 +136,14 @@ class Update(AAZCommand):
             help="Plan details of the monitor resource.",
             nullable=True,
         )
+        _args_schema.project_details = AAZObjectArg(
+            options=["--project-details"],
+            arg_group="Properties",
+            help="Project details of the monitor resource IF it belongs to Serverless offer kind.",
+            nullable=True,
+        )
         _args_schema.saa_s_azure_subscription_status = AAZStrArg(
-            options=["-s","--saa-s-azure-subscription-status"],
+            options=["--saa-s-azure-subscription-status", "--saas-status"],
             arg_group="Properties",
             help="Status of Azure Subscription where Marketplace SaaS is located.",
             nullable=True,
@@ -179,6 +198,20 @@ class Update(AAZCommand):
             options=["term-id"],
             help="Term ID of the plan",
             nullable=True,
+        )
+
+        project_details = cls._args_schema.project_details
+        project_details.configuration_type = AAZStrArg(
+            options=["configuration-type"],
+            help="Configuration type of the Elasticsearch project",
+            nullable=True,
+            enum={"GeneralPurpose": "GeneralPurpose", "NotApplicable": "NotApplicable", "TimeSeries": "TimeSeries", "Vector": "Vector"},
+        )
+        project_details.project_type = AAZStrArg(
+            options=["project-type"],
+            help="Project type; ex: Elasticsearch / Observability / Security",
+            nullable=True,
+            enum={"Elasticsearch": "Elasticsearch", "NotApplicable": "NotApplicable", "Observability": "Observability", "Security": "Security"},
         )
         return cls._args_schema
 
@@ -260,7 +293,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -359,7 +392,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -418,6 +451,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType
             )
             _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("kind", AAZStrType, ".kind")
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("sku", AAZObjectType, ".sku")
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -429,8 +463,10 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("generateApiKey", AAZBoolType, ".generate_api_key")
+                properties.set_prop("hostingType", AAZStrType, ".hosting_type")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
                 properties.set_prop("planDetails", AAZObjectType, ".plan_details")
+                properties.set_prop("projectDetails", AAZObjectType, ".project_details")
                 properties.set_prop("saaSAzureSubscriptionStatus", AAZStrType, ".saa_s_azure_subscription_status")
                 properties.set_prop("sourceCampaignId", AAZStrType, ".source_campaign_id")
                 properties.set_prop("sourceCampaignName", AAZStrType, ".source_campaign_name")
@@ -444,6 +480,11 @@ class Update(AAZCommand):
                 plan_details.set_prop("planName", AAZStrType, ".plan_name")
                 plan_details.set_prop("publisherID", AAZStrType, ".publisher_id")
                 plan_details.set_prop("termID", AAZStrType, ".term_id")
+
+            project_details = _builder.get(".properties.projectDetails")
+            if project_details is not None:
+                project_details.set_prop("configurationType", AAZStrType, ".configuration_type")
+                project_details.set_prop("projectType", AAZStrType, ".project_type")
 
             sku = _builder.get(".sku")
             if sku is not None:
@@ -474,6 +515,7 @@ class _UpdateHelper:
         if cls._schema_elastic_monitor_resource_read is not None:
             _schema.id = cls._schema_elastic_monitor_resource_read.id
             _schema.identity = cls._schema_elastic_monitor_resource_read.identity
+            _schema.kind = cls._schema_elastic_monitor_resource_read.kind
             _schema.location = cls._schema_elastic_monitor_resource_read.location
             _schema.name = cls._schema_elastic_monitor_resource_read.name
             _schema.properties = cls._schema_elastic_monitor_resource_read.properties
@@ -490,6 +532,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         elastic_monitor_resource_read.identity = AAZObjectType()
+        elastic_monitor_resource_read.kind = AAZStrType()
         elastic_monitor_resource_read.location = AAZStrType(
             flags={"required": True},
         )
@@ -525,6 +568,9 @@ class _UpdateHelper:
         properties.generate_api_key = AAZBoolType(
             serialized_name="generateApiKey",
         )
+        properties.hosting_type = AAZStrType(
+            serialized_name="hostingType",
+        )
         properties.liftr_resource_category = AAZStrType(
             serialized_name="liftrResourceCategory",
             flags={"read_only": True},
@@ -538,6 +584,9 @@ class _UpdateHelper:
         )
         properties.plan_details = AAZObjectType(
             serialized_name="planDetails",
+        )
+        properties.project_details = AAZObjectType(
+            serialized_name="projectDetails",
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
@@ -624,6 +673,14 @@ class _UpdateHelper:
             serialized_name="termID",
         )
 
+        project_details = _schema_elastic_monitor_resource_read.properties.project_details
+        project_details.configuration_type = AAZStrType(
+            serialized_name="configurationType",
+        )
+        project_details.project_type = AAZStrType(
+            serialized_name="projectType",
+        )
+
         sku = _schema_elastic_monitor_resource_read.sku
         sku.name = AAZStrType(
             flags={"required": True},
@@ -654,6 +711,7 @@ class _UpdateHelper:
 
         _schema.id = cls._schema_elastic_monitor_resource_read.id
         _schema.identity = cls._schema_elastic_monitor_resource_read.identity
+        _schema.kind = cls._schema_elastic_monitor_resource_read.kind
         _schema.location = cls._schema_elastic_monitor_resource_read.location
         _schema.name = cls._schema_elastic_monitor_resource_read.name
         _schema.properties = cls._schema_elastic_monitor_resource_read.properties

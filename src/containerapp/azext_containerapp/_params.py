@@ -30,13 +30,15 @@ def load_arguments(self, _):
     with self.argument_context('containerapp', arg_group='Configuration') as c:
         c.argument('revisions_mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
 
+    with self.argument_context('containerapp') as c:
+        c.argument('kind', arg_type=get_enum_type(['functionapp']), help="Set to 'functionapp' to enable built-in support and autoscaling for Azure Functions on Azure Container Apps.", is_preview=True)
+
     with self.argument_context('containerapp create') as c:
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://aka.ms/SourceToCloudSupportedVersions.", is_preview=True)
         c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)
         c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
                    validator=validate_build_env_vars, is_preview=True)
         c.argument('max_inactive_revisions', type=int, help="Max inactive revisions a Container App can have.", is_preview=True)
-        c.argument('kind', type=str, help="Set to 'functionapp' to enable built-in support and autoscaling for Azure Functions on Azure Container Apps.", is_preview=True)
         c.argument('registry_identity', help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-defined identity, Use 'system-environment' for an environment level system-defined identity or a resource id for a user-defined environment/containerapp level identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
         c.argument('target_label', help="The label to apply to new revisions. Required for revisions-mode 'labels'.", is_preview=True)
 
@@ -469,6 +471,7 @@ def load_arguments(self, _):
         c.argument('startup_command', nargs='*', options_list=['--command'], help="A list of supported commands on the container that will executed during startup. Space-separated values e.g. \"/bin/queue\" \"mycommand\". Empty string to clear existing values")
         c.argument('args', nargs='*', help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
         c.argument('target_port', type=int, validator=validate_target_port_range, help="The session port used for ingress traffic.")
+        c.argument('probe_yaml', type=file_type, help='Path to a .yaml file with the configuration of the container probes. Only applicable for Custom Container Session Pool', is_preview=True)
 
     with self.argument_context('containerapp sessionpool', arg_group='Registry') as c:
         c.argument('registry_server', validator=validate_registry_server, help="The container registry server hostname, e.g. myregistry.azurecr.io.")
@@ -476,10 +479,16 @@ def load_arguments(self, _):
         c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
         c.argument('registry_identity', validator=validate_registry_user, help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-assigned identity, use a resource ID for a user-assigned identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
 
-    # sessions code interpreter commands
-    with self.argument_context('containerapp session code-interpreter') as c:
+    # sessions commands
+    with self.argument_context('containerapp session') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp session stop') as c:
+        c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
+
+    # sessions code interpreter commands
+    with self.argument_context('containerapp session code-interpreter') as c:
         c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
         c.argument('session_pool_location', help="The location of the session pool")
 
@@ -522,8 +531,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('name', options_list=['--name', '-n'], help="The name of the managed environment.")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="The workload profile to run ingress replicas on. This profile must not be shared with any container app or job.")
-        c.argument('min_replicas', options_list=['--min-replicas'], type=int, deprecate_info=c.deprecate(hide=True, expiration='2.78.0'), help="The workload profile minimum instances is used instead.")
-        c.argument('max_replicas', options_list=['--max-replicas'], type=int, deprecate_info=c.deprecate(hide=True, expiration='2.78.0'), help="The workload profile maximum instances is used instead.")
         c.argument('termination_grace_period', options_list=['--termination-grace-period', '-t'], type=int, help="Time in seconds to drain requests during ingress shutdown. Default 500, minimum 0, maximum 3600.")
-        c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 1.")
+        c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 4, maximum 30.")
         c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")
