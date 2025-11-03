@@ -62,10 +62,18 @@ def aks_machine_show_table_format(result):
         entry["ipv4"] = ipv4_addresses
         entry["ipv6"] = ipv6_addresses
         parsed = compile_jmes("""{
-                name: name,
-                ipv4: ipv4,
-                ipv6: ipv6
-            }""")
+            name: name,
+            zones: zones,
+            ipv4: ipv4,
+            ipv6: ipv6,
+            nodeImageVersion: nodeImageVersion,
+            provisioningState: provisioningState,
+            orchestratorVersion: orchestratorVersion,
+            currentOrchestratorVersion: currentOrchestratorVersion,
+            vmSize: vmSize,
+            priority: priority,
+            mode: mode
+        }""")
         return parsed.search(entry, Options(dict_cls=OrderedDict))
     return parser(result)
 
@@ -477,4 +485,53 @@ def aks_extension_type_version_show_table_format(results):
 def _get_extension_type_versions_table_row(result):
     return OrderedDict([
         ('versions', result['properties']['version'])
+    ])
+
+
+def aks_jwtauthenticator_list_table_format(results):
+    """Format a list of JWT authenticators as summary results for display with "-o table". """
+    return [_get_jwtauthenticator_table_row(result) for result in results]
+
+
+def aks_jwtauthenticator_show_table_format(result):
+    """Format a JWT authenticator as summary results for display with "-o table". """
+    return _get_jwtauthenticator_table_row(result)
+
+
+def _get_jwtauthenticator_table_row(result):
+    """Extract information from a JWT authenticator for table display."""
+    properties = result.get('properties', {})
+    provisioningState = properties.get('provisioningState', '')
+    issuer = properties.get('issuer', {})
+
+    issuer_url = issuer.get('url', '') if issuer else ''
+    audiences = issuer.get('audiences', []) if issuer else []
+    audience_list = ', '.join(audiences) if audiences else ''
+
+    claim_mappings = properties.get('claimMappings', {})
+    has_claim_mappings = 'No'
+    if claim_mappings:
+        has_username = bool(claim_mappings.get('username'))
+        has_groups = bool(claim_mappings.get('groups'))
+        has_uid = bool(claim_mappings.get('uid'))
+        has_extra = (claim_mappings.get('extra') and
+                     isinstance(claim_mappings['extra'], list) and
+                     len(claim_mappings['extra']) > 0)
+
+        if has_username or has_groups or has_uid or has_extra:
+            has_claim_mappings = 'Yes'
+
+    claim_rules = properties.get('claimValidationRules', [])
+    user_rules = properties.get('userValidationRules', [])
+    has_claim_rules = 'Yes' if claim_rules else 'No'
+    has_user_rules = 'Yes' if user_rules else 'No'
+
+    return OrderedDict([
+        ('name', result.get('name', '')),
+        ('provisioningState', provisioningState),
+        ('issuerUrl', issuer_url),
+        ('audiences', audience_list),
+        ('hasClaimMappings', has_claim_mappings),
+        ('hasClaimRules', has_claim_rules),
+        ('hasUserRules', has_user_rules),
     ])

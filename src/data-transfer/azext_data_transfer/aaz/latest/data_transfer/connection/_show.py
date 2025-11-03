@@ -18,8 +18,11 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get connection resource.
 
+    Get connection with specified ids or name.
+
     :example: Gets connection resource
         az data-transfer connection show --resource-group testRG --connection-name testConnection
+        az data-transfer connection show --ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.AzureDataTransfer/connections/testConnection
     """
 
     _aaz_info = {

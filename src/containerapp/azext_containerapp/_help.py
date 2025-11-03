@@ -161,6 +161,9 @@ helps['containerapp up'] = """
     - name: Create a container app and deploy a model from Azure AI Foundry
       text: |
             az containerapp up -n my-containerapp -l westus3 --model-registry azureml --model-name Phi-4 --model-version 7
+    - name: Create an Azure Functions on Azure Container Apps (kind=functionapp)
+      text: |
+            az containerapp up -n my-containerapp --image my-app:v1.0 --kind functionapp
 """
 
 
@@ -455,7 +458,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Manual.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappEnv
+              --environment MyContainerappEnv \\
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -466,7 +469,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Schedule.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappEnv
+              --environment MyContainerappEnv \\
               --trigger-type Schedule \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -477,7 +480,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Event.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappEnv
+              --environment MyContainerappEnv \\
               --trigger-type Event \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -486,11 +489,11 @@ helps['containerapp job create'] = """
               --polling-interval 30 \\
               --min-executions 0 \\
               --max-executions 1 \\
-              --scale-rule-name queueJob \\
+              --scale-rule-name queue \\
               --scale-rule-type azure-queue \\
               --scale-rule-metadata "accountName=mystorageaccountname" \\
                                     "cloud=AzurePublicCloud" \\
-                                    "queueLength": "5" "queueName": "foo" \\
+                                    "queueLength=5" "queueName=foo" \\
               --scale-rule-auth "connection=my-connection-string-secret-name" \\
               --image imageName
 """
@@ -917,7 +920,7 @@ helps['containerapp create'] = """
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --enable-java-agent
-    - name: Create a container app with kind as functionapp
+    - name: Create an Azure Functions on Azure Container Apps (kind=functionapp)
       text: |
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
@@ -1188,7 +1191,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Manual.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappEnv
+              --environment MyContainerappEnv \\
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -1199,7 +1202,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Schedule.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappEnv
+              --environment MyContainerappEnv \\
               --trigger-type Schedule \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -1210,7 +1213,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Event.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappEnv
+              --environment MyContainerappEnv \\
               --trigger-type Event \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -2007,6 +2010,11 @@ helps['containerapp sessionpool create'] = """
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 --container-type CustomContainer \\
               --cooldown-period 360 --location eastasia
+    - name: Create or update a Session Pool with container type CustomContainer with container probes
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 --container-type CustomContainer \\
+              --probe-yaml config.yaml --location eastasia
 """
 
 helps['containerapp sessionpool update'] = """
@@ -2016,6 +2024,9 @@ helps['containerapp sessionpool update'] = """
     - name: Update a session pool's max concurrent sessions configuration and image.
       text: |
           az containerapp sessionpool update -n mysessionpool -g MyResourceGroup --max-sessions 20 --image MyNewImage
+    - name: Update the container probes of a CustomContainer type session pool.
+      text: |
+          az containerapp sessionpool update -n mysessionpool -g MyResourceGroup --probe-yaml config.yaml
 """
 
 helps['containerapp sessionpool delete'] = """
@@ -2047,12 +2058,22 @@ helps['containerapp sessionpool list'] = """
           az containerapp sessionpool list -g MyResourceGroup
 """
 
-# code interpreter commands
+# Session Commands
 helps['containerapp session'] = """
     type: group
     short-summary: Commands to manage sessions.To learn more about individual commands under each subgroup run containerapp session [subgroup name] --help.
 """
 
+helps['containerapp session stop'] = """
+    type: command
+    short-summary: Stop a custom container session.
+    examples:
+    - name: Stop a custom container session.
+      text: |
+          az containerapp session stop -n MySessionPool -g MyResourceGroup --identifier MySession
+"""
+
+# code interpreter commands
 helps['containerapp session code-interpreter'] = """
     type: group
     short-summary: Commands to interact with and manage code interpreter sessions.
@@ -2075,7 +2096,7 @@ helps['containerapp session code-interpreter upload-file'] = """
     - name: Upload a file to a session.
       text: |
           az containerapp session code-interpreter upload-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filepath example.txt --path /
+              --filepath example.txt --path my-directory
 """
 
 helps['containerapp session code-interpreter show-file-content'] = """
@@ -2084,7 +2105,7 @@ helps['containerapp session code-interpreter show-file-content'] = """
     examples:
     - name: Show content of file.
       text: az containerapp session code-interpreter show-file-content -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filename example.txt --path /
+              --filename example.txt --path my-directory
 """
 
 helps['containerapp session code-interpreter show-file-metadata'] = """
@@ -2093,7 +2114,7 @@ helps['containerapp session code-interpreter show-file-metadata'] = """
     examples:
     - name: Show the meta-data details of a file uploaded to a session.
       text: az containerapp session code-interpreter show-file-metadata -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filename example.txt --path /
+              --filename example.txt --path my-directory
 """
 
 helps['containerapp session code-interpreter delete-file'] = """
@@ -2102,7 +2123,7 @@ helps['containerapp session code-interpreter delete-file'] = """
     examples:
     - name: Delete a file .
       text: az containerapp session code-interpreter delete-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filename example.txt --path /
+              --filename example.txt --path my-directory
 """
 
 helps['containerapp session code-interpreter list-files'] = """
@@ -2111,7 +2132,7 @@ helps['containerapp session code-interpreter list-files'] = """
     examples:
     - name: List files uploaded in a code-interpreter session.
       text: |
-          az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession --path /
+          az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession --path my-directory
 """
 
 helps['containerapp java'] = """
@@ -2384,7 +2405,7 @@ helps['containerapp env premium-ingress'] = """
     examples:
     - name: Enable premium ingress for the environment.
       text: |
-          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
+          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
 """
 
 helps['containerapp env premium-ingress add'] = """
@@ -2395,7 +2416,7 @@ helps['containerapp env premium-ingress add'] = """
     examples:
     - name: Add the premium ingress settings for the environment.
       text: |
-          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName --min-replicas 2 --max-replicas 10
+          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
 """
 
 helps['containerapp env premium-ingress update'] = """

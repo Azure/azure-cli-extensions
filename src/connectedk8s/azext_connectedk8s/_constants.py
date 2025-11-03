@@ -63,13 +63,13 @@ Infrastructure_Enum_Values = [
 AHB_Enum_Values = ["True", "False", "NotApplicable"]
 Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
 CRD_FOR_FORCE_DELETE = [
-    "arccertificates.clusterconfig.azure.com",
-    "azureclusteridentityrequests.clusterconfig.azure.com",
-    "azureextensionidentities.clusterconfig.azure.com",
-    "connectedclusters.arc.azure.com",
-    "customlocationsettings.clusterconfig.azure.com",
-    "extensionconfigs.clusterconfig.azure.com",
-    "gitconfigs.clusterconfig.azure.com",
+    "arccertificates.clusterconfig.azure",
+    "azureclusteridentityrequests.clusterconfig.azure",
+    "azureextensionidentities.clusterconfig.azure",
+    "connectedclusters.arc.azure",
+    "customlocationsettings.clusterconfig.azure",
+    "extensionconfigs.clusterconfig.azure",
+    "gitconfigs.clusterconfig.azure",
 ]
 Helm_Install_Release_Userfault_Messages = [
     "forbidden",
@@ -418,7 +418,7 @@ SigningKey_CR_Snapshot = "signingkey_cr_snapshot.txt"
 
 # Connect Precheck Diagnoser constants
 Cluster_Diagnostic_Checks_Job_Registry_Path = (
-    "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.2.2"
+    "azurearck8s/helmchart/stable/clusterdiagnosticchecks:1.29.3"
 )
 Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = (
     "Error while installing cluster diagnostic checks helm release"
@@ -460,6 +460,14 @@ For guidance, refer to: https://aka.ms/enable-customlocation"""
 
 Custom_Location_Enable_Failed_warning = """Important! Custom Location feature wasn't enabled due to insufficient privileges on the Service Principal Name. If the custom location feature is not enabled, you will encounter an error when creating the custom location. Refer to: https://aka.ms/enable-cl-spn"""
 
+KubeApi_Connectivity_Failed_Warning = """Unable to verify connectivity to the Kubernetes cluster.
+Please check https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/diagnose-connection-issues"""
+
+Kubeconfig_Load_Failed_Warning = """Unable to load the kubeconfig file.
+Please check https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/diagnose-connection-issues#is-kubeconfig-pointing-to-the-right-cluster"""
+
+Cluster_Already_Onboarded_Error = """The kubernetes cluster is already onboarded.
+Please check if the Kubeconfig is pointing to the correct cluster using  command: kubectl config current-context."""
 
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity"
@@ -481,8 +489,8 @@ CSP_REFRESH_TIME = 300
 DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS = "1200"
 
 # URL constants
-CLIENT_PROXY_MCR_TARGET = "mcr.microsoft.com/azureconnectivity/proxy"
-HELM_MCR_URL = "mcr.microsoft.com/azurearck8s/helm"
+CLIENT_PROXY_MCR_TARGET = "azureconnectivity/proxy"
+HELM_MCR_URL = "azurearck8s/helm"
 HELM_VERSION = "v3.12.2"
 Download_And_Install_Kubectl_Fault_Type = "Failed to download and install kubectl"
 Azure_Access_Token_Variable = "AZURE_ACCESS_TOKEN"
@@ -517,3 +525,9 @@ Doc_Agent_Version_Support_Policy_Url = "https://learn.microsoft.com/en-us/azure/
 # "Application code shouldn't block the creation of resources for a resource provider that is in the registering state."
 # See https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-providers-and-types#register-resource-provider
 allowed_rp_registration_states = ["Registering", "Registered"]
+
+GATEWAY_LINK_FAULT_TYPE = "gateway-link-error"
+Gateway_Cluster_Resource_Update_Failed_Fault_Type = (
+    "Gateway-Cluster-Resource-Update-Failed"
+)
+GATEWAY_ASSOCIATE_URL = "https://management.azure.com/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/providers/Microsoft.HybridCompute/settings/Default?api-version={api_version}"

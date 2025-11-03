@@ -28,21 +28,21 @@ def cleanup_scenario(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario(test)
     step_ro_valid_json(test, checks=[])
     cleanup_scenario(test)
 
 
 def call_scenario2(test):
-    """# Testcase: scenario2"""
+    """Testcase: scenario2"""
     setup_scenario(test)
     step_ro_invalid_json(test, checks=[])
     cleanup_scenario(test)
 
 
 def call_scenario3(test):
-    """# Testcase: scenario3"""
+    """Testcase: scenario3"""
     setup_scenario(test)
     step_ro_missing_keys(test, checks=[])
     cleanup_scenario(test)
@@ -119,7 +119,7 @@ class GA_DeviceRoScenarioTest1(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Ro_scenario1(self):
+    def test_GA_device_ro_scenario1(self):
         """test scenario for Device CRUD operations - valid JSON"""
         call_scenario1(self)
 
@@ -138,7 +138,7 @@ class GA_DeviceRoScenarioTest2(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Ro_scenario2(self):
+    def test_GA_device_ro_scenario2(self):
         """test scenario for Device CRUD operations - invalid JSON"""
         call_scenario2(self)
 
@@ -157,6 +157,6 @@ class GA_DeviceRoScenarioTest3(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Ro_scenario3(self):
+    def test_GA_device_ro_scenario3(self):
         """test scenario for Device CRUD operations - invalid JSON"""
         call_scenario3(self)

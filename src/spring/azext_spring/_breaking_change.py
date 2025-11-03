@@ -6,4 +6,4 @@
 from azure.cli.core.breaking_change import register_command_group_deprecate
 
 # https://aka.ms/asaretirement
-register_command_group_deprecate('spring', target_version='Mar 2028', hide=True)
+register_command_group_deprecate('spring', target_version='Mar 2028')

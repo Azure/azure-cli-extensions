@@ -15,17 +15,17 @@ from azure.cli.core.aaz import *
     "elastic monitor list",
 )
 class List(AAZCommand):
-    """List all monitors under the specified resource group. And List all                                monitors under the specified subscription.
+    """List all Elastic monitor resources within a specified subscription, helping you audit and manage your monitoring setup.
 
-    :example: List all monitors by resource group
-        az elastic monitor list -g rg
+    :example: Monitors_List
+        az elastic monitor list
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/monitors", "2024-06-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/monitors", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors", "2025-06-01"],
         ]
     }
 
@@ -51,12 +51,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.MonitorsListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.MonitorsList(ctx=self.ctx)()
+        if condition_1:
+            self.MonitorsListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,6 +71,271 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
+
+    class MonitorsList(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Elastic/monitors",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "ODataV4Format"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-06-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.identity = AAZObjectType()
+            _element.kind = AAZStrType()
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType()
+            _element.sku = AAZObjectType()
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType()
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.elastic_properties = AAZObjectType(
+                serialized_name="elasticProperties",
+            )
+            properties.generate_api_key = AAZBoolType(
+                serialized_name="generateApiKey",
+            )
+            properties.hosting_type = AAZStrType(
+                serialized_name="hostingType",
+            )
+            properties.liftr_resource_category = AAZStrType(
+                serialized_name="liftrResourceCategory",
+                flags={"read_only": True},
+            )
+            properties.liftr_resource_preference = AAZIntType(
+                serialized_name="liftrResourcePreference",
+                flags={"read_only": True},
+            )
+            properties.monitoring_status = AAZStrType(
+                serialized_name="monitoringStatus",
+            )
+            properties.plan_details = AAZObjectType(
+                serialized_name="planDetails",
+            )
+            properties.project_details = AAZObjectType(
+                serialized_name="projectDetails",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.saa_s_azure_subscription_status = AAZStrType(
+                serialized_name="saaSAzureSubscriptionStatus",
+            )
+            properties.source_campaign_id = AAZStrType(
+                serialized_name="sourceCampaignId",
+            )
+            properties.source_campaign_name = AAZStrType(
+                serialized_name="sourceCampaignName",
+            )
+            properties.subscription_state = AAZStrType(
+                serialized_name="subscriptionState",
+            )
+            properties.version = AAZStrType()
+
+            elastic_properties = cls._schema_on_200.value.Element.properties.elastic_properties
+            elastic_properties.elastic_cloud_deployment = AAZObjectType(
+                serialized_name="elasticCloudDeployment",
+            )
+            elastic_properties.elastic_cloud_user = AAZObjectType(
+                serialized_name="elasticCloudUser",
+            )
+
+            elastic_cloud_deployment = cls._schema_on_200.value.Element.properties.elastic_properties.elastic_cloud_deployment
+            elastic_cloud_deployment.azure_subscription_id = AAZStrType(
+                serialized_name="azureSubscriptionId",
+                flags={"read_only": True},
+            )
+            elastic_cloud_deployment.deployment_id = AAZStrType(
+                serialized_name="deploymentId",
+                flags={"read_only": True},
+            )
+            elastic_cloud_deployment.elasticsearch_region = AAZStrType(
+                serialized_name="elasticsearchRegion",
+                flags={"read_only": True},
+            )
+            elastic_cloud_deployment.elasticsearch_service_url = AAZStrType(
+                serialized_name="elasticsearchServiceUrl",
+                flags={"read_only": True},
+            )
+            elastic_cloud_deployment.kibana_service_url = AAZStrType(
+                serialized_name="kibanaServiceUrl",
+                flags={"read_only": True},
+            )
+            elastic_cloud_deployment.kibana_sso_url = AAZStrType(
+                serialized_name="kibanaSsoUrl",
+                flags={"read_only": True},
+            )
+            elastic_cloud_deployment.name = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            elastic_cloud_user = cls._schema_on_200.value.Element.properties.elastic_properties.elastic_cloud_user
+            elastic_cloud_user.elastic_cloud_sso_default_url = AAZStrType(
+                serialized_name="elasticCloudSsoDefaultUrl",
+                flags={"read_only": True},
+            )
+            elastic_cloud_user.email_address = AAZStrType(
+                serialized_name="emailAddress",
+                flags={"read_only": True},
+            )
+            elastic_cloud_user.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            plan_details = cls._schema_on_200.value.Element.properties.plan_details
+            plan_details.offer_id = AAZStrType(
+                serialized_name="offerID",
+            )
+            plan_details.plan_id = AAZStrType(
+                serialized_name="planID",
+            )
+            plan_details.plan_name = AAZStrType(
+                serialized_name="planName",
+            )
+            plan_details.publisher_id = AAZStrType(
+                serialized_name="publisherID",
+            )
+            plan_details.term_id = AAZStrType(
+                serialized_name="termID",
+            )
+
+            project_details = cls._schema_on_200.value.Element.properties.project_details
+            project_details.configuration_type = AAZStrType(
+                serialized_name="configurationType",
+            )
+            project_details.project_type = AAZStrType(
+                serialized_name="projectType",
+            )
+
+            sku = cls._schema_on_200.value.Element.sku
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
     class MonitorsListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -116,7 +381,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -162,6 +427,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.identity = AAZObjectType()
+            _element.kind = AAZStrType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -197,6 +463,9 @@ class List(AAZCommand):
             properties.generate_api_key = AAZBoolType(
                 serialized_name="generateApiKey",
             )
+            properties.hosting_type = AAZStrType(
+                serialized_name="hostingType",
+            )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",
                 flags={"read_only": True},
@@ -210,6 +479,9 @@ class List(AAZCommand):
             )
             properties.plan_details = AAZObjectType(
                 serialized_name="planDetails",
+            )
+            properties.project_details = AAZObjectType(
+                serialized_name="projectDetails",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -296,254 +568,12 @@ class List(AAZCommand):
                 serialized_name="termID",
             )
 
-            sku = cls._schema_on_200.value.Element.sku
-            sku.name = AAZStrType(
-                flags={"required": True},
+            project_details = cls._schema_on_200.value.Element.properties.project_details
+            project_details.configuration_type = AAZStrType(
+                serialized_name="configurationType",
             )
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
-
-    class MonitorsList(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.Elastic/monitors",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "ODataV4Format"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.identity = AAZObjectType()
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType()
-            _element.sku = AAZObjectType()
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            identity = cls._schema_on_200.value.Element.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType()
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.elastic_properties = AAZObjectType(
-                serialized_name="elasticProperties",
-            )
-            properties.generate_api_key = AAZBoolType(
-                serialized_name="generateApiKey",
-            )
-            properties.liftr_resource_category = AAZStrType(
-                serialized_name="liftrResourceCategory",
-                flags={"read_only": True},
-            )
-            properties.liftr_resource_preference = AAZIntType(
-                serialized_name="liftrResourcePreference",
-                flags={"read_only": True},
-            )
-            properties.monitoring_status = AAZStrType(
-                serialized_name="monitoringStatus",
-            )
-            properties.plan_details = AAZObjectType(
-                serialized_name="planDetails",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.saa_s_azure_subscription_status = AAZStrType(
-                serialized_name="saaSAzureSubscriptionStatus",
-            )
-            properties.source_campaign_id = AAZStrType(
-                serialized_name="sourceCampaignId",
-            )
-            properties.source_campaign_name = AAZStrType(
-                serialized_name="sourceCampaignName",
-            )
-            properties.subscription_state = AAZStrType(
-                serialized_name="subscriptionState",
-            )
-            properties.version = AAZStrType()
-
-            elastic_properties = cls._schema_on_200.value.Element.properties.elastic_properties
-            elastic_properties.elastic_cloud_deployment = AAZObjectType(
-                serialized_name="elasticCloudDeployment",
-            )
-            elastic_properties.elastic_cloud_user = AAZObjectType(
-                serialized_name="elasticCloudUser",
-            )
-
-            elastic_cloud_deployment = cls._schema_on_200.value.Element.properties.elastic_properties.elastic_cloud_deployment
-            elastic_cloud_deployment.azure_subscription_id = AAZStrType(
-                serialized_name="azureSubscriptionId",
-                flags={"read_only": True},
-            )
-            elastic_cloud_deployment.deployment_id = AAZStrType(
-                serialized_name="deploymentId",
-                flags={"read_only": True},
-            )
-            elastic_cloud_deployment.elasticsearch_region = AAZStrType(
-                serialized_name="elasticsearchRegion",
-                flags={"read_only": True},
-            )
-            elastic_cloud_deployment.elasticsearch_service_url = AAZStrType(
-                serialized_name="elasticsearchServiceUrl",
-                flags={"read_only": True},
-            )
-            elastic_cloud_deployment.kibana_service_url = AAZStrType(
-                serialized_name="kibanaServiceUrl",
-                flags={"read_only": True},
-            )
-            elastic_cloud_deployment.kibana_sso_url = AAZStrType(
-                serialized_name="kibanaSsoUrl",
-                flags={"read_only": True},
-            )
-            elastic_cloud_deployment.name = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            elastic_cloud_user = cls._schema_on_200.value.Element.properties.elastic_properties.elastic_cloud_user
-            elastic_cloud_user.elastic_cloud_sso_default_url = AAZStrType(
-                serialized_name="elasticCloudSsoDefaultUrl",
-                flags={"read_only": True},
-            )
-            elastic_cloud_user.email_address = AAZStrType(
-                serialized_name="emailAddress",
-                flags={"read_only": True},
-            )
-            elastic_cloud_user.id = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            plan_details = cls._schema_on_200.value.Element.properties.plan_details
-            plan_details.offer_id = AAZStrType(
-                serialized_name="offerID",
-            )
-            plan_details.plan_id = AAZStrType(
-                serialized_name="planID",
-            )
-            plan_details.plan_name = AAZStrType(
-                serialized_name="planName",
-            )
-            plan_details.publisher_id = AAZStrType(
-                serialized_name="publisherID",
-            )
-            plan_details.term_id = AAZStrType(
-                serialized_name="termID",
+            project_details.project_type = AAZStrType(
+                serialized_name="projectType",
             )
 
             sku = cls._schema_on_200.value.Element.sku

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor create-and-associate-pl-filter",
 )
 class CreateAndAssociatePlFilter(AAZCommand):
-    """Create and associate pl filter
+    """Create and associate a PL filter with your Elastic monitor resource to control and manage network traffic.
 
-    :example: Create and associate pl filter
-        az elastic monitor create-and-associate-pl-filter --monitor-name monitor -g rg --name name
+    :example: createAndAssociatePLFilter_Create
+        az elastic monitor create-and-associate-pl-filter --resource-group myResourceGroup --monitor-name myMonitor --private-endpoint-guid fdb54d3b-e85e-4d08-8958-0d2f7g523df9 --private-endpoint-name myPrivateEndpoint
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/createandassociateplfilter", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/createandassociateplfilter", "2025-06-01"],
         ]
     }
 
@@ -32,8 +32,7 @@ class CreateAndAssociatePlFilter(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -158,7 +157,7 @@ class CreateAndAssociatePlFilter(AAZCommand):
                     "privateEndpointName", self.ctx.args.private_endpoint_name,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

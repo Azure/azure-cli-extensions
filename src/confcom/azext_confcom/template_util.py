@@ -4,21 +4,19 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
-import re
-import json
 import copy
+import json
+import re
 import tarfile
-from typing import Any, Tuple, Dict, List
 from hashlib import sha256
+from typing import Any, Dict, List, Tuple
+
 import deepdiff
-import yaml
 import docker
+import yaml
+from azext_confcom import config, os_util
+from azext_confcom.errors import eprint
 from knack.log import get_logger
-from azext_confcom.errors import (
-    eprint,
-)
-from azext_confcom import os_util
-from azext_confcom import config
 
 logger = get_logger(__name__)
 
@@ -26,6 +24,8 @@ logger = get_logger(__name__)
 # make this global so it can be used in multiple functions
 PARAMETER_AND_VARIABLE_REGEX = r"\[(?:parameters|variables)\(\s*'([^\.\/]+?)'\s*\)\]"
 WHOLE_PARAMETER_AND_VARIABLE = r"(\s*\[\s*(parameters|variables))(\(\s*'([^\.\/]+?)'\s*\)\])"
+SVN_PATTERN = r'svn\s*:=\s*"(\d+)"'
+NAMESPACE_PATTERN = r'package\s+([a-zA-Z_][a-zA-Z0-9_]*)'
 
 
 class DockerClient:
@@ -44,7 +44,7 @@ class DockerClient:
             self._client.close()
 
 
-def case_insensitive_dict_get(dictionary, search_key) -> Any:
+def case_insensitive_dict_get(dictionary, search_key, default_value=None) -> Any:
     if not isinstance(dictionary, dict):
         return None
     # if the cases happen to match, immediately return .get() result
@@ -55,7 +55,7 @@ def case_insensitive_dict_get(dictionary, search_key) -> Any:
     for key in dictionary.keys():
         if key.lower() == search_key.lower():
             return dictionary[key]
-    return None
+    return default_value
 
 
 def deep_dict_update(source: dict, destination: dict):
@@ -558,7 +558,7 @@ def process_fragment_imports(rego_imports) -> None:
             eprint(
                 f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
                 + f'["{config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN}"] '
-                + "can only be an integer value."
+                + "can only be a string with an integer value."
             )
 
         includes = case_insensitive_dict_get(
@@ -572,6 +572,40 @@ def process_fragment_imports(rego_imports) -> None:
             )
 
     return rego_imports
+
+
+def process_standalone_fragments(standalone_fragments: List[str]) -> Tuple[List[str], List[str]]:
+    fragment_contents = []
+    feeds = []
+
+    for fragment in standalone_fragments:
+        feed = case_insensitive_dict_get(
+            fragment, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED
+        )
+        if not isinstance(feed, str):
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                + f'["{config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED}"] '
+                + "can only be a string value."
+            )
+
+        filename = case_insensitive_dict_get(
+            fragment, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FILE
+        )
+        if not isinstance(filename, str):
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                + f'["{config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FILE}"] '
+                + "can only be a string value."
+            )
+
+        with open(filename, "r", encoding="utf-8") as file:
+            text = file.read()
+
+        fragment_contents.append(text)
+        feeds.append(feed)
+
+    return fragment_contents, feeds
 
 
 def process_mounts(image_properties: dict, volumes: List[dict]) -> List[Dict[str, str]]:
@@ -1013,6 +1047,24 @@ def extract_containers_from_text(text, start) -> str:
     return ending[:count]
 
 
+def extract_standalone_fragments(
+    container_group_properties,
+) -> List[str]:
+    # extract the existing cce policy if that's what was being asked
+    confidential_compute_properties = case_insensitive_dict_get(
+        container_group_properties, config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES
+    )
+
+    if confidential_compute_properties is None:
+        return []
+
+    # in the ARM template, this is a list of references (strings) to OCI registries
+    standalone_fragments = case_insensitive_dict_get(
+        confidential_compute_properties, config.ACI_FIELD_TEMPLATE_STANDALONE_REGO_FRAGMENTS
+    ) or []
+    return standalone_fragments
+
+
 def extract_confidential_properties(
     container_group_properties,
 ) -> Tuple[List[Dict], List[Dict]]:
@@ -1066,12 +1118,57 @@ def extract_containers_and_fragments_from_text(text: str) -> Tuple[List[Dict], L
             Loader=yaml.FullLoader,
         )
     except yaml.YAMLError as e:
-        eprint(f"Error parsing rego file: {e}")
+        logger.warning("Error parsing rego file: %s", e)
         # reading the rego file failed, so we'll just return the default outputs
         containers = []
         fragments = []
 
     return (containers, fragments)
+
+
+def extract_svn_from_text(text: str) -> int:
+    """Extract SVN value from text using regex pattern matching.
+
+    Args:
+        text: The input text containing the SVN definition
+
+    Returns:
+        int: The SVN value
+    """
+    # Pattern matches: svn := "123" or svn := "1"
+    match = re.search(SVN_PATTERN, text)
+
+    if not match:
+        eprint("SVN value not found in the input text.")
+
+    try:
+        return int(match.group(1))
+    except (AttributeError, ValueError, IndexError):
+        eprint("Unable to extract valid SVN value from the text.")
+
+
+def extract_namespace_from_text(text: str) -> str:
+    """Extract namespace value from text by finding text after 'package' keyword.
+
+    Args:
+        text: The input text containing the namespace definition
+
+    Returns:
+        str: The namespace value
+    """
+    # Find the package declaration line
+    lines = text.split('\n')
+    for line in lines:
+        stripped_line = line.strip()
+        beginning = 'package '
+        if stripped_line.startswith(beginning):
+            # Extract everything after 'package ' (first whitespace)
+            namespace = stripped_line[len(beginning):].strip()
+            if namespace:
+                return namespace
+
+    eprint("Namespace value not found in the input text.")
+    return None
 
 
 # making these lambda print functions looks cleaner than having "json.dumps" 6 times
@@ -1572,25 +1669,31 @@ def convert_config_v0_to_v1(old_data):
 
     # Prepare the structure of the new JSON
     new_data = {
-        config.ACI_FIELD_VERSION: old_data.get(config.ACI_FIELD_VERSION, "1.0"),  # default if missing
-        config.ACI_FIELD_CONTAINERS_REGO_FRAGMENTS: [],  # empty by default in your example
+        config.ACI_FIELD_VERSION: case_insensitive_dict_get(
+            old_data, config.ACI_FIELD_VERSION, "1.0"
+        ),  # default if missing
+        config.ACI_FIELD_CONTAINERS_REGO_FRAGMENTS: [],
         config.ACI_FIELD_CONTAINERS: []
     }
 
-    old_containers = old_data.get(config.ACI_FIELD_CONTAINERS, [])
+    old_containers = case_insensitive_dict_get(old_data, config.ACI_FIELD_CONTAINERS, [])
 
     for old_container in old_containers:
         # Build the 'environmentVariables' section in the new format
         new_envs = []
-        for env_var in old_container.get(config.ACI_FIELD_CONTAINERS_ENVS) or []:
+        for env_var in case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_ENVS) or []:
             # Decide if we need 'regex' or not, based on 'strategy' or your custom logic
             # Here we'll assume "strategy"=="re2" means 'regex' = True
             # If strategy is missing or 'string', omit 'regex' or set it to False
             env_entry = {
-                config.ACI_FIELD_CONTAINERS_ENVS_NAME: env_var.get(config.ACI_FIELD_CONTAINERS_ENVS_NAME),
-                config.ACI_FIELD_CONTAINERS_ENVS_VALUE: env_var.get(config.ACI_FIELD_CONTAINERS_ENVS_VALUE, "")
+                config.ACI_FIELD_CONTAINERS_ENVS_NAME: case_insensitive_dict_get(
+                    env_var, config.ACI_FIELD_CONTAINERS_ENVS_NAME
+                ),
+                config.ACI_FIELD_CONTAINERS_ENVS_VALUE: case_insensitive_dict_get(
+                    env_var, config.ACI_FIELD_CONTAINERS_ENVS_VALUE, ""
+                )
             }
-            strategy = env_var.get(config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY)
+            strategy = case_insensitive_dict_get(env_var, config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY)
             if strategy == "re2":
                 env_entry["regex"] = True
 
@@ -1598,25 +1701,25 @@ def convert_config_v0_to_v1(old_data):
 
         # Build the 'execProcesses' from the old 'command'
         exec_processes = []
-        old_command_list = old_container.get(config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES, [])
+        old_command_list = case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES, [])
         if old_command_list:
             exec_processes.append({config.ACI_FIELD_CONTAINERS_COMMAND: old_command_list})
 
-        command = old_container.get(config.ACI_FIELD_CONTAINERS_COMMAND)
+        command = case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_COMMAND)
 
         # Liveness probe => exec process
-        liveness_probe = old_container.get(config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE, {})
-        liveness_exec = liveness_probe.get(config.ACI_FIELD_CONTAINERS_PROBE_ACTION, {})
-        liveness_command = liveness_exec.get(config.ACI_FIELD_CONTAINERS_COMMAND, [])
+        liveness_probe = case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE, {})
+        liveness_exec = case_insensitive_dict_get(liveness_probe, config.ACI_FIELD_CONTAINERS_PROBE_ACTION, {})
+        liveness_command = case_insensitive_dict_get(liveness_exec, config.ACI_FIELD_CONTAINERS_COMMAND, [])
         if liveness_command:
             exec_processes.append({
                 config.ACI_FIELD_CONTAINERS_COMMAND: liveness_command
             })
 
         # Readiness probe => exec process
-        readiness_probe = old_container.get(config.ACI_FIELD_CONTAINERS_READINESS_PROBE, {})
-        readiness_exec = readiness_probe.get(config.ACI_FIELD_CONTAINERS_PROBE_ACTION, {})
-        readiness_command = readiness_exec.get(config.ACI_FIELD_CONTAINERS_COMMAND, [])
+        readiness_probe = case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_READINESS_PROBE, {})
+        readiness_exec = case_insensitive_dict_get(readiness_probe, config.ACI_FIELD_CONTAINERS_PROBE_ACTION, {})
+        readiness_command = case_insensitive_dict_get(readiness_exec, config.ACI_FIELD_CONTAINERS_COMMAND, [])
         if readiness_command:
             exec_processes.append({
                 config.ACI_FIELD_CONTAINERS_COMMAND: readiness_command
@@ -1624,47 +1727,61 @@ def convert_config_v0_to_v1(old_data):
 
         # Build the 'volumeMounts' section
         volume_mounts = []
-        for mount in old_container.get(config.ACI_FIELD_CONTAINERS_MOUNTS) or []:
+        for mount in case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_MOUNTS) or []:
             # For 'name', we can take the mountType or generate something else:
             # e.g. if mountType is "azureFile", name "azurefile"
-            mount_name = mount.get(config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE, "defaultName").lower()
+            mount_name = case_insensitive_dict_get(
+                mount, config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE, "defaultName"
+            ).lower()
             volume_mount = {
                 config.ACI_FIELD_CONTAINERS_ENVS_NAME: mount_name,
-                config.ACI_FIELD_TEMPLATE_MOUNTS_PATH: mount.get(config.ACI_FIELD_CONTAINERS_MOUNTS_PATH),
-                config.ACI_FIELD_TEMPLATE_MOUNTS_TYPE: mount.get(config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE),
-                config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY: mount.get(config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY, True),
+                config.ACI_FIELD_TEMPLATE_MOUNTS_PATH: case_insensitive_dict_get(
+                    mount, config.ACI_FIELD_CONTAINERS_MOUNTS_PATH
+                ),
+                config.ACI_FIELD_TEMPLATE_MOUNTS_TYPE: case_insensitive_dict_get(
+                    mount, config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE
+                ),
+                config.ACI_FIELD_TEMPLATE_MOUNTS_READONLY: case_insensitive_dict_get(
+                    mount, config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY, True
+                ),
             }
             volume_mounts.append(volume_mount)
 
         # Create the container's "properties" object
         container_properties = {
-            config.ACI_FIELD_TEMPLATE_IMAGE: old_container.get(config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE),
+            config.ACI_FIELD_TEMPLATE_IMAGE: case_insensitive_dict_get(
+                old_container, config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE
+            ),
             config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes,
             config.ACI_FIELD_TEMPLATE_VOLUME_MOUNTS: volume_mounts,
             config.ACI_FIELD_CONTAINERS_ENVS: new_envs,
             config.ACI_FIELD_CONTAINERS_COMMAND: command,
         }
 
-        if old_container.get(config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT) is not None:
+        if case_insensitive_dict_get(old_container, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT) is not None:
             container_properties[
                 config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
             ] = old_container[config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT]
 
-        if old_container.get(config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED) is not None:
+        if case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED) is not None:
             if config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT not in container_properties:
                 container_properties[config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT] = {}
             container_properties[
                 config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
-            ][config.ACI_FIELD_CONTAINERS_PRIVILEGED] = old_container.get(config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED)
+            ][config.ACI_FIELD_CONTAINERS_PRIVILEGED] = case_insensitive_dict_get(
+                old_container, config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED
+            )
 
-        if old_container.get(config.ACI_FIELD_CONTAINERS_WORKINGDIR) is not None:
+        if case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_WORKINGDIR) is not None:
             container_properties[
                 config.ACI_FIELD_CONTAINERS_WORKINGDIR
-            ] = old_container.get(config.ACI_FIELD_CONTAINERS_WORKINGDIR)
+            ] = case_insensitive_dict_get(old_container, config.ACI_FIELD_CONTAINERS_WORKINGDIR)
 
         # Finally, assemble the new container dict
         new_container = {
-            config.ACI_FIELD_CONTAINERS_NAME: old_container.get(config.ACI_FIELD_CONTAINERS_NAME),
+            config.ACI_FIELD_CONTAINERS_NAME: case_insensitive_dict_get(
+                old_container, config.ACI_FIELD_CONTAINERS_NAME
+            ),
             config.ACI_FIELD_TEMPLATE_PROPERTIES: container_properties
         }
 
@@ -1677,8 +1794,10 @@ def detect_old_format(old_data):
     # we want to encourage customers to transition to the new format. The best way to check for the old format is
     # to see if the json is flattened. This is an appropriate check since the image name is required
     # and they are located in different places in the two formats
-    old_containers = old_data.get(config.ACI_FIELD_CONTAINERS, [])
-    if len(old_containers) > 0 and old_containers[0].get(config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE) is not None:
+    old_containers = case_insensitive_dict_get(old_data, config.ACI_FIELD_CONTAINERS, [])
+    if len(old_containers) > 0 and case_insensitive_dict_get(
+        old_containers[0], config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE
+    ) is not None:
         logger.warning(
             "%s %s %s",
             "(Deprecation Warning) The input format used is deprecated.",

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor tag-rule list",
 )
 class List(AAZCommand):
-    """List the tag rules for a given monitor resource.
+    """List all tag rules for a given Elastic monitor resource, helping you manage fine-grained control over observability based on resource tags.
 
-    :example: List monitor tag rule
-        az elastic monitor tag-rule list -g rg --monitor-name name
+    :example: TagRules_List
+        az elastic monitor tag-rule list --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/tagrules", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/tagrules", "2025-06-01"],
         ]
     }
 
@@ -124,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}", "2025-10-08"],
         ]
     }
 
@@ -45,6 +45,9 @@ class Wait(AAZWaitCommand):
             help="Firewall resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^(?![-_])(?!.*[-_]{2})(?!.*[-_]$)[a-zA-Z0-9][a-zA-Z0-9-]{0,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -116,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
@@ -212,6 +215,9 @@ class Wait(AAZWaitCommand):
             properties.is_panorama_managed = AAZStrType(
                 serialized_name="isPanoramaManaged",
             )
+            properties.is_strata_cloud_managed = AAZStrType(
+                serialized_name="isStrataCloudManaged",
+            )
             properties.marketplace_details = AAZObjectType(
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
@@ -232,6 +238,10 @@ class Wait(AAZWaitCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.strata_cloud_manager_config = AAZObjectType(
+                serialized_name="strataCloudManagerConfig",
             )
 
             associated_rulestack = cls._schema_on_200.properties.associated_rulestack
@@ -308,9 +318,15 @@ class Wait(AAZWaitCommand):
                 serialized_name="networkType",
                 flags={"required": True},
             )
+            network_profile.private_source_nat_rules_destination = AAZListType(
+                serialized_name="privateSourceNatRulesDestination",
+            )
             network_profile.public_ips = AAZListType(
                 serialized_name="publicIps",
                 flags={"required": True},
+            )
+            network_profile.trusted_ranges = AAZListType(
+                serialized_name="trustedRanges",
             )
             network_profile.vnet_configuration = AAZObjectType(
                 serialized_name="vnetConfiguration",
@@ -323,9 +339,15 @@ class Wait(AAZWaitCommand):
             egress_nat_ip.Element = AAZObjectType()
             _WaitHelper._build_schema_ip_address_read(egress_nat_ip.Element)
 
+            private_source_nat_rules_destination = cls._schema_on_200.properties.network_profile.private_source_nat_rules_destination
+            private_source_nat_rules_destination.Element = AAZStrType()
+
             public_ips = cls._schema_on_200.properties.network_profile.public_ips
             public_ips.Element = AAZObjectType()
             _WaitHelper._build_schema_ip_address_read(public_ips.Element)
+
+            trusted_ranges = cls._schema_on_200.properties.network_profile.trusted_ranges
+            trusted_ranges.Element = AAZStrType()
 
             vnet_configuration = cls._schema_on_200.properties.network_profile.vnet_configuration
             vnet_configuration.ip_of_trust_subnet_for_udr = AAZObjectType(
@@ -418,6 +440,12 @@ class Wait(AAZWaitCommand):
             )
             plan_data.usage_type = AAZStrType(
                 serialized_name="usageType",
+            )
+
+            strata_cloud_manager_config = cls._schema_on_200.properties.strata_cloud_manager_config
+            strata_cloud_manager_config.cloud_manager_name = AAZStrType(
+                serialized_name="cloudManagerName",
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.system_data

@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.7.2
+++++
+* Upgrade `vendored_sdks` to ensure the compatibility with Python 3.13
+
+1.7.1
++++++
+* Upgrade `websockets` to `13.0.1` to sure the compatibility with Python 3.12
+
 1.7.0
 +++++
 * Add `az webpubsub update --client-cert-enable/--disable-local-auth/--region-endpoint-enabled` support

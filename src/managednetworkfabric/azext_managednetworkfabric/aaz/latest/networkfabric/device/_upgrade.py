@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Upgrade(AAZCommand):
     """Upgrades the version of the Network Device.
+
+    :example: Upgrade the Network Device
+        az networkfabric device upgrade --resource-group example-rg --resource-name example-device --version 1.0.0
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/upgrade", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/upgrade", "2025-07-15"],
         ]
     }
 
@@ -58,10 +61,19 @@ class Upgrade(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
+        _args_schema.rw_device_config_url = AAZStrArg(
+            options=["--rw-device-config-url"],
+            arg_group="Body",
+            help="URL to the file containing Read-write configuration to be applied on the device during upgrade.",
+        )
         _args_schema.version = AAZStrArg(
             options=["--version"],
             arg_group="Body",
             help="Specify the version.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         return cls._args_schema
 
@@ -146,7 +158,7 @@ class Upgrade(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -171,7 +183,8 @@ class Upgrade(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("version", AAZStrType, ".version")
+            _builder.set_prop("rwDeviceConfigUrl", AAZStrType, ".rw_device_config_url")
+            _builder.set_prop("version", AAZStrType, ".version", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -193,12 +206,34 @@ class Upgrade(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.configuration_state = AAZStrType(
-                serialized_name="configurationState",
-                flags={"read_only": True},
+            _schema_on_200.end_time = AAZStrType(
+                serialized_name="endTime",
             )
             _schema_on_200.error = AAZObjectType()
             _UpgradeHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _schema_on_200.id = AAZStrType(
+                nullable=True,
+            )
+            _schema_on_200.name = AAZStrType()
+            _schema_on_200.operations = AAZListType()
+            _schema_on_200.percent_complete = AAZFloatType(
+                serialized_name="percentComplete",
+            )
+            _schema_on_200.resource_id = AAZStrType(
+                serialized_name="resourceId",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            _schema_on_200.start_time = AAZStrType(
+                serialized_name="startTime",
+            )
+            _schema_on_200.status = AAZStrType(
+                flags={"required": True},
+            )
+
+            operations = cls._schema_on_200.operations
+            operations.Element = AAZObjectType()
+            _UpgradeHelper._build_schema_operation_status_result_read(operations.Element)
 
             return cls._schema_on_200
 
@@ -242,12 +277,15 @@ class _UpgradeHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()
@@ -258,6 +296,61 @@ class _UpgradeHelper:
         _schema.details = cls._schema_error_detail_read.details
         _schema.message = cls._schema_error_detail_read.message
         _schema.target = cls._schema_error_detail_read.target
+
+    _schema_operation_status_result_read = None
+
+    @classmethod
+    def _build_schema_operation_status_result_read(cls, _schema):
+        if cls._schema_operation_status_result_read is not None:
+            _schema.end_time = cls._schema_operation_status_result_read.end_time
+            _schema.error = cls._schema_operation_status_result_read.error
+            _schema.id = cls._schema_operation_status_result_read.id
+            _schema.name = cls._schema_operation_status_result_read.name
+            _schema.operations = cls._schema_operation_status_result_read.operations
+            _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+            _schema.resource_id = cls._schema_operation_status_result_read.resource_id
+            _schema.start_time = cls._schema_operation_status_result_read.start_time
+            _schema.status = cls._schema_operation_status_result_read.status
+            return
+
+        cls._schema_operation_status_result_read = _schema_operation_status_result_read = AAZObjectType()
+
+        operation_status_result_read = _schema_operation_status_result_read
+        operation_status_result_read.end_time = AAZStrType(
+            serialized_name="endTime",
+        )
+        operation_status_result_read.error = AAZObjectType()
+        cls._build_schema_error_detail_read(operation_status_result_read.error)
+        operation_status_result_read.id = AAZStrType()
+        operation_status_result_read.name = AAZStrType()
+        operation_status_result_read.operations = AAZListType()
+        operation_status_result_read.percent_complete = AAZFloatType(
+            serialized_name="percentComplete",
+        )
+        operation_status_result_read.resource_id = AAZStrType(
+            serialized_name="resourceId",
+            flags={"read_only": True},
+        )
+        operation_status_result_read.start_time = AAZStrType(
+            serialized_name="startTime",
+        )
+        operation_status_result_read.status = AAZStrType(
+            flags={"required": True},
+        )
+
+        operations = _schema_operation_status_result_read.operations
+        operations.Element = AAZObjectType()
+        cls._build_schema_operation_status_result_read(operations.Element)
+
+        _schema.end_time = cls._schema_operation_status_result_read.end_time
+        _schema.error = cls._schema_operation_status_result_read.error
+        _schema.id = cls._schema_operation_status_result_read.id
+        _schema.name = cls._schema_operation_status_result_read.name
+        _schema.operations = cls._schema_operation_status_result_read.operations
+        _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+        _schema.resource_id = cls._schema_operation_status_result_read.resource_id
+        _schema.start_time = cls._schema_operation_status_result_read.start_time
+        _schema.status = cls._schema_operation_status_result_read.status
 
 
 __all__ = ["Upgrade"]

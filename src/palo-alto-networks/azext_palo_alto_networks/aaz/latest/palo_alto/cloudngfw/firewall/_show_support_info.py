@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw firewall show-support-info",
 )
 class ShowSupportInfo(AAZCommand):
-    """Support info for firewall.
+    """Retrieve support information of a specific Palo Alto Networks firewall.
 
-    :example: Get support info for firewall.
+    :example: Retrieve support information of a specific Palo Alto Networks firewall.
         az palo-alto cloudngfw firewall show-support-info --resource-group MyResourceGroup -n MyCloudngfwFirewall
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/getsupportinfo", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/getsupportinfo", "2025-10-08"],
         ]
     }
 
@@ -49,6 +49,9 @@ class ShowSupportInfo(AAZCommand):
             help="Firewall resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^(?![-_])(?!.*[-_]{2})(?!.*[-_]$)[a-zA-Z0-9][a-zA-Z0-9-]{0,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -127,7 +130,7 @@ class ShowSupportInfo(AAZCommand):
                     "email", self.ctx.args.email,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }

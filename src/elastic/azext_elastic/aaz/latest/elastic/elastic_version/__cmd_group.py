@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic elastic-version",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage the version of Elastic
+    """Manage the version of Elastic, including upgrades and compatibility checks.
     """
     pass
 

@@ -3,6 +3,21 @@
 Release History
 ===============
 
+1.3.0
+++++++
+* Add a new --enable-stdio flag, with a warning if neither this or --disable-stdio is set
+
+1.2.7
+++++++
+* bugfix making it so that oras discover function doesn't error when no fragments are found in the remote repository
+* splitting out documentation into command-specific files and adding info about --input flag
+* adding standalone fragment support
+* bugfix for oras pulling fragments when offline
+
+1.2.6
+++++++
+* bugfix making it so the fields in the --input format are case-insensitive
+
 1.2.5
 ++++++
 * consolidating functions for --input policygen

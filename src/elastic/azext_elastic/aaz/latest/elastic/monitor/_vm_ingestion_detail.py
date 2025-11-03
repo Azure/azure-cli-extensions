@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor vm-ingestion-detail",
 )
 class VmIngestionDetail(AAZCommand):
-    """List the vm ingestion details that will be monitored by the Elastic                                monitor resource.
+    """List detailed information about VM ingestion that will be monitored by the Elastic monitor resource, ensuring optimal observability and performance.
 
-    :example: Vm ingestion detail
-        az elastic monitor vm-ingestion-detail --monitor-name name -g rg
+    :example: VMIngestion_Details
+        az elastic monitor vm-ingestion-detail --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/vmingestiondetails", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/vmingestiondetails", "2025-06-01"],
         ]
     }
 
@@ -123,7 +123,7 @@ class VmIngestionDetail(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

@@ -15,6 +15,8 @@ from azext_aks_preview._client_factory import (
     cf_machines,
     cf_operations,
     cf_load_balancers,
+    cf_identity_bindings,
+    cf_jwt_authenticators,
 )
 
 from azext_aks_preview._format import (
@@ -45,6 +47,8 @@ from azext_aks_preview._format import (
     aks_extension_type_show_table_format,
     aks_extension_type_versions_list_table_format,
     aks_extension_type_version_show_table_format,
+    aks_jwtauthenticator_list_table_format,
+    aks_jwtauthenticator_show_table_format,
 )
 
 from knack.log import get_logger
@@ -140,6 +144,12 @@ def load_command_table(self, _):
         client_factory=cf_mc_snapshots,
     )
 
+    jwt_authenticators_sdk = CliCommandType(
+        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
+        "operations._jwt_authenticators_operations#JWTAuthenticatorsOperations.{}",
+        client_factory=cf_jwt_authenticators,
+    )
+
     # AKS managed cluster commands
     with self.command_group(
         "aks",
@@ -186,6 +196,7 @@ def load_command_table(self, _):
         g.custom_command(
             "operation-abort", "aks_operation_abort", supports_no_wait=True
         )
+        g.custom_command("bastion", "aks_bastion")
 
     # AKS maintenance configuration commands
     with self.command_group(
@@ -235,7 +246,6 @@ def load_command_table(self, _):
         "aks namespace",
         managed_namespaces_sdk,
         client_factory=cf_managed_namespaces,
-        is_preview=True,
     ) as g:
         g.custom_command("add", "aks_namespace_add", supports_no_wait=True)
         g.custom_command("update", "aks_namespace_update", supports_no_wait=True)
@@ -290,6 +300,8 @@ def load_command_table(self, _):
         g.custom_show_command(
             "show", "aks_machine_show", table_transformer=aks_machine_show_table_format
         )
+        g.custom_command("add", "aks_machine_add", supports_no_wait=True)
+        g.custom_command("update", "aks_machine_update", supports_no_wait=True)
 
     with self.command_group(
         "aks operation", operations_sdk, client_factory=cf_operations
@@ -429,6 +441,16 @@ def load_command_table(self, _):
             "aks_mesh_get_upgrades",
             table_transformer=aks_mesh_upgrades_table_format,
         )
+        g.custom_command(
+            "enable-istio-cni",
+            "aks_mesh_enable_istio_cni",
+            supports_no_wait=True,
+        )
+        g.custom_command(
+            "disable-istio-cni",
+            "aks_mesh_disable_istio_cni",
+            supports_no_wait=True,
+        )
 
     # AKS mesh upgrade commands
     with self.command_group(
@@ -504,4 +526,43 @@ def load_command_table(self, _):
             'list',
             'list_k8s_extension_type_versions',
             table_transformer=aks_extension_type_versions_list_table_format
+        )
+
+# AKS identity binding commands
+    with self.command_group(
+        "aks identity-binding", managed_clusters_sdk, client_factory=cf_identity_bindings
+    ) as g:
+        g.custom_command("create", "aks_identity_binding_create")
+        g.custom_command("delete", "aks_identity_binding_delete")
+        g.custom_show_command("show", "aks_identity_binding_show")
+        g.custom_command("list", "aks_identity_binding_list")
+
+    # AKS jwt authenticator commands
+    with self.command_group(
+        "aks jwtauthenticator", jwt_authenticators_sdk, client_factory=cf_jwt_authenticators,
+    ) as g:
+        g.custom_command(
+            "add",
+            "aks_jwtauthenticator_add",
+            supports_no_wait=True
+        )
+        g.custom_command(
+            "update",
+            "aks_jwtauthenticator_update",
+            supports_no_wait=True
+        )
+        g.custom_command(
+            "delete",
+            "aks_jwtauthenticator_delete",
+            supports_no_wait=True, confirmation=True
+        )
+        g.custom_command(
+            "list",
+            "aks_jwtauthenticator_list",
+            table_transformer=aks_jwtauthenticator_list_table_format
+        )
+        g.custom_show_command(
+            "show",
+            "aks_jwtauthenticator_show",
+            table_transformer=aks_jwtauthenticator_show_table_format
         )

@@ -139,7 +139,8 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+    # `acr` cannot be created in stage region
+    @SubnetPreparer(location=TEST_LOCATION, location_replace_stage="eastasia", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_registry_update(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
@@ -209,7 +210,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+    @SubnetPreparer(location=TEST_LOCATION, location_replace_stage="eastasia", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_registry(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
@@ -287,7 +288,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+    @SubnetPreparer(location=TEST_LOCATION, location_replace_stage="eastasia", delegations='Microsoft.App/environments',
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_registry_identity(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
@@ -370,6 +371,260 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck("properties.managedIdentitySettings[0].lifecycle", "None"),
             ])
         
+
+        self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
+
+        # List Session Pools
+        sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(sessionpool_list) == 0)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer()
+    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+                    service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_sessionpool_oncontainerexit(self, resource_group, subnet_id, vnet_name, subnet_name):
+        location = TEST_LOCATION
+        self.cmd('configure --defaults location={}'.format(location))
+
+        env_name = self.create_random_name(prefix='aca-sp-env', length=24)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none -s {}'.format(resource_group, env_name, location, subnet_id), expect_failure=False)
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        # List Session Pools
+        sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(sessionpool_list) == 0)
+
+        # Create CustomContainer SessionPool
+        sessionpool_name_custom = self.create_random_name(prefix='spcustomcontainer', length=24)
+        ready_instances = 2
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+        secret_name = "testsecret"
+        secret_value = "testsecretvalue"
+        cpu = "0.5"
+        memory = "1Gi"
+        lifecycle_type = "OnContainerExit"
+        max_alive_period = 600
+        self.cmd(
+            'containerapp sessionpool create -g {} -n {} --container-type CustomContainer --environment {} --secrets {}={} --ready-sessions {} --image {} --cpu {} --memory {} --target-port {} --lifecycle-type {} --max-alive-period {}'.format(
+                resource_group, sessionpool_name_custom, env_name, secret_name, secret_value, ready_instances, image, cpu, memory, 80, lifecycle_type, max_alive_period),
+            checks=[
+                JMESPathCheck('name', sessionpool_name_custom),
+                JMESPathCheck('properties.containerType', "CustomContainer"),
+                JMESPathCheck('properties.scaleConfiguration.maxConcurrentSessions', 10),
+                JMESPathCheck('properties.scaleConfiguration.readySessionInstances', ready_instances),
+                JMESPathCheck('properties.secrets[0].name', secret_name),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].image', image),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.cpu', cpu),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
+                JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
+                JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.lifecycleType', lifecycle_type),
+                JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.maxAlivePeriodInSeconds', max_alive_period),
+            ])
+
+        sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
+        while sessionpool["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
+
+        self.cmd(
+            'containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom),
+            checks=[JMESPathCheck('properties.provisioningState', "Succeeded")]
+        )
+
+        # List Session Pools
+        sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(sessionpool_list) == 1)
+
+        # Update Session Pool
+        max_concurrent_session = 12
+        cpu = "2.0"
+        memory = "4Gi"
+        egress = "EgressDisabled"
+        max_alive_period = 400
+        secret_name = "testsecret1"
+        secret_value = "testsecretvalue1"
+        self.cmd(
+            'containerapp sessionpool update -g {} -n {} --max-sessions {} --cpu {} --memory {} --network-status {} --max-alive-period {} --secrets {}={}'.format(
+                resource_group, sessionpool_name_custom, max_concurrent_session, cpu, memory, egress, max_alive_period, secret_name, secret_value),
+            checks=[
+                JMESPathCheck('name', sessionpool_name_custom),
+                JMESPathCheck('properties.containerType', "CustomContainer"),
+                JMESPathCheck('properties.scaleConfiguration.maxConcurrentSessions', max_concurrent_session),
+                JMESPathCheck('properties.scaleConfiguration.readySessionInstances', ready_instances),
+                JMESPathCheck('properties.secrets[0].name', secret_name),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].image', image),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.cpu', cpu),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
+                JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
+                JMESPathCheck('properties.sessionNetworkConfiguration.status', egress),
+                JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.lifecycleType', lifecycle_type),
+                JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.maxAlivePeriodInSeconds', max_alive_period),
+            ])
+
+        sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
+        while sessionpool["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
+
+        self.cmd(
+            'containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom),
+            checks=[JMESPathCheck('properties.provisioningState', "Succeeded")]
+        )
+
+        # Show a Session Pool
+        self.cmd(
+            'containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom),
+            checks=[
+                JMESPathCheck('name', sessionpool_name_custom),
+                JMESPathCheck('properties.containerType', "CustomContainer")
+            ])
+
+        self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
+
+        # List Session Pools
+        sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(sessionpool_list) == 0)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer()
+    @SubnetPreparer(location=TEST_LOCATION, delegations='Microsoft.App/environments',
+                    service_endpoints="Microsoft.Storage.Global")
+    def test_containerapp_sessionpool_health_probe(self, resource_group, subnet_id, vnet_name, subnet_name):
+        location = TEST_LOCATION
+ 
+        self.cmd('configure --defaults location={}'.format(location))
+
+        env_name = self.create_random_name(prefix='aca-sp-env-probe', length=24)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none -s {}'.format(resource_group, env_name, location, subnet_id), expect_failure=False)
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        # Create CustomContainer SessionPool
+        sessionpool_name_custom = self.create_random_name(prefix='spcustomcontainer', length=24)
+        ready_instances = 2
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+        secret_name = "testsecret"
+        secret_value = "testsecretvalue"
+        cpu = "0.5"
+        memory = "1Gi"
+
+        # Health probe config
+        health_probe_yaml_text = """
+                                probes:
+                                  - type: Liveness
+                                    httpGet:
+                                      path: "/health"
+                                      port: 80
+                                      httpHeaders:
+                                        - name: Custom-Header
+                                          value: "liveness probe"
+                                    initialDelaySeconds: 7
+                                    periodSeconds: 3
+                                  - type: Startup
+                                    httpGet:
+                                      path: "/health"
+                                      port: 80
+                                      httpHeaders:
+                                        - name: Custom-Header
+                                          value: "startup probe"
+                                    initialDelaySeconds: 3
+                                    periodSeconds: 3
+                                """
+        health_probe_file_name = f"{self._testMethodName}_health_probe.yml"
+        write_test_file(health_probe_file_name, health_probe_yaml_text)
+
+        self.cmd(
+            'containerapp sessionpool create -g {} -n {} --container-type CustomContainer --environment {} --secrets {}={} --ready-sessions {} --image {} --cpu {} --memory {} --target-port {} --probe-yaml {}'.format(
+                resource_group, sessionpool_name_custom, env_name, secret_name, secret_value, ready_instances, image, cpu, memory, 80, health_probe_file_name),
+            checks=[
+                JMESPathCheck('name', sessionpool_name_custom),
+                JMESPathCheck('properties.containerType', "CustomContainer"),
+                JMESPathCheck('properties.scaleConfiguration.maxConcurrentSessions', 10),
+                JMESPathCheck('properties.scaleConfiguration.readySessionInstances', ready_instances),
+                JMESPathCheck('properties.secrets[0].name', secret_name),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].image', image),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.cpu', cpu),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
+                JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
+                JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.lifecycleType', "Timed"),
+                JMESPathCheck('properties.dynamicPoolConfiguration.lifecycleConfiguration.cooldownPeriodInSeconds', 300),
+
+                JMESPathCheck('length(properties.customContainerTemplate.containers[0].probes)', 2),
+
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].type', "Liveness"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].httpGet.path', "/health"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].httpGet.port', 80),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].httpGet.httpHeaders[0].name', "Custom-Header"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].httpGet.httpHeaders[0].value', "liveness probe"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].initialDelaySeconds', 7),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].periodSeconds', 3),
+
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[1].type', "Startup"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[1].httpGet.path', "/health"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[1].httpGet.port', 80),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[1].httpGet.httpHeaders[0].name', "Custom-Header"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[1].httpGet.httpHeaders[0].value', "startup probe"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[1].initialDelaySeconds', 3),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[1].periodSeconds', 3),
+            ])
+
+        sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
+        while sessionpool["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
+
+        self.cmd(
+            'containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom),
+            checks=[JMESPathCheck('properties.provisioningState', "Succeeded")]
+        )
+        clean_up_test_file(health_probe_file_name)
+
+        health_probe_yaml_text = """
+                                probes:
+                                  - type: Liveness
+                                    httpGet:
+                                      path: "/health"
+                                      port: 80
+                                      httpHeaders:
+                                        - name: Custom-Header
+                                          value: "liveness probe"
+                                    initialDelaySeconds: 7
+                                    periodSeconds: 3
+                                """
+        write_test_file(health_probe_file_name, health_probe_yaml_text)
+
+        self.cmd(
+            'containerapp sessionpool update -g {} -n {} --probe-yaml {}'.format(resource_group, sessionpool_name_custom, health_probe_file_name),
+            checks=[
+                JMESPathCheck('length(properties.customContainerTemplate.containers[0].probes)', 1),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].type', "Liveness"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].httpGet.path', "/health"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].httpGet.port', 80),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].httpGet.httpHeaders[0].name', "Custom-Header"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].httpGet.httpHeaders[0].value', "liveness probe"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].initialDelaySeconds', 7),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].probes[0].periodSeconds', 3),
+            ])
+
+        health_probe_yaml_text = """
+                                probes:
+                                """
+        write_test_file(health_probe_file_name, health_probe_yaml_text)
+
+        self.cmd(
+            'containerapp sessionpool update -g {} -n {} --probe-yaml {}'.format(resource_group, sessionpool_name_custom, health_probe_file_name),
+            checks=[JMESPathCheck('length(properties.customContainerTemplate.containers[0].probes)', 0)]
+        )
+        clean_up_test_file(health_probe_file_name)
+
+        # List Session Pools
+        sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(sessionpool_list) == 1)
 
         self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
 

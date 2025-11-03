@@ -51,7 +51,7 @@ def install_vme(
             continue
         except ResourceNotFoundError:
             # The extension does not exist, proceed with installation
-            print(f"Installing extension {extension_type}...")
+            print(f"Installing extension {extension_type}...", flush=True)
             command = [
                 str(shutil.which("az")),
                 "k8s-extension",
@@ -70,7 +70,7 @@ def install_vme(
                 "cluster"
             ]
             result = utils.call_subprocess_raise_output(command)
-            print(f"Installed extension {extension_type} successfully.")
+            print(f"Installed extension {extension_type} successfully.", flush=True)
             print(result)
 
     if len(include_extension_types) > 1:
@@ -81,7 +81,8 @@ def uninstall_vme(
         cmd,
         resource_group_name: str,
         cluster_name: str,
-        include_extension_types: list[str]):
+        include_extension_types: list[str],
+        force=False):
     if 'all' in include_extension_types:
         include_extension_types = consts.BundleExtensionTypes
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -96,7 +97,7 @@ def uninstall_vme(
 
     # Uninstall the bundle extensions one by one
     for extension_type in include_extension_types:
-        print(f"Uninstalling extension {extension_type}...")
+        print(f"Uninstalling extension {extension_type}...", flush=True)
         command = [str(shutil.which("az")),
                    "k8s-extension",
                    "delete",
@@ -108,10 +109,11 @@ def uninstall_vme(
                    "connectedClusters",
                    "--name",
                    consts.BundleExtensionTypeNames[extension_type],
-                   "--force",
                    "--yes"]
+        if force:
+            command.append("--force")
         utils.call_subprocess_raise_output(command)
-        print(f"Uninstalled extension {extension_type} successfully.")
+        print(f"Uninstalled extension {extension_type} successfully.", flush=True)
     if len(include_extension_types) > 1:
         print("All extensions uninstalled successfully.")
 
@@ -141,7 +143,7 @@ def upgrade_vme(
         cmd, subscription_id, cluster, resource_group_name, cluster_name, kube_config, kube_context)
     deployment_name = (consts.ARC_UPDATE_PREFIX + cluster_name).lower()
     print(f"Checking arm template deployment '{deployment_name}' for '{cluster_resource_id}' "
-          f"which has agent version '{agent_version}'")
+          f"which has agent version '{agent_version}'", flush=True)
 
     client = cf_deployments(cmd.cli_ctx, subscription_id)
 
@@ -165,7 +167,7 @@ def upgrade_vme(
                     f"[{timestamp}] The current deployment {deployment_name} is for {deployment_agent_version} "
                     f"instead of current agent version {agent_version}. {consts.UPGRADE_NOTSTARTED_MSG}"
                 )
-                print(msg)
+                print(msg, flush=True)
                 time.sleep(consts.UPGRADE_CHECK_INTERVAL)
                 continue
             if utils.check_deployment_status(resources, deployment, timestamp):

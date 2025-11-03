@@ -3,18 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
 import unittest
-import json
-
-from azext_confcom.security_policy import (
-    UserContainerImage,
-    OutputType,
-    load_policy_from_json,
-)
 
 import azext_confcom.config as config
-from azext_confcom.template_util import case_insensitive_dict_get, DockerClient
+from azext_confcom.security_policy import (OutputType, UserContainerImage,
+                                           load_policy_from_json)
+from azext_confcom.template_util import DockerClient, case_insensitive_dict_get
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
@@ -571,7 +567,7 @@ class CustomJsonParsing(unittest.TestCase):
             "containers": [
                 {
                     "name": "mcr.microsoft.com/azurelinux/base/python:3.12",
-                    "containerImage": "mcr.microsoft.com/azurelinux/base/python:3.12",
+                    "containerImage": "mcr.microsoft.com/azurelinux/base/python@sha256:ec2e8a66b7a5ad1da168bf13463e03ea79c3a18d7142818d52fbcc8772bbba8d",
                     "environmentVariables": [],
                     "command": ["echo", "hello"]
                 }
@@ -582,13 +578,13 @@ class CustomJsonParsing(unittest.TestCase):
             # pull actual image to local for next step
             with DockerClient() as client:
                 image_ref = aci_policy.get_images()[0]
-                image = client.images.pull(image_ref.base, tag=image_ref.tag)
+                image = client.images.pull(image_ref.containerImage)
             aci_policy.populate_policy_content_for_all_images()
             layers = aci_policy.get_images()[0]._layers
             expected_layers = [
-                "1824eb49720f59202136bd38681f32e57239676c9a423fb1e025aa210aaa22aa",
-                "8d68e2b0c2c32fa7fab2a5543d94e0b70b5bea400ca7f89f4c925a02ae15f453",
-                "44e8e0480dc3c0d04564ba87b3ba851cfab008717abdf6be83baf47963599614"
+                "679545575069dd4dc31f4d991094d669ca346950c3bc3aa465a9343a7369a8c9",
+                "ff808293653ce6dc4aa63381a8ceaec73c15618bbc6ccb30a44441d638c07af7",
+                "1dd5fd89c3a5a58b669d14d9a693aff3f16d3a8ec643c9d7f2d24f25297cfbc7"
             ]
             self.assertEqual(len(layers), len(expected_layers))
             for i in range(len(expected_layers)):

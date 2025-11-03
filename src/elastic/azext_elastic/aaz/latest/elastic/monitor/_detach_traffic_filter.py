@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor detach-traffic-filter",
 )
 class DetachTrafficFilter(AAZCommand):
-    """Detach traffic filter
+    """Detach an existing traffic filter from your Elastic monitor resource, removing its network traffic control capabilities.
 
-    :example: Detach traffic filter
-        az elastic monitor detach-traffic-filter --monitor-name name -g rg --ruleset-id
+    :example: DetachTrafficFilter_Update
+        az elastic monitor detach-traffic-filter --resource-group myResourceGroup --monitor-name myMonitor --ruleset-id 31d91b5afb6f4c2eaaf104c97b1991dd
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/detachtrafficfilter", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/detachtrafficfilter", "2025-06-01"],
         ]
     }
 
@@ -134,7 +134,7 @@ class DetachTrafficFilter(AAZCommand):
                     "rulesetId", self.ctx.args.ruleset_id,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

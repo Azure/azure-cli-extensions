@@ -1,0 +1,10 @@
+customer-relations-webapp is not running. All pods are stuck in ImagePullBackOff due to failure pulling image                      
+yourcompany/crw:latest.                                                                                                            
+
+Root cause: Kubernetes cannot pull the container image yourcompany/crw:latest. This is likely due to one of:                       
+
+ 1 Image does not exist in the registry.                                                                                           
+ 2 Image registry credentials are missing or incorrect.                                                                            
+ 3 Network or permission issue accessing the registry.                                                                             
+
+Fix: Verify the image exists and is accessible, and check imagePullSecrets if a private registry is used.

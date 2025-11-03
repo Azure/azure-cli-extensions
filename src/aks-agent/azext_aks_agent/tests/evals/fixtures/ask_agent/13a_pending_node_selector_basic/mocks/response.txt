@@ -1,0 +1,6 @@
+Pod user-profile-import in namespace app-13a is stuck in Pending state.                                                            
+
+Root cause: Pod's node selector label=someLabel does not match any available nodes. All 3 nodes lack the required label, so        
+scheduling fails.                                                                                                                  
+
+How to fix: Update the pod spec to use a valid node selector label, or add label=someLabel to one or more nodes.
