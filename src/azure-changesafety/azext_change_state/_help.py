@@ -44,10 +44,10 @@ helps['changesafety changestate create'] = """
     examples:
       - name: Create a change state for a VM rollout
         text: |-
-          az changesafety changestate create -g MyResourceGroup -n deploy-001 --change-type AppDeployment --rollout-type Normal --targets resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PUT
+          az changesafety changestate create -g MyResourceGroup -n deploy-001 --change-type AppDeployment --rollout-type Normal --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PUT"
       - name: Create with staging rollout configuration
         text: |-
-          az changesafety changestate create -g MyResourceGroup -n ops-change-01 --rollout-type Hotfix --targets resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Web/sites/myApp,operation=POST
+          az changesafety changestate create -g MyResourceGroup -n ops-change-01 --rollout-type Hotfix --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Web/sites/myApp,operation=POST"
 """
 
 helps['changesafety changestate update'] = """
@@ -74,7 +74,7 @@ helps['changesafety changestate update'] = """
           az changesafety changestate update -g MyResourceGroup -n deploy-001 --rollout-type Emergency --comments "Escalated to emergency rollout"
       - name: Replace the target definition
         text: |-
-          az changesafety changestate update -g MyResourceGroup -n deploy-001 --targets resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/myServer,operation=PATCH
+          az changesafety changestate update -g MyResourceGroup -n deploy-001 --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/myServer,operation=PATCH"
 """
 
 helps['changesafety changestate delete'] = """
