@@ -145,9 +145,11 @@ def initialize_replication_infrastructure(cmd,
     """
     from azure.cli.core.commands.client_factory import \
         get_subscription_id
-    from azext_migrate._initialize_replication_infrastructure_helpers import (
-        validate_required_parameters,
+    from azext_migrate.helpers.replication.init._execute_init import (
         execute_replication_infrastructure_setup)
+    from azext_migrate.helpers.replication.init._validate import (
+        validate_required_parameters,
+    )
 
     # Validate required parameters
     validate_required_parameters(resource_group_name,
