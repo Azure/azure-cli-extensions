@@ -7,27 +7,31 @@
 # --------------------------------------------------------------------------
 
 from copy import deepcopy
-from typing import Any, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING, cast
 from typing_extensions import Self
 
 from azure.core.pipeline import policies
 from azure.core.rest import HttpRequest, HttpResponse
+from azure.core.settings import settings
 from azure.mgmt.core import ARMPipelineClient
 from azure.mgmt.core.policies import ARMAutoResourceProviderRegistrationPolicy
+from azure.mgmt.core.tools import get_arm_endpoints
 
 from . import models as _models
 from ._configuration import ContainerServiceClientConfiguration
-from ._serialization import Deserializer, Serializer
+from ._utils.serialization import Deserializer, Serializer
 from .operations import (
     AgentPoolsOperations,
     ContainerServiceOperations,
     IdentityBindingsOperations,
+    JWTAuthenticatorsOperations,
     LoadBalancersOperations,
     MachinesOperations,
     MaintenanceConfigurationsOperations,
     ManagedClusterSnapshotsOperations,
     ManagedClustersOperations,
     ManagedNamespacesOperations,
+    MeshMembershipsOperations,
     OperationStatusResultOperations,
     Operations,
     PrivateEndpointConnectionsOperations,
@@ -39,6 +43,7 @@ from .operations import (
 )
 
 if TYPE_CHECKING:
+    from azure.core import AzureClouds
     from azure.core.credentials import TokenCredential
 
 
@@ -87,13 +92,20 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
     :vartype load_balancers: azure.mgmt.containerservice.operations.LoadBalancersOperations
     :ivar identity_bindings: IdentityBindingsOperations operations
     :vartype identity_bindings: azure.mgmt.containerservice.operations.IdentityBindingsOperations
+    :ivar jwt_authenticators: JWTAuthenticatorsOperations operations
+    :vartype jwt_authenticators: azure.mgmt.containerservice.operations.JWTAuthenticatorsOperations
+    :ivar mesh_memberships: MeshMembershipsOperations operations
+    :vartype mesh_memberships: azure.mgmt.containerservice.operations.MeshMembershipsOperations
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription. The value must be an UUID. Required.
     :type subscription_id: str
-    :param base_url: Service URL. Default value is "https://management.azure.com".
+    :param base_url: Service URL. Default value is None.
     :type base_url: str
-    :keyword api_version: Api Version. Default value is "2025-06-02-preview". Note that overriding
+    :keyword cloud_setting: The cloud setting for which to get the ARM endpoint. Default value is
+     None.
+    :paramtype cloud_setting: ~azure.core.AzureClouds
+    :keyword api_version: Api Version. Default value is "2025-09-02-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -104,12 +116,24 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
         self,
         credential: "TokenCredential",
         subscription_id: str,
-        base_url: str = "https://management.azure.com",
+        base_url: Optional[str] = None,
+        *,
+        cloud_setting: Optional["AzureClouds"] = None,
         **kwargs: Any
     ) -> None:
+        _cloud = cloud_setting or settings.current.azure_cloud  # type: ignore
+        _endpoints = get_arm_endpoints(_cloud)
+        if not base_url:
+            base_url = _endpoints["resource_manager"]
+        credential_scopes = kwargs.pop("credential_scopes", _endpoints["credential_scopes"])
         self._config = ContainerServiceClientConfiguration(
-            credential=credential, subscription_id=subscription_id, **kwargs
+            credential=credential,
+            subscription_id=subscription_id,
+            cloud_setting=cloud_setting,
+            credential_scopes=credential_scopes,
+            **kwargs
         )
+
         _policies = kwargs.pop("policies", None)
         if _policies is None:
             _policies = [
@@ -128,7 +152,7 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
                 policies.SensitiveHeaderCleanupPolicy(**kwargs) if self._config.redirect_policy else None,
                 self._config.http_logging_policy,
             ]
-        self._client: ARMPipelineClient = ARMPipelineClient(base_url=base_url, policies=_policies, **kwargs)
+        self._client: ARMPipelineClient = ARMPipelineClient(base_url=cast(str, base_url), policies=_policies, **kwargs)
 
         client_models = {k: v for k, v in _models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
@@ -173,6 +197,12 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
         )
         self.load_balancers = LoadBalancersOperations(self._client, self._config, self._serialize, self._deserialize)
         self.identity_bindings = IdentityBindingsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.jwt_authenticators = JWTAuthenticatorsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.mesh_memberships = MeshMembershipsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
 

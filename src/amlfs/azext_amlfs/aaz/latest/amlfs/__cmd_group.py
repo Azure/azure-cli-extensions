@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "amlfs",
 )
 class __CMDGroup(AAZCommandGroup):
-    """This is an extension to Azure CLI to manage Amlfs resources.
+    """Manage Azure Managed Lustre Filesystem
     """
     pass
 

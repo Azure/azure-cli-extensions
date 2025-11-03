@@ -1,0 +1,59 @@
+interactions:
+- request:
+    body: '{"location": "eastus2", "properties": {"description": "My Test Network
+      Manager", "networkManagerScopeAccesses": ["SecurityUser", "Connectivity"], "networkManagerScopes":
+      {"subscriptions": ["/subscriptions/00000000-0000-0000-0000-000000000000"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '246'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --description --scope-accesses --network-manager-scopes -l --resource-group
+      User-Agent:
+      - AZURECLI/2.77.0 azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_user_config000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2023-09-01
+  response:
+    body:
+      string: '{"error":{"message":"The subscription: a85adf9b-ce1f-4f83-8139-804e22c93a2a
+        is not registered for feature: AllowAVNMPreviewJuly2022","code":"BadRequest"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '154'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 Sep 2025 00:44:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2b59e065-d5ad-415c-b3ff-9f22cf8c9c72/australiaeast/693d6642-402c-4f9f-b6bc-5e17954603c1
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 2AFD75BC616E450C8531A00A43DE3B19 Ref B: MWH011020808023 Ref C: 2025-09-03T00:44:15Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

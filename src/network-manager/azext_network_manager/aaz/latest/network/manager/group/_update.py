@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/networkgroups/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/networkgroups/{}", "2024-07-01"],
         ]
     }
 
@@ -71,6 +71,13 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="A description of the network group.",
             nullable=True,
+        )
+        _args_schema.member_type = AAZStrArg(
+            options=["--member-type"],
+            arg_group="Properties",
+            help="The type of the group member.",
+            nullable=True,
+            enum={"Subnet": "Subnet", "VirtualNetwork": "VirtualNetwork"},
         )
         return cls._args_schema
 
@@ -156,7 +163,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -243,7 +250,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -309,6 +316,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("memberType", AAZStrType, ".member_type")
 
             return _instance_value
 
@@ -362,8 +370,15 @@ class _UpdateHelper:
 
         properties = _schema_network_group_read.properties
         properties.description = AAZStrType()
+        properties.member_type = AAZStrType(
+            serialized_name="memberType",
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.resource_guid = AAZStrType(
+            serialized_name="resourceGuid",
             flags={"read_only": True},
         )
 

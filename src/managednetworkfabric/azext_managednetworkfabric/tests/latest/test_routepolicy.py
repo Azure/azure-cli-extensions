@@ -14,45 +14,32 @@ from azure.cli.testsdk import ScenarioTest
 from .config import CONFIG
 
 
-def setup_scenario1(test):
-    """Env setup_scenario1"""
+def setup_scenario(test):
+    """Env setup_scenario"""
     pass
 
 
-def cleanup_scenario1(test):
-    """Env cleanup_scenario1"""
-    pass
-
-
-def setup_scenario2(test):
-    """Env setup_scenario1"""
-    pass
-
-
-def cleanup_scenario2(test):
-    """Env cleanup_scenario1"""
+def cleanup_scenario(test):
+    """Env cleanup_scenario"""
     pass
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
-    setup_scenario1(test)
+    """Testcase: scenario1"""
+    setup_scenario(test)
     step_create_s1(test, checks=[])
     step_show(test, checks=[])
     step_update(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
-    cleanup_scenario1(test)
+    cleanup_scenario(test)
 
 
 def call_scenario2(test):
-    """# Testcase: scenario1"""
-    setup_scenario2(test)
+    """Testcase: scenario2"""
+    setup_scenario(test)
     step_create_s2(test, checks=[])
-    step_show(test, checks=[])
-    step_list_resource_group(test, checks=[])
-    step_delete(test, checks=[])
-    cleanup_scenario2(test)
+    cleanup_scenario(test)
 
 
 def step_create_s1(test, checks=None):
@@ -60,7 +47,8 @@ def step_create_s1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --default-action {defaultAction} --nf-id {nfId} --address-family-type {addressFamilyType} --statements {statementsWithIpcommunity}",
+        "az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --default-action {defaultAction} --nf-id {nfId} --address-family-type {addressFamilyType}"
+        " --statements {statementsWithIpcommunity} --annotation {annotation}",
         checks=checks,
     )
 
@@ -70,7 +58,8 @@ def step_create_s2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --default-action {defaultAction} --nf-id {nfId} --address-family-type {addressFamilyType} --statements {statementsWithIpextcommunity}",
+        "az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --default-action {defaultAction} --network-fabric-id {nfId} --address-family-type {addressFamilyType}"
+        " --statements {statementsWithIpextcommunity} --annotation {annotation}",
         checks=checks,
     )
 
@@ -89,7 +78,7 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric routepolicy update --resource-group {rg} --resource-name {name} --statements {updatedStatementsWithIpcommunity}",
+        "az networkfabric routepolicy update --resource-group {rg} --resource-name {name} --statements {updatedStatementsWithIpcommunity} --default-action {defaultAction}",
         checks=checks,
     )
 
@@ -121,6 +110,7 @@ class GA_RoutePolicyScenarioTest1(ScenarioTest):
         self.kwargs.update(
             {
                 "name": CONFIG.get("ROUTE_POLICY", "name"),
+                "annotation": CONFIG.get("ROUTE_POLICY", "annotation"),
                 "rg": CONFIG.get("ROUTE_POLICY", "resource_group"),
                 "location": CONFIG.get("ROUTE_POLICY", "location"),
                 "nfId": CONFIG.get("ROUTE_POLICY", "nf_id"),

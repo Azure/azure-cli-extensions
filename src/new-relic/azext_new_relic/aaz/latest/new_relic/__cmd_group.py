@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Azure NewRelic resources.
+    """Manage Azure New Relic resources.
     """
     pass
 

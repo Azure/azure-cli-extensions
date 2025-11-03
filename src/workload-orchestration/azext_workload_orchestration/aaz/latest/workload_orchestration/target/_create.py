@@ -9,7 +9,11 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from azure.cli.core.azclierror import CLIInternalError
+import configparser
+import logging
 
+logger = logging.getLogger(__name__)
 
 @register_command(
     "workload-orchestration target create",
@@ -22,9 +26,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/targets/{}", "2025-08-01"],
         ]
     }
 
@@ -66,27 +70,33 @@ class Create(AAZCommand):
             options=["--capabilities"],
             arg_group="Properties",
             help="List of capabilities",
+            required=True
         )
         _args_schema.context_id = AAZResourceIdArg(
             options=["--context-id"],
             arg_group="Properties",
             help="ArmId of Context",
-            required=True,
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
             help="Description of target",
+            required=True,
+
         )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
             arg_group="Properties",
             help="Display name of target",
+            required=True,
+
         )
         _args_schema.hierarchy_level = AAZStrArg(
             options=["--hierarchy-level"],
             arg_group="Properties",
             help="Hierarchy Level",
+            required=True,
+
         )
         _args_schema.solution_scope = AAZStrArg(
             options=["--solution-scope"],
@@ -107,6 +117,8 @@ class Create(AAZCommand):
             options=["--target-specification"],
             arg_group="Properties",
             help="Specifies that we are using Helm charts for the k8s deployment",
+            required=True,
+
         )
 
         capabilities = cls._args_schema.capabilities
@@ -158,7 +170,26 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+         # If context_id is not provided, try to get it from config
+        if not self.ctx.args.context_id:
+            try:
+                # Attempt to retrieve the context_id from the config file
+                context_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
+                if context_id:
+                    self.ctx.args.context_id = context_id
+                else:
+                    # This else block handles the case where the section exists, but the key is empty
+                    raise CLIInternalError(
+                        "No context-id was provided, and no default context is set. "
+                        "Please provide the --context-id argument or set a default context using 'az workload-orchestration context use'."
+                    )
+            except configparser.NoSectionError as e:
+                logger.debug("Config section 'workload_orchestration' not found: %s", e)
+                # This is the fix: catch the specific error when the [workload_orchestration] section is missing
+                raise CLIInternalError(
+                    "No context-id was provided, and no default context is set. "
+                    "Please provide the --context-id argument or set a default context using 'az workload-orchestration context use'."
+                )
 
     @register_callback
     def post_operations(self):
@@ -198,7 +229,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.edge/targets/{targetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}",
                 **self.url_parameters
             )
 
@@ -232,7 +263,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-08-01",
                     required=True,
                 ),
             }
