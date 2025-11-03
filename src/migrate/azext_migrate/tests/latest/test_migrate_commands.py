@@ -433,12 +433,12 @@ class MigrateReplicationInitTests(ScenarioTest):
     @mock.patch(
         'azure.cli.core.commands.client_factory.get_mgmt_service_client')
     @mock.patch(
-        'azext_migrate._helpers.'
+        'azext_migrate.helpers._utils.'
         'create_or_update_resource')
     @mock.patch(
         'azext_migrate._get_discovered_server_helpers.fetch_all_servers')
     @mock.patch(
-        'azext_migrate._helpers.get_resource_by_id')
+        'azext_migrate.helpers._utils.get_resource_by_id')
     @mock.patch(
         'azure.cli.core.commands.client_factory.get_subscription_id')
     @mock.patch('time.sleep')
@@ -682,7 +682,7 @@ class MigrateReplicationNewTests(ScenarioTest):
             pass
 
     @mock.patch(
-        'azext_migrate._helpers.send_get_request')
+        'azext_migrate.helpers._utils.send_get_request')
     @mock.patch(
         'azext_migrate._helpers.get_resource_by_id')
     @mock.patch(

@@ -5,7 +5,7 @@
 
 from knack.util import CLIError
 from knack.log import get_logger
-from azext_migrate._helpers import (
+from azext_migrate.helpers._utils import (
     send_get_request,
 )
 
@@ -45,7 +45,7 @@ def get_discovered_server(cmd,
         CLIError: If required parameters are missing or the API request
             fails
     """
-    from azext_migrate._helpers import APIVersion
+    from azext_migrate.helpers._utils import APIVersion
     from azext_migrate._get_discovered_server_helpers import (
         validate_get_discovered_server_params,
         build_base_uri,
@@ -252,7 +252,7 @@ def new_local_server_replication(cmd,
     Raises:
         CLIError: If required parameters are missing or validation fails
     """
-    from azext_migrate._helpers import SiteTypes
+    from azext_migrate.helpers._utils import SiteTypes
     from azext_migrate._new_local_server_replication_helpers import (
         validate_server_parameters,
         validate_required_parameters,
@@ -597,7 +597,7 @@ def get_local_replication_job(cmd,
     """
     from azure.cli.core.commands.client_factory import \
         get_subscription_id
-    from azext_migrate._helpers import (
+    from azext_migrate.helpers._utils import (
         get_resource_by_id,
         send_get_request,
         APIVersion
@@ -771,7 +771,7 @@ def _get_vault_name_from_project(cmd, resource_group_name,
     Raises:
         CLIError: If the solution or vault is not found
     """
-    from azext_migrate._helpers import get_resource_by_id, APIVersion
+    from azext_migrate.helpers._utils import get_resource_by_id, APIVersion
 
     # Get the migration solution
     solution_name = "Servers-Migration-ServerMigration_DataReplication"
@@ -854,7 +854,7 @@ def remove_local_server_replication(cmd,
     """
     from azure.cli.core.commands.client_factory import \
         get_subscription_id
-    from azext_migrate._helpers import (
+    from azext_migrate.helpers._utils import (
         get_resource_by_id,
         APIVersion
     )
