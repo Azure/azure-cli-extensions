@@ -981,22 +981,42 @@ def remove_local_server_replication(cmd,
                             "Successfully initiated removal of replication "
                             "for '%s'. Job: %s",
                             protected_item_name, job_name)
+                        
+                        # Display job ID and helpful command for user
+                        print(f"Successfully initiated removal of replication for "
+                              f"'{protected_item_name}'.")
+                        print(f"Job ID: {job_name}")
+                        print(f"\nTo check removal job status, run:")
+                        print(f"  az migrate local replication get-job "
+                              f"--job-name {job_name} "
+                              f"--resource-group {resource_group_name} "
+                              f"--project-name <project-name>")
+                        
                         return job_details
                 except Exception as job_error:
                     logger.warning(
                         "Could not retrieve job details: %s. "
                         "Replication removal was initiated.",
                         str(job_error))
+                    # Still show the job name even if we can't get details
+                    print(f"Successfully initiated removal of replication for "
+                          f"'{protected_item_name}'.")
+                    print(f"Job ID: {job_name}")
+                    print(f"\nTo check removal job status, run:")
+                    print(f"  az migrate local replication get-job "
+                          f"--job-name {job_name} "
+                          f"--resource-group {resource_group_name} "
+                          f"--project-name <project-name>")
 
         # If we can't get job details, return success message
         logger.info(
             "Successfully initiated removal of replication for '%s'",
             protected_item_name)
-        return {
-            "status": "Accepted",
-            "message": f"Replication removal initiated for "
-                      f"{protected_item_name}"
-        }
+        
+        print(f"Successfully initiated removal of replication for "
+              f"'{protected_item_name}'.")
+        if operation_location:
+            print("Note: Job ID could not be extracted from response headers.")
 
     except CLIError:
         raise

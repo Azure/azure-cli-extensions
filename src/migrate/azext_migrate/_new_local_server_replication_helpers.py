@@ -1571,11 +1571,32 @@ def create_protected_item(cmd,
         }
     }
 
-    create_or_update_resource(
+    response = create_or_update_resource(
         cmd,
         protected_item_uri,
         APIVersion.Microsoft_DataReplication.value,
         protected_item_body)
 
-    print(f"Successfully initiated replication for machine "
-          f"'{machine_name}'.")
+    # Extract job ID from response if available
+    job_id = None
+    if response and 'properties' in response:
+        props = response['properties']
+        if 'lastSuccessfulEnableProtectionJob' in props:
+            job_info = props['lastSuccessfulEnableProtectionJob']
+            if 'id' in job_info:
+                # Extract just the job name from the full ARM ID
+                job_id = job_info['id'].split('/')[-1]
+        elif 'lastEnableProtectionJob' in props:
+            job_info = props['lastEnableProtectionJob']
+            if 'id' in job_info:
+                job_id = job_info['id'].split('/')[-1]
+
+    print(f"Successfully initiated replication for machine '{machine_name}'.")
+    if job_id:
+        print(f"Job ID: {job_id}")
+        print(f"\nTo check job status, run:")
+        print(f"  az migrate local replication get-job --job-name {job_id} "
+              f"--resource-group {resource_group_name} "
+              f"--project-name <project-name>")
+    
+    return response
