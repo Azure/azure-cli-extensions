@@ -50,7 +50,7 @@ def get_extensions():
             project_url = exts[0]['metadata']['project_url'].replace('homepage,', '').strip()
             print(f"Warning: extension {exts[0]['metadata']['name']} has migrated to pyproject.toml.")
         else:
-            project_url = None
+            project_url = ''
             print(f"Warning: No project_url found for extension {exts[0]['metadata']['name']}")
         history_tmp = project_url + '/HISTORY.rst'
         history = project_url if str(requests.get(history_tmp).status_code) == '404' else history_tmp
