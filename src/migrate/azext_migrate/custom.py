@@ -255,10 +255,14 @@ def new_local_server_replication(cmd,
         CLIError: If required parameters are missing or validation fails
     """
     from azext_migrate.helpers._utils import SiteTypes
-    from azext_migrate._new_local_server_replication_helpers import (
+    from azext_migrate.helpers.replication.new._validate import (
         validate_server_parameters,
         validate_required_parameters,
         validate_ARM_id_formats,
+        validate_replication_extension,
+        validate_target_VM_name
+    )
+    from azext_migrate.helpers.replication.new._process_inputs import (
         process_site_type_hyperV,
         process_site_type_vmware,
         process_amh_solution,
@@ -266,12 +270,13 @@ def new_local_server_replication(cmd,
         process_replication_policy,
         process_appliance_map,
         process_source_fabric,
-        process_target_fabric,
-        validate_replication_extension,
+        process_target_fabric
+    )
+    from azext_migrate.helpers.replication.new._execute_new import (
         get_ARC_resource_bridge_info,
-        validate_target_VM_name,
         construct_disk_and_nic_mapping,
-        create_protected_item)
+        create_protected_item
+    )
 
     rg_uri, machine_id = validate_server_parameters(
         cmd,
