@@ -552,6 +552,7 @@ def _format_job_summary(job_details):
         dict: Formatted job summary
     """
     props = job_details.get('properties', {})
+    errors = props.get('errors') or []
     
     return {
         'jobName': job_details.get('name'),
@@ -561,7 +562,7 @@ def _format_job_summary(job_details):
         'startTime': props.get('startTime'),
         'endTime': props.get('endTime'),
         'duration': _calculate_duration(props.get('startTime'), props.get('endTime')),
-        'hasErrors': len(props.get('errors', [])) > 0
+        'hasErrors': len(errors) > 0
     }
 
 
@@ -675,19 +676,44 @@ def get_local_replication_job(cmd,
 
         try:
             response = send_get_request(cmd, request_uri)
-            response_data = response.json() if response else {}
+            
+            if not response:
+                logger.warning("Empty response received when listing jobs")
+                return []
+            
+            response_data = response.json() if hasattr(response, 'json') else {}
+            
+            if not response_data:
+                logger.warning("No data in response when listing jobs")
+                return []
 
             jobs = response_data.get('value', [])
+            
+            if not jobs:
+                logger.info("No jobs found in vault '%s'", vault_name)
+                return []
 
             # Handle pagination if nextLink is present
-            while response_data and 'nextLink' in response_data:
+            while response_data and response_data.get('nextLink'):
                 next_link = response_data['nextLink']
                 response = send_get_request(cmd, next_link)
-                response_data = response.json() if response else {}
-                jobs.extend(response_data.get('value', []))
+                response_data = response.json() if (response and hasattr(response, 'json')) else {}
+                if response_data and response_data.get('value'):
+                    jobs.extend(response_data['value'])
 
+            logger.info("Retrieved %d jobs from vault '%s'", len(jobs), vault_name)
+            
             # Format the jobs for cleaner output
-            return [_format_job_summary(job) for job in jobs]
+            formatted_jobs = []
+            for job in jobs:
+                try:
+                    formatted_jobs.append(_format_job_summary(job))
+                except Exception as format_error:
+                    logger.warning("Error formatting job: %s", str(format_error))
+                    # Skip jobs that fail to format
+                    continue
+            
+            return formatted_jobs
 
         except Exception as e:
             logger.error("Error listing jobs: %s", str(e))
@@ -1015,8 +1041,6 @@ def remove_local_server_replication(cmd,
         
         print(f"Successfully initiated removal of replication for "
               f"'{protected_item_name}'.")
-        if operation_location:
-            print("Note: Job ID could not be extracted from response headers.")
 
     except CLIError:
         raise
