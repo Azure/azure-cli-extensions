@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "change-safety change-state update",
+    "changesafety changestate update",
 )
 class Update(AAZCommand):
     """Update a ChangeState
