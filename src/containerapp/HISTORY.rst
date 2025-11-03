@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env premium-ingress add/update': remove `--min-replicas` and `--max-replicas`
 
 1.2.0b4
 ++++++
