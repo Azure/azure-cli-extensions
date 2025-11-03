@@ -5,11 +5,18 @@
 
 
 import requests
+
 from .base import LLMProvider, non_empty
 
 
 class AnthropicProvider(LLMProvider):
-    name = "anthropic"
+    @property
+    def readable_name(self) -> str:
+        return "Anthropic"
+
+    @property
+    def model_route(self) -> str:
+        return "anthropic"
 
     @property
     def parameter_schema(self):
@@ -22,7 +29,7 @@ class AnthropicProvider(LLMProvider):
             },
             "MODEL_NAME": {
                 "secret": False,
-                "default": "claude-3",
+                "default": "claude-sonnet-4",
                 "hint": None,
                 "validator": non_empty
             },

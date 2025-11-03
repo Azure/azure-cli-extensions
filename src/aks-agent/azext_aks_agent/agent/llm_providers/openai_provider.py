@@ -5,19 +5,31 @@
 
 
 import requests
+
 from .base import LLMProvider, non_empty
 
 
 class OpenAIProvider(LLMProvider):
-    name = "openai"
+    @property
+    def readable_name(self) -> str:
+        return "OpenAI"
+
+    @property
+    def name(self) -> str:
+        return "openai"
+
+    @property
+    def model_route(self) -> str:
+        # Openai model route is empty under the Litellm provider scheme
+        return ""
 
     @property
     def parameter_schema(self):
         return {
             "MODEL_NAME": {
                 "secret": False,
-                "default": None,
-                "hint": "gpt-4.1",
+                "default": "gpt-5",
+                "hint": None,
                 "validator": non_empty
             },
             "OPENAI_API_KEY": {

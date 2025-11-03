@@ -8,7 +8,6 @@
 
 from knack.help_files import helps
 
-
 helps[
     "aks agent"
 ] = """
@@ -78,10 +77,11 @@ helps[
             Here is an example of config file:
             ```json
             llms:
-              - provider: "azure"
-                MODEL_NAME: "gpt-4.1"
-                AZURE_API_BASE: "https://<your-base-url>"
-                AZURE_API_KEY: "<your-api-key>"
+            - provider: azure
+              MODEL_NAME: gpt-4.1
+              AZURE_API_KEY: *******
+              AZURE_API_BASE: https://{azure-openai-service-name}.openai.azure.com/
+              AZURE_API_VERSION: 2025-04-01-preview
             # define a list of mcp servers, mcp server can be defined
             mcp_servers:
               aks_mcp:
