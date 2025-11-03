@@ -16,7 +16,7 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     delete_command = ChangeStateDelete(loader=self)
     show_command = ChangeStateShow(loader=self)
 
-    self.command_table['change-state create'] = create_command
-    self.command_table['change-state update'] = update_command
-    self.command_table['change-state delete'] = delete_command
-    self.command_table['change-state show'] = show_command
+    self.command_table['changesafety changestate create'] = create_command
+    self.command_table['changesafety changestate update'] = update_command
+    self.command_table['changesafety changestate delete'] = delete_command
+    self.command_table['changesafety changestate show'] = show_command

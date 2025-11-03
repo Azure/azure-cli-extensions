@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "change-safety change-state",
+    "changesafety",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Change State
+    """Manage Change Safety
     """
     pass
 

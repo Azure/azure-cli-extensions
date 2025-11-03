@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "change-safety change-state delete",
+    "changesafety changestate delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
@@ -22,8 +22,8 @@ class Delete(AAZCommand):
     _aaz_info = {
         "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/changestates/{}", "2025-09-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.changesafety/changestates/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/Microsoft.ChangeSafety/changestates/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.ChangeSafety/changestates/{}", "2025-09-01-preview"],
         ]
     }
 
