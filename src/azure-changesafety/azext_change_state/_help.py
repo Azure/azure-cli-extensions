@@ -44,7 +44,7 @@ helps['changesafety changestate create'] = """
     examples:
       - name: Create with stage map reference and status link
         text: |-
-          az changesafety changestate create -g MyResourceGroup -n deploy-002 --change-type ManualTouch --rollout-type Normal --stage-map "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ChangeSafety/stageMaps/rollout-stage-map" --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH" --links name=status uri=https://contoso.com/change/rollout-002
+          az changesafety changestate create -g MyResourceGroup -n deploy-002 --change-type ManualTouch --rollout-type Normal --stage-map "{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ChangeSafety/stageMaps/rollout-stage-map}" --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH" --links "[{name:status,uri:'https://contoso.com/change/rollout-002'}]"
       - name: Create a change state for a VM rollout
         text: |-
           az changesafety changestate create -g MyResourceGroup -n deploy-001 --change-type AppDeployment --rollout-type Normal --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PUT"
