@@ -15,6 +15,7 @@ Pending
 * * Add add-on support for `ApplicationLoadBalancer` (Application Gateway for Containers)
   - `az aks applicationloadbalancer enable`: Enable Application Load Balancer add-on for an existing cluster.
   - `az aks applicationloadbalancer disable`: Disable Application Load Balancer add-on for an existing cluster.
+  - `az aks applicationloadbalancer update`: Update Application Load Balancer add-on for an existing cluster.
 
 19.0.0b9
 +++++++
