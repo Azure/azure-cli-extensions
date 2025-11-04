@@ -23,7 +23,7 @@ Create a ChangeState describing a web app rollout:
 ```bash
 az changesafety changestate create \
   -g MyResourceGroup \
-  -n webapp-rollout-01 \
+  -n webAppRollout01 \
   --change-type AppDeployment \
   --rollout-type Normal \
   --targets "resourceId=/subscriptions/<subId>/resourceGroups/MyResourceGroup/providers/Microsoft.Web/sites/myApp,operation=create" \
@@ -34,14 +34,14 @@ Update the rollout type and add a comment:
 ```bash
 az changesafety changestate update \
   -g MyResourceGroup \
-  -n webapp-rollout-01 \
+  -n webAppRollout01 \
   --rollout-type Emergency \
   --comments "Escalated due to customer impact"
 ```
 
 Delete a ChangeState:
 ```bash
-az changesafety changestate delete -g MyResourceGroup -n webapp-rollout-01 --yes
+az changesafety changestate delete -g MyResourceGroup -n webAppRollout01 --yes
 ```
 
 ## Additional Information
