@@ -428,6 +428,108 @@ def get_restore_target_info_basics(restore_object_type, restore_location):
     }
 
 
+def _validate_container_name(container):
+    # Whitelist for reserved container names
+    reserved_container_names = ['$web', '$root']
+
+    if container in reserved_container_names:
+        return
+
+    pattern = r'^([a-z\d]((-(?=[a-z\d]))|([a-z\d])){2,62})$'
+
+    if not re.match(pattern, container):
+        raise InvalidArgumentValueError(
+            f"Container name '{container}' is invalid. "
+            "Container names must:\n"
+            "  - Be between 3 and 63 characters long\n"
+            "  - Start with a lowercase letter or number\n"
+            "  - Contain only lowercase letters, numbers, and hyphens\n"
+            "  - Not contain consecutive hyphens\n"
+            "  - Not end with a hyphen\n"
+            "Reserved names $web and $root are allowed."
+        )
+
+
+def _validate_container_list_size(container_list, is_vaulted_backup):
+    max_containers = 1000 if is_vaulted_backup else 10
+    backup_type = "vaulted backup" if is_vaulted_backup else "operational backup"
+
+    if len(container_list) > max_containers:
+        raise InvalidArgumentValueError(
+            f"A maximum of {max_containers} containers can be restored for {backup_type}. "
+            f"Please choose up to {max_containers} containers."
+        )
+
+
+def _create_container_restore_criteria(container, is_vaulted_backup):
+    _validate_container_name(container)
+
+    if is_vaulted_backup:
+        return {
+            "object_type": "ItemPathBasedRestoreCriteria",
+            "item_path": container,
+            "is_path_relative_to_backup_item": True
+        }
+
+    return {
+        "object_type": "RangeBasedItemLevelRestoreCriteria",
+        "min_matching_value": container,
+        "max_matching_value": container + "-0"
+    }
+
+
+def _process_container_list(container_list, recovery_point_id):
+    is_vaulted_backup = bool(recovery_point_id)
+    _validate_container_list_size(container_list, is_vaulted_backup)
+
+    restore_criteria_list = []
+    for container in container_list:
+        restore_criteria = _create_container_restore_criteria(container, is_vaulted_backup)
+        restore_criteria_list.append(restore_criteria)
+
+    return restore_criteria_list
+
+
+def _process_prefix_pattern(from_prefix_pattern, to_prefix_pattern):
+    """Process prefix patterns and return restore criteria list."""
+    validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern)
+
+    restore_criteria_list = []
+    for index in range(len(from_prefix_pattern)):
+        restore_criteria = {
+            "object_type": "RangeBasedItemLevelRestoreCriteria",
+            "min_matching_value": from_prefix_pattern[index],
+            "max_matching_value": to_prefix_pattern[index]
+        }
+        restore_criteria_list.append(restore_criteria)
+
+    return restore_criteria_list
+
+
+def _process_vaulted_blob_pattern(vaulted_blob_prefix_pattern):
+    """Process vaulted blob prefix pattern and return restore criteria list."""
+    validate_vaulted_blob_prefix_pattern(vaulted_blob_prefix_pattern)
+
+    restore_criteria_list = []
+    for container in vaulted_blob_prefix_pattern['containers']:
+        restore_criteria = {
+            "object_type": "ItemPathBasedRestoreCriteria",
+            "item_path": container['name'],
+            "is_path_relative_to_backup_item": True
+        }
+
+        # Add optional fields only if they exist
+        if 'prefixmatch' in container:
+            restore_criteria["sub_item_path_prefix"] = container['prefixmatch']
+
+        if 'renameto' in container:
+            restore_criteria["rename_to"] = container['renameto']
+
+        restore_criteria_list.append(restore_criteria)
+
+    return restore_criteria_list
+
+
 def get_resource_criteria_list(datasource_type, restore_configuration, container_list,
                                from_prefix_pattern, to_prefix_pattern, recovery_point_id,
                                vaulted_blob_prefix_pattern):
@@ -453,62 +555,21 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
             raise MutuallyExclusiveArgumentError("Please specify only one of container list, prefix pattern, or "
                                                  "vaulted blob's prefix patterns")
 
-        if container_list_present:
-            if recovery_point_id:
-                if len(container_list) > 1000:
-                    raise InvalidArgumentValueError("A maximum of 1000 containers can be restored for vaulted backup. Please choose up to 1000 containers.")
-                for container in container_list:
-                    if container[0] == '$':
-                        raise InvalidArgumentValueError("container name can not start with '$'. Please retry with different sets of containers.")
-                    restore_criteria = {}
-                    restore_criteria["object_type"] = "ItemPathBasedRestoreCriteria"
-                    restore_criteria["item_path"] = container
-                    restore_criteria["is_path_relative_to_backup_item"] = True
-                    restore_criteria_list.append(restore_criteria)
-            else:
-                if len(container_list) > 10:
-                    raise InvalidArgumentValueError("A maximum of 10 containers can be restored. Please choose up to 10 containers.")
-                for container in container_list:
-                    if container[0] == '$':
-                        raise InvalidArgumentValueError("container name can not start with '$'. Please retry with different sets of containers.")
-                    restore_criteria = {}
-                    restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
-                    restore_criteria["min_matching_value"] = container
-                    restore_criteria["max_matching_value"] = container + "-0"
-
-                    restore_criteria_list.append(restore_criteria)
-
-        if prefix_pattern_present:
-            validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern)
-
-            for index, _ in enumerate(from_prefix_pattern):
-                restore_criteria = {}
-                restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
-                restore_criteria["min_matching_value"] = from_prefix_pattern[index]
-                restore_criteria["max_matching_value"] = to_prefix_pattern[index]
-
-                restore_criteria_list.append(restore_criteria)
-
-        if vaulted_pattern_present:
-            validate_vaulted_blob_prefix_pattern(vaulted_blob_prefix_pattern)
-            for container in vaulted_blob_prefix_pattern['containers']:
-                container_name = container['name']
-                restore_criteria = {}
-                restore_criteria["object_type"] = "ItemPathBasedRestoreCriteria"
-                restore_criteria["item_path"] = container_name
-                restore_criteria["is_path_relative_to_backup_item"] = True
-                restore_criteria["sub_item_path_prefix"] = container.get('prefixmatch', [])
-                restore_criteria_list.append(restore_criteria)
-
-                if 'prefixmatch' in container:
-                    restore_criteria["sub_item_path_prefix"] = container['prefixmatch']
-
-                if 'renameto' in container:
-                    restore_criteria["rename_to"] = container['renameto']
-
         if not any([container_list_present, prefix_pattern_present, vaulted_pattern_present]):
             raise RequiredArgumentMissingError("Provide ContainersList or Prefixes for Item Level Recovery")
-    return restore_criteria_list
+
+        # Process based on the provided parameter type
+    if container_list_present:
+        return _process_container_list(container_list, recovery_point_id)
+
+    if prefix_pattern_present:
+        return _process_prefix_pattern(from_prefix_pattern, to_prefix_pattern)
+
+    if vaulted_pattern_present:
+        return _process_vaulted_blob_pattern(vaulted_blob_prefix_pattern)
+
+    # This should never be reached due to the validation above, but included for completeness
+    return []
 
 
 def are_multiple_true(*values):
