@@ -100,17 +100,29 @@ class NginxScenarioTest(ScenarioTest):
         self.kwargs['policy'] = policy
         with open('policy.json', 'w') as json_file:
             json.dump(policy, json_file)
+        
+        current_user = self.cmd('ad signed-in-user show').get_output_in_json()
+        current_user_object_id = current_user['id']
+        self.kwargs.update({
+            'current_user_object_id': current_user_object_id,
+        })
+
+        # Grant the current user Key Vault Administrator permissions
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            self.cmd("role assignment create --role 'Key Vault Administrator' --assignee-object-id {current_user_object_id} --scope {kv_resource_id} --assignee-principal-type 'User'")
+        
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            self.cmd("role assignment create --role 'Key Vault Administrator' --assignee-object-id {identity_object_id} --scope {kv_resource_id} --assignee-principal-type 'ServicePrincipal'")
+        
+        time.sleep(60) # wait for the role assignment to propagate
         self.cmd('keyvault certificate create --vault-name {kv_name} -n {cert_name} -p @policy.json')
         certificate = self.cmd('keyvault certificate show --name {cert_name} --vault-name {kv_name}').get_output_in_json()
         self.kwargs['kv_secret_id'] = certificate['sid']
         self.kwargs['mi_principal_id'] = self.cmd('identity show --name {managed_identity} --resource-group {rg}').get_output_in_json()['principalId']
 
-        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
-            self.cmd("role assignment create --role 'Key Vault Administrator' --assignee-object-id {identity_object_id} --scope {kv_resource_id} --assignee-principal-type 'ServicePrincipal'")
         if self.is_live:
             print('=-=-=-=-=-=-=-=-= into the is live')
         print('-=-=-=-=-=-=-=-= Sleeping for 30 seconds to wait for the role assignment to propagate')
-        time.sleep(30) # wait for the role assignment to propagate
         self.cmd('nginx deployment certificate create --certificate-name {cert_name} --deployment-name {deployment_name} --resource-group {rg} --certificate-path /etc/nginx/test.cert --key-path /etc/nginx/test.key --key-vault-secret-id {kv_secret_id}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['cert_name']),
