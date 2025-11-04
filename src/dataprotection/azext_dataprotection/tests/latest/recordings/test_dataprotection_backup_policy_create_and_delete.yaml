@@ -34,7 +34,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 04:20:49 GMT
+      - Tue, 04 Nov 2025 08:56:27 GMT
       expires:
       - '-1'
       pragma:
@@ -46,15 +46,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-resource-system-data:
-      - '{"lastModifiedBy":"ianna@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-11-04T04:20:48.8562157Z"}'
+      - '{"lastModifiedBy":"ianna@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-11-04T08:56:26.9783883Z"}'
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/6c649127-a607-4178-a0e0-c926f582df26
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/ce25a817-186d-4f3b-8121-8bbec19782a0
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '799'
       x-ms-throttling-version:
       - v1
       x-msedge-ref:
-      - 'Ref A: A72B309CDD0349AEBD27B2A2D9A6C76B Ref B: BY1AA1072316040 Ref C: 2025-11-04T04:20:48Z'
+      - 'Ref A: 42C9257FD6A44EFAA8627C8F6EF98E16 Ref B: BY1AA1072318031 Ref C: 2025-11-04T08:56:26Z'
     status:
       code: 200
       message: OK
@@ -100,7 +100,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 04:20:50 GMT
+      - Tue, 04 Nov 2025 08:56:27 GMT
       expires:
       - '-1'
       pragma:
@@ -112,13 +112,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/096b6adb-c0e9-45cb-ba33-67b4de6fdb4f
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/7c426089-ef4b-4cb6-b5f3-e544863d1579
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '799'
       x-ms-throttling-version:
       - v1
       x-msedge-ref:
-      - 'Ref A: EB71F1B4AB104BABAC7B3C4B1F6966C4 Ref B: BY1AA1072319023 Ref C: 2025-11-04T04:20:50Z'
+      - 'Ref A: 786389DA85714EF78C90A465C596454D Ref B: BY1AA1072320040 Ref C: 2025-11-04T08:56:28Z'
     status:
       code: 200
       message: OK
@@ -150,7 +150,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 04 Nov 2025 04:20:51 GMT
+      - Tue, 04 Nov 2025 08:56:28 GMT
       expires:
       - '-1'
       pragma:
@@ -162,13 +162,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/86a7cf68-547f-4746-9d1b-7bfb3776346b
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/c854c064-7a1a-452a-ad3e-c000d280b7c1
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '799'
       x-ms-throttling-version:
       - v1
       x-msedge-ref:
-      - 'Ref A: 42B9F38ACFB0460CA17D8281D616FF27 Ref B: SJC211051204029 Ref C: 2025-11-04T04:20:51Z'
+      - 'Ref A: 9F367C6D4D3F47CCB478AE7A4B891B68 Ref B: BY1AA1072317060 Ref C: 2025-11-04T08:56:28Z'
     status:
       code: 200
       message: OK
@@ -177,14 +177,14 @@ interactions:
       "name": "BlobPolicy1", "objectType": "BackupPolicy", "policyRules": [{"isDefault":
       true, "lifecycles": [{"deleteAfter": {"duration": "P30D", "objectType": "AbsoluteDeleteOption"},
       "sourceDataStore": {"dataStoreType": "OperationalStore", "objectType": "DataStoreInfoBase"},
-      "targetDataStoreCopySettings": []}], "name": "Default", "objectType": "AzureRetentionRule"},
-      {"isDefault": true, "lifecycles": [{"deleteAfter": {"duration": "P7D", "objectType":
-      "AbsoluteDeleteOption"}, "sourceDataStore": {"dataStoreType": "VaultStore",
-      "objectType": "DataStoreInfoBase"}, "targetDataStoreCopySettings": []}], "name":
-      "Default", "objectType": "AzureRetentionRule"}, {"backupParameters": {"backupType":
-      "Discrete", "objectType": "AzureBackupParams"}, "dataStore": {"dataStoreType":
-      "VaultStore", "objectType": "DataStoreInfoBase"}, "name": "BackupDaily", "objectType":
-      "AzureBackupRule", "trigger": {"objectType": "ScheduleBasedTriggerContext",
+      "targetDataStoreCopySettings": []}], "name": "Default_OperationalStore", "objectType":
+      "AzureRetentionRule"}, {"isDefault": true, "lifecycles": [{"deleteAfter": {"duration":
+      "P7D", "objectType": "AbsoluteDeleteOption"}, "sourceDataStore": {"dataStoreType":
+      "VaultStore", "objectType": "DataStoreInfoBase"}, "targetDataStoreCopySettings":
+      []}], "name": "Default", "objectType": "AzureRetentionRule"}, {"backupParameters":
+      {"backupType": "Discrete", "objectType": "AzureBackupParams"}, "dataStore":
+      {"dataStoreType": "VaultStore", "objectType": "DataStoreInfoBase"}, "name":
+      "BackupDaily", "objectType": "AzureBackupRule", "trigger": {"objectType": "ScheduleBasedTriggerContext",
       "schedule": {"repeatingTimeIntervals": ["R/2023-06-28T07:30:00+00:00/P1D"],
       "timeZone": "UTC"}, "taggingCriteria": [{"isDefault": true, "tagInfo": {"id":
       "Default_", "tagName": "Default"}, "taggingPriority": 99}]}}]}}'
@@ -198,7 +198,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1238'
+      - '1255'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -209,16 +209,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dataprotectionclitest-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault/backupPolicies/blobpolicy?api-version=2025-07-01
   response:
     body:
-      string: '{"properties":{"policyRules":[{"lifecycles":[{"deleteAfter":{"objectType":"AbsoluteDeleteOption","duration":"P30D"},"targetDataStoreCopySettings":[],"sourceDataStore":{"dataStoreType":"OperationalStore","objectType":"DataStoreInfoBase"}}],"isDefault":true,"name":"Default","objectType":"AzureRetentionRule"},{"lifecycles":[{"deleteAfter":{"objectType":"AbsoluteDeleteOption","duration":"P7D"},"targetDataStoreCopySettings":[],"sourceDataStore":{"dataStoreType":"VaultStore","objectType":"DataStoreInfoBase"}}],"isDefault":true,"name":"Default","objectType":"AzureRetentionRule"},{"backupParameters":{"backupType":"Discrete","objectType":"AzureBackupParams"},"trigger":{"schedule":{"repeatingTimeIntervals":["R/2023-06-28T07:30:00+00:00/P1D"],"timeZone":"UTC"},"taggingCriteria":[{"tagInfo":{"tagName":"Default","id":"Default_"},"taggingPriority":99,"isDefault":true}],"objectType":"ScheduleBasedTriggerContext"},"dataStore":{"dataStoreType":"VaultStore","objectType":"DataStoreInfoBase"},"name":"BackupDaily","objectType":"AzureBackupRule"}],"datasourceTypes":["Microsoft.Storage/storageAccounts/blobServices"],"objectType":"BackupPolicy"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dataprotectionclitest-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault/backupPolicies/blobpolicy","name":"blobpolicy","type":"Microsoft.DataProtection/backupVaults/backupPolicies"}'
+      string: '{"properties":{"policyRules":[{"lifecycles":[{"deleteAfter":{"objectType":"AbsoluteDeleteOption","duration":"P30D"},"targetDataStoreCopySettings":[],"sourceDataStore":{"dataStoreType":"OperationalStore","objectType":"DataStoreInfoBase"}}],"isDefault":true,"name":"Default_OperationalStore","objectType":"AzureRetentionRule"},{"lifecycles":[{"deleteAfter":{"objectType":"AbsoluteDeleteOption","duration":"P7D"},"targetDataStoreCopySettings":[],"sourceDataStore":{"dataStoreType":"VaultStore","objectType":"DataStoreInfoBase"}}],"isDefault":true,"name":"Default","objectType":"AzureRetentionRule"},{"backupParameters":{"backupType":"Discrete","objectType":"AzureBackupParams"},"trigger":{"schedule":{"repeatingTimeIntervals":["R/2023-06-28T07:30:00+00:00/P1D"],"timeZone":"UTC"},"taggingCriteria":[{"tagInfo":{"tagName":"Default","id":"Default_"},"taggingPriority":99,"isDefault":true}],"objectType":"ScheduleBasedTriggerContext"},"dataStore":{"dataStoreType":"VaultStore","objectType":"DataStoreInfoBase"},"name":"BackupDaily","objectType":"AzureBackupRule"}],"datasourceTypes":["Microsoft.Storage/storageAccounts/blobServices"],"objectType":"BackupPolicy"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dataprotectionclitest-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault/backupPolicies/blobpolicy","name":"blobpolicy","type":"Microsoft.DataProtection/backupVaults/backupPolicies"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1413'
+      - '1430'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 04:20:52 GMT
+      - Tue, 04 Nov 2025 08:56:29 GMT
       expires:
       - '-1'
       pragma:
@@ -230,13 +230,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/296cc291-5b5d-48b6-99c1-8ee40acecef8
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/c9586751-1be6-4aaa-aacc-a2611e63988b
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '799'
       x-ms-throttling-version:
       - v1
       x-msedge-ref:
-      - 'Ref A: 5A962698697D4C7E8C02577C91A0FE0D Ref B: BY1AA1072316034 Ref C: 2025-11-04T04:20:52Z'
+      - 'Ref A: 96596F0C7A9B425698446E5F531AD6F2 Ref B: BY1AA1072316034 Ref C: 2025-11-04T08:56:29Z'
     status:
       code: 200
       message: OK
@@ -268,7 +268,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 04 Nov 2025 04:20:53 GMT
+      - Tue, 04 Nov 2025 08:56:29 GMT
       expires:
       - '-1'
       pragma:
@@ -280,13 +280,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/46541e00-0af1-40a4-9b5e-b365d5ce60fa
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/4d35af1e-2cb9-46bc-82c8-84e8784d3643
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '799'
       x-ms-throttling-version:
       - v1
       x-msedge-ref:
-      - 'Ref A: EF66D8B39E384F0EB2A1678176DDC5D5 Ref B: BY1AA1072316023 Ref C: 2025-11-04T04:20:53Z'
+      - 'Ref A: 87FBB65768C8469CBA575B8FAEB6FA1A Ref B: BY1AA1072316040 Ref C: 2025-11-04T08:56:30Z'
     status:
       code: 200
       message: OK
@@ -332,7 +332,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 04:20:53 GMT
+      - Tue, 04 Nov 2025 08:56:30 GMT
       expires:
       - '-1'
       pragma:
@@ -344,13 +344,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/98c67dd7-86b2-4e51-a507-05acf412594b
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/69ca3342-d660-403b-89a9-6017f0abed37
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '799'
       x-ms-throttling-version:
       - v1
       x-msedge-ref:
-      - 'Ref A: 95E0675FB5FB4B2BAC35AF8EB3AA1CCD Ref B: SJC211051205037 Ref C: 2025-11-04T04:20:53Z'
+      - 'Ref A: A33976053EFA4644A812E2B984569192 Ref B: BY1AA1072316040 Ref C: 2025-11-04T08:56:30Z'
     status:
       code: 200
       message: OK
@@ -382,7 +382,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 04 Nov 2025 04:20:54 GMT
+      - Tue, 04 Nov 2025 08:56:31 GMT
       expires:
       - '-1'
       pragma:
@@ -394,13 +394,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/67f52262-83ae-4bcb-9918-2e1563643520
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/6795f2d9-7100-43c1-bb72-82fc32b6113a
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '799'
       x-ms-throttling-version:
       - v1
       x-msedge-ref:
-      - 'Ref A: 7466AE2BD7834ADEA11D8D5E230F7E21 Ref B: BY1AA1072319023 Ref C: 2025-11-04T04:20:54Z'
+      - 'Ref A: 5D4CA77A414C480BB1AD4A7699705FC7 Ref B: SJC211051201023 Ref C: 2025-11-04T08:56:31Z'
     status:
       code: 200
       message: OK
@@ -455,7 +455,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 04:20:55 GMT
+      - Tue, 04 Nov 2025 08:56:32 GMT
       expires:
       - '-1'
       pragma:
@@ -467,13 +467,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/edd5b544-d1fc-4bf2-8da4-40a566e226c0
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/21dfb6f3-3df4-45fc-b27e-2e555f1504f1
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '799'
       x-ms-throttling-version:
       - v1
       x-msedge-ref:
-      - 'Ref A: 47C368207FBF4FBC87C2A1E00C86B2F8 Ref B: SJC211051205033 Ref C: 2025-11-04T04:20:55Z'
+      - 'Ref A: ECA9CC2955FC4FD18F1CC8691A41B85A Ref B: BY1AA1072315034 Ref C: 2025-11-04T08:56:32Z'
     status:
       code: 200
       message: OK
@@ -505,7 +505,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 04 Nov 2025 04:20:56 GMT
+      - Tue, 04 Nov 2025 08:56:32 GMT
       expires:
       - '-1'
       pragma:
@@ -517,13 +517,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/centraluseuap/07d656e7-6e3c-45c0-9ef2-380a3322ce9a
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=025ad709-9e1c-4597-b09f-f331c3d683f8/eastus/bf53e868-cc94-4c42-9cc8-4b196b2ea931
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '799'
-      x-ms-throttling-version:
-      - v1
       x-msedge-ref:
-      - 'Ref A: 6950F36A2F9A46F2B21B3E4F06CE3F5D Ref B: SJC211051203025 Ref C: 2025-11-04T04:20:55Z'
+      - 'Ref A: 97B6BEECA7DD4FBEB102DC6FFB76423A Ref B: BY1AA1072320052 Ref C: 2025-11-04T08:56:33Z'
     status:
       code: 200
       message: OK
