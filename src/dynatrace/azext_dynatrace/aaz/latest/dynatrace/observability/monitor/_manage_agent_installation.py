@@ -12,28 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor tag-rule delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "dynatrace observability monitor manage-agent-installation",
 )
-class Delete(AAZCommand):
-    """Remove or delete a tag rule from Dynatrace resource.
-
-    :example: Delete tag-rule
-        az dynatrace monitor tag-rule delete -g rg --monitor-name monitor -n default -y
+class ManageAgentInstallation(AAZCommand):
+    """Performs Dynatrace agent install/uninstall action through the Azure Dynatrace resource on the provided list of resources.
     """
 
     _aaz_info = {
         "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2024-04-24"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/manageagentinstallation", "2024-04-24"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -58,20 +53,37 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.rule_set_name = AAZStrArg(
-            options=["-n", "--name", "--rule-set-name"],
-            help="Monitor rule set name",
+
+        # define Arg Group "Request"
+
+        _args_schema = cls._args_schema
+        _args_schema.action = AAZStrArg(
+            options=["--action"],
+            arg_group="Request",
+            help="Install/Uninstall action.",
             required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z]*$",
-            ),
+            enum={"Install": "Install", "Uninstall": "Uninstall"},
+        )
+        _args_schema.manage_agent_installation_list = AAZListArg(
+            options=["--manage-agent-installation-list"],
+            arg_group="Request",
+            help="The list of resources.",
+            required=True,
+        )
+
+        manage_agent_installation_list = cls._args_schema.manage_agent_installation_list
+        manage_agent_installation_list.Element = AAZObjectArg()
+
+        _element = cls._args_schema.manage_agent_installation_list.Element
+        _element.id = AAZStrArg(
+            options=["id"],
+            help="The ARM id of the resource to install/uninstall agent.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TagRulesDelete(ctx=self.ctx)()
+        self.MonitorsManageAgentInstallation(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,52 +94,27 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class TagRulesDelete(AAZHttpOperation):
+    class MonitorsManageAgentInstallation(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/tagRules/{ruleSetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/manageAgentInstallation",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -142,10 +129,6 @@ class Delete(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "ruleSetName", self.ctx.args.rule_set_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -165,15 +148,41 @@ class Delete(AAZCommand):
             }
             return parameters
 
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+            }
+            return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("manageAgentInstallationList", AAZListType, ".manage_agent_installation_list", typ_kwargs={"flags": {"required": True}})
+
+            manage_agent_installation_list = _builder.get(".manageAgentInstallationList")
+            if manage_agent_installation_list is not None:
+                manage_agent_installation_list.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".manageAgentInstallationList[]")
+            if _elements is not None:
+                _elements.set_prop("id", AAZStrType, ".id")
+
+            return self.serialize_content(_content_value)
+
         def on_204(self, session):
             pass
 
-        def on_200_201(self, session):
-            pass
+
+class _ManageAgentInstallationHelper:
+    """Helper class for ManageAgentInstallation"""
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
-
-
-__all__ = ["Delete"]
+__all__ = ["ManageAgentInstallation"]

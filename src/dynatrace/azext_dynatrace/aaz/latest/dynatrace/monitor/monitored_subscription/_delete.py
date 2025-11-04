@@ -12,20 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor tag-rule delete",
+    "dynatrace monitor monitored-subscription delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Remove or delete a tag rule from Dynatrace resource.
-
-    :example: Delete tag-rule
-        az dynatrace monitor tag-rule delete -g rg --monitor-name monitor -n default -y
+    """Delete the subscriptions that are being monitored by the Dynatrace monitor resource
     """
 
     _aaz_info = {
         "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2024-04-24"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/monitoredsubscriptions/default", "2024-04-24"],
         ]
     }
 
@@ -58,20 +55,11 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.rule_set_name = AAZStrArg(
-            options=["-n", "--name", "--rule-set-name"],
-            help="Monitor rule set name",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z]*$",
-            ),
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TagRulesDelete(ctx=self.ctx)()
+        yield self.MonitoredSubscriptionsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,7 +70,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class TagRulesDelete(AAZHttpOperation):
+    class MonitoredSubscriptionsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -121,7 +109,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/tagRules/{ruleSetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/monitoredSubscriptions/default",
                 **self.url_parameters
             )
 
@@ -142,10 +130,6 @@ class Delete(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "ruleSetName", self.ctx.args.rule_set_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
