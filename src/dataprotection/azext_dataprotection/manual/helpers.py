@@ -52,6 +52,7 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
 datasource_map = {
     "AzureDisk": "Microsoft.Compute/disks",
     "AzureBlob": "Microsoft.Storage/storageAccounts/blobServices",
+    "AzureDataLakeStorage": "Microsoft.Storage/storageAccounts/adlsBlobServices",
     "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases",
     "AzureKubernetesService": "Microsoft.ContainerService/managedClusters",
     "AzureDatabaseForPostgreSQLFlexibleServer": "Microsoft.DBforPostgreSQL/flexibleServers",
@@ -191,6 +192,13 @@ def get_datasourceset_info(datasource_type, resource_id, resource_location):
         resource_type = manifest["resourceType"]
         resource_uri = resource_id
         resource_id_return = resource_id
+    
+    # For ADLS and Blob with enableDataSourceSetInfo, datasourceset info should match datasource info
+    if datasource_type in ["AzureDataLakeStorage", "AzureBlob"] and manifest["enableDataSourceSetInfo"]:
+        resource_name = resource_id.split("/")[-1]
+        resource_type = manifest["resourceType"]
+        resource_uri = resource_id
+        resource_id_return = resource_id
 
     return {
         "datasource_type": manifest["datasourceType"],
@@ -288,10 +296,17 @@ def get_identity_details(use_system_assigned_identity, user_assigned_identity_ar
     return identity_details
 
 
-def get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group):
+def get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group, datasource_type):
+    # Determine the backup datasource parameters type
+    if datasource_type == "AzureDataLakeStorage":
+        blob_backup_datasource_parameters = "AdlsBlobBackupDatasourceParameters"
+    else:  # AzureBlob
+        blob_backup_datasource_parameters = "BlobBackupDatasourceParameters"
+    
+
     if vaulted_backup_containers:
         return {
-            "object_type": "BlobBackupDatasourceParameters",
+            "object_type": blob_backup_datasource_parameters,
             "containers_list": vaulted_backup_containers
         }
     if include_all_containers:
@@ -303,7 +318,7 @@ def get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_co
             # if len(containers_list) > 100:
             #     raise InvalidArgumentValueError('Storage account has more than 100 containers. Please select 100 containers or less for backup configuration.')
             return {
-                "object_type": "BlobBackupDatasourceParameters",
+                "object_type": blob_backup_datasource_parameters,
                 "containers_list": containers_list
             }
         raise RequiredArgumentMissingError('Please input --storage-account-name and --storage-account-resource-group parameters '
@@ -441,8 +456,8 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
 
         if container_list_present:
             if recovery_point_id:
-                if len(container_list) > 100:
-                    raise InvalidArgumentValueError("A maximum of 100 containers can be restored for vaulted backup. Please choose up to 100 containers.")
+                if len(container_list) > 1000:
+                    raise InvalidArgumentValueError("A maximum of 1000 containers can be restored for vaulted backup. Please choose up to 1000 containers.")
                 for container in container_list:
                     if container[0] == '$':
                         raise InvalidArgumentValueError("container name can not start with '$'. Please retry with different sets of containers.")
@@ -479,13 +494,18 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
             validate_vaulted_blob_prefix_pattern(vaulted_blob_prefix_pattern)
             for container in vaulted_blob_prefix_pattern['containers']:
                 container_name = container['name']
-                prefix_match_list = container['prefixmatch']
                 restore_criteria = {}
                 restore_criteria["object_type"] = "ItemPathBasedRestoreCriteria"
                 restore_criteria["item_path"] = container_name
                 restore_criteria["is_path_relative_to_backup_item"] = True
-                restore_criteria["sub_item_path_prefix"] = prefix_match_list
+                restore_criteria["sub_item_path_prefix"] = container.get('prefixmatch', [])
                 restore_criteria_list.append(restore_criteria)
+
+                if 'prefixmatch' in container:
+                    restore_criteria["sub_item_path_prefix"] = container['prefixmatch']
+                
+                if 'renameto' in container:
+                    restore_criteria["rename_to"] = container['renameto']
 
         if not any([container_list_present, prefix_pattern_present, vaulted_pattern_present]):
             raise RequiredArgumentMissingError("Provide ContainersList or Prefixes for Item Level Recovery")
@@ -537,17 +557,32 @@ def validate_vaulted_blob_prefix_pattern(vaulted_blob_prefix_pattern):
 
         if type(container['name']) is not str:
             raise InvalidArgumentValueError('The container name should be a string')
+        
+        has_prefixmatch = 'prefixmatch' in container
+        has_renameto = 'renameto' in container
+        
+        if not has_prefixmatch and not has_renameto:
+            raise InvalidArgumentValueError(f'Container "{container["name"]}" must have at least one of "prefixmatch" or "renameto"')
 
-        if 'prefixmatch' not in container:
-            raise InvalidArgumentValueError('The container-prefix pattern should have a list of prefix matches under "prefixmatch"')
+        # Validate prefixmatch if present
+        if has_prefixmatch:
+            if type(container['prefixmatch']) is not list:
+                raise InvalidArgumentValueError(f'The "prefixmatch" for container "{container["name"]}" should be a list of strings')
 
-        if type(container['prefixmatch']) is not list:
-            raise InvalidArgumentValueError('The prefix matches should be a list of strings')
+            if len(container['prefixmatch']) == 0:
+                raise InvalidArgumentValueError(f'The "prefixmatch" for container "{container["name"]}" should not be an empty list')
 
-        for prefix in container['prefixmatch']:
-            if type(prefix) is not str:
-                raise InvalidArgumentValueError('The prefix match should be a string value')
+            for prefix in container['prefixmatch']:
+                if type(prefix) is not str:
+                    raise InvalidArgumentValueError(f'Each prefix match in container "{container["name"]}" should be a string value')
 
+        # Validate renameto if present
+        if has_renameto:
+            if type(container['renameto']) is not str:
+                raise InvalidArgumentValueError(f'The "renameto" value for container "{container["name"]}" should be a string')
+            
+            if container['renameto'].strip() == '':
+                raise InvalidArgumentValueError(f'The "renameto" value for container "{container["name"]}" should not be empty')
 
 def validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern):
     if from_prefix_pattern is None or to_prefix_pattern is None or \
@@ -814,7 +849,7 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
 
         if datasource_type == 'AzureKubernetesService':
             helptext_dsname = "AKS Cluster"
-        if datasource_type == 'AzureBlob':
+        if datasource_type == 'AzureBlob' or datasource_type == 'AzureDataLakeStorage':
             helptext_dsname = 'storage account'
         if datasource_type == 'AzureDisk':
             helptext_dsname = 'disk'
