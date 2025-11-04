@@ -24,7 +24,7 @@ helps['changesafety changestate create'] = """
     type: command
     short-summary: Create a ChangeState resource.
     long-summary: >
-        Provide at least one target definition to describe which resources or operations the change
+        Provide at least one target definition to describe which resources or operations the ChangeState
         will affect. Targets are expressed as comma or semicolon separated key=value pairs such as
         resourceId=RESOURCE_ID,operation=DELETE. The command is also available through the alias
         `az change-safety change-state`.
@@ -42,15 +42,16 @@ helps['changesafety changestate create'] = """
       - name: --links
         short-summary: Add supporting links by repeating --links name=NAME uri=URL [description=TEXT].
     examples:
-      - name: Create with stage map reference and status link
+      - name: Create with StageMap reference and status link
         text: |-
-          az changesafety changestate create -g MyResourceGroup -n deploy-002 --change-type ManualTouch --rollout-type Normal --stage-map "{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ChangeSafety/stageMaps/rollout-stage-map}" --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH" --links "[{name:status,uri:'https://contoso.com/change/rollout-002'}]"
+          az changesafety changestate create -g MyResourceGroup -n changestate002 --change-type ManualTouch --rollout-type Normal --stage-map "{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ChangeSafety/stageMaps/rolloutStageMap}" --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH" --links "[{name:status,uri:'https://contoso.com/change/rollout-002'}]"
+          az changesafety changestate delete -g MyResourceGroup -n changestate002 --yes
       - name: Create a change state for a VM rollout
         text: |-
-          az changesafety changestate create -g MyResourceGroup -n deploy-001 --change-type AppDeployment --rollout-type Normal --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PUT"
+          az changesafety changestate create -g MyResourceGroup -n changestate001 --change-type AppDeployment --rollout-type Normal --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PUT"
       - name: Create with staging rollout configuration
         text: |-
-          az changesafety changestate create -g MyResourceGroup -n ops-change-01 --rollout-type Hotfix --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Web/sites/myApp,operation=POST"
+          az changesafety changestate create -g MyResourceGroup -n opsChange01 --rollout-type Hotfix --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Web/sites/myApp,operation=POST"
 """
 
 helps['changesafety changestate update'] = """
@@ -58,7 +59,7 @@ helps['changesafety changestate update'] = """
     short-summary: Update an existing ChangeState resource.
     long-summary: >
         Use this command to modify descriptive metadata, rollout settings, or replace targets for an
-        existing change. When you pass --targets, the supplied definitions overwrite the previous set.
+        existing ChangeState. When you pass --targets, the supplied definitions overwrite the previous set.
         This command is also available through the alias `az change-safety change-state`.
     parameters:
       - name: --targets
@@ -74,13 +75,13 @@ helps['changesafety changestate update'] = """
     examples:
       - name: Adjust rollout type and add a comment
         text: |-
-          az changesafety changestate update -g MyResourceGroup -n deploy-001 --rollout-type Emergency --comments "Escalated to emergency rollout"
+          az changesafety changestate update -g MyResourceGroup -n changestate001 --rollout-type Emergency --comments "Escalated to emergency rollout"
       - name: Update scheduling window
         text: |-
-          az changesafety changestate update -g MyResourceGroup -n deploy-001 --anticipated-start-time "2024-09-01T08:00:00Z" --anticipated-end-time "2024-09-01T12:00:00Z"
+          az changesafety changestate update -g MyResourceGroup -n changestate001 --anticipated-start-time "2024-09-01T08:00:00Z" --anticipated-end-time "2024-09-01T12:00:00Z"
       - name: Replace the target definition
         text: |-
-          az changesafety changestate update -g MyResourceGroup -n deploy-001 --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/myServer,operation=PATCH"
+          az changesafety changestate update -g MyResourceGroup -n changestate001 --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/myServer,operation=PATCH"
 """
 
 helps['changesafety changestate delete'] = """
@@ -89,7 +90,7 @@ helps['changesafety changestate delete'] = """
     examples:
       - name: Delete a change state without confirmation
         text: |-
-          az changesafety changestate delete -g MyResourceGroup -n deploy-001 --yes
+          az changesafety changestate delete -g MyResourceGroup -n changestate001 --yes
 """
 
 helps['changesafety changestate show'] = """
@@ -98,5 +99,5 @@ helps['changesafety changestate show'] = """
     examples:
       - name: Show a change state
         text: |-
-          az changesafety changestate show -g MyResourceGroup -n deploy-001
+          az changesafety changestate show -g MyResourceGroup -n changestate001
 """
