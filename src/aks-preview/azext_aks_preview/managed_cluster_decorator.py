@@ -6646,7 +6646,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # get parameters from context
         enable_application_load_balancer = self.context.get_enable_application_load_balancer()
 
-        # update ManagedCluster object with app routing settings
+        # update ManagedCluster object with application load balancer settings
         mc.ingress_profile = (
             mc.ingress_profile or
             self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
