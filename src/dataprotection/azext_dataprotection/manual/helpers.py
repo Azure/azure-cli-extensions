@@ -192,7 +192,7 @@ def get_datasourceset_info(datasource_type, resource_id, resource_location):
         resource_type = manifest["resourceType"]
         resource_uri = resource_id
         resource_id_return = resource_id
-    
+
     # For ADLS and Blob with enableDataSourceSetInfo, datasourceset info should match datasource info
     if datasource_type in ["AzureDataLakeStorage", "AzureBlob"] and manifest["enableDataSourceSetInfo"]:
         resource_name = resource_id.split("/")[-1]
@@ -302,7 +302,6 @@ def get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_co
         blob_backup_datasource_parameters = "AdlsBlobBackupDatasourceParameters"
     else:  # AzureBlob
         blob_backup_datasource_parameters = "BlobBackupDatasourceParameters"
-    
 
     if vaulted_backup_containers:
         return {
@@ -503,7 +502,7 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
 
                 if 'prefixmatch' in container:
                     restore_criteria["sub_item_path_prefix"] = container['prefixmatch']
-                
+
                 if 'renameto' in container:
                     restore_criteria["rename_to"] = container['renameto']
 
@@ -557,10 +556,10 @@ def validate_vaulted_blob_prefix_pattern(vaulted_blob_prefix_pattern):
 
         if type(container['name']) is not str:
             raise InvalidArgumentValueError('The container name should be a string')
-        
+
         has_prefixmatch = 'prefixmatch' in container
         has_renameto = 'renameto' in container
-        
+
         if not has_prefixmatch and not has_renameto:
             raise InvalidArgumentValueError(f'Container "{container["name"]}" must have at least one of "prefixmatch" or "renameto"')
 
@@ -580,9 +579,10 @@ def validate_vaulted_blob_prefix_pattern(vaulted_blob_prefix_pattern):
         if has_renameto:
             if type(container['renameto']) is not str:
                 raise InvalidArgumentValueError(f'The "renameto" value for container "{container["name"]}" should be a string')
-            
+
             if container['renameto'].strip() == '':
                 raise InvalidArgumentValueError(f'The "renameto" value for container "{container["name"]}" should not be empty')
+
 
 def validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern):
     if from_prefix_pattern is None or to_prefix_pattern is None or \

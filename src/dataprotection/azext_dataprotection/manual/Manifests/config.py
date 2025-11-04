@@ -3,5 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-supported_datasource_types = ["AzureDisk", "AzureBlob", "AzureDataLakeStorage", "AzureDatabaseForPostgreSQL", "AzureKubernetesService",
+supported_datasource_types = ["AzureDisk", "AzureBlob", "AzureDataLakeStorage",
+                              "AzureDatabaseForPostgreSQL", "AzureKubernetesService",
                               "AzureDatabaseForPostgreSQLFlexibleServer", "AzureDatabaseForMySQL"]
