@@ -54,7 +54,6 @@ def test_acipolicygen(sample_directory, generated_policy_path):
 
     for failing_sample_directory, failing_generated_policy_paths in [
         ("multi_container_groups", ("policy_fragment.rego", "policy_fragment_plus_infrastructure_svn.rego")), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9229
-        (None, ("policy_exclude_default_fragment.rego",)), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9198
     ]:
         if (
             (sample_directory == failing_sample_directory or failing_sample_directory is None)
