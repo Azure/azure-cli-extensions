@@ -619,7 +619,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         self.assertEqual(ctx_1.get_disable_fips_image(), True)
 
     def common_get_enable_kata_image(self):
-        # default
+        # testing new kata naming convention
         ctx_1 = AKSPreviewAgentPoolContext(
             self.cmd,
             AKSAgentPoolParamDict({
@@ -630,10 +630,24 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             self.agentpool_decorator_mode,
         )
         self.assertEqual(ctx_1.get_workload_runtime(), CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
-        agentpool = self.create_initialized_agentpool_instance(workload_runtime=CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION)
-        ctx_1.attach_agentpool(agentpool)
-        # self.assertEqual(ctx_1.get_enable_fips_image(), True)
-        self.assertEqual(ctx_1.get_workload_runtime, CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION)
+        agentpool_1 = self.create_initialized_agentpool_instance(workload_runtime=CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION)
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_workload_runtime(), CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION)
+
+        # tesing old kata naming convention
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({
+                "workload_runtime": CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION,
+            }),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_workload_runtime(), CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
+        agentpool_2 = self.create_initialized_agentpool_instance(workload_runtime=CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION)
+        ctx_2.attach_agentpool(agentpool_2)
+        self.assertEqual(ctx_2.get_workload_runtime(), CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION)
 
 
     def common_get_agentpool_windows_profile(self):
