@@ -1,4 +1,4 @@
-# ---------------------------------------------------------
+﻿# ---------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # ---------------------------------------------------------
 
@@ -10,11 +10,8 @@ try:
 except ImportError:
     load_deployment_template = None
 
-from azure.ai.ml.exceptions import ErrorCategory, ErrorTarget, UserErrorException, ValidationException
-
 from .raise_error import log_and_raise_error
 from .utils import (
-    _dump_entity_with_warnings,
     get_ml_client,
     is_not_found_error,
     wrap_lro,
@@ -30,7 +27,7 @@ def ml_deployment_template_list(cmd, registry_name=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-    
+
     try:
         deployment_templates = ml_client.deployment_templates.list()
         # Handle DeploymentTemplate serialization - try as_dict() first, then _to_dict()
@@ -57,16 +54,15 @@ def ml_deployment_template_get(cmd, name, version=None, registry_name=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-    
+
     try:
         deployment_template = ml_client.deployment_templates.get(name=name, version=version)
         # Handle DeploymentTemplate serialization
         if hasattr(deployment_template, 'as_dict'):
             return deployment_template.as_dict()
-        elif hasattr(deployment_template, '_to_dict'):
+        if hasattr(deployment_template, '_to_dict'):
             return deployment_template._to_dict()  # pylint: disable=protected-access
-        else:
-            return dict(deployment_template)
+        return dict(deployment_template)
     except Exception as err:  # pylint: disable=broad-except
         if is_not_found_error(err):
             raise ValueError(f"Deployment template '{name}' with version '{version}' does not exist.") from err
@@ -87,15 +83,15 @@ def ml_deployment_template_create(
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-    
+
     params_override = params_override or []
-    
+
     try:
         if name:
             params_override.append({"name": name})
         if version:
             params_override.append({"version": version})
-            
+
         if load_deployment_template:
             deployment_template = load_deployment_template(source=file, params_override=params_override)
         else:
@@ -103,19 +99,19 @@ def ml_deployment_template_create(
             import yaml
             if not file:
                 raise ValueError("A YAML file must be provided for deployment template creation.")
-                
+
             with open(file, 'r', encoding='utf-8') as f:
                 yaml_content = yaml.safe_load(f)
-            
+
             # Apply parameter overrides
             for override in params_override:
                 if isinstance(override, dict):
                     yaml_content.update(override)
-            
+
             deployment_template = yaml_content
-            
+
         deployment_template_result = ml_client.deployment_templates.create_or_update(deployment_template)
-        
+
         if no_wait:
             module_logger.warning(
                 "Deployment template create/update request initiated. "
@@ -124,16 +120,14 @@ def ml_deployment_template_create(
                 deployment_template.version if hasattr(deployment_template, 'version') else version or "unknown"
             )
             return None
-        else:
-            deployment_template_result = wrap_lro(cmd.cli_ctx, deployment_template_result)
-            
+        deployment_template_result = wrap_lro(cmd.cli_ctx, deployment_template_result)
+
         # Handle serialization
         if hasattr(deployment_template_result, 'as_dict'):
             return deployment_template_result.as_dict()
-        elif hasattr(deployment_template_result, '_to_dict'):
+        if hasattr(deployment_template_result, '_to_dict'):
             return deployment_template_result._to_dict()  # pylint: disable=protected-access
-        else:
-            return dict(deployment_template_result)
+        return dict(deployment_template_result)
     except Exception as err:  # pylint: disable=broad-except
         yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
@@ -158,10 +152,9 @@ def _ml_deployment_template_update(
         # Handle serialization
         if hasattr(deployment_template_result, 'as_dict'):
             return deployment_template_result.as_dict()
-        elif hasattr(deployment_template_result, '_to_dict'):
+        if hasattr(deployment_template_result, '_to_dict'):
             return deployment_template_result._to_dict()  # pylint: disable=protected-access
-        else:
-            return dict(deployment_template_result)
+        return dict(deployment_template_result)
     except Exception as err:  # pylint: disable=broad-except
         log_and_raise_error(err, debug)
 
@@ -171,19 +164,18 @@ def _ml_deployment_template_show(cmd, name, version=None, registry_name=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-    
+
     try:
         deployment_template = ml_client.deployment_templates.get(name=name, version=version)
-        
+
         # Use to_rest_object to get proper field naming (snake_case instead of camelCase)
         if hasattr(deployment_template, 'to_rest_object'):
             return deployment_template.to_rest_object()
-        elif hasattr(deployment_template, 'as_dict'):
+        if hasattr(deployment_template, 'as_dict'):
             return deployment_template.as_dict()
-        elif hasattr(deployment_template, '_to_dict'):
+        if hasattr(deployment_template, '_to_dict'):
             return deployment_template._to_dict()  # pylint: disable=protected-access
-        else:
-            return dict(deployment_template)
+        return dict(deployment_template)
     except Exception as err:  # pylint: disable=broad-except
         if is_not_found_error(err):
             raise ValueError(f"Deployment template '{name}' with version '{version}' does not exist.") from err
@@ -202,7 +194,7 @@ def ml_deployment_template_archive(
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-    
+
     try:
         ml_client.deployment_templates.archive(name=name, version=version)
     except Exception as err:  # pylint: disable=broad-except
@@ -221,11 +213,8 @@ def ml_deployment_template_restore(
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-    
+
     try:
         ml_client.deployment_templates.restore(name=name, version=version)
     except Exception as err:  # pylint: disable=broad-except
         log_and_raise_error(err, debug)
-
-
-
