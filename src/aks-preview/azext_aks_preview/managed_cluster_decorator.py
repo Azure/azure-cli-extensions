@@ -4005,6 +4005,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
                     enabled=True,
                     key_id=key_id,
+                    key_vault_network_access=self.context.get_azure_keyvault_kms_key_vault_network_access(),
                     key_vault_resource_id=self.context.get_azure_keyvault_kms_key_vault_resource_id(),
                 )
 
@@ -6065,6 +6066,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
                     enabled=True,
                     key_id=key_id,
+                    key_vault_network_access=self.context.get_azure_keyvault_kms_key_vault_network_access(),
                     key_vault_resource_id=self.context.get_azure_keyvault_kms_key_vault_resource_id(),
                 )
 
