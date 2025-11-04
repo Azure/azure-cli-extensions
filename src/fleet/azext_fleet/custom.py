@@ -237,8 +237,8 @@ def get_credentials(cmd,
             fleet_member = fleet_members_client.get(resource_group_name, name, member_name)
 
             parsed_id = parse_resource_id(fleet_member.cluster_resource_id)
-            if (parsed_id.get('resource_type') != 'managedclusters' or
-                    parsed_id.get('namespace') != 'microsoft.containerservice'):
+            if (parsed_id.get('resource_type').lower() != 'managedclusters' or
+                    parsed_id.get('namespace').lower() != 'microsoft.containerservice'):
                 raise CLIError(f"Fleet member '{member_name}' is not associated with an AKS managed cluster. "
                                f"Currently, only AKS managed clusters are supported for this command.")
 
