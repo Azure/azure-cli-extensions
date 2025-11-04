@@ -175,7 +175,8 @@ helps['aks create'] = f"""
             - monitoring                      :  turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
             - virtual-node                    : enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use. aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
             - azure-policy                    : enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling deployment safeguards. Learn more at aka.ms/aks/policy.
-            - ingress-appgw                   : enable Application Gateway Ingress Controller addon (PREVIEW).
+            - application-load-balancer       : enable the Application Load Balancer (Application Gateway for Containers) addon (PREVIEW).
+            - ingress-appgw                   : enable Application Gateway Ingress Controller addon.
             - confcom                         : enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
             - open-service-mesh               : enable Open Service Mesh addon (PREVIEW).
             - gitops                          : enable GitOps (PREVIEW).
@@ -2779,7 +2780,8 @@ long-summary: |-
         virtual-node                    - enable AKS Virtual Node. Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
         azure-policy                    - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
                                           Learn more at aka.ms/aks/policy.
-        ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
+        application-load-balancer       - enable the Application Load Balancer (Application Gateway for Containers) addon (PREVIEW).
+        ingress-appgw                   - enable Application Gateway Ingress Controller addon.
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
         azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
@@ -2939,7 +2941,8 @@ long-summary: |-
         virtual-node                    - enable AKS Virtual Node. Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
         azure-policy                    - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
                                           Learn more at aka.ms/aks/policy.
-        ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
+        application-load-balancer       - enable the Application Load Balancer (Application Gateway for Containers) addon (PREVIEW).
+        ingress-appgw                   - enable Application Gateway Ingress Controller addon.
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
         azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
@@ -3612,9 +3615,33 @@ helps['aks mesh disable-istio-cni'] = """
         text: az aks mesh disable-istio-cni --resource-group MyResourceGroup --name MyManagedCluster
 """
 
+helps['aks applicationloadbalancer'] = """
+    type: group
+    short-summary: Commands to manage Application Load Balancer (Application Gateway for Containers) addon.
+    long-summary: A group of commands to manage Application Load Balancer (Application Gateway for Containers) in given cluster.
+"""
+
+helps['aks applicationloadbalancer enable'] = """
+    type: command
+    short-summary: Enable Application Load Balancer (Application Gateway for Containers) addon.
+    long-summary: This command enables Application Load Balancer in given cluster.
+"""
+
+helps['aks applicationloadbalancer update'] = """
+    type: command
+    short-summary: Update Application Load Balancer (Application Gateway for Containers) addon.
+    long-summary: This command is used to make a put operation on the Application Load Balancer in a given cluster.
+"""
+
+helps['aks applicationloadbalancer disable'] = """
+    type: command
+    short-summary: Disable Application Load Balancer (Application Gateway for Containers) addon.
+    long-summary: This command disables Application Load Balancer (Application Gateway for Containers) in given cluster.
+"""
+
 helps['aks approuting'] = """
     type: group
-    short-summary: Commands to manage App Routing aadon.
+    short-summary: Commands to manage App Routing addon.
     long-summary: A group of commands to manage App Routing in given cluster.
 """
 
