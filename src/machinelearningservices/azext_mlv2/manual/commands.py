@@ -235,7 +235,7 @@ def load_command_table(self, _):
                          command_type=custom_deployment_template)
         g.generic_update_command(
             "update",
-            getter_name="ml_deployment_template_get",
+            getter_name="_ml_deployment_template_show",
             getter_type=custom_deployment_template,
             setter_name="_ml_deployment_template_update",
             setter_type=custom_deployment_template,
