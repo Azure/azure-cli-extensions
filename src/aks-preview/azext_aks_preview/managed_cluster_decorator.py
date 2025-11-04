@@ -3565,6 +3565,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("app_routing_default_nginx_controller")
 
+    def get_enable_default_domain(self) -> bool:
+        """Obtain the value of enable_default_domain.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_default_domain")
+    
+    def get_disable_default_domain(self) -> bool:
+        """Obtain the value of disable_default_domain.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_default_domain")
+
     def get_nginx(self):
         """Obtain the value of nginx, written to the update decorator context by _aks_approuting_update
 
