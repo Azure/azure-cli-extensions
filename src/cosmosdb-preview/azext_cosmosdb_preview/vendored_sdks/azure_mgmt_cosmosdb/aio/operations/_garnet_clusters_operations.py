@@ -33,12 +33,12 @@ from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
 from ..._utils.serialization import Deserializer, Serializer
-from ...operations._fleet_operations import (
-    build_create_request,
+from ...operations._garnet_clusters_operations import (
+    build_create_update_request,
     build_delete_request,
     build_get_request,
     build_list_by_resource_group_request,
-    build_list_request,
+    build_list_by_subscription_request,
     build_update_request,
 )
 from .._configuration import CosmosDBManagementClientConfiguration
@@ -48,14 +48,14 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T
 List = list
 
 
-class FleetOperations:
+class GarnetClustersOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
         :class:`~azure.mgmt.cosmosdb.aio.CosmosDBManagementClient`'s
-        :attr:`fleet` attribute.
+        :attr:`garnet_clusters` attribute.
     """
 
     models = _models
@@ -68,18 +68,18 @@ class FleetOperations:
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list(self, **kwargs: Any) -> AsyncItemPaged["_models.FleetResource"]:
-        """Lists all the fleets under the subscription.
+    def list_by_subscription(self, **kwargs: Any) -> AsyncItemPaged["_models.ClusterResource"]:
+        """List all Garnet clusters in this subscription.
 
-        :return: An iterator like instance of either FleetResource or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.FleetResource]
+        :return: An iterator like instance of either ClusterResource or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.ClusterResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.FleetListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ListClusters] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -92,7 +92,7 @@ class FleetOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_list_request(
+                _request = build_list_by_subscription_request(
                     subscription_id=self._config.subscription_id,
                     api_version=api_version,
                     headers=_headers,
@@ -118,11 +118,11 @@ class FleetOperations:
             return _request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("FleetListResult", pipeline_response)
+            deserialized = self._deserialize("ListClusters", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.next_link or None, AsyncList(list_of_elem)
+            return None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)
@@ -148,21 +148,21 @@ class FleetOperations:
     @distributed_trace
     def list_by_resource_group(
         self, resource_group_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.FleetResource"]:
-        """Lists all the fleets under the specified subscription and resource group.
+    ) -> AsyncItemPaged["_models.ClusterResource"]:
+        """List all Garnet clusters in this resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :return: An iterator like instance of either FleetResource or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.FleetResource]
+        :return: An iterator like instance of either ClusterResource or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.ClusterResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.FleetListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ListClusters] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -202,11 +202,11 @@ class FleetOperations:
             return _request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("FleetListResult", pipeline_response)
+            deserialized = self._deserialize("ListClusters", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.next_link or None, AsyncList(list_of_elem)
+            return None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)
@@ -230,16 +230,16 @@ class FleetOperations:
         return AsyncItemPaged(get_next, extract_data)
 
     @distributed_trace_async
-    async def get(self, resource_group_name: str, fleet_name: str, **kwargs: Any) -> _models.FleetResource:
-        """Retrieves the properties of an existing Azure Cosmos DB fleet under a subscription.
+    async def get(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> _models.ClusterResource:
+        """Get the properties of a Garnet cache cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
-        :type fleet_name: str
-        :return: FleetResource or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.FleetResource
+        :param cluster_name: Garnet cache cluster name. Required.
+        :type cluster_name: str
+        :return: ClusterResource or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.ClusterResource
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -254,11 +254,11 @@ class FleetOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.FleetResource] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
 
         _request = build_get_request(
             resource_group_name=resource_group_name,
-            fleet_name=fleet_name,
+            cluster_name=cluster_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -281,282 +281,14 @@ class FleetOperations:
             )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("FleetResource", pipeline_response.http_response)
+        deserialized = self._deserialize("ClusterResource", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
 
-    @overload
-    async def create(
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        body: _models.FleetResource,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> _models.FleetResource:
-        """Creates an Azure Cosmos DB fleet under a subscription.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
-        :type fleet_name: str
-        :param body: The parameters to provide for the current fleet. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.FleetResource
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: FleetResource or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.FleetResource
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def create(
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        body: IO[bytes],
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> _models.FleetResource:
-        """Creates an Azure Cosmos DB fleet under a subscription.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
-        :type fleet_name: str
-        :param body: The parameters to provide for the current fleet. Required.
-        :type body: IO[bytes]
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: FleetResource or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.FleetResource
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @distributed_trace_async
-    async def create(
-        self, resource_group_name: str, fleet_name: str, body: Union[_models.FleetResource, IO[bytes]], **kwargs: Any
-    ) -> _models.FleetResource:
-        """Creates an Azure Cosmos DB fleet under a subscription.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
-        :type fleet_name: str
-        :param body: The parameters to provide for the current fleet. Is either a FleetResource type or
-         a IO[bytes] type. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.FleetResource or IO[bytes]
-        :return: FleetResource or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.FleetResource
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.FleetResource] = kwargs.pop("cls", None)
-
-        content_type = content_type or "application/json"
-        _json = None
-        _content = None
-        if isinstance(body, (IOBase, bytes)):
-            _content = body
-        else:
-            _json = self._serialize.body(body, "FleetResource")
-
-        _request = build_create_request(
-            resource_group_name=resource_group_name,
-            fleet_name=fleet_name,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            content_type=content_type,
-            json=_json,
-            content=_content,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponseAutoGenerated,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("FleetResource", pipeline_response.http_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @overload
-    async def update(
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        body: Optional[_models.FleetResourceUpdate] = None,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> _models.FleetResource:
-        """Updates the properties of an existing Azure Cosmos DB Fleet.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
-        :type fleet_name: str
-        :param body: The parameters to provide for the current fleet. Default value is None.
-        :type body: ~azure.mgmt.cosmosdb.models.FleetResourceUpdate
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: FleetResource or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.FleetResource
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def update(
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        body: Optional[IO[bytes]] = None,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> _models.FleetResource:
-        """Updates the properties of an existing Azure Cosmos DB Fleet.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
-        :type fleet_name: str
-        :param body: The parameters to provide for the current fleet. Default value is None.
-        :type body: IO[bytes]
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: FleetResource or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.FleetResource
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @distributed_trace_async
-    async def update(
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        body: Optional[Union[_models.FleetResourceUpdate, IO[bytes]]] = None,
-        **kwargs: Any
-    ) -> _models.FleetResource:
-        """Updates the properties of an existing Azure Cosmos DB Fleet.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
-        :type fleet_name: str
-        :param body: The parameters to provide for the current fleet. Is either a FleetResourceUpdate
-         type or a IO[bytes] type. Default value is None.
-        :type body: ~azure.mgmt.cosmosdb.models.FleetResourceUpdate or IO[bytes]
-        :return: FleetResource or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.FleetResource
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        content_type = content_type if body else None
-        cls: ClsType[_models.FleetResource] = kwargs.pop("cls", None)
-
-        content_type = content_type or "application/json" if body else None
-        _json = None
-        _content = None
-        if isinstance(body, (IOBase, bytes)):
-            _content = body
-        else:
-            if body is not None:
-                _json = self._serialize.body(body, "FleetResourceUpdate")
-            else:
-                _json = None
-
-        _request = build_update_request(
-            resource_group_name=resource_group_name,
-            fleet_name=fleet_name,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            content_type=content_type,
-            json=_json,
-            content=_content,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponseAutoGenerated,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("FleetResource", pipeline_response.http_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-    async def _delete_initial(self, resource_group_name: str, fleet_name: str, **kwargs: Any) -> AsyncIterator[bytes]:
+    async def _delete_initial(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> AsyncIterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -573,7 +305,7 @@ class FleetOperations:
 
         _request = build_delete_request(
             resource_group_name=resource_group_name,
-            fleet_name=fleet_name,
+            cluster_name=cluster_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -616,14 +348,14 @@ class FleetOperations:
         return deserialized  # type: ignore
 
     @distributed_trace_async
-    async def begin_delete(self, resource_group_name: str, fleet_name: str, **kwargs: Any) -> AsyncLROPoller[None]:
-        """Deletes an existing Azure Cosmos DB Fleet.
+    async def begin_delete(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> AsyncLROPoller[None]:
+        """Deletes a Garnet cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
-        :type fleet_name: str
+        :param cluster_name: Garnet cache cluster name. Required.
+        :type cluster_name: str
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -639,7 +371,7 @@ class FleetOperations:
         if cont_token is None:
             raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
-                fleet_name=fleet_name,
+                cluster_name=cluster_name,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
                 headers=_headers,
@@ -654,10 +386,7 @@ class FleetOperations:
                 return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod,
-                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
-            )
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -670,3 +399,405 @@ class FleetOperations:
                 deserialization_callback=get_long_running_output,
             )
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    async def _create_update_initial(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: Union[_models.ClusterResource, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(body, (IOBase, bytes)):
+            _content = body
+        else:
+            _json = self._serialize.body(body, "ClusterResource")
+
+        _request = build_create_update_request(
+            resource_group_name=resource_group_name,
+            cluster_name=cluster_name,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 201]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponseAutoGenerated,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    async def begin_create_update(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: _models.ClusterResource,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.ClusterResource]:
+        """Create or update a Garnet cache cluster. When updating, you must specify all writable
+        properties.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param cluster_name: Garnet cache cluster name. Required.
+        :type cluster_name: str
+        :param body: The properties specifying the desired state of the Garnet cache cluster. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.ClusterResource
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns either ClusterResource or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    async def begin_create_update(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: IO[bytes],
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.ClusterResource]:
+        """Create or update a Garnet cache cluster. When updating, you must specify all writable
+        properties.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param cluster_name: Garnet cache cluster name. Required.
+        :type cluster_name: str
+        :param body: The properties specifying the desired state of the Garnet cache cluster. Required.
+        :type body: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns either ClusterResource or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def begin_create_update(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: Union[_models.ClusterResource, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.ClusterResource]:
+        """Create or update a Garnet cache cluster. When updating, you must specify all writable
+        properties.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param cluster_name: Garnet cache cluster name. Required.
+        :type cluster_name: str
+        :param body: The properties specifying the desired state of the Garnet cache cluster. Is either
+         a ClusterResource type or a IO[bytes] type. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.ClusterResource or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns either ClusterResource or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._create_update_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                body=body,
+                api_version=api_version,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("ClusterResource", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[_models.ClusterResource].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[_models.ClusterResource](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
+
+    async def _update_initial(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: Union[_models.ClusterResourcePatch, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(body, (IOBase, bytes)):
+            _content = body
+        else:
+            _json = self._serialize.body(body, "ClusterResourcePatch")
+
+        _request = build_update_request(
+            resource_group_name=resource_group_name,
+            cluster_name=cluster_name,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponseAutoGenerated,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    async def begin_update(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: _models.ClusterResourcePatch,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.ClusterResource]:
+        """Updates some of the properties of a garnet cluster.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param cluster_name: Garnet cache cluster name. Required.
+        :type cluster_name: str
+        :param body: Parameters to provide for updating the Garnet cluster. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.ClusterResourcePatch
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns either ClusterResource or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    async def begin_update(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: IO[bytes],
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.ClusterResource]:
+        """Updates some of the properties of a garnet cluster.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param cluster_name: Garnet cache cluster name. Required.
+        :type cluster_name: str
+        :param body: Parameters to provide for updating the Garnet cluster. Required.
+        :type body: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns either ClusterResource or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def begin_update(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: Union[_models.ClusterResourcePatch, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.ClusterResource]:
+        """Updates some of the properties of a garnet cluster.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param cluster_name: Garnet cache cluster name. Required.
+        :type cluster_name: str
+        :param body: Parameters to provide for updating the Garnet cluster. Is either a
+         ClusterResourcePatch type or a IO[bytes] type. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.ClusterResourcePatch or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns either ClusterResource or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._update_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                body=body,
+                api_version=api_version,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("ClusterResource", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[_models.ClusterResource].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[_models.ClusterResource](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
