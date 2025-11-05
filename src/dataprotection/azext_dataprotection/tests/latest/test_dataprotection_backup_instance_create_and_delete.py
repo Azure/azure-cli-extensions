@@ -87,6 +87,7 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
         track_job_to_completion(test)
 
     @AllowLargeResponse()
+    @live_only()
     def test_dataprotection_backup_instance_create_and_delete_blob(test):
         test.kwargs.update({
             'dataSourceType': "AzureBlob",
@@ -138,6 +139,7 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
             test.cmd('storage container delete --name "{containerName}" --account-name "{storageAccountName}" --auth-mode login')
 
     @AllowLargeResponse()
+    @live_only()
     def test_dataprotection_backup_instance_create_and_delete_adls(test):
         test.kwargs.update({
             'dataSourceType': 'AzureDataLakeStorage',
