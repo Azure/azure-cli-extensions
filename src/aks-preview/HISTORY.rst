@@ -17,15 +17,15 @@ Pending
 * Remove PMK validation for `--azure-keyvault-kms-key-id` parameter.
 * `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when enabling PMK on a CMK-disabled cluster
 
+19.0.0b11
++++++++
+
+* `az aks create --workload-runtime KataVmIsolation`: Added the KataVmIsolation workload runtime value.
+
 19.0.0b10
 +++++++
 * Vendor new SDK and bump API version to 2025-08-02-preview.
 * `az aks update`: Fix `--azure-keyvault-kms-key-vault-network-access` parameter not being correctly applied during cluster creation and updates.
-
-19.0.0b10
-+++++++
-
-* `az aks create --workload-runtime KataVmIsolation`: Added the KataVmIsolation workload runtime value.
 
 19.0.0b9
 +++++++
