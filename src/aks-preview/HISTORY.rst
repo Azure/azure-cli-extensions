@@ -11,13 +11,18 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Remove PMK validation for `--azure-keyvault-kms-key-id` parameter.
+
+19.0.0b10
++++++++
 * Vendor new SDK and bump API version to 2025-08-02-preview.
+* `az aks update`: Fix `--azure-keyvault-kms-key-vault-network-access` parameter not being correctly applied during cluster creation and updates.
 
 19.0.0b9
 +++++++
 * `az aks create --enable-hosted-system`: no longer provision default system node pool when creating an automatic cluster with hosted system enabled.
 * `az aks machine update`: Add support for updating machine tags, node taints and node labels.
-* Fix `az aks bastion` subshell defaulting to cmd on Windows when invoked from PowerShell by implementing grandparent process detection to identify the actual user shell. 
+* Fix `az aks bastion` subshell defaulting to cmd on Windows when invoked from PowerShell by implementing grandparent process detection to identify the actual user shell.
 
 19.0.0b8
 +++++++

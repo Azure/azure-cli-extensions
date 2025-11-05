@@ -445,7 +445,7 @@ def load_arguments(self, _):
         c.argument('network_status', arg_type=get_enum_type(["EgressEnabled", "EgressDisabled"]), help="Egress is enabled for the Sessions or not.")
 
     with self.argument_context('containerapp sessionpool create', arg_group='Configuration') as c:
-        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS", "NodeLTS"]), help="The pool type of the Session Pool, default='PythonLTS'")
+        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS", "NodeLTS", "Shell"]), help="The pool type of the Session Pool, default='PythonLTS'")
         c.argument('lifecycle_type', arg_type=get_enum_type(["Timed", "OnContainerExit"]), help="The lifecycle type of the Session Pool", default='Timed')
 
     with self.argument_context('containerapp sessionpool update', arg_group='Configuration') as c:
