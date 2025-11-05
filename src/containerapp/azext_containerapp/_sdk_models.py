@@ -1176,10 +1176,6 @@ class BaseContainer(_serialization.Model):
 
     :ivar image: Container image tag.
     :vartype image: str
-    :ivar image_type: The type of the image. Set to CloudBuild to let the system manages the image,
-     where user will not be able to update image through image field. Set to ContainerImage for user
-     provided image. Known values are: "CloudBuild" and "ContainerImage".
-    :vartype image_type: str or ~azure.mgmt.appcontainers.models.ImageType
     :ivar name: Custom container name.
     :vartype name: str
     :ivar command: Container start command.
@@ -1196,7 +1192,6 @@ class BaseContainer(_serialization.Model):
 
     _attribute_map = {
         "image": {"key": "image", "type": "str"},
-        "image_type": {"key": "imageType", "type": "str"},
         "name": {"key": "name", "type": "str"},
         "command": {"key": "command", "type": "[str]"},
         "args": {"key": "args", "type": "[str]"},
@@ -1209,7 +1204,6 @@ class BaseContainer(_serialization.Model):
         self,
         *,
         image: Optional[str] = None,
-        image_type: Optional[Union[str, "_models.ImageType"]] = None,
         name: Optional[str] = None,
         command: Optional[list[str]] = None,
         args: Optional[list[str]] = None,
@@ -1221,10 +1215,6 @@ class BaseContainer(_serialization.Model):
         """
         :keyword image: Container image tag.
         :paramtype image: str
-        :keyword image_type: The type of the image. Set to CloudBuild to let the system manages the
-         image, where user will not be able to update image through image field. Set to ContainerImage
-         for user provided image. Known values are: "CloudBuild" and "ContainerImage".
-        :paramtype image_type: str or ~azure.mgmt.appcontainers.models.ImageType
         :keyword name: Custom container name.
         :paramtype name: str
         :keyword command: Container start command.
@@ -1240,7 +1230,6 @@ class BaseContainer(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.image = image
-        self.image_type = image_type
         self.name = name
         self.command = command
         self.args = args
@@ -2663,10 +2652,6 @@ class Container(BaseContainer):
 
     :ivar image: Container image tag.
     :vartype image: str
-    :ivar image_type: The type of the image. Set to CloudBuild to let the system manages the image,
-     where user will not be able to update image through image field. Set to ContainerImage for user
-     provided image. Known values are: "CloudBuild" and "ContainerImage".
-    :vartype image_type: str or ~azure.mgmt.appcontainers.models.ImageType
     :ivar name: Custom container name.
     :vartype name: str
     :ivar command: Container start command.
@@ -2685,7 +2670,6 @@ class Container(BaseContainer):
 
     _attribute_map = {
         "image": {"key": "image", "type": "str"},
-        "image_type": {"key": "imageType", "type": "str"},
         "name": {"key": "name", "type": "str"},
         "command": {"key": "command", "type": "[str]"},
         "args": {"key": "args", "type": "[str]"},
@@ -2699,7 +2683,6 @@ class Container(BaseContainer):
         self,
         *,
         image: Optional[str] = None,
-        image_type: Optional[Union[str, "_models.ImageType"]] = None,
         name: Optional[str] = None,
         command: Optional[list[str]] = None,
         args: Optional[list[str]] = None,
@@ -2712,10 +2695,6 @@ class Container(BaseContainer):
         """
         :keyword image: Container image tag.
         :paramtype image: str
-        :keyword image_type: The type of the image. Set to CloudBuild to let the system manages the
-         image, where user will not be able to update image through image field. Set to ContainerImage
-         for user provided image. Known values are: "CloudBuild" and "ContainerImage".
-        :paramtype image_type: str or ~azure.mgmt.appcontainers.models.ImageType
         :keyword name: Custom container name.
         :paramtype name: str
         :keyword command: Container start command.
@@ -2733,7 +2712,6 @@ class Container(BaseContainer):
         """
         super().__init__(
             image=image,
-            image_type=image_type,
             name=name,
             command=command,
             args=args,
@@ -2795,9 +2773,6 @@ class ContainerApp(TrackedResource):
     :vartype environment_id: str
     :ivar workload_profile_name: Workload profile name to pin for container app execution.
     :vartype workload_profile_name: str
-    :ivar patching_configuration: Container App auto patch configuration.
-    :vartype patching_configuration:
-     ~azure.mgmt.appcontainers.models.ContainerAppPropertiesPatchingConfiguration
     :ivar latest_revision_name: Name of the latest revision of the Container App.
     :vartype latest_revision_name: str
     :ivar latest_ready_revision_name: Name of the latest ready revision of the Container App.
@@ -2851,10 +2826,6 @@ class ContainerApp(TrackedResource):
         "managed_environment_id": {"key": "properties.managedEnvironmentId", "type": "str"},
         "environment_id": {"key": "properties.environmentId", "type": "str"},
         "workload_profile_name": {"key": "properties.workloadProfileName", "type": "str"},
-        "patching_configuration": {
-            "key": "properties.patchingConfiguration",
-            "type": "ContainerAppPropertiesPatchingConfiguration",
-        },
         "latest_revision_name": {"key": "properties.latestRevisionName", "type": "str"},
         "latest_ready_revision_name": {"key": "properties.latestReadyRevisionName", "type": "str"},
         "latest_revision_fqdn": {"key": "properties.latestRevisionFqdn", "type": "str"},
@@ -2877,7 +2848,6 @@ class ContainerApp(TrackedResource):
         managed_environment_id: Optional[str] = None,
         environment_id: Optional[str] = None,
         workload_profile_name: Optional[str] = None,
-        patching_configuration: Optional["_models.ContainerAppPropertiesPatchingConfiguration"] = None,
         configuration: Optional["_models.Configuration"] = None,
         template: Optional["_models.Template"] = None,
         **kwargs: Any
@@ -2906,9 +2876,6 @@ class ContainerApp(TrackedResource):
         :paramtype environment_id: str
         :keyword workload_profile_name: Workload profile name to pin for container app execution.
         :paramtype workload_profile_name: str
-        :keyword patching_configuration: Container App auto patch configuration.
-        :paramtype patching_configuration:
-         ~azure.mgmt.appcontainers.models.ContainerAppPropertiesPatchingConfiguration
         :keyword configuration: Non versioned Container App configuration properties.
         :paramtype configuration: ~azure.mgmt.appcontainers.models.Configuration
         :keyword template: Container App versioned application definition.
@@ -2925,7 +2892,6 @@ class ContainerApp(TrackedResource):
         self.managed_environment_id = managed_environment_id
         self.environment_id = environment_id
         self.workload_profile_name = workload_profile_name
-        self.patching_configuration = patching_configuration
         self.latest_revision_name: Optional[str] = None
         self.latest_ready_revision_name: Optional[str] = None
         self.latest_revision_fqdn: Optional[str] = None
@@ -3307,32 +3273,6 @@ class ContainerAppProbeTcpSocket(_serialization.Model):
         super().__init__(**kwargs)
         self.host = host
         self.port = port
-
-
-class ContainerAppPropertiesPatchingConfiguration(_serialization.Model):  # pylint: disable=name-too-long
-    """Container App auto patch configuration.
-
-    :ivar patching_mode: Patching mode for the container app. Null or default in this field will be
-     interpreted as Automatic by RP. Automatic mode will automatically apply available patches.
-     Manual mode will require the user to manually apply patches. Disabled mode will stop patch
-     detection and auto patching. Known values are: "Automatic", "Manual", and "Disabled".
-    :vartype patching_mode: str or ~azure.mgmt.appcontainers.models.PatchingMode
-    """
-
-    _attribute_map = {
-        "patching_mode": {"key": "patchingMode", "type": "str"},
-    }
-
-    def __init__(self, *, patching_mode: Optional[Union[str, "_models.PatchingMode"]] = None, **kwargs: Any) -> None:
-        """
-        :keyword patching_mode: Patching mode for the container app. Null or default in this field will
-         be interpreted as Automatic by RP. Automatic mode will automatically apply available patches.
-         Manual mode will require the user to manually apply patches. Disabled mode will stop patch
-         detection and auto patching. Known values are: "Automatic", "Manual", and "Disabled".
-        :paramtype patching_mode: str or ~azure.mgmt.appcontainers.models.PatchingMode
-        """
-        super().__init__(**kwargs)
-        self.patching_mode = patching_mode
 
 
 class ContainerAppsBuildCollection(_serialization.Model):
@@ -8104,10 +8044,6 @@ class InitContainer(BaseContainer):
 
     :ivar image: Container image tag.
     :vartype image: str
-    :ivar image_type: The type of the image. Set to CloudBuild to let the system manages the image,
-     where user will not be able to update image through image field. Set to ContainerImage for user
-     provided image. Known values are: "CloudBuild" and "ContainerImage".
-    :vartype image_type: str or ~azure.mgmt.appcontainers.models.ImageType
     :ivar name: Custom container name.
     :vartype name: str
     :ivar command: Container start command.
@@ -8468,9 +8404,6 @@ class ContainerAppsJob(TrackedResource):
     :ivar provisioning_state: Provisioning state of the Container Apps Job. Known values are:
      "InProgress", "Succeeded", "Failed", "Canceled", and "Deleting".
     :vartype provisioning_state: str or ~azure.mgmt.appcontainers.models.JobProvisioningState
-    :ivar running_state: Current running state of the job. Known values are: "Ready",
-     "Progressing", and "Suspended".
-    :vartype running_state: str or ~azure.mgmt.appcontainers.models.JobRunningState
     :ivar environment_id: Resource ID of environment.
     :vartype environment_id: str
     :ivar workload_profile_name: Workload profile name to pin for container apps job execution.
@@ -8492,7 +8425,6 @@ class ContainerAppsJob(TrackedResource):
         "system_data": {"readonly": True},
         "location": {"required": True},
         "provisioning_state": {"readonly": True},
-        "running_state": {"readonly": True},
         "outbound_ip_addresses": {"readonly": True},
         "event_stream_endpoint": {"readonly": True},
     }
@@ -8507,7 +8439,6 @@ class ContainerAppsJob(TrackedResource):
         "extended_location": {"key": "extendedLocation", "type": "ExtendedLocation"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
-        "running_state": {"key": "properties.runningState", "type": "str"},
         "environment_id": {"key": "properties.environmentId", "type": "str"},
         "workload_profile_name": {"key": "properties.workloadProfileName", "type": "str"},
         "configuration": {"key": "properties.configuration", "type": "JobConfiguration"},
@@ -8552,7 +8483,6 @@ class ContainerAppsJob(TrackedResource):
         self.extended_location = extended_location
         self.identity = identity
         self.provisioning_state: Optional[Union[str, "_models.JobProvisioningState"]] = None
-        self.running_state: Optional[Union[str, "_models.JobRunningState"]] = None
         self.environment_id = environment_id
         self.workload_profile_name = workload_profile_name
         self.configuration = configuration
