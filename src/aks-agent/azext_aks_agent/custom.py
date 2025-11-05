@@ -10,10 +10,7 @@ from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME, HELP_COLOR
 # pylint: disable=too-many-lines, disable=broad-except
 from azext_aks_agent.agent.agent import aks_agent as aks_agent_internal
 from azext_aks_agent.agent.llm_config_manager import LLMConfigManager
-from azext_aks_agent.agent.llm_providers import (
-    PROVIDER_REGISTRY,
-    prompt_provider_choice,
-)
+from azext_aks_agent.agent.llm_providers import prompt_provider_choice
 from azext_aks_agent.agent.logging import rich_logging
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.azclierror import AzCLIError

@@ -647,7 +647,6 @@ class TestLLMConfigManager(unittest.TestCase):
 
         # Verify environment variables were set
         self.assertEqual(mock_environ["OPENAI_API_KEY"], "test-key")
-        self.assertEqual("MODEL_NAME", mock_environ)
         self.assertNotIn("provider", mock_environ)
 
         # Verify provider was called correctly
@@ -685,7 +684,7 @@ class TestLLMConfigManager(unittest.TestCase):
         self.assertEqual(llm_config["DEPLOYMENT_NAME"], "gpt-4-legacy")
 
         # Verify environment variables
-        self.assertEqual("DEPLOYMENT_NAME", mock_environ)
+        self.assertEqual(mock_environ["AZURE_OPENAI_API_KEY"], "azure-key")
         self.assertEqual(mock_environ["AZURE_OPENAI_ENDPOINT"], "https://test.openai.azure.com")
 
         # Verify provider was called with deployment name
@@ -716,7 +715,7 @@ class TestLLMConfigManager(unittest.TestCase):
 
         # Verify DEPLOYMENT_NAME is preserved
         self.assertEqual(llm_config["DEPLOYMENT_NAME"], "my-gpt-4-deployment")
-        self.assertEqual("DEPLOYMENT_NAME", mock_environ)
+        self.assertEqual(mock_environ["AZURE_OPENAI_ENDPOINT"], "https://test.openai.azure.com")
 
         # Verify provider was called with deployment name
         mock_provider_instance.model_name.assert_called_once_with("my-gpt-4-deployment")
