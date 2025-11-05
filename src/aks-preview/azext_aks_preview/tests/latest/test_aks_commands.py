@@ -3153,7 +3153,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("workloadRuntime", "KataVmIsolation"),
+                self.check("workloadRuntime", CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION),
             ],
         )
 
