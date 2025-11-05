@@ -21192,3 +21192,188 @@ spec:
         # Cleanup
         delete_cmd = "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
         self.cmd(delete_cmd, checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2"
+    )
+    def test_aks_safeguards_create_update_show_delete(
+        self, resource_group, resource_group_location
+    ):
+        """
+        Test the full lifecycle of AKS safeguards with Pod Security Standards:
+        - Creates a minimal cluster
+        - Creates safeguards with Warn level and Baseline PSS
+        - Shows safeguards to verify creation
+        - Updates safeguards to Enforce level and Restricted PSS with excluded namespaces
+        - Shows safeguards to verify update
+        - Deletes safeguards
+        - Verifies deletion
+        """
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # Create a minimal cluster
+        create_cluster_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--ssh-key-value={ssh_key_value} -o json"
+        )
+        self.cmd(
+            create_cluster_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # Create safeguards with Warn level and Baseline PSS
+        create_safeguards_cmd = (
+            "aks safeguards create --resource-group={resource_group} --name={name} "
+            "--level Warn --pod-security-standards-level Baseline "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview "
+            "-o json"
+        )
+        self.cmd(
+            create_safeguards_cmd,
+            checks=[
+                self.check("properties.level", "Warn"),
+                self.check("properties.podSecurityStandardsLevel", "Baseline"),
+            ],
+        )
+
+        # Show safeguards to verify creation
+        show_safeguards_cmd = (
+            "aks safeguards show --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview "
+            "-o json"
+        )
+        self.cmd(
+            show_safeguards_cmd,
+            checks=[
+                self.check("properties.level", "Warn"),
+                self.check("properties.podSecurityStandardsLevel", "Baseline"),
+            ],
+        )
+
+        # Update safeguards to Enforce level and Restricted PSS with excluded namespaces
+        update_safeguards_cmd = (
+            "aks safeguards update --resource-group={resource_group} --name={name} "
+            "--level Enforce --pod-security-standards-level Restricted "
+            "--excluded-ns kube-system default "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview "
+            "-o json"
+        )
+        self.cmd(
+            update_safeguards_cmd,
+            checks=[
+                self.check("properties.level", "Enforce"),
+                self.check("properties.podSecurityStandardsLevel", "Restricted"),
+                self.check("properties.excludedNamespaces", ["kube-system", "default"]),
+            ],
+        )
+
+        # Show safeguards to verify update
+        self.cmd(
+            show_safeguards_cmd,
+            checks=[
+                self.check("properties.level", "Enforce"),
+                self.check("properties.podSecurityStandardsLevel", "Restricted"),
+                self.check("properties.excludedNamespaces", ["kube-system", "default"]),
+            ],
+        )
+
+        # Delete safeguards
+        delete_safeguards_cmd = (
+            "aks safeguards delete --resource-group={resource_group} --name={name} --yes "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview"
+        )
+        self.cmd(delete_safeguards_cmd, checks=[self.is_empty()])
+
+        # Verify safeguards are deleted (show should fail)
+        self.cmd(show_safeguards_cmd, expect_failure=True)
+
+        # Cleanup cluster
+        delete_cluster_cmd = "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
+        self.cmd(delete_cluster_cmd, checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2"
+    )
+    def test_aks_safeguards_list(
+        self, resource_group, resource_group_location
+    ):
+        """
+        Test listing safeguards:
+        - Creates a minimal cluster
+        - Lists safeguards (should be empty initially)
+        - Creates safeguards with Privileged PSS
+        - Lists safeguards and verifies it appears
+        """
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # Create a minimal cluster
+        create_cluster_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--ssh-key-value={ssh_key_value} -o json"
+        )
+        self.cmd(
+            create_cluster_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # List safeguards (should be empty initially)
+        list_safeguards_cmd = (
+            "aks safeguards list --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview "
+            "-o json"
+        )
+        result = self.cmd(list_safeguards_cmd).get_output_in_json()
+        self.assertEqual(len(result), 0)
+
+        # Create safeguards with Privileged PSS level
+        create_safeguards_cmd = (
+            "aks safeguards create --resource-group={resource_group} --name={name} "
+            "--level Warn --pod-security-standards-level Privileged "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview "
+            "-o json"
+        )
+        self.cmd(
+            create_safeguards_cmd,
+            checks=[
+                self.check("properties.level", "Warn"),
+                self.check("properties.podSecurityStandardsLevel", "Privileged"),
+            ],
+        )
+
+        # List safeguards and verify it appears
+        result = self.cmd(list_safeguards_cmd).get_output_in_json()
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["properties"]["level"], "Warn")
+        self.assertEqual(result[0]["properties"]["podSecurityStandardsLevel"], "Privileged")
+
+        # Cleanup cluster
+        delete_cluster_cmd = "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
+        self.cmd(delete_cluster_cmd, checks=[self.is_empty()])

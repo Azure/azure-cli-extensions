@@ -1105,6 +1105,7 @@ def aks_create(
     safeguards_level=None,
     safeguards_version=None,
     safeguards_excluded_ns=None,
+    pod_security_standards_level=None,
     # azure service mesh
     enable_azure_service_mesh=None,
     revision=None,
@@ -1353,6 +1354,7 @@ def aks_update(
     safeguards_level=None,
     safeguards_version=None,
     safeguards_excluded_ns=None,
+    pod_security_standards_level=None,
     # advanced networking
     enable_acns=None,
     disable_acns=None,
@@ -5089,3 +5091,165 @@ def aks_jwtauthenticator_list(cmd, client, resource_group_name, cluster_name, ak
 def aks_jwtauthenticator_show(cmd, client, resource_group_name, cluster_name, name, aks_custom_headers=None):
     headers = get_aks_custom_headers(aks_custom_headers)
     return client.get(resource_group_name, cluster_name, name, headers=headers)
+
+
+# Deployment Safeguards commands
+def aks_safeguards_create(
+        cmd,
+        client,
+        resource_group_name=None,
+        cluster_name=None,
+        managed_cluster=None,
+        level=None,
+        excluded_namespaces=None,
+        pod_security_standards_level=None,
+        no_wait=False
+):
+    from azext_aks_preview._client_factory import get_container_service_client
+    from azure.cli.core.commands import LongRunningOperation
+    
+    # Determine cluster resource ID
+    if managed_cluster:
+        cluster_resource_id = managed_cluster
+    elif resource_group_name and cluster_name:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        cluster_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}"
+    else:
+        raise RequiredArgumentMissingError("Either --managed-cluster or both --resource-group and --name must be provided.")
+    
+    # Get the models
+    container_service_client = get_container_service_client(cmd.cli_ctx)
+    DeploymentSafeguard = cmd.get_models(
+        "DeploymentSafeguard",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="deployment_safeguards",
+    )
+    DeploymentSafeguardsProperties = cmd.get_models(
+        "DeploymentSafeguardsProperties",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="deployment_safeguards",
+    )
+    
+    # Build the safeguards object
+    properties = DeploymentSafeguardsProperties(
+        level=level,
+        excluded_namespaces=excluded_namespaces if excluded_namespaces else [],
+        pod_security_standards_level=pod_security_standards_level
+    )
+    
+    safeguards = DeploymentSafeguard(properties=properties)
+    
+    # Create the deployment safeguard
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        cluster_resource_id,
+        "default",  # Safeguards resource is always named "default"
+        safeguards
+    )
+
+
+def aks_safeguards_update(
+        cmd,
+        client,
+        resource_group_name=None,
+        cluster_name=None,
+        managed_cluster=None,
+        level=None,
+        excluded_namespaces=None,
+        pod_security_standards_level=None,
+        no_wait=False
+):
+    from azext_aks_preview._client_factory import get_container_service_client
+    
+    # Determine cluster resource ID
+    if managed_cluster:
+        cluster_resource_id = managed_cluster
+    elif resource_group_name and cluster_name:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        cluster_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}"
+    else:
+        raise RequiredArgumentMissingError("Either --managed-cluster or both --resource-group and --name must be provided.")
+    
+    # Get existing safeguards
+    existing = client.get(cluster_resource_id, "default")
+    
+    # Update properties
+    if level is not None:
+        existing.properties.level = level
+    if excluded_namespaces is not None:
+        existing.properties.excluded_namespaces = excluded_namespaces
+    if pod_security_standards_level is not None:
+        existing.properties.pod_security_standards_level = pod_security_standards_level
+    
+    # Update the deployment safeguard
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        cluster_resource_id,
+        "default",
+        existing
+    )
+
+
+def aks_safeguards_show(
+        cmd,
+        client,
+        resource_group_name=None,
+        cluster_name=None,
+        managed_cluster=None
+):
+    # Determine cluster resource ID
+    if managed_cluster:
+        cluster_resource_id = managed_cluster
+    elif resource_group_name and cluster_name:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        cluster_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}"
+    else:
+        raise RequiredArgumentMissingError("Either --managed-cluster or both --resource-group and --name must be provided.")
+    
+    return client.get(cluster_resource_id, "default")
+
+
+def aks_safeguards_delete(
+        cmd,
+        client,
+        resource_group_name=None,
+        cluster_name=None,
+        managed_cluster=None,
+        no_wait=False
+):
+    # Determine cluster resource ID
+    if managed_cluster:
+        cluster_resource_id = managed_cluster
+    elif resource_group_name and cluster_name:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        cluster_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}"
+    else:
+        raise RequiredArgumentMissingError("Either --managed-cluster or both --resource-group and --name must be provided.")
+    
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        cluster_resource_id,
+        "default"
+    )
+
+
+def aks_safeguards_list(
+        cmd,
+        client,
+        resource_group_name=None,
+        cluster_name=None,
+        managed_cluster=None
+):
+    # Determine cluster resource ID
+    if managed_cluster:
+        cluster_resource_id = managed_cluster
+    elif resource_group_name and cluster_name:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        cluster_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}"
+    else:
+        raise RequiredArgumentMissingError("Either --managed-cluster or both --resource-group and --name must be provided.")
+    
+    return client.list(cluster_resource_id)

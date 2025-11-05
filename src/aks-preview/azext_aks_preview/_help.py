@@ -564,6 +564,9 @@ helps['aks create'] = f"""
         - name: --safeguards-excluded-ns
           type: string
           short-summary: Comma-separated list of Kubernetes namespaces to exclude from deployment safeguards
+        - name: --pod-security-standards-level
+          type: string
+          short-summary: The Pod Security Standards level. Accepted Values are [Privileged, Baseline, Restricted]. Requires safeguards to be enabled
         - name: --enable-asm --enable-azure-service-mesh
           type: bool
           short-summary: Enable Azure Service Mesh.
@@ -762,6 +765,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --enable-addons azure-policy
         - name: Create a kubernetes cluster with safeguards set to "Warning" and some namespaces excluded
           text: az aks create -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --safeguards-excluded-ns ns1,ns2 --enable-addons azure-policy
+        - name: Create a kubernetes cluster with safeguards and Pod Security Standards set to "Baseline"
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --pod-security-standards-level Baseline --enable-addons azure-policy
         - name: Create a kubernetes cluster with Azure Service Mesh enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-service-mesh
         - name: Create a kubernetes cluster with Azure Monitor Metrics enabled.
@@ -1486,6 +1491,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-azure-monitor-logs
       - name: Update a kubernetes cluster to clear any namespaces excluded from safeguards. Assumes azure policy addon is already enabled
         text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-excluded-ns ""
+      - name: Update a kubernetes cluster with safeguards and Pod Security Standards set to "Baseline". Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --pod-security-standards-level Baseline
       - name: Update a kubernetes cluster to enable a managed installation of Gateway API CRDs from the standard release channel.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-gateway-api
       - name: Update a kubernetes cluster to disable the managed installation of Gateway API CRDs.
@@ -4346,4 +4353,77 @@ helps['aks jwtauthenticator show'] = """
     examples:
         - name: Show a specific JWT authenticator configuration
           text: az aks jwtauthenticator show -g MyResourceGroup --cluster-name MyCluster --name myjwt
+"""
+
+helps['aks safeguards'] = """
+    type: group
+    short-summary: Manage Deployment Safeguards for a Managed Cluster (preview).
+"""
+
+helps['aks safeguards create'] = """
+    type: command
+    short-summary: Enable Deployment Safeguards for a Managed Cluster with Pod Security Standards support (preview).
+    parameters:
+        - name: --level
+          type: string
+          short-summary: The deployment safeguards level. Accepted values are Warn and Enforce.
+        - name: --excluded-namespaces --excluded-ns
+          type: string
+          short-summary: Space-separated list of namespaces to exclude from Deployment Safeguards.
+        - name: --pod-security-standards-level
+          type: string
+          short-summary: The Pod Security Standards level. Accepted values are Privileged, Baseline, Restricted.
+    examples:
+        - name: Create DeploymentSafeguards at Warn level with Pod Security Standards Baseline
+          text: az aks safeguards create -g MyResourceGroup -n MyCluster --level Warn --pod-security-standards-level Baseline
+        - name: Create DeploymentSafeguards at Enforce level with excluded namespaces
+          text: az aks safeguards create -g MyResourceGroup -n MyCluster --level Enforce --excluded-ns kube-system ns1 ns2
+        - name: Create DeploymentSafeguards with all security features enabled
+          text: az aks safeguards create -g MyResourceGroup -n MyCluster --level Enforce --pod-security-standards-level Restricted
+"""
+
+helps['aks safeguards update'] = """
+    type: command
+    short-summary: Update Deployment Safeguards configuration for a Managed Cluster with Pod Security Standards support (preview).
+    parameters:
+        - name: --level
+          type: string
+          short-summary: The deployment safeguards level. Accepted values are Warn and Enforce.
+        - name: --excluded-namespaces --excluded-ns
+          type: string
+          short-summary: Space-separated list of namespaces to exclude from Deployment Safeguards.
+        - name: --pod-security-standards-level
+          type: string
+          short-summary: The Pod Security Standards level. Accepted values are Privileged, Baseline, Restricted.
+    examples:
+        - name: Update DeploymentSafeguards to Enforce level
+          text: az aks safeguards update -g MyResourceGroup -n MyCluster --level Enforce
+        - name: Update Pod Security Standards level to Restricted
+          text: az aks safeguards update -g MyResourceGroup -n MyCluster --pod-security-standards-level Restricted
+        - name: Update excluded namespaces
+          text: az aks safeguards update -g MyResourceGroup -n MyCluster --excluded-ns kube-system custom-ns
+"""
+
+helps['aks safeguards show'] = """
+    type: command
+    short-summary: Show Deployment Safeguards configuration for a Managed Cluster (preview).
+    examples:
+        - name: Show DeploymentSafeguards configuration
+          text: az aks safeguards show -g MyResourceGroup -n MyCluster
+"""
+
+helps['aks safeguards delete'] = """
+    type: command
+    short-summary: Disable Deployment Safeguards for a Managed Cluster (preview).
+    examples:
+        - name: Delete DeploymentSafeguards
+          text: az aks safeguards delete -g MyResourceGroup -n MyCluster
+"""
+
+helps['aks safeguards list'] = """
+    type: command
+    short-summary: List DeploymentSafeguards by parent resource (preview).
+    examples:
+        - name: List DeploymentSafeguards for a cluster
+          text: az aks safeguards list -g MyResourceGroup -n MyCluster
 """

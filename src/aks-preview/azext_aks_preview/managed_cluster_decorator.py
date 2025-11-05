@@ -251,6 +251,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     def get_safeguards_version(self) -> Union[str, None]:
         return self.raw_param.get("safeguards_version")
 
+    def get_pod_security_standards_level(self) -> Union[str, None]:
+        return self.raw_param.get("pod_security_standards_level")
+
     def __validate_pod_identity_with_kubenet(self, mc, enable_pod_identity, enable_pod_identity_with_kubenet):
         """Helper function to check the validity of serveral pod identity related parameters.
 

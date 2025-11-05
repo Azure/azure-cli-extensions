@@ -17,6 +17,7 @@ from azext_aks_preview._client_factory import (
     cf_load_balancers,
     cf_identity_bindings,
     cf_jwt_authenticators,
+    cf_deployment_safeguards,
 )
 
 from azext_aks_preview._format import (
@@ -565,4 +566,39 @@ def load_command_table(self, _):
             "show",
             "aks_jwtauthenticator_show",
             table_transformer=aks_jwtauthenticator_show_table_format
+        )
+
+    # AKS deployment safeguards commands
+    deployment_safeguards_sdk = CliCommandType(
+        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
+        "operations._deployment_safeguards_operations#DeploymentSafeguardsOperations.{}",
+        operation_group="deployment_safeguards",
+        client_factory=cf_deployment_safeguards,
+    )
+    with self.command_group(
+        "aks safeguards", deployment_safeguards_sdk, client_factory=cf_deployment_safeguards, is_preview=True
+    ) as g:
+        g.custom_command(
+            "create",
+            "aks_safeguards_create",
+            supports_no_wait=True
+        )
+        g.custom_command(
+            "update",
+            "aks_safeguards_update",
+            supports_no_wait=True
+        )
+        g.custom_show_command(
+            "show",
+            "aks_safeguards_show"
+        )
+        g.custom_command(
+            "delete",
+            "aks_safeguards_delete",
+            supports_no_wait=True,
+            confirmation=True
+        )
+        g.custom_command(
+            "list",
+            "aks_safeguards_list"
         )

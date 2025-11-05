@@ -441,6 +441,13 @@ safeguards_levels = [
     CONST_SAFEGUARDSLEVEL_ENFORCEMENT,
 ]
 
+# consts for Pod Security Standards level
+pod_security_standards_levels = [
+    CONST_POD_SECURITY_STANDARDS_LEVEL_PRIVILEGED,
+    CONST_POD_SECURITY_STANDARDS_LEVEL_BASELINE,
+    CONST_POD_SECURITY_STANDARDS_LEVEL_RESTRICTED,
+]
+
 # azure service mesh
 ingress_gateway_types = [
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
@@ -1029,6 +1036,11 @@ def load_arguments(self, _):
             "safeguards_excluded_ns",
             type=str,
             is_preview=True
+        )
+        c.argument(
+            "pod_security_standards_level",
+            arg_type=get_enum_type(pod_security_standards_levels),
+            is_preview=True,
         )
         # azure monitor profile
         c.argument(
@@ -3116,6 +3128,33 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('config_file', options_list=['--config-file'], type=file_type, completer=FilesCompleter(),
                        help='Path to the JSON configuration file containing JWT authenticator properties.')
+
+    # AKS deployment safeguards parameters
+    with self.argument_context('aks safeguards') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'])
+        c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the Managed Cluster.')
+        c.argument('managed_cluster', options_list=['--cluster', '--managed-cluster', '-c'],
+                   help='The fully qualified Azure Resource manager identifier of the Managed Cluster.')
+
+    with self.argument_context('aks safeguards create') as c:
+        c.argument('level', arg_type=get_enum_type(['Warn', 'Enforce']),
+                   help='The deployment safeguards level.')
+        c.argument('excluded_namespaces', options_list=['--excluded-namespaces', '--excluded-ns'],
+                   nargs='+',
+                   help='User defined list of namespaces to exclude from Deployment Safeguards.')
+        c.argument('pod_security_standards_level', arg_type=get_enum_type(pod_security_standards_levels),
+                   is_preview=True,
+                   help='The Pod Security Standards level.')
+
+    with self.argument_context('aks safeguards update') as c:
+        c.argument('level', arg_type=get_enum_type(['Warn', 'Enforce']),
+                   help='The deployment safeguards level.')
+        c.argument('excluded_namespaces', options_list=['--excluded-namespaces', '--excluded-ns'],
+                   nargs='+',
+                   help='User defined list of namespaces to exclude from Deployment Safeguards.')
+        c.argument('pod_security_standards_level', arg_type=get_enum_type(pod_security_standards_levels),
+                   is_preview=True,
+                   help='The Pod Security Standards level.')
 
 
 def _get_default_install_location(exe_name):
