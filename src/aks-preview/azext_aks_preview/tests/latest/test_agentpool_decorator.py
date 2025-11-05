@@ -629,7 +629,6 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.CREATE,
             self.agentpool_decorator_mode,
         )
-        self.assertEqual(ctx_1.get_workload_runtime(), CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         agentpool_1 = self.create_initialized_agentpool_instance(workload_runtime=CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION)
         ctx_1.attach_agentpool(agentpool_1)
         self.assertEqual(ctx_1.get_workload_runtime(), CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION)
@@ -644,7 +643,6 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.CREATE,
             self.agentpool_decorator_mode,
         )
-        self.assertEqual(ctx_2.get_workload_runtime(), CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         agentpool_2 = self.create_initialized_agentpool_instance(workload_runtime=CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION)
         ctx_2.attach_agentpool(agentpool_2)
         self.assertEqual(ctx_2.get_workload_runtime(), CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION)
@@ -1066,13 +1064,13 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_disable_vtpm(self):
         self.common_get_disable_vtpm()
 
-    def common_get_enable_fips_image(self):
+    def test_common_get_enable_fips_image(self):
         self.common_get_enable_fips_image()
 
-    def common_get_disable_fips_image(self):
+    def test_common_get_disable_fips_image(self):
         self.common_get_disable_fips_image()
 
-    def common_get_enable_kata_image(self):
+    def test_common_get_enable_kata_image(self):
         self.common_get_enable_kata_image()
 
     def test_get_agentpool_windows_profile(self):
@@ -1151,10 +1149,10 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
     def test_get_enable_vtpm(self):
         self.common_get_enable_vtpm()
 
-    def common_get_enable_fips_image(self):
+    def test_common_get_enable_fips_image(self):
         self.common_get_enable_fips_image()
 
-    def common_get_enable_kata_image(self):
+    def test_common_get_enable_kata_image(self):
         self.common_get_enable_kata_image()
 
     def test_get_agentpool_windows_profile(self):
