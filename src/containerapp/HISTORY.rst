@@ -6,6 +6,7 @@ upcoming
 ++++++
 * 'az containerapp env premium-ingress add/update': remove `--min-replicas` and `--max-replicas`
 * 'az containerapp sessionpool create': Add `Shell` container type
+*  Upgrade api-version to 2025-10-02-preview
 
 1.2.0b4
 ++++++
