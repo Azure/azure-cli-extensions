@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict, Tuple
 from urllib.parse import urlparse
 
+from azext_aks_agent._consts import ERROR_COLOR, HELP_COLOR
 from rich.console import Console
 
 console = Console()
@@ -85,9 +86,6 @@ class LLMProvider(ABC):
 
     def prompt_params(self):
         """Prompt user for parameters using parameter_schema when available."""
-        from holmes.interactive import SlashCommands
-        from holmes.utils.colors import ERROR_COLOR, HELP_COLOR
-
         schema = self.parameter_schema
         params = {}
         for param, meta in schema.items():
@@ -134,7 +132,7 @@ class LLMProvider(ABC):
                     params[param] = value
                     break
                 console.print(
-                    f"Invalid value for {param}. Please try again, or type '{SlashCommands.EXIT.command}' to exit.",
+                    f"Invalid value for {param}. Please try again, or type '/exit' to exit.",
                     style=f"{ERROR_COLOR}")
 
         return params
