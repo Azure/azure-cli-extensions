@@ -128,17 +128,17 @@ class LLMConfigManager:
         """
         model_configs = self.get_list()
         for cfg in model_configs:
-            if cfg.get("provider") == provider_name:
-                if provider_name.lower() == "azure" and (cfg.get("DEPLOYMENT_NAME") == model_name or cfg.get("MODEL_NAME") == model_name):
+            if cfg.get("provider") == provider_name and provider_name.lower() == "azure":
+                if cfg.get("DEPLOYMENT_NAME") == model_name or cfg.get("MODEL_NAME") == model_name:
                     return cfg
-                elif cfg.get("MODEL_NAME") == model_name:
-                    return cfg
+            if cfg.get("provider") == provider_name and cfg.get("MODEL_NAME") == model_name:
+                return cfg
         return None
 
     def get_model_config(self, model) -> Optional[Dict]:
-        prompt_for_init = "Run 'az aks agent-init' to set up your LLM endpoint (recommended path).\n"
-        "To configure your LLM manually, create a config file using the templates provided here: "
-        "https://aka.ms/aks/agentic-cli/init"
+        prompt_for_init = "Run 'az aks agent-init' to set up your LLM endpoint (recommended path).\n" \
+            "To configure your LLM manually, create a config file using the templates provided here: " \
+            "https://aka.ms/aks/agentic-cli/init"
 
         if not model:
             llm_config: Optional[Dict] = self.get_latest()
