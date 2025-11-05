@@ -8,7 +8,7 @@
 
 import unittest
 from random import randint
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from ..utils import track_job_to_completion
 
