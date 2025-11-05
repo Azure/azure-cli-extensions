@@ -21,12 +21,15 @@ class Update(AAZCommand):
         az network front-door waf-policy update -g rg -n n1 --log-scrubbing "{scrubbing-rules:[{match-variable:QueryStringArgNames,selector-match-operator:EqualsAny}],state:Enabled}"
         az network front-door waf-policy update -g rg -n n1 --log-scrubbing scrubbing-rules[1]="{match-variable:RequestUri,selector-match-operator:Equals}"
         az network front-door waf-policy update -g rg -n n1 --log-scrubbing "{scrubbing-rules:[{match-variable:RequestBodyJsonArgNames,selector-match-operator:EqualsAny}],state:Enabled}" scrubbing-rules[1]="{match-variable:RequestUri,selector-match-operator:EqualsAny}"
+
+    :example: Update specific policy
+        az network front-door waf-policy update --resource-group rg1 --policy-name Policy1 --location WestUs --enabled-state Enabled --mode Prevention --redirect-url http://www.bing.com --custom-block-response-status-code 429 --custom-block-response-body PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg== --request-body-check Disabled --javascript-challenge-expiration-in-minutes 30 --captcha-expiration-in-minutes 30 --log-scrubbing "{state:Enabled,scrubbing-rules:[{match-variable:RequestIPAddress,selector-match-operator:EqualsAny,selector:null,state:Enabled}]}" --custom-rules "{rules:[{name:Rule1,priority:1,rule-type:RateLimitRule,rate-limit-threshold:1000,match-conditions:[{match-variable:RemoteAddr,operator:IPMatch,match-value:[192.168.1.0/24,10.0.0.0/24]}],action:Block},{name:Rule2,priority:2,rule-type:MatchRule,match-conditions:[{match-variable:RemoteAddr,operator:GeoMatch,match-value:[CH]},{match-variable:RequestHeader,operator:Contains,selector:UserAgent,match-value:[windows],transforms:[Lowercase]}],action:Block},{name:Rule3,priority:1,rule-type:RateLimitRule,rate-limit-threshold:1000,match-conditions:[{match-variable:RemoteAddr,operator:ServiceTagMatch,match-value:[AzureBackup,AzureBotService]}],action:CAPTCHA}]}" --managed-rules "{managed-rule-sets:[{rule-set-type:DefaultRuleSet,rule-set-version:1.0,rule-set-action:Block,exclusions:[{matchVariable:RequestHeaderNames,selectorMatchOperator:Equals,selector:User-Agent}],rule-group-overrides:[{rule-group-name:SQLI,exclusions:[{matchVariable:RequestCookieNames,selectorMatchOperator:StartsWith,selector:token}],rules:[{rule-id:942100,enabled-state:Enabled,action:Redirect,exclusions:[{matchVariable:QueryStringArgNames,selectorMatchOperator:Equals,selector:query}]},{rule-id:942110,enabled-state:Disabled}]}]},{rule-set-type:Microsoft_HTTPDDoSRuleSet,rule-set-version:1.0,rule-group-overrides:[{rule-group-name:ExcessiveRequests,rules:[{rule-id:500100,enabled-state:Enabled,action:Block,sensitivity:High}]}]}]}" --sku Premium_AzureFrontDoor
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
+        "version": "2025-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2025-10-01"],
         ]
     }
 
@@ -320,7 +323,7 @@ class Update(AAZCommand):
         _element.operator = AAZStrArg(
             options=["operator"],
             help="Comparison type to use for matching with the variable value.",
-            enum={"Any": "Any", "BeginsWith": "BeginsWith", "Contains": "Contains", "EndsWith": "EndsWith", "Equal": "Equal", "GeoMatch": "GeoMatch", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "IPMatch": "IPMatch", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "RegEx": "RegEx"},
+            enum={"Any": "Any", "BeginsWith": "BeginsWith", "Contains": "Contains", "EndsWith": "EndsWith", "Equal": "Equal", "GeoMatch": "GeoMatch", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "IPMatch": "IPMatch", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "RegEx": "RegEx", "ServiceTagMatch": "ServiceTagMatch"},
         )
         _element.selector = AAZStrArg(
             options=["selector"],
@@ -441,6 +444,12 @@ class Update(AAZCommand):
         _element.rule_id = AAZStrArg(
             options=["rule-id"],
             help="Identifier for the managed rule.",
+        )
+        _element.sensitivity = AAZStrArg(
+            options=["sensitivity"],
+            help="Describes the override sensitivity to be applied when rule matches.",
+            nullable=True,
+            enum={"High": "High", "Low": "Low", "Medium": "Medium"},
         )
 
         exclusions = cls._args_schema.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules.Element.exclusions
@@ -573,7 +582,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }
@@ -672,7 +681,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }
@@ -835,6 +844,7 @@ class Update(AAZCommand):
                 _elements.set_prop("enabledState", AAZStrType, ".enabled_state")
                 _elements.set_prop("exclusions", AAZListType, ".exclusions")
                 _elements.set_prop("ruleId", AAZStrType, ".rule_id", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("sensitivity", AAZStrType, ".sensitivity")
 
             exclusions = _builder.get(".properties.managedRules.managedRuleSets[].ruleGroupOverrides[].rules[].exclusions")
             if exclusions is not None:
@@ -1129,6 +1139,7 @@ class _UpdateHelper:
             serialized_name="ruleId",
             flags={"required": True},
         )
+        _element.sensitivity = AAZStrType()
 
         exclusions = _schema_web_application_firewall_policy_read.properties.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules.Element.exclusions
         exclusions.Element = AAZObjectType()

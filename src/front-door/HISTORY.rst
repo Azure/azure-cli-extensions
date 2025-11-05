@@ -2,6 +2,12 @@
 
 Release History
 ===============
+
+1.4.0
+++++++
+* Bump swagger version to 2025-10-01
+* Add support for DDos RuleSet
+
 1.3.0
 ++++++
 * Add support for captcha

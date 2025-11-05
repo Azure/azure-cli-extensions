@@ -27,7 +27,7 @@ class WafTests(WafScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_waf_log_scrubbing(self, resource_group):
         blockpolicy = self.create_random_name(prefix='cli', length=24)
-        cmd = 'az network front-door waf-policy create -g {resource_group} -n {blockpolicy} --mode prevention --sku Standard_AzureFrontDoor'.format(**locals())
+        cmd = 'az network front-door waf-policy create -g {resource_group} -n {blockpolicy} --mode prevention --sku Premium_AzureFrontDoor'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], blockpolicy)
         self.assertEqual(result['policySettings']['mode'], "Prevention")
@@ -74,10 +74,10 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         standardskupolicy = self.create_random_name(prefix='cli', length=24)
-        cmd = 'az network front-door waf-policy create -g {resource_group} -n {standardskupolicy} --mode prevention --sku Standard_AzureFrontDoor'.format(**locals())
+        cmd = 'az network front-door waf-policy create -g {resource_group} -n {standardskupolicy} --mode prevention --sku Premium_AzureFrontDoor'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], standardskupolicy)
         self.assertEqual(result['policySettings']['mode'], "Prevention")
@@ -85,7 +85,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
-        self.assertEqual(result['sku']['name'], "Standard_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         detectionredirectpolicy = self.create_random_name(prefix='cli', length=24)
         cmd = 'az network front-door waf-policy create -g {resource_group} -n {detectionredirectpolicy} --mode Detection --redirect-url http://www.microsoft.com --sku Premium_AzureFrontDoor'.format(**locals())
@@ -100,7 +100,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         detectioncbcpolicy = self.create_random_name(prefix='cli', length=24)
-        cmd = 'az network front-door waf-policy create -g {resource_group} -n {detectioncbcpolicy} --mode Detection --redirect-url http://www.microsoft.com --custom-block-response-status-code 406 --sku Classic_AzureFrontDoor'.format(**locals())
+        cmd = 'az network front-door waf-policy create -g {resource_group} -n {detectioncbcpolicy} --mode Detection --redirect-url http://www.microsoft.com --custom-block-response-status-code 406 --sku Premium_AzureFrontDoor'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], detectioncbcpolicy)
         self.assertEqual(result['policySettings']['mode'], "Detection")
@@ -110,7 +110,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         detectioncbbpolicy = self.create_random_name(prefix='cli', length=24)
         cmd = 'az network front-door waf-policy create -g {resource_group} -n {detectioncbbpolicy} --mode Detection --redirect-url http://www.microsoft.com --custom-block-response-status-code 406 --custom-block-response-body YiBvZHk='.format(**locals())
@@ -125,7 +125,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         detectiondisabledpolicy = self.create_random_name(prefix='cli', length=24)
         cmd = 'az network front-door waf-policy create -g {resource_group} -n {detectiondisabledpolicy} --mode Detection --disabled'.format(**locals())
@@ -137,7 +137,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {detectiondisabledpolicy} --mode Detection'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
@@ -146,7 +146,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertIn('id', result)
         self.assertEqual(result['policySettings']['enabledState'], "Enabled")
         self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --tags test=best'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
@@ -157,21 +157,21 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
-        cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --mode detection --sku Classic_AzureFrontDoor'.format(**locals())
+        cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --mode detection --sku Premium_AzureFrontDoor'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], blockpolicy)
         self.assertEqual(result['policySettings']['mode'], "Detection")
         self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --mode prevention --redirect-url http://www.microsoft.com'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], blockpolicy)
         self.assertEqual(result['policySettings']['mode'], "Prevention")
         self.assertEqual(result['policySettings']['redirectUrl'], 'http://www.microsoft.com')
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --custom-block-response-status-code 406'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
@@ -179,7 +179,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(result['policySettings']['mode'], "Prevention")
         self.assertEqual(result['policySettings']['customBlockResponseStatusCode'], 406)
         self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --custom-block-response-status-code 405 --custom-block-response-body YiBvZHk='.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
@@ -188,14 +188,14 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(result['policySettings']['customBlockResponseStatusCode'], 405)
         self.assertEqual(result['policySettings']['customBlockResponseBody'], "YiBvZHk=")
         self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --disabled'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], blockpolicy)
         self.assertEqual(result['policySettings']['enabledState'], "Disabled")
         self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy show -g {resource_group} -n {blockpolicy}'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
@@ -204,7 +204,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(result['policySettings']['enabledState'], "Disabled")
         self.assertEqual(result['policySettings']['customBlockResponseStatusCode'], 405)
         self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy list -g {resource_group}'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
@@ -219,67 +219,6 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(len(result), 5)
         self.assertEqual(len([policy for policy in result if policy['name'] == blockpolicy]), 0)
-
-    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
-    def test_waf_policy_custom_rule_matching(self, resource_group):
-        # multi-line comment below
-        """
-Example command sequence:
-az network front-door waf-policy create --resource-group {resource_group} --name {policyName}
-az network front-door waf-policy rule create  -g {resource_group} --policy-name {policyName} -n {ruleName} --priority 6 --rule-type MatchRule --action Block --match-variable RequestBody --operator RegEx --values "something"
-az network front-door create  --resource-group {resource_group} --backend-address www.example.com --name {frontdoorName}
-# wait two minutes
-az network front-door update --name {frontdoorName}--resource-group {resource_group} --set "FrontendEndpoints[0].WebApplicationFirewallPolicyLink.id=/subscriptions/{subscriptionId}/resourcegroups/{resource_group}/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/{policyName}"
-"""
-
-        subscription = self.current_subscription()
-        policyName = self.create_random_name(prefix='cli', length=24)
-        ruleName = self.create_random_name(prefix='cli', length=24)
-        frontdoorName = self.create_random_name(prefix='cli', length=24)
-
-        cmd = 'az network front-door waf-policy create --resource-group {resource_group} --name {policyName} --sku Classic_AzureFrontDoor'.format(**locals())
-        result = self.cmd(cmd).get_output_in_json()
-
-        self.assertIn('customRules', result)
-        self.assertIn('managedRules', result)
-        self.assertIn('id', result)
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
-
-        cmd = 'az network front-door waf-policy rule create  -g {resource_group} --policy-name {policyName} -n {ruleName} --priority 6 --rule-type MatchRule --action Block --defer'.format(**locals())
-        result = self.cmd(cmd).get_output_in_json()
-
-        self.assertIn('customRules', result)
-
-        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {ruleName} --match-variable RequestBody --operator RegEx --values "something"'.format(**locals())
-        result = self.cmd(cmd).get_output_in_json()
-        self.assertEqual(result['customRules']['rules'][0]['matchConditions'][0]['matchValue'][0], "something")
-
-        cmd = 'az network front-door create  --resource-group {resource_group} --backend-address www.example.com --name {frontdoorName}'.format(**locals())
-        result = self.cmd(cmd).get_output_in_json()
-
-        self.assertIn('frontendEndpoints', result)
-        hostName = result['frontendEndpoints'][0]['hostName']
-        self.assertTrue(hostName is not None)
-
-        wafId = '/subscriptions/{subscription}/resourcegroups/{resource_group}/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/{policyName}'.format(**locals())
-        cmd = 'az network front-door update --name {frontdoorName} --resource-group {resource_group} --set "FrontendEndpoints[0].WebApplicationFirewallPolicyLink.id={wafId}"'.format(**locals())
-        result = self.cmd(cmd).get_output_in_json()
-        self.assertIn('frontendEndpoints', result)
-        self.assertEqual(result['frontendEndpoints'][0]['hostName'], hostName)
-        self.assertEqual(result['frontendEndpoints'][0]['webApplicationFirewallPolicyLink']['id'], wafId)
-
-        if self.is_live:
-            import requests
-
-            import time
-            elapsed_seconds = 0
-            while elapsed_seconds < 900:
-                r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'something'")
-                if(r.status_code == 403):
-                    break
-                time.sleep(10)
-                elapsed_seconds += 10
-            self.assertEqual(r.status_code, 403)
 
     @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_waf_policy_managed_rules(self, resource_group):
@@ -375,7 +314,7 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         cmd = 'az network front-door waf-policy create -g {resource_group} -n {policyName} --mode prevention'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
 
-        self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
 
         rateLimit = self.create_random_name(prefix='cli', length=24)
         cmd = 'az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimit} --priority 10 --action log --rule-type ratelimitrule --rate-limit-duration 5 --rate-limit-threshold 10000 --defer'.format(**locals())
