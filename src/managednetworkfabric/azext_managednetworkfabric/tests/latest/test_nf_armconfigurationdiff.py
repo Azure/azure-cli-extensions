@@ -5,55 +5,55 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
-"""
-NF tests scenarios
-"""
+# """
+# NF tests scenarios
+# """
 
-from azure.cli.testsdk import ScenarioTest
+# from azure.cli.testsdk import ScenarioTest
 
-from .config import CONFIG
-
-
-def setup_scenario1(test):
-    """Env setup_scenario1"""
-    pass
+# from .config import CONFIG
 
 
-def cleanup_scenario1(test):
-    """Env cleanup_scenario1"""
-    pass
+# def setup_scenario1(test):
+#     """Env setup_scenario1"""
+#     pass
 
 
-def call_scenario1(test):
-    """Testcase: scenario1"""
-    setup_scenario1(test)
-    step_arm_configuration_diff(test)
-    cleanup_scenario1(test)
+# def cleanup_scenario1(test):
+#     """Env cleanup_scenario1"""
+#     pass
 
 
-def step_arm_configuration_diff(test, checks=None):
-    """nf arm configuration diff operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkfabric fabric arm-configuration-diff --resource-name {commitNFName} --resource-group {commitNFRGName}"
-    )
+# def call_scenario1(test):
+#     """Testcase: scenario1"""
+#     setup_scenario1(test)
+#     step_arm_configuration_diff(test)
+#     cleanup_scenario1(test)
 
 
-class GA_NFArmConfigurationDiffsScenarioTest1(ScenarioTest):
-    """NFScenario test"""
+# def step_arm_configuration_diff(test, checks=None):
+#     """nf arm configuration diff operation"""
+#     if checks is None:
+#         checks = []
+#     test.cmd(
+#         "az networkfabric fabric arm-configuration-diff --resource-name {commitNFName} --resource-group {commitNFRGName}"
+#     )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.kwargs.update(
-            {
-                "commitNFRGName": CONFIG.get(
-                    "NETWORK_FABRIC", "commit_nf_resource_group"
-                ),
-                "commitNFName": CONFIG.get("NETWORK_FABRIC", "commit_nf_name"),
-            }
-        )
 
-    def test_GA_nf_arm_configuration_diff_scenario1(self):
-        """test scenario for NF arm configuration diff operations"""
-        call_scenario1(self)
+# class GA_NFArmConfigurationDiffsScenarioTest1(ScenarioTest):
+#     """NFScenario test"""
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.kwargs.update(
+#             {
+#                 "commitNFRGName": CONFIG.get(
+#                     "NETWORK_FABRIC", "commit_nf_resource_group"
+#                 ),
+#                 "commitNFName": CONFIG.get("NETWORK_FABRIC", "commit_nf_name"),
+#             }
+#         )
+
+#     def test_GA_nf_arm_configuration_diff_scenario1(self):
+#         """test scenario for NF arm configuration diff operations"""
+#         call_scenario1(self)

@@ -2,6 +2,15 @@
 
 Release History
 ===============
+1.10.12
++++++
+* Removed deprecated '--app-id' and '--app-secret' RBAC parameters from the extension.
+
+1.10.11
++++++++
+* Removed hardcoded public ARM endpoint URL for Government clouds.
+* Fixed incorrect MCR endpoint URLs for Government cloud environments.
+
 1.10.10
 +++++
 * Deprecated '--app-id' and '--app-secret' RBAC parameters from the extension by adding them to _breaking_change.py.
