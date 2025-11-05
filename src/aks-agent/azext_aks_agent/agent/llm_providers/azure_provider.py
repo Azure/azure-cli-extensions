@@ -32,10 +32,10 @@ class AzureProvider(LLMProvider):
     @property
     def parameter_schema(self):
         return {
-            "MODEL_NAME": {
+            "DEPLOYMENT_NAME": {
                 "secret": False,
                 "default": None,
-                "hint": "should be consistent with your deployed name, e.g., gpt-5",
+                "hint": "ensure your deployment name is the same as the model name, e.g., gpt-5",
                 "validator": non_empty
             },
             "AZURE_API_KEY": {
