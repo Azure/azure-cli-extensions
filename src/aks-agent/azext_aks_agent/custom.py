@@ -5,7 +5,7 @@
 
 import os
 
-from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
+from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME, HELP_COLOR
 
 # pylint: disable=too-many-lines, disable=broad-except
 from azext_aks_agent.agent.agent import aks_agent as aks_agent_internal
@@ -25,29 +25,28 @@ logger = get_logger(__name__)
 # pylint: disable=unused-argument
 def aks_agent_init(cmd):
     """Initialize AKS agent llm configuration."""
+    from rich.console import Console
+    console = Console()
+    console.print(
+        "Welcome to AKS Agent LLM configuration setup. Type '/exit' to exit.",
+        style=f"bold {HELP_COLOR}")
 
-    with rich_logging() as console:
-        from holmes.utils.colors import HELP_COLOR
+    provider = prompt_provider_choice()
+    params = provider.prompt_params()
+
+    llm_config_manager = LLMConfigManager()
+    # If the connection to the model endpoint is valid, save the configuration
+    is_valid, msg, action = provider.validate_connection(params)
+
+    if is_valid and action == "save":
+        llm_config_manager.save(provider.model_route if provider.model_route else "openai", params)
         console.print(
-            "Welcome to AKS Agent LLM configuration setup. Type '/exit' to exit.",
+            f"LLM configuration setup successfully and is saved to {llm_config_manager.config_path}.",
             style=f"bold {HELP_COLOR}")
-
-        provider = prompt_provider_choice()
-        params = provider.prompt_params()
-
-        llm_config_manager = LLMConfigManager()
-        # If the connection to the model endpoint is valid, save the configuration
-        is_valid, msg, action = provider.validate_connection(params)
-
-        if is_valid and action == "save":
-            llm_config_manager.save(provider.model_route if provider.model_route else "openai", params)
-            console.print(
-                f"LLM configuration setup successfully and is saved to {llm_config_manager.config_path}.",
-                style=f"bold {HELP_COLOR}")
-        elif not is_valid and action == "retry_input":
-            raise AzCLIError(f"Please re-run `az aks agent-init` to correct the input parameters. {str(msg)}")
-        else:
-            raise AzCLIError(f"Please check your deployed model and network connectivity. {str(msg)}")
+    elif not is_valid and action == "retry_input":
+        raise AzCLIError(f"Please re-run `az aks agent-init` to correct the input parameters. {str(msg)}")
+    else:
+        raise AzCLIError(f"Please check your deployed model and network connectivity. {str(msg)}")
 
 
 # pylint: disable=unused-argument
@@ -81,18 +80,7 @@ def aks_agent(
     llm_config_manager = LLMConfigManager(config_file)
     llm_config_manager.validate_config()
     llm_config = llm_config_manager.get_model_config(model)
-
-    # Check if the configuration is complete
-    provider_name = llm_config.get("provider")
-    provider_instance = PROVIDER_REGISTRY.get(provider_name)()
-    model = provider_instance.model_name(llm_config.get("MODEL_NAME"))
-
-    # Set environment variables for the model provider
-    for k, v in llm_config.items():
-        if k not in ["provider", "MODEL_NAME"]:
-            os.environ[k] = v
-    logger.info(
-        "Using provider: %s, model: %s, Env vars setup successfully.", provider_name, llm_config.get("MODEL_NAME"))
+    llm_config_manager.export_model_config(llm_config)
 
     with rich_logging():
         aks_agent_internal(

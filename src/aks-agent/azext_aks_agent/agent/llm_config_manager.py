@@ -9,8 +9,12 @@ from typing import Dict, List, Optional
 
 import yaml
 from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
+from azext_aks_agent.agent.llm_providers import PROVIDER_REGISTRY
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.azclierror import AzCLIError
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 
 class LLMConfigManager:
@@ -67,18 +71,30 @@ class LLMConfigManager:
             configs = {}
 
         models = configs.get("llms", [])
-        model_name = params.get("MODEL_NAME")
-        if not model_name:
-            raise ValueError("MODEL_NAME is required to save configuration.")
 
-        # Check if model already exists, update it and move it to the last;
-        # otherwise, append new
-        models = [
-            cfg for cfg in models if not (
-                cfg.get("provider") == provider_name and cfg.get("MODEL_NAME") == model_name)]
-        models.append({"provider": provider_name, **params})
+        # modify existing azure openai config from model name to deloyment name
+        for model in models:
+            if provider_name.lower() == "azure" and "MODEL_NAME" in model:
+                model["DEPLOYMENT_NAME"] = model.pop("MODEL_NAME")
 
-        configs["llms"] = models
+        def _update_llm_config(provider_name, required_key, params, existing_models):
+            required_value = params.get(required_key)
+            if not required_value:
+                raise ValueError(f"{required_key} is required to save configuration.")
+
+            # Check if model already exists, update it and move it to the last;
+            # otherwise, append the new one.
+            models = [
+                cfg for cfg in existing_models if not (
+                    cfg.get("provider") == provider_name and cfg.get(required_key) == required_value)]
+            models.append({"provider": provider_name, **params})
+            return models
+
+        # To be consistent, we expose DEPLOYMENT_NAME for Azure provider in both configuration file and init prompts.
+        if provider_name.lower() == "azure":
+            configs["llms"] = _update_llm_config(provider_name, "DEPLOYMENT_NAME", params, models)
+        else:
+            configs["llms"] = _update_llm_config(provider_name, "MODEL_NAME", params, models)
 
         with open(self.config_path, "w") as f:
             yaml.safe_dump(configs, f, sort_keys=False)
@@ -112,15 +128,17 @@ class LLMConfigManager:
         """
         model_configs = self.get_list()
         for cfg in model_configs:
-            if cfg.get("provider") == provider_name and cfg.get(
-                    "MODEL_NAME") == model_name:
-                return cfg
+            if cfg.get("provider") == provider_name:
+                if provider_name.lower() == "azure" and (cfg.get("DEPLOYMENT_NAME") == model_name or cfg.get("MODEL_NAME") == model_name):
+                    return cfg
+                elif cfg.get("MODEL_NAME") == model_name:
+                    return cfg
         return None
 
     def get_model_config(self, model) -> Optional[Dict]:
-        prompt_for_init = "Run 'az aks agent-init' to set up your LLM endpoint (recommended path).\n" \
-            "To configure your LLM manually, create a config file using the templates provided here: "\
-            "https://aka.ms/aks/agentic-cli/init"
+        prompt_for_init = "Run 'az aks agent-init' to set up your LLM endpoint (recommended path).\n"
+        "To configure your LLM manually, create a config file using the templates provided here: "
+        "https://aka.ms/aks/agentic-cli/init"
 
         if not model:
             llm_config: Optional[Dict] = self.get_latest()
@@ -147,3 +165,23 @@ class LLMConfigManager:
                     config.get(key)):
                 return False
         return True
+
+    def export_model_config(self, llm_config) -> str:
+        # Check if the configuration is complete
+        provider_name = llm_config.get("provider")
+        provider_instance = PROVIDER_REGISTRY.get(provider_name)()
+        # NOTE(mainred) for backward compatibility with Azure OpenAI, replace the MODEL_NAME with DEPLOYMENT_NAME
+        if provider_name.lower() == "azure" and "MODEL_NAME" in llm_config:
+            llm_config["DEPLOYMENT_NAME"] = llm_config.pop("MODEL_NAME")
+
+        model_name_key = "MODEL_NAME" if provider_name.lower() != "azure" else "DEPLOYMENT_NAME"
+        model = provider_instance.model_name(llm_config.get(model_name_key))
+
+        # Set environment variables for the model provider
+        for k, v in llm_config.items():
+            if k not in ["provider", "MODEL_NAME", "DEPLOYMENT_NAME"]:
+                os.environ[k] = v
+        logger.info(
+            "Using provider: %s, model: %s, Env vars setup successfully.", provider_name, llm_config.get("MODEL_NAME"))
+
+        return model

@@ -6,7 +6,7 @@
 import os
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import yaml
 from azext_aks_agent.agent.llm_config_manager import LLMConfigManager
@@ -450,6 +450,306 @@ class TestLLMConfigManager(unittest.TestCase):
         # Don't create the file - validation should be skipped for default path
         # Should not raise any exception
         self.manager.validate_config()
+
+    def test_save_new_configuration(self):
+        """Test save method with new configuration."""
+        provider_name = "openai"
+        params = {
+            "MODEL_NAME": "gpt-4",
+            "OPENAI_API_KEY": "test-key-123"
+        }
+
+        self.manager.save(provider_name, params)
+
+        # Verify the configuration was saved
+        with open(self.config_file, 'r') as f:
+            saved_config = yaml.safe_load(f)
+
+        self.assertIn("llms", saved_config)
+        self.assertEqual(len(saved_config["llms"]), 1)
+
+        saved_llm = saved_config["llms"][0]
+        self.assertEqual(saved_llm["provider"], provider_name)
+        self.assertEqual(saved_llm["MODEL_NAME"], "gpt-4")
+        self.assertEqual(saved_llm["OPENAI_API_KEY"], "test-key-123")
+
+    def test_save_update_existing_configuration(self):
+        """Test save method updates existing configuration."""
+        # First save
+        provider_name = "openai"
+        initial_params = {
+            "MODEL_NAME": "gpt-3.5-turbo",
+            "OPENAI_API_KEY": "old-key"
+        }
+        self.manager.save(provider_name, initial_params)
+
+        # Update with same model name
+        updated_params = {
+            "MODEL_NAME": "gpt-3.5-turbo",
+            "OPENAI_API_KEY": "new-key"
+        }
+        self.manager.save(provider_name, updated_params)
+
+        # Verify only one configuration exists and it's updated
+        with open(self.config_file, 'r') as f:
+            saved_config = yaml.safe_load(f)
+
+        self.assertEqual(len(saved_config["llms"]), 1)
+        saved_llm = saved_config["llms"][0]
+        self.assertEqual(saved_llm["OPENAI_API_KEY"], "new-key")
+
+    def test_save_azure_provider_uses_deployment_name(self):
+        """Test save method with Azure provider uses DEPLOYMENT_NAME."""
+        provider_name = "azure"
+        params = {
+            "DEPLOYMENT_NAME": "my-gpt-4-deployment",
+            "AZURE_OPENAI_ENDPOINT": "https://test.openai.azure.com",
+            "AZURE_OPENAI_API_KEY": "azure-key"
+        }
+
+        self.manager.save(provider_name, params)
+
+        with open(self.config_file, 'r') as f:
+            saved_config = yaml.safe_load(f)
+
+        saved_llm = saved_config["llms"][0]
+        self.assertEqual(saved_llm["provider"], "azure")
+        self.assertEqual(saved_llm["DEPLOYMENT_NAME"], "my-gpt-4-deployment")
+
+    def test_save_azure_converts_model_name_to_deployment_name(self):
+        """Test save method converts MODEL_NAME to DEPLOYMENT_NAME for Azure."""
+        # Setup existing config with MODEL_NAME
+        existing_config = {
+            "llms": [{
+                "provider": "azure",
+                "MODEL_NAME": "gpt-4",
+                "AZURE_OPENAI_ENDPOINT": "https://test.openai.azure.com"
+            }]
+        }
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(existing_config, f)
+
+        # Save new Azure config
+        provider_name = "azure"
+        params = {
+            "DEPLOYMENT_NAME": "new-deployment",
+            "AZURE_OPENAI_ENDPOINT": "https://test2.openai.azure.com"
+        }
+        self.manager.save(provider_name, params)
+
+        with open(self.config_file, 'r') as f:
+            saved_config = yaml.safe_load(f)
+
+        # Verify existing config was converted and new one added
+        self.assertEqual(len(saved_config["llms"]), 2)
+
+        # First config should have DEPLOYMENT_NAME now
+        first_llm = saved_config["llms"][0]
+        self.assertNotIn("MODEL_NAME", first_llm)
+        self.assertIn("DEPLOYMENT_NAME", first_llm)
+        self.assertEqual(first_llm["DEPLOYMENT_NAME"], "gpt-4")
+
+    def test_save_missing_model_name_raises_error(self):
+        """Test save method raises error when MODEL_NAME is missing for non-Azure provider."""
+        provider_name = "openai"
+        params = {
+            "OPENAI_API_KEY": "test-key"
+            # Missing MODEL_NAME
+        }
+
+        with self.assertRaises(ValueError) as cm:
+            self.manager.save(provider_name, params)
+
+        self.assertIn("MODEL_NAME is required", str(cm.exception))
+
+    def test_save_missing_deployment_name_raises_error(self):
+        """Test save method raises error when DEPLOYMENT_NAME is missing for Azure provider."""
+        provider_name = "azure"
+        params = {
+            "AZURE_OPENAI_ENDPOINT": "https://test.openai.azure.com",
+            "AZURE_OPENAI_API_KEY": "test-key"
+            # Missing DEPLOYMENT_NAME
+        }
+
+        with self.assertRaises(ValueError) as cm:
+            self.manager.save(provider_name, params)
+
+        self.assertIn("DEPLOYMENT_NAME is required", str(cm.exception))
+
+    def test_save_appends_new_model_to_existing_list(self):
+        """Test save method appends new model to existing list."""
+        # Setup existing config
+        existing_config = {
+            "llms": [{
+                "provider": "openai",
+                "MODEL_NAME": "gpt-3.5-turbo",
+                "OPENAI_API_KEY": "key1"
+            }]
+        }
+        with open(self.config_file, 'w') as f:
+            yaml.safe_dump(existing_config, f)
+
+        # Add different model
+        provider_name = "openai"
+        params = {
+            "MODEL_NAME": "gpt-4",
+            "OPENAI_API_KEY": "key2"
+        }
+        self.manager.save(provider_name, params)
+
+        with open(self.config_file, 'r') as f:
+            saved_config = yaml.safe_load(f)
+
+        # Should have both models
+        self.assertEqual(len(saved_config["llms"]), 2)
+        models = [llm["MODEL_NAME"] for llm in saved_config["llms"]]
+        self.assertIn("gpt-3.5-turbo", models)
+        self.assertIn("gpt-4", models)
+
+    def test_save_handles_empty_config_file(self):
+        """Test save method handles empty config file."""
+        # Create empty config file
+        with open(self.config_file, 'w') as f:
+            f.write("")
+
+        provider_name = "openai"
+        params = {
+            "MODEL_NAME": "gpt-4",
+            "OPENAI_API_KEY": "test-key"
+        }
+
+        self.manager.save(provider_name, params)
+
+        with open(self.config_file, 'r') as f:
+            saved_config = yaml.safe_load(f)
+
+        self.assertIn("llms", saved_config)
+        self.assertEqual(len(saved_config["llms"]), 1)
+
+    @patch("azext_aks_agent.agent.llm_config_manager.PROVIDER_REGISTRY")
+    @patch("azext_aks_agent.agent.llm_config_manager.os.environ", new_callable=dict)
+    def test_export_model_config_sets_environment_variables(self, mock_environ, mock_registry):
+        """Test export_model_config sets environment variables."""
+        # Mock provider
+        mock_provider_instance = MagicMock()
+        mock_provider_instance.model_name.return_value = "test-model"
+        mock_provider = MagicMock(return_value=mock_provider_instance)
+        mock_registry.get.return_value = mock_provider
+
+        llm_config = {
+            "provider": "openai",
+            "MODEL_NAME": "gpt-4",
+            "OPENAI_API_KEY": "test-key",
+        }
+
+        with patch("azext_aks_agent.agent.llm_config_manager.logger") as mock_logger:
+            result = self.manager.export_model_config(llm_config)
+
+        # Verify environment variables were set
+        self.assertEqual(mock_environ["OPENAI_API_KEY"], "test-key")
+        self.assertEqual("MODEL_NAME", mock_environ)
+        self.assertNotIn("provider", mock_environ)
+
+        # Verify provider was called correctly
+        mock_registry.get.assert_called_once_with("openai")
+        mock_provider_instance.model_name.assert_called_once_with("gpt-4")
+
+        # Verify logging
+        mock_logger.info.assert_called_once()
+
+        self.assertEqual(result, "test-model")
+
+    @patch("azext_aks_agent.agent.llm_config_manager.PROVIDER_REGISTRY")
+    @patch("azext_aks_agent.agent.llm_config_manager.os.environ", new_callable=dict)
+    def test_export_model_config_azure_converts_model_name(self, mock_environ, mock_registry):
+        """Test export_model_config converts MODEL_NAME to DEPLOYMENT_NAME for Azure."""
+        # Mock provider
+        mock_provider_instance = MagicMock()
+        mock_provider_instance.model_name.return_value = "azure-model"
+        mock_provider = MagicMock(return_value=mock_provider_instance)
+        mock_registry.get.return_value = mock_provider
+
+        llm_config = {
+            "provider": "azure",
+            "MODEL_NAME": "gpt-4-legacy",  # This should be converted
+            "AZURE_OPENAI_ENDPOINT": "https://test.openai.azure.com",
+            "AZURE_OPENAI_API_KEY": "azure-key"
+        }
+
+        with patch("azext_aks_agent.agent.llm_config_manager.logger"):
+            result = self.manager.export_model_config(llm_config)
+
+        # Verify MODEL_NAME was converted to DEPLOYMENT_NAME
+        self.assertNotIn("MODEL_NAME", llm_config)
+        self.assertIn("DEPLOYMENT_NAME", llm_config)
+        self.assertEqual(llm_config["DEPLOYMENT_NAME"], "gpt-4-legacy")
+
+        # Verify environment variables
+        self.assertEqual("DEPLOYMENT_NAME", mock_environ)
+        self.assertEqual(mock_environ["AZURE_OPENAI_ENDPOINT"], "https://test.openai.azure.com")
+
+        # Verify provider was called with deployment name
+        mock_provider_instance.model_name.assert_called_once_with("gpt-4-legacy")
+
+        # Verify return value
+        self.assertEqual(result, "azure-model")
+
+    @patch("azext_aks_agent.agent.llm_config_manager.PROVIDER_REGISTRY")
+    @patch("azext_aks_agent.agent.llm_config_manager.os.environ", new_callable=dict)
+    def test_export_model_config_azure_with_deployment_name(self, mock_environ, mock_registry):
+        """Test export_model_config with Azure provider using DEPLOYMENT_NAME."""
+        # Mock provider
+        mock_provider_instance = MagicMock()
+        mock_provider_instance.model_name.return_value = "azure-deployment"
+        mock_provider = MagicMock(return_value=mock_provider_instance)
+        mock_registry.get.return_value = mock_provider
+
+        llm_config = {
+            "provider": "azure",
+            "DEPLOYMENT_NAME": "my-gpt-4-deployment",
+            "AZURE_OPENAI_ENDPOINT": "https://test.openai.azure.com",
+            "AZURE_OPENAI_API_KEY": "azure-key"
+        }
+
+        with patch("azext_aks_agent.agent.llm_config_manager.logger"):
+            result = self.manager.export_model_config(llm_config)
+
+        # Verify DEPLOYMENT_NAME is preserved
+        self.assertEqual(llm_config["DEPLOYMENT_NAME"], "my-gpt-4-deployment")
+        self.assertEqual("DEPLOYMENT_NAME", mock_environ)
+
+        # Verify provider was called with deployment name
+        mock_provider_instance.model_name.assert_called_once_with("my-gpt-4-deployment")
+
+        # Verify return value
+        self.assertEqual(result, "azure-deployment")
+
+    @patch("azext_aks_agent.agent.llm_config_manager.PROVIDER_REGISTRY")
+    def test_export_model_config_non_azure_provider(self, mock_registry):
+        """Test export_model_config with non-Azure provider."""
+        # Mock provider
+        mock_provider_instance = MagicMock()
+        mock_provider_instance.model_name.return_value = "openai-model"
+        mock_provider = MagicMock(return_value=mock_provider_instance)
+        mock_registry.get.return_value = mock_provider
+
+        llm_config = {
+            "provider": "openai",
+            "MODEL_NAME": "gpt-4",
+            "OPENAI_API_KEY": "test-key"
+        }
+
+        with patch("azext_aks_agent.agent.llm_config_manager.logger"):
+            with patch("azext_aks_agent.agent.llm_config_manager.os.environ", new_callable=dict):
+                result = self.manager.export_model_config(llm_config)
+
+        # Verify MODEL_NAME is preserved for non-Azure providers
+        self.assertEqual(llm_config["MODEL_NAME"], "gpt-4")
+
+        # Verify provider was called with model name
+        mock_provider_instance.model_name.assert_called_once_with("gpt-4")
+
+        self.assertEqual(result, "openai-model")
 
 
 if __name__ == '__main__':

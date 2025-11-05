@@ -62,19 +62,19 @@ class AzureProvider(LLMProvider):
         api_key = params.get("AZURE_API_KEY")
         api_base = params.get("AZURE_API_BASE")
         api_version = params.get("AZURE_API_VERSION")
-        model_name = params.get("MODEL_NAME")
+        deployment_name = params.get("DEPLOYMENT_NAME")
 
-        if not all([api_key, api_base, api_version, model_name]):
+        if not all([api_key, api_base, api_version, deployment_name]):
             return False, "Missing required Azure parameters.", "retry_input"
 
         # REST API reference: https://learn.microsoft.com/en-us/azure/ai-foundry/openai/api-version-lifecycle?tabs=rest
-        url = urljoin(api_base, f"openai/deployments/{model_name}/chat/completions")
+        url = urljoin(api_base, f"openai/deployments/{deployment_name}/chat/completions")
 
         query = {"api-version": api_version}
         full_url = f"{url}?{urlencode(query)}"
         headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
         payload = {
-            "model": model_name,
+            "model": deployment_name,
             "messages": [{"role": "user", "content": "ping"}],
             "max_tokens": 16
         }
