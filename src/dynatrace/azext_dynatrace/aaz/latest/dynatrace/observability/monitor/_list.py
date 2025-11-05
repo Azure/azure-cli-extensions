@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all MonitorResource by subscriptionId
+
+    :example: Monitors_ListBySubscriptionId_MaximumSet_Gen
+        az dynatrace observability monitor list
     """
 
     _aaz_info = {

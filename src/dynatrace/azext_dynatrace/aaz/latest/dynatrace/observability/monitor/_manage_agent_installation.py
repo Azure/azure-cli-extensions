@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ManageAgentInstallation(AAZCommand):
     """Performs Dynatrace agent install/uninstall action through the Azure Dynatrace resource on the provided list of resources.
+
+    :example: Monitors_ManageAgentInstallation_MaximumSet_Gen
+        az dynatrace observability monitor manage-agent-installation --resource-group myResourceGroup --monitor-name myMonitor --mng-agt-instal-list "[{id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachineScaleSets/vmssName},{id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachineScaleSets/vmssName2}]" --action Install
     """
 
     _aaz_info = {
@@ -64,17 +67,17 @@ class ManageAgentInstallation(AAZCommand):
             required=True,
             enum={"Install": "Install", "Uninstall": "Uninstall"},
         )
-        _args_schema.manage_agent_installation_list = AAZListArg(
-            options=["--manage-agent-installation-list"],
+        _args_schema.mng_agt_instal_list = AAZListArg(
+            options=["--mng-agt-instal-list"],
             arg_group="Request",
             help="The list of resources.",
             required=True,
         )
 
-        manage_agent_installation_list = cls._args_schema.manage_agent_installation_list
-        manage_agent_installation_list.Element = AAZObjectArg()
+        mng_agt_instal_list = cls._args_schema.mng_agt_instal_list
+        mng_agt_instal_list.Element = AAZObjectArg()
 
-        _element = cls._args_schema.manage_agent_installation_list.Element
+        _element = cls._args_schema.mng_agt_instal_list.Element
         _element.id = AAZStrArg(
             options=["id"],
             help="The ARM id of the resource to install/uninstall agent.",
@@ -165,7 +168,7 @@ class ManageAgentInstallation(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("manageAgentInstallationList", AAZListType, ".manage_agent_installation_list", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("manageAgentInstallationList", AAZListType, ".mng_agt_instal_list", typ_kwargs={"flags": {"required": True}})
 
             manage_agent_installation_list = _builder.get(".manageAgentInstallationList")
             if manage_agent_installation_list is not None:

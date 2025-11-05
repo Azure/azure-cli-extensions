@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the subscriptions currently being monitored by the Dynatrace monitor resource.
+
+    :example: Monitors_GetMonitoredSubscriptions
+        az dynatrace monitor monitored-subscription show --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {

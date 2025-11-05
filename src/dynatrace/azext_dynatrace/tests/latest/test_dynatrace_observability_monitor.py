@@ -37,7 +37,7 @@ class DynatraceObservabilityMonitorScenario(ScenarioTest):
         
         # Manage agent installation (nonexistent VM expected to fail; keep expect_failure to record behavior)
         self.kwargs['vm_id'] = f"/subscriptions/{self.get_subscription_id()}/resourceGroups/{resource_group}/providers/Microsoft.Compute/virtualMachines/nonexistentVM"
-        self.cmd('dynatrace observability monitor manage-agent-installation --resource-group {rg} --monitor-name {monitor} --action Install --manage-agent-installation-list \'[{{id:"{vm_id}"}}]\'', expect_failure=True)
+        self.cmd('dynatrace observability monitor manage-agent-installation --resource-group {rg} --monitor-name {monitor} --action Install --mng-agt-instal-list \'[{{id:"{vm_id}"}}]\'', expect_failure=True)
 
         # Cleanup monitor (monitored-subscription deletion handled in its dedicated test)
         self.cmd('dynatrace monitor delete -g {rg} -n {monitor} -y')

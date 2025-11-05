@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a DynatraceSingleSignOnResource
+
+    :example: SingleSignOn_CreateOrUpdate_MaximumSet_Gen
+        az dynatrace monitor sso-config update --resource-group {rg} --monitor-name {monitor} -n default --aad-domains [\\'mpliftrdt20210811outlook.onmicrosoft.com\\'] --single-sign-on-url "https://www.dynatrace.io"
     """
 
     _aaz_info = {

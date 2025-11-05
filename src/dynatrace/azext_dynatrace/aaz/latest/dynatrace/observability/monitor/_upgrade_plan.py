@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class UpgradePlan(AAZCommand):
     """Upgrades the billing Plan for Dynatrace monitor resource.
+
+    :example: Monitors_UpgradePlan_MaximumSet_Gen
+        az dynatrace observability monitor upgrade-plan --resource-group myResourceGroup --monitor-name myMonitor --plan-data "{usage-type:Committed,billing-cycle:Monthly,plan-details:dynatraceapitestplan,effective-date:'2019-08-30T15:14:33+02:00'}"
     """
 
     _aaz_info = {

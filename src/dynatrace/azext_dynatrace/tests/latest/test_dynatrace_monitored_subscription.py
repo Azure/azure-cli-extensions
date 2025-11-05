@@ -28,7 +28,7 @@ class DynatraceMonitoredSubscriptionScenario(ScenarioTest):
         self.cmd('dynatrace monitor wait -g {rg} -n {monitor} --created')
 
         # Create monitored subscription (default resource) - build JSON list via preformatted string to prevent kwargs KeyError
-        self.cmd('dynatrace monitor monitored-subscription create --resource-group {rg} --monitor-name {monitor} --monitored-subscription-list "[{{\\"subscription-id\\":\\"{subscription_id}\\",\\"status\\":\\"Active\\"}}]" ', checks=[
+        self.cmd('dynatrace monitor monitored-subscription create --resource-group {rg} --monitor-name {monitor} --monitored-sub-list "[{{\\"subscription-id\\":\\"{subscription_id}\\",\\"status\\":\\"Active\\"}}]" ', checks=[
             self.check('name', 'default'),
             self.check('properties.monitoredSubscriptionList[0].subscriptionId', '{subscription_id}'),
             self.check('properties.monitoredSubscriptionList[0].status', 'Active'),

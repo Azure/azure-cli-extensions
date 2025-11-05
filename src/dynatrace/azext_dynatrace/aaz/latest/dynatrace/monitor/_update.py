@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a MonitorResource
+
+    :example: Monitors_Update_MaximumSet_Gen
+        az dynatrace monitor update --resource-group myResourceGroup --monitor-name myMonitor --tags "{Environment:Dev}" --plan-data "{usage-type:Committed,billing-cycle:Monthly,plan-details:dynatraceapitestplan,effective-date:'2019-08-30'}"
     """
 
     _aaz_info = {

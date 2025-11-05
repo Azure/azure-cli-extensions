@@ -65,8 +65,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Properties of the Dynatrace environment.",
         )
-        _args_schema.marketplace_saas_auto_renew = AAZStrArg(
-            options=["--marketplace-saas-auto-renew"],
+        _args_schema.mp_saas_auto_renew = AAZStrArg(
+            options=["--mp-saas-auto-renew"],
             arg_group="Properties",
             help="Marketplace resource autorenew flag",
             enum={"Off": "Off", "On": "On"},
@@ -400,7 +400,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("dynatraceEnvironmentProperties", AAZObjectType, ".environment")
-                properties.set_prop("marketplaceSaasAutoRenew", AAZStrType, ".marketplace_saas_auto_renew")
+                properties.set_prop("marketplaceSaasAutoRenew", AAZStrType, ".mp_saas_auto_renew")
                 properties.set_prop("marketplaceSubscriptionStatus", AAZStrType, ".subscription_status")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
                 properties.set_prop("planData", AAZObjectType, ".plan_data")

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create the subscriptions that should be monitored by the Dynatrace monitor resource.
+
+    :example: Monitors_AddMonitoredSubscriptions
+        az dynatrace monitor monitored-subscription create --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
@@ -57,8 +60,8 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.monitored_subscription_list = AAZListArg(
-            options=["--monitored-subscription-list"],
+        _args_schema.monitored_sub_list = AAZListArg(
+            options=["--monitored-sub-list"],
             arg_group="Properties",
             help="List of subscriptions and the state of the monitoring.",
         )
@@ -69,10 +72,10 @@ class Create(AAZCommand):
             enum={"Active": "Active", "AddBegin": "AddBegin", "AddComplete": "AddComplete", "DeleteBegin": "DeleteBegin", "DeleteComplete": "DeleteComplete"},
         )
 
-        monitored_subscription_list = cls._args_schema.monitored_subscription_list
-        monitored_subscription_list.Element = AAZObjectArg()
+        monitored_sub_list = cls._args_schema.monitored_sub_list
+        monitored_sub_list.Element = AAZObjectArg()
 
-        _element = cls._args_schema.monitored_subscription_list.Element
+        _element = cls._args_schema.monitored_sub_list.Element
         _element.error = AAZStrArg(
             options=["error"],
             help="The reason of not monitoring the subscription.",
@@ -92,7 +95,7 @@ class Create(AAZCommand):
             help="Properties for the Tag rules resource of a Monitor account.",
         )
 
-        tag_rules = cls._args_schema.monitored_subscription_list.Element.tag_rules
+        tag_rules = cls._args_schema.monitored_sub_list.Element.tag_rules
         tag_rules.log_rules = AAZObjectArg(
             options=["log-rules"],
             help="Set of rules for sending logs for the Monitor resource.",
@@ -102,7 +105,7 @@ class Create(AAZCommand):
             help="Set of rules for sending metrics for the Monitor resource.",
         )
 
-        log_rules = cls._args_schema.monitored_subscription_list.Element.tag_rules.log_rules
+        log_rules = cls._args_schema.monitored_sub_list.Element.tag_rules.log_rules
         log_rules.filtering_tags = AAZListArg(
             options=["filtering-tags"],
             help="List of filtering tags to be used for capturing logs. This only takes effect if SendActivityLogs flag is enabled. If empty, all resources will be captured. If only Exclude action is specified, the rules will apply to the list of all available resources. If Include actions are specified, the rules will only include resources with the associated tags.",
@@ -123,11 +126,11 @@ class Create(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
-        filtering_tags = cls._args_schema.monitored_subscription_list.Element.tag_rules.log_rules.filtering_tags
+        filtering_tags = cls._args_schema.monitored_sub_list.Element.tag_rules.log_rules.filtering_tags
         filtering_tags.Element = AAZObjectArg()
         cls._build_args_filtering_tag_create(filtering_tags.Element)
 
-        metric_rules = cls._args_schema.monitored_subscription_list.Element.tag_rules.metric_rules
+        metric_rules = cls._args_schema.monitored_sub_list.Element.tag_rules.metric_rules
         metric_rules.filtering_tags = AAZListArg(
             options=["filtering-tags"],
             help="List of filtering tags to be used for capturing metrics. If empty, all resources will be captured. If only Exclude action is specified, the rules will apply to the list of all available resources. If Include actions are specified, the rules will only include resources with the associated tags.",
@@ -138,7 +141,7 @@ class Create(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
-        filtering_tags = cls._args_schema.monitored_subscription_list.Element.tag_rules.metric_rules.filtering_tags
+        filtering_tags = cls._args_schema.monitored_sub_list.Element.tag_rules.metric_rules.filtering_tags
         filtering_tags.Element = AAZObjectArg()
         cls._build_args_filtering_tag_create(filtering_tags.Element)
         return cls._args_schema
@@ -284,7 +287,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("monitoredSubscriptionList", AAZListType, ".monitored_subscription_list")
+                properties.set_prop("monitoredSubscriptionList", AAZListType, ".monitored_sub_list")
                 properties.set_prop("operation", AAZStrType, ".operation")
 
             monitored_subscription_list = _builder.get(".properties.monitoredSubscriptionList")

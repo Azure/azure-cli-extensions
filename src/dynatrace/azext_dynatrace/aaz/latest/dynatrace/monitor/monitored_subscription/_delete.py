@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the subscriptions that are being monitored by the Dynatrace monitor resource
+
+    :example: Monitors_DeleteMonitoredSubscriptions
+        az dynatrace monitor monitored-subscription delete --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
