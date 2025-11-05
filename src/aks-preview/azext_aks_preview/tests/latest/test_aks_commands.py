@@ -3081,6 +3081,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "location": resource_group_location,
                 "resource_type": "Microsoft.ContainerService/ManagedClusters",
                 "workload_runtime": CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION,
+                "ssh_key_value": self.generate_ssh_keys(),
             }
         )
 
@@ -3088,7 +3089,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--os-sku AzureLinux --workload-runtime {workload_runtime} --node-count 1 "
-            "--node-vm-size Standard_D4s_v3"
+            "--ssh-key-value={ssh_key_value} --node-vm-size Standard_D4s_v3"
         )
         self.cmd(
             create_cmd,
@@ -3128,13 +3129,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "location": resource_group_location,
                 "resource_type": "Microsoft.ContainerService/ManagedClusters",
                 "workload_runtime": CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION,
+                "ssh_key_value": self.generate_ssh_keys(),
             }
         )
 
         # create
         create_cmd = (
                 "aks create --resource-group={resource_group} --name={name} "
-                "--nodepool-name {node_pool_name} -c 1"
+                "--nodepool-name {node_pool_name} -c 1 --ssh-key-value={ssh_key_value}"
         )
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -3181,6 +3183,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "location": resource_group_location,
                 "resource_type": "Microsoft.ContainerService/ManagedClusters",
                 "workload_runtime": CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION,
+                "ssh_key_value": self.generate_ssh_keys(),
             }
         )
 
@@ -3188,7 +3191,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--os-sku AzureLinux --workload-runtime {workload_runtime} --node-count 1 "
-            "--node-vm-size Standard_D4s_v3"
+            "--ssh-key-value={ssh_key_value} --node-vm-size Standard_D4s_v3"
         )
         self.cmd(
             create_cmd,
@@ -3228,13 +3231,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "location": resource_group_location,
                 "resource_type": "Microsoft.ContainerService/ManagedClusters",
                 "workload_runtime": CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION,
+                "ssh_key_value": self.generate_ssh_keys(),
             }
         )
 
         # create
         create_cmd = (
                 "aks create --resource-group={resource_group} --name={name} "
-                "--nodepool-name {node_pool_name} -c 1"
+                "--nodepool-name {node_pool_name} -c 1 --ssh-key-value={ssh_key_value}"
         )
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
