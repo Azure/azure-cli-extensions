@@ -1443,30 +1443,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 raise RequiredArgumentMissingError(
                     '"--azure-keyvault-kms-key-id" requires "--enable-azure-keyvault-kms".')
 
-            # PMK validation logic moved from validate_azure_keyvault_kms_key_id
-            if key_id:
-                # Check if PMK (Platform-Managed Keys) is enabled
-                is_pmk_enabled = self.get_kms_infrastructure_encryption() == "Enabled"
-                segments = key_id[len("https://"):].split("/")
-
-                if is_pmk_enabled:
-                    # PMK enabled (K2P): Only accept versionless key ID (3 segments: vault.net/keys/key-name)
-                    if len(segments) != 3:
-                        err_msg = (
-                            "--azure-keyvault-kms-key-id is not a valid versionless Key Vault key ID for PMK. "
-                            "Valid format is https://{key-vault-url}/keys/{key-name}. "
-                            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
-                        )
-                        raise InvalidArgumentValueError(err_msg)
-                else:
-                    # PMK disabled (KMS v2): Accept versioned key ID (4 segments)
-                    if len(segments) != 4:
-                        err_msg = (
-                            "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
-                            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
-                        )
-                        raise InvalidArgumentValueError(err_msg)
-
         return key_id
 
     def get_azure_keyvault_kms_key_id(self) -> Union[str, None]:
