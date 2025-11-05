@@ -5,6 +5,7 @@ Release History
 upcoming
 ++++++
 * 'az containerapp env premium-ingress add/update': remove `--min-replicas` and `--max-replicas`
+* 'az containerapp sessionpool create': Add `Shell` container type
 
 1.2.0b4
 ++++++
