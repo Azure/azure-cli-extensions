@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Remove PMK validation for `--azure-keyvault-kms-key-id` parameter.
+* `az aks safeguards`: Add support for Deployment Safeguards with Pod Security Standards (PSS). New `--pss-level` parameter allows setting PSS enforcement level to Privileged, Baseline, or Restricted. Commands now support both `-g/-n` and `--cluster` argument patterns.
 
 19.0.0b10
 +++++++

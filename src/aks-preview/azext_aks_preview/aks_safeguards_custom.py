@@ -49,7 +49,7 @@ def _add_resource_group_cluster_name_args(_args_schema):
     _args_schema.resource_group = AAZResourceGroupNameArg(
         options=["-g", "--resource-group"],
         help="The name of the resource group. You can configure the default group using "
-             "az configure --defaults group=<name>. You may provide either 'managed_cluster' "
+             "`az configure --defaults group=<name>`. You may provide either 'managed_cluster' "
              "or both 'resource_group' and 'name', but not both.",
         required=False,
     )
