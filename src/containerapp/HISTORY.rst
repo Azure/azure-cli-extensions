@@ -6,6 +6,8 @@ upcoming
 ++++++
 * 'az containerapp env premium-ingress add/update': remove `--min-replicas` and `--max-replicas`
 * 'az containerapp sessionpool create': Add `Shell` container type
+* Update azure cli dependency version >= "2.79.0"
+* 'az containerapp env http-route-config/premium-ingress': Remove GA commands which exist in azure-cli version 2.79.0
 
 1.2.0b4
 ++++++
