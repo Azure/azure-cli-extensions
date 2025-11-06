@@ -9,3 +9,9 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['nginx deployment waf-policy create'] = """
+    type: group
+    short-summary: Commands to manage Azure VMware Solution.
+    examples: az nginx deployment waf-policy create --name mypolicyname --deployment-name mydeploymentname --resource-group myresourcegroupname --filepath /path/to/my/policy.json --content mycontentfileinbase64encoding
+"""
