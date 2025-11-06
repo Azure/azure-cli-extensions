@@ -19,12 +19,15 @@ class Create(AAZCommand):
 
     :example: Upsert DNS security rule
         az dns-resolver policy dns-security-rule create --resource-group sampleResourceGroup --policy-name sampleDnsResolverPolicy --dns-security-rule-name sampleDnsSecurityRule --location westus2 --tags "{key1:value1}" --priority 100 --action "{action-type:Block}" --domain-lists "[{id:/subscriptions/abdd4249-9f34-4cc6-8e42-c2e32110603e/resourceGroups/sampleResourceGroup/providers/Microsoft.Network/dnsResolverDomainLists/sampleDnsResolverDomainList}]" --rule-state Enabled
+
+    :example: Upsert DNS security rule with managed domain list
+        az dns-resolver policy dns-security-rule create --resource-group sampleResourceGroup --policy-name sampleDnsResolverPolicy --dns-security-rule-name sampleDnsSecurityRule --location westus2 --action "{action-type:Block}" --rule-state Enabled --priority 100 --tags "{key1:value1}" --managed-domain-lists "[AzureDnsThreatIntel]"
     """
 
     _aaz_info = {
-        "version": "2025-05-01",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}/dnssecurityrules/{}", "2025-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}/dnssecurityrules/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -110,13 +113,19 @@ class Create(AAZCommand):
             options=["--domain-lists"],
             arg_group="Properties",
             help="DNS resolver policy domains lists that the DNS security rule applies to.",
-            required=True,
+            default=[],
         )
         _args_schema.rule_state = AAZStrArg(
             options=["--rule-state"],
             arg_group="Properties",
             help="The state of DNS security rule.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.managed_domain_lists = AAZListArg(
+            options=["--managed-domain-lists"],
+            arg_group="Properties",
+            help="Managed domain lists that the DNS security rule applies to.",
+            default=[],
         )
         _args_schema.priority = AAZIntArg(
             options=["--priority"],
@@ -140,6 +149,11 @@ class Create(AAZCommand):
             options=["id"],
             help="Resource ID.",
             required=True,
+        )
+
+        managed_domain_lists = cls._args_schema.managed_domain_lists
+        managed_domain_lists.Element = AAZStrArg(
+            enum={"AzureDnsThreatIntel": "AzureDnsThreatIntel"},
         )
         return cls._args_schema
 
@@ -172,7 +186,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -181,7 +195,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -228,7 +242,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-05-01",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -238,10 +252,10 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "If-Match", self.ctx.args.if_match,
+                    "if-match", self.ctx.args.if_match,
                 ),
                 **self.serialize_header_param(
-                    "If-None-Match", self.ctx.args.if_none_match,
+                    "if-none-match", self.ctx.args.if_none_match,
                 ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
@@ -266,8 +280,9 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("action", AAZObjectType, ".action", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("dnsResolverDomainLists", AAZListType, ".domain_lists", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("dnsResolverDomainLists", AAZListType, ".domain_lists")
                 properties.set_prop("dnsSecurityRuleState", AAZStrType, ".rule_state")
+                properties.set_prop("managedDomainLists", AAZListType, ".managed_domain_lists")
                 properties.set_prop("priority", AAZIntType, ".priority", typ_kwargs={"flags": {"required": True}})
 
             action = _builder.get(".properties.action")
@@ -281,6 +296,10 @@ class Create(AAZCommand):
             _elements = _builder.get(".properties.dnsResolverDomainLists[]")
             if _elements is not None:
                 _elements.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
+
+            managed_domain_lists = _builder.get(".properties.managedDomainLists")
+            if managed_domain_lists is not None:
+                managed_domain_lists.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -336,10 +355,12 @@ class Create(AAZCommand):
             )
             properties.dns_resolver_domain_lists = AAZListType(
                 serialized_name="dnsResolverDomainLists",
-                flags={"required": True},
             )
             properties.dns_security_rule_state = AAZStrType(
                 serialized_name="dnsSecurityRuleState",
+            )
+            properties.managed_domain_lists = AAZListType(
+                serialized_name="managedDomainLists",
             )
             properties.priority = AAZIntType(
                 flags={"required": True},
@@ -361,6 +382,9 @@ class Create(AAZCommand):
             _element.id = AAZStrType(
                 flags={"required": True},
             )
+
+            managed_domain_lists = cls._schema_on_200_201.properties.managed_domain_lists
+            managed_domain_lists.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
