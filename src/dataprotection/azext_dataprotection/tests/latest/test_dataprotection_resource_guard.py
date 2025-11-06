@@ -19,10 +19,10 @@ class ResourceGuardScenarioTest(ScenarioTest):
         test.kwargs.update({
             'location': 'centraluseuap',
             'resourceGuardName': 'clitest-resource-guard',
+            'rg': 'clitest-dpp-rg'
         })
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitest-dpp-resourceguard-', location='centraluseuap')
     def test_dataprotection_resource_guard_create_and_delete(test):
         test.cmd('az dataprotection resource-guard create -g "{rg}" -n "{resourceGuardName}"', checks=[
             test.check('name', "{resourceGuardName}")
@@ -36,7 +36,6 @@ class ResourceGuardScenarioTest(ScenarioTest):
         test.cmd('az dataprotection resource-guard delete -g "{rg}" -n "{resourceGuardName}" -y')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitest-dpp-resourceguard-', location='centraluseuap')
     def test_dataprotection_resource_guard_update(test):
         test.kwargs.update({
             'resourceType': 'Microsoft.RecoveryServices/vaults'
@@ -65,7 +64,6 @@ class ResourceGuardScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitest-dpp-resourceguard-', location='centraluseuap')
     def test_dataprotection_resource_guard_mapping(test):
         test.kwargs.update({
             'vaultName': 'clitest-dpp-muavault-deletable',

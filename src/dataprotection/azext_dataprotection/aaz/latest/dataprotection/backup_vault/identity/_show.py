@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Show the details of managed identities.
-
-    :example: Show identity of the Backup vault
-        az dataprotection backup-vault identity show -g testRG -v testVault
     """
 
     _aaz_info = {
-        "version": "2025-01-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-01-01", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-07-01", "identity"],
         ]
     }
 
@@ -131,7 +128,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-01-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }

@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2024-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2025-07-01"],
         ]
     }
 
@@ -57,6 +57,11 @@ class Create(AAZCommand):
             options=["-v", "--vault-name"],
             help="The name of the backup vault.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z][-A-Za-z0-9]*[A-Za-z0-9]$",
+                max_length=50,
+                min_length=2,
+            ),
         )
 
         # define Arg Group "Parameters"
@@ -69,20 +74,18 @@ class Create(AAZCommand):
     @classmethod
     def _build_args_base_resource_properties_create(cls, _schema):
         if cls._args_base_resource_properties_create is not None:
-            _schema.object_type = cls._args_base_resource_properties_create.object_type
+            _schema.default_resource_properties = cls._args_base_resource_properties_create.default_resource_properties
             return
 
         cls._args_base_resource_properties_create = AAZObjectArg()
 
         base_resource_properties_create = cls._args_base_resource_properties_create
-        base_resource_properties_create.object_type = AAZStrArg(
-            options=["object-type"],
-            help="Type of the specific object - used for deserializing",
-            required=True,
-            enum={"DefaultResourceProperties": "DefaultResourceProperties"},
+        base_resource_properties_create.default_resource_properties = AAZObjectArg(
+            options=["default-resource-properties"],
+            blank={},
         )
 
-        _schema.object_type = cls._args_base_resource_properties_create.object_type
+        _schema.default_resource_properties = cls._args_base_resource_properties_create.default_resource_properties
 
     def _execute_operations(self):
         self.pre_operations()
@@ -113,7 +116,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -122,7 +125,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -169,7 +172,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -268,6 +271,7 @@ class Create(AAZCommand):
             _CreateHelper._build_schema_user_facing_error_read(properties.protection_error_details)
             properties.protection_status = AAZObjectType(
                 serialized_name="protectionStatus",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -393,6 +397,15 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
 
+            disc_adls_blob_backup_datasource_parameters = cls._schema_on_200_201.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "AdlsBlobBackupDatasourceParameters")
+            disc_adls_blob_backup_datasource_parameters.containers_list = AAZListType(
+                serialized_name="containersList",
+                flags={"required": True},
+            )
+
+            containers_list = cls._schema_on_200_201.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "AdlsBlobBackupDatasourceParameters").containers_list
+            containers_list.Element = AAZStrType()
+
             disc_blob_backup_datasource_parameters = cls._schema_on_200_201.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "BlobBackupDatasourceParameters")
             disc_blob_backup_datasource_parameters.containers_list = AAZListType(
                 serialized_name="containersList",
@@ -422,6 +435,9 @@ class Create(AAZCommand):
             disc_kubernetes_cluster_backup_datasource_parameters.included_resource_types = AAZListType(
                 serialized_name="includedResourceTypes",
             )
+            disc_kubernetes_cluster_backup_datasource_parameters.included_volume_types = AAZListType(
+                serialized_name="includedVolumeTypes",
+            )
             disc_kubernetes_cluster_backup_datasource_parameters.label_selectors = AAZListType(
                 serialized_name="labelSelectors",
             )
@@ -448,6 +464,9 @@ class Create(AAZCommand):
 
             included_resource_types = cls._schema_on_200_201.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").included_resource_types
             included_resource_types.Element = AAZStrType()
+
+            included_volume_types = cls._schema_on_200_201.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").included_volume_types
+            included_volume_types.Element = AAZStrType()
 
             label_selectors = cls._schema_on_200_201.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").label_selectors
             label_selectors.Element = AAZStrType()
@@ -513,7 +532,8 @@ class _CreateHelper:
     def _build_schema_base_resource_properties_create(cls, _builder):
         if _builder is None:
             return
-        _builder.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
+        _builder.set_const("objectType", "DefaultResourceProperties", AAZStrType, ".default_resource_properties", typ_kwargs={"flags": {"required": True}})
+        _builder.discriminate_by("objectType", "DefaultResourceProperties")
 
     _schema_base_resource_properties_read = None
 
@@ -521,6 +541,14 @@ class _CreateHelper:
     def _build_schema_base_resource_properties_read(cls, _schema):
         if cls._schema_base_resource_properties_read is not None:
             _schema.object_type = cls._schema_base_resource_properties_read.object_type
+            _schema.discriminate_by(
+                "object_type",
+                "DefaultResourceProperties",
+                cls._schema_base_resource_properties_read.discriminate_by(
+                    "object_type",
+                    "DefaultResourceProperties",
+                )
+            )
             return
 
         cls._schema_base_resource_properties_read = _schema_base_resource_properties_read = AAZObjectType()
@@ -532,6 +560,14 @@ class _CreateHelper:
         )
 
         _schema.object_type = cls._schema_base_resource_properties_read.object_type
+        _schema.discriminate_by(
+                "object_type",
+                "DefaultResourceProperties",
+                cls._schema_base_resource_properties_read.discriminate_by(
+                    "object_type",
+                    "DefaultResourceProperties",
+                )
+            )
 
     _schema_inner_error_read = None
 
