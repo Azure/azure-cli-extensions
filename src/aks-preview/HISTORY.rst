@@ -11,8 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+19.0.0b11
++++++++
 * Remove PMK validation for `--azure-keyvault-kms-key-id` parameter.
 * `az aks safeguards`: Add support for Deployment Safeguards with Pod Security Standards (PSS). New `--pss-level` parameter allows setting PSS enforcement level to Privileged, Baseline, or Restricted. Commands now support both `-g/-n` and `--cluster` argument patterns.
+* `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when enabling PMK on a CMK-disabled cluster
 
 19.0.0b10
 +++++++
@@ -35,7 +39,7 @@ Pending
 * `az aks create`: Add new parameter `--enable-container-network-logs` to enable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs`.
 * `az aks update`: Add new parameter `--enable-container-network-logs` and `--disable-container-network-logs` to enable/disable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs` and `--disable-retina-flow-logs`.
 * Support `entraid` for parameter `--ssh-access` to support EntraID feature.
-* `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when "--disable-azure-keyvault-kms" is specified
+* `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when disabling CMK on a PMK-enabled cluster
 
 19.0.0b6
 +++++++
