@@ -8839,6 +8839,46 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_10, ground_truth_mc_10)
 
+        # test enabling PMK on cluster with disabled CMK - should clear CMK properties
+        dec_11 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "kms_infrastructure_encryption": "Enabled",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # Start with a cluster that has CMK disabled with existing properties
+        existing_security_profile = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=self.models.AzureKeyVaultKms(
+                enabled=False,
+                key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+                key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+            )
+        )
+        mc_11 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=existing_security_profile,
+        )
+        dec_11.context.attach_mc(mc_11)
+        dec_mc_11 = dec_11.update_kms_pmk_cmk(mc_11)
+
+        # should clear CMK properties and enable PMK
+        ground_truth_azure_key_vault_kms_11 = self.models.AzureKeyVaultKms()
+        ground_truth_azure_key_vault_kms_11.enabled = False
+        ground_truth_kube_resource_encryption_profile_11 = self.models.KubernetesResourceObjectEncryptionProfile(
+            infrastructure_encryption="Enabled"
+        )
+        ground_truth_security_profile_11 = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=ground_truth_azure_key_vault_kms_11,
+            kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_11,
+        )
+        ground_truth_mc_11 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_11,
+        )
+        self.assertEqual(dec_mc_11, ground_truth_mc_11)
+
     def test_update_workload_auto_scaler_profile(self):
         # Throws exception when incorrect mc object is passed.
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
