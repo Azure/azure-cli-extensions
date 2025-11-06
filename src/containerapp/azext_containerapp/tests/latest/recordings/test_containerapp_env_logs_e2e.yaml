@@ -244,7 +244,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000004/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"ATdsiGi2s5akJ7t9N9H7tzLXZHGHrlAwT07AX5t4zlJtdjvzDURqFgt6wRdKPJjHirigEJ9UX+/wDJNHKnDu+A==","secondarySharedKey":"3u5dlw4XBtU4q+xEiCG4IjTocivC6R3fDWwLxgm+XBL3oje+LMWY+uflFpqQLpffzwkAAz6LELeNVF5Np+5F4Q=="}'
+      string: '{"primarySharedKey": "abc123","secondarySharedKey": "abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -1707,7 +1707,7 @@ interactions:
       null, "vnetConfiguration": {"infrastructureSubnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnetcoobhhxesmi/subnets/default",
       "dockerBridgeCidr": null, "platformReservedCidr": null, "platformReservedDnsIP":
       null}, "appLogsConfiguration": {"destination": "log-analytics", "logAnalyticsConfiguration":
-      {"customerId": "750fb1d2-9292-4217-80ca-2bf46448cd67", "sharedKey": "ATdsiGi2s5akJ7t9N9H7tzLXZHGHrlAwT07AX5t4zlJtdjvzDURqFgt6wRdKPJjHirigEJ9UX+/wDJNHKnDu+A==",
+      {"customerId": "750fb1d2-9292-4217-80ca-2bf46448cd67", "sharedKey": "abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false, "infrastructureResourceGroup": null}}'
@@ -6836,7 +6836,7 @@ interactions:
 - request:
     body: '{"location": "East US", "properties": {"appLogsConfiguration": {"destination":
       "log-analytics", "logAnalyticsConfiguration": {"customerId": "750fb1d2-9292-4217-80ca-2bf46448cd67",
-      "sharedKey": "ATdsiGi2s5akJ7t9N9H7tzLXZHGHrlAwT07AX5t4zlJtdjvzDURqFgt6wRdKPJjHirigEJ9UX+/wDJNHKnDu+A=="}}}}'
+      "sharedKey": "abc123"}}}}'
     headers:
       Accept:
       - '*/*'
@@ -9623,7 +9623,7 @@ interactions:
 - request:
     body: '{"location": "East US", "properties": {"appLogsConfiguration": {"destination":
       "log-analytics", "logAnalyticsConfiguration": {"customerId": "750fb1d2-9292-4217-80ca-2bf46448cd67",
-      "sharedKey": "ATdsiGi2s5akJ7t9N9H7tzLXZHGHrlAwT07AX5t4zlJtdjvzDURqFgt6wRdKPJjHirigEJ9UX+/wDJNHKnDu+A=="}}}}'
+      "sharedKey": "abc123"}}}}'
     headers:
       Accept:
       - '*/*'
