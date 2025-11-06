@@ -9,3 +9,19 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['nginx deployment waf-policy create'] = """
+    type: command
+    short-summary: Create a WAF policy for an nginx deployment.
+    examples:
+      - name: Create a default WAF policy
+        text: az nginx deployment waf-policy create --name mypolicyname --deployment-name mydeploymentname --resource-group myresourcegroupname --filepath /path/to/my/policy.json --content mycontentfileinbase64encoding
+"""
+
+helps['nginx deployment waf-policy update'] = """
+    type: command
+    short-summary: Update a WAF policy for an nginx deployment.
+    examples:
+      - name: Update a default WAF policy
+        text: az nginx deployment waf-policy update --name mypolicyname --deployment-name mydeploymentname --resource-group myresourcegroupname --filepath /path/to/my/policy.json --content mycontentfileinbase64encoding
+"""
