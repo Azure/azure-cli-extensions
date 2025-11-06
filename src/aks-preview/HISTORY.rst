@@ -12,15 +12,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b12
++++++++
+
+* `az aks create --workload-runtime KataVmIsolation`: Added the KataVmIsolation workload runtime value.
+
 19.0.0b11
 +++++++
 * Remove PMK validation for `--azure-keyvault-kms-key-id` parameter.
 * `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when enabling PMK on a CMK-disabled cluster
-
-19.0.0b11
-+++++++
-
-* `az aks create --workload-runtime KataVmIsolation`: Added the KataVmIsolation workload runtime value.
 
 19.0.0b10
 +++++++
