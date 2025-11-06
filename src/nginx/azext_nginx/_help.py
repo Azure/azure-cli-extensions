@@ -12,6 +12,8 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['nginx deployment waf-policy create'] = """
     type: group
-    short-summary: Commands to manage Azure VMware Solution.
-    examples: az nginx deployment waf-policy create --name mypolicyname --deployment-name mydeploymentname --resource-group myresourcegroupname --filepath /path/to/my/policy.json --content mycontentfileinbase64encoding
+    short-summary: Commands to manage Nginx Deployment WAF Policies.
+    examples:
+        - name: Create a WAF policy for a Nginx deployment
+          text: az nginx deployment waf-policy create --name mypolicyname --deployment-name mydeploymentname --resource-group myresourcegroupname --filepath /path/to/my/policy.json --content mycontentfileinbase64encoding
 """
