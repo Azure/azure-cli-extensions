@@ -29,3 +29,7 @@ CONST_MCP_DEFAULT_URL = "http://localhost:8003/sse"
 CONST_MCP_MIN_VERSION = "0.0.10"
 CONST_MCP_GITHUB_REPO = "Azure/aks-mcp"
 CONST_MCP_BINARY_DIR = "bin"
+
+# Color constants for terminal output
+HELP_COLOR = "cyan"  # same as AI_COLOR for now
+ERROR_COLOR = "red"

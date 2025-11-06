@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b9
++++++++
+* agent-init: replace model name with deployment name for Azure OpenAI service.
+* agent-init: remove importing holmesgpt to resolve the latency issue.
+
 1.0.0b8
 +++++++
 * Error handling: dont raise traceback for init prompt and holmesgpt interaction.
