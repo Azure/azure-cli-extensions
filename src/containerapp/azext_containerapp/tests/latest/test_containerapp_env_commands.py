@@ -15,7 +15,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 
 from .common import TEST_LOCATION, STAGE_LOCATION
 from .custom_preparers import SubnetPreparer
-from .utils import create_vent_subnet
+from .utils import create_vnet_subnet
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -459,7 +459,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
-        sub_id1 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        sub_id1 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         default_env_name = self.create_random_name(prefix='containerapp-env', length=24)
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics -j -s {}'.format(resource_group, default_env_name, logs_workspace_id, logs_workspace_key, sub_id1), checks=[
@@ -468,7 +468,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', True),
         ])
 
-        sub_id2 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        sub_id2 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         default_env_name2 = self.create_random_name(prefix='containerapp-env', length=24)
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} -j false -s {}'.format(resource_group, default_env_name2, logs_workspace_id, logs_workspace_key, sub_id2),checks=[
@@ -478,7 +478,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
-        sub_id3 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        sub_id3 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics -s {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key, sub_id3))
 
@@ -799,7 +799,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
-        sub_id1 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        sub_id1 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         self.cmd(
             'containerapp env create -g {} -n {} --logs-destination none -s {}'.format(resource_group, env_name, sub_id1))
@@ -823,7 +823,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
                  ])
 
         self.cmd('containerapp env delete -g {} -n {} -y --no-wait'.format(resource_group, env_name))
-        sub_id2 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        sub_id2 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         enabled_env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         self.cmd('containerapp env create -g {} -n {} --public-network-access Disabled --logs-destination none -s {}'.format(
