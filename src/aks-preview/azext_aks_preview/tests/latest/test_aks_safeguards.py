@@ -99,7 +99,7 @@ class AksSafeguardsScenario(ScenarioTest):
     def test_aks_deployment_safeguards_with_pss(self):
         """Test safeguards with Pod Security Standards (PSS) feature"""
         self.kwargs.update({
-            'aks_name': self.create_random_name(prefix='akssafeguardspss-', length=20),
+            'aks_name': self.create_random_name(prefix='akspss-', length=15),
             'ssh_key_value': self.generate_ssh_keys(),
             'vm_size': 'standard_a8_v2'
         })
@@ -153,7 +153,7 @@ class AksSafeguardsScenario(ScenarioTest):
     def test_aks_deployment_safeguards_argument_validation(self):
         """Test that argument validation works correctly for -g/-n vs --managed-cluster"""
         self.kwargs.update({
-            'aks_name': self.create_random_name(prefix='akssafeguardsval-', length=20),
+            'aks_name': self.create_random_name(prefix='aksval-', length=15),
             'ssh_key_value': self.generate_ssh_keys(),
             'vm_size': 'standard_a8_v2'
         })
