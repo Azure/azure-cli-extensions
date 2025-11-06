@@ -18,7 +18,7 @@ class AksSafeguardsScenario(ScenarioTest):
         # If the `--ssh-key-value` option is not specified, the validator will try to read the ssh-key from the "~/.ssh" directory,
         # and if no key exists, it will call the method provided by azure-cli.core to generate one under the "~/.ssh" directory.
         # In order to avoid misuse of personal ssh-key during testing and the race condition that is prone to occur when key creation
-        # is handled by azure-cli when performing test cases concurrently, we provide this function as a workround.
+        # is handled by azure-cli when performing test cases concurrently, we provide this function as a workaround.
 
         # In the scenario of runner and AKS check-in pipeline, a temporary ssh-key will be generated in advance under the
         # "tests/latest/data/.ssh" sub-directory of the acs module in the cloned azure-cli repository when setting up the

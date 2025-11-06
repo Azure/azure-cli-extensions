@@ -36,7 +36,7 @@ def _validate_and_set_managed_cluster_argument(ctx):
     if not has_managed_cluster:
         # Construct the managed cluster resource ID from resource group and cluster name
         args.managed_cluster = (
-            f"subscriptions/{ctx.subscription_id}/resourceGroups/{args.resource_group}/"
+            f"/subscriptions/{ctx.subscription_id}/resourceGroups/{args.resource_group}/"
             f"providers/Microsoft.ContainerService/managedClusters/{args.cluster_name}"
         )
 
@@ -49,14 +49,14 @@ def _add_resource_group_cluster_name_args(_args_schema):
     _args_schema.resource_group = AAZResourceGroupNameArg(
         options=["-g", "--resource-group"],
         help="The name of the resource group. You can configure the default group using "
-             "`az configure --defaults group=<name>`. You may provide either 'managed_cluster' "
-             "or both 'resource_group' and 'name', but not both.",
+             "`az configure --defaults group=\`<name>\``. You may provide either --managed-cluster "
+             "or both --resource-group and --name, but not both.",
         required=False,
     )
     _args_schema.cluster_name = AAZStrArg(
         options=["--name", "-n"],
-        help="The name of the Managed Cluster. You may provide either 'managed_cluster' "
-             "or both 'resource_group' and 'name', but not both.",
+        help="The name of the Managed Cluster. You may provide either --managed-cluster "
+             "or both --resource-group and --name, but not both.",
         required=False,
     )
     _args_schema.managed_cluster.required = False
