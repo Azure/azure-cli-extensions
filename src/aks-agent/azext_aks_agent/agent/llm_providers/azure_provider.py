@@ -4,22 +4,38 @@
 # --------------------------------------------------------------------------------------------
 
 
-import requests
 from typing import Tuple
-from urllib.parse import urljoin, urlencode
+from urllib.parse import urlencode, urljoin
+
+import requests
+
 from .base import LLMProvider, is_valid_url, non_empty
 
 
+def is_valid_api_base(v: str) -> bool:
+    # validate the v follows the pattern https://{azure-openai-service-name}.openai.azure.com/
+    if not v.startswith("https://") or not v.endswith(".openai.azure.com/"):
+        return False
+
+    return is_valid_url(v)
+
+
 class AzureProvider(LLMProvider):
-    name = "azure"
+    @property
+    def readable_name(self) -> str:
+        return "Azure OpenAI"
+
+    @property
+    def model_route(self) -> str:
+        return "azure"
 
     @property
     def parameter_schema(self):
         return {
-            "MODEL_NAME": {
+            "DEPLOYMENT_NAME": {
                 "secret": False,
                 "default": None,
-                "hint": "should be consistent with your deployed name, e.g., gpt-4.1",
+                "hint": "ensure your deployment name is the same as the model name, e.g., gpt-5",
                 "validator": non_empty
             },
             "AZURE_API_KEY": {
@@ -31,8 +47,8 @@ class AzureProvider(LLMProvider):
             "AZURE_API_BASE": {
                 "secret": False,
                 "default": None,
-                "hint": "https://{your-custom-endpoint}.openai.azure.com/",
-                "validator": is_valid_url
+                "hint": "https://{azure-openai-service-name}.openai.azure.com/",
+                "validator": is_valid_api_base
             },
             "AZURE_API_VERSION": {
                 "secret": False,
@@ -46,18 +62,22 @@ class AzureProvider(LLMProvider):
         api_key = params.get("AZURE_API_KEY")
         api_base = params.get("AZURE_API_BASE")
         api_version = params.get("AZURE_API_VERSION")
-        model_name = params.get("MODEL_NAME")
+        deployment_name = params.get("DEPLOYMENT_NAME")
 
-        if not all([api_key, api_base, api_version, model_name]):
+        if not all([api_key, api_base, api_version, deployment_name]):
             return False, "Missing required Azure parameters.", "retry_input"
 
         # REST API reference: https://learn.microsoft.com/en-us/azure/ai-foundry/openai/api-version-lifecycle?tabs=rest
-        url = urljoin(api_base, "openai/responses")
+        url = urljoin(api_base, f"openai/deployments/{deployment_name}/chat/completions")
+
         query = {"api-version": api_version}
         full_url = f"{url}?{urlencode(query)}"
-        headers = {"api-key": api_key, "Content-Type": "application/json"}
-        payload = {"model": model_name,
-                   "input": "ping", "max_output_tokens": 16}
+        headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+        payload = {
+            "model": deployment_name,
+            "messages": [{"role": "user", "content": "ping"}],
+            "max_tokens": 16
+        }
 
         try:
             resp = requests.post(full_url, headers=headers,
