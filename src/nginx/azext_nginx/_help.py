@@ -14,14 +14,14 @@ helps['nginx deployment waf-policy create'] = """
 type: command
 short-summary: Command to create an Nginx Deployment WAF Policy.
 examples:
-    - name: Create a WAF policy for a Nginx deployment
-      text: az nginx deployment waf-policy create --name mypolicyname --deployment-name mydeploymentname --resource-group myresourcegroupname --filepath /path/to/my/policy.json --content mycontentfileinbase64encoding
+  - name: Create a WAF policy for a Nginx deployment
+    text: az nginx deployment waf-policy create --name mypolicyname --deployment-name mydeploymentname --resource-group myresourcegroupname --filepath /path/to/my/policy.json --content mycontentfileinbase64encoding
 """
 
 helps['nginx deployment waf-policy update'] = """
 type: command
 short-summary: Command to update an Nginx Deployment WAF Policy.
 examples:
-    - name: Update a WAF policy for a Nginx deployment
-      text: az nginx deployment waf-policy update --name mypolicyname --deployment-name mydeploymentname --resource-group myresourcegroupname --filepath /path/to/my/policy.json --content mycontentfileinbase64encoding
+  - name: Update a WAF policy for a Nginx deployment
+    text: az nginx deployment waf-policy update --name mypolicyname --deployment-name mydeploymentname --resource-group myresourcegroupname --filepath /path/to/my/policy.json --content mycontentfileinbase64encoding
 """
