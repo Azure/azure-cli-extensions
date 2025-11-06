@@ -6,6 +6,7 @@
 import copy
 from dataclasses import asdict
 import json
+import tempfile
 import warnings
 from enum import Enum, auto
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -14,6 +15,7 @@ import deepdiff
 from azext_confcom import config, os_util
 from azext_confcom.lib.policy import Container
 from azext_confcom.container import ContainerImage, UserContainerImage
+from azext_confcom.lib.policy import Container
 from azext_confcom.errors import eprint
 from azext_confcom.fragment_util import sanitize_fragment_fields
 from azext_confcom.oras_proxy import create_list_of_standalone_imports
@@ -42,6 +44,7 @@ from azext_confcom.template_util import (case_insensitive_dict_get,
                                          process_mounts,
                                          process_mounts_from_config,
                                          readable_diff)
+from azext_confcom.lib.serialization import policy_serialize, policy_deserialize
 from knack.log import get_logger
 from tqdm import tqdm
 
@@ -174,7 +177,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         rego_boilerplate=True,
         omit_id: bool = False,
         include_sidecars: bool = True,
+        container_definitions: Optional[list] = None,
     ):
+        if container_definitions is None:
+            container_definitions = []
+
         # error check the output type
         if not isinstance(output_type, Enum) or output_type.value not in [item.value for item in OutputType]:
             eprint("Unknown output type for serialization.")
@@ -185,6 +192,19 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         if rego_boilerplate:
             policy_str = self._add_rego_boilerplate(policy_str)
+
+        # If rego container definitions are provided, use the new paradigm of
+        # directly editing rego files to add them.
+        # This requires a serialization round trip for now.
+        if container_definitions:
+            with tempfile.NamedTemporaryFile(mode="w+", delete=True) as temp_policy_file:
+                temp_policy_file.write(policy_str)
+                temp_policy_file.flush()
+                policy_obj = policy_deserialize(temp_policy_file.name)
+
+                policy_obj.containers.extend(Container(**json.loads(c)) for c in container_definitions)
+
+                policy_str = policy_serialize(policy_obj)
 
         # if we're not outputting base64
         if output_type in (OutputType.RAW, OutputType.PRETTY_PRINT):

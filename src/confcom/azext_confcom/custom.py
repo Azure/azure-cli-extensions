@@ -7,6 +7,7 @@ import os
 import sys
 from typing import Optional
 
+from azext_confcom import config
 from azext_confcom import oras_proxy, os_util, security_policy
 from azext_confcom._validators import resolve_stdio
 from azext_confcom.config import (
@@ -22,6 +23,7 @@ from azext_confcom.template_util import (
     get_image_name, inject_policy_into_template, inject_policy_into_yaml,
     pretty_print_func, print_existing_policy_from_arm_template,
     print_existing_policy_from_yaml, print_func, str_to_sha256)
+from azext_confcom.command.containers_from_radius import containers_from_radius as _containers_from_radius
 from knack.log import get_logger
 from pkg_resources import parse_version
 
@@ -197,24 +199,48 @@ def acipolicygen_confcom(
             exit_code = validate_sidecar_in_policy(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif virtual_node_yaml_path and not (print_policy_to_terminal or outraw or outraw_pretty_print or diff):
             result = inject_policy_into_yaml(
-                virtual_node_yaml_path, policy.get_serialized_output(omit_id=omit_id), count
+                virtual_node_yaml_path,
+                policy.get_serialized_output(
+                    omit_id=omit_id,
+                    container_definitions=container_definitions,
+                ),
+                count,
             )
             if result:
-                print(str_to_sha256(policy.get_serialized_output(OutputType.RAW, omit_id=omit_id)))
+                print(str_to_sha256(policy.get_serialized_output(
+                    OutputType.RAW,
+                    omit_id=omit_id,
+                    container_definitions=container_definitions,
+                )))
                 logger.info("CCE Policy successfully injected into YAML file")
         elif diff:
             exit_code = get_diff_outputs(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
-            result = inject_policy_into_template(arm_template, arm_template_parameters,
-                                                 policy.get_serialized_output(omit_id=omit_id), count)
+            result = inject_policy_into_template(
+                arm_template,
+                arm_template_parameters,
+                policy.get_serialized_output(
+                    omit_id=omit_id,
+                    container_definitions=container_definitions,
+                ),
+                count,
+            )
             if result:
                 # this is always going to be the unencoded policy
-                print(str_to_sha256(policy.get_serialized_output(OutputType.RAW, omit_id=omit_id)))
+                print(str_to_sha256(policy.get_serialized_output(
+                    OutputType.RAW,
+                    omit_id=omit_id,
+                    container_definitions=container_definitions,
+                )))
                 logger.info("CCE Policy successfully injected into ARM Template")
 
         else:
             # output to terminal
-            print(f"{policy.get_serialized_output(output_type, omit_id=omit_id)}\n\n")
+            print(f"{policy.get_serialized_output(
+                output_type,
+                omit_id=omit_id,
+                container_definitions=container_definitions,
+            )}\n\n")
 
             # output to file
             if save_to_file:
@@ -512,3 +538,19 @@ def get_fragment_output_type(outraw):
     if outraw:
         output_type = security_policy.OutputType.RAW
     return output_type
+
+
+def containers_from_radius(
+    cmd,
+    template: str,
+    parameters: dict,
+    container_index: int,
+    platform: str,
+) -> None:
+    print(_containers_from_radius(
+        az_cli_command=cmd,
+        template=template,
+        parameters=parameters,
+        container_index=container_index,
+        platform=platform,
+    ))

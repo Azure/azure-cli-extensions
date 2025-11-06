@@ -434,3 +434,36 @@ def load_arguments(self, _):
             help="Path to containerd socket if not using the default",
             validator=validate_katapolicygen_input,
         )
+
+    with self.argument_context("confcom containers from_radius") as c:
+        c.positional(
+            "template",
+            type=str,
+            help="Template to create container definitions from",
+        )
+        c.argument(
+            "parameters",
+            options_list=['--parameters', '-p'],
+            action='append',
+            nargs='+',
+            completer=FilesCompleter(),
+            required=False,
+            default=[],
+            help='The parameters for the radius template'
+        )
+        c.argument(
+            "container_index",
+            options_list=['--idx'],
+            required=False,
+            default=0,
+            type=int,
+            help='The index of the container definition in the template to use'
+        )
+        c.argument(
+            "platform",
+            options_list=["--platform"],
+            required=False,
+            default="aci",
+            type=str,
+            help="Platform to create container definition for",
+        )
