@@ -13,6 +13,10 @@ Pending
 +++++++
 * Add option `Windows2025` to `--os-sku` for `az aks nodepool add`.
 
+18.0.0b40
++++++++
+* Update user prompt for `az aks upgrade` command to clarify the implication of the `--control-plane-only` options.
+
 18.0.0b39
 +++++++
 * Add option `AzureLinuxOSGuard` and `AzureLinux3OSGuard` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
