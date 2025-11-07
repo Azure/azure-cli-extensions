@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b10
+++++++++
+* pin supabase==2.8.0 to avoid "ModuleNotFoundError: No module named 'supabase_auth.http_clients'"
+
 1.0.0b9
 +++++++
 * agent-init: replace model name with deployment name for Azure OpenAI service.
