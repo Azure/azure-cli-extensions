@@ -29,13 +29,13 @@ class SanitizerRule:
             return value
 
 
-class Sanitizer(object):
+class Sanitizer:
     """
     Object sanitizer allowing for properties to be excluded based on
     configurable filters
     """
 
-    def __init__(self, filters: List[SanitizerRule] = [], *args, **kwargs):
+    def __init__(self, filters: List[SanitizerRule] = None, *args, **kwargs):
         """
         Initializer with additional parameters for managing serialized content
 
@@ -46,7 +46,7 @@ class Sanitizer(object):
         """
         super().__init__(*args, **kwargs)
         self._serializedInstances = []
-        self._filters = filters
+        self._filters = filters if filters is not None else []
 
     def sanitize_value(self, property_path, property_value):
         for f in self._filters:
@@ -99,12 +99,12 @@ class Sanitizer(object):
             return self.sanitize_value(path, obj)
 
     @staticmethod
-    def sanitize_object(obj, filters: List[SanitizerRule] = []):
+    def sanitize_object(obj, filters: List[SanitizerRule] = None):
         """
         Convenience method allowing for an object and filters to be passed in.
         The results will be the sanitized object
         """
-        sanitizer = Sanitizer(filters)
+        sanitizer = Sanitizer(filters if filters is not None else [])
         return sanitizer.sanitize(obj)
 
     @staticmethod

@@ -19,7 +19,7 @@ __all__ = ["OutputStream", "IOBuffer"]
 
 
 @singleton
-class OutputStream(object):
+class OutputStream:
     __ORIGINAL_STDOUT__ = sys.stdout
     """
     Placeholder for the original system stdout.

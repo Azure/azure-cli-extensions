@@ -5,10 +5,7 @@
 # ------------------------------------------------------------------------------
 
 from knack.cli import CLIError
-from requests.exceptions import HTTPError
 
 
 class ClusterLogError(CLIError):
     """All errors related to log collection calls."""
-
-    pass

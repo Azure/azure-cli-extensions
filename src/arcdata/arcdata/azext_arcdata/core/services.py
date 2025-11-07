@@ -75,7 +75,7 @@ def beget_service(az_cli):
 
 
 @add_metaclass(ABCMeta)
-class BaseServiceProxy(object):
+class BaseServiceProxy:
     def __init__(self, name):
         self._name = name
 
@@ -110,6 +110,7 @@ class BaseServiceProxy(object):
         }
 
     @staticmethod
+
     def get_spec_file_dict():
         import azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants as dc_constants
 
@@ -228,7 +229,7 @@ class BaseDataControllerServiceProxy(BaseServiceProxy):
 
 
 @add_metaclass(ABCMeta)
-class ArmMixin(object):
+class ArmMixin:
     @staticmethod
     def get_azure_credentials(az_cli):
         from azure.common.credentials import get_cli_profile
@@ -277,7 +278,7 @@ class ArmMixin(object):
 
 
 @add_metaclass(ABCMeta)
-class KubernetesMixin(object):
+class KubernetesMixin:
     def __init__(self):
         self.apply_context()
 

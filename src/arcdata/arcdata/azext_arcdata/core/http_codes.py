@@ -7,7 +7,7 @@
 __all__ = ["HTTPCodes"]
 
 
-class HTTPCodes(object):
+class HTTPCodes:
     """
     Defines the HTTP status codes.
     NOTE: Add more when needed.

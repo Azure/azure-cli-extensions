@@ -15,7 +15,7 @@ __all__ = ["BoxLayout"]
 
 
 @add_metaclass(ABCMeta)
-class BaseLayout(object):
+class BaseLayout:
     def __init__(self):
         pass
 
@@ -311,13 +311,13 @@ class BoxLayout(BaseLayout):
     def __repr__(self):
         return self.render()
 
-
+        class BaseLayout:
 # ---------------------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 
 
-class Box(object):
+class Box:
     def __init__(self, data):
         self._data = data
         self._identifiers = (
@@ -351,10 +351,11 @@ class Box(object):
 
 
 def print_formatted_text(text, end="\n"):
-    from prompt_toolkit import print_formatted_text as pft
-
     try:
+        from prompt_toolkit import print_formatted_text as pft
         pft(text, end=end)
+    except ImportError:
+        print(text, end=end)
     except Exception:
         print(text, end=end)
 
@@ -371,9 +372,8 @@ def indention(depth):
 
 def badge(text, depth=0, end="", identifiers=None):
     def background(label, color):
-        from prompt_toolkit import print_formatted_text as pft, ANSI
-
         try:
+            from prompt_toolkit import print_formatted_text as pft, ANSI
             style = {"green": 102, "red": 101}[color]
             pft(
                 ANSI(
@@ -381,13 +381,13 @@ def badge(text, depth=0, end="", identifiers=None):
                 ),
                 end="",
             )
-        except Exception:
-            # shim fall back for cygwin/git-bash/ect...
+        except ImportError:
             from colorama import init, Back
-
             init(strip=False)
             style = {"green": Back.GREEN, "red": Back.RED}[color]
             print("{}{}".format(style, label) + Back.RESET, end="")
+        except Exception:
+            print(label)
 
     margin_left = "".ljust(indention(depth))
 

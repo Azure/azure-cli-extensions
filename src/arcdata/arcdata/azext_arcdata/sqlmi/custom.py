@@ -607,22 +607,15 @@ def arc_sql_mi_edit(
     license_type=None,
     tier=None,
     nowait=False,
-    dev=None,
     labels=None,
     annotations=None,
     service_labels=None,
     service_annotations=None,
     agent_enabled=None,
     trace_flags=None,
-    time_zone=None,
     use_k8s=None,
     retention_days=None,
-    # -- direct --
     resource_group=None,
-    location=None,
-    custom_location=None,
-    tag_name=None,
-    tag_value=None,
 ):
     """
     Deprecated, use update over edit.
@@ -632,7 +625,6 @@ def arc_sql_mi_edit(
             client,
             name,
             path=path,
-            time_zone=time_zone,
             cores_limit=cores_limit,
             cores_request=cores_request,
             memory_limit=memory_limit,
@@ -675,7 +667,6 @@ def arc_sql_mi_update(
     readable_secondaries=None,
     sync_secondary_to_commit=None,
     path=None,
-    time_zone=None,
     cores_limit=None,
     cores_request=None,
     memory_limit=None,
@@ -694,15 +685,11 @@ def arc_sql_mi_update(
     certificate_private_key_file=None,
     service_certificate_secret=None,
     preferred_primary_replica=None,
-    # -- indirect --
     use_k8s=None,
     namespace=None,
-    # -- direct --
     resource_group=None,
-    # -- Active Directory --
     keytab_secret=None,
     ad_encryption_types=None,
-    # -- Transparent Data Encryption --
     tde_mode=None,
     tde_protector_secret=None,
     tde_protector_public_key_file=None,

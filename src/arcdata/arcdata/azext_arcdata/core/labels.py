@@ -21,9 +21,8 @@ def parse_labels(label_str):
 
         label_key, label_value = label_kv
 
-        if label_key in labels.keys():
+        if label_key in labels:
             raise ValueError("Duplicate label key {}".format(label_key))
-
         labels[label_key.strip()] = label_value.strip()
 
     return labels

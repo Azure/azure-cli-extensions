@@ -5,6 +5,7 @@
 # ------------------------------------------------------------------------------
 
 from knack.log import get_logger
+from typing import Any, Optional
 
 import os
 import abc
@@ -32,7 +33,7 @@ class BaseTokenMixin(abc.ABC):
 
     @abc.abstractmethod
     def acquire_token(self, *scopes, **kwargs):
-        # type: (*str, **Any) -> Optional[AccessToken]
+        # type: (*str, **Any) -> Optional[Any]
         """
         Attempt to acquire an access token from a cache or by redeeming a
         refresh token
@@ -40,11 +41,11 @@ class BaseTokenMixin(abc.ABC):
 
     @abc.abstractmethod
     def request_token(self, *scopes, **kwargs):
-        # type: (*str, **Any) -> AccessToken
+        # type: (*str, **Any) -> Any
         """Request an access token"""
 
     def should_refresh(self, token):
-        # type: (AccessToken) -> bool
+        # type: (Any) -> bool
         now = int(time.time())
         if token.expires_on - now > BaseTokenMixin.DEFAULT_REFRESH_OFFSET:
             return False
@@ -56,7 +57,7 @@ class BaseTokenMixin(abc.ABC):
         return True
 
     def get_token(self, *scopes, **kwargs):
-        # type: (*str, **Any) -> AccessToken
+        # type: (*str, **Any) -> Any
         """
         Request an access token for `scopes`.
 
@@ -89,7 +90,7 @@ class ArcDataCliCredential(BaseTokenMixin):
 
     # override
     def get_token(self, *scopes, **kwargs):
-        # type: (*str, **Any) -> AccessToken
+        # type: (*str, **Any) -> Any
         """
         Request an access token for `scopes`.
         """
@@ -113,7 +114,7 @@ class ArcDataCliCredential(BaseTokenMixin):
 
     # override
     def acquire_token(self, *scopes):
-        # type: (*str) -> Optional[AccessToken]
+        # type: (*str) -> Optional[Any]
         """
         Attempt to acquire an access token from a cache or by redeeming
         a refresh token.
@@ -125,7 +126,7 @@ class ArcDataCliCredential(BaseTokenMixin):
         azure_folder = get_config_dir()
         ACCOUNT.load(os.path.join(azure_folder, "azureProfile.json"))
         p = Profile(storage=ACCOUNT)
-        cred, subscription_id, tenant_id = p.get_login_credentials()
+        cred, _, _ = p.get_login_credentials()
         scopes = ["https://management.azure.com/.default"]
         access_token = cred.get_token(*scopes)
 
@@ -133,8 +134,5 @@ class ArcDataCliCredential(BaseTokenMixin):
 
     # override
     def request_token(self, *scopes, **kwargs):
-        # TODO: Impl refresh logic if possible. For now we give error
-        # to az login again
-        return super(ArcDataCliCredential, self).request_token(
-            *scopes, **kwargs
-        )
+        # TODO: Implement refresh logic if possible. For now, raise an error to prompt az login again.
+        raise NotImplementedError("Token refresh logic not implemented. Please run 'az login' again.")
