@@ -8726,6 +8726,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_azure_key_vault_kms_7 = self.models.AzureKeyVaultKms(
             enabled=True,
             key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+            key_vault_network_access="Public",
             key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
         )
         ground_truth_kube_resource_encryption_profile_7 = self.models.KubernetesResourceObjectEncryptionProfile(
@@ -8788,8 +8789,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_mc_9 = dec_9.update_kms_pmk_cmk(mc_9)
 
         # should disable existing Azure Key Vault KMS
-        ground_truth_azure_key_vault_kms_9 = self.models.AzureKeyVaultKms()
-        ground_truth_azure_key_vault_kms_9.enabled = False
+        ground_truth_azure_key_vault_kms_9 = self.models.AzureKeyVaultKms(
+            enabled=False,
+            key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+            key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+        )
         ground_truth_kube_resource_encryption_profile_9 = self.models.KubernetesResourceObjectEncryptionProfile(
             infrastructure_encryption="Enabled"
         )
@@ -8827,6 +8831,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_azure_key_vault_kms_10 = self.models.AzureKeyVaultKms(
             enabled=True,
             key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+            key_vault_network_access="Public",
             key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
         )
         ground_truth_security_profile_10 = self.models.ManagedClusterSecurityProfile(
@@ -8839,7 +8844,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_10, ground_truth_mc_10)
 
-        # test enabling PMK on cluster with disabled CMK - should clear CMK properties
+        # test enabling PMK on cluster with disabled CMK
         dec_11 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -8853,6 +8858,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             azure_key_vault_kms=self.models.AzureKeyVaultKms(
                 enabled=False,
                 key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+                key_vault_network_access="Private",
                 key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
             )
         )
@@ -8864,8 +8870,12 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_mc_11 = dec_11.update_kms_pmk_cmk(mc_11)
 
         # should clear CMK properties and enable PMK
-        ground_truth_azure_key_vault_kms_11 = self.models.AzureKeyVaultKms()
-        ground_truth_azure_key_vault_kms_11.enabled = False
+        ground_truth_azure_key_vault_kms_11 = self.models.AzureKeyVaultKms(
+            enabled=False,
+            key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+            key_vault_network_access="Private",
+            key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+        )
         ground_truth_kube_resource_encryption_profile_11 = self.models.KubernetesResourceObjectEncryptionProfile(
             infrastructure_encryption="Enabled"
         )

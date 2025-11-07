@@ -6026,7 +6026,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if self.context.get_disable_azure_keyvault_kms() or cmk_disabled_on_existing_cluster:
             if mc.security_profile is None:
                 mc.security_profile = self.models.ManagedClusterSecurityProfile()
-            mc.security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms()
             # set enabled to False
             mc.security_profile.azure_key_vault_kms.enabled = False
 
