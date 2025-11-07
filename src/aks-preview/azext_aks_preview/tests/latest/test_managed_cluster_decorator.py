@@ -12903,5 +12903,97 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             "Public"
         )
 
+    def test_update_agentpool_profile_with_none_agent_pool_profiles(self):
+        """Test update_agentpool_profile handles None agent_pool_profiles with hosted system components"""
+        # Test case 1: None agent_pool_profiles with hosted system components enabled (should succeed)
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Create a managed cluster with None agent_pool_profiles but hosted system components enabled
+        hosted_system_profile = self.models.ManagedClusterHostedSystemProfile(enabled=True)
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=None,  # This is the key scenario
+            hosted_system_profile=hosted_system_profile
+        )
+        dec_1.context.attach_mc(mc_1)
+
+        # Should return the MC unchanged without raising an error
+        result_1 = dec_1.update_agentpool_profile(mc_1)
+        self.assertEqual(result_1, mc_1)
+        self.assertIsNone(result_1.agent_pool_profiles)
+        self.assertTrue(result_1.hosted_system_profile.enabled)
+
+    def test_update_agentpool_profile_with_none_agent_pool_profiles_no_hosted_system(self):
+        """Test update_agentpool_profile raises UnknownError for None agent_pool_profiles without hosted system components"""
+        # Test case 2: None agent_pool_profiles without hosted system components (should raise UnknownError)
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Create a managed cluster with None agent_pool_profiles and no hosted system components
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=None,  # This is the key scenario
+            hosted_system_profile=None
+        )
+        dec_2.context.attach_mc(mc_2)
+
+        # Should raise UnknownError
+        with self.assertRaises(UnknownError):
+            dec_2.update_agentpool_profile(mc_2)
+
+    def test_update_agentpool_profile_with_none_agent_pool_profiles_hosted_system_disabled(self):
+        """Test update_agentpool_profile raises UnknownError for None agent_pool_profiles with hosted system components disabled"""
+        # Test case 3: None agent_pool_profiles with hosted system components disabled (should raise UnknownError)
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Create a managed cluster with None agent_pool_profiles and hosted system components disabled
+        hosted_system_profile_disabled = self.models.ManagedClusterHostedSystemProfile(enabled=False)
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=None,  # This is the key scenario
+            hosted_system_profile=hosted_system_profile_disabled
+        )
+        dec_3.context.attach_mc(mc_3)
+
+        # Should raise UnknownError
+        with self.assertRaises(UnknownError):
+            dec_3.update_agentpool_profile(mc_3)
+
+    def test_update_agentpool_profile_with_empty_agent_pool_profiles(self):
+        """Test update_agentpool_profile raises UnknownError for empty agent_pool_profiles list"""
+        # Test case 4: Empty agent_pool_profiles list (should raise UnknownError)
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Create a managed cluster with empty agent_pool_profiles
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[],  # Empty list scenario
+            hosted_system_profile=None
+        )
+        dec_4.context.attach_mc(mc_4)
+
+        # Should raise UnknownError
+        with self.assertRaises(UnknownError):
+            dec_4.update_agentpool_profile(mc_4)
+
 if __name__ == "__main__":
     unittest.main()
