@@ -11,10 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-
-19.0.0.b12
-+++++++
 * Update enable-container-network-logs DCR to ContainerNetworkLogs instead of RetinaNetworkFlowLogs
+
+19.0.0b12
++++++++
+* `az aks create --workload-runtime KataVmIsolation`: Added the KataVmIsolation workload runtime value.
 
 19.0.0b11
 +++++++
