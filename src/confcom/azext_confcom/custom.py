@@ -3,8 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
 import sys
+import tempfile
 from typing import Optional
 
 from azext_confcom import config
@@ -18,7 +20,9 @@ from azext_confcom.errors import eprint
 from azext_confcom.fragment_util import get_all_fragment_contents
 from azext_confcom.init_checks import run_initial_docker_checks
 from azext_confcom.kata_proxy import KataPolicyGenProxy
-from azext_confcom.security_policy import AciPolicy, OutputType
+from azext_confcom.security_policy import AciPolicy, OutputType, policy_deserialize
+from azext_confcom.lib.policy import Container
+from azext_confcom.lib.serialization import policy_serialize, policy_deserialize
 from azext_confcom.template_util import (
     get_image_name, inject_policy_into_template, inject_policy_into_yaml,
     pretty_print_func, print_existing_policy_from_arm_template,
@@ -386,6 +390,12 @@ def acifragmentgen_confcom(
         feed = get_image_name(image_target)
 
     fragment_text = policy.generate_fragment(namespace, svn, output_type, omit_id=omit_id)
+    with tempfile.NamedTemporaryFile(mode="w+", delete=True) as temp_policy_file:
+        temp_policy_file.write(fragment_text)
+        temp_policy_file.flush()
+        policy_obj = policy_deserialize(temp_policy_file.name)
+        policy_obj.containers.extend(Container(**json.loads(c)) for c in container_definitions)
+        fragment_text = policy_serialize(policy_obj)
 
     if output_type != security_policy.OutputType.DEFAULT and not no_print:
         print(fragment_text)
