@@ -226,11 +226,11 @@ def load_command_table(self, _):
             supports_no_wait=True,
         )
 
-    with self.command_group("ml deployment-template", client_factory=cf_ml_cl) as g:
+    with self.command_group("ml deployment-template", client_factory=cf_ml_cl, is_preview=True) as g:
         custom_tmpl = "azext_mlv2.manual.custom.deployment_template#{}"
         custom_deployment_template = CliCommandType(operations_tmpl=custom_tmpl)
         g.custom_command("list", "ml_deployment_template_list", command_type=custom_deployment_template)
-        g.custom_command("get", "ml_deployment_template_get", command_type=custom_deployment_template)
+        g.custom_command("show", "ml_deployment_template_get", command_type=custom_deployment_template)
         g.custom_command("create", "ml_deployment_template_create", supports_no_wait=True,
                          command_type=custom_deployment_template)
         g.generic_update_command(

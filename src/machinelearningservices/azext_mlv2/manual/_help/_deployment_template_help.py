@@ -31,7 +31,7 @@ examples:
     text: az ml deployment-template list --registry-name myregistry --output table
 """
 
-helps['ml deployment-template get'] = """
+helps['ml deployment-template show'] = """
 type: command
 short-summary: Get a specific deployment template by name and version.
 long-summary: |
@@ -39,7 +39,7 @@ long-summary: |
     specified, the latest version will be returned.
 examples:
   - name: Get a specific version of a deployment template
-    text: az ml deployment-template get --name my-template --version 1 --registry-name myregistry
+    text: az ml deployment-template show --name my-template --version 1 --registry-name myregistry
 """
 
 helps['ml deployment-template create'] = """

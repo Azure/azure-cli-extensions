@@ -115,7 +115,7 @@ def ml_deployment_template_create(
         if no_wait:
             module_logger.warning(
                 "Deployment template create/update request initiated. "
-                "Status can be checked using `az ml deployment-template get -n %s -v %s`",
+                "Status can be checked using `az ml deployment-template show -n %s -v %s`",
                 deployment_template.name if hasattr(deployment_template, 'name') else name or "unknown",
                 deployment_template.version if hasattr(deployment_template, 'version') else version or "unknown"
             )
