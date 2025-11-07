@@ -4,7 +4,9 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+import argparse
 import json
+import sys
 from knack.arguments import CLIArgumentType
 from azext_confcom._validators import (
     validate_params_file,
@@ -466,4 +468,27 @@ def load_arguments(self, _):
             default="aci",
             type=str,
             help="Platform to create container definition for",
+        )
+
+    with self.argument_context("confcom radius policy insert") as c:
+        c.positional(
+            "policy_file",
+            nargs='?',
+            type=argparse.FileType('rb'),
+            default=sys.stdin.buffer,
+            help="Policy to add to the template",
+        )
+        c.argument(
+            "template_path",
+            options_list=("--template_file", '-f'),
+            required=False,
+            help="Path to the template file"
+        )
+        c.argument(
+            "container_index",
+            options_list=['--idx'],
+            required=False,
+            default=0,
+            type=int,
+            help='The index of the container definition in the template to use'
         )
