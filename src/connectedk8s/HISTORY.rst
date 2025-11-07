@@ -5,6 +5,9 @@ Release History
 1.10.12
 +++++
 * Removed deprecated '--app-id' and '--app-secret' RBAC parameters from the extension.
+* Update cluster diagnostics image to comply with Pod Securty standards-restricted( Updated image version:1.31.2).
+* Add endpoint overrides for Azure Government cloud environments
+* Update Proxy Image to 1.3.032281
 
 1.10.11
 +++++++
