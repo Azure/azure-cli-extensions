@@ -4,6 +4,9 @@ Release History
 ===============
 upcoming
 ++++++
+
+1.2.0b5
+++++++
 * 'az containerapp env premium-ingress add/update': remove `--min-replicas` and `--max-replicas`
 * 'az containerapp sessionpool create': Add `Shell` container type
 * Update azure cli dependency version >= "2.79.0"
