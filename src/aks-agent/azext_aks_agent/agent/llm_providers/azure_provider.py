@@ -76,7 +76,7 @@ class AzureProvider(LLMProvider):
         payload = {
             "model": deployment_name,
             "messages": [{"role": "user", "content": "ping"}],
-            "max_tokens": 16
+            "max_completion_tokens": 16
         }
 
         try:
