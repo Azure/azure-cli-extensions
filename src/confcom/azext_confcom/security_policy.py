@@ -6,7 +6,6 @@
 import copy
 from dataclasses import asdict
 import json
-import tempfile
 import warnings
 from enum import Enum, auto
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -15,7 +14,6 @@ import deepdiff
 from azext_confcom import config, os_util
 from azext_confcom.lib.policy import Container
 from azext_confcom.container import ContainerImage, UserContainerImage
-from azext_confcom.lib.policy import Container
 from azext_confcom.errors import eprint
 from azext_confcom.fragment_util import sanitize_fragment_fields
 from azext_confcom.oras_proxy import create_list_of_standalone_imports
@@ -44,7 +42,6 @@ from azext_confcom.template_util import (case_insensitive_dict_get,
                                          process_mounts,
                                          process_mounts_from_config,
                                          readable_diff)
-from azext_confcom.lib.serialization import policy_serialize, policy_deserialize
 from knack.log import get_logger
 from tqdm import tqdm
 
