@@ -86,7 +86,7 @@ class Container:
     id: Optional[str] = None
     layers: list[str] = field(default_factory=list)
     mounts: list[ContainerMount] = field(default_factory=list)
-    name: Optional[str] = None,
+    name: Optional[str] = None
     no_new_privileges: bool = False
     seccomp_profile_sha256: str = ""
     signals: list[str] = field(default_factory=list)
