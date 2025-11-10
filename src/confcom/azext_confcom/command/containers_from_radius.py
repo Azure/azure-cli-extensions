@@ -4,17 +4,19 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+import os
 import tempfile
 
 from azext_confcom.lib.images import get_image_config, get_image_layers
 from azext_confcom.lib.deployments import parse_deployment_template
 from azext_confcom.lib.platform import ACI_MOUNTS
+import re
 
 
 def containers_from_radius(
     az_cli_command,
     template: str,
-    parameters: dict,
+    parameters: list,
     container_index: int,
     platform: str,
 ) -> None:
@@ -25,6 +27,24 @@ def containers_from_radius(
         with open(template, 'r') as f:
             temp_template_file.write(f.read().replace("extension radius", ""))
         temp_template_file.flush()
+
+        # Handle parameters file if it's a path
+        if len(parameters) > 0 and isinstance(parameters[0][0], str) and os.path.isfile(parameters[0][0]):
+            parameters_path = parameters[0][0]
+            with open(parameters_path, 'r') as params_file:
+                params_content = params_file.read()
+
+            # Replace any references to the original template file with the temporary one
+            params_content = re.sub(
+                r"using\s+'.*\.bicep'",
+                f"using '{os.path.basename(temp_template_file.name)}'",
+                params_content
+            )
+
+            with tempfile.NamedTemporaryFile('w+', delete=False, suffix=".bicepparam") as temp_params_file:
+                temp_params_file.write(params_content)
+                temp_params_file.flush()
+                parameters = [[temp_params_file.name]]
 
         template = parse_deployment_template(
             az_cli_command,
