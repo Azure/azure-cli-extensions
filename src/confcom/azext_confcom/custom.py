@@ -37,7 +37,7 @@ def acipolicygen_confcom(
     virtual_node_yaml_path: str,
     infrastructure_svn: str,
     tar_mapping_location: str,
-    container_definitions: list,
+    container_definitions: Optional[list] = None,
     approve_wildcards: str = False,
     outraw: bool = False,
     outraw_pretty_print: bool = False,
@@ -64,6 +64,9 @@ def acipolicygen_confcom(
             "source control. Also verify that no secrets are present in the logs of your command or script.",
             "For additional information, see http://aka.ms/clisecrets. \n",
         )
+
+    if container_definitions is None:
+        container_definitions = []
 
     stdio_enabled = resolve_stdio(enable_stdio, disable_stdio)
 
