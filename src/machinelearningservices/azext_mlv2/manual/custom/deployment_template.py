@@ -54,7 +54,7 @@ def ml_deployment_template_list(cmd, registry_name=None):
         log_and_raise_error(err, debug)
 
 
-def ml_deployment_template_get(cmd, name, version=None, registry_name=None):
+def ml_deployment_template_show(cmd, name, version=None, registry_name=None):
     """Get a specific deployment template by name and version."""
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
