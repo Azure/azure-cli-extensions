@@ -5,10 +5,11 @@
 
 
 from abc import ABC, abstractmethod
-from typing import Dict, Callable, Tuple, Any
-from rich.console import Console
-from rich.prompt import Prompt
+from typing import Any, Callable, Dict, Tuple
 from urllib.parse import urlparse
+
+from azext_aks_agent._consts import ERROR_COLOR, HELP_COLOR
+from rich.console import Console
 
 console = Console()
 HINT_COLOR = "bright_black"
@@ -30,7 +31,41 @@ def is_valid_url(v: str) -> bool:
 
 
 class LLMProvider(ABC):
-    name = "base"
+
+    @property
+    @abstractmethod
+    def readable_name(self) -> str:
+        """Return the provider name for this provider.
+        The provider name is a human-readable string, e.g., "Azure OpenAI", "OpenAI", etc.
+        """
+        return "Base Provider"
+
+    @property
+    def name(self) -> str:
+        """Return the provider name for this provider.
+        provider name is the key to identity a llmprovider.
+        https://docs.litellm.ai/docs/providers
+        """
+        return self.model_route
+
+    @property
+    @abstractmethod
+    def model_route(self) -> str:
+        """Return the model route parameter key for this provider.
+        This model route indicates the model prefix of llm providers supported by LiteLLM, for example the azure openai.
+        https://docs.litellm.ai/docs/providers
+        """
+        return "base"
+
+    def model_name(self, model_name) -> str:
+        """Return the model name for this provider.
+        The models name combines the model route and model name, e.g., "azure/gpt-5"
+        https://docs.litellm.ai/docs/providers
+        """
+        if self.model_route:
+            return f"{self.model_route}/{model_name}"
+
+        return model_name
 
     @property
     @abstractmethod
@@ -51,9 +86,6 @@ class LLMProvider(ABC):
 
     def prompt_params(self):
         """Prompt user for parameters using parameter_schema when available."""
-        from holmes.utils.colors import HELP_COLOR, ERROR_COLOR
-        from holmes.interactive import SlashCommands
-
         schema = self.parameter_schema
         params = {}
         for param, meta in schema.items():
@@ -71,12 +103,24 @@ class LLMProvider(ABC):
 
             while True:
                 if secret:
-                    value = Prompt.ask(
-                        f"[bold {HELP_COLOR}]Enter your API key[/]",
-                        password=True
-                    )
+                    # For password input, we'll handle the display differently
+                    value = console.input(prompt, password=secret)
+                    # Calculate the masked display value following OpenAI pattern
+                    if len(value) <= 8:
+                        # For short passwords, show all as asterisks
+                        display_value = '*' * len(value)
+                    else:
+                        # Show first 3 chars + 3 dots + last 4 chars (OpenAI pattern)
+                        first_chars = value[:3]
+                        last_chars = value[-4:]
+                        display_value = f"{first_chars}...{last_chars}"
+                    # It seems rich renders the cursor up as plain text not a control sequence,
+                    # so when we combine the cursor up and re-print, console prints extra "[1A" unexpectedly.
+                    # To avoid that, we use a workaround by printing the cursor up separately.
+                    print("\033[1A", end='')
+                    console.print(f"{prompt}{display_value}")
                 else:
-                    value = console.input(prompt)
+                    value = console.input(prompt, password=False)
 
                 if not value and default is not None:
                     value = default
@@ -88,7 +132,7 @@ class LLMProvider(ABC):
                     params[param] = value
                     break
                 console.print(
-                    f"Invalid value for {param}. Please try again, or type '{SlashCommands.EXIT.command}' to exit.",
+                    f"Invalid value for {param}. Please try again, or type '/exit' to exit.",
                     style=f"{ERROR_COLOR}")
 
         return params
@@ -113,4 +157,6 @@ class LLMProvider(ABC):
         Returns a tuple of (is_valid: bool, message: str, action: str)
         where action can be "retry_input", "connection_error", or "save".
         """
+        # TODO(mainred): leverage 3rd party libraries like litellm instead of
+        # calling http request in each provider to complete the connection check.
         raise NotImplementedError()
