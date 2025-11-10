@@ -12,26 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog monitor set-default-key",
+    "datadog monitor get-billing-info",
 )
-class SetDefaultKey(AAZCommand):
-    """Sets the default Datadog API key for the specified monitor resource, which will be used for authenticating and sending telemetry data from Azure to Datadog.
+class GetBillingInfo(AAZCommand):
+    """Get marketplace and organization info mapped to the given monitor.
 
-    :example: Monitors_SetDefaultKey
-        az datadog monitor set-default-key --resource-group myResourceGroup --monitor-name myMonitor --key 1111111111111111aaaaaaaaaaaaaaaa
+    :example: BillingInfo_Get
+        az datadog monitor get-billing-info --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
         "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/setdefaultkey", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/getbillinginfo", "2025-06-11"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
         self._execute_operations()
-        return None
+        return self._output()
 
     _args_schema = None
 
@@ -45,7 +45,7 @@ class SetDefaultKey(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["-n", "--name", "--monitor-name"],
+            options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
             id_part="name",
@@ -58,35 +58,11 @@ class SetDefaultKey(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.created = AAZStrArg(
-            options=["--created"],
-            arg_group="Body",
-            help="The time of creation of the API key.",
-        )
-        _args_schema.created_by = AAZStrArg(
-            options=["--created-by"],
-            arg_group="Body",
-            help="The user that created the API key.",
-        )
-        _args_schema.key = AAZStrArg(
-            options=["--key"],
-            arg_group="Body",
-            help="The value of the API key.",
-        )
-        _args_schema.key_name = AAZStrArg(
-            options=["--key-name"],
-            arg_group="Body",
-            help="The name of the API key.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsSetDefaultKey(ctx=self.ctx)()
+        self.BillingInfoGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -97,7 +73,11 @@ class SetDefaultKey(AAZCommand):
     def post_operations(self):
         pass
 
-    class MonitorsSetDefaultKey(AAZHttpOperation):
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+    class BillingInfoGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -111,7 +91,7 @@ class SetDefaultKey(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/setDefaultKey",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/getBillingInfo",
                 **self.url_parameters
             )
 
@@ -155,31 +135,63 @@ class SetDefaultKey(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
+                    "Accept", "application/json",
                 ),
             }
             return parameters
 
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
-            )
-            _builder.set_prop("created", AAZStrType, ".created")
-            _builder.set_prop("createdBy", AAZStrType, ".created_by")
-            _builder.set_prop("key", AAZStrType, ".key", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("name", AAZStrType, ".key_name")
-
-            return self.serialize_content(_content_value)
-
         def on_200(self, session):
-            pass
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.marketplace_saas_info = AAZObjectType(
+                serialized_name="marketplaceSaasInfo",
+            )
+            _schema_on_200.partner_billing_entity = AAZObjectType(
+                serialized_name="partnerBillingEntity",
+            )
+
+            marketplace_saas_info = cls._schema_on_200.marketplace_saas_info
+            marketplace_saas_info.billed_azure_subscription_id = AAZStrType(
+                serialized_name="billedAzureSubscriptionId",
+            )
+            marketplace_saas_info.marketplace_name = AAZStrType(
+                serialized_name="marketplaceName",
+            )
+            marketplace_saas_info.marketplace_status = AAZStrType(
+                serialized_name="marketplaceStatus",
+            )
+            marketplace_saas_info.marketplace_subscription_id = AAZStrType(
+                serialized_name="marketplaceSubscriptionId",
+            )
+            marketplace_saas_info.subscribed = AAZBoolType()
+
+            partner_billing_entity = cls._schema_on_200.partner_billing_entity
+            partner_billing_entity.id = AAZStrType()
+            partner_billing_entity.name = AAZStrType()
+            partner_billing_entity.partner_entity_uri = AAZStrType(
+                serialized_name="partnerEntityUri",
+            )
+
+            return cls._schema_on_200
 
 
-class _SetDefaultKeyHelper:
-    """Helper class for SetDefaultKey"""
+class _GetBillingInfoHelper:
+    """Helper class for GetBillingInfo"""
 
 
-__all__ = ["SetDefaultKey"]
+__all__ = ["GetBillingInfo"]
