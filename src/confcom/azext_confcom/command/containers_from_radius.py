@@ -56,17 +56,27 @@ def containers_from_radius(
         "Applications.Core/containers",
     }]
 
-    container = supported_resources[container_index]
-    image = container.get("properties", {}).get("container", {}).get("image")
+    container = supported_resources[container_index].get("properties", {}).get("container", {})
+    image = container.get("image")
 
     mounts = {
         "aci": ACI_MOUNTS,
     }.get(platform, None)
+
+    image_config = get_image_config(image)
+    image_config["env_rules"] += [
+        {
+            "pattern": f"{k}={v["value"]}",
+            "strategy": "string",
+            "required": False,
+        }
+        for k, v in container.get("env", {}).items()
+    ]
 
     return json.dumps({
         "id": image,
         "name": image,
         "layers": get_image_layers(image),
         **({"mounts": mounts} if mounts else {}),
-        **get_image_config(image),
+        **image_config,
     })
