@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.3.2
+1.4.0
 ++++++
 * Add --with-containers flag to acipolicygen and acifragmentgen to allow passing container policy definitions directly
 
