@@ -5,8 +5,384 @@
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, arguments-differ, abstract-method, logging-format-interpolation, broad-except
 
 from knack.log import get_logger
+from knack.prompting import prompt, prompt_choice_list
+
+from ._compose_ported import (
+    calculate_model_runner_resources as _ported_calculate_model_runner_resources,
+    detect_service_type as _ported_detect_service_type,
+    extract_model_definitions as _ported_extract_model_definitions,
+    get_mcp_gateway_environment_vars as _ported_get_mcp_gateway_environment_vars,
+    get_model_endpoint_environment_vars as _ported_get_model_endpoint_environment_vars,
+    get_model_runner_environment_vars as _ported_get_model_runner_environment_vars,
+    parse_mcp_servers_from_command as _ported_parse_mcp_servers_from_command,
+    parse_models_section as _ported_parse_models_section,
+    parse_service_models_config as _ported_parse_service_models_config,
+    should_deploy_model_runner as _ported_should_deploy_model_runner,
+)
 
 logger = get_logger(__name__)
+
+
+# ============================================================================
+# Functions copied from azure-cli core to make extension self-contained
+# These eliminate the dependency on azure-cli core's containerapp module
+# ============================================================================
+
+def build_containerapp_from_compose_service(cmd,
+                                            name,
+                                            source,
+                                            dockerfile,
+                                            resource_group_name,
+                                            managed_env,
+                                            location,
+                                            image,
+                                            target_port,
+                                            ingress,
+                                            registry_server,
+                                            registry_user,
+                                            registry_pass,
+                                            env_vars,
+                                            logs_key=None,
+                                            logs_customer_id=None):
+    from .custom import create_managed_environment
+    from ._up_utils import (ContainerApp,
+                            ContainerAppEnvironment,
+                            ResourceGroup,
+                            _get_registry_from_app,
+                            _get_registry_details,
+                            _get_acr_from_image)
+
+    resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
+    env = ContainerAppEnvironment(cmd,
+                                  managed_env,
+                                  resource_group,
+                                  location=location,
+                                  logs_key=logs_key,
+                                  logs_customer_id=logs_customer_id)
+    app = ContainerApp(cmd,
+                       name,
+                       resource_group,
+                       None,
+                       image,
+                       env,
+                       target_port,
+                       registry_server,
+                       registry_user,
+                       registry_pass,
+                       env_vars,
+                       ingress)
+
+    if not registry_server:
+        _get_registry_from_app(app, True)
+
+    if app.registry_server is None and app.image is not None:
+        _get_acr_from_image(cmd, app)
+    _get_registry_details(cmd, app, True)
+
+    app.create_acr_if_needed()
+    app.run_acr_build(dockerfile, source, False)
+    return app.image, app.registry_server, app.registry_user, app.registry_pass
+
+
+def resolve_configuration_element_list(compose_service, unsupported_configuration, area=None):
+    if area is not None:
+        compose_service = getattr(compose_service, area)
+    config_list = []
+    for configuration_element in unsupported_configuration:
+        try:
+            attribute = getattr(compose_service, configuration_element)
+        except AttributeError:
+            logger.critical("Failed to resolve %s", configuration_element)
+        if attribute is not None:
+            config_list.append(f"{compose_service.compose_path}/{configuration_element}")
+    return config_list
+
+
+def warn_about_unsupported_build_configuration(compose_service):
+    unsupported_configuration = ["args", "ssh", "cache_from", "cache_to", "extra_hosts",
+                                 "isolation", "labels", "no_cache", "pull", "shm_size",
+                                 "target", "secrets", "tags"]
+    if compose_service.build is not None:
+        config_list = resolve_configuration_element_list(compose_service, unsupported_configuration, 'build')
+        message = "These build configuration settings from the docker-compose file are yet supported."
+        message += " Currently, we support supplying a build context and optionally target Dockerfile for a service."
+        message += " See https://aka.ms/containerapp/compose/build_support for more information or to add feedback."
+        if len(config_list) >= 1:
+            logger.warning(message)
+            for item in config_list:
+                logger.warning("     %s", item)
+
+
+def warn_about_unsupported_runtime_host_configuration(compose_service):
+    unsupported_configuration = ["blkio_config", "cpu_count", "cpu_percent", "cpu_shares", "cpu_period",
+                                 "cpu_quota", "cpu_rt_runtime", "cpu_rt_period", "cpuset", "cap_add",
+                                 "cap_drop", "cgroup_parent", "configs", "credential_spec",
+                                 "device_cgroup_rules", "devices", "dns", "dns_opt", "dns_search",
+                                 "domainname", "external_links", "extra_hosts", "group_add", "healthcheck",
+                                 "hostname", "init", "ipc", "isolation", "links", "logging", "mem_limit",
+                                 "mem_swappiness", "memswap_limit", "oom_kill_disable", "oom_score_adj",
+                                 "pid", "pids_limit", "privileged", "profiles", "pull_policy", "read_only",
+                                 "restart", "runtime", "security_opt", "shm_size", "stdin_open",
+                                 "stop_grace_period", "stop_signal", "storage_opt", "sysctls", "tmpfs",
+                                 "tty", "ulimits", "user", "working_dir"]
+    config_list = resolve_configuration_element_list(compose_service, unsupported_configuration)
+    message = "These container and host configuration elements from the docker-compose file are not supported"
+    message += " in Azure Container Apps. For more information about supported configuration,"
+    message += " please see https://aka.ms/containerapp/compose/configuration"
+    if len(config_list) >= 1:
+        logger.warning(message)
+        for item in config_list:
+            logger.warning("     %s", item)
+
+
+def warn_about_unsupported_volumes(compose_service):
+    unsupported_configuration = ["volumes", "volumes_from"]
+    config_list = resolve_configuration_element_list(compose_service, unsupported_configuration)
+    message = "These volume mount elements from the docker-compose file are not supported"
+    message += " in Azure Container Apps. For more information about supported storage configuration,"
+    message += " please see https://aka.ms/containerapp/compose/volumes"
+    if len(config_list) >= 1:
+        logger.warning(message)
+        for item in config_list:
+            logger.warning("     %s", item)
+
+
+def warn_about_unsupported_network(compose_service):
+    unsupported_configuration = ["networks", "network_mode", "mac_address"]
+    config_list = resolve_configuration_element_list(compose_service, unsupported_configuration)
+    message = "These network configuration settings from the docker-compose file are not supported"
+    message += " in Azure Container Apps. For more information about supported networking configuration,"
+    message += " please see https://aka.ms/containerapp/compose/networking"
+    if len(config_list) >= 1:
+        logger.warning(message)
+        for item in config_list:
+            logger.warning("     %s", item)
+
+
+def warn_about_unsupported_elements(compose_service):
+    warn_about_unsupported_build_configuration(compose_service)
+    warn_about_unsupported_runtime_host_configuration(compose_service)
+    warn_about_unsupported_volumes(compose_service)
+    warn_about_unsupported_network(compose_service)
+
+
+def check_supported_platform(platform):
+    if platform is not None:
+        platform = platform.split('/')
+        if len(platform) >= 2:
+            return platform[0] == 'linux' and platform[1] == 'amd64'
+        return platform[0] == 'linux'
+    return True
+
+
+def service_deploy_exists(service):
+    return service.deploy is not None
+
+
+def service_deploy_resources_exists(service):
+    return service_deploy_exists(service) and service.deploy.resources is not None
+
+
+def flatten_list(source_value):
+    flat_list = []
+    for sub_list in source_value:
+        flat_list += sub_list
+    return flat_list
+
+
+def resolve_transport_from_cli_args(service_name, transport):
+    if transport is not None:
+        transport = flatten_list(transport)
+        for setting in transport:
+            key, value = setting.split('=')
+            if key.lower() == service_name.lower():
+                return value
+    return 'auto'
+
+
+def resolve_registry_from_cli_args(registry_server, registry_user, registry_pass):
+    if registry_server is not None:
+        if registry_user is None and registry_pass is None:
+            registry_user = prompt("Please enter the registry's username: ")
+            registry_pass = prompt("Please enter the registry's password: ")
+        elif registry_user is not None and registry_pass is None:
+            registry_pass = prompt("Please enter the registry's password: ")
+    return (registry_server, registry_user, registry_pass)
+
+
+def resolve_environment_from_service(service):
+    env_array = []
+
+    env_vars = service.resolve_environment_hierarchy()
+
+    if env_vars is None:
+        return None
+
+    for k, v in env_vars.items():
+        if v is None:
+            v = prompt(f"{k} is empty. What would you like the value to be? ")
+        env_array.append(f"{k}={v}")
+
+    return env_array
+
+
+def resolve_secret_from_service(service, secrets_map):
+    secret_array = []
+    secret_env_ref = []
+
+    if service.secrets is None:
+        return (None, None)
+
+    for secret in service.secrets:
+
+        secret_config = secrets_map[secret.source]
+        if secret_config is not None and secret_config.file is not None:
+            value = secret_config.file.readFile()
+            if secret.target is None:
+                secret_name = secret.source.replace('_', '-')
+            else:
+                secret_name = secret.target.replace('_', '-')
+            secret_array.append(f"{secret_name}={value}")
+            secret_env_ref.append(f"{secret_name}=secretref:{secret_name}")
+
+    if len(secret_array) == 0:
+        return (None, None)
+
+    logger.warning("Note: Secrets will be mapped as secure environment variables in Azure Container Apps.")
+
+    return (secret_array, secret_env_ref)
+
+
+def resolve_replicas_from_service(service):
+    replicas = None
+
+    if service.scale:
+        replicas = service.scale
+    if service_deploy_exists(service):
+        if service.deploy.replicas is not None:
+            replicas = service.deploy.replicas
+        if service.deploy.mode == "global":
+            replicas = 1
+
+    return replicas
+
+
+# Ported from azure-cli commit 2f7ef21a0d6c4afb9f066c0d65affcc84a8b36a4.
+def resolve_cpu_configuration_from_service(service):
+    cpu = None
+    # Check x-azure-deployment.resources.cpu first
+    if hasattr(service, 'x_azure_deployment') and service.x_azure_deployment:
+        resources = service.x_azure_deployment.get('resources', {})
+        if 'cpu' in resources:
+            cpu = str(resources['cpu'])
+            return cpu
+    
+    if service_deploy_resources_exists(service):
+        resources = service.deploy.resources
+        if resources.reservations is not None and resources.reservations.cpus is not None:
+            cpu = str(resources.reservations.cpus)
+    elif service.cpus is not None:
+        cpu = str(service.cpus)
+    
+    # Default to 1.0 CPU if not specified
+    if cpu is None:
+        cpu = '1.0'
+    return cpu
+
+
+# Ported from azure-cli commit 2f7ef21a0d6c4afb9f066c0d65affcc84a8b36a4.
+def resolve_memory_configuration_from_service(service):
+    memory = None
+    # Check x-azure-deployment.resources.memory first
+    if hasattr(service, 'x_azure_deployment') and service.x_azure_deployment:
+        resources = service.x_azure_deployment.get('resources', {})
+        if 'memory' in resources:
+            memory = str(resources['memory'])
+            return memory
+    
+    if service_deploy_resources_exists(service):
+        resources = service.deploy.resources
+        if resources.reservations is not None and resources.reservations.memory is not None:
+            memory = str(resources.reservations.memory.as_gigabytes())
+    elif service.mem_reservation is not None:
+        memory = str(service.mem_reservation.as_gigabytes())
+    
+    # Default to 2Gi if not specified
+    if memory is None:
+        memory = '2'
+    return memory
+
+
+def resolve_port_or_expose_list(ports, name):
+    if len(ports) > 1:
+        message = f"You have more than one {name} mapping defined in your docker-compose file."
+        message += " Which port would you like to use? "
+        choice_index = prompt_choice_list(message, ports)
+
+    return ports[choice_index]
+
+
+def resolve_ingress_and_target_port(service):
+    # External Ingress Check
+    if service.ports is not None:
+        ingress_type = "external"
+
+        if len(service.ports) == 1:
+            target_port = service.ports[0].target
+        else:
+            ports_list = []
+
+            for p in service.ports:
+                ports_list.append(p.target)
+            target_port = resolve_port_or_expose_list(ports_list, "port")
+
+    # Internal Ingress Check
+    elif service.expose is not None:
+        ingress_type = "internal"
+
+        if len(service.expose) == 1:
+            target_port = service.expose[0]
+        else:
+            target_port = resolve_port_or_expose_list(service.expose, "expose")
+    else:
+        ingress_type = None
+        target_port = None
+    return (ingress_type, target_port)
+
+
+# Ported from azure-cli commit 2f7ef21a0d6c4afb9f066c0d65affcc84a8b36a4.
+def resolve_service_startup_command(service):
+    startup_command_array = []
+    startup_args_array = []
+    if service.entrypoint is not None:
+        startup_command = service.entrypoint.command_string()
+        startup_command_array.append(startup_command)
+        if service.command is not None:
+            # Preserve individual command items as separate args
+            if hasattr(service.command, '__iter__') and not isinstance(service.command, str):
+                startup_args_array = list(service.command)
+            else:
+                startup_args = service.command.command_string()
+                startup_args_array.append(startup_args)
+    elif service.command is not None:
+        # When there's no entrypoint, command should be args
+        # Preserve individual command items as separate args
+        if hasattr(service.command, '__iter__') and not isinstance(service.command, str):
+            startup_command_array = None
+            startup_args_array = list(service.command)
+        else:
+            startup_args = service.command.command_string()
+            startup_command_array = None
+            startup_args_array.append(startup_args)
+    else:
+        startup_command_array = None
+        startup_args_array = None
+    return (startup_command_array, startup_args_array)
+
+
+# ============================================================================
+# End of functions copied from azure-cli core
+# ============================================================================
 
 
 def valid_resource_settings():
@@ -50,22 +426,34 @@ def validate_memory_and_cpu_setting(cpu, memory, managed_environment):
 
 
 def parse_models_section(compose_yaml):
-    """
-    Extract models section from raw YAML compose file.
-    
-    Args:
-        compose_yaml: Dictionary representation of compose file
-        
-    Returns:
-        Dictionary of models configuration or empty dict if not present
-    """
-    from knack.log import get_logger
-    logger = get_logger(__name__)
-    
-    models = compose_yaml.get('models', {})
+    """Wrapper around the ported compose helper from commit 092e028c556c5d98c06ea1a337c26b97fe00ce59."""
+    models = _ported_parse_models_section(compose_yaml)
     if models:
-        logger.info(f"Found {len(models)} model(s) in compose file: {list(models.keys())}")
+        logger.info(
+            "Models section detected with entries: %s",
+            ", ".join(sorted(models.keys())),
+        )
     return models
+
+
+def parse_service_models_config(service):
+    """Ported helper from azure-cli commit 092e028c556c5d98c06ea1a337c26b97fe00ce59."""
+    return _ported_parse_service_models_config(service)
+
+
+def detect_service_type(service):
+    """Ported helper from azure-cli commit 092e028c556c5d98c06ea1a337c26b97fe00ce59."""
+    return _ported_detect_service_type(service)
+
+
+def parse_mcp_servers_from_command(service):
+    """Ported helper from azure-cli commit 092e028c556c5d98c06ea1a337c26b97fe00ce59."""
+    return _ported_parse_mcp_servers_from_command(service)
+
+
+def should_deploy_model_runner(compose_yaml, parsed_compose_file):
+    """Ported helper from azure-cli commit 092e028c556c5d98c06ea1a337c26b97fe00ce59."""
+    return _ported_should_deploy_model_runner(compose_yaml, parsed_compose_file)
 
 
 def detect_mcp_gateway_service(service_name, service):
@@ -217,6 +605,16 @@ def validate_model_source(model_name, source):
     logger.info(f"Validated model source for '{model_name}': {source}")
 
 
+def get_model_runner_environment_vars(models_config, aca_environment_name):
+    """Ported helper from azure-cli commit 092e028c556c5d98c06ea1a337c26b97fe00ce59."""
+    return _ported_get_model_runner_environment_vars(models_config, aca_environment_name)
+
+
+def get_mcp_gateway_environment_vars(aca_environment_name):
+    """Ported helper from azure-cli commit 092e028c556c5d98c06ea1a337c26b97fe00ce59."""
+    return _ported_get_mcp_gateway_environment_vars(aca_environment_name)
+
+
 def check_gpu_profile_availability(cmd, resource_group_name, env_name, location):
     """
     Check if GPU workload profiles are available in the region.
@@ -337,10 +735,9 @@ def create_gpu_workload_profile_if_needed(cmd, resource_group_name, env_name, lo
     from azure.cli.core.azclierror import ResourceNotFoundError
     from ._client_factory import handle_raw_exception
     from ._clients import ManagedEnvironmentClient
-    
+
     logger = get_logger(__name__)
-    
-    # Check if environment already has a GPU profile that matches the request
+    logger.warning(f"[GPU DEBUG] create_gpu_workload_profile_if_needed called with requested_gpu_profile_type: {requested_gpu_profile_type}")    # Check if environment already has a GPU profile that matches the request
     try:
         # Use class methods directly - no instantiation needed
         env = ManagedEnvironmentClient.show(cmd, resource_group_name, env_name)
@@ -377,27 +774,40 @@ def create_gpu_workload_profile_if_needed(cmd, resource_group_name, env_name, lo
         # Validate that requested profile is available
         # The API returns profiles with 'name' field containing the workload profile type
         available_types = [p.get('name') for p in available_gpu]
-        
+        logger.warning(f"[GPU DEBUG] Requested GPU profile: {requested_gpu_profile_type}")
+        logger.warning(f"[GPU DEBUG] Available GPU profiles in {location}: {available_types}")
+
         # Pass through the requested type as-is - it's already the API value
         # (e.g., Consumption-GPU-NC8as-T4, Consumption-GPU-NC24-A100, Consumption, Flex)
         if requested_gpu_profile_type in available_types:
             gpu_profile_type = requested_gpu_profile_type
+            logger.warning(f"[GPU DEBUG] ✅ Requested profile IS available, using: {gpu_profile_type}")
             logger.info(f"Using requested GPU profile type: {gpu_profile_type}")
         else:
             # Don't fall back - user explicitly requested this type
             logger.error(f"Requested GPU profile '{requested_gpu_profile_type}' not available in {location}")
             logger.error(f"Available GPU profiles: {available_types}")
+            logger.warning(f"[GPU DEBUG] ❌ Requested profile NOT available - will raise error")
             raise ResourceNotFoundError(
                 f"Requested workload profile type '{requested_gpu_profile_type}' is not available in region '{location}'. "
                 f"Available types: {', '.join(available_types)}"
             )
     else:
-        gpu_profile_type = available_gpu[0].get('name')
+        # Default to T4 if available, otherwise first available
+        available_types = [p.get('name') for p in available_gpu]
+        if 'Consumption-GPU-NC8as-T4' in available_types:
+            gpu_profile_type = 'Consumption-GPU-NC8as-T4'
+            logger.warning(f"[GPU DEBUG] ⚠️ No specific GPU profile requested, defaulting to T4: {gpu_profile_type}")
+        else:
+            gpu_profile_type = available_gpu[0].get('name')
+            logger.warning(f"[GPU DEBUG] ⚠️ No specific GPU profile requested, T4 not available, defaulting to first: {gpu_profile_type}")
         logger.info(f"No specific GPU profile requested, using: {gpu_profile_type}")
     
     # Check if it's a consumption-based GPU profile
+    logger.warning(f"[GPU DEBUG] Selected gpu_profile_type: {gpu_profile_type}")
     if gpu_profile_type.startswith('Consumption-'):
         # Consumption profiles need to be added to the environment's workloadProfiles array
+        logger.warning(f"[GPU DEBUG] Profile is consumption-based, will add to environment")
         logger.info(f"Adding consumption-based GPU profile to environment: {gpu_profile_type}")
         
         from azure.cli.core.util import send_raw_request
@@ -409,14 +819,23 @@ def create_gpu_workload_profile_if_needed(cmd, resource_group_name, env_name, lo
         
         # Check if profile already exists
         existing_profiles = env.get('properties', {}).get('workloadProfiles', [])
+        profile_exists = False
         for profile in existing_profiles:
             if profile.get('workloadProfileType') == gpu_profile_type:
+                profile_exists = True
                 logger.info(f"GPU profile already exists: {gpu_profile_type}")
-                # Even if profile exists, environment might still be provisioning from a previous operation
-                wait_for_environment_provisioning(cmd, resource_group_name, env_name)
-                return gpu_profile_type
+                break
         
-        # Add the consumption GPU profile to the environment
+        # If profile already exists, skip PATCH and return early
+        if profile_exists:
+            logger.info(f"Skipping environment update - profile '{gpu_profile_type}' already configured")
+            # Wait for environment to be ready in case it's still provisioning from a previous operation
+            wait_for_environment_provisioning(cmd, resource_group_name, env_name)
+            return gpu_profile_type
+        
+        # Profile doesn't exist - add it to the environment
+        logger.info(f"Adding new GPU profile '{gpu_profile_type}' to environment")
+        
         new_profile = {
             "name": gpu_profile_type,
             "workloadProfileType": gpu_profile_type
@@ -541,6 +960,7 @@ def create_models_container_app(cmd, resource_group_name, env_name, env_id, mode
     """
     from knack.log import get_logger
     from ._clients import ManagedEnvironmentClient
+    from ._constants import MODEL_RUNNER_CONFIG_IMAGE
     import json
     
     logger = get_logger(__name__)
@@ -552,6 +972,23 @@ def create_models_container_app(cmd, resource_group_name, env_name, env_id, mode
     # are in the same container app (in-app communication)
     model_runner_url = "http://localhost:12434"
     logger.info(f"Model runner URL (localhost): {model_runner_url}")
+    
+    # Determine model-runner image based on x-azure-deployment.image or GPU profile
+    model_runner_image = None
+    for model_name, model_config in models.items():
+        if isinstance(model_config, dict) and 'x-azure-deployment' in model_config:
+            azure_deployment = model_config.get('x-azure-deployment', {})
+            if 'image' in azure_deployment:
+                model_runner_image = azure_deployment['image']
+                logger.info(f"Using custom model-runner image from x-azure-deployment: {model_runner_image}")
+                break
+    
+    # Default to GPU-aware image selection if not specified
+    if not model_runner_image:
+        from ._constants import MODEL_RUNNER_IMAGE, MODEL_RUNNER_IMAGE_CUDA
+        is_gpu_profile = 'GPU' in gpu_profile_name.upper()
+        model_runner_image = MODEL_RUNNER_IMAGE_CUDA if is_gpu_profile else MODEL_RUNNER_IMAGE
+        logger.info(f"Using default model-runner image: {model_runner_image} (GPU profile: {is_gpu_profile})")
     
     # Determine GPU-appropriate resources based on profile type
     # T4 GPU: 8 vCPUs, 56GB memory (NC8as_T4_v3)
@@ -586,7 +1023,7 @@ def create_models_container_app(cmd, resource_group_name, env_name, env_id, mode
     containers = [
         {
             'name': 'model-runner',
-            'image': 'docker/model-runner:latest',
+            'image': model_runner_image,
             'resources': {
                 'cpu': gpu_cpu,
                 'memory': gpu_memory
@@ -612,7 +1049,7 @@ def create_models_container_app(cmd, resource_group_name, env_name, env_id, mode
         },
         {
             'name': 'model-runner-config',
-            'image': 'simon.azurecr.io/model-runner-config:09112025-1504',
+            'image': MODEL_RUNNER_CONFIG_IMAGE,
             'resources': {
                 'cpu': 0.5,
                 'memory': '1Gi'
@@ -706,6 +1143,21 @@ def create_models_container_app(cmd, resource_group_name, env_name, env_id, mode
     except Exception as e:
         logger.error(f"Failed to create models container app: {str(e)}")
         raise
+
+
+def extract_model_definitions(compose_yaml, parsed_compose_file):
+    """Ported helper from azure-cli commit 092e028c556c5d98c06ea1a337c26b97fe00ce59."""
+    return _ported_extract_model_definitions(compose_yaml, parsed_compose_file)
+
+
+def get_model_endpoint_environment_vars(service_models, models_config, aca_environment_name):
+    """Ported helper from azure-cli commit 092e028c556c5d98c06ea1a337c26b97fe00ce59."""
+    return _ported_get_model_endpoint_environment_vars(service_models, models_config, aca_environment_name)
+
+
+def calculate_model_runner_resources(model_definitions):
+    """Ported helper from azure-cli commit 092e028c556c5d98c06ea1a337c26b97fe00ce59."""
+    return _ported_calculate_model_runner_resources(model_definitions)
 
 
 def get_containerapp_fqdn(cmd, resource_group_name, env_name, app_name, is_external=False):
@@ -804,10 +1256,12 @@ def get_mcp_gateway_configuration(service):
     
     logger = get_logger(__name__)
     
+    from ._constants import MCP_GATEWAY_IMAGE
+    
     config = {
         'port': 8811,  # Standard MCP gateway port
         'ingress_type': 'internal',  # MCP gateway should be internal-only
-        'image': service.image if hasattr(service, 'image') else 'mcr.microsoft.com/mcp-gateway:latest'
+        'image': service.image if hasattr(service, 'image') else MCP_GATEWAY_IMAGE
     }
     
     # Check for custom port in service ports
@@ -897,13 +1351,13 @@ def attempt_role_assignment(cmd, principal_id, resource_group_name, app_name):
     from azure.cli.core.commands.client_factory import get_subscription_id
     
     logger = get_logger(__name__)
-    
-    # Use the specific role definition ID for container app management
-    # This role allows the MCP gateway to modify container apps
-    role_definition_id = "/subscriptions/30501c6c-81f6-41ac-a388-d29cf43a020d/providers/Microsoft.Authorization/roleDefinitions/358470bc-b998-42bd-ab17-a7e34c199c0f"
-    
+
     # Build scope - resource group level
     subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Use the specific role definition ID for container app management
+    # This role allows the MCP gateway to modify container apps
+    role_definition_id = f"/subscriptions/{subscription_id}/providers/Microsoft.Authorization/roleDefinitions/358470bc-b998-42bd-ab17-a7e34c199c0f"
     scope = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}"
     
     logger.info(f"Attempting to assign role to principal {principal_id}")
@@ -1249,6 +1703,9 @@ def parse_x_azure_deployment(service):
             # Handle port
             if 'port' in ingress_config:
                 overrides['target_port'] = int(ingress_config['port'])
+            # Handle allowInsecure
+            if 'allowInsecure' in ingress_config:
+                overrides['allow_insecure'] = bool(ingress_config['allowInsecure'])
         elif isinstance(ingress_config, str):
             overrides['ingress_type'] = ingress_config
 
@@ -1678,8 +2135,21 @@ def print_dry_run_models_deployment(models_config, gpu_profile_info):
     # Container App name
     print(f"  Container App: models")
     
+    # Determine model-runner image from x-azure-deployment.image or GPU profile
+    model_runner_image = None
+    for model_name, model_spec in models_config.items():
+        if isinstance(model_spec, dict) and 'x-azure-deployment' in model_spec:
+            azure_deployment = model_spec.get('x-azure-deployment', {})
+            if 'image' in azure_deployment:
+                model_runner_image = azure_deployment['image']
+                break
+    
+    if not model_runner_image:
+        is_gpu = gpu_profile_info and 'GPU' in str(gpu_profile_info.get('type', '')).upper()
+        model_runner_image = 'docker/model-runner:latest-cuda' if is_gpu else 'docker/model-runner:latest'
+    
     # Image
-    print(f"  Image: docker/model-runner:latest")
+    print(f"  Image: {model_runner_image}")
     
     # Show model names and paths (filter out x-azure-* keys)
     model_names = [k for k in models_config.keys() if not k.startswith('x-')]

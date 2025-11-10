@@ -1545,19 +1545,20 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       replace_all=None):
     from pycomposefile import ComposeFile
 
-    from azure.cli.command_modules.containerapp._compose_utils import (build_containerapp_from_compose_service,
-                                                                       check_supported_platform,
-                                                                       warn_about_unsupported_elements,
-                                                                       resolve_ingress_and_target_port,
-                                                                       resolve_registry_from_cli_args,
-                                                                       resolve_transport_from_cli_args,
-                                                                       resolve_service_startup_command,
-                                                                       resolve_cpu_configuration_from_service,
-                                                                       resolve_memory_configuration_from_service,
-                                                                       resolve_replicas_from_service,
-                                                                       resolve_environment_from_service,
-                                                                       resolve_secret_from_service)
-    from ._compose_utils import validate_memory_and_cpu_setting, parse_x_azure_deployment
+    from ._compose_utils import (build_containerapp_from_compose_service,
+                                 check_supported_platform,
+                                 warn_about_unsupported_elements,
+                                 resolve_ingress_and_target_port,
+                                 resolve_registry_from_cli_args,
+                                 resolve_transport_from_cli_args,
+                                 resolve_service_startup_command,
+                                 resolve_cpu_configuration_from_service,
+                                 resolve_memory_configuration_from_service,
+                                 resolve_replicas_from_service,
+                                 resolve_environment_from_service,
+                                 resolve_secret_from_service,
+                                 validate_memory_and_cpu_setting,
+                                 parse_x_azure_deployment)
 
     # Validate managed environment
     parsed_managed_env = parse_resource_id(managed_env)
@@ -1628,16 +1629,30 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         # Get or create GPU workload profile
         # Extract requested GPU profile type from models x-azure-deployment section
         # x-azure-deployment is nested inside each model (models.gemma.x-azure-deployment)
+        # IMPORTANT: We need to read from compose_yaml_original because parse_models_section() 
+        # strips out x-azure-deployment from the returned models dict
         requested_gpu_type = None
+
+        logger.warning(f"[GPU DEBUG] Inspecting RAW models YAML for GPU profile configuration")
+        raw_models = compose_yaml_original.get('models', {})
+        logger.warning(f"[GPU DEBUG] Raw models keys: {list(raw_models.keys())}")
         
-        for model_name, model_config in models.items():
-            if isinstance(model_config, dict) and 'x-azure-deployment' in model_config:
-                azure_deployment = model_config.get('x-azure-deployment', {})
-                workload_profiles = azure_deployment.get('workloadProfiles', {})
-                requested_gpu_type = workload_profiles.get('workloadProfileType')
-                if requested_gpu_type:
-                    logger.info(f"Found GPU profile in model '{model_name}': {requested_gpu_type}")
-                    break
+        for model_name, model_config in raw_models.items():
+            logger.warning(f"[GPU DEBUG] Raw model '{model_name}' config type: {type(model_config)}")
+            if isinstance(model_config, dict):
+                logger.warning(f"[GPU DEBUG] Raw model '{model_name}' has x-azure-deployment: {'x-azure-deployment' in model_config}")
+                if 'x-azure-deployment' in model_config:
+                    azure_deployment = model_config.get('x-azure-deployment', {})
+                    logger.warning(f"[GPU DEBUG] Model '{model_name}' azure_deployment: {azure_deployment}")
+                    workload_profiles = azure_deployment.get('workloadProfiles', {})
+                    logger.warning(f"[GPU DEBUG] Model '{model_name}' workloadProfiles: {workload_profiles}")
+                    requested_gpu_type = workload_profiles.get('workloadProfileType')
+                    logger.warning(f"[GPU DEBUG] Model '{model_name}' requested GPU type: {requested_gpu_type}")
+                    if requested_gpu_type:
+                        logger.info(f"Found GPU profile in model '{model_name}': {requested_gpu_type}")
+                        break
+
+        logger.warning(f"[GPU DEBUG] Final requested_gpu_type to be passed: {requested_gpu_type}")
         
         try:
             gpu_profile_name = create_gpu_workload_profile_if_needed(
@@ -1748,18 +1763,24 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             # Check if service depends on mcp-gateway and needs URL injection
             needs_gateway_url = False
             gateway_allow_insecure = False
+            mcp_gateway_vars = []  # Track all variables that reference mcp-gateway
             
-            # Check for MCP_GATEWAY_URL in environment
+            # Check for any environment variable referencing mcp-gateway by value
             for env_var in environment:
                 var_name = None
+                var_value = None
+                
                 if isinstance(env_var, dict):
                     var_name = env_var.get('name')
+                    var_value = env_var.get('value', '')
                 elif isinstance(env_var, str) and '=' in env_var:
-                    var_name = env_var.split('=', 1)[0]
+                    var_name, var_value = env_var.split('=', 1)
                 
-                if var_name == 'MCP_GATEWAY_URL':
+                # Check if value contains reference to mcp-gateway service
+                if var_value and '://mcp-gateway' in var_value:
                     needs_gateway_url = True
-                    break
+                    mcp_gateway_vars.append(var_name)
+                    logger.info(f"Detected MCP gateway reference in {var_name}: {var_value}")
             
             # Determine mcp-gateway allowInsecure setting
             if needs_gateway_url:
@@ -1772,8 +1793,11 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             
             for i, env_var in enumerate(environment):
                 if isinstance(env_var, dict) and 'value' in env_var:
-                    # Check if this is MCP_GATEWAY_URL that needs FQDN injection
-                    if env_var.get('name') == 'MCP_GATEWAY_URL' and needs_gateway_url:
+                    var_name = env_var.get('name')
+                    var_value = env_var.get('value', '')
+                    
+                    # Check if this variable references mcp-gateway and needs FQDN injection
+                    if var_name in mcp_gateway_vars and '://mcp-gateway' in var_value:
                         from ._compose_utils import get_containerapp_fqdn
                         # Determine if mcp-gateway has external or internal ingress
                         gateway_external = False
@@ -1788,8 +1812,14 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                         gateway_fqdn = get_containerapp_fqdn(cmd, resource_group_name, managed_env_name, 'mcp-gateway', is_external=gateway_external)
                         gateway_protocol = 'http' if gateway_allow_insecure else 'https'
                         gateway_fqdn = gateway_fqdn.replace('https://', f'{gateway_protocol}://')
-                        env_var['value'] = gateway_fqdn
-                        logger.info(f"Injected MCP_GATEWAY_URL with FQDN: {gateway_fqdn}")
+                        
+                        # Extract and preserve the path from the original URL (e.g., /sse from http://mcp-gateway:8811/sse)
+                        import re
+                        path_match = re.search(r'://mcp-gateway(?::\d+)?(/[^\s]*)', var_value)
+                        preserved_path = path_match.group(1) if path_match else ''
+                        
+                        env_var['value'] = gateway_fqdn + preserved_path
+                        logger.info(f"Transformed {var_name} to FQDN with path: {env_var['value']}")
                     else:
                         # Match http://hostname:port or https://hostname:port patterns
                         env_var['value'] = re.sub(r'(https?://[^:/]+):\d+', r'\1', env_var['value'])
@@ -1797,7 +1827,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                     # Handle string format "KEY=VALUE"
                     key, value = env_var.split('=', 1)
                     
-                    if key == 'MCP_GATEWAY_URL' and needs_gateway_url:
+                    if key in mcp_gateway_vars and '://mcp-gateway' in value:
                         from ._compose_utils import get_containerapp_fqdn
                         gateway_external = False
                         for svc_name in parsed_compose_file.services.keys():
@@ -1811,8 +1841,14 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                         gateway_fqdn = get_containerapp_fqdn(cmd, resource_group_name, managed_env_name, 'mcp-gateway', is_external=gateway_external)
                         gateway_protocol = 'http' if gateway_allow_insecure else 'https'
                         gateway_fqdn = gateway_fqdn.replace('https://', f'{gateway_protocol}://')
-                        environment[i] = f"{key}={gateway_fqdn}"
-                        logger.info(f"Injected MCP_GATEWAY_URL with FQDN: {gateway_fqdn}")
+                        
+                        # Extract and preserve the path from the original URL
+                        import re
+                        path_match = re.search(r'://mcp-gateway(?::\d+)?(/[^\s]*)', value)
+                        preserved_path = path_match.group(1) if path_match else ''
+                        
+                        environment[i] = f"{key}={gateway_fqdn}{preserved_path}"
+                        logger.info(f"Transformed {key} to FQDN with path: {gateway_fqdn}{preserved_path}")
                     else:
                         value = re.sub(r'(https?://[^:/]+):\d+', r'\1', value)
                         environment[i] = f"{key}={value}"
@@ -1868,7 +1904,9 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         
         # Phase 3: Inject environment variables for services with models declarations
         # Services with "models:" section and endpoint_var/model_var get those specific variables injected
-        if hasattr(service, 'models') and service.models and models:
+        # Note: pycomposefile sets models=None if not present, so we just check if service.models is truthy
+        service_models = getattr(service, 'models', None)
+        if service_models:
             logger.info(f"Service '{service_name}' has models section - processing endpoint_var and model_var")
             
             # Ensure environment list exists
@@ -1895,7 +1933,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             logger.info(f"Generated MODEL_RUNNER_URL: {models_endpoint_with_path}")
             
             # Process each model reference
-            for model_name, model_config in service.models.items():
+            for model_name, model_config in service_models.items():
                 if isinstance(model_config, dict):
                     endpoint_var = model_config.get('endpoint_var')
                     model_var = model_config.get('model_var')
@@ -1917,8 +1955,9 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                             logger.info(f"  Injected {endpoint_var}={models_endpoint_with_path}")
                     
                     # Inject model_var if specified
-                    if model_var and model_name in models:
-                        model_path = models[model_name].get('model', '')
+                    if model_var:
+                        # Try to get model path from top-level models section, fallback to model name
+                        model_path = models.get(model_name, {}).get('model', model_name) if models else model_name
                         
                         # Check if variable already exists
                         var_exists = any(
@@ -1966,11 +2005,17 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             # Get raw service YAML for override parsing
             raw_service_yaml = compose_yaml_original.get('services', {}).get(service_name, {})
             overrides = parse_x_azure_deployment(raw_service_yaml)
-            
-            # Priority: x-azure-deployment override > default based on ports
+
+            # Check if this service has models section
+            has_models = service_name == 'models'
+
+            # Priority: x-azure-deployment override > default based on service type > default based on ports
             # NOTE: We ignore ingress_type from resolve_ingress_and_target_port because it always returns 'external'
             if overrides.get('ingress_type') is not None:
                 final_ingress_type = overrides['ingress_type']
+            elif is_mcp_gateway or has_models:
+                # MCP gateway and models apps default to internal ingress
+                final_ingress_type = 'internal'
             elif service.ports:
                 final_ingress_type = 'internal'  # Default to internal if ports exist
             else:
@@ -1978,6 +2023,9 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             
             # Apply image override if specified in x-azure-deployment
             final_image = overrides.get('image') or image
+
+            # Extract allowInsecure from x-azure-deployment.ingress
+            allow_insecure = overrides.get('allow_insecure', False)
 
             # Check if container app already exists
             try:
@@ -2053,6 +2101,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                     registry_user=registry_username,
                                     registry_pass=registry_password,
                                     transport=transport_setting,
+                                    allow_insecure=allow_insecure,
                                     startup_command=startup_command,
                                     args=startup_args,
                                     cpu=cpu,
