@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.3.1
+++++++
+* Add --with-containers flag to acipolicygen and acifragmentgen to allow passing container policy definitions directly
+
 1.3.0
 ++++++
 * Add a new --enable-stdio flag, with a warning if neither this or --disable-stdio is set
