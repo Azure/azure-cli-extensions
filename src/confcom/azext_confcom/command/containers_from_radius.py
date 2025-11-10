@@ -63,6 +63,16 @@ def containers_from_radius(
         "aci": ACI_MOUNTS,
     }.get(platform, None)
 
+    mounts += [
+        {
+            "destination": mount_info["mountPath"],
+            "options": ["rbind", "rshared", "ro"],
+            "source": mount_info["source"],
+            "type": "bind"
+        }
+        for mount_info in container.get("volumes", {}).values()
+    ]
+
     image_config = get_image_config(image)
     image_config["env_rules"] += [
         {
