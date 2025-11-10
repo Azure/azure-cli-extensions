@@ -6,7 +6,6 @@
 import copy
 from dataclasses import asdict
 import json
-import tempfile
 import warnings
 from enum import Enum, auto
 from typing import Any, Dict, List, Optional, Tuple, Union

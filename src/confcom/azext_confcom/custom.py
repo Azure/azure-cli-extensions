@@ -328,6 +328,9 @@ def acifragmentgen_confcom(
             disable_stdio=disable_stdio,
             container_definitions=container_definitions,
         )
+    else:
+        eprint("Either --image-name, --input, or --container-definitions must be provided", exit_code=2)
+        return
 
     # get all of the fragments that are being used in the policy
     # and associate them with each container group

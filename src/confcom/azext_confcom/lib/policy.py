@@ -27,6 +27,7 @@ def get_default_capabilities():
         "CAP_SYS_CHROOT"
     ]
 
+
 @dataclass
 class ContainerCapabilities:
     ambient: list[str] = field(default_factory=list)
