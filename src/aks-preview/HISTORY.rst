@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b15
++++++++
+* Fix `NoneType` error when performing operations on automatic clusters that have hosted system components enabled.
+
+
 19.0.0b14
 +++++++
 * `az aks safeguards`: Add support for Deployment Safeguards with Pod Security Standards (PSS). New `--pss-level` parameter allows setting PSS enforcement level to Privileged, Baseline, or Restricted. Commands now support both `-g/-n` and `--cluster` argument patterns.
