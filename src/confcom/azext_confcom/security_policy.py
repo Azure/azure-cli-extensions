@@ -4,13 +4,16 @@
 # --------------------------------------------------------------------------------------------
 
 import copy
+from dataclasses import asdict
 import json
+import tempfile
 import warnings
 from enum import Enum, auto
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import deepdiff
 from azext_confcom import config, os_util
+from azext_confcom.lib.policy import Container
 from azext_confcom.container import ContainerImage, UserContainerImage
 from azext_confcom.errors import eprint
 from azext_confcom.fragment_util import sanitize_fragment_fields
@@ -65,6 +68,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         disable_stdio: bool = False,
         is_vn2: bool = False,
         fragment_contents: Any = None,
+        container_definitions: Optional[list] = None,
     ) -> None:
         self._rootfs_proxy = None
         self._policy_str = None
@@ -74,6 +78,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._existing_fragments = existing_rego_fragments
         self._api_version = config.API_VERSION
         self._fragment_contents = fragment_contents
+        self._container_definitions = container_definitions or []
 
         if debug_mode:
             self._allow_properties_access = config.DEBUG_MODE_SETTINGS.get(
@@ -398,6 +403,12 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             if self._disable_stdio:
                 for container in policy:
                     container[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS] = False
+
+        if self._container_definitions:
+            policy += [
+                asdict(Container(**json.loads(c)))
+                for c in self._container_definitions
+            ]
 
         if pretty_print:
             return pretty_print_func(policy)

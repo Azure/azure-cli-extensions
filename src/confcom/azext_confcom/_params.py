@@ -198,6 +198,14 @@ def load_arguments(self, _):
             required=False,
             help="Exclude default fragments in the generated policy",
         )
+        c.argument(
+            "container_definitions",
+            options_list=['--with-containers'],
+            action='append',
+            required=False,
+            default=[],
+            help='Container definitions to include in the policy'
+        )
 
     with self.argument_context("confcom acifragmentgen") as c:
         c.argument(
@@ -344,6 +352,14 @@ def load_arguments(self, _):
             required=False,
             help="Path to JSON file to write fragment import information. This is used with --generate-import. If not specified, the import statement will print to the console",
             validator=validate_fragment_json,
+        )
+        c.argument(
+            "container_definitions",
+            options_list=['--with-containers'],
+            action='append',
+            required=False,
+            default=[],
+            help='Container definitions to include in the policy'
         )
 
     with self.argument_context("confcom katapolicygen") as c:
