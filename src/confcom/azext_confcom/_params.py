@@ -8,6 +8,7 @@ import argparse
 import json
 import sys
 from knack.arguments import CLIArgumentType
+from argcomplete.completers import FilesCompleter
 from azext_confcom._validators import (
     validate_params_file,
     validate_diff,

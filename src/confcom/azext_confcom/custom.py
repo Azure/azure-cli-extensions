@@ -204,48 +204,24 @@ def acipolicygen_confcom(
             exit_code = validate_sidecar_in_policy(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif virtual_node_yaml_path and not (print_policy_to_terminal or outraw or outraw_pretty_print or diff):
             result = inject_policy_into_yaml(
-                virtual_node_yaml_path,
-                policy.get_serialized_output(
-                    omit_id=omit_id,
-                    container_definitions=container_definitions,
-                ),
-                count,
+                virtual_node_yaml_path, policy.get_serialized_output(omit_id=omit_id), count
             )
             if result:
-                print(str_to_sha256(policy.get_serialized_output(
-                    OutputType.RAW,
-                    omit_id=omit_id,
-                    container_definitions=container_definitions,
-                )))
+                print(str_to_sha256(policy.get_serialized_output(OutputType.RAW, omit_id=omit_id)))
                 logger.info("CCE Policy successfully injected into YAML file")
         elif diff:
             exit_code = get_diff_outputs(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
-            result = inject_policy_into_template(
-                arm_template,
-                arm_template_parameters,
-                policy.get_serialized_output(
-                    omit_id=omit_id,
-                    container_definitions=container_definitions,
-                ),
-                count,
-            )
+            result = inject_policy_into_template(arm_template, arm_template_parameters,
+                                                 policy.get_serialized_output(omit_id=omit_id), count)
             if result:
                 # this is always going to be the unencoded policy
-                print(str_to_sha256(policy.get_serialized_output(
-                    OutputType.RAW,
-                    omit_id=omit_id,
-                    container_definitions=container_definitions,
-                )))
+                print(str_to_sha256(policy.get_serialized_output(OutputType.RAW, omit_id=omit_id)))
                 logger.info("CCE Policy successfully injected into ARM Template")
 
         else:
             # output to terminal
-            print(f"{policy.get_serialized_output(
-                output_type,
-                omit_id=omit_id,
-                container_definitions=container_definitions,
-            )}\n\n")
+            print(f"{policy.get_serialized_output(output_type, omit_id=omit_id)}\n\n")
 
             # output to file
             if save_to_file:

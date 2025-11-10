@@ -177,11 +177,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         rego_boilerplate=True,
         omit_id: bool = False,
         include_sidecars: bool = True,
-        container_definitions: Optional[list] = None,
     ):
-        if container_definitions is None:
-            container_definitions = []
-
         # error check the output type
         if not isinstance(output_type, Enum) or output_type.value not in [item.value for item in OutputType]:
             eprint("Unknown output type for serialization.")
@@ -192,19 +188,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         if rego_boilerplate:
             policy_str = self._add_rego_boilerplate(policy_str)
-
-        # If rego container definitions are provided, use the new paradigm of
-        # directly editing rego files to add them.
-        # This requires a serialization round trip for now.
-        if container_definitions:
-            with tempfile.NamedTemporaryFile(mode="w+", delete=True) as temp_policy_file:
-                temp_policy_file.write(policy_str)
-                temp_policy_file.flush()
-                policy_obj = policy_deserialize(temp_policy_file.name)
-
-                policy_obj.containers.extend(Container(**json.loads(c)) for c in container_definitions)
-
-                policy_str = policy_serialize(policy_obj)
 
         # if we're not outputting base64
         if output_type in (OutputType.RAW, OutputType.PRETTY_PRINT):
