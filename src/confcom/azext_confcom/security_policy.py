@@ -79,6 +79,14 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._fragment_contents = fragment_contents
         self._container_definitions = container_definitions or []
 
+        self._container_definitions = []
+        if container_definitions:
+            for container_definition in container_definitions:
+                if isinstance(container_definition, list):
+                    self._container_definitions.extend(container_definition)
+                else:
+                    self._container_definitions.append(container_definition)
+
         if debug_mode:
             self._allow_properties_access = config.DEBUG_MODE_SETTINGS.get(
                 "allowPropertiesAccess"
@@ -403,11 +411,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 for container in policy:
                     container[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS] = False
 
-        if self._container_definitions:
-            policy += [
-                asdict(Container(**json.loads(c)))
-                for c in self._container_definitions
-            ]
+        policy += [asdict(Container(**c)) for c in self._container_definitions]
 
         if pretty_print:
             return pretty_print_func(policy)

@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+import json
 from knack.arguments import CLIArgumentType
 from azext_confcom._validators import (
     validate_params_file,
@@ -202,8 +203,8 @@ def load_arguments(self, _):
             "container_definitions",
             options_list=['--with-containers'],
             action='append',
+            type=json.loads,
             required=False,
-            default=[],
             help='Container definitions to include in the policy'
         )
 
@@ -358,7 +359,7 @@ def load_arguments(self, _):
             options_list=['--with-containers'],
             action='append',
             required=False,
-            default=[],
+            type=json.loads,
             help='Container definitions to include in the policy'
         )
 
