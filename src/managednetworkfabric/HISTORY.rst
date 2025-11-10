@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+9.0.0
+++++++
+* Updates this 2025-07-15 CLI to a stable version (9.0.0) from beta version (9.0.0b1).
+
 9.0.0b1
 ++++++
 * Per the v8.1.0 30-day [Breaking Change] notice - the folowing updates have been implmemented:
