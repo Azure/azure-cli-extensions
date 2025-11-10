@@ -127,7 +127,8 @@ from azext_aks_preview._consts import (
     CONST_WEEKINDEX_SECOND,
     CONST_WEEKINDEX_THIRD,
     CONST_WEEKLY_MAINTENANCE_SCHEDULE,
-    CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION,
     CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
@@ -314,7 +315,8 @@ scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCA
 workload_runtimes = [
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
-    CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION,
     CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION,
 ]
 gpu_instance_profiles = [
@@ -2247,6 +2249,14 @@ def load_arguments(self, _):
             validator=validate_k8s_version,
             help="Version of Kubernetes to use for the machine.",
         )
+
+    with self.argument_context("aks machine update") as c:
+        c.argument(
+            "machine_name", help="The machine name."
+        )
+        c.argument("tags", tags_type, help="The tags to set on the machine.")
+        c.argument("node_taints", validator=validate_nodepool_taints)
+        c.argument("labels", nargs="*", help="Labels to set on the machine.")
 
     with self.argument_context("aks operation") as c:
         c.argument(

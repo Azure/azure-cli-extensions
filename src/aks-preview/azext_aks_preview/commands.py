@@ -246,7 +246,6 @@ def load_command_table(self, _):
         "aks namespace",
         managed_namespaces_sdk,
         client_factory=cf_managed_namespaces,
-        is_preview=True,
     ) as g:
         g.custom_command("add", "aks_namespace_add", supports_no_wait=True)
         g.custom_command("update", "aks_namespace_update", supports_no_wait=True)
@@ -302,6 +301,7 @@ def load_command_table(self, _):
             "show", "aks_machine_show", table_transformer=aks_machine_show_table_format
         )
         g.custom_command("add", "aks_machine_add", supports_no_wait=True)
+        g.custom_command("update", "aks_machine_update", supports_no_wait=True)
 
     with self.command_group(
         "aks operation", operations_sdk, client_factory=cf_operations
@@ -566,3 +566,19 @@ def load_command_table(self, _):
             "aks_jwtauthenticator_show",
             table_transformer=aks_jwtauthenticator_show_table_format
         )
+
+    # AKS safeguards commands - override generated commands with custom classes
+    with self.command_group('aks safeguards'):
+        from .aks_safeguards_custom import AKSSafeguardsShowCustom as Show
+        from .aks_safeguards_custom import AKSSafeguardsCreateCustom as Create
+        from .aks_safeguards_custom import AKSSafeguardsUpdateCustom as Update
+        from .aks_safeguards_custom import AKSSafeguardsDeleteCustom as Delete
+        from .aks_safeguards_custom import AKSSafeguardsListCustom as List
+        from .aks_safeguards_custom import AKSSafeguardsWaitCustom as Wait
+
+        self.command_table["aks safeguards show"] = Show(loader=self)
+        self.command_table["aks safeguards create"] = Create(loader=self)
+        self.command_table["aks safeguards update"] = Update(loader=self)
+        self.command_table["aks safeguards delete"] = Delete(loader=self)
+        self.command_table["aks safeguards list"] = List(loader=self)
+        self.command_table["aks safeguards wait"] = Wait(loader=self)

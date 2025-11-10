@@ -16,9 +16,9 @@ class Trigger(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/locations/{}/crossregionrestore", "2024-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/locations/{}/crossregionrestore", "2025-07-01"],
         ]
     }
 
@@ -228,6 +228,10 @@ class Trigger(AAZCommand):
             options=["item-path"],
             help="The path of the item to be restored. It could be the full path of the item or the path relative to the backup item",
             required=True,
+        )
+        item_path_based_restore_criteria.rename_to = AAZStrArg(
+            options=["rename-to"],
+            help="Rename the item to be restored. Restore will rename the itemPath to this new name if the value is specified otherwise the itemPath will be restored as same name.",
         )
         item_path_based_restore_criteria.sub_item_path_prefix = AAZListArg(
             options=["sub-item-path-prefix"],
@@ -511,20 +515,18 @@ class Trigger(AAZCommand):
     @classmethod
     def _build_args_base_resource_properties_create(cls, _schema):
         if cls._args_base_resource_properties_create is not None:
-            _schema.object_type = cls._args_base_resource_properties_create.object_type
+            _schema.default_resource_properties = cls._args_base_resource_properties_create.default_resource_properties
             return
 
         cls._args_base_resource_properties_create = AAZObjectArg()
 
         base_resource_properties_create = cls._args_base_resource_properties_create
-        base_resource_properties_create.object_type = AAZStrArg(
-            options=["object-type"],
-            help="Type of the specific object - used for deserializing",
-            required=True,
-            enum={"DefaultResourceProperties": "DefaultResourceProperties"},
+        base_resource_properties_create.default_resource_properties = AAZObjectArg(
+            options=["default-resource-properties"],
+            blank={},
         )
 
-        _schema.object_type = cls._args_base_resource_properties_create.object_type
+        _schema.default_resource_properties = cls._args_base_resource_properties_create.default_resource_properties
 
     _args_datasource_set_create = None
 
@@ -755,7 +757,7 @@ class Trigger(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -852,6 +854,7 @@ class Trigger(AAZCommand):
             if disc_item_path_based_restore_criteria is not None:
                 disc_item_path_based_restore_criteria.set_prop("isPathRelativeToBackupItem", AAZBoolType, ".item_path_based_restore_criteria.is_path_relative_to_backup_item", typ_kwargs={"flags": {"required": True}})
                 disc_item_path_based_restore_criteria.set_prop("itemPath", AAZStrType, ".item_path_based_restore_criteria.item_path", typ_kwargs={"flags": {"required": True}})
+                disc_item_path_based_restore_criteria.set_prop("renameTo", AAZStrType, ".item_path_based_restore_criteria.rename_to")
                 disc_item_path_based_restore_criteria.set_prop("subItemPathPrefix", AAZListType, ".item_path_based_restore_criteria.sub_item_path_prefix")
 
             sub_item_path_prefix = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:ItemPathBasedRestoreCriteria}.subItemPathPrefix")
@@ -1045,7 +1048,8 @@ class _TriggerHelper:
     def _build_schema_base_resource_properties_create(cls, _builder):
         if _builder is None:
             return
-        _builder.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
+        _builder.set_const("objectType", "DefaultResourceProperties", AAZStrType, ".default_resource_properties", typ_kwargs={"flags": {"required": True}})
+        _builder.discriminate_by("objectType", "DefaultResourceProperties")
 
     @classmethod
     def _build_schema_datasource_set_create(cls, _builder):
