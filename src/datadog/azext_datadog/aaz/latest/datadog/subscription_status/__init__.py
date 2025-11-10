@@ -9,17 +9,4 @@
 # flake8: noqa
 
 from .__cmd_group import *
-from ._create import *
-from ._delete import *
-from ._get_billing_info import *
-from ._get_default_key import *
 from ._list import *
-from ._list_api_key import *
-from ._list_host import *
-from ._list_linked_resource import *
-from ._list_monitored_resource import *
-from ._refresh_set_password_link import *
-from ._set_default_key import *
-from ._show import *
-from ._update import *
-from ._wait import *
