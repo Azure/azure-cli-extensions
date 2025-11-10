@@ -116,10 +116,3 @@ class Fragment:
     framework_version: str = "0.2.3"
     fragments: list[FragmentReference] = field(default_factory=list)
     containers: list[Container] = field(default_factory=list)
-
-
-POLICY_CLASSES = [
-    cls
-    for _, cls in inspect.getmembers(sys.modules[__name__], inspect.isclass)
-    if is_dataclass(cls) and cls.__module__ == sys.modules[__name__].__name__
-]
