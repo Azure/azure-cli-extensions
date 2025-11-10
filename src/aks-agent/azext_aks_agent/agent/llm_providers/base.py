@@ -157,4 +157,6 @@ class LLMProvider(ABC):
         Returns a tuple of (is_valid: bool, message: str, action: str)
         where action can be "retry_input", "connection_error", or "save".
         """
+        # TODO(mainred): leverage 3rd party libraries like litellm instead of
+        # calling http request in each provider to complete the connection check.
         raise NotImplementedError()
