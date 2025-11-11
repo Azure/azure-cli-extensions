@@ -879,7 +879,7 @@ def get_random_replica(cmd, resource_group_name, container_app_name, revision_na
 
 def execute_function_admin_command(cmd, resource_group_name, name, command, revision_name=None, replica_name=None, container_name=None):
     from .custom import containerapp_debug
-    
+
     return containerapp_debug(
         cmd=cmd,
         resource_group_name=resource_group_name,

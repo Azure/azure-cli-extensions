@@ -258,7 +258,6 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
             self.validate_arguments()
 
             # Get arguments
-            cmd = self.cmd
             resource_group_name = self.get_argument_resource_group_name()
             container_app_name = self.get_argument_container_app_name()
             revision_name = self.get_argument_revision_name()
@@ -290,7 +289,6 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
             self.validate_arguments()
 
             # Get all arguments
-            cmd = self.cmd
             resource_group_name = self.get_argument_resource_group_name()
             container_app_name = self.get_argument_container_app_name()
             revision_name = self.get_argument_revision_name()
