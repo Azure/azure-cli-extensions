@@ -305,7 +305,6 @@ class ContainerAppsResiliencyPreviewClient():
 
 class ContainerAppFunctionsPreviewClient():
     api_version = "2025-10-02-preview"
-    APP_INSIGHTS_API_VERSION = "2018-04-20"
 
     @classmethod
     def list_functions_by_revision(cls, cmd, resource_group_name, container_app_name, revision_name):
@@ -380,113 +379,8 @@ class ContainerAppFunctionsPreviewClient():
         return r.json()
 
     @classmethod
-    def get_function_invocation_summary(cls, cmd, resource_group_name, container_app_name, revision_name, function_name, timespan="30d"):
-        # Fetch the app insights resource app id
-        app_id = cls._get_app_insights_id(cmd, resource_group_name, container_app_name, revision_name)
-
-        # Use application insights query to get function invocations summary
-        invocation_summary_query = (
-            f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
-            f"| where timestamp >= ago({timespan}) "
-            f"| where cloud_RoleName =~ '{container_app_name}' "
-            f"| where cloud_RoleInstance contains '{revision_name}' "
-            f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
-            f"| summarize SuccessCount = coalesce(countif(success == true), 0), ErrorCount = coalesce(countif(success == false), 0)"
-        )
-
-        try:
-            result = cls._execute_app_insights_query(cmd, app_id, invocation_summary_query, "getLast30DaySummary")
-            return result
-        except Exception as ex:
-            raise CLIError(f"Error retrieving function invocation summary: {str(ex)}")
-
-    @classmethod
-    def get_function_invocation_traces(cls, cmd, resource_group_name, container_app_name, revision_name, function_name, timespan="30d", limit=20):
-        # Fetch the app insights resource app id
-        app_id = cls._get_app_insights_id(cmd, resource_group_name, container_app_name, revision_name)
-
-        # Use application insights query to get function invocations traces
-        invocation_traces_query = (
-            f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
-            f"| project timestamp, id, operation_Name, success, resultCode, duration, operation_Id, functionNameFromCustomDimension, "
-            f"cloud_RoleName, cloud_RoleInstance, invocationId=coalesce(tostring(customDimensions['InvocationId']), tostring(customDimensions['faas.invocation_id'])) "
-            f"| where timestamp > ago({timespan}) "
-            f"| where cloud_RoleName =~ '{container_app_name}' "
-            f"| where cloud_RoleInstance contains '{revision_name}' "
-            f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
-            f"| order by timestamp desc | take {limit} "
-            f"| project timestamp, success, resultCode, durationInMilliSeconds=duration, invocationId, operationId=operation_Id, operationName=operation_Name, functionNameFromCustomDimension "
-        )
-
-        try:
-            result = cls._execute_app_insights_query(cmd, app_id, invocation_traces_query, "getInvocationTraces")
-            return result
-        except Exception as ex:
-            raise CLIError(f"Error retrieving function invocation traces: {str(ex)}")
-
-    @classmethod
-    def _get_app_insights_id(cls, cmd, resource_group_name, container_app_name, revision_name):
-        # Fetch the revision details using the container app client
-        revision = ContainerAppPreviewClient.show_revision(cmd, resource_group_name, container_app_name, revision_name)
-        # Extract the list of environment variables from the revision's properties
-        env_vars = []
-        if revision and "properties" in revision and "template" in revision["properties"]:
-            containers = revision["properties"]["template"].get("containers", [])
-            for container in containers:
-                env_vars.extend(container.get("env", []))
-
-        # Check for APPLICATIONINSIGHTS_CONNECTION_STRING
-        ai_conn_str = None
-        for env in env_vars:
-            if env.get("name") == "APPLICATIONINSIGHTS_CONNECTION_STRING":
-                ai_conn_str = env.get("value")
-                break
-
-        if not ai_conn_str:
-            raise CLIError(f"Required application setting APPLICATIONINSIGHTS_CONNECTION_STRING not present in the containerapp '{container_app_name}'.")
-
-        # Extract ApplicationId from the connection string
-        app_id = None
-        parts = ai_conn_str.split(";")
-        for part in parts:
-            if part.startswith("ApplicationId="):
-                app_id = part.split("=", 1)[1]
-                break
-
-        if not app_id:
-            raise CLIError(f"ApplicationId not found in APPLICATIONINSIGHTS_CONNECTION_STRING for containerapp '{container_app_name}'.")
-        return app_id
-
-    @classmethod
-    def _execute_app_insights_query(cls, cmd, app_id, query, queryType, timespan="30D"):
-
-        # Application Insights REST API endpoint
-        api_endpoint = "https://api.applicationinsights.io"
-        url = f"{api_endpoint}/v1/apps/{app_id}/query?api-version={cls.APP_INSIGHTS_API_VERSION}&queryType={queryType}"
-
-        # Prepare the request body
-        body = {
-            "query": query,
-            "timespan": f"P{timespan}"
-        }
-
-        # Execute the query using Azure CLI's send_raw_request
-        response = send_raw_request(
-            cmd.cli_ctx,
-            "POST",
-            url,
-            body=json.dumps(body),
-            headers=["Content-Type=application/json"]
-        )
-
-        result = response.json()
-        if isinstance(result, dict) and 'error' in result:
-            raise CLIError(f"Error retrieving invocations details: {result['error']}")
-        return result
-
-    @classmethod
     def show_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, function_name=None, revision_name=None, replica_name=None, container_name=None):
-        from .custom import containerapp_debug
+        from ._utils import execute_function_admin_command
 
         command_fmt = ""
         if key_type != "functionKey":
@@ -496,14 +390,14 @@ class ContainerAppFunctionsPreviewClient():
             command_fmt = "/bin/azure-functions-admin keys show --key-type {} --key-name {} --function-name {}"
             command = command_fmt.format(key_type, key_name, function_name)
 
-        r = containerapp_debug(
+        r = execute_function_admin_command(
             cmd=cmd,
             resource_group_name=resource_group_name,
             name=name,
-            container=container_name,
-            revision=revision_name,
-            replica=replica_name,
-            debug_command=command
+            command=command,
+            revision_name=revision_name,
+            replica_name=replica_name,
+            container_name=container_name
         )
         if not r:
             raise CLIError(f"Error retrieving function key '{key_name}' of type '{key_type}'.")
@@ -511,7 +405,7 @@ class ContainerAppFunctionsPreviewClient():
 
     @classmethod
     def list_function_keys(cls, cmd, resource_group_name, name, key_type, function_name=None, revision_name=None, replica_name=None, container_name=None):
-        from .custom import containerapp_debug
+        from ._utils import execute_function_admin_command
 
         command_fmt = ""
         if key_type != "functionKey":
@@ -521,14 +415,14 @@ class ContainerAppFunctionsPreviewClient():
             command_fmt = "/bin/azure-functions-admin keys list --key-type {} --function-name {}"
             command = command_fmt.format(key_type, function_name)
 
-        r = containerapp_debug(
+        r = execute_function_admin_command(
             cmd=cmd,
             resource_group_name=resource_group_name,
             name=name,
-            container=container_name,
-            revision=revision_name,
-            replica=replica_name,
-            debug_command=command
+            command=command,
+            revision_name=revision_name,
+            replica_name=replica_name,
+            container_name=container_name
         )
         if not r:
             raise CLIError(f"Error retrieving function keys of type '{key_type}'.")
@@ -537,7 +431,7 @@ class ContainerAppFunctionsPreviewClient():
     @classmethod
     def set_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, key_value, function_name=None, revision_name=None, replica_name=None, container_name=None):
         """Set/Update function keys based on key type"""
-        from .custom import containerapp_debug
+        from ._utils import execute_function_admin_command
 
         command_fmt = ""
         if key_type != "functionKey":
@@ -550,14 +444,14 @@ class ContainerAppFunctionsPreviewClient():
         if key_value is not None:
             command += " --key-value {}".format(key_value)
 
-        r = containerapp_debug(
+        r = execute_function_admin_command(
             cmd=cmd,
             resource_group_name=resource_group_name,
             name=name,
-            container=container_name,
-            revision=revision_name,
-            replica=replica_name,
-            debug_command=command
+            command=command,
+            revision_name=revision_name,
+            replica_name=replica_name,
+            container_name=container_name
         )
         if not r:
             raise CLIError(f"Error setting function key '{key_name}' of type '{key_type}'.")

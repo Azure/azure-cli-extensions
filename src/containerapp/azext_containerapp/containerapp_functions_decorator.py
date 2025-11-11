@@ -5,14 +5,17 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, broad-except, logging-format-interpolation, too-many-public-methods, too-many-boolean-expressions, logging-fstring-interpolation
 
+import json
 from knack.log import get_logger
 
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, CLIError
+from azure.cli.core.util import send_raw_request
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 
 from ._client_factory import handle_raw_exception
 from ._validators import validate_basic_arguments, validate_revision_and_get_name, validate_functionapp_kind
 from ._transformers import process_app_insights_response
+from ._clients import ContainerAppPreviewClient
 
 logger = get_logger(__name__)
 
@@ -165,6 +168,8 @@ class ContainerAppFunctionsShowDecorator(ContainerAppFunctionsDecorator):
 class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
     """Decorator for showing function invocation"""
 
+    APP_INSIGHTS_API_VERSION = "2018-04-20"
+
     def validate_arguments(self):
         """Validate arguments required for function invocation operations"""
         validate_basic_arguments(
@@ -190,21 +195,91 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
         self.set_argument_revision_name(revision_name)
         self.validate_function_name_requirement()
 
+    def _get_app_insights_id(self, resource_group_name, container_app_name, revision_name):
+        # Fetch the revision details using the container app client
+        revision = ContainerAppPreviewClient.show_revision(self.cmd, resource_group_name, container_app_name, revision_name)
+        # Extract the list of environment variables from the revision's properties
+        env_vars = []
+        if revision and "properties" in revision and "template" in revision["properties"]:
+            containers = revision["properties"]["template"].get("containers", [])
+            for container in containers:
+                env_vars.extend(container.get("env", []))
+
+        # Check for APPLICATIONINSIGHTS_CONNECTION_STRING
+        ai_conn_str = None
+        for env in env_vars:
+            if env.get("name") == "APPLICATIONINSIGHTS_CONNECTION_STRING":
+                ai_conn_str = env.get("value")
+                break
+
+        if not ai_conn_str:
+            raise CLIError(f"Required application setting APPLICATIONINSIGHTS_CONNECTION_STRING not present in the containerapp '{container_app_name}'.")
+
+        # Extract ApplicationId from the connection string
+        app_id = None
+        parts = ai_conn_str.split(";")
+        for part in parts:
+            if part.startswith("ApplicationId="):
+                app_id = part.split("=", 1)[1]
+                break
+
+        if not app_id:
+            raise CLIError(f"ApplicationId not found in APPLICATIONINSIGHTS_CONNECTION_STRING for containerapp '{container_app_name}'.")
+        return app_id
+
+    def _execute_app_insights_query(self, app_id, query, query_type, timespan="30D"):
+        # Application Insights REST API endpoint
+        api_endpoint = "https://api.applicationinsights.io"
+        url = f"{api_endpoint}/v1/apps/{app_id}/query?api-version={self.APP_INSIGHTS_API_VERSION}&queryType={query_type}"
+
+        # Prepare the request body
+        body = {
+            "query": query,
+            "timespan": f"P{timespan}"
+        }
+
+        # Execute the query using Azure CLI's send_raw_request
+        response = send_raw_request(
+            self.cmd.cli_ctx,
+            "POST",
+            url,
+            body=json.dumps(body),
+            headers=["Content-Type=application/json"]
+        )
+
+        result = response.json()
+        if isinstance(result, dict) and 'error' in result:
+            raise CLIError(f"Error retrieving invocations details: {result['error']}")
+        return result
+
     def get_summary(self):
         """Get function invocation summary using the client"""
         try:
             self.validate_arguments()
 
-            response = self.client.get_function_invocation_summary(
-                cmd=self.cmd,
-                resource_group_name=self.get_argument_resource_group_name(),
-                container_app_name=self.get_argument_container_app_name(),
-                revision_name=self.get_argument_revision_name(),
-                function_name=self.get_argument_function_name(),
-                timespan=self.get_argument_timespan() or "30d"
+            # Get arguments
+            resource_group_name = self.get_argument_resource_group_name()
+            container_app_name = self.get_argument_container_app_name()
+            revision_name = self.get_argument_revision_name()
+            function_name = self.get_argument_function_name()
+            timespan = self.get_argument_timespan() or "30d"
+
+            # Fetch the app insights resource app id
+            app_id = self._get_app_insights_id(resource_group_name, container_app_name, revision_name)
+
+            # Use application insights query to get function invocations summary
+            invocation_summary_query = (
+                f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
+                f"| where timestamp >= ago({timespan}) "
+                f"| where cloud_RoleName =~ '{container_app_name}' "
+                f"| where cloud_RoleInstance contains '{revision_name}' "
+                f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
+                f"| summarize SuccessCount = coalesce(countif(success == true), 0), ErrorCount = coalesce(countif(success == false), 0)"
             )
 
-            return process_app_insights_response(response)
+            result = self._execute_app_insights_query(app_id, invocation_summary_query, "getLast30DaySummary", timespan)
+
+            return process_app_insights_response(result)
         except Exception as e:
             handle_raw_exception(e)
 
@@ -214,23 +289,31 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
             self.validate_arguments()
 
             # Get all arguments
-            resource_group = self.get_argument_resource_group_name()
-            container_app = self.get_argument_container_app_name()
-            revision = self.get_argument_revision_name()
-            function = self.get_argument_function_name()
-            timespan = self.get_argument_timespan()
-            limit = self.get_argument_limit()
+            resource_group_name = self.get_argument_resource_group_name()
+            container_app_name = self.get_argument_container_app_name()
+            revision_name = self.get_argument_revision_name()
+            function_name = self.get_argument_function_name()
+            timespan = self.get_argument_timespan() or "30d"
+            limit = self.get_argument_limit() or 20
 
-            response = self.client.get_function_invocation_traces(
-                cmd=self.cmd,
-                resource_group_name=resource_group,
-                container_app_name=container_app,
-                revision_name=revision,
-                function_name=function,
-                timespan=timespan,
-                limit=limit
+            # Fetch the app insights resource app id
+            app_id = self._get_app_insights_id(resource_group_name, container_app_name, revision_name)
+
+            # Use application insights query to get function invocations traces
+            invocation_traces_query = (
+                f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
+                f"| project timestamp, id, operation_Name, success, resultCode, duration, operation_Id, functionNameFromCustomDimension, "
+                f"cloud_RoleName, cloud_RoleInstance, invocationId=coalesce(tostring(customDimensions['InvocationId']), tostring(customDimensions['faas.invocation_id'])) "
+                f"| where timestamp > ago({timespan}) "
+                f"| where cloud_RoleName =~ '{container_app_name}' "
+                f"| where cloud_RoleInstance contains '{revision_name}' "
+                f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
+                f"| order by timestamp desc | take {limit} "
+                f"| project timestamp, success, resultCode, durationInMilliSeconds=duration, invocationId, operationId=operation_Id, operationName=operation_Name, functionNameFromCustomDimension "
             )
 
-            return process_app_insights_response(response)
+            result = self._execute_app_insights_query(app_id, invocation_traces_query, "getInvocationTraces", timespan)
+
+            return process_app_insights_response(result)
         except Exception as e:
             handle_raw_exception(e)
