@@ -13,6 +13,19 @@ Pending
 +++++++
 * Update enable-container-network-logs DCR to ContainerNetworkLogs instead of RetinaNetworkFlowLogs
 
+19.0.0b15
++++++++
+* Fix `NoneType` error when performing operations on automatic clusters that have hosted system components enabled.
+
+
+19.0.0b14
++++++++
+* `az aks safeguards`: Add support for Deployment Safeguards with Pod Security Standards (PSS). New `--pss-level` parameter allows setting PSS enforcement level to Privileged, Baseline, or Restricted. Commands now support both `-g/-n` and `--cluster` argument patterns.
+
+19.0.0b13
++++++++
+* `az aks update`: Set CMK property "enabled" to false and reserve other CMK properties for a PMK-enabled and CMK-disabled cluster.
+
 19.0.0b12
 +++++++
 * `az aks create --workload-runtime KataVmIsolation`: Added the KataVmIsolation workload runtime value.
