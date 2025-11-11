@@ -127,7 +127,8 @@ from azext_aks_preview._consts import (
     CONST_WEEKINDEX_SECOND,
     CONST_WEEKINDEX_THIRD,
     CONST_WEEKLY_MAINTENANCE_SCHEDULE,
-    CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION,
     CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
@@ -139,6 +140,7 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_SSH_ACCESS_DISABLED,
+    CONST_SSH_ACCESS_ENTRAID,
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT,
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
     CONST_ARTIFACT_SOURCE_DIRECT,
@@ -176,6 +178,10 @@ from azext_aks_preview._validators import (
     validate_assign_kubelet_identity,
     validate_azure_keyvault_kms_key_id,
     validate_azure_keyvault_kms_key_vault_resource_id,
+    validate_azure_monitor_and_opentelemetry_for_create,
+    validate_azure_monitor_and_opentelemetry_for_update,
+    validate_azure_monitor_logs_and_enable_addons,
+    validate_azure_monitor_logs_enable_disable,
     validate_azuremonitorworkspaceresourceid,
     validate_cluster_id,
     validate_cluster_snapshot_id,
@@ -309,7 +315,8 @@ scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCA
 workload_runtimes = [
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
-    CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION,
     CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION,
 ]
 gpu_instance_profiles = [
@@ -507,6 +514,7 @@ node_provisioning_default_pools = [
 ssh_accesses = [
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_SSH_ACCESS_DISABLED,
+    CONST_SSH_ACCESS_ENTRAID,
 ]
 
 health_probe_modes = [
@@ -749,6 +757,12 @@ def load_arguments(self, _):
             options_list=["--enable-addons", "-a"],
             validator=validate_addons,
         )
+        c.argument(
+            "enable_azure_monitor_logs",
+            action="store_true",
+            validator=validate_azure_monitor_logs_and_enable_addons,
+            help="Enable Azure Monitor logs for the cluster. Equivalent to '--enable-addons monitoring'."
+        )
         c.argument("workspace_resource_id")
         c.argument(
             "enable_msi_auth_for_monitoring",
@@ -959,6 +973,15 @@ def load_arguments(self, _):
         c.argument(
             "enable_retina_flow_logs",
             action="store_true",
+            deprecate_info=c.deprecate(
+                target="--enable-retina-flow-logs",
+                redirect="--enable-container-network-logs",
+                hide=True,
+            ),
+        )
+        c.argument(
+            "enable_container_network_logs",
+            action="store_true",
         )
         c.argument(
             "custom_ca_trust_certificates",
@@ -1028,9 +1051,50 @@ def load_arguments(self, _):
         c.argument("ksm_metric_annotations_allow_list")
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
-        c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
-        c.argument("enable_cost_analysis", action="store_true")
-        c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
+        c.argument("enable_azure_monitor_app_monitoring",
+                   is_preview=True,
+                   action="store_true"
+                   )
+        # OpenTelemetry parameters
+        c.argument("enable_opentelemetry_metrics",
+                   is_preview=True,
+                   action="store_true",
+                   help="Enable OpenTelemetry metrics collection",
+                   validator=validate_azure_monitor_and_opentelemetry_for_create
+                   )
+        c.argument("opentelemetry_metrics_port",
+                   is_preview=True,
+                   type=int,
+                   help="Port for OpenTelemetry metrics collection"
+                   )
+        c.argument("disable_opentelemetry_metrics",
+                   is_preview=True,
+                   action="store_true",
+                   help="Disable OpenTelemetry metrics collection"
+                   )
+        c.argument("enable_opentelemetry_logs",
+                   options_list=["--enable-opentelemetry-logs"],
+                   is_preview=True,
+                   action="store_true",
+                   help="Enable OpenTelemetry logs collection"
+                   )
+        c.argument("opentelemetry_logs_port",
+                   is_preview=True,
+                   type=int,
+                   help="Port for OpenTelemetry logs collection"
+                   )
+        c.argument("disable_opentelemetry_logs",
+                   is_preview=True,
+                   action="store_true",
+                   help="Disable OpenTelemetry logs collection"
+                   )
+        c.argument("enable_cost_analysis",
+                   action="store_true"
+                   )
+        c.argument("enable_ai_toolchain_operator",
+                   is_preview=True,
+                   action="store_true"
+                   )
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
@@ -1129,6 +1193,12 @@ def load_arguments(self, _):
                    is_preview=True,
                    deprecate_info=c.deprecate(target="--enable-managed-system-pool", hide=True))
         c.argument("enable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
+        c.argument(
+            "enable_gateway_api",
+            action="store_true",
+            help="Enable managed installation of Gateway API CRDs from the standard release channel."
+        )
+        c.argument("enable_hosted_system", action="store_true", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1281,6 +1351,18 @@ def load_arguments(self, _):
             is_preview=True,
         )
         # addons
+        c.argument(
+            "enable_azure_monitor_logs",
+            action="store_true",
+            validator=validate_azure_monitor_logs_enable_disable,
+            help="Enable Azure Monitor logs for the cluster. Equivalent to 'az aks enable-addons -a monitoring'."
+        )
+# Monitoring parameters are inherited from base CLI
+        c.argument(
+            "disable_azure_monitor_logs",
+            action="store_true",
+            help="Disable Azure Monitor logs for the cluster. Equivalent to 'az aks disable-addons -a monitoring'."
+        )
         c.argument("enable_secret_rotation", action="store_true")
         c.argument("disable_secret_rotation", action="store_true")
         c.argument("rotation_poll_interval")
@@ -1407,9 +1489,69 @@ def load_arguments(self, _):
                 hide=True,
             ),
         )
-        c.argument("disable_azure_monitor_metrics", action="store_true")
-        c.argument("enable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
-        c.argument("disable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
+        c.argument("enable_azure_monitor_app_monitoring",
+                   action="store_true",
+                   is_preview=True
+                   )
+        c.argument("disable_azure_monitor_app_monitoring",
+                   action="store_true",
+                   is_preview=True
+                   )
+        # Azure Monitor logs additional parameters
+        c.argument("workspace_resource_id",
+                   help="Resource ID of the Azure Log Analytics workspace to use for monitoring")
+        c.argument(
+            "enable_msi_auth_for_monitoring",
+            arg_type=get_three_state_flag(),
+            is_preview=True,
+            help="Enable managed identity authentication for Azure Monitor logs"
+        )
+        c.argument("enable_syslog",
+                   arg_type=get_three_state_flag(),
+                   is_preview=True,
+                   help="Enable syslog collection for Azure Monitor logs")
+        c.argument("data_collection_settings",
+                   is_preview=True,
+                   help="Data collection settings for Azure Monitor logs")
+        c.argument("enable_high_log_scale_mode",
+                   arg_type=get_three_state_flag(),
+                   is_preview=True,
+                   help="Enable high log scale mode for Azure Monitor logs")
+        c.argument("ampls_resource_id",
+                   is_preview=True,
+                   help="Resource ID of the Azure Monitor Private Link Scope to associate with the cluster")
+        # OpenTelemetry parameters
+        c.argument("enable_opentelemetry_metrics",
+                   is_preview=True,
+                   action="store_true",
+                   help="Enable OpenTelemetry metrics collection",
+                   validator=validate_azure_monitor_and_opentelemetry_for_update
+                   )
+        c.argument("opentelemetry_metrics_port",
+                   is_preview=True,
+                   type=int,
+                   help="Port for OpenTelemetry metrics collection"
+                   )
+        c.argument("disable_opentelemetry_metrics",
+                   is_preview=True,
+                   action="store_true",
+                   help="Disable OpenTelemetry metrics collection"
+                   )
+        c.argument("enable_opentelemetry_logs",
+                   is_preview=True,
+                   action="store_true",
+                   help="Enable OpenTelemetry logs collection"
+                   )
+        c.argument("opentelemetry_logs_port",
+                   is_preview=True,
+                   type=int,
+                   help="Port for OpenTelemetry logs collection"
+                   )
+        c.argument("disable_opentelemetry_logs",
+                   is_preview=True,
+                   action="store_true",
+                   help="Disable OpenTelemetry logs collection"
+                   )
         c.argument(
             "enable_vpa",
             action="store_true",
@@ -1496,9 +1638,27 @@ def load_arguments(self, _):
         c.argument(
             "enable_retina_flow_logs",
             action="store_true",
+            deprecate_info=c.deprecate(
+                target="--enable-retina-flow-logs",
+                redirect="--enable-container-network-logs",
+                hide=True,
+            ),
+        )
+        c.argument(
+            "enable_container_network_logs",
+            action="store_true",
         )
         c.argument(
             "disable_retina_flow_logs",
+            action="store_true",
+            deprecate_info=c.deprecate(
+                target="--disable-retina-flow-logs",
+                redirect="--disable-container-network-logs",
+                hide=True,
+            ),
+        )
+        c.argument(
+            "disable_container_network_logs",
             action="store_true",
         )
         c.argument("enable_cost_analysis", action="store_true")
@@ -1595,6 +1755,16 @@ def load_arguments(self, _):
         c.argument("enable_http_proxy", action="store_true", is_preview=True)
         c.argument("enable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
         c.argument("disable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
+        c.argument(
+            "enable_gateway_api",
+            action="store_true",
+            help="Enable managed installation of Gateway API CRDs from the standard release channel."
+        )
+        c.argument(
+            "disable_gateway_api",
+            action="store_true",
+            help="Disable managed installation of Gateway API CRDs."
+        )
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -2079,6 +2249,14 @@ def load_arguments(self, _):
             validator=validate_k8s_version,
             help="Version of Kubernetes to use for the machine.",
         )
+
+    with self.argument_context("aks machine update") as c:
+        c.argument(
+            "machine_name", help="The machine name."
+        )
+        c.argument("tags", tags_type, help="The tags to set on the machine.")
+        c.argument("node_taints", validator=validate_nodepool_taints)
+        c.argument("labels", nargs="*", help="Labels to set on the machine.")
 
     with self.argument_context("aks operation") as c:
         c.argument(

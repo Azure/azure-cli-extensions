@@ -12,6 +12,13 @@ upcoming
 * 'az containerapp function invocations summary': Get function invocation summary from Application Insights
 * 'az containerapp function invocations traces': Get function invocation traces from Application Insights
 
+1.2.0b5
+++++++
+* 'az containerapp env premium-ingress add/update': remove `--min-replicas` and `--max-replicas`
+* 'az containerapp sessionpool create': Add `Shell` container type
+* Update azure cli dependency version >= "2.79.0"
+* 'az containerapp env http-route-config/premium-ingress': Remove GA commands which exist in azure-cli version 2.79.0
+
 1.2.0b4
 ++++++
 * 'az containerapp update/up': Disallow changing `--revisions-mode` to Labels.
