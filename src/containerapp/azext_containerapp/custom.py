@@ -3615,6 +3615,7 @@ def list_maintenance_config(cmd, resource_group_name, env_name):
 
 
 def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None, debug_command=None):
+    logger.warning("Connecting...")
     if debug_command is not None:
         raw_parameters = {
             'resource_group_name': resource_group_name,
@@ -3654,12 +3655,14 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
 
     while conn.is_connected:
         if not reader.is_alive() or not writer.is_alive():
+            logger.warning("Reader or Writer for WebSocket is not alive. Closing the connection.")
             conn.disconnect()
 
         try:
             time.sleep(0.1)
         except KeyboardInterrupt:
             if conn.is_connected:
+                logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
                 conn.send(SSH_CTRL_C_MSG)
 
 
