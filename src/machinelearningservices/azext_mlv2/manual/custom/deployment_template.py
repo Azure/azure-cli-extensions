@@ -54,7 +54,7 @@ def ml_deployment_template_list(cmd, registry_name=None):
         log_and_raise_error(err, debug)
 
 
-def ml_deployment_template_get(cmd, name, version=None, registry_name=None):
+def ml_deployment_template_show(cmd, name, version=None, registry_name=None):
     """Get a specific deployment template by name and version."""
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
@@ -120,7 +120,7 @@ def ml_deployment_template_create(
         if no_wait:
             module_logger.warning(
                 "Deployment template create/update request initiated. "
-                "Status can be checked using `az ml deployment-template get -n %s -v %s`",
+                "Status can be checked using `az ml deployment-template show -n %s -v %s`",
                 deployment_template.name if hasattr(deployment_template, 'name') else name or "unknown",
                 deployment_template.version if hasattr(deployment_template, 'version') else version or "unknown"
             )
