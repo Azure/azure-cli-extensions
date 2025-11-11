@@ -16,6 +16,7 @@ from ._compute_params import load_compute_params
 from ._connection_params import load_connection_params
 from ._data_params import load_data_params
 from ._datastore_params import load_datastore_params
+from ._deployment_template_params import load_deployment_template_params
 from ._environment_params import load_environment_params
 from ._feature_set_params import load_feature_set_params
 from ._feature_store_entity_params import load_feature_store_entity_params
@@ -44,6 +45,7 @@ def load_arguments(self, _):
     load_batch_endpoint_params(self)
     load_online_deployment_params(self)
     load_batch_deployment_params(self)
+    load_deployment_template_params(self)
     load_environment_params(self)
     load_compute_params(self)
     load_workspace_params(self)

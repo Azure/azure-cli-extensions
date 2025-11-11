@@ -67,6 +67,8 @@ helps['dataprotection backup-policy get-default-policy-template'] = """
     examples:
       - name: Get default policy template for Azure Disk
         text: az dataprotection backup-policy get-default-policy-template --datasource-type AzureDisk
+      - name: Get default policy template for Azure Data Lake Storage
+        text: az dataprotection backup-policy get-default-policy-template --datasource-type AzureDataLakeStorage
 """
 
 helps['dataprotection backup-policy trigger'] = """
@@ -178,8 +180,17 @@ helps['dataprotection backup-instance restore initialize-for-item-recovery'] = "
     type: command
     short-summary: Initialize restore request object to recover specified items of backed up data in a backup vault.
     examples:
-      - name: initialize restore request for azure blob backup instance
+      - name: Initialize restore request for azure blob backup instance
         text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureBlob --restore-location centraluseuap --source-datastore OperationalStore --backup-instance-id {backup_instance_id}  --point-in-time 2021-05-26T15:00:00 --container-list container1 container2
+      - name: Initialize item-level restore request for azure data lake storage with prefix patterns and rename
+        text: |
+          az dataprotection backup-instance restore initialize-for-item-recovery \\
+            --datasource-type AzureDataLakeStorage \\
+            --restore-location centraluseuap \\
+            --source-datastore VaultStore \\
+            --recovery-point-id {recovery_point_id} \\
+            --target-resource-id {storage_account_id} \\
+            --vaulted-blob-prefix-pattern '{"containers":[{"name":"container1","prefixmatch":["a","b"],"renameto":"container1renamed"},{"name":"container2","renameto":"container2renamed"}]}'
 """
 
 helps['dataprotection resource-guard list-protected-operations'] = """
@@ -198,6 +209,9 @@ helps['dataprotection backup-instance initialize-backupconfig'] = """
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService --label-selectors key=val foo=bar --excluded-namespaces excludeNS1 excludeNS2
       - name: Initialize backup configuration for AzureBlob
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type "AzureBlob" --include-all-containers --storage-account-rg "sampleRG" --storage-account-name "samplestorage"
+      - name: Initialize backup configuration for AzureDataLakeStorage
+        text: az dataprotection backup-instance initialize-backupconfig --datasource-type "AzureDataLakeStorage" --container-list container1 container2 --storage-account-rg "sampleRG" --storage-account-name "samplestorage"
+
 """
 
 helps['dataprotection backup-instance initialize-restoreconfig'] = """

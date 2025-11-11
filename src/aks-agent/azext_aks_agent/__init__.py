@@ -4,10 +4,20 @@
 # --------------------------------------------------------------------------------------------
 
 
-from azure.cli.core import AzCommandsLoader
+import os
 
 # pylint: disable=unused-import
 import azext_aks_agent._help
+from azext_aks_agent._consts import (
+    CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY,
+    CONST_AGENT_NAME,
+    CONST_AGENT_NAME_ENV_KEY,
+    CONST_DISABLE_PROMETHEUS_TOOLSET_ENV_KEY,
+    CONST_PRIVACY_NOTICE_BANNER,
+    CONST_PRIVACY_NOTICE_BANNER_ENV_KEY,
+)
+from azure.cli.core import AzCommandsLoader
+from azure.cli.core.api import get_config_dir
 
 
 class ContainerServiceCommandsLoader(AzCommandsLoader):
@@ -34,3 +44,14 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
 
 
 COMMAND_LOADER_CLS = ContainerServiceCommandsLoader
+
+
+# NOTE(mainred): holmesgpt leverages the environment variables to customize its behavior.
+def customize_holmesgpt():
+    os.environ[CONST_DISABLE_PROMETHEUS_TOOLSET_ENV_KEY] = "true"
+    os.environ[CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY] = get_config_dir()
+    os.environ[CONST_AGENT_NAME_ENV_KEY] = CONST_AGENT_NAME
+    os.environ[CONST_PRIVACY_NOTICE_BANNER_ENV_KEY] = CONST_PRIVACY_NOTICE_BANNER
+
+
+customize_holmesgpt()

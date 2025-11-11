@@ -1,3 +1,27 @@
+## 2025-11-11
+
+### Azure Machine Learning CLI (v2) v 2.40.1
+- `az ml deployment-template show` instead of `az ml deployment-template get`
+  - Show details of a specific deployment template by name and version.
+- Make deployment templates as preview feature
+
+
+## 2025-11-04
+
+### Azure Machine Learning CLI (v2) v 2.40.0
+- `az ml deployment-template create`
+  - Create a new deployment template from a YAML file.
+- `az ml deployment-template list`
+  - List deployment templates in a registry
+- `az ml deployment-template get`
+  - Get a specific deployment template by name and version.
+- `az ml deployment-template update`
+  - Update specific fields of an existing deployment template.
+- `az ml deployment-template archive`
+  - Archive a deployment template.
+- `az ml deployment-template restore`
+  - Restore an archived deployment template.
+
 ## 2025-08-27
 
 ### Azure Machine Learning CLI (v2) v 2.39.0
