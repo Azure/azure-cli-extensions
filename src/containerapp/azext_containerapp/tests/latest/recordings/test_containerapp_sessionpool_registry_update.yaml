@@ -6575,7 +6575,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000004/listCredentials?api-version=2025-03-01-preview
   response:
     body:
-      string: '{"username":"acr000004","passwords":[{"name":"password","value":"7yohsaQcG/nDFmg4RVXkg/NWThBYWZWjSmj0YSn0MR+ACRBiCynv"},{"name":"password2","value":"FB4ewUQmfkvrfr6nqkcpKfpYVptrX2QFb+JYL2GkKK+ACRDYIZw+"}]}'
+      string: '{"username":"acr000004","passwords":[{"name":"password","value":"***"},{"name":"password2","value":"***"}]}'
     headers:
       api-supported-versions:
       - 2025-03-01-preview
@@ -15054,7 +15054,7 @@ interactions:
       message: OK
 - request:
     body: '{"identity": {"type": "None", "userAssignedIdentities": null}, "properties":
-      {"secrets": [{"name": "acr000004azurecrio-acr000004", "value": "7yohsaQcG/nDFmg4RVXkg/NWThBYWZWjSmj0YSn0MR+ACRBiCynv"}],
+      {"secrets": [{"name": "acr000004azurecrio-acr000004", "value": "***"}],
       "customContainerTemplate": {"registryCredentials": {"server": "acr000004.azurecr.io",
       "username": "acr000004", "passwordSecretRef": "acr000004azurecrio-acr000004"},
       "containers": [{"image": "acr000004.azurecr.io/k8se/quickstart:latest", "name":

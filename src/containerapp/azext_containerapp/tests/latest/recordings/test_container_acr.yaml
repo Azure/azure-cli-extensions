@@ -626,7 +626,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000003/listCredentials?api-version=2025-03-01-preview
   response:
     body:
-      string: '{"username":"containerapp000003","passwords":[{"name":"password","value":"n2xIpPzzQe+vAdFiR22nvcc4CmjR6x+qmOgKqC8Tye+ACRA5q/8g"},{"name":"password2","value":"J/cKlebWQ35x7A18Vp0hmVXng6PgJ8QyPkoZhRb2f1+ACRDz10hR"}]}'
+      string: '{"username":"containerapp000003","passwords":[{"name":"password","value":"***"},{"name":"password2","value":"***"}]}'
     headers:
       api-supported-versions:
       - 2025-03-01-preview
@@ -1405,7 +1405,7 @@ interactions:
     body: '{"location": "North Central US (Stage)", "identity": null, "properties":
       {"environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_northcentralusstage/providers/Microsoft.App/managedEnvironments/env-northcentralusstage",
       "configuration": {"secrets": [{"name": "containerapp000003azurecrio-containerapp000003",
-      "value": "n2xIpPzzQe+vAdFiR22nvcc4CmjR6x+qmOgKqC8Tye+ACRA5q/8g"}], "activeRevisionsMode":
+      "value": "***"}], "activeRevisionsMode":
       "single", "ingress": null, "dapr": null, "registries": [{"server": "containerapp000003.azurecr.io",
       "username": "containerapp000003", "passwordSecretRef": "containerapp000003azurecrio-containerapp000003"}],
       "targetLabel": null, "service": null}, "template": {"revisionSuffix": null,
@@ -3726,7 +3726,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000004/listSecrets?api-version=2025-07-01
   response:
     body:
-      string: '{"value":[{"name":"containerapp000003azurecrio-containerapp000003","value":"n2xIpPzzQe+vAdFiR22nvcc4CmjR6x+qmOgKqC8Tye+ACRA5q/8g"}]}'
+      string: '{"value":[{"name":"containerapp000003azurecrio-containerapp000003","value":"***"}]}'
     headers:
       api-supported-versions:
       - 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview, 2023-04-01-preview,
@@ -3787,7 +3787,7 @@ interactions:
       "containerapp-e2e000004--0000001", "latestReadyRevisionName": "containerapp-e2e000004--jwbhuct",
       "latestRevisionFqdn": "", "customDomainVerificationId": "0D108ECDA67B783F7DC96F63AAF576B6328A7CB93E31A11DBC67A93D88D8E7F8",
       "configuration": {"secrets": [{"name": "containerapp000003azurecrio-containerapp000003",
-      "value": "n2xIpPzzQe+vAdFiR22nvcc4CmjR6x+qmOgKqC8Tye+ACRA5q/8g"}, {"name": "newsecret",
+      "value": "***"}, {"name": "newsecret",
       "value": "test", "keyVaultUrl": "", "identity": ""}], "activeRevisionsMode":
       "Single", "ingress": null, "registries": [{"server": "containerapp000003.azurecr.io",
       "username": "containerapp000003", "passwordSecretRef": "containerapp000003azurecrio-containerapp000003",
@@ -4566,7 +4566,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000004/listSecrets?api-version=2025-07-01
   response:
     body:
-      string: '{"value":[{"name":"newsecret","value":"test"},{"name":"containerapp000003azurecrio-containerapp000003","value":"n2xIpPzzQe+vAdFiR22nvcc4CmjR6x+qmOgKqC8Tye+ACRA5q/8g"}]}'
+      string: '{"value":[{"name":"newsecret","value":"test"},{"name":"containerapp000003azurecrio-containerapp000003","value":"***"}]}'
     headers:
       api-supported-versions:
       - 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview, 2023-04-01-preview,
