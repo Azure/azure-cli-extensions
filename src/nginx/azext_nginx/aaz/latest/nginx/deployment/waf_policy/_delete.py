@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a specific WAF policy.
+
+    :example: WafPolicy_Delete
+        az nginx deployment waf-policy delete --resource-group myResourceGroup --deployment-name myDeployment --waf-policy-name myWafPolicy
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a WAF policy.
+
+    :example: WafPolicy_Update
+        az nginx deployment waf-policy update --resource-group myResourceGroup --deployment-name myDeployment --waf-policy-name myWafPolicy
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a WAF policy.
+
+    :example: WafPolicy_Create
+        az nginx deployment waf-policy create --resource-group myResourceGroup --deployment-name myDeployment --waf-policy-name myWafPolicy
     """
 
     _aaz_info = {

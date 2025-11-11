@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListDefaultWafPolicy(AAZCommand):
     """Lists the default WAF policies for a deployment.
+
+    :example: DefaultWafPolicy_List
+        az nginx deployment list-default-waf-policy --resource-group myResourceGroup --deployment-name myDeployment
     """
 
     _aaz_info = {

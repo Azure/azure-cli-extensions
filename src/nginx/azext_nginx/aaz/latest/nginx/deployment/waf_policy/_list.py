@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all WAF policies in a deployment.
+
+    :example: WafPolicy_List
+        az nginx deployment waf-policy list --resource-group myResourceGroup --deployment-name myDeployment
     """
 
     _aaz_info = {
