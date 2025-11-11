@@ -34,7 +34,7 @@ class ContainerappFunctionTests(ScenarioTest):
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerapp_function_list_show_basic(self, resource_group):
         """Test basic function list functionality with various scenarios"""
-        location = "northcentralusstage"
+        location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
 
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -365,7 +365,7 @@ class ContainerappFunctionTests(ScenarioTest):
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerapp_function_invocations_summary_traces(self, resource_group):
         """Test function keys show/list/set functionality using connection string and App Insights"""
-        location = "northcentralus"
+        location = TEST_LOCATION
         functionapp_location = "northcentralusstage"  
         funcapp_name = self.create_random_name("functionapp", length=24)
         image = "mcr.microsoft.com/azure-functions/dotnet8-quickstart-demo:1.0"

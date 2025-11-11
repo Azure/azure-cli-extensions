@@ -4,9 +4,6 @@ Release History
 ===============
 upcoming
 ++++++
-
-1.2.0b4
-++++++
 * 'az containerapp function list': List functions in a container app
 * 'az containerapp function show': Show specific function in a container app
 * 'az containerapp function keys show': Show specific function key in a container app
@@ -14,6 +11,9 @@ upcoming
 * 'az containerapp function keys set': Create a new or update an existing function key in a container app
 * 'az containerapp function invocations summary': Get function invocation summary from Application Insights
 * 'az containerapp function invocations traces': Get function invocation traces from Application Insights
+
+1.2.0b4
+++++++
 * 'az containerapp update/up': Disallow changing `--revisions-mode` to Labels.
 * 'az containerapp session code-interpreter': Fix `--path` in examples
 * 'az containerapp sessionpool create/update': Support `--lifecycle-type` and `--max-alive-period`
