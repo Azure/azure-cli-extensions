@@ -7,6 +7,7 @@
 
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPreparer)
 import time
+import unittest
 
 
 class ElasticSanScenario(ScenarioTest):
@@ -321,6 +322,7 @@ class ElasticSanScenario(ScenarioTest):
                  checks=[JMESPathCheck('identity.type', "SystemAssigned")
                          ]).get_output_in_json()
 
+    @unittest.skip("Soft delete has been disabled in service for this release, skipping until later")
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.softdelete')
     def test_elastic_san_soft_delete_scenarios(self, resource_group):
         self.kwargs.update({

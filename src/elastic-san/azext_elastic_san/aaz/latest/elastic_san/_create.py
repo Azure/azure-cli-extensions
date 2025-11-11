@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01-preview",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2024-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2025-09-01"],
         ]
     }
 
@@ -69,26 +69,22 @@ class Create(AAZCommand):
             options=["--auto-scale-policy", "--auto-scale-policy-enforcement"],
             arg_group="AutoScaleProperties",
             help="Enable or Disable scale up setting on Elastic San Appliance.",
-            is_preview=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled", "None": "None"},
         )
         _args_schema.capacity_unit_scale_up_limit_tib = AAZIntArg(
             options=["--capacity-unit-scale-up", "--capacity-unit-scale-up-limit-tib"],
             arg_group="AutoScaleProperties",
             help="Maximum scale up size on Elastic San appliance in TiB.",
-            is_preview=True,
         )
         _args_schema.increase_capacity_unit_by_tib = AAZIntArg(
             options=["--increase-capacity-unit", "--increase-capacity-unit-by-tib"],
             arg_group="AutoScaleProperties",
             help="Unit to increase Capacity Unit on Elastic San appliance in TiB.",
-            is_preview=True,
         )
         _args_schema.unused_size_tib = AAZIntArg(
             options=["--unused-size-tib"],
             arg_group="AutoScaleProperties",
             help="Unused size on Elastic San appliance in TiB.",
-            is_preview=True,
         )
 
         # define Arg Group "Parameters"
@@ -244,7 +240,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01-preview",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
