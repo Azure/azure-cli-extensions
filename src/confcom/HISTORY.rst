@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.4.0
+++++++
+* Add --with-containers flag to acipolicygen and acifragmentgen to allow passing container policy definitions directly
+
 1.3.1
 ++++++
 * bugfix for --exclude-default-fragments flag not working as intended
