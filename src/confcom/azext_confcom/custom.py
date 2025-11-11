@@ -241,7 +241,7 @@ def acifragmentgen_confcom(
     key: str,
     chain: str,
     minimum_svn: str,
-    container_definitions: list,
+    container_definitions: Optional[list] = None,
     image_target: str = "",
     algo: str = "ES384",
     fragment_path: str = None,
@@ -256,6 +256,8 @@ def acifragmentgen_confcom(
     no_print: bool = False,
     fragments_json: str = "",
 ):
+    if container_definitions is None:
+        container_definitions = []
 
     stdio_enabled = resolve_stdio(enable_stdio, disable_stdio)
 
