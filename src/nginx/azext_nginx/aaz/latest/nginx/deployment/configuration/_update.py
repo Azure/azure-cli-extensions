@@ -90,7 +90,7 @@ class Update(AAZCommand):
         _args_schema.root_file = AAZStrArg(
             options=["--root-file"],
             arg_group="Properties",
-            help="The root file of the Nginx Configuration"
+            help="The root file of the Nginx Configuration",
             nullable=True,
         )
 
