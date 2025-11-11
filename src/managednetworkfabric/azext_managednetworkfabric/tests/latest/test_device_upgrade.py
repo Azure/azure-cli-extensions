@@ -27,7 +27,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_upgrade(test, checks=[])
     cleanup_scenario1(test)
@@ -38,7 +38,7 @@ def step_upgrade(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric device upgrade --resource-group {upgradeDeviceRGName} --resource-name {upgradeDeviceName} --version {upgradeVersion}",
+        "az networkfabric device upgrade --resource-group {upgradeDeviceRGName} --resource-name {upgradeDeviceName} --version {upgradeVersion} --rw-device-config-url {configUrl}",
         checks=checks,
     )
 
@@ -57,10 +57,11 @@ class GA_DeviceUpgradeScenarioTest1(ScenarioTest):
                     "NETWORK_DEVICE", "upgrade_device_name"
                 ),
                 "upgradeVersion": CONFIG.get("NETWORK_DEVICE", "upgrade_version"),
+                "configUrl": CONFIG.get("NETWORK_DEVICE", "rw_command_url"),
             }
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_upgrade_scenario1(self):
+    def test_GA_device_upgrade_scenario1(self):
         """test scenario for Device upgrade operation"""
         call_scenario1(self)

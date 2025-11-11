@@ -16,13 +16,16 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List NetworkMonitors list by subscription GET method.
+
+    :example: List the Network Monitor
+        az networkfabric networkmonitor list
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkmonitors", "2024-06-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkmonitors", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkmonitors", "2025-07-15"],
         ]
     }
 
@@ -109,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -200,6 +203,9 @@ class List(AAZCommand):
             bmp_configuration.export_policy = AAZStrType(
                 serialized_name="exportPolicy",
             )
+            bmp_configuration.export_policy_configuration = AAZObjectType(
+                serialized_name="exportPolicyConfiguration",
+            )
             bmp_configuration.monitored_address_families = AAZListType(
                 serialized_name="monitoredAddressFamilies",
             )
@@ -208,6 +214,7 @@ class List(AAZCommand):
             )
             bmp_configuration.scope_resource_id = AAZStrType(
                 serialized_name="scopeResourceId",
+                nullable=True,
             )
             bmp_configuration.station_configuration_state = AAZStrType(
                 serialized_name="stationConfigurationState",
@@ -226,16 +233,27 @@ class List(AAZCommand):
             )
             bmp_configuration.station_network = AAZStrType(
                 serialized_name="stationNetwork",
+                nullable=True,
             )
             bmp_configuration.station_port = AAZIntType(
                 serialized_name="stationPort",
             )
 
+            export_policy_configuration = cls._schema_on_200.value.Element.properties.bmp_configuration.export_policy_configuration
+            export_policy_configuration.export_policies = AAZListType(
+                serialized_name="exportPolicies",
+            )
+
+            export_policies = cls._schema_on_200.value.Element.properties.bmp_configuration.export_policy_configuration.export_policies
+            export_policies.Element = AAZStrType()
+
             monitored_address_families = cls._schema_on_200.value.Element.properties.bmp_configuration.monitored_address_families
             monitored_address_families.Element = AAZStrType()
 
             monitored_networks = cls._schema_on_200.value.Element.properties.bmp_configuration.monitored_networks
-            monitored_networks.Element = AAZStrType()
+            monitored_networks.Element = AAZStrType(
+                nullable=True,
+            )
 
             station_connection_properties = cls._schema_on_200.value.Element.properties.bmp_configuration.station_connection_properties
             station_connection_properties.keepalive_idle_time = AAZIntType(
@@ -322,7 +340,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -413,6 +431,9 @@ class List(AAZCommand):
             bmp_configuration.export_policy = AAZStrType(
                 serialized_name="exportPolicy",
             )
+            bmp_configuration.export_policy_configuration = AAZObjectType(
+                serialized_name="exportPolicyConfiguration",
+            )
             bmp_configuration.monitored_address_families = AAZListType(
                 serialized_name="monitoredAddressFamilies",
             )
@@ -421,6 +442,7 @@ class List(AAZCommand):
             )
             bmp_configuration.scope_resource_id = AAZStrType(
                 serialized_name="scopeResourceId",
+                nullable=True,
             )
             bmp_configuration.station_configuration_state = AAZStrType(
                 serialized_name="stationConfigurationState",
@@ -439,16 +461,27 @@ class List(AAZCommand):
             )
             bmp_configuration.station_network = AAZStrType(
                 serialized_name="stationNetwork",
+                nullable=True,
             )
             bmp_configuration.station_port = AAZIntType(
                 serialized_name="stationPort",
             )
 
+            export_policy_configuration = cls._schema_on_200.value.Element.properties.bmp_configuration.export_policy_configuration
+            export_policy_configuration.export_policies = AAZListType(
+                serialized_name="exportPolicies",
+            )
+
+            export_policies = cls._schema_on_200.value.Element.properties.bmp_configuration.export_policy_configuration.export_policies
+            export_policies.Element = AAZStrType()
+
             monitored_address_families = cls._schema_on_200.value.Element.properties.bmp_configuration.monitored_address_families
             monitored_address_families.Element = AAZStrType()
 
             monitored_networks = cls._schema_on_200.value.Element.properties.bmp_configuration.monitored_networks
-            monitored_networks.Element = AAZStrType()
+            monitored_networks.Element = AAZStrType(
+                nullable=True,
+            )
 
             station_connection_properties = cls._schema_on_200.value.Element.properties.bmp_configuration.station_connection_properties
             station_connection_properties.keepalive_idle_time = AAZIntType(

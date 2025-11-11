@@ -114,9 +114,6 @@ class ServiceCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApimServicePreparer()
     def test_import_from_apim(self):
-        self.kwargs.update({
-          'apim_name': self.create_random_name(prefix='cli', length=24)
-        })
         # Import from APIM
         self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis *')
 
@@ -130,11 +127,8 @@ class ServiceCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApimServicePreparer()
     def test_import_from_apim_for_one_api(self):
-        self.kwargs.update({
-          'apim_name': self.create_random_name(prefix='cli', length=24)
-        })
         # Import from APIM
-        self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis echo')
+        self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis echotest')
 
         # Wait for import to finish
         if self.is_live:
@@ -142,18 +136,15 @@ class ServiceCommandsTests(ScenarioTest):
 
         # Check result
         self.cmd('az apic api list -g {rg} -n {s}', checks=[
-            self.check('contains(@[*].title, `Echo API`)', True),
+            self.check('contains(@[*].title, `Echo API Test`)', True),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApimServicePreparer()
     def test_import_from_apim_for_multiple_apis(self):
-        self.kwargs.update({
-          'apim_name': self.create_random_name(prefix='cli', length=24)
-        })
         # Import from APIM
-        self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis [echo,foo]')
+        self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis [echotest,footest]')
 
         # Wait for import to finish
         if self.is_live:
@@ -161,8 +152,8 @@ class ServiceCommandsTests(ScenarioTest):
 
         # Check result
         self.cmd('az apic api list -g {rg} -n {s}', checks=[
-            self.check('contains(@[*].title, `Echo API`)', True),
-            self.check('contains(@[*].title, `Foo API`)', True)
+            self.check('contains(@[*].title, `Echo API Test`)', True),
+            self.check('contains(@[*].title, `Foo API Test`)', True)
         ])
 
 
@@ -198,18 +189,12 @@ class ServiceCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApimServicePreparer()
     def test_examples_import_all_apis_from_apim(self):
-        self.kwargs.update({
-          'apim_name': self.create_random_name(prefix='cli', length=24)
-        })
         self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis *')
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApimServicePreparer()
     def test_examples_import_selected_apis_from_apim(self):
-        self.kwargs.update({
-          'apim_name': self.create_random_name(prefix='cli', length=24)
-        })
         self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis [echo,foo]')
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)

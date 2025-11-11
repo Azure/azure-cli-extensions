@@ -1,0 +1,52 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.7.0
+        (Darwin-22.3.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/testFeed/discovery
+  response:
+    body:
+      string: '{"registryId": "3b513a6b-f110-4e7f-9ce3-472b5aa28170", "registryName":
+        "testFeed", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "centraluseuap", "regions": ["centraluseuap"], "subscriptionId": "4f26493f-21d2-4726-92ea-1ddd550b1d27",
+        "resourceGroup": "test-registries", "workspaceName": null, "primaryRegionResourceProviderUri":
+        "https://cert-master.experiments.azureml-test.net/", "registryFqdns": {"centraluseuap":
+        {"uri": "https://3b513a6b-f110-4e7f-9ce3-472b5aa28170.registry.master.privatelink.api.azureml-test.ms"}}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '545'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Feb 2023 22:33:46 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.124'
+    status:
+      code: 200
+      message: OK
+version: 1

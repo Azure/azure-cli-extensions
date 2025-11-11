@@ -18,9 +18,9 @@ from azure.cli.command_modules.containerapp._validators import (validate_memory,
 from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id, validate_build_env_vars,
                           validate_custom_location_name_or_id, validate_env_name_or_id_for_up,
-                          validate_otlp_headers, validate_target_port_range, validate_timeout_in_seconds)
+                          validate_otlp_headers, validate_target_port_range, validate_session_timeout_in_seconds)
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH,
-                         AKS_AZURE_LOCAL_DISTRO)
+                         AKS_AZURE_LOCAL_DISTRO, OPENSHIFT_DISTRO)
 
 
 def load_arguments(self, _):
@@ -30,13 +30,15 @@ def load_arguments(self, _):
     with self.argument_context('containerapp', arg_group='Configuration') as c:
         c.argument('revisions_mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
 
+    with self.argument_context('containerapp') as c:
+        c.argument('kind', arg_type=get_enum_type(['functionapp']), help="Set to 'functionapp' to enable built-in support and autoscaling for Azure Functions on Azure Container Apps.", is_preview=True)
+
     with self.argument_context('containerapp create') as c:
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://aka.ms/SourceToCloudSupportedVersions.", is_preview=True)
         c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)
         c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
                    validator=validate_build_env_vars, is_preview=True)
         c.argument('max_inactive_revisions', type=int, help="Max inactive revisions a Container App can have.", is_preview=True)
-        c.argument('kind', type=str, help="Set to 'functionapp' to get built in support and autoscaling to run Azure functions on Azure Container apps", is_preview=True)
         c.argument('registry_identity', help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-defined identity, Use 'system-environment' for an environment level system-defined identity or a resource id for a user-defined environment/containerapp level identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
         c.argument('target_label', help="The label to apply to new revisions. Required for revisions-mode 'labels'.", is_preview=True)
 
@@ -48,7 +50,7 @@ def load_arguments(self, _):
         c.ignore('service_type')
 
     with self.argument_context('containerapp create', arg_group='GitHub Repository', is_preview=True) as c:
-        c.argument('repo', help='Create an app via GitHub Actions in the format: https://github.com/owner/repository-name or owner/repository-name')
+        c.argument('repo', help='Create an app via GitHub Actions in the format: `https://github.com/owner/repository-name` or owner/repository-name')
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')
         c.argument('branch', options_list=['--branch', '-b'], help='Branch in the provided GitHub repository. Assumed to be the GitHub repository\'s default branch if not specified.')
         c.argument('context_path', help='Path in the repository to run docker build. Defaults to "./". Dockerfile is assumed to be named "Dockerfile" and in this directory.')
@@ -89,12 +91,6 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env', arg_group='Monitoring') as c:
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
-
-    # HttpRouteConfig
-    with self.argument_context('containerapp env http-route-config') as c:
-        c.argument('http_route_config_name', options_list=['--http-route-config-name', '-r'], help="The name of the http route configuration.")
-        c.argument('yaml', help="The path to the YAML input file.")
-        c.argument('name', id_part=None)
 
     # Telemetry
     with self.argument_context('containerapp env telemetry') as c:
@@ -264,7 +260,7 @@ def load_arguments(self, _):
         c.argument('target_label', help="The label to apply to new revisions. Required for revisions-mode 'labels'.", is_preview=True)
 
     with self.argument_context('containerapp up', arg_group='Github Repo') as c:
-        c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/owner/repository-name or owner/repository-name')
+        c.argument('repo', help='Create an app via Github Actions. In the format: `https://github.com/owner/repository-name` or owner/repository-name')
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')
         c.argument('branch', options_list=['--branch', '-b'], help='The branch of the Github repo. Assumed to be the Github repo\'s default branch if not specified.')
         c.argument('context_path', help='Path in the repo from which to run the docker build. Defaults to "./". Dockerfile is assumed to be named "Dockerfile" and in this directory.')
@@ -275,6 +271,11 @@ def load_arguments(self, _):
     with self.argument_context('containerapp up', arg_group='Identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
         c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.", action='store_true')
+
+    with self.argument_context('containerapp up', arg_group='Deploy an Azure AI Foundry Model', is_preview=True) as c:
+        c.argument('model_registry', help="The name of the Azure AI Foundry model registry.", is_preview=True)
+        c.argument('model_name', help="The name of the Azure AI Foundry model.", is_preview=True)
+        c.argument('model_version', help="The version of the Azure AI Foundry model.", is_preview=True)
 
     with self.argument_context('containerapp auth') as c:
         c.argument('blob_container_uri', help='The URI of the blob storage containing the tokens. Should not be used along with sas_url_secret and sas_url_secret_name.', is_preview=True)
@@ -373,7 +374,7 @@ def load_arguments(self, _):
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a Dapr component. All other parameters will be ignored. For an example, see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema')
 
     with self.argument_context('containerapp arc setup-core-dns') as c:
-        c.argument('distro', arg_type=get_enum_type([AKS_AZURE_LOCAL_DISTRO]), required=True, help="The distro supported to setup CoreDNS.")
+        c.argument('distro', arg_type=get_enum_type([AKS_AZURE_LOCAL_DISTRO, OPENSHIFT_DISTRO]), required=True, help="The distro supported to setup CoreDNS.")
         c.argument('kube_config', help="Path to the kube config file.")
         c.argument('kube_context', help="Kube context from current machine.")
         c.argument('skip_ssl_verification', help="Skip SSL verification for any cluster connection.")
@@ -438,10 +439,17 @@ def load_arguments(self, _):
         c.argument('mi_user_assigned', nargs='+', help='Space-separated user identities to be assigned.')
 
     with self.argument_context('containerapp sessionpool', arg_group='Configuration') as c:
-        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS", "NodeLTS"]), help="The pool type of the Session Pool, default='PythonLTS'")
-        c.argument('cooldown_period', help="Period (in seconds), after which the session will be deleted, default=300")
+        c.argument('cooldown_period', help="Period (in seconds), after which the session will be deleted, this is only applicable for lifecycle type 'Timed', default=300")
+        c.argument('max_alive_period', help="Period (in seconds), before the session be deleted if its container was not exited earlier, this is only applicable for lifecycle type 'OnContainerExit', default=3600")
         c.argument('secrets', nargs='*', options_list=['--secrets', '-s'], help="A list of secret(s) for the session pool. Space-separated values in 'key=value' format. Empty string to clear existing values.")
         c.argument('network_status', arg_type=get_enum_type(["EgressEnabled", "EgressDisabled"]), help="Egress is enabled for the Sessions or not.")
+
+    with self.argument_context('containerapp sessionpool create', arg_group='Configuration') as c:
+        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS", "NodeLTS", "Shell"]), help="The pool type of the Session Pool, default='PythonLTS'")
+        c.argument('lifecycle_type', arg_type=get_enum_type(["Timed", "OnContainerExit"]), help="The lifecycle type of the Session Pool", default='Timed')
+
+    with self.argument_context('containerapp sessionpool update', arg_group='Configuration') as c:
+        c.argument('lifecycle_type', arg_type=get_enum_type(["Timed", "OnContainerExit"]), help="The lifecycle type of the Session Pool")
 
     with self.argument_context('containerapp sessionpool', arg_group='Scale') as c:
         c.argument('max_concurrent_sessions', options_list=['--max-sessions'], help="Max count of sessions can be run at the same time.", type=int)
@@ -457,6 +465,7 @@ def load_arguments(self, _):
         c.argument('startup_command', nargs='*', options_list=['--command'], help="A list of supported commands on the container that will executed during startup. Space-separated values e.g. \"/bin/queue\" \"mycommand\". Empty string to clear existing values")
         c.argument('args', nargs='*', help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
         c.argument('target_port', type=int, validator=validate_target_port_range, help="The session port used for ingress traffic.")
+        c.argument('probe_yaml', type=file_type, help='Path to a .yaml file with the configuration of the container probes. Only applicable for Custom Container Session Pool', is_preview=True)
 
     with self.argument_context('containerapp sessionpool', arg_group='Registry') as c:
         c.argument('registry_server', validator=validate_registry_server, help="The container registry server hostname, e.g. myregistry.azurecr.io.")
@@ -464,10 +473,16 @@ def load_arguments(self, _):
         c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
         c.argument('registry_identity', validator=validate_registry_user, help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-assigned identity, use a resource ID for a user-assigned identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
 
-    # sessions code interpreter commands
-    with self.argument_context('containerapp session code-interpreter') as c:
+    # sessions commands
+    with self.argument_context('containerapp session') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp session stop') as c:
+        c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
+
+    # sessions code interpreter commands
+    with self.argument_context('containerapp session code-interpreter') as c:
         c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
         c.argument('session_pool_location', help="The location of the session pool")
 
@@ -478,7 +493,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp session code-interpreter', arg_group='execute') as c:
         c.argument('code', help="The code to execute in the code interpreter session")
-        c.argument('timeout_in_seconds', type=int, validator=validate_timeout_in_seconds, default=60, help="Duration in seconds code in session can run prior to timing out 0 - 60 secs, e.g. 30")
+        c.argument('timeout_in_seconds', type=int, validator=validate_session_timeout_in_seconds, default=60, help="Duration in seconds code in session can run prior to timing out 1 - 220 secs, e.g. 30")
 
     with self.argument_context('containerapp java logger') as c:
         c.argument('logger_name', help="The logger name.")

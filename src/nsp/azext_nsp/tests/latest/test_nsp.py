@@ -6,17 +6,18 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 
 
 class NspScenario(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='test_nsp_crud', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='test_nsp_crud', location='centraluseuap')
     def test_nsp_crud(self, resource_group):
         self.kwargs.update({
             'name': 'TestNetworkSecurityPerimeter'
         })
 
-        self.cmd('network perimeter create --name {name} -l eastus2euap --resource-group {rg}')
+        self.cmd('network perimeter create --name {name} -l centraluseuap --resource-group {rg}')
 
         self.cmd('network perimeter show --resource-group {rg} --name {name}', checks=[
             self.check('name', '{name}')
@@ -26,16 +27,16 @@ class NspScenario(ScenarioTest):
 
         self.cmd('network perimeter delete -g {rg} --name {name} --yes')
 
-        self.cmd('network perimeter onboarded-resources list -l eastus2euap')
+        self.cmd('network perimeter associable-resource-type list -l centraluseuap')
 
-    @ResourceGroupPreparer(name_prefix='test_nsp_profile_crud', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='test_nsp_profile_crud', location='centraluseuap')
     def test_nsp_profile_crud(self, resource_group):
         self.kwargs.update({
             'nsp_name': 'TestNetworkSecurityPerimeter',
             'profile_name': 'TestNspProfile'
         })
 
-        self.cmd('network perimeter create --name {nsp_name} -l eastus2euap --resource-group {rg}')
+        self.cmd('network perimeter create --name {nsp_name} -l centraluseuap --resource-group {rg}')
         self.cmd('network perimeter profile create --name {profile_name} --perimeter-name {nsp_name} --resource-group {rg}')
 
         self.cmd('network perimeter profile show --name {profile_name} --perimeter-name {nsp_name} --resource-group {rg}', checks=[
@@ -46,7 +47,7 @@ class NspScenario(ScenarioTest):
 
         self.cmd('network perimeter profile delete --name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --yes')
 
-    @ResourceGroupPreparer(name_prefix='test_nsp_accessrule_crud', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='test_nsp_accessrule_crud', location='centraluseuap')
     def test_nsp_accessrule_crud(self, resource_group):
         self.kwargs.update({
             'nsp_name': 'TestNetworkSecurityPerimeter',
@@ -54,26 +55,26 @@ class NspScenario(ScenarioTest):
             'accessrule_name': 'TestNspAccessRule'
         })
 
-        self.cmd('network perimeter create --name {nsp_name} -l eastus2euap --resource-group {rg}')
+        self.cmd('network perimeter create --name {nsp_name} -l centraluseuap --resource-group {rg}')
         self.cmd('network perimeter profile create --name {profile_name} --perimeter-name {nsp_name} --resource-group {rg}')
 
         self.cmd('az network perimeter profile access-rule create --name {accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --fqdn "[\'www.abc.com\', \'www.google.com\']" --direction "Outbound"')
 
         self.cmd('az network perimeter profile access-rule show --name {accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg}', checks=[
-            self.check('properties.fullyQualifiedDomainNames', "[\'www.abc.com\', \'www.google.com\']")
+            self.check('fullyQualifiedDomainNames', "[\'www.abc.com\', \'www.google.com\']")
         ])
 
         self.cmd('az network perimeter profile access-rule update --name {accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --fqdn "[\'www.abc.com\']" --direction "Outbound"')
 
         self.cmd('az network perimeter profile access-rule show --name {accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg}', checks=[
-            self.check('properties.fullyQualifiedDomainNames', "[\'www.abc.com\']")
+            self.check('fullyQualifiedDomainNames', "[\'www.abc.com\']")
         ])
 
         self.cmd('network perimeter profile access-rule list --perimeter-name {nsp_name} --profile-name {profile_name} --resource-group {rg}')
 
         self.cmd('network perimeter profile access-rule delete --name {accessrule_name} --perimeter-name {nsp_name} --profile-name {profile_name} --resource-group {rg} --yes')
 
-    @ResourceGroupPreparer(name_prefix='test_nsp_accessrule_inbound', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='test_nsp_accessrule_inbound', location='centraluseuap')
     def test_nsp_accessrule_inbound(self, resource_group):
         self.kwargs.update({
             'nsp_name': 'TestNetworkSecurityPerimeter',
@@ -87,25 +88,25 @@ class NspScenario(ScenarioTest):
             'sub': self.get_subscription_id()
         })
 
-        self.cmd('network perimeter create --name {nsp_name} -l eastus2euap --resource-group {rg}')
+        self.cmd('network perimeter create --name {nsp_name} -l centraluseuap --resource-group {rg}')
         self.cmd('network perimeter profile create --name {profile_name} --perimeter-name {nsp_name} --resource-group {rg}')
 
         # IP based access rule
         self.cmd('az network perimeter profile access-rule create --name {ip_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --address-prefixes "[10.10.0.0/16]"', checks=[
-            self.check('properties.addressPrefixes', "['10.10.0.0/16']")
+            self.check('addressPrefixes', "['10.10.0.0/16']")
         ])
 
         # Subscription based access rule
         self.cmd('az network perimeter profile access-rule create --name {sub_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --subscriptions [0].id="/subscriptions/{sub}"', checks=[
-            self.check('properties.subscriptions[0].id', "/subscriptions/{sub}")
+            self.check('subscriptions[0].id', "/subscriptions/{sub}")
         ])
 
         """
         # NSP based access rule
-        self.cmd('network perimeter create --name nsp_for_rule -l eastus2euap --resource-group {rg}')
+        self.cmd('network perimeter create --name nsp_for_rule -l centraluseuap --resource-group {rg}')
 
         self.cmd('az network perimeter profile access-rule create --name {nsp_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --nsp [0].id="/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/nsp_for_rule"', checks=[
-            self.check('properties.networkSecurityPerimeters[0].id', "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/nsp_for_rule")
+            self.check('networkSecurityPerimeters[0].id', "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/nsp_for_rule")
         ])
         """
 
@@ -117,31 +118,31 @@ class NspScenario(ScenarioTest):
 
         # ServiceTag based access rule
         self.cmd('az network perimeter profile access-rule create --name {servicetag_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --service-tags  [MicrosoftPublicIPSpace]', checks=[
-            self.check('properties.serviceTags', "['MicrosoftPublicIPSpace']")
+            self.check('serviceTags', "['MicrosoftPublicIPSpace']")
         ])
         
-    @ResourceGroupPreparer(name_prefix='test_nsp_association_crud', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='test_nsp_association_crud', location='centraluseuap')
     def test_nsp_association_crud(self, resource_group):
 
         self.kwargs.update({
             'nsp_name': 'TestNetworkSecurityPerimeter',
             'profile_name': 'TestNspProfile',
             'association_name': 'TestNspAssociation',
-            'resource_name': 'kvclinsp18',
+            'resource_name': 'kvclinsp20-test',
             'sub': self.get_subscription_id()
         })
 
-        self.cmd('network perimeter create --name {nsp_name} -l eastus2euap --resource-group {rg}')
+        self.cmd('network perimeter create --name {nsp_name} -l centraluseuap --resource-group {rg}')
         self.cmd('network perimeter profile create --name {profile_name} --perimeter-name {nsp_name} --resource-group {rg}')
 
-        self.cmd('keyvault create --name {resource_name} -l eastus2euap --resource-group {rg}')
+        self.cmd('keyvault create --name {resource_name} -l centraluseuap --resource-group {rg}')
 
         self.cmd('network perimeter association create --name {association_name} --perimeter-name {nsp_name} --resource-group {rg} --access-mode Learning '
                  '--private-link-resource id="/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.KeyVault/vaults/{resource_name}" '
                  '--profile id="/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/{nsp_name}/profiles/{profile_name}"')
 
         self.cmd('network perimeter association show --name {association_name} --perimeter-name {nsp_name} --resource-group {rg}', checks=[
-            self.check('properties.accessMode', 'Learning')
+            self.check('accessMode', 'Learning')
         ])
 
         self.cmd('network perimeter association update --name {association_name} --perimeter-name {nsp_name} --resource-group {rg} --access-mode Enforced '
@@ -149,7 +150,7 @@ class NspScenario(ScenarioTest):
                  '--profile id="/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/{nsp_name}/profiles/{profile_name}"')
 
         self.cmd('network perimeter association show --name {association_name} --perimeter-name {nsp_name} --resource-group {rg}', checks=[
-            self.check('properties.accessMode', 'Enforced')
+            self.check('accessMode', 'Enforced')
         ])
 
         self.cmd('network perimeter association list --perimeter-name {nsp_name} --resource-group {rg}')
@@ -159,9 +160,9 @@ class NspScenario(ScenarioTest):
         self.cmd('network perimeter association show --name {association_name} --perimeter-name {nsp_name} --resource-group {rg}', expect_failure=True)
 
         self.cmd('keyvault delete --name {resource_name} --resource-group {rg} --no-wait')
-        self.cmd('keyvault purge --name {resource_name} -l eastus2euap --no-wait')
+        self.cmd('keyvault purge --name {resource_name} -l centraluseuap --no-wait')
 
-    @ResourceGroupPreparer(name_prefix='test_nsp_link_crud', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='test_nsp_link_crud', location='centraluseuap')
     def test_nsp_link_linkreference_crud(self, resource_group):
 
         self.kwargs.update({
@@ -171,8 +172,8 @@ class NspScenario(ScenarioTest):
             'link1_name': 'TestNspLink1'
         })
 
-        self.cmd('network perimeter create --name {nsp1_name} -l eastus2euap --resource-group {rg}')
-        self.cmd('network perimeter create --name {nsp2_name} -l eastus2euap --resource-group {rg}')
+        self.cmd('network perimeter create --name {nsp1_name} -l centraluseuap --resource-group {rg}')
+        self.cmd('network perimeter create --name {nsp2_name} -l centraluseuap --resource-group {rg}')
 
         # create nsp link
         self.cmd('az network perimeter link create --name {link1_name} --perimeter-name {nsp1_name} --resource-group {rg} --auto-remote-nsp-id "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/{nsp2_name}" --local-inbound-profile "[\'*\']" --remote-inbound-profile "[\'*\']" ')
@@ -200,7 +201,7 @@ class NspScenario(ScenarioTest):
         # delete link reference
         self.cmd('az network perimeter link-reference delete --perimeter-name {nsp2_name} --resource-group {rg} --name {ref2_name} --yes')
     
-    @ResourceGroupPreparer(name_prefix='test_nsp_logging_configuration_crud', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='test_nsp_logging_configuration_crud', location='centraluseuap')
     def test_nsp_logging_configuration_crud(self, resource_group):
         self.kwargs.update({
             'nsp_name': 'TestNetworkSecurityPerimeter',
@@ -208,14 +209,14 @@ class NspScenario(ScenarioTest):
         })
 
         # Create NSP
-        self.cmd('network perimeter create --name {nsp_name} -l eastus2euap --resource-group {rg}')
+        self.cmd('network perimeter create --name {nsp_name} -l centraluseuap --resource-group {rg}')
 
         # Create logging configuration
         self.cmd('network perimeter logging-configuration create --perimeter-name {nsp_name} --resource-group {rg} --enabled-log-categories "[\'NspPublicInboundPerimeterRulesDenied\']"')
 
         # Show logging configuration and verify the enabled log categories
         self.cmd('network perimeter logging-configuration show --perimeter-name {nsp_name} --resource-group {rg}', checks=[
-            self.check('properties.enabledLogCategories', "[\'NspPublicInboundPerimeterRulesDenied\']")
+            self.check('enabledLogCategories', "[\'NspPublicInboundPerimeterRulesDenied\']")
         ])
 
         # Update logging configuration
@@ -223,7 +224,7 @@ class NspScenario(ScenarioTest):
 
         # Show logging configuration and verify the updated enabled log categories
         self.cmd('network perimeter logging-configuration show --perimeter-name {nsp_name} --resource-group {rg}', checks=[
-            self.check('properties.enabledLogCategories', "[\'NspPublicInboundPerimeterRulesDenied\', \'NspPublicOutboundPerimeterRulesDenied\']")
+            self.check('enabledLogCategories', "[\'NspPublicInboundPerimeterRulesDenied\', \'NspPublicOutboundPerimeterRulesDenied\']")
         ])
 
         # Delete logging configuration
@@ -231,4 +232,13 @@ class NspScenario(ScenarioTest):
 
         # Verify the logging configuration is deleted
         self.cmd('network perimeter logging-configuration show --perimeter-name {nsp_name} --resource-group {rg}', expect_failure=True)
+    
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='test_nsp_service_tags_crud', location='centraluseuap')
+    def test_nsp_service_tags_crud(self, resource_group):
+
+        # Show service tags
+        self.cmd('network perimeter service-tag list -l centraluseuap', checks=[
+            self.check("length([?contains(serviceTags, 'MicrosoftPublicIPSpace')])", 1)
+        ])
 

@@ -110,10 +110,11 @@ def install_helm_client():
         logger.warning(
             "Downloading helm client for first time. This can take few minutes..."
         )
-        client = oras.client.OrasClient()
+        client = oras.client.OrasClient(hostname="mcr.microsoft.com")
         try:
             client.pull(
-                target=f"{consts.HELM_MCR_URL}:{artifactTag}", outdir=download_location
+                target=f"mcr.microsoft.com/{consts.HELM_MCR_URL}:{artifactTag}",
+                outdir=download_location,
             )
         except Exception as e:
             logger.warning("Failed to download helm client." + str(e))
@@ -397,7 +398,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             {kubeconfig} --kube-context {managed_cluster_name}-admin -y"
         )
         cmd_output = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        _, error_helm_delete = cmd_output.communicate()
+        _, _error_helm_delete = cmd_output.communicate()
         assert cmd_output.returncode == 0
         changed_cmd = json.loads(cmd_output.communicate()[0].strip())
         assert changed_cmd["systemDefaultValues"]["customLocations"]["enabled"] == bool(
@@ -409,7 +410,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             {kubeconfig} --kube-context {managed_cluster_name}-admin --custom-locations-oid {custom_locations_oid}"
         )
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        _, error_helm_delete = cmd_output1.communicate()
+        _, _error_helm_delete = cmd_output1.communicate()
         assert cmd_output1.returncode == 0
         enabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert enabled_cmd1["systemDefaultValues"]["customLocations"][
@@ -434,7 +435,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             {kubeconfig} --kube-context {managed_cluster_name}-admin -y"
         )
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        _, error_helm_delete = cmd_output1.communicate()
+        _, _error_helm_delete = cmd_output1.communicate()
         assert cmd_output1.returncode == 0
         disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert disabled_cmd1["systemDefaultValues"]["customLocations"][
@@ -446,7 +447,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             {kubeconfig} --kube-context {managed_cluster_name}-admin -y"
         )
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        _, error_helm_delete = cmd_output1.communicate()
+        _, _error_helm_delete = cmd_output1.communicate()
         assert cmd_output1.returncode == 0
         disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert disabled_cmd1["systemDefaultValues"]["clusterconnect-agent"][
@@ -458,7 +459,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             {kubeconfig} --kube-context {managed_cluster_name}-admin --custom-locations-oid {custom_locations_oid}"
         )
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        _, error_helm_delete = cmd_output1.communicate()
+        _, _error_helm_delete = cmd_output1.communicate()
         assert cmd_output1.returncode == 0
         enabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert enabled_cmd1["systemDefaultValues"]["customLocations"][
@@ -474,7 +475,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             --kube-context {managed_cluster_name}-admin -y"
         )
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        _, error_helm_delete = cmd_output1.communicate()
+        _, _error_helm_delete = cmd_output1.communicate()
         assert cmd_output1.returncode == 0
         disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert disabled_cmd1["systemDefaultValues"]["guard"]["enabled"] == bool(0)
@@ -660,7 +661,7 @@ only supported when auto-upgrade is set to false",
             --kube-context {managed_cluster_name}-admin"
         )
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        _, error_helm_delete = cmd_output1.communicate()
+        _, _error_helm_delete = cmd_output1.communicate()
         assert cmd_output1.returncode == 0
         updated_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert updated_cmd1["systemDefaultValues"]["azureArcAgents"][
@@ -763,7 +764,7 @@ only supported when auto-upgrade is set to false",
             --kube-context {managed_cluster_name}-admin"
         )
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        _, error_helm_delete = cmd_output1.communicate()
+        _, _error_helm_delete = cmd_output1.communicate()
         assert cmd_output1.returncode == 0
         updated_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert updated_cmd1["systemDefaultValues"]["azureArcAgents"][
@@ -776,7 +777,7 @@ only supported when auto-upgrade is set to false",
             --kube-context {managed_cluster_name}-admin"
         )
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        _, error_helm_delete = cmd_output1.communicate()
+        _, _error_helm_delete = cmd_output1.communicate()
         assert cmd_output1.returncode == 0
         updated_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert updated_cmd1["systemDefaultValues"]["azureArcAgents"][

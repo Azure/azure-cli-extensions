@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor list-connected-partner-resource",
 )
 class ListConnectedPartnerResource(AAZCommand):
-    """List of all active deployments that are associated with the marketplace subscription linked to the given monitor.
+    """List all active deployments associated with the marketplace subscription linked to the given Elastic monitor resource.
 
     :example: ConnectedPartnerResources_List
         az elastic monitor list-connected-partner-resource --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/listconnectedpartnerresources", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/listconnectedpartnerresources", "2025-06-01"],
         ]
     }
 
@@ -124,7 +124,7 @@ class ListConnectedPartnerResource(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -179,6 +179,7 @@ class ListConnectedPartnerResource(AAZCommand):
             properties.partner_deployment_uri = AAZStrType(
                 serialized_name="partnerDeploymentUri",
             )
+            properties.type = AAZStrType()
 
             return cls._schema_on_200
 

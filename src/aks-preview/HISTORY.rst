@@ -12,6 +12,327 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b15
++++++++
+* Fix `NoneType` error when performing operations on automatic clusters that have hosted system components enabled.
+
+
+19.0.0b14
++++++++
+* `az aks safeguards`: Add support for Deployment Safeguards with Pod Security Standards (PSS). New `--pss-level` parameter allows setting PSS enforcement level to Privileged, Baseline, or Restricted. Commands now support both `-g/-n` and `--cluster` argument patterns.
+
+19.0.0b13
++++++++
+* `az aks update`: Set CMK property "enabled" to false and reserve other CMK properties for a PMK-enabled and CMK-disabled cluster.
+
+19.0.0b12
++++++++
+* `az aks create --workload-runtime KataVmIsolation`: Added the KataVmIsolation workload runtime value.
+
+19.0.0b11
++++++++
+* Remove PMK validation for `--azure-keyvault-kms-key-id` parameter.
+* `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when enabling PMK on a CMK-disabled cluster
+
+19.0.0b10
++++++++
+* Vendor new SDK and bump API version to 2025-08-02-preview.
+* `az aks update`: Fix `--azure-keyvault-kms-key-vault-network-access` parameter not being correctly applied during cluster creation and updates.
+
+19.0.0b9
++++++++
+* `az aks create --enable-hosted-system`: no longer provision default system node pool when creating an automatic cluster with hosted system enabled.
+* `az aks machine update`: Add support for updating machine tags, node taints and node labels.
+* Fix `az aks bastion` subshell defaulting to cmd on Windows when invoked from PowerShell by implementing grandparent process detection to identify the actual user shell.
+
+19.0.0b8
++++++++
+* Remove the preview flag from `az aks namespace` add/update help command.
+* Remove the feature preview flag AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview from managed namespace e2e test.
+
+19.0.0b7
++++++++
+* `az aks create`: Add new parameter `--enable-container-network-logs` to enable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs`.
+* `az aks update`: Add new parameter `--enable-container-network-logs` and `--disable-container-network-logs` to enable/disable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs` and `--disable-retina-flow-logs`.
+* Support `entraid` for parameter `--ssh-access` to support EntraID feature.
+* `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when disabling CMK on a PMK-enabled cluster
+
+19.0.0b6
++++++++
+* Update the minimum required cli core version to `2.73.0` (actually since `18.0.0b35`).
+
+19.0.0b5
++++++++
+* `az aks get-credentials`: Convert device code mode kubeconfig to Azure CLI token format to bypass conditional access login blocks.
+* Add `enable-istio-cni` and `disable-istio-cni` commands under `az aks mesh`.
+
+19.0.0b4
++++++++
+* `az aks create`: Add new parameter `--enable-hosted-system` to enable hosted system components for automatic clusters.
+* Added `--enable-gateway-api` to `az aks create` to enable managed Gateway API installation
+* Added `--enable-gateway-api` and `--disable-gateway-api` to `az aks update` to enable/disable managed Gateway API installation
+
+19.0.0b3
++++++++
+* Implement platform-managed-keys (PMK) awared validation for KMS customer-managed-key (CMK)
+
+19.0.0b2
++++++++
+* `az aks create`: Add new parameter `--enable-opentelemetry-metrics` to enable OTLP feature for metrics addon.
+* `az aks update`: Add new parameter `--enable-opentelemetry-metrics` to enable OTLP feature for metrics addon.
+* `az aks update`: Add new parameter `--disable-opentelemetry-metrics` to disable OTLP feature for metrics addon.
+* `az aks create`: Add new parameter `--opentelemetry-metrics-port` to change the OTLP port from the default for metrics addon.
+* `az aks update`: Add new parameter `--opentelemetry-metrics-port` to change the OTLP port from the default for metrics addon.
+* `az aks create`: Add new parameter `--enable-opentelemetry-logs` to enable OTLP feature for logs addon.
+* `az aks update`: Add new parameter `--enable-opentelemetry-logs` to enable OTLP feature for logs addon.
+* `az aks update`: Add new parameter `--disable-opentelemetry-logs` to disable OTLP feature for logs addon.
+* `az aks create`: Add new parameter `--opentelemetry-logs-port` to change the OTLP port from the default for logs addon.
+* `az aks update`: Add new parameter `--opentelemetry-logs-port` to change the OTLP port from the default for logs addon.
+* `az aks create`: Add new parameter `--enable-azure-monitor-logs` that is a wrapper to enable-addons -a monitoring.
+* `az aks update`: Add new parameter `--enable-azure-monitor-logs` that is a wrapper to enable-addons -a monitoring.
+* `az aks update`: Add new parameter `--disable-azure-monitor-logs` that is a wrapper to disable-addons -a monitoring.
+
+19.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks nodepool add`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* [BREAKING CHANGE]: `az aks nodepool update`: remove `--enable-custom-ca-trust` and `--disable-custom-ca-trust` options
+* `az aks update`: Add new parameter `--kms-infrastructure-encryption` to enable KMS infrastructure encryption on an existing cluster.
+
+18.0.0b44
++++++++
+* Vendor new SDK and bump API version to 2025-08-02-preview.
+* Pre-deprecate `--enable-custom-ca-trust` and `--disable-custom-ca-trust` in `az aks create`, `az aks update` commands.
+* Hide `--enable-managed-system-pool` parameter for `az aks create` for now, as the feature is not ready yet.
+
+18.0.0b43
++++++++
+* Fix `--localdns-config` parameter to handle null values and case-insensitive JSON keys in DNS override sections, preventing crashes with malformed localdns configuration files.
+* Enhance `build_override` function to validate dictionary types and only initialize DNS overrides when present in localdns configuration (case-insensitive).
+* Refactor `build_localdns_profile` function to eliminate code duplication between AgentPool add and update operations.
+
+18.0.0b42
++++++++
+* Fix role assignment failure when using azure-cli version >= `2.77.0`.
+* Add option `Flatcar` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
+18.0.0b41
++++++++
+* Fix `--localdns-config` parameter to handle null values in JSON configuration files gracefully, preventing crashes when DNS override sections are null.
+* Add jwtauthenticator commands `az aks jwtauthenticator add/update/show/list/delete` to manage JWT authenticators for a managed cluster.
+* Fix an issue in disabling ACNS performance (--acns-datapath-acceleration-mode None).
+
+18.0.0b40
++++++++
+* Add option `Windows2025` to `--os-sku` for `az aks nodepool add`.
+* `az aks create`: Add new parameter `--container-storage-version` to enable the given version of Azure Container Storage.
+* `az aks update`: Add new parameter `--container-storage-version` to enable the given version of Azure Container Storage.
+* `az aks create`: Change behavior of `--enable-azure-container-storage` to enable latest Azure Container Storage by default.
+* `az aks update`: Change behavior of `--enable-azure-container-storage` to enable latest Azure Container Storage by default.
+* `az aks update`: Change behavior of `--disable-azure-container-storage` to handle disable based on the installed version.
+
+18.0.0b39
++++++++
+* Add option `AzureLinuxOSGuard` and `AzureLinux3OSGuard` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+* Add machine command `az aks machine add` to add a machine to an existing machine pool.
+* Add blue-green upgrade strategy support for AKS node pools:
+  - `az aks nodepool add/update/upgrade`: Add `--upgrade-strategy` parameter to switch between rolling and blue-green nodepool upgrades.
+  - `az aks nodepool add/update/upgrade`: Add `--drain-batch-size`, `--drain-timeout-bg`, `--batch-soak-duration`, `--final-soak-duration` parameters to configure blue-green upgrade settings.
+
+18.0.0b38
++++++++
+* Add option `--acns-datapath-acceleration-mode <None|BpfVeth>` to `az aks create/update`
+
+18.0.0b37
++++++++
+* Enable autoscaler support for the VirtualMachines agent pool type.
+* Add `--node-vm-size` to `az aks update` to allow changing the VM size for VirtualMachines node pools.
+
+18.0.0b36
++++++++
+* Add option `AzureLinux3` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
+18.0.0b35
++++++++
+* Vendor new SDK and bump API version to 2025-07-02-preview.
+
+18.0.0b34
++++++++
+* Add machines agent pool support for `az aks nodepool add` command.
+
+18.0.0b33
++++++++
+* `az aks create`: Add new parameter `--kms-infrastructure-encryption` to enable KMS infrastructure encryption.
+
+18.0.0b32
++++++++
+* Remove the sku preview flag from help command for AKS automatic
+
+18.0.0b31
++++++++
+* Remove DATA_STORAGE references
+
+18.0.0b30
++++++++
+* Remove interactive AI-powered debugging tool `az aks agent`. To use the debugging tool, please enable it in the aks-agent extension by running `az extension add --name aks-agent`.
+
+18.0.0b29
++++++++
+* Refactor code to suppress ssh access warning message when creating an automatic cluster.
+
+18.0.0b28
++++++++
+* Add interactive AI-powered debugging tool `az aks agent`.
+
+18.0.0b27
++++++++
+* Add framework for interactive AI-powered debugging tool.
+- Add `--enable-upstream-kubescheduler-user-configuration` to `az aks create` and `az aks update`.
+- Add `--disable-upstream-kubescheduler-user-configuration` to `az aks update`.
+
+18.0.0b26
++++++++
+* Add `az aks identity-binding` command group for identity binding feature.
+
+18.0.0b25
++++++++
+* Update for `az aks machine show` and `az aks machine list` to show more details about the machine.
+
+18.0.0b24
++++++++
+* Suppress the ssh access annoying message if the cluster sku name is automatic.
+
+18.0.0b23
++++++++
+* `az aks create`: Add new parameter `--disable-run-command` to disable run command feature for the cluster
+* `az aks update`: Add  new parameters `--disable-run-command` and `--enable-run-command` to toggle the run command feature on or off
+
+18.0.0b22
++++++++
+* Vendor new SDK and bump API version to 2025-06-02-preview.
+
+18.0.0b21
++++++++
+* Add command `az aks bastion` to enable connections to managed Kubernetes clusters via Azure Bastion.
+
+18.0.0b20
++++++++
+* Fix the bug affecting VMAS to VMS migration in the `az aks update` command using the `--migrate-vmas-to-vms` option.
+
+18.0.0b19
++++++++
+* Add support for `ManagedSystem` Agent Pool Mode.
+* Add `--localdns-config` to `az aks nodepool add` and to `az aks nodepool update` to support configuring a local DNS profile for agent pools.
+
+18.0.0b18
++++++++
+* Add validation error when neither --location or --cluster and --resource-group-name are specified for az extension type list or az extension type version list
+
+18.0.0b17
++++++++
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` from `vendored_sdks/__init__.py` to fix the namespace package issue.
+
+18.0.0b16
++++++++
+* Vendor new SDK and bump API version to 2025-05-02-preview.
+
+18.0.0b15
++++++++
+* Fixed NPE issue for `--acns-transit-encryption-type`.
+
+18.0.0b14
++++++++
+* Add preview flag for `az aks namespace`.
+* Add `--node-provisioning-default-pools` to the `az aks update` command.
+* Add `--node-provisioning-default-pools` to the `az aks create` command.
+
+18.0.0b13
++++++++
+* Add option `--enable-http-proxy` to `az aks update`.
+
+18.0.0b12
++++++++
+* Add option `--acns-transit-encryption-type <None|WireGuard>` to `az aks create/update`
+
+18.0.0b11
++++++++
+* Vendor new SDK and bump API version to 2025-04-02-preview.
+
+18.0.0b10
++++++++
+* Wrap the ARG call in the managed namespace list command
+
+18.0.0b9
++++++++
+* Add `--max-blocked-nodes` to the `az aks nodepool add/update/upgrade` commands.
+
+18.0.0b8
++++++++
+* Populate location of managed namespaces using managed cluster's location
+
+18.0.0b7
++++++++
+* Add option `--disable-http-proxy` to `az aks update`.
+
+18.0.0b6
++++++++
+* Quality improvements for `az aks extension` and `az aks extension type` command groups
+
+18.0.0b5
++++++++
+* Add option `Ubuntu2204` and `Ubuntu2404` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
+18.0.0b4
++++++++
+* Add managed namespace commands `az aks namespace add/update/show/list/delete/get-credentials`
+
+18.0.0b3
++++++++
+* Add basic lb sku migration support `az aks update --load-balancer-sku standard`
+
+18.0.0b2
++++++++
+* Vendor new SDK and bump API version to 2025-03-02-preview.
+
+18.0.0b1
++++++++
+* [BREAKING CHANGE] Remove `--enable-pod-security-policy` and `--disable-pod-security-policy` as it's deprecated.
+
+17.0.0b4
+++++++++
+* Reset vm_size and count to None for `az aks update --migrate-vmas-to-vms`
+
+17.0.0b3
+++++++++
+* Add default value of option `--vm-sizes` for `az aks create` and `az aks nodepool add`.
+
+17.0.0b2
+++++++++
+* Add option `--migrate-vmas-to-vms` to `az aks update`
+
+17.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: Change default value of option `--node-vm-size` to ""
+* [BREAKING CHANGE]: `az aks nodepool add`: Change default value of option `--node-vm-size` to ""
+
+16.0.0b1
++++++++
+* [BREAKING CHANGE] Remove flux extension from the list of supported core extensions
+
+15.0.0b2
++++++++
+* Add aks extension and aks extension-type command groups
+* Remove TrustedAccess commands from aks-preview extension as it is GA and exists in azure-cli for long time.
+
+15.0.0b1
+++++++++
+* [BREAKING CHANGE] Change `--vm-sizes` for VirtualMachines manual profile to awalys support single SKU size.
+
+14.0.0b7
+++++++++
+* Add `az aks create/update --enable-retina-flow-logs` and `az aks update --disable-retina-flow-logs` commands.
+
 14.0.0b6
 +++++++
 * Add option `--acns-advanced-networkpolicies <None|FQDN|L7>` to `az aks create/update`

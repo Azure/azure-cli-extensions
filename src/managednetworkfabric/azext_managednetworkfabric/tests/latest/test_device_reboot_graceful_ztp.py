@@ -27,7 +27,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_reboot(
         test,
@@ -61,6 +61,6 @@ class GA_DeviceRebootGracefulZTPScenarioTest1(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Reboot_GracefulZTP_scenario1(self):
+    def test_GA_device_reboot_graceful_ztp_scenario1(self):
         """test scenario for Device CRUD operations"""
         call_scenario1(self)

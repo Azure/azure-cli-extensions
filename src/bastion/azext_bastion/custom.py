@@ -180,8 +180,7 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     if not resource_port:
         resource_port = 22
 
-    if _is_sku_standard_or_higher(bastion['sku']['name']) is not True or \
-       bastion['enableTunneling'] is not True:
+    if not _is_nativeclient_enabled(bastion):
         raise ClientRequestError('Bastion Host SKU must be Standard or Premium and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
@@ -387,6 +386,14 @@ def _is_sku_standard_or_higher(sku):
         BastionSku.Premium.value
     }
     return sku in allowed_skus
+
+
+def _is_nativeclient_enabled(bastion):
+    if bastion['sku']['name'] == BastionSku.Developer.value:
+        return True
+    if _is_sku_standard_or_higher(bastion['sku']['name']):
+        return bastion['enableTunneling']
+    return False
 
 
 def handle_error_response(response):

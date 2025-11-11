@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor get-billing-info",
 )
 class GetBillingInfo(AAZCommand):
-    """Get marketplace and organization info mapped to the given monitor.
+    """Retrieve marketplace and organization billing information mapped to the given Elastic monitor resource.
 
     :example: BillingInfo_Get
         az elastic monitor get-billing-info --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/getbillinginfo", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/getbillinginfo", "2025-06-01"],
         ]
     }
 
@@ -123,7 +123,7 @@ class GetBillingInfo(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

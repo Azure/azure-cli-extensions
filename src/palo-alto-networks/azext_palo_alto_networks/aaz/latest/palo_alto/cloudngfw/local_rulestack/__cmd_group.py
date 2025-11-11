@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage local-rulestack resource
+    """Manage local rulestack resources associated to the Palo Alto Networks Cloud NGFW on Azure
     """
     pass
 

@@ -27,7 +27,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_reboot(
         test,
@@ -43,7 +43,7 @@ def step_reboot(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric device reboot --network-device-name {name} --resource-group {rg} --reboot-type {rebootType}"
+        "az networkfabric device reboot --resource-name {name} --resource-group {rg} --reboot-type {rebootType}"
     )
 
 
@@ -63,6 +63,6 @@ class GA_DeviceRebootUngracefulNoZTPScenarioTest1(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Reboot_UngracefulNoZTP_scenario1(self):
+    def test_GA_device_reboot_ungraceful_noztp_scenario1(self):
         """test scenario for Device CRUD operations"""
         call_scenario1(self)

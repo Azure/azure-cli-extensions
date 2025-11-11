@@ -3,17 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-TEST_SUBS_DEFAULT = "916dfd6d-030c-4bd9-b579-7bb6d1926e97"
+TEST_SUBS_DEFAULT = "1916d14f-6594-4756-955d-9b95970a73a8"
 TEST_RG_DEFAULT = "e2e-scenarios"
-TEST_WORKSPACE_DEFAULT = "e2e-qsharp-tests"
-TEST_WORKSPACE_DEFAULT_LOCATION = "westus2"
-TEST_WORKSPACE_DEFAULT_STORAGE = "e2etests"
-TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "e2etestsgrs"
-TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "Microsoft.ChemistryHpc/Basic"
-TEST_CAPABILITIES_DEFAULT = "new.Microsoft.ChemistryHpc;submit.Microsoft.ChemistryHpc"
-TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "Microsoft.ChemistryHpc/Basic"
-TEST_TARGET_DEFAULT_PROVIDER = "Microsoft.ChemistryHpc"
-TEST_TARGET_DEFAULT_TARGET = "microsoft.hpc"
+TEST_WORKSPACE_DEFAULT = "qw-e2e-tests-eus"
+TEST_WORKSPACE_DEFAULT_LOCATION = "eastus"
+TEST_WORKSPACE_DEFAULT_STORAGE = "qwe2etestswus2"
+TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "qwe2etestsgrswus2"
+TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "quantinuum/basic1"
+TEST_CAPABILITIES_DEFAULT = "new.quantinuum;submit.quantinuum"
+TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "quantinuum/basic1"
+TEST_TARGET_DEFAULT_PROVIDER = "quantinuum"
+TEST_TARGET_DEFAULT_TARGET = "quantinuum.sim.h2-1sc"
 
 
 def get_from_os_environment(env_name, default):
@@ -35,17 +35,6 @@ def get_test_workspace():
 
 def get_test_workspace_location():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_LOCATION", TEST_WORKSPACE_DEFAULT_LOCATION)
-
-
-def get_test_workspace_location_for_dft():
-    """ TODO: Currently, "microsoft.dft" target is not available in WestUS2 region,
-        therefore we need to specify the region to WestUS. At the same time,
-        we need to preserve functionality of setting the region via environment variable
-        so that we could override it in E2E tests.
-
-        Remove this method once/if "microsoft.dft" target is available in WestUS2.
-    """
-    return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_LOCATION", "westus")
 
 
 def get_test_workspace_storage():

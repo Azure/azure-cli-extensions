@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic get-organization-api-key",
 )
 class GetOrganizationApiKey(AAZCommand):
-    """Fetch User API Key from internal database, if it was generated and stored while creating the Elasticsearch Organization.
+    """Fetch the User API Key from the internal database, if it was generated and stored during the creation of the Elasticsearch Organization.
 
-    :example: Get organization api key
-        az elastic get-organization-api-key --email-id id
+    :example: Organizations_GetApiKey
+        az elastic get-organization-api-key
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/getorganizationapikey", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/getorganizationapikey", "2025-06-01"],
         ]
     }
 
@@ -110,7 +110,7 @@ class GetOrganizationApiKey(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

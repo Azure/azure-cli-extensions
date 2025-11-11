@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor associate-traffic-filter",
 )
 class AssociateTrafficFilter(AAZCommand):
-    """Associate traffic filter
+    """Associate a traffic filter with your Elastic monitor resource to control and manage network traffic.
 
-    :example: Monitor associate traffic filter
-        az elastic monitor associate-traffic-filter --monitor-name name -g rg --ruleset-id
+    :example: AssociateTrafficFilter_Associate
+        az elastic monitor associate-traffic-filter --resource-group myResourceGroup --monitor-name myMonitor --ruleset-id 31d91b5afb6f4c2eaaf104c97b1991dd
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/associatetrafficfilter", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/associatetrafficfilter", "2025-06-01"],
         ]
     }
 
@@ -32,8 +32,7 @@ class AssociateTrafficFilter(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -135,7 +134,7 @@ class AssociateTrafficFilter(AAZCommand):
                     "rulesetId", self.ctx.args.ruleset_id,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

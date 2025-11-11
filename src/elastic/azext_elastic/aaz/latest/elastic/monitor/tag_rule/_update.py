@@ -15,13 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor tag-rule update",
 )
 class Update(AAZCommand):
-    """Update a tag rule set for a given monitor resource.
+    """Update a tag rule set for a given Elastic monitor resource, enabling fine-grained control over observability based on resource tags.
+
+    :example: TagRules_CreateOrUpdate
+        az elastic monitor tag-rule update --resource-group myResourceGroup --monitor-name myMonitor --rule-set-name default
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/tagrules/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/tagrules/{}", "2025-06-01"],
         ]
     }
 
@@ -203,7 +206,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -290,7 +293,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

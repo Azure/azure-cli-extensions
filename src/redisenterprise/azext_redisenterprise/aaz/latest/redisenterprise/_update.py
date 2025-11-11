@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-09-01-preview",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2024-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2025-07-01"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -63,7 +63,7 @@ class Update(AAZCommand):
         _args_schema.key_encryption_key_url = AAZStrArg(
             options=["--key-encryption-key-url"],
             arg_group="Encryption",
-            help="Key encryption key Url, versioned only. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78",
+            help="Key encryption key Url, versioned only. Ex: `https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78`",
             nullable=True,
         )
 
@@ -139,7 +139,6 @@ class Update(AAZCommand):
             options=["--high-availability"],
             arg_group="Properties",
             help="Enabled by default. If highAvailability is disabled, the data set is not replicated. This affects the availability SLA, and increases the risk of data loss.",
-            is_preview=True,
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
@@ -149,6 +148,13 @@ class Update(AAZCommand):
             help="The minimum TLS version for the cluster to support, e.g. '1.2'",
             nullable=True,
             enum={"1.0": "1.0", "1.1": "1.1", "1.2": "1.2"},
+        )
+        _args_schema.public_network_access = AAZStrArg(
+            options=["--public-network-access"],
+            arg_group="Properties",
+            help="Whether or not public network traffic can access the Redis cluster. Only 'Enabled' or 'Disabled' can be set. null is returned only for clusters created using an old API version which do not have this property and cannot be set.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
         # define Arg Group "Sku"
@@ -246,7 +252,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01-preview",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -345,7 +351,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01-preview",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -403,7 +409,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType)
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -423,6 +429,7 @@ class Update(AAZCommand):
                 properties.set_prop("encryption", AAZObjectType)
                 properties.set_prop("highAvailability", AAZStrType, ".high_availability")
                 properties.set_prop("minimumTlsVersion", AAZStrType, ".minimum_tls_version")
+                properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access", typ_kwargs={"flags": {"required": True}, "nullable": True})
 
             encryption = _builder.get(".properties.encryption")
             if encryption is not None:
@@ -472,6 +479,7 @@ class _UpdateHelper:
         if cls._schema_cluster_read is not None:
             _schema.id = cls._schema_cluster_read.id
             _schema.identity = cls._schema_cluster_read.identity
+            _schema.kind = cls._schema_cluster_read.kind
             _schema.location = cls._schema_cluster_read.location
             _schema.name = cls._schema_cluster_read.name
             _schema.properties = cls._schema_cluster_read.properties
@@ -487,7 +495,10 @@ class _UpdateHelper:
         cluster_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        cluster_read.identity = AAZObjectType()
+        cluster_read.identity = AAZIdentityObjectType()
+        cluster_read.kind = AAZStrType(
+            flags={"read_only": True},
+        )
         cluster_read.location = AAZStrType(
             flags={"required": True},
         )
@@ -554,6 +565,11 @@ class _UpdateHelper:
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
+        )
+        properties.public_network_access = AAZStrType(
+            serialized_name="publicNetworkAccess",
+            flags={"required": True},
+            nullable=True,
         )
         properties.redis_version = AAZStrType(
             serialized_name="redisVersion",
@@ -645,6 +661,7 @@ class _UpdateHelper:
 
         _schema.id = cls._schema_cluster_read.id
         _schema.identity = cls._schema_cluster_read.identity
+        _schema.kind = cls._schema_cluster_read.kind
         _schema.location = cls._schema_cluster_read.location
         _schema.name = cls._schema_cluster_read.name
         _schema.properties = cls._schema_cluster_read.properties

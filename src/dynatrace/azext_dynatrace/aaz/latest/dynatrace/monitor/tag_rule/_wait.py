@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor tag-rule wait",
 )
 class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+    """Pauses CLI execution until a specified tag rule operation completes or reaches a defined state.
     """
 
     _aaz_info = {

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw firewall status default",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage cloudngfw firewall status default resource
+    """Manage default status resources for Palo Alto Networks cloudngfw firewalls.
     """
     pass
 

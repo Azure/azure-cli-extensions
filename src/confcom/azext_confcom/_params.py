@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+import json
 from knack.arguments import CLIArgumentType
 from azext_confcom._validators import (
     validate_params_file,
@@ -23,6 +24,7 @@ from azext_confcom._validators import (
     validate_fragment_json,
     validate_fragment_json_policy,
     validate_image_target,
+    validate_stdio,
     validate_upload_fragment,
     validate_infrastructure_svn,
 )
@@ -105,9 +107,15 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_stdio",
-            options_list=("--disable-stdio",),
-            required=False,
+            action="store_true",
             help="Disabling container stdio will disable the ability to see the output of the container in the terminal for Confidential ACI",
+            validator=validate_stdio,
+        )
+        c.argument(
+            "enable_stdio",
+            action="store_true",
+            help="Enable the standard io streams to leave the container",
+            validator=validate_stdio,
         )
         c.argument(
             "diff",
@@ -172,7 +180,6 @@ def load_arguments(self, _):
             required=False,
             help="Omit the id field in the policy. This is helpful if the image being used will be present in multiple registries and used interchangeably.",
         )
-
         c.argument(
             "include_fragments",
             options_list=("--include-fragments", "-f"),
@@ -191,6 +198,14 @@ def load_arguments(self, _):
             options_list=("--exclude-default-fragments", "-e"),
             required=False,
             help="Exclude default fragments in the generated policy",
+        )
+        c.argument(
+            "container_definitions",
+            options_list=['--with-containers'],
+            action='append',
+            type=json.loads,
+            required=False,
+            help='Container definitions to include in the policy'
         )
 
     with self.argument_context("confcom acifragmentgen") as c:
@@ -266,7 +281,7 @@ def load_arguments(self, _):
             "fragment_path",
             options_list=("--fragment-path", "-p"),
             required=False,
-            help="Path to a policy fragment to be used with --generate-import to make import statements without having access to the fragment's OCI registry",
+            help="Path to a signed policy fragment to be used with --generate-import to make import statements without having access to the fragment's OCI registry. This can either be a local path or a registry address.",
             validator=validate_fragment_path,
         )
         c.argument(
@@ -291,9 +306,15 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_stdio",
-            options_list=("--disable-stdio",),
-            required=False,
+            action="store_true",
             help="Disabling container stdio will disable the ability to see the output of the container in the terminal for Confidential ACI",
+            validator=validate_stdio,
+        )
+        c.argument(
+            "enable_stdio",
+            action="store_true",
+            help="Enable the standard io streams to leave the container",
+            validator=validate_stdio,
         )
         c.argument(
             "debug_mode",
@@ -332,6 +353,14 @@ def load_arguments(self, _):
             required=False,
             help="Path to JSON file to write fragment import information. This is used with --generate-import. If not specified, the import statement will print to the console",
             validator=validate_fragment_json,
+        )
+        c.argument(
+            "container_definitions",
+            options_list=['--with-containers'],
+            action='append',
+            required=False,
+            type=json.loads,
+            help='Container definitions to include in the policy'
         )
 
     with self.argument_context("confcom katapolicygen") as c:

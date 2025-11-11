@@ -15,13 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor monitored-subscription update",
 )
 class Update(AAZCommand):
-    """Update the subscriptions that should be monitored by the Elastic monitor resource.
+    """Update subscriptions to be monitored by the Elastic monitor resource, enabling observability and monitoring.
+
+    :example: Monitors_AddMonitoredSubscriptions
+        az elastic monitor monitored-subscription update --resource-group myResourceGroup --monitor-name myMonitor --configuration-name default
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/monitoredsubscriptions/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/monitoredsubscriptions/{}", "2025-06-01"],
         ]
     }
 
@@ -70,7 +73,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitored_subscription_list = AAZListArg(
-            options=["-m","--monitored-subscription-list"],
+            options=["--monitored-subscription-list", "--subscription-list"],
             arg_group="Properties",
             help="List of subscriptions and the state of the monitoring.",
             nullable=True,
@@ -246,7 +249,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -349,7 +352,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

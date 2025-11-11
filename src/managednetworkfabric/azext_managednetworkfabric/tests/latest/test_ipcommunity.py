@@ -27,7 +27,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
@@ -44,7 +44,7 @@ def step_create(test, checks=None):
         checks = []
     test.cmd(
         "az networkfabric ipcommunity create --resource-group {rg} --location {location} --resource-name {name}"
-        " --ip-community-rules {ipCommunityRules}",
+        " --ip-community-rules {ipCommunityRules} --annotation {annotation}",
         checks=checks,
     )
 
@@ -63,7 +63,7 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric ipcommunity create --resource-group {rg} --location {location} --resource-name {name}"
+        "az networkfabric ipcommunity update --resource-group {rg} --resource-name {name}"
         " --ip-community-rules {updatedIpCommunityRules}",
         checks=checks,
     )
@@ -102,6 +102,7 @@ class GA_IpCommunityScenarioTest1(ScenarioTest):
         self.kwargs.update(
             {
                 "name": CONFIG.get("IP_COMMUNITY", "name"),
+                "annotation": CONFIG.get("IP_COMMUNITY", "annotation"),
                 "rg": CONFIG.get("IP_COMMUNITY", "resource_group"),
                 "location": CONFIG.get("IP_COMMUNITY", "location"),
                 "ipCommunityRules": CONFIG.get("IP_COMMUNITY", "ip_community_rules"),

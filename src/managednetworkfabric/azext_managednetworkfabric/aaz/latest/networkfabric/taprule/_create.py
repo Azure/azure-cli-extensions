@@ -28,9 +28,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules/{}", "2025-07-15"],
         ]
     }
 
@@ -63,6 +63,25 @@ class Create(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities.",
+            blank=[],
+        )
+
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -79,7 +98,7 @@ class Create(AAZCommand):
             enum={"File": "File", "Inline": "Inline"},
         )
         _args_schema.dynamic_match_configurations = AAZListArg(
-            options=["--dynamic-match-configurations"],
+            options=["--dynamic-match-configs", "--dynamic-match-configurations"],
             arg_group="Properties",
             help="List of dynamic match configurations.",
             fmt=AAZListArgFormat(
@@ -87,9 +106,14 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.global_network_tap_rule_actions = AAZObjectArg(
-            options=["--global-network-tap-rule-actions"],
+            options=["--global-ntr-actions", "--global-network-tap-rule-actions"],
             arg_group="Properties",
             help="Global network tap rule actions",
+        )
+        _args_schema.identity_selector = AAZObjectArg(
+            options=["--identity-selector"],
+            arg_group="Properties",
+            help="The selection of the managed identity to use with this storage account. The identity type must be either system assigned or user assigned.",
         )
         _args_schema.match_configurations = AAZListArg(
             options=["--match-configurations"],
@@ -99,12 +123,11 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.polling_interval_in_seconds = AAZFloatArg(
-            options=["--polling-interval-in-seconds"],
+        _args_schema.polling_interval_in_seconds = AAZIntArg(
+            options=["--polling-interval", "--polling-interval-in-seconds"],
             arg_group="Properties",
             help="Polling interval in seconds.",
-            default=30.0,
-            enum={"120": 120, "30": 30, "60": 60, "90": 90},
+            default=30,
         )
         _args_schema.tap_rules_url = AAZStrArg(
             options=["--tap-rules-url"],
@@ -206,6 +229,19 @@ class Create(AAZCommand):
             ),
         )
 
+        identity_selector = cls._args_schema.identity_selector
+        identity_selector.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="The type of managed identity that is being selected.",
+            required=True,
+            enum={"SystemAssignedIdentity": "SystemAssignedIdentity", "UserAssignedIdentity": "UserAssignedIdentity"},
+        )
+        identity_selector.user_assigned_identity_resource_id = AAZResourceIdArg(
+            options=["user-assigned-identity-resource-id"],
+            help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
+            nullable=True,
+        )
+
         match_configurations = cls._args_schema.match_configurations
         match_configurations.Element = AAZObjectArg()
 
@@ -246,6 +282,7 @@ class Create(AAZCommand):
         _element.destination_id = AAZResourceIdArg(
             options=["destination-id"],
             help="Destination Id. The ARM resource Id may be either Network To Network Interconnect or NeighborGroup.",
+            nullable=True,
         )
         _element.is_timestamp_enabled = AAZStrArg(
             options=["is-timestamp-enabled"],
@@ -498,7 +535,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -523,9 +560,19 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -533,8 +580,9 @@ class Create(AAZCommand):
                 properties.set_prop("configurationType", AAZStrType, ".configuration_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("dynamicMatchConfigurations", AAZListType, ".dynamic_match_configurations")
                 properties.set_prop("globalNetworkTapRuleActions", AAZObjectType, ".global_network_tap_rule_actions")
+                properties.set_prop("identitySelector", AAZObjectType, ".identity_selector")
                 properties.set_prop("matchConfigurations", AAZListType, ".match_configurations")
-                properties.set_prop("pollingIntervalInSeconds", AAZFloatType, ".polling_interval_in_seconds")
+                properties.set_prop("pollingIntervalInSeconds", AAZIntType, ".polling_interval_in_seconds")
                 properties.set_prop("tapRulesUrl", AAZStrType, ".tap_rules_url")
 
             dynamic_match_configurations = _builder.get(".properties.dynamicMatchConfigurations")
@@ -592,6 +640,11 @@ class Create(AAZCommand):
                 global_network_tap_rule_actions.set_prop("enableCount", AAZStrType, ".enable_count")
                 global_network_tap_rule_actions.set_prop("truncate", AAZStrType, ".truncate")
 
+            identity_selector = _builder.get(".properties.identitySelector")
+            if identity_selector is not None:
+                identity_selector.set_prop("identityType", AAZStrType, ".identity_type", typ_kwargs={"flags": {"required": True}})
+                identity_selector.set_prop("userAssignedIdentityResourceId", AAZStrType, ".user_assigned_identity_resource_id", typ_kwargs={"nullable": True})
+
             match_configurations = _builder.get(".properties.matchConfigurations")
             if match_configurations is not None:
                 match_configurations.set_elements(AAZObjectType, ".")
@@ -610,7 +663,7 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.matchConfigurations[].actions[]")
             if _elements is not None:
-                _elements.set_prop("destinationId", AAZStrType, ".destination_id")
+                _elements.set_prop("destinationId", AAZStrType, ".destination_id", typ_kwargs={"nullable": True})
                 _elements.set_prop("isTimestampEnabled", AAZStrType, ".is_timestamp_enabled")
                 _elements.set_prop("matchConfigurationName", AAZStrType, ".match_configuration_name")
                 _elements.set_prop("truncate", AAZStrType, ".truncate")
@@ -707,6 +760,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
@@ -722,6 +776,37 @@ class Create(AAZCommand):
             )
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200_201.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
                 flags={"read_only": True},
             )
 
@@ -745,6 +830,9 @@ class Create(AAZCommand):
             properties.global_network_tap_rule_actions = AAZObjectType(
                 serialized_name="globalNetworkTapRuleActions",
             )
+            properties.identity_selector = AAZObjectType(
+                serialized_name="identitySelector",
+            )
             properties.last_operation = AAZObjectType(
                 serialized_name="lastOperation",
                 flags={"read_only": True},
@@ -756,11 +844,15 @@ class Create(AAZCommand):
             properties.match_configurations = AAZListType(
                 serialized_name="matchConfigurations",
             )
-            properties.network_tap_id = AAZStrType(
-                serialized_name="networkTapId",
+            properties.network_fabric_ids = AAZListType(
+                serialized_name="networkFabricIds",
                 flags={"read_only": True},
             )
-            properties.polling_interval_in_seconds = AAZFloatType(
+            properties.network_tap_ids = AAZListType(
+                serialized_name="networkTapIds",
+                flags={"read_only": True},
+            )
+            properties.polling_interval_in_seconds = AAZIntType(
                 serialized_name="pollingIntervalInSeconds",
             )
             properties.provisioning_state = AAZStrType(
@@ -826,6 +918,16 @@ class Create(AAZCommand):
             )
             global_network_tap_rule_actions.truncate = AAZStrType()
 
+            identity_selector = cls._schema_on_200_201.properties.identity_selector
+            identity_selector.identity_type = AAZStrType(
+                serialized_name="identityType",
+                flags={"required": True},
+            )
+            identity_selector.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
+                nullable=True,
+            )
+
             last_operation = cls._schema_on_200_201.properties.last_operation
             last_operation.details = AAZStrType(
                 flags={"read_only": True},
@@ -855,6 +957,7 @@ class Create(AAZCommand):
             _element = cls._schema_on_200_201.properties.match_configurations.Element.actions.Element
             _element.destination_id = AAZStrType(
                 serialized_name="destinationId",
+                nullable=True,
             )
             _element.is_timestamp_enabled = AAZStrType(
                 serialized_name="isTimestampEnabled",
@@ -942,6 +1045,16 @@ class Create(AAZCommand):
 
             vlans = cls._schema_on_200_201.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlans
             vlans.Element = AAZStrType()
+
+            network_fabric_ids = cls._schema_on_200_201.properties.network_fabric_ids
+            network_fabric_ids.Element = AAZStrType(
+                nullable=True,
+            )
+
+            network_tap_ids = cls._schema_on_200_201.properties.network_tap_ids
+            network_tap_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

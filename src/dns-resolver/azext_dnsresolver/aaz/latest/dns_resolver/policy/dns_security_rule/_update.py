@@ -17,14 +17,17 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a DNS security rule for a DNS resolver policy.
 
-    :example: Update a DNS security rule
-        az dns-resolver policy dns-security-rule update --resource-group sampleResourceGroup --policy-name sampleDnsResolverPolicy --rule-name sampleDnsSecurityRule --location westus2 --tags "{key2:value2}" --priority 100 --action "{action-type:Block,block-response-code:SERVFAIL}" --domain-lists "[{id:/subscriptions/abdd4249-9f34-4cc6-8e42-c2e32110603e/resourceGroups/sampleResourceGroup/providers/Microsoft.Network/dnsResolverDomainLists/sampleDnsResolverDomainList}]" --rule-state Disabled
+    :example: Update a dns-security rule.
+        az dns-resolver policy dns-security-rule update --resource-group sampleResourceGroup --policy-name sampleDnsResolverPolicy --dns-security-rule-name sampleDnsSecurityRule --location westus2 --tags "{key1:value1}" --priority 100 --action "{action-type:Block}" --domain-lists "[{id:/subscriptions/abdd4249-9f34-4cc6-8e42-c2e32110603e/resourceGroups/sampleResourceGroup/providers/Microsoft.Network/dnsResolverDomainLists/sampleDnsResolverDomainList}]" --rule-state Enabled
+
+    :example: Upsert DNS security rule with managed domain list
+        az dns-resolver policy dns-security-rule update --resource-group sampleResourceGroup --policy-name sampleDnsResolverPolicy --dns-security-rule-name sampleDnsSecurityRule --action "{action-type:Block}" --rule-state Enabled --priority 100 --managed-domain-lists "[AzureDnsThreatIntel]" --tags "{key1:value1}"
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}/dnssecurityrules/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}/dnssecurityrules/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -108,6 +111,7 @@ class Update(AAZCommand):
             options=["--domain-lists"],
             arg_group="Properties",
             help="DNS resolver policy domains lists that the DNS security rule applies to.",
+            nullable=True,
         )
         _args_schema.rule_state = AAZStrArg(
             options=["--rule-state"],
@@ -115,6 +119,12 @@ class Update(AAZCommand):
             help="The state of DNS security rule.",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.managed_domain_lists = AAZListArg(
+            options=["--managed-domain-lists"],
+            arg_group="Properties",
+            help="Managed domain lists that the DNS security rule applies to.",
+            nullable=True,
         )
         _args_schema.priority = AAZIntArg(
             options=["--priority"],
@@ -129,12 +139,6 @@ class Update(AAZCommand):
             nullable=True,
             enum={"Alert": "Alert", "Allow": "Allow", "Block": "Block"},
         )
-        action.block_response_code = AAZStrArg(
-            options=["block-response-code"],
-            help="The response code for block actions.",
-            nullable=True,
-            enum={"SERVFAIL": "SERVFAIL"},
-        )
 
         domain_lists = cls._args_schema.domain_lists
         domain_lists.Element = AAZObjectArg(
@@ -145,6 +149,12 @@ class Update(AAZCommand):
         _element.id = AAZStrArg(
             options=["id"],
             help="Resource ID.",
+        )
+
+        managed_domain_lists = cls._args_schema.managed_domain_lists
+        managed_domain_lists.Element = AAZStrArg(
+            nullable=True,
+            enum={"AzureDnsThreatIntel": "AzureDnsThreatIntel"},
         )
         return cls._args_schema
 
@@ -230,7 +240,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -277,7 +287,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -286,7 +296,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -333,7 +343,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -343,10 +353,10 @@ class Update(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "If-Match", self.ctx.args.if_match,
+                    "if-match", self.ctx.args.if_match,
                 ),
                 **self.serialize_header_param(
-                    "If-None-Match", self.ctx.args.if_none_match,
+                    "if-none-match", self.ctx.args.if_none_match,
                 ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
@@ -403,14 +413,14 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("action", AAZObjectType, ".action", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("dnsResolverDomainLists", AAZListType, ".domain_lists", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("dnsResolverDomainLists", AAZListType, ".domain_lists")
                 properties.set_prop("dnsSecurityRuleState", AAZStrType, ".rule_state")
+                properties.set_prop("managedDomainLists", AAZListType, ".managed_domain_lists")
                 properties.set_prop("priority", AAZIntType, ".priority", typ_kwargs={"flags": {"required": True}})
 
             action = _builder.get(".properties.action")
             if action is not None:
                 action.set_prop("actionType", AAZStrType, ".action_type")
-                action.set_prop("blockResponseCode", AAZStrType, ".block_response_code")
 
             dns_resolver_domain_lists = _builder.get(".properties.dnsResolverDomainLists")
             if dns_resolver_domain_lists is not None:
@@ -419,6 +429,10 @@ class Update(AAZCommand):
             _elements = _builder.get(".properties.dnsResolverDomainLists[]")
             if _elements is not None:
                 _elements.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
+
+            managed_domain_lists = _builder.get(".properties.managedDomainLists")
+            if managed_domain_lists is not None:
+                managed_domain_lists.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -486,10 +500,12 @@ class _UpdateHelper:
         )
         properties.dns_resolver_domain_lists = AAZListType(
             serialized_name="dnsResolverDomainLists",
-            flags={"required": True},
         )
         properties.dns_security_rule_state = AAZStrType(
             serialized_name="dnsSecurityRuleState",
+        )
+        properties.managed_domain_lists = AAZListType(
+            serialized_name="managedDomainLists",
         )
         properties.priority = AAZIntType(
             flags={"required": True},
@@ -503,9 +519,6 @@ class _UpdateHelper:
         action.action_type = AAZStrType(
             serialized_name="actionType",
         )
-        action.block_response_code = AAZStrType(
-            serialized_name="blockResponseCode",
-        )
 
         dns_resolver_domain_lists = _schema_dns_security_rule_read.properties.dns_resolver_domain_lists
         dns_resolver_domain_lists.Element = AAZObjectType()
@@ -514,6 +527,9 @@ class _UpdateHelper:
         _element.id = AAZStrType(
             flags={"required": True},
         )
+
+        managed_domain_lists = _schema_dns_security_rule_read.properties.managed_domain_lists
+        managed_domain_lists.Element = AAZStrType()
 
         system_data = _schema_dns_security_rule_read.system_data
         system_data.created_at = AAZStrType(

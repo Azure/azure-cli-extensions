@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class ValidateConfiguration(AAZCommand):
     """Validates the configuration of the underlying resources in the given Network Fabric instance.
 
-    :example: Validate the configuration
+    :example: Validate the configuration on the Network Fabric
         az networkfabric fabric validate-configuration -g "example-rg" --resource-name "example-nf" --validate-action "Cabling"
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/validateconfiguration", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/validateconfiguration", "2025-07-15"],
         ]
     }
 
@@ -150,7 +150,7 @@ class ValidateConfiguration(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -247,12 +247,15 @@ class _ValidateConfigurationHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZFreeFormDictType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()

@@ -103,6 +103,9 @@ class AzureFirewallCreate(_AzureFirewallCreate):
         args_schema.enable_udp_log_optimization = AAZBoolArg(
             options=['--enable-udp-log-optimization', '--udp-log-optimization'],
             help="Allow UDP log optimization. By default it is false.")
+        args_schema.enable_dnstap_logging = AAZBoolArg(
+            options=['--enable-dnstap-logging', '--dnstap-logging'],
+            help="Allow dnstap logging. By default it is false.")
         args_schema.dns_servers = AAZListArg(
             options=['--dns-servers'],
             arg_group="DNS",
@@ -183,6 +186,11 @@ class AzureFirewallCreate(_AzureFirewallCreate):
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
                      "/virtualHubs/{}",
         )
+        args_schema.edge_zone = AAZStrArg(
+            options=["--edge-zone"],
+            help="The name of edge zone.",
+        )
+        args_schema.extended_location._registered = False
         args_schema.additional_properties._registered = False
         args_schema.ip_configurations._registered = False
         args_schema.mgmt_ip_conf_subnet._registered = False
@@ -191,6 +199,9 @@ class AzureFirewallCreate(_AzureFirewallCreate):
 
     def pre_operations(self):
         args = self.ctx.args
+        if has_value(args.edge_zone):
+            args.extended_location.name = args.edge_zone
+            args.extended_location.type = "EdgeZone"
         if has_value(args.public_ip_count) and has_value(args.public_ip):
             raise CLIError(
                 'usage error: Cannot add both --public-ip-count and --public-ip at the same time.')
@@ -250,6 +261,9 @@ class AzureFirewallCreate(_AzureFirewallCreate):
 
         if has_value(args.route_server_id):
             args.additional_properties['Network.RouteServerInfo.RouteServerID'] = args.route_server_id
+
+        if has_value(args.enable_dnstap_logging) and args.enable_dnstap_logging:
+            args.additional_properties['Network.AdditionalLogs.EnableDnstapLogging'] = 'true'
 
         if has_value(args.conf_name) and has_value(args.sku) and sku.lower() == 'azfw_vnet':
             subnet_id = resource_id(
@@ -317,6 +331,10 @@ class AzureFirewallUpdate(_AzureFirewallUpdate):
             options=['--enable-udp-log-optimization', '--udp-log-optimization'],
             help="Allow UDP log optimization. By default it is false.",
             nullable=True)
+        args_schema.enable_dnstap_logging = AAZBoolArg(
+            options=['--enable-dnstap-logging', '--dnstap-logging'],
+            help="Allow dnstap logging. By default it is false.",
+            nullable=True)
         args_schema.dns_servers = AAZListArg(
             options=['--dns-servers'],
             arg_group="DNS",
@@ -344,6 +362,7 @@ class AzureFirewallUpdate(_AzureFirewallUpdate):
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
                      "/virtualHubs/{}",
         )
+        args_schema.extended_location._registered = False
         args_schema.addresses._registered = False
         args_schema.additional_properties._registered = False
 
@@ -445,6 +464,14 @@ class AzureFirewallUpdate(_AzureFirewallUpdate):
                 instance.properties.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization'] = 'true'
             elif 'Network.AdditionalLogs.EnableUdpLogOptimization' in instance.properties.additional_properties:
                 del instance.properties.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization']
+
+        if has_value(args.enable_dnstap_logging):
+            if not has_value(instance.properties.additional_properties):
+                instance.properties.additional_properties = {}
+            if args.enable_dnstap_logging:
+                instance.properties.additional_properties['Network.AdditionalLogs.EnableDnstapLogging'] = 'true'
+            elif 'Network.AdditionalLogs.EnableDnstapLogging' in instance.properties.additional_properties:
+                del instance.properties.additional_properties['Network.AdditionalLogs.EnableDnstapLogging']
 
 
 # pylint: disable=unused-argument

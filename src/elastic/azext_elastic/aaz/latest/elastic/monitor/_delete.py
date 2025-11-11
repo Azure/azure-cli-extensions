@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a monitor resource.
+    """Delete an existing Elastic monitor resource from your Azure subscription, removing its observability and monitoring capabilities.
 
-    :example: Delete monitor
-        az elastic monitor delete -n monitor -g rg
+    :example: Monitors_Delete
+        az elastic monitor delete --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2025-06-01"],
         ]
     }
 
@@ -146,7 +146,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

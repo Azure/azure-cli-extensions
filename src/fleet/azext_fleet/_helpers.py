@@ -9,14 +9,18 @@ import platform
 import stat
 import tempfile
 import yaml
+import time
 
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
 from knack.util import CLIError
 from azure.cli.command_modules.acs._roleassignments import add_role_assignment
+from azure.mgmt.core.tools import parse_resource_id
+from azext_fleet.constants import NETWORK_CONTRIBUTOR_ROLE_ID
 
-from azext_fleet.constants import FLEET_1P_APP_ID
 from azext_fleet._client_factory import get_provider_client
+from azext_fleet._client_factory import get_msi_client
+from azext_fleet._client_factory import get_role_assignments_client
 
 logger = get_logger(__name__)
 
@@ -154,15 +158,51 @@ def _load_kubernetes_configuration(filename):
         raise CLIError(f'Error parsing {filename} ({str(ex)})') from ex
 
 
-def assign_network_contributor_role_to_subnet(cmd, subnet_id):
+def assign_network_contributor_role_to_subnet(cmd, object_id, subnet_id):
+    if not add_role_assignment(cmd, 'Network Contributor', object_id, scope=subnet_id):
+        logger.warning(
+            "Failed to create Network Contributor role assignment on the subnet %s.\n"
+            "This role assignment is required for the managed identity to access the subnet.\n"
+            "Please ensure you have sufficient permissions, or ask an administrator to run:\n"
+            "az role assignment create --assignee-principal-type ServicePrincipal --assignee-object-id %s "
+            "--role 'Network Contributor' --scope %s",
+            subnet_id, object_id, subnet_id)
+        return
+
+    auth_client = get_role_assignments_client(cmd.cli_ctx)
+    max_attempts = 3
+    interval = 3
+    for _ in range(max_attempts):
+        if _is_assignment_present(auth_client, subnet_id, object_id):
+            return
+        time.sleep(interval)
+    logger.warning(
+        "Role assignment for Network Contributor on subnet %s was not detected after %s seconds. "
+        "There may be a delay in propagation.",
+        subnet_id, max_attempts * interval)
+
+
+def _is_assignment_present(auth_client, subnet_id, object_id):
+    filter_query = f"assignedTo('{object_id}') and atScope()"
+    for assignment in auth_client.list_for_scope(subnet_id, filter=filter_query):
+        if assignment.role_definition_id.lower().endswith(NETWORK_CONTRIBUTOR_ROLE_ID) and \
+           assignment.scope.lower() == subnet_id.lower():
+            return True
+    return False
+
+
+def get_msi_object_id(cmd, msi_resource_id):
+    parsed = parse_resource_id(msi_resource_id)
+    subscription_id = parsed['subscription']
+    resource_group_name = parsed['resource_group']
+    msi_name = parsed['resource_name']
+    msi_client = get_msi_client(cmd.cli_ctx, subscription_id=subscription_id)
+    msi = msi_client.user_assigned_identities.get(resource_name=msi_name,
+                                                  resource_group_name=resource_group_name)
+    return msi.principal_id
+
+
+def is_rp_registered(cmd):
     resource_client = get_provider_client(cmd.cli_ctx)
     provider = resource_client.providers.get("Microsoft.ContainerService")
-
-    # provider registration state being is checked to ensure that the Fleet service principal is available
-    # to create the role assignment on the subnet
-    if provider.registration_state != 'Registered':
-        raise CLIError("The Microsoft.ContainerService resource provider is not registered."
-                       "Run `az provider register -n Microsoft.ContainerService --wait`.")
-    if not add_role_assignment(cmd, 'Network Contributor', FLEET_1P_APP_ID, scope=subnet_id):
-        raise CLIError("failed to create role assignment for Fleet RP.\n"
-                       f"Do you have owner permissions on the subnet {subnet_id}?\n")
+    return provider.registration_state == 'Registered'

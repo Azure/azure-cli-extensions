@@ -17,7 +17,7 @@ setupVenv(){
     # create new venv
     python"${PYTHON_VERSION}" -m venv azEnv
     source azEnv/bin/activate
-    python -m pip install -U pip
+    python -m pip install pip==25.2  # fix to 25.2 to avoid the "No module named 'azure.cli.__main__'" issue with pip 25.3+
 }
 
 # need to be executed in a venv
@@ -32,7 +32,7 @@ setupAZ(){
     ext_repo=${2:-""}
 
     # install azdev, used later to install azcli and extension
-    pip install azdev==0.1.60
+    pip install azdev==0.2.8
 
     # fix setuptools to 77.0.3 as a workaround for "No module named azure.cli.__main__; 'azure.cli' is a package and cannot be directly executed"
     pip install setuptools==77.0.3
@@ -47,8 +47,8 @@ setupAZ(){
         azdev setup -c "${cli_repo}" -r "${ext_repo}"
     fi
 
-    # fix the issue that vcrpy>=4.3.0 is not compatible with urllib3
-    pip install vcrpy==4.2.1
+    # bump to 7.0.0 to fix the issue missing request.version_string attribute with urllib3 == 2.3.0, see https://github.com/kevin1024/vcrpy/issues/888
+    pip install vcrpy==7.0.0
 
     # fix the issue "Cannot import name 'AccessTokenInfo' from 'azure.core.credentials'"
     pip install azure-identity==1.17.1

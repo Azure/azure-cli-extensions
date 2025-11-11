@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack certificate create",
 )
 class Create(AAZCommand):
-    """Create a CertificateObjectLocalRulestackResource
+    """Create a new certificate for a Palo Alto Networks local rulestack.
 
-    :example: Create a CertificateObjectLocalRulestackResource
+    :example: Create a new certificate for a Palo Alto Networks local rulestack.
         az palo-alto cloudngfw local-rulestack certificate create -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyCertificate --audit-comment "comment" --certificate-self-signed "TRUE" --description "description"
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/certificates/{}", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/certificates/{}", "2025-10-08"],
         ]
     }
 
@@ -176,7 +176,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
@@ -263,6 +263,7 @@ class Create(AAZCommand):
             properties.etag = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200_201.system_data

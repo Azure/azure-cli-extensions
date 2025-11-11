@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}/dnssecurityrules", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}/dnssecurityrules", "2025-10-01-preview"],
         ]
     }
 
@@ -133,7 +133,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -168,9 +168,10 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
-                flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -206,10 +207,12 @@ class List(AAZCommand):
             )
             properties.dns_resolver_domain_lists = AAZListType(
                 serialized_name="dnsResolverDomainLists",
-                flags={"required": True},
             )
             properties.dns_security_rule_state = AAZStrType(
                 serialized_name="dnsSecurityRuleState",
+            )
+            properties.managed_domain_lists = AAZListType(
+                serialized_name="managedDomainLists",
             )
             properties.priority = AAZIntType(
                 flags={"required": True},
@@ -223,9 +226,6 @@ class List(AAZCommand):
             action.action_type = AAZStrType(
                 serialized_name="actionType",
             )
-            action.block_response_code = AAZStrType(
-                serialized_name="blockResponseCode",
-            )
 
             dns_resolver_domain_lists = cls._schema_on_200.value.Element.properties.dns_resolver_domain_lists
             dns_resolver_domain_lists.Element = AAZObjectType()
@@ -234,6 +234,9 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"required": True},
             )
+
+            managed_domain_lists = cls._schema_on_200.value.Element.properties.managed_domain_lists
+            managed_domain_lists.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

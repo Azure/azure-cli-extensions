@@ -14,38 +14,61 @@ from azure.cli.testsdk import ScenarioTest
 from .config import CONFIG
 
 
-def setup_scenario1(test):
-    """Env setup_scenario1"""
+def setup_scenario(test):
+    """Env setup_scenario"""
     pass
 
 
-def cleanup_scenario1(test):
-    """Env cleanup_scenario1"""
+def cleanup_scenario(test):
+    """Env cleanup_scenario"""
     pass
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
-    setup_scenario1(test)
-    step_create(test, checks=[])
+    """Testcase: scenario1"""
+    setup_scenario(test)
+    step_create_scenario1(test, checks=[])
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
-    cleanup_scenario1(test)
+    cleanup_scenario(test)
 
 
-def step_create(test, checks=None):
+def call_scenario2(test):
+    """Testcase: scenario1"""
+    setup_scenario(test)
+    step_create_scenario1(test, checks=[])
+    cleanup_scenario(test)
+
+
+def step_create_scenario1(test, checks=None):
     """nf create operation"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric create --resource-group {rg} --location {location} --resource-name {name} --nf-sku {nf_sku} --nfc-id {nfc_id}"
-        " --fabric-asn {fabric_asn} --ipv4-prefix {ipv4_prefix} --ipv6-prefix {ipv6_prefix} --rack-count {rack_count} --server-count-per-rack {server_count_per_rack}"
-        " --ts-config {terminal_server_conf} --managed-network-config {managed_network_conf} --user-assigned {user_assigned_identity}"
-        " --control-plane-acls {control_plane_acls} --fabric-version {fabric_version}"
-        " --hardware-alert-threshold {hardware_alert_threshold} --storage-account-configuration {storage_account_configuration}"
-        " --storage-array-count {storage_array_count} --trusted-ip-prefixes {trusted_ip_prefixes} --unique-rd-configuration {unique_rd_configuration}"
-        " --tags {tags}",
+        "az networkfabric fabric create --resource-group {rg} --location {location} --resource-name {name} --nf-sku {nfSku} --nfc-id {nfcId}"
+        " --fabric-asn {fabricAsn} --ipv4-prefix {ipv4Prefix} --ipv6-prefix {ipv6Prefix} --rack-count {rackCount} --server-count-per-rack {serverCountPerRack}"
+        " --ts-config {terminalServerConf} --managed-network-config {managedNetworkConf} --user-assigned {userAssignedIdentity}"
+        " --control-plane-acls {controlPlaneAcls} --fabric-version {fabricVersion} --annotation {annotation}"
+        " --ha-threshold {hardwareAlertThreshold} --storage-account-config {storageAccountConfiguration}"
+        " --storage-array-count {storageArrayCount} --trusted-ip-prefixes {trustedIpPrefixes} --unique-rd-config {uniqueRdConfiguration}"
+        " --authorized-transceiver {authorizedTransceiver} --tags {tags} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
+        checks=checks,
+    )
+
+
+def step_create_scenario2(test, checks=None):
+    """nf create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric fabric create --resource-group {rg} --location {location} --resource-name {name} --network-fabric-sku {nfSku} --network-fabric-controller-id {nfcId}"
+        " --fabric-asn {fabricAsn} --ipv4-prefix {ipv4Prefix} --ipv6-prefix {ipv6Prefix} --rack-count {rackCount} --server-count-per-rack {serverCountPerRack}"
+        " --terminal-server-configuration {terminalServerConf} --user-assigned {userAssignedIdentity} --control-plane-acls {controlPlaneAcls} --fabric-version {fabricVersion} "
+        " --annotation {annotation} --feature-flags {featureFlags} --management-network-configuration {managementNetworkConfig} --qos-configuration {qosConfig}"
+        " --hardware-alert-threshold {hardwareAlertThreshold} --storage-account-configuration {storageAccountConfiguration}"
+        " --storage-array-count {storageArrayCount} --trusted-ip-prefixes {trustedIpPrefixes} --unique-rd-configuration {uniqueRdConfiguration}"
+        " --authorized-transceiver {authorizedTransceiver} --tags {tags} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
 
@@ -81,46 +104,56 @@ class GA_NFScenarioTest1(ScenarioTest):
         self.kwargs.update(
             {
                 "name": CONFIG.get("NETWORK_FABRIC", "name"),
+                "annotation": CONFIG.get("NETWORK_FABRIC", "annotation"),
                 "rg": CONFIG.get("NETWORK_FABRIC", "resource_group"),
                 "location": CONFIG.get("NETWORK_FABRIC", "location"),
-                "nf_sku": CONFIG.get("NETWORK_FABRIC", "nf_sku"),
-                "nfc_id": CONFIG.get("NETWORK_FABRIC", "nfc_id"),
-                "fabric_asn": CONFIG.get("NETWORK_FABRIC", "fabric_asn"),
-                "ipv4_prefix": CONFIG.get("NETWORK_FABRIC", "ipv4_prefix"),
-                "ipv6_prefix": CONFIG.get("NETWORK_FABRIC", "ipv6_prefix"),
-                "rack_count": CONFIG.get("NETWORK_FABRIC", "rack_count"),
-                "server_count_per_rack": CONFIG.get(
+                "nfSku": CONFIG.get("NETWORK_FABRIC", "nf_sku"),
+                "nfcId": CONFIG.get("NETWORK_FABRIC", "nfc_id"),
+                "fabricAsn": CONFIG.get("NETWORK_FABRIC", "fabric_asn"),
+                "ipv4Prefix": CONFIG.get("NETWORK_FABRIC", "ipv4_prefix"),
+                "ipv6Prefix": CONFIG.get("NETWORK_FABRIC", "ipv6_prefix"),
+                "rackCount": CONFIG.get("NETWORK_FABRIC", "rack_count"),
+                "serverCountPerRack": CONFIG.get(
                     "NETWORK_FABRIC", "server_count_per_rack"
                 ),
-                "terminal_server_conf": CONFIG.get(
+                "terminalServerConf": CONFIG.get(
                     "NETWORK_FABRIC", "terminal_server_conf"
                 ),
-                "managed_network_conf": CONFIG.get(
+                "managedNetworkConf": CONFIG.get(
                     "NETWORK_FABRIC", "managed_network_conf"
                 ),
-                "user_assigned_identity": CONFIG.get(
-                    "NETWORK_FABRIC", "user_assigned_identity"
-                ),
-                "control_plane_acls": CONFIG.get(
-                    "NETWORK_FABRIC", "control_plane_acls"
-                ),
-                "fabric_version": CONFIG.get("NETWORK_FABRIC", "fabric_version"),
-                "hardware_alert_threshold": CONFIG.get(
+                "controlPlaneAcls": CONFIG.get("NETWORK_FABRIC", "control_plane_acls"),
+                "fabricVersion": CONFIG.get("NETWORK_FABRIC", "fabric_version"),
+                "hardwareAlertThreshold": CONFIG.get(
                     "NETWORK_FABRIC", "hardware_alert_threshold"
                 ),
-                "storage_account_configuration": CONFIG.get(
+                "storageAccountConfiguration": CONFIG.get(
                     "NETWORK_FABRIC", "storage_account_configuration"
                 ),
-                "storage_array_count": CONFIG.get(
+                "storageArrayCount": CONFIG.get(
                     "NETWORK_FABRIC", "storage_array_count"
                 ),
-                "trusted_ip_prefixes": CONFIG.get(
+                "trustedIpPrefixes": CONFIG.get(
                     "NETWORK_FABRIC", "trusted_ip_prefixes"
                 ),
-                "unique_rd_configuration": CONFIG.get(
+                "uniqueRdConfiguration": CONFIG.get(
                     "NETWORK_FABRIC", "unique_rd_configuration"
                 ),
+                "authorizedTransceiver": CONFIG.get(
+                    "NETWORK_FABRIC", "authorized_transceiver"
+                ),
+                "qosConfig": CONFIG.get("NETWORK_FABRIC", "qos_configuration"),
+                "managementNetworkConfig": CONFIG.get(
+                    "NETWORK_FABRIC", "management_network_configuration"
+                ),
+                "featureFlags": CONFIG.get("NETWORK_FABRIC", "feature_flags"),
                 "tags": CONFIG.get("NETWORK_FABRIC", "tags"),
+                "userAssignedIdentity": CONFIG.get(
+                    "MANAGED_IDENTITY", "user_assigned_identity"
+                ),
+                "systemAssignedIdentity": CONFIG.get(
+                    "MANAGED_IDENTITY", "system_assigned_identity"
+                ),
             }
         )
 

@@ -143,6 +143,14 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         if not self.containerapp_def:
             raise ResourceNotFoundError("The containerapp '{}' does not exist".format(self.get_argument_name()))
 
+        # Transitioning into labels mode is complicated and we don't want to combine it with other updates.
+        # If the app was not previously in labels mode throw an error saying to use Set-Mode instead.
+        if (self.get_argument_revisions_mode()
+                and self.get_argument_revisions_mode().lower() == "labels"
+                and safe_get(self.containerapp_def, "properties", "configuration", "activeRevisionsMode").lower() != "labels"):
+            raise ArgumentUsageError("The containerapp '{}' is not in labels mode. Please use `az containerapp revision set-mode` to switch to labels mode first.".format(
+                self.get_argument_name()))
+
         validate_revision_suffix(self.get_argument_revision_suffix())
         # Validate that max_replicas is set to 0-1000
         if self.get_argument_max_replicas() is not None:
@@ -697,6 +705,34 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                 if not env_has_managed_identity(self.cmd, managed_env_rg, managed_env_name, identity):
                     set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerapp_def, user_assigned=[identity])
 
+    def set_up_managed_identity(self):
+        if self.get_argument_user_assigned() or self.get_argument_system_assigned():
+            identity_def = deepcopy(ManagedServiceIdentityModel)
+            identity_def["type"] = "None"
+
+            assign_system_identity = self.get_argument_system_assigned()
+            if self.get_argument_user_assigned():
+                assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
+            else:
+                assign_user_identities = []
+
+            if assign_system_identity and assign_user_identities:
+                identity_def["type"] = "SystemAssigned, UserAssigned"
+            elif assign_system_identity:
+                identity_def["type"] = "SystemAssigned"
+            elif assign_user_identities:
+                identity_def["type"] = "UserAssigned"
+
+            if assign_user_identities:
+                identity_def["userAssignedIdentities"] = {}
+                subscription_id = get_subscription_id(self.cmd.cli_ctx)
+
+                for r in assign_user_identities:
+                    r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
+                    identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+
+            self.containerapp_def["identity"] = identity_def
+
     # If --registry-server is ACR, use system-assigned managed identity for image pull by default
     def set_up_system_assigned_identity_as_default_if_using_acr(self):
         registry_server = self.get_argument_registry_server()
@@ -816,29 +852,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         config_def["dapr"] = dapr_def
 
         # Identity actions
-        identity_def = deepcopy(ManagedServiceIdentityModel)
-        identity_def["type"] = "None"
-
-        assign_system_identity = self.get_argument_system_assigned()
-        if self.get_argument_user_assigned():
-            assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
-        else:
-            assign_user_identities = []
-
-        if assign_system_identity and assign_user_identities:
-            identity_def["type"] = "SystemAssigned, UserAssigned"
-        elif assign_system_identity:
-            identity_def["type"] = "SystemAssigned"
-        elif assign_user_identities:
-            identity_def["type"] = "UserAssigned"
-
-        if assign_user_identities:
-            identity_def["userAssignedIdentities"] = {}
-            subscription_id = get_subscription_id(self.cmd.cli_ctx)
-
-            for r in assign_user_identities:
-                r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
-                identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+        self.set_up_managed_identity()
 
         scale_def = self.set_up_scale_rule()
 
@@ -885,7 +899,6 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             template_def["terminationGracePeriodSeconds"] = self.get_argument_termination_grace_period()
 
         self.containerapp_def["location"] = location
-        self.containerapp_def["identity"] = identity_def
         self.containerapp_def["properties"]["environmentId"] = self.get_argument_managed_env()
         self.containerapp_def["properties"]["configuration"] = config_def
         self.containerapp_def["properties"]["template"] = template_def

@@ -4,7 +4,46 @@ Release History
 ===============
 upcoming
 ++++++
+
+1.2.0b5
+++++++
+* 'az containerapp env premium-ingress add/update': remove `--min-replicas` and `--max-replicas`
+* 'az containerapp sessionpool create': Add `Shell` container type
+* Update azure cli dependency version >= "2.79.0"
+* 'az containerapp env http-route-config/premium-ingress': Remove GA commands which exist in azure-cli version 2.79.0
+
+1.2.0b4
+++++++
+* 'az containerapp update/up': Disallow changing `--revisions-mode` to Labels.
+* 'az containerapp session code-interpreter': Fix `--path` in examples
+* 'az containerapp sessionpool create/update': Support `--lifecycle-type` and `--max-alive-period`
+* 'az containerapp up': support for `--kind` parameter
+* 'az containerapp env premium-ingress': Deprecate `--min-replicas` and `--max-replicas` parameters, use workload profile scale instead.
+* 'az containerapp sessionpool create/update': Support `--probe-yaml`
+* 'az containerapp session stop': Support stop session for custom container sessions
+
+1.2.0b3
+++++++
+* 'az containerapp job list': Fix only 20 items returned
+
+1.2.0b2
+++++++
+* 'az containerapp session code-interpreter execute': Extend maximum supported value of `--timeout-in-seconds` from 60 to 220.
+* 'az containerapp job create': Fix message with `--help`
+* 'az containerapp arc': Enable setup custom core dns for Openshift on Arc
+
+1.2.0b1
+++++++
+* 'az containerapp env premium-ingress': New environment level ingress configuration.
+* 'az containerapp sessionpool update': Support `--mi-system-assigned`, `--mi-user-assigned` and `--registry-identity`
+*  Upgrade api-version to 2025-02-02-preview
+
+1.1.0b5
+++++++
 * 'az containerapp auth update': Support authenticating blob storage token store using managed identity with `--blob-container-uri` and `--blob-container-identity`.
+* 'az containerapp env create': Set identity only when `--mi-system-assigned` or `--mi-user-assigned` is specified.
+* 'az containerapp env create': Set identity only when `--system-assigned` or `--user-assigned` is specified.
+* 'az containerapp up': Support deploying Azure AI Foundry model to Container App with `--model-registry`, `--model-name`, `--model-version`.
 
 1.1.0b4
 ++++++

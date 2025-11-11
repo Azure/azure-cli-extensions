@@ -21,7 +21,6 @@ from azure.cli.core.extension.operations import _install_deps_for_psycopg2, _run
 from azure.cli.core._profile import Profile
 from azure.cli.command_modules.serviceconnector._utils import (
     generate_random_string,
-    is_packaged_installed,
     get_object_id_of_current_user
 )
 from azure.cli.command_modules.serviceconnector._resource_config import (
@@ -32,7 +31,14 @@ from azure.cli.command_modules.serviceconnector._validators import (
     get_source_resource_name,
     get_target_resource_name,
 )
-from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow, confirm_admin_set, confirm_enable_entra_auth
+from ._utils import (
+    run_cli_cmd,
+    get_local_ip,
+    confirm_all_ip_allow,
+    confirm_admin_set,
+    confirm_enable_entra_auth,
+    is_packaged_installed
+)
 logger = get_logger(__name__)
 
 AUTHTYPES = {
@@ -507,6 +513,7 @@ class SqlHandler(TargetHandler):
             logger.warning("Connecting to database...")
             self.create_aad_user_in_sql(connection_args, query_list)
         except AzureConnectionError as e:
+            logger.warning(e)
             from azure.cli.core.util import in_cloud_console
             if in_cloud_console():
                 self.set_target_firewall(
@@ -520,7 +527,6 @@ class SqlHandler(TargetHandler):
                         error_code = error_res.group(1)
                     telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
                     raise e
-                logger.warning(e)
                 # allow local access
                 ip_address = self.ip
                 self.set_target_firewall(True, ip_name, ip_address, ip_address)
@@ -690,7 +696,7 @@ class PostgresFlexHandler(TargetHandler):
             self.target_id))
 
     def set_user_admin(self, user_object_id, **kwargs):
-        admins = run_cli_cmd('az postgres flexible-server ad-admin list -g "{}" -s "{}" --subscription "{}"'.format(
+        admins = run_cli_cmd('az postgres flexible-server microsoft-entra-admin list -g "{}" -s "{}" --subscription "{}"'.format(
             self.resource_group, self.db_server, self.subscription))
 
         if not user_object_id:
@@ -706,7 +712,7 @@ class PostgresFlexHandler(TargetHandler):
         admin_info = next((ad for ad in admins if ad.get('objectId', "") == user_object_id), None)
         if not admin_info:
             logger.warning('Set current user as DB Server Microsoft Entra Administrators.')
-            admin_info = run_cli_cmd('az postgres flexible-server ad-admin create -u "{}" -i "{}" -g "{}" -s "{}" --subscription "{}" -t {}'.format(
+            admin_info = run_cli_cmd('az postgres flexible-server microsoft-entra-admin create -u "{}" -i "{}" -g "{}" -s "{}" --subscription "{}" -t {}'.format(
                 self.login_username, user_object_id, self.resource_group, self.db_server, self.subscription, self.login_usertype))
         self.admin_username = admin_info.get('principalName', self.login_username)
 

@@ -16,9 +16,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2025-07-01"],
         ]
     }
 
@@ -52,13 +52,40 @@ class Create(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities.",
+            blank=[],
+        )
+
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.azure_multi_cloud_connector = AAZObjectArg(
+            options=["--azure-multi-cloud-connector"],
+            arg_group="Properties",
+        )
         _args_schema.storage_blob_container = AAZObjectArg(
             options=["--storage-blob-container"],
             arg_group="Properties",
             help="Storage Blob Container Object",
+        )
+        _args_schema.azure_storage_nfs_file_share = AAZObjectArg(
+            options=["--azure-storage-nfs-file-share"],
+            arg_group="Properties",
         )
         _args_schema.azure_storage_smb_file_share = AAZObjectArg(
             options=["--azure-storage-smb-file-share"],
@@ -78,6 +105,18 @@ class Create(AAZCommand):
             help="A description for the Endpoint.",
         )
 
+        azure_multi_cloud_connector = cls._args_schema.azure_multi_cloud_connector
+        azure_multi_cloud_connector.aws_s3_bucket_id = AAZResourceIdArg(
+            options=["aws-s3-bucket-id"],
+            help="The AWS S3 bucket ARM resource Id.",
+            required=True,
+        )
+        azure_multi_cloud_connector.multi_cloud_connector_id = AAZResourceIdArg(
+            options=["multi-cloud-connector-id"],
+            help="The Azure Resource ID of the MultiCloud Connector resource.",
+            required=True,
+        )
+
         storage_blob_container = cls._args_schema.storage_blob_container
         storage_blob_container.blob_container_name = AAZStrArg(
             options=["blob-container-name"],
@@ -87,6 +126,18 @@ class Create(AAZCommand):
         storage_blob_container.storage_account_resource_id = AAZResourceIdArg(
             options=["storage-account-resource-id"],
             help="The Azure Resource ID of the storage account that is the target destination.",
+            required=True,
+        )
+
+        azure_storage_nfs_file_share = cls._args_schema.azure_storage_nfs_file_share
+        azure_storage_nfs_file_share.file_share_name = AAZStrArg(
+            options=["file-share-name"],
+            help="The name of the Azure Storage NFS file share.",
+            required=True,
+        )
+        azure_storage_nfs_file_share.storage_account_resource_id = AAZResourceIdArg(
+            options=["storage-account-resource-id"],
+            help="The Azure Resource ID of the storage account.",
             required=True,
         )
 
@@ -215,7 +266,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -240,24 +291,48 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_const("endpointType", "AzureMultiCloudConnector", AAZStrType, ".azure_multi_cloud_connector", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "AzureStorageBlobContainer", AAZStrType, ".storage_blob_container", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("endpointType", "AzureStorageNfsFileShare", AAZStrType, ".azure_storage_nfs_file_share", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "AzureStorageSmbFileShare", AAZStrType, ".azure_storage_smb_file_share", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "NfsMount", AAZStrType, ".nfs_mount", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "SmbMount", AAZStrType, ".smb_mount", typ_kwargs={"flags": {"required": True}})
+                properties.discriminate_by("endpointType", "AzureMultiCloudConnector")
                 properties.discriminate_by("endpointType", "AzureStorageBlobContainer")
+                properties.discriminate_by("endpointType", "AzureStorageNfsFileShare")
                 properties.discriminate_by("endpointType", "AzureStorageSmbFileShare")
                 properties.discriminate_by("endpointType", "NfsMount")
                 properties.discriminate_by("endpointType", "SmbMount")
+
+            disc_azure_multi_cloud_connector = _builder.get(".properties{endpointType:AzureMultiCloudConnector}")
+            if disc_azure_multi_cloud_connector is not None:
+                disc_azure_multi_cloud_connector.set_prop("awsS3BucketId", AAZStrType, ".azure_multi_cloud_connector.aws_s3_bucket_id", typ_kwargs={"flags": {"required": True}})
+                disc_azure_multi_cloud_connector.set_prop("multiCloudConnectorId", AAZStrType, ".azure_multi_cloud_connector.multi_cloud_connector_id", typ_kwargs={"flags": {"required": True}})
 
             disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
             if disc_azure_storage_blob_container is not None:
                 disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".storage_blob_container.blob_container_name", typ_kwargs={"flags": {"required": True}})
                 disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
+
+            disc_azure_storage_nfs_file_share = _builder.get(".properties{endpointType:AzureStorageNfsFileShare}")
+            if disc_azure_storage_nfs_file_share is not None:
+                disc_azure_storage_nfs_file_share.set_prop("fileShareName", AAZStrType, ".azure_storage_nfs_file_share.file_share_name", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_nfs_file_share.set_prop("storageAccountResourceId", AAZStrType, ".azure_storage_nfs_file_share.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
 
             disc_azure_storage_smb_file_share = _builder.get(".properties{endpointType:AzureStorageSmbFileShare}")
             if disc_azure_storage_smb_file_share is not None:
@@ -305,6 +380,7 @@ class Create(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -319,6 +395,35 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.properties
             properties.description = AAZStrType()
             properties.endpoint_type = AAZStrType(
@@ -330,12 +435,32 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            disc_azure_multi_cloud_connector = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureMultiCloudConnector")
+            disc_azure_multi_cloud_connector.aws_s3_bucket_id = AAZStrType(
+                serialized_name="awsS3BucketId",
+                flags={"required": True},
+            )
+            disc_azure_multi_cloud_connector.multi_cloud_connector_id = AAZStrType(
+                serialized_name="multiCloudConnectorId",
+                flags={"required": True},
+            )
+
             disc_azure_storage_blob_container = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer")
             disc_azure_storage_blob_container.blob_container_name = AAZStrType(
                 serialized_name="blobContainerName",
                 flags={"required": True},
             )
             disc_azure_storage_blob_container.storage_account_resource_id = AAZStrType(
+                serialized_name="storageAccountResourceId",
+                flags={"required": True},
+            )
+
+            disc_azure_storage_nfs_file_share = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageNfsFileShare")
+            disc_azure_storage_nfs_file_share.file_share_name = AAZStrType(
+                serialized_name="fileShareName",
+                flags={"required": True},
+            )
+            disc_azure_storage_nfs_file_share.storage_account_resource_id = AAZStrType(
                 serialized_name="storageAccountResourceId",
                 flags={"required": True},
             )

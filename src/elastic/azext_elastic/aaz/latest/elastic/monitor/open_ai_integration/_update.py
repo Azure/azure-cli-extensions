@@ -15,13 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor open-ai-integration update",
 )
 class Update(AAZCommand):
-    """Update a OpenAI integration rule for a given monitor resource.
+    """Update an OpenAI integration rule for a given Elastic monitor resource, enabling advanced AI-driven observability and monitoring.
+
+    :example: OpenAI_CreateOrUpdate
+        az elastic monitor open-ai-integration update --resource-group myResourceGroup --monitor-name myMonitor --integration-name default
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/openaiintegrations/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/openaiintegrations/{}", "2025-06-01"],
         ]
     }
 
@@ -81,7 +84,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.open_ai_resource_endpoint = AAZStrArg(
-            options=["-e","--open-ai-resource-endpoint"],
+            options=["--open-ai-resource-endpoint", "--openai-endpoint"],
             arg_group="Properties",
             help="The API endpoint for Open AI resource",
             nullable=True,
@@ -176,7 +179,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -263,7 +266,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

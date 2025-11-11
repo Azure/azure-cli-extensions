@@ -3,6 +3,40 @@
 Release History
 ===============
 
+1.4.0
+++++++
+* Add --with-containers flag to acipolicygen and acifragmentgen to allow passing container policy definitions directly
+
+1.3.1
+++++++
+* bugfix for --exclude-default-fragments flag not working as intended
+
+1.3.0
+++++++
+* Add a new --enable-stdio flag, with a warning if neither this or --disable-stdio is set
+
+1.2.7
+++++++
+* bugfix making it so that oras discover function doesn't error when no fragments are found in the remote repository
+* splitting out documentation into command-specific files and adding info about --input flag
+* adding standalone fragment support
+* bugfix for oras pulling fragments when offline
+
+1.2.6
+++++++
+* bugfix making it so the fields in the --input format are case-insensitive
+
+1.2.5
+++++++
+* consolidating functions for --input policygen
+* bugfix for "scenario" field in json input
+* updating tests and examples to use azurelinux
+* "name" field is required when using --input
+
+1.2.4
+++++++
+* rolling back genpolicy version for Azure Linux V2 support instead of V3
+
 1.2.3
 ++++++
 * adding fragment support for VN2

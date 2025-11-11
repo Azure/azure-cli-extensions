@@ -19,13 +19,13 @@ class Delete(AAZCommand):
     """Delete a vm group by id in a private cloud workload network.
 
     :example: Delete a VM Group by ID in a private cloud workload network.
-        az vmware workload-network vm-group delete --resource-group group1 --private-cloud cloud1 --vm-group vmGroup1
+        az vmware workload-network vm-group delete --resource-group group1 --vm-group vmGroup1 --private-cloud cloud1
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/vmgroups/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/vmgroups/{}", "2024-09-01"],
         ]
     }
 
@@ -159,7 +159,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }

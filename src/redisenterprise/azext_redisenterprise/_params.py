@@ -44,6 +44,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('high_availability', arg_type=get_enum_type(['Disabled', 'Enabled']), options_list=['--high-availability'], help='Enabled by default. If highAvailability is disabled, the data set is not replicated. This affects the availability SLA, and increases the risk of data loss.')
+        c.argument('public_network_access', arg_type=get_enum_type(['Disabled', 'Enabled']), options_list=['--public-network-access'], help='Whether or not public network traffic can access the Redis cluster. Only Enabled or Disabled can be set. null is returned only for clusters created using an old API version which do not have this property and cannot be set.')
         c.argument('sku', arg_type=get_enum_type(['Balanced_B0', 'Balanced_B1', 'Balanced_B10', 'Balanced_B100', 'Balanced_B1000', 'Balanced_B150', 'Balanced_B20', 'Balanced_B250', 'Balanced_B3', 'Balanced_B350', 'Balanced_B5', 'Balanced_B50', 'Balanced_B500', 'Balanced_B700', 'ComputeOptimized_X10', 'ComputeOptimized_X100', 'ComputeOptimized_X150', 'ComputeOptimized_X20', 'ComputeOptimized_X250', 'ComputeOptimized_X3', 'ComputeOptimized_X350', 'ComputeOptimized_X5', 'ComputeOptimized_X50', 'ComputeOptimized_X500', 'ComputeOptimized_X700', 'EnterpriseFlash_F1500', 'EnterpriseFlash_F300', 'EnterpriseFlash_F700', 'Enterprise_E1', 'Enterprise_E10', 'Enterprise_E100', 'Enterprise_E20', 'Enterprise_E200', 'Enterprise_E400', 'Enterprise_E5', 'Enterprise_E50', 'FlashOptimized_A1000', 'FlashOptimized_A1500', 'FlashOptimized_A2000', 'FlashOptimized_A250', 'FlashOptimized_A4500', 'FlashOptimized_A500', 'FlashOptimized_A700', 'MemoryOptimized_M10', 'MemoryOptimized_M100', 'MemoryOptimized_M1000', 'MemoryOptimized_M150', 'MemoryOptimized_M1500', 'MemoryOptimized_M20', 'MemoryOptimized_M2000', 'MemoryOptimized_M250', 'MemoryOptimized_M350', 'MemoryOptimized_M50', 'MemoryOptimized_M500', 'MemoryOptimized_M700']), help='The type of RedisEnterprise cluster '
                    'to deploy. Possible values: (Enterprise_E10, EnterpriseFlash_F300 etc.)')
         c.argument('capacity', type=int, help='The size of the RedisEnterprise cluster. Defaults to 2 or 3 or not applicable depending on SKU.'
@@ -80,8 +81,8 @@ def load_arguments(self, _):
                    'can connect using TLS-encrypted or plaintext redis protocols. Default is TLS-encrypted.')
         c.argument('port', type=int, help='TCP port of the database endpoint. Specified at create time. Defaults to an '
                    'available port.')
-        c.argument('access_keys_authentication', options_list=['--access-keys-auth', '--access-keys-authentication'], arg_type=get_enum_type(['Enabled', 'Disabled']), help='Access database using keys - default is enabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.')
-        c.argument('clustering_policy', arg_type=get_enum_type(['EnterpriseCluster', 'OSSCluster']), help='Clustering policy - default '
+        c.argument('access_keys_authentication', options_list=['--access-keys-auth', '--access-keys-authentication'], arg_type=get_enum_type(['Enabled', 'Disabled']), help='Access database using keys - default is disabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.')
+        c.argument('clustering_policy', arg_type=get_enum_type(['EnterpriseCluster', 'OSSCluster', 'NoCluster']), help='Clustering policy - default '
                    'is OSSCluster. Specified at create time.')
         c.argument('eviction_policy', arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU', 'AllKeysRandom',
                                                               'VolatileLRU', 'VolatileLFU', 'VolatileTTL',
@@ -103,6 +104,7 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
                    'RedisEnterprise cluster.', id_part='name')
         c.argument('high_availability', arg_type=get_enum_type(['Disabled', 'Enabled']), options_list=['--high-availability'], help='Enabled by default. If highAvailability is disabled, the data set is not replicated. This affects the availability SLA, and increases the risk of data loss.')
+        c.argument('public_network_access', arg_type=get_enum_type(['Disabled', 'Enabled']), options_list=['--public-network-access'], help='Whether or not public network traffic can access the Redis cluster. Only Enabled or Disabled can be set. null is returned only for clusters created using an old API version which do not have this property and cannot be set.')
         c.argument('sku', arg_type=get_enum_type(['Balanced_B0', 'Balanced_B1', 'Balanced_B10', 'Balanced_B100', 'Balanced_B1000', 'Balanced_B150', 'Balanced_B20', 'Balanced_B250', 'Balanced_B3', 'Balanced_B350', 'Balanced_B5', 'Balanced_B50', 'Balanced_B500', 'Balanced_B700', 'ComputeOptimized_X10', 'ComputeOptimized_X100', 'ComputeOptimized_X150', 'ComputeOptimized_X20', 'ComputeOptimized_X250', 'ComputeOptimized_X3', 'ComputeOptimized_X350', 'ComputeOptimized_X5', 'ComputeOptimized_X50', 'ComputeOptimized_X500', 'ComputeOptimized_X700', 'EnterpriseFlash_F1500', 'EnterpriseFlash_F300', 'EnterpriseFlash_F700', 'Enterprise_E1', 'Enterprise_E10', 'Enterprise_E100', 'Enterprise_E20', 'Enterprise_E200', 'Enterprise_E400', 'Enterprise_E5', 'Enterprise_E50', 'FlashOptimized_A1000', 'FlashOptimized_A1500', 'FlashOptimized_A2000', 'FlashOptimized_A250', 'FlashOptimized_A4500', 'FlashOptimized_A500', 'FlashOptimized_A700', 'MemoryOptimized_M10', 'MemoryOptimized_M100', 'MemoryOptimized_M1000', 'MemoryOptimized_M150', 'MemoryOptimized_M1500', 'MemoryOptimized_M20', 'MemoryOptimized_M2000', 'MemoryOptimized_M250', 'MemoryOptimized_M350', 'MemoryOptimized_M50', 'MemoryOptimized_M500', 'MemoryOptimized_M700']), help='The type of RedisEnterprise cluster '
                    'to deploy. Possible values: (Balanced_B1, ComputeOptimized_X10, MemoryOptimized_M10, Enterprise_E10, EnterpriseFlash_F300 etc.)')
         c.argument('capacity', type=int, help='The size of the RedisEnterprise cluster. Defaults to 2 or 3 or not applicable depending on SKU.'
@@ -159,10 +161,10 @@ def load_arguments(self, _):
         c.argument('client_protocol', arg_type=get_enum_type(['Encrypted', 'Plaintext']), help='Specifies whether '
                    'redis clients can connect using TLS-encrypted or plaintext redis protocols. Default is '
                    'TLS-encrypted.')
-        c.argument('access_keys_authentication', options_list=['--access-keys-auth', '--access-keys-authentication'], arg_type=get_enum_type(['Enabled', 'Disabled']), help='Access database using keys - default is enabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.')
+        c.argument('access_keys_authentication', options_list=['--access-keys-auth', '--access-keys-authentication'], arg_type=get_enum_type(['Enabled', 'Disabled']), help='Access database using keys - default is disabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.')
         c.argument('port', type=int, help='TCP port of the database endpoint. Specified at create time. Defaults to an '
                    'available port.')
-        c.argument('clustering_policy', arg_type=get_enum_type(['EnterpriseCluster', 'OSSCluster']), help='Clustering '
+        c.argument('clustering_policy', arg_type=get_enum_type(['EnterpriseCluster', 'OSSCluster', 'NoCluster']), help='Clustering '
                    'policy - default is OSSCluster. Specified at create time.')
         c.argument('eviction_policy', arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU', 'AllKeysRandom',
                                                               'VolatileLRU', 'VolatileLFU', 'VolatileTTL',
@@ -183,7 +185,7 @@ def load_arguments(self, _):
         c.argument('client_protocol', arg_type=get_enum_type(['Encrypted', 'Plaintext']), help='Specifies whether '
                    'redis clients can connect using TLS-encrypted or plaintext redis protocols. Default is '
                    'TLS-encrypted.')
-        c.argument('access_keys_authentication', options_list=['--access-keys-auth', '--access-keys-authentication'], arg_type=get_enum_type(['Enabled', 'Disabled']), help='Access database using keys - default is enabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.')
+        c.argument('access_keys_authentication', options_list=['--access-keys-auth', '--access-keys-authentication'], arg_type=get_enum_type(['Enabled', 'Disabled']), help='Access database using keys - default is disabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.')
         c.argument('eviction_policy', arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU', 'AllKeysRandom',
                                                               'VolatileLRU', 'VolatileLFU', 'VolatileTTL',
                                                               'VolatileRandom', 'NoEviction']), help='Redis eviction '

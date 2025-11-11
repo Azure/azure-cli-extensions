@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw firewall update",
 )
 class Update(AAZCommand):
-    """Update a FirewallResource
+    """Update configuration or metadata for a Palo Alto Networks Cloud NGFW resource on Azure.
 
-    :example: Update a FirewallResource
+    :example: Update configuration or metadata for a Palo Alto Networks Cloud NGFW resource on Azure.
         az palo-alto cloudngfw firewall update --name MyCloudngfwFirewall -g MyResourceGroup --tags "{tagName:value}"
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}", "2025-10-08"],
         ]
     }
 
@@ -52,6 +52,9 @@ class Update(AAZCommand):
             help="Firewall resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^(?![-_])(?!.*[-_]{2})(?!.*[-_]$)[a-zA-Z0-9][a-zA-Z0-9-]{0,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -186,7 +189,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
@@ -285,7 +288,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
@@ -482,6 +485,9 @@ class _UpdateHelper:
         properties.is_panorama_managed = AAZStrType(
             serialized_name="isPanoramaManaged",
         )
+        properties.is_strata_cloud_managed = AAZStrType(
+            serialized_name="isStrataCloudManaged",
+        )
         properties.marketplace_details = AAZObjectType(
             serialized_name="marketplaceDetails",
             flags={"required": True},
@@ -502,6 +508,10 @@ class _UpdateHelper:
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.strata_cloud_manager_config = AAZObjectType(
+            serialized_name="strataCloudManagerConfig",
         )
 
         associated_rulestack = _schema_firewall_resource_read.properties.associated_rulestack
@@ -578,9 +588,15 @@ class _UpdateHelper:
             serialized_name="networkType",
             flags={"required": True},
         )
+        network_profile.private_source_nat_rules_destination = AAZListType(
+            serialized_name="privateSourceNatRulesDestination",
+        )
         network_profile.public_ips = AAZListType(
             serialized_name="publicIps",
             flags={"required": True},
+        )
+        network_profile.trusted_ranges = AAZListType(
+            serialized_name="trustedRanges",
         )
         network_profile.vnet_configuration = AAZObjectType(
             serialized_name="vnetConfiguration",
@@ -593,9 +609,15 @@ class _UpdateHelper:
         egress_nat_ip.Element = AAZObjectType()
         cls._build_schema_ip_address_read(egress_nat_ip.Element)
 
+        private_source_nat_rules_destination = _schema_firewall_resource_read.properties.network_profile.private_source_nat_rules_destination
+        private_source_nat_rules_destination.Element = AAZStrType()
+
         public_ips = _schema_firewall_resource_read.properties.network_profile.public_ips
         public_ips.Element = AAZObjectType()
         cls._build_schema_ip_address_read(public_ips.Element)
+
+        trusted_ranges = _schema_firewall_resource_read.properties.network_profile.trusted_ranges
+        trusted_ranges.Element = AAZStrType()
 
         vnet_configuration = _schema_firewall_resource_read.properties.network_profile.vnet_configuration
         vnet_configuration.ip_of_trust_subnet_for_udr = AAZObjectType(
@@ -688,6 +710,12 @@ class _UpdateHelper:
         )
         plan_data.usage_type = AAZStrType(
             serialized_name="usageType",
+        )
+
+        strata_cloud_manager_config = _schema_firewall_resource_read.properties.strata_cloud_manager_config
+        strata_cloud_manager_config.cloud_manager_name = AAZStrType(
+            serialized_name="cloudManagerName",
+            flags={"required": True},
         )
 
         system_data = _schema_firewall_resource_read.system_data

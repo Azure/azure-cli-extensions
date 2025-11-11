@@ -25,7 +25,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_upgrade(test)
     cleanup_scenario1(test)
@@ -36,7 +36,7 @@ def step_upgrade(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric upgrade  --resource-name {upgradeNFName} --resource-group {upgradeNFRGName} --action {upgradeActionStart} --version {upgradeVersion}"
+        "az networkfabric fabric upgrade --resource-name {name} --resource-group {resourceGroup} --action {upgradeActionStart} --version {upgradeVersion}"
     )
 
 
@@ -47,10 +47,8 @@ class GA_NFUpgradeStartScenarioTest1(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
-                "upgradeNFRGName": CONFIG.get(
-                    "NETWORK_FABRIC", "upgrade_nf_resource_group"
-                ),
-                "upgradeNFName": CONFIG.get("NETWORK_FABRIC", "upgrade_nf_name"),
+                "name": CONFIG.get("NETWORK_FABRIC", "name"),
+                "resourceGroup": CONFIG.get("NETWORK_FABRIC", "resource_group"),
                 "upgradeActionStart": CONFIG.get(
                     "NETWORK_FABRIC", "upgrade_action_start"
                 ),

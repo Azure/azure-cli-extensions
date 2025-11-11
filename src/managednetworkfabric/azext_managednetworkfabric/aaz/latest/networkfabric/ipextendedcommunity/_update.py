@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update to update certain properties of the IP Extended Community resource.
 
-    :example: Update IP Extended Community
+    :example: Update the Ip Extended Community
         az networkfabric ipextendedcommunity update --resource-group "example-rg" --resource-name "example-ipextendedcommunity" --ip-extended-community-rules "[{action:Permit,sequenceNumber:1234,routeTargets:['1024:219','1001:200']}]"
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2025-07-15"],
         ]
     }
 
@@ -68,7 +68,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.ip_extended_community_rules = AAZListArg(
-            options=["--ip-extended-community-rules"],
+            options=["--ip-ext-community-rules", "--ip-extended-community-rules"],
             arg_group="Properties",
             help="List of IP Extended Community Rules.",
             nullable=True,
@@ -195,7 +195,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -220,7 +220,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -307,6 +307,7 @@ class Update(AAZCommand):
             )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(

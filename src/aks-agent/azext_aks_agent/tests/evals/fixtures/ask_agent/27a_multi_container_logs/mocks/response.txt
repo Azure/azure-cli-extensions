@@ -1,0 +1,16 @@
+Logs from both containers in llama pod (namespace: app-27a):                                                                       
+
+web container:                                                                                                                     
+
+ • API server starts on port 8080                                                                                                  
+ • Handles GET /api/users (200 OK)                                                                                                 
+ • Handles POST /api/orders (201 Created)                                                                                          
+ • Repeats API processing, no errors shown                                                                                         
+
+sidecar container:                                                                                                                 
+
+ • Collects metrics regularly                                                                                                      
+ • Reports CPU usage (10–29%), memory usage (112–193MB), active connections (10–45)                                                
+ • No errors or warnings                                                                                                           
+
+Both containers are running normally, no issues in logs.

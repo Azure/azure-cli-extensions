@@ -2,7 +2,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, JMESPathCheck, NoneCheck,
                                api_version_constraint)
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
@@ -40,6 +39,38 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall list -g {rg}')
         self.cmd('network firewall delete -g {rg} -n {af}')
 
+    @ResourceGroupPreparer(name_prefix='cli_test_az_firewall_autoscale_configuration')
+    def test_azure_firewall_autoscale_configuration(self, resource_group):
+        self.kwargs.update({
+            'pubip': 'pubip',
+            'vnet': 'vnet',
+            'firewall': 'firewall',
+            'min_capacity': 4,
+            'max_capacity': 6
+        })
+
+        self.cmd('network public-ip create -g {rg} -n {pubip} --allocation-method Static --sku Standard')
+        self.cmd('network vnet create -g {rg} -n {vnet} --address-prefix 10.0.0.0/16 --subnet-name AzureFirewallSubnet --subnet-prefix 10.0.1.0/26')
+        self.cmd('network firewall create -g {rg} -n {firewall} --vnet-name {vnet} --public-ip {pubip} --min-capacity {min_capacity} --max-capacity {max_capacity}', checks=[
+            self.check('autoscaleConfiguration.minCapacity', 4),
+            self.check('autoscaleConfiguration.maxCapacity', 6),
+        ])
+
+    @ResourceGroupPreparer(name_prefix='cli_test_az_firewall_extended_location')
+    def test_azure_firewall_extended_location(self, resource_group):
+        self.kwargs.update({
+            'pubip': 'pubip',
+            'vnet': 'vnet',
+            'firewall': 'firewall'
+        })
+
+        self.cmd('network public-ip create -g {rg} -n {pubip} --allocation-method Static --sku Standard --edge-zone losangeles')
+        self.cmd('network vnet create -g {rg} -n {vnet} --address-prefix 10.0.0.0/16 --subnet-name AzureFirewallSubnet --subnet-prefix 10.0.1.0/26 --edge-zone losangeles')
+        self.cmd('network firewall create -g {rg} -n {firewall} --vnet-name {vnet} --public-ip {pubip} --enable-dns-proxy true --edge-zone losangeles', checks=[
+            self.check('extendedLocation.type', 'EdgeZone'),
+            self.check('extendedLocation.name', 'losangeles')
+        ])
+
     @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_additional_log_", location="westus")
     def test_firewall_with_additional_log(self):
         self.kwargs.update({
@@ -48,18 +79,20 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd(
             "network firewall create -n {firewall_name} -g {rg} "
-            "--enable-fat-flow-logging --enable-udp-log-optimization",
+            "--enable-fat-flow-logging --enable-udp-log-optimization --enable-dnstap-logging",
             checks=[
                 self.check('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"', "true"),
-                self.check('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"', "true")
+                self.check('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"', "true"),
+                self.check('additionalProperties."Network.AdditionalLogs.EnableDnstapLogging"', "true")
             ]
         )
         self.cmd(
             "network firewall update -n {firewall_name} -g {rg} "
-            "--enable-fat-flow-logging false --enable-udp-log-optimization false",
+            "--enable-fat-flow-logging false --enable-udp-log-optimization false --enable-dnstap-logging false",
             checks=[
                 self.not_exists('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"'),
-                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"')
+                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"'),
+                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableDnstapLogging"')
             ]
         )
 
@@ -246,15 +279,15 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall application-rule create -f {af} -n {app_rule2} --protocols Http=80 Https=8080 -g {rg} -c {coll3} --source-ip-groups {source_ip_group} --target-fqdns www.microsoft.com')
         self.cmd('network firewall delete -g {rg} -n {af}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_zones', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_zones', location='westus3')
     def test_azure_firewall_zones(self, resource_group):
 
         self.kwargs.update({
             'af': 'af1',
             'coll': 'rc1',
         })
-        self.cmd('network firewall create -g {rg} -n {af} --zones 1 3')
-        self.cmd('network firewall update -g {rg} -n {af} --zones 1')
+        self.cmd('network firewall create -g {rg} -n {af} --zones 1 2 3')
+        # cannot modify zones after creation
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_virtual_hub', location='eastus2')
     def test_azure_firewall_virtual_hub(self, resource_group):
@@ -660,7 +693,7 @@ class AzureFirewallScenario(ScenarioTest):
     def test_firewall_policy_with_dns_settings(self, resource_group):
         self.kwargs.update({
             'rg': resource_group,
-            'location': 'eastus',   # available only in this location for now
+            'location': 'westus3',   # available only in this location for now
             'policy': 'fwp01',
             'dns_servers': '10.0.0.1 10.0.0.2 10.0.0.3',
         })
@@ -773,7 +806,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('length(ruleCollections[1].rules)', 2)
                  ])
 
-    @AllowLargeResponse()
+    @AllowLargeResponse(size_kb=20000)
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='westus2')
     def test_azure_firewall_policy_rules_with_ip_groups(self, resource_group, resource_group_location):
         self.kwargs.update({
@@ -907,35 +940,7 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy delete -g {rg} --name {policy}')
 
-    @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_explicit_proxy', location='westus2')
-    def test_azure_firewall_policy_explicit_proxy(self, resource_group):
-        self.kwargs.update({
-            'policy_name': 'testFirewallPolicy',
-            'sas_url': "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D"
-        })
-        self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium --explicit-proxy enable-explicit-proxy=true http-port=85 https-port=121 enable-pac-file=true pac-file-port=122 pac-file="{sas_url}"',
-                 checks=[
-                     self.check('name', '{policy_name}'),
-                     self.check('explicitProxy.enableExplicitProxy', True),
-                     self.check('explicitProxy.enablePacFile', True),
-                     self.check('explicitProxy.httpPort', 85),
-                     self.check('explicitProxy.httpsPort', 121),
-                     self.check('explicitProxy.pacFile', '{sas_url}'),
-                     self.check('explicitProxy.pacFilePort', 122),
-                 ])
-
-        self.cmd(
-            'network firewall policy update -g {rg} -n {policy_name} --explicit-proxy enable-explicit-proxy=true http-port=86 https-port=123 enable-pac-file=true pac-file-port=124 pac-file="{sas_url}"',
-            checks=[
-                self.check('name', '{policy_name}'),
-                self.check('explicitProxy.enableExplicitProxy', True),
-                self.check('explicitProxy.enablePacFile', True),
-                self.check('explicitProxy.httpPort', 86),
-                self.check('explicitProxy.httpsPort', 123),
-                self.check('explicitProxy.pacFile', '{sas_url}'),
-                self.check('explicitProxy.pacFilePort', 124),
-            ])
+    # removed explicit proxy test as it requires a non static sas url which fails other tests 100% of the time
 
     @ResourceGroupPreparer(name_prefix='test_firewall_with_dns_proxy_')
     def test_firewall_with_dns_proxy(self, resource_group):
@@ -973,7 +978,7 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall delete -g {rg} --name {fw}')
 
-    @ResourceGroupPreparer(name_prefix='test_azure_firewall_tier', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_tier', location='westus2')
     def test_azure_firewall_tier(self, resource_group):
         self.kwargs.update({
             'rg': resource_group
@@ -992,7 +997,7 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy update -g {rg} -n {policy} --threat-intel-mode Deny')
 
-    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_with_sql', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_with_sql', location='westus2')
     def test_azure_firewall_policy_with_sql(self, resource_group):
         self.kwargs.update({
             'policy': 'testpolicy'
@@ -1090,7 +1095,7 @@ class AzureFirewallScenario(ScenarioTest):
         )
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_route_server_", location="eastus2euap")
+    @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_route_server_", location="westus2")
     def test_firewall_with_route_server(self):
         self.kwargs.update({
             "firewall_name": self.create_random_name("firewall-", 16),
@@ -1103,7 +1108,7 @@ class AzureFirewallScenario(ScenarioTest):
         vhub = self.cmd('network vhub create -n {vhub} -g {rg} --vwan {vwan} --address-prefix 10.0.0.0/24 -l westus --sku Standard').get_output_in_json()
         self.kwargs['route_server_id'] = vhub['id']
 
-        self.cmd("network firewall create -n {firewall_name} -g {rg} -l eastus2euap --route-server-id {route_server_id}",
+        self.cmd("network firewall create -n {firewall_name} -g {rg} -l westus2 --route-server-id {route_server_id}",
                  self.check("additionalProperties.\"Network.RouteServerInfo.RouteServerID\"", "{route_server_id}"))
         self.cmd("network firewall update -n {firewall_name} -g {rg} --route-server-id ''",
                  self.check("additionalProperties.\"Network.RouteServerInfo.RouteServerID\"", ""))
@@ -1516,3 +1521,68 @@ class AzureFirewallScenario(ScenarioTest):
 
         # delete policy 2
         self.cmd('network firewall policy delete -g {rg} --name {policy_name_2}')
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_capture', location='centralus')
+    def test_azure_firewall_packet_capture(self, resource_group, resource_group_location):
+        from datetime import date, timedelta
+        tomorrow = date.today() + timedelta(days=1)
+        self.kwargs.update({
+            "firewall_name": self.create_random_name("firewall-", 16),
+            "vnet_name": self.create_random_name("vnet-", 12),
+            "conf_name": self.create_random_name("ipconfig-", 16),
+            "m_conf_name": self.create_random_name("ipconfig-", 16),
+            "public_ip_name": self.create_random_name("public-ip-", 16),
+            "m_public_ip_name": self.create_random_name("mpublic-ip-", 16),
+            'rg' : resource_group,
+            'sub_id': self.get_subscription_id(),
+            'location': "centralus",
+            'storageaccountname': self.create_random_name('fwpcap', 20).lower(),
+            'expirystring': tomorrow.strftime("%Y-%m-%d"),
+            'containername': 'packetcapturecontainer',
+        })
+
+        self.cmd('storage account create -g {rg} -n {storageaccountname} --sku Standard_LRS --https-only true --kind StorageV2 --access-tier Hot')
+        self.cmd('storage container create -n {containername} --account-name {storageaccountname} --public-access off')
+        storage_account = self.cmd('az storage account show -g {rg} -n {storageaccountname}').get_output_in_json()
+        sas_response = self.cmd('az storage container generate-sas --account-name {storageaccountname} --name {containername} --permissions acdlrw --expiry {expirystring}').get_output_in_json()
+        blob_endpoint = storage_account['primaryEndpoints']['blob']
+        sas_url = f"{blob_endpoint}{self.kwargs['containername']}?{sas_response}"
+        self.kwargs.update({
+            'sas_url': sas_url
+        })
+
+        # Create virtual network with firewall and management subnets
+        self.cmd('az network vnet create -g {rg} -n {vnet_name} --location {location} --address-prefixes 10.0.0.0/16')
+        self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name AzureFirewallSubnet --address-prefixes 10.0.0.0/24')
+        self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name AzureFirewallManagementSubnet --address-prefixes 10.0.1.0/24')
+
+        # Create public IPs
+        self.cmd('az network public-ip create -g {rg} -n {public_ip_name} --sku Standard --location {location} --allocation-method Static')
+        self.cmd('az network public-ip create -g {rg} -n {m_public_ip_name} --sku Standard --location {location} --allocation-method Static')
+
+        # Create Azure Firewall with management IP
+        self.cmd('az network firewall create -g {rg} -n {firewall_name} --location {location} --sku AZFW_VNet --tier Basic --vnet-name {vnet_name} --public-ip {public_ip_name} --conf-name {conf_name} --m-conf-name {m_conf_name} --m-public-ip {m_public_ip_name}')
+
+        # Perform Start Packet Capture Operation on the Azure Firewall
+        self.cmd(
+            'network firewall packet-capture-operation'
+            ' --resource-group {rg}'
+            ' --azure-firewall-name {firewall_name}'
+            ' --duration-in-seconds 1200'
+            ' --number-of-packets-to-capture 50000'
+            ' --sas-url {sas_url}'
+            ' --file-name azureFirewallPacketCapture'
+            ' --protocol Any'
+            ' --flags "[{{type:syn}},{{type:fin}}]"'
+            ' --filters "[{{sources:[20.1.1.0],destinations:[20.1.2.0],destination-ports:[4500]}},{{sources:[10.1.1.0,10.1.1.1],destinations:[10.1.2.0],destination-ports:[123,80]}}]"'
+            ' --operation Start'
+        )
+        # Perform Status Packet Capture Operation on the Azure Firewall
+        self.cmd('network firewall packet-capture-operation --resource-group {rg} --azure-firewall-name {firewall_name} --operation Status')
+
+        # Perform Stop Packet Capture Operation on the Azure Firewall
+        self.cmd('network firewall packet-capture-operation --resource-group {rg} --azure-firewall-name {firewall_name} --operation Stop')
+
+        #Delete firewall
+        self.cmd('network firewall delete -n {firewall_name} -g {rg}')

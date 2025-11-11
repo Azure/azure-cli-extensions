@@ -35,8 +35,16 @@ def cf_agent_pools(cli_ctx, *_):
     return get_container_service_client(cli_ctx).agent_pools
 
 
+def cf_managed_namespaces(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).managed_namespaces
+
+
 def cf_machines(cli_ctx, *_):
     return get_container_service_client(cli_ctx).machines
+
+
+def cf_identity_bindings(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).identity_bindings
 
 
 def cf_operations(cli_ctx, *_):
@@ -61,14 +69,6 @@ def cf_mc_snapshots(cli_ctx, *_):
 
 def get_mc_snapshots_client(cli_ctx, subscription_id=None):
     return get_container_service_client(cli_ctx, subscription_id=subscription_id).managed_cluster_snapshots
-
-
-def cf_trustedaccess_role(cli_ctx, *_):
-    return get_container_service_client(cli_ctx).trusted_access_roles
-
-
-def cf_trustedaccess_role_binding(cli_ctx, *_):
-    return get_container_service_client(cli_ctx).trusted_access_role_bindings
 
 
 def get_compute_client(cli_ctx, *_):
@@ -155,3 +155,7 @@ def get_keyvault_client(cli_ctx, subscription_id=None):
 
 def cf_load_balancers(cli_ctx, *_):
     return get_container_service_client(cli_ctx).load_balancers
+
+
+def cf_jwt_authenticators(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).jwt_authenticators

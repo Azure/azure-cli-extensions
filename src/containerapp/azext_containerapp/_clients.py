@@ -26,7 +26,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2024-10-02-preview"
+PREVIEW_API_VERSION = "2025-02-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -119,6 +119,62 @@ class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
+
+    @classmethod
+    def list_by_subscription(cls, cmd, formatter=lambda x: x):
+        app_list = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        request_url = "{}/subscriptions/{}/providers/Microsoft.App/jobs?api-version={}".format(
+            management_hostname.strip('/'),
+            sub_id,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        j = r.json()
+        for app in j["value"]:
+            formatted = formatter(app)
+            app_list.append(formatted)
+
+        while j.get("nextLink") is not None:
+            request_url = j["nextLink"]
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            j = r.json()
+            for app in j["value"]:
+                formatted = formatter(app)
+                app_list.append(formatted)
+
+        return app_list
+
+    @classmethod
+    def list_by_resource_group(cls, cmd, resource_group_name, formatter=lambda x: x):
+        app_list = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        j = r.json()
+        for app in j["value"]:
+            formatted = formatter(app)
+            app_list.append(formatted)
+
+        while j.get("nextLink") is not None:
+            request_url = j["nextLink"]
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            j = r.json()
+            for app in j["value"]:
+                formatted = formatter(app)
+                app_list.append(formatted)
+
+        return app_list
 
 
 class ContainerAppsResiliencyPreviewClient():
@@ -1455,6 +1511,23 @@ class SessionCodeInterpreterPreviewClient():
             return path_in_filename, filename
         else:
             return path.rstrip("/") + "/" + path_in_filename.lstrip('/'), filename
+
+
+class SessionCustomContainerPreviewClient():
+    # pylint: disable=too-few-public-methods
+    session_dp_api_version = "2025-02-02-preview"  # may be different from ACA CP
+
+    @classmethod
+    def stop_session(cls, cmd, identifier, session_pool_endpoint):
+        url_fmt = "{}/.management/stopSession?identifier={}&api-version={}"
+        request_url = url_fmt.format(
+            session_pool_endpoint,
+            identifier,
+            cls.session_dp_api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url, resource=SESSION_RESOURCE)
+
+        return r.text
 
 
 class DotNetComponentPreviewClient():

@@ -22,6 +22,7 @@ class DataProtectionKubernetes(DefaultExtension):
            - Backup storage location (required)
            - Resource Requests (optional)
            - Resource Limits (optional)
+           - Disable Informer Cache (optional)
         """
         self.TENANT_ID = "credentials.tenantId"
         self.BACKUP_STORAGE_ACCOUNT_CONTAINER = "configuration.backupStorageLocation.bucket"
@@ -34,6 +35,7 @@ class DataProtectionKubernetes(DefaultExtension):
         self.RESOURCE_LIMIT_MEMORY = "resources.limits.memory"
         self.BACKUP_STORAGE_ACCOUNT_USE_AAD = "configuration.backupStorageLocation.config.useAAD"
         self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI = "configuration.backupStorageLocation.config.storageAccountURI"
+        self.DISABLE_INFORMER_CACHE = "configuration.disableInformerCache"
 
         self.blob_container = "blobContainer"
         self.storage_account = "storageAccount"
@@ -45,6 +47,7 @@ class DataProtectionKubernetes(DefaultExtension):
         self.memory_limit = "memoryLimit"
         self.use_aad = "useAAD"
         self.storage_account_uri = "storageAccountURI"
+        self.disable_informer_cache = "disableInformerCache"
 
         self.configuration_mapping = {
             self.blob_container.lower(): self.BACKUP_STORAGE_ACCOUNT_CONTAINER,
@@ -56,7 +59,8 @@ class DataProtectionKubernetes(DefaultExtension):
             self.cpu_limit.lower(): self.RESOURCE_LIMIT_CPU,
             self.memory_limit.lower(): self.RESOURCE_LIMIT_MEMORY,
             self.use_aad.lower(): self.BACKUP_STORAGE_ACCOUNT_USE_AAD,
-            self.storage_account_uri.lower(): self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI
+            self.storage_account_uri.lower(): self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI,
+            self.disable_informer_cache.lower(): self.DISABLE_INFORMER_CACHE
         }
 
         self.bsl_configuration_settings = [
