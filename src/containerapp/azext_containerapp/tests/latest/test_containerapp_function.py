@@ -68,7 +68,7 @@ class ContainerappFunctionTests(ScenarioTest):
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerapp_function_list_show_error_scenarios(self, resource_group):
         """Test error scenarios for function list command"""
-        location = "northcentralusstage"
+        location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
 
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -133,7 +133,7 @@ class ContainerappFunctionTests(ScenarioTest):
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerapp_function_list_show_multirevision_scenarios(self, resource_group):
         """Test multiple revisions scenarios for function list command"""
-        location = "northcentralusstage"
+        location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
         env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
 
@@ -197,8 +197,8 @@ class ContainerappFunctionTests(ScenarioTest):
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerapp_function_keys(self, resource_group):
         """Test function keys show/list/set functionality"""
-        location = "northcentralus"
-        functionapp_location = "northcentralusstage"  
+        location = TEST_LOCATION
+        functionapp_location = TEST_LOCATION 
         storage_account_name = self.create_random_name("storageacc", length=24)
         funcapp_name = self.create_random_name("functionapp", length=24)
         image = "mcr.microsoft.com/azure-functions/dotnet8-quickstart-demo:1.0"
@@ -366,7 +366,7 @@ class ContainerappFunctionTests(ScenarioTest):
     def test_containerapp_function_invocations_summary_traces(self, resource_group):
         """Test function keys show/list/set functionality using connection string and App Insights"""
         location = TEST_LOCATION
-        functionapp_location = "northcentralusstage"  
+        functionapp_location = TEST_LOCATION  
         funcapp_name = self.create_random_name("functionapp", length=24)
         image = "mcr.microsoft.com/azure-functions/dotnet8-quickstart-demo:1.0"
         app_insights_name = self.create_random_name("appinsights", length=24)
