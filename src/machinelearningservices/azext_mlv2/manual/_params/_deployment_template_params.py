@@ -42,7 +42,7 @@ def load_deployment_template_params(self):
             ),
         )
 
-    with self.argument_context("ml deployment-template get") as c:
+    with self.argument_context("ml deployment-template show") as c:
         add_common_params(c)
         add_deployment_template_common_param(c, name_required=True, version_required=True)
         c.argument(
