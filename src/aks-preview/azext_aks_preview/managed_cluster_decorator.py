@@ -5201,6 +5201,45 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         error_msg = f"Please specify one or more of {' or '.join(option_names)}."
         raise RequiredArgumentMissingError(error_msg)
 
+    def update_agentpool_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update agentpool profile for the ManagedCluster object.
+
+        Preview override to handle empty agent_pool_profiles gracefully.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        # Preview-specific change: an AKS ManagedCluster of automatic
+        # cluster with hosted system components may not have agent pools
+        # When transitioning from hosted to non-hosted automatic clusters,
+        # customers must first add a system node pool before disabling
+        # the hosted system profile.
+        if not mc.agent_pool_profiles:
+            if mc.hosted_system_profile and mc.hosted_system_profile.enabled:
+                return mc
+            raise UnknownError(
+                "Encounter an unexpected error while getting agent pool profiles from the cluster in the process of "
+                "updating agentpool profile."
+            )
+
+        # Call preview agentpool decorator method instead of default
+        agentpool_profile = self.agentpool_decorator.update_agentpool_profile_preview(mc.agent_pool_profiles)
+        mc.agent_pool_profiles[0] = agentpool_profile
+
+        # Update nodepool labels for all nodepools
+        nodepool_labels = self.context.get_nodepool_labels()
+        if nodepool_labels is not None:
+            for agent_profile in mc.agent_pool_profiles:
+                agent_profile.node_labels = nodepool_labels
+
+        # Update nodepool taints for all nodepools
+        nodepool_taints = self.context.get_nodepool_taints()
+        if nodepool_taints is not None:
+            for agent_profile in mc.agent_pool_profiles:
+                agent_profile.node_taints = nodepool_taints
+        return mc
+
     def update_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -6020,10 +6059,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     key_vault_resource_id=self.context.get_azure_keyvault_kms_key_vault_resource_id(),
                 )
 
-        if self.context.get_disable_azure_keyvault_kms():
+        cmk_disabled_on_existing_cluster = False
+        if mc.security_profile is not None and mc.security_profile.azure_key_vault_kms is not None and mc.security_profile.azure_key_vault_kms.enabled is False:
+            cmk_disabled_on_existing_cluster = True
+        if self.context.get_disable_azure_keyvault_kms() or cmk_disabled_on_existing_cluster:
             if mc.security_profile is None:
                 mc.security_profile = self.models.ManagedClusterSecurityProfile()
-            mc.security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms()
             # set enabled to False
             mc.security_profile.azure_key_vault_kms.enabled = False
 
@@ -6520,34 +6561,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
-    def update_nodepool_taints_mc(self, mc: ManagedCluster) -> ManagedCluster:
-        self._ensure_mc(mc)
-
-        if not mc.agent_pool_profiles:
-            raise UnknownError(
-                "Encounter an unexpected error while getting agent pool profiles from the cluster in the process of "
-                "updating agentpool profile."
-            )
-
-        # update nodepool taints for all nodepools
-        nodepool_taints = self.context.get_nodepool_taints()
-        if nodepool_taints is not None:
-            for agent_profile in mc.agent_pool_profiles:
-                agent_profile.node_taints = nodepool_taints
-        return mc
-
     def update_nodepool_initialization_taints_mc(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
-
-        if not mc.agent_pool_profiles:
-            raise UnknownError(
-                "Encounter an unexpected error while getting agent pool profiles from the cluster in the process of "
-                "updating agentpool profile."
-            )
 
         # update nodepool taints for all nodepools
         nodepool_initialization_taints = self.context.get_nodepool_initialization_taints()
         if nodepool_initialization_taints is not None:
+            if not mc.agent_pool_profiles:
+                raise UnknownError(
+                    "Encounter an unexpected error while getting agent pool profiles from the "
+                    "cluster in the process of updating agentpool profile."
+                )
             for agent_profile in mc.agent_pool_profiles:
                 if agent_profile.mode is not None and agent_profile.mode.lower() == "user":
                     agent_profile.node_initialization_taints = nodepool_initialization_taints
@@ -7243,8 +7267,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_auto_upgrade_profile(mc)
         # update cluster upgrade settings profile
         mc = self.update_upgrade_settings(mc)
-        # update nodepool taints
-        mc = self.update_nodepool_taints_mc(mc)
         # update nodepool initialization taints
         mc = self.update_nodepool_initialization_taints_mc(mc)
         # update acns in network_profile

@@ -2,6 +2,12 @@
 
 Release History
 ===============
+3.0.0
+++++++
+* Added multi subscription support
+* Updated dependencies to latest versions
+* Update monitor does not need location parameter anymore
+
 2.0.0
 ++++++
 * Fix resource creation issue
