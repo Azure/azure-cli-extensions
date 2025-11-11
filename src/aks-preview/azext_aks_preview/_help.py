@@ -2469,16 +2469,14 @@ type: command
 short-summary: Rollback an agent pool to a previously used configuration.
 long-summary: |
     Rollback an agent pool to a previously used Kubernetes version or node image version.
-    If no specific versions are provided, the nodepool will be rolled back to the most recently used configuration.
+    At least one of --kubernetes-version or --node-image-version must be specified.
 parameters:
-  - name: --kubernetes-version
+  - name: --kubernetes-version -k
     type: string
     short-summary: Target Kubernetes version for rollback.
-    long-summary: If not specified, uses the most recent available Kubernetes version.
   - name: --node-image-version
     type: string
     short-summary: Target node image version for rollback.
-    long-summary: If not specified, uses the most recent available node image version.
   - name: --aks-custom-headers
     type: string
     short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.
@@ -2489,14 +2487,14 @@ parameters:
     type: string
     short-summary: Set to '*' to allow a new resource to be created, but to prevent updating an existing resource.
 examples:
-  - name: Rollback a nodepool to the most recent configuration.
-    text: az aks nodepool rollback --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool
-    crafted: true
   - name: Rollback a nodepool to a specific Kubernetes version.
     text: az aks nodepool rollback --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool --kubernetes-version 1.28.5
     crafted: true
   - name: Rollback a nodepool to specific Kubernetes and node image versions.
     text: az aks nodepool rollback --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool --kubernetes-version 1.28.5 --node-image-version AKSUbuntu-1804gen2containerd-2024.01.15
+    crafted: true
+  - name: Rollback a nodepool to a specific node image version.
+    text: az aks nodepool rollback --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool --node-image-version AKSUbuntu-1804gen2containerd-2024.01.15
     crafted: true
 """
 

@@ -2186,14 +2186,8 @@ def load_arguments(self, _):
         pass  # Uses common nodepool parameters
 
     with self.argument_context("aks nodepool rollback") as c:
-        c.argument(
-            "kubernetes_version",
-            help="Target Kubernetes version for rollback. If not specified, uses the most recent available version."
-        )
-        c.argument(
-            "node_image_version",
-            help="Target node image version for rollback. If not specified, uses the most recent available version."
-        )
+        c.argument("kubernetes_version")
+        c.argument("node_image_version")
         c.argument("aks_custom_headers", nargs="*")
         c.argument("if_match")
         c.argument("if_none_match")
