@@ -4969,7 +4969,7 @@ def aks_loadbalancer_rebalance_nodes(
     return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
 
 
-def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, yes=False):
+def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, yes=False, public_fqdn=False):
     import asyncio
     import tempfile
 
@@ -4998,6 +4998,7 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
                     port,
                     mc_id,
                     kubeconfig_path,
+                    public_fqdn=public_fqdn,
                     test_hook=os.getenv("AKS_BASTION_TEST_HOOK"),
                 )
             )
