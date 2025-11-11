@@ -61,6 +61,6 @@
 #         )
 
 #     @AllowLargeResponse()
-#     def test_GA_externalnetwork_UpdateBFDAdminState_scenario1(self):
+#     def test_GA_externalnetwork_update_bfd_admin_state_scenario1(self):
 #         """test scenario for externalnetwork CRUD operations"""
 #         call_scenario1(self)

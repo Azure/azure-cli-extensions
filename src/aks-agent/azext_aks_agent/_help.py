@@ -8,7 +8,6 @@
 
 from knack.help_files import helps
 
-
 helps[
     "aks agent"
 ] = """
@@ -16,7 +15,7 @@ helps[
     short-summary: Run AI assistant to analyze and troubleshoot Kubernetes clusters.
     long-summary: |-
       This command allows you to ask questions about your Azure Kubernetes cluster and get answers using AI models.
-      Environment variables must be set to use the AI model, please refer to https://docs.litellm.ai/docs/providers to learn more about supported AI providers and models and required environment variables.
+      No need to manually set environment variables! All model and credential information can be configured interactively using `az aks agent-init` or via a config file.
     parameters:
         - name: --name -n
           type: string
@@ -36,7 +35,7 @@ helps[
             Note: For Azure OpenAI, it is recommended to set the deployment name as the model name until https://github.com/BerriAI/litellm/issues/13950 is resolved.
         - name: --api-key
           type: string
-          short-summary: API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY).
+          short-summary: API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY). (Deprecated)
         - name: --config-file
           type: string
           short-summary: Path to configuration file.
@@ -63,23 +62,26 @@ helps[
           short-summary: Enable AKS MCP integration for enhanced capabilities. Traditional mode is the default.
 
     examples:
+        - name: Ask about pod issues in the cluster with last configured model
+          text: |-
+            az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup
         - name: Ask about pod issues in the cluster with Azure OpenAI
           text: |-
-            export AZURE_API_BASE="https://my-azureopenai-service.openai.azure.com/"
-            export AZURE_API_VERSION="2025-01-01-preview"
-            export AZURE_API_KEY="sk-xxx"
             az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model azure/gpt-4.1
         - name: Ask about pod issues in the cluster with OpenAI
           text: |-
-            export OPENAI_API_KEY="sk-xxx"
             az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model gpt-4o
         - name: Run agent with config file
           text: |
             az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml --name MyManagedCluster --resource-group MyResourceGroup
             Here is an example of config file:
             ```json
-            model: "azure/gpt-4.1"
-            api_key: "..."
+            llms:
+            - provider: azure
+              MODEL_NAME: gpt-4.1
+              AZURE_API_KEY: *******
+              AZURE_API_BASE: https://{azure-openai-service-name}.openai.azure.com/
+              AZURE_API_VERSION: 2025-04-01-preview
             # define a list of mcp servers, mcp server can be defined
             mcp_servers:
               aks_mcp:
@@ -130,4 +132,17 @@ helps[
           text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/my-gpt4.1-deployment
         - name: Refresh toolsets to get the latest available tools
           text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deployment
+"""
+
+helps[
+    "aks agent-init"
+] = """
+    type: command
+    short-summary: Initialize and validate LLM provider/model configuration for AKS agent.
+    long-summary: |-
+      This command interactively guides you to select an LLM provider and model, validates the connection, and saves the configuration for later use.
+      You can run this command multiple times to add or update different model configurations.
+    examples:
+        - name: Initialize configuration for Azure OpenAI, OpenAI or other llms
+          text: az aks agent-init
 """

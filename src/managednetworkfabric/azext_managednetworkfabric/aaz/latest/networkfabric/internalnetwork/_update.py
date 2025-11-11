@@ -26,9 +26,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2025-07-15"],
         ]
     }
 
@@ -91,18 +91,12 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="List of Connected IPv4 Subnets.",
             nullable=True,
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         _args_schema.connected_ipv6_subnets = AAZListArg(
             options=["--connected-ipv6-subnets"],
             arg_group="Properties",
             help="List of connected IPv6 Subnets.",
             nullable=True,
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         _args_schema.egress_acl_id = AAZResourceIdArg(
             options=["--egress-acl-id"],
@@ -146,19 +140,19 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.native_ipv4_prefix_limit = AAZObjectArg(
-            options=["--native-ipv4-prefix-limit"],
+            options=["--nat-ipv4-prefix-limit", "--native-ipv4-prefix-limit"],
             arg_group="Properties",
             help="Native IPv4 Prefix Limit Configuration properties.",
             nullable=True,
         )
         _args_schema.native_ipv6_prefix_limit = AAZObjectArg(
-            options=["--native-ipv6-prefix-limit"],
+            options=["--nat-ipv6-prefix-limit", "--native-ipv6-prefix-limit"],
             arg_group="Properties",
             help="Native IPv6 Prefix Limit Configuration properties.",
             nullable=True,
         )
         _args_schema.static_route_configuration = AAZObjectArg(
-            options=["--static-route-configuration"],
+            options=["--static-route-config", "--static-route-configuration"],
             arg_group="Properties",
             help="Static Route Configuration properties.",
             nullable=True,
@@ -240,9 +234,6 @@ class Update(AAZCommand):
         bmp_configuration.neighbor_ip_exclusions = AAZListArg(
             options=["neighbor-ip-exclusions"],
             help="BMP Collector Address.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
 
         neighbor_ip_exclusions = cls._args_schema.bgp_configuration.bmp_configuration.neighbor_ip_exclusions
@@ -298,9 +289,6 @@ class Update(AAZCommand):
         native_ipv4_prefix_limit.prefix_limits = AAZListArg(
             options=["prefix-limits"],
             help="Prefix limits",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
 
         prefix_limits = cls._args_schema.native_ipv4_prefix_limit.prefix_limits
@@ -311,9 +299,6 @@ class Update(AAZCommand):
         native_ipv6_prefix_limit.prefix_limits = AAZListArg(
             options=["prefix-limits"],
             help="Prefix limits",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
 
         prefix_limits = cls._args_schema.native_ipv6_prefix_limit.prefix_limits
@@ -567,7 +552,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -592,7 +577,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -784,6 +769,11 @@ class Update(AAZCommand):
             properties.native_ipv6_prefix_limit = AAZObjectType(
                 serialized_name="nativeIpv6PrefixLimit",
             )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                nullable=True,
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -845,9 +835,20 @@ class Update(AAZCommand):
             bmp_configuration.bmp_configuration_state = AAZStrType(
                 serialized_name="bmpConfigurationState",
             )
+            bmp_configuration.export_policy_configuration = AAZObjectType(
+                serialized_name="exportPolicyConfiguration",
+            )
             bmp_configuration.neighbor_ip_exclusions = AAZListType(
                 serialized_name="neighborIpExclusions",
             )
+
+            export_policy_configuration = cls._schema_on_200.properties.bgp_configuration.bmp_configuration.export_policy_configuration
+            export_policy_configuration.export_policies = AAZListType(
+                serialized_name="exportPolicies",
+            )
+
+            export_policies = cls._schema_on_200.properties.bgp_configuration.bmp_configuration.export_policy_configuration.export_policies
+            export_policies.Element = AAZStrType()
 
             neighbor_ip_exclusions = cls._schema_on_200.properties.bgp_configuration.bmp_configuration.neighbor_ip_exclusions
             neighbor_ip_exclusions.Element = AAZStrType()

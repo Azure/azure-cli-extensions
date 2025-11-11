@@ -263,7 +263,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         return policy.validate(policy_content, sidecar_validation=True)
 
     # pylint: disable=too-many-locals
-    def validate(self, policy, sidecar_validation=False) -> Tuple[bool, Dict]:
+    def validate(self, container_policy_list, sidecar_validation=False) -> Tuple[bool, Dict]:
         """Utility method: general method to compare two policies.
         One being the current object and the other is passed in as a parameter.
 
@@ -274,8 +274,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         The minimum difference is used to match up the containers in the policy vs
         the containers in the ARM template. Afterwards, the differences are compiled
         and returned as a dictionary organized by container name."""
-        if not policy:
-            eprint("Policy is not in the expected form to validate against")
+        if not container_policy_list:
+            container_policy_list = []
 
         policy_str = self.get_serialized_output(
             OutputType.PRETTY_PRINT, rego_boilerplate=False
@@ -286,11 +286,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         policy_ids = [
             case_insensitive_dict_get(i, config.POLICY_FIELD_CONTAINERS_ID)
-            for i in policy
+            for i in container_policy_list
         ]
         policy_names = [
             case_insensitive_dict_get(i, config.POLICY_FIELD_CONTAINERS_NAME)
-            for i in policy
+            for i in container_policy_list
         ]
 
         for container in arm_containers:
@@ -324,7 +324,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             temp_diff_list = []
             for idx in set_idx:
                 temp_diff = {}
-                matching_policy_container = policy[idx]
+                matching_policy_container = container_policy_list[idx]
 
                 diff_values = get_container_diff(matching_policy_container, container)
                 # label the diff with the ID so it can be merged
@@ -675,13 +675,14 @@ def load_policy_from_arm_template_str(
         containers = []
         existing_containers = None
         fragments = None
-        exclude_default_fragments = False
+        group_exclude_default_fragments = exclude_default_fragments
 
         tags = case_insensitive_dict_get(resource, config.ACI_FIELD_TEMPLATE_TAGS)
         if tags:
-            exclude_default_fragments = case_insensitive_dict_get(tags, config.ACI_FIELD_TEMPLATE_ZERO_SIDECAR)
-            if isinstance(exclude_default_fragments, str):
-                exclude_default_fragments = exclude_default_fragments.lower() == "true"
+            group_exclude_default_fragments = \
+                case_insensitive_dict_get(tags, config.ACI_FIELD_TEMPLATE_ZERO_SIDECAR)
+            if isinstance(group_exclude_default_fragments, str):
+                group_exclude_default_fragments = group_exclude_default_fragments.lower() == "true"
 
         container_group_properties = case_insensitive_dict_get(
             resource, config.ACI_FIELD_TEMPLATE_PROPERTIES
@@ -713,19 +714,17 @@ def load_policy_from_arm_template_str(
                     rego_imports.append(fragment)
                     unique_imports.add(fragment)
 
-        try:
+        if diff_mode:
             existing_containers, fragments = extract_confidential_properties(
                 container_group_properties
             )
-        except ValueError as e:
-            if diff_mode:
-                # In diff mode, we raise an error if the base64 policy is malformed
-                eprint(f"Unable to decode existing policy. Please check the base64 encoding.\n{e}")
-            else:
-                # In non-diff mode, we ignore the error and proceed without the policy
-                existing_containers, fragments = ([], [])
+        else:
+            existing_containers, fragments = ([], [])
 
-        rego_fragments = copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS) if not exclude_default_fragments else []
+        rego_fragments = (
+            copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS)
+            if not group_exclude_default_fragments else []
+        )
         if infrastructure_svn:
             # assumes the first DEFAULT_REGO_FRAGMENT is always the
             # infrastructure fragment
