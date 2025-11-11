@@ -258,6 +258,7 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
             self.validate_arguments()
 
             # Get arguments
+            cmd = self.cmd
             resource_group_name = self.get_argument_resource_group_name()
             container_app_name = self.get_argument_container_app_name()
             revision_name = self.get_argument_revision_name()
@@ -277,7 +278,7 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
                 f"| summarize SuccessCount = coalesce(countif(success == true), 0), ErrorCount = coalesce(countif(success == false), 0)"
             )
 
-            result = self._execute_app_insights_query(app_id, invocation_summary_query, "getLast30DaySummary", timespan)
+            result = self._execute_app_insights_query(app_id, invocation_summary_query, "getLast30DaySummary")
 
             return process_app_insights_response(result)
         except Exception as e:
@@ -289,6 +290,7 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
             self.validate_arguments()
 
             # Get all arguments
+            cmd = self.cmd
             resource_group_name = self.get_argument_resource_group_name()
             container_app_name = self.get_argument_container_app_name()
             revision_name = self.get_argument_revision_name()
@@ -312,7 +314,7 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
                 f"| project timestamp, success, resultCode, durationInMilliSeconds=duration, invocationId, operationId=operation_Id, operationName=operation_Name, functionNameFromCustomDimension "
             )
 
-            result = self._execute_app_insights_query(app_id, invocation_traces_query, "getInvocationTraces", timespan)
+            result = self._execute_app_insights_query(app_id, invocation_traces_query, "getInvocationTraces")
 
             return process_app_insights_response(result)
         except Exception as e:
