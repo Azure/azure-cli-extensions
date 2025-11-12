@@ -15,6 +15,6 @@ Release History
 +++++++++++++++
 * Switch to experimental version.
 
-2.0.1b1
+3.0.0b1
 +++++++++++++++
-* Add new commands.
+* Refactor codebase for improved readability and maintainability.
