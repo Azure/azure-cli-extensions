@@ -18252,7 +18252,7 @@ spec:
         get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2022-06-01'
         self.cmd(get_cmd, checks=[
             self.check('properties.destinations.logAnalytics[0].workspaceResourceId', f'{workspace_resource_id}'),
-            self.check('properties.dataFlows[0].streams[-1]', 'Microsoft-RetinaNetworkFlowLogs'),
+            self.check('properties.dataFlows[0].streams[-1]', 'Microsoft-ContainerNetworkLogs'),
         ])
 
         disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-container-network-logs -o json"
