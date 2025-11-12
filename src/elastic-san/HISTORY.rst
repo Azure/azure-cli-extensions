@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.3.2
+++++++
+* `az elastic-san`: Support autoscale, prerestore, and prebackup
+
 1.3.1b1
 ++++++
 * `az elastic-san volume-group create/update`: Add warning for CRC data integration check
