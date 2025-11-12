@@ -13,9 +13,13 @@ Pending
 +++++++
 * `az aks bastion`: Correctly configure `$KUBECONFIG` values for tunneling traffic into a private AKS cluster.
 
+19.0.0b16
++++++++
+* Update --enable-container-network-logs DCR to ContainerNetworkLogs instead of RetinaNetworkFlowLogs
+
 19.0.0b15
 +++++++
-* Fix `NoneType` error when performing operations on automatic clusters that have hosted system components enabled
+* Fix `NoneType` error when performing operations on automatic clusters that have hosted system components enabled.
 
 19.0.0b14
 +++++++
