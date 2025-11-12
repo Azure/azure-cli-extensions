@@ -3,9 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from dataclasses import dataclass, field, is_dataclass
-import inspect
-import sys
+from dataclasses import dataclass, field
 from typing import Literal, Optional
 
 
@@ -75,6 +73,7 @@ class FragmentReference:
     path: Optional[str] = None
 
 
+# pylint: disable=too-many-instance-attributes
 @dataclass
 class Container:
     allow_elevated: bool = False
@@ -94,6 +93,7 @@ class Container:
     working_dir: str = "/"
 
 
+# pylint: disable=too-many-instance-attributes
 @dataclass
 class Policy:
     package: str = "policy"
