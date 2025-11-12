@@ -30,10 +30,10 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerappFunctionTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, random_config_dir=True, **kwargs)
-        cmd = ['azdev', 'extension', 'add', 'applicationinsights']
+        cmd = ['azdev', 'extension', 'add', 'application-insights']
         run(cmd, check=True)
-        cmd = ['azdev', 'extension', 'add', 'azure-mgmt-applicationinsights']
-        run(cmd, check=True)
+        # cmd = ['azdev', 'extension', 'add', 'azure-mgmt-applicationinsights']
+        # run(cmd, check=True)
         sleep(120)
     
 
