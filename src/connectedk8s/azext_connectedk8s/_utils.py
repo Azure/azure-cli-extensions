@@ -1315,7 +1315,7 @@ def helm_install_release(
     ]
 
     # Special configurations from 2022-09-01 ARM metadata.
-    # "dataplaneEndpoints" does not appear in arm_metadata for public and AGC
+    # "dataplaneEndpoints" property does not appear in arm_metadata structure for public and AGC clouds.
     if "dataplaneEndpoints" in arm_metadata:
         if "arcConfigEndpoint" in arm_metadata["dataplaneEndpoints"]:
             notification_endpoint = arm_metadata["dataplaneEndpoints"][
