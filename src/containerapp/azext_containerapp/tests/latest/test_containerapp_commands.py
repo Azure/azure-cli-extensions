@@ -2936,14 +2936,8 @@ properties:
                 revisionSuffix: myrevision
                 terminationGracePeriodSeconds: 90
                 containers:
-                  - image: nginx
-                    name: nginx
-                    env:
-                      - name: HTTP_PORT
-                        value: 80
-                    command:
-                      - npm
-                      - start
+                  - image: mcr.microsoft.com/k8se/quickstart:latest
+                    name: quickstart
                     resources:
                       cpu: 0.5
                       memory: 1Gi
@@ -2969,11 +2963,20 @@ properties:
         write_test_file(containerapp_file_name, containerapp_yaml_text)
         self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env_id} --yaml {containerapp_file_name}')
 
+        # wait for the revision to be ready and update traffic with the label, revision, and weight
+        for _ in range(10):
+            appJson = self.cmd(f'containerapp show -g {resource_group} -n {app}')
+            if appJson.get_output_in_json().get("properties", {}).get("provisioningState") == "Succeeded" and \
+                appJson.get_output_in_json().get("properties", {}).get("configuration", {}).get("ingress", {}).get("traffic", [{}]) != None:
+                break
+            time.sleep(5)
+
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.activeRevisionsMode", "Labels"),
             JMESPathCheck("properties.configuration.ingress.external", True),
-            # JMESPathCheck("properties.configuration.ingress.traffic[0].label", "label1"),
+            JMESPathCheck("properties.configuration.ingress.traffic[0].weight", 100),
+            JMESPathCheck("properties.configuration.ingress.traffic[0].label", "label1"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
@@ -2982,7 +2985,7 @@ properties:
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.terminationGracePeriodSeconds", 90),
-            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.containers[0].name", "quickstart"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
             JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
@@ -3015,14 +3018,8 @@ properties:
                       template:
                         revisionSuffix: myrevision2
                         containers:
-                          - image: nginx
-                            name: nginx
-                            env:
-                              - name: HTTP_PORT
-                                value: 80
-                            command:
-                              - npm
-                              - start
+                          - image: mcr.microsoft.com/k8se/quickstart:latest
+                            name: quickstart
                             resources:
                               cpu: 0.5
                               memory: 1Gi
@@ -3039,14 +3036,14 @@ properties:
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.activeRevisionsMode", "Labels"),
             JMESPathCheck("properties.configuration.ingress.external", True),
-            # JMESPathCheck("properties.configuration.ingress.traffic[0].label", "label1"),
+            JMESPathCheck("properties.configuration.ingress.traffic[0].label", "label1"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("length(properties.configuration.secrets)", 2),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision2"),
-            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.containers[0].name", "quickstart"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
             JMESPathCheck("properties.template.scale.rules", None)
