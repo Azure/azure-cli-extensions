@@ -14,7 +14,7 @@ Pending
 
 19.0.0b16
 +++++++
-* Update enable-container-network-logs DCR to ContainerNetworkLogs instead of RetinaNetworkFlowLogs
+* Update --enable-container-network-logs DCR to ContainerNetworkLogs instead of RetinaNetworkFlowLogs
 
 19.0.0b15
 +++++++
