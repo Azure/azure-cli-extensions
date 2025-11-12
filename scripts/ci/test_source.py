@@ -9,6 +9,8 @@ from __future__ import print_function
 
 import logging
 import os
+from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import shutil
@@ -64,7 +66,7 @@ def run_command(cmd, check_return_code=False, cwd=None):
         raise RuntimeError(f"{cmd} failed")
 
 
-def test_extension():
+def test_extension(whl_dir: Path):
     for pkg_name, ext_path in ALL_TESTS:
         ext_name = ext_path.split('/')[-1]
         logger.info(f'installing extension: {ext_name}')
@@ -86,22 +88,45 @@ def test_extension():
         cmd = ['azdev', 'extension', 'remove', ext_name]
         run_command(cmd, check_return_code=True)
 
+        logger.info(f'installing extension wheel: {ext_name}')
+        wheel_path = next(whl_dir.glob(f"{ext_name}*.whl"))
+        subprocess.run(
+            f"az extension add -y -s {wheel_path}".split(" "),
+            check=True,
+        )
+        subprocess.run(
+            f"az {ext_name} --help".split(" "),
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        subprocess.run(
+            f"az extension remove -n {ext_name}".split(" "),
+            check=True,
+        )
 
-def test_source_wheels():
+
+def test_source_wheels(whl_dir: Path):
     # Test we can build all sources into wheels and that metadata from the wheel is valid
     built_whl_dir = tempfile.mkdtemp()
     source_extensions = [os.path.join(SRC_PATH, n) for n in os.listdir(SRC_PATH)
                          if os.path.isdir(os.path.join(SRC_PATH, n))]
     for s in source_extensions:
+        ext_name = s.split('/')[-1]
         if not os.path.isfile(os.path.join(s, 'setup.py')):
             continue
         try:
-            check_output(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir], cwd=s)
+            check_output(['azdev', 'extension', 'build', ext_name, '--dist-dir', built_whl_dir])
         except CalledProcessError as err:
             raise("Unable to build extension {} : {}".format(s, err))
     # Export built wheels so CI can publish them as artifacts
-    wheels_out_dir = os.environ.get('WHEELS_OUTPUT_DIR')
-    if wheels_out_dir:
+    wheels_out_dirs = [
+        os.environ.get('WHEELS_OUTPUT_DIR'),
+        str(whl_dir),
+    ]
+    for wheels_out_dir in wheels_out_dirs:
+        if not wheels_out_dir:
+            continue
         try:
             os.makedirs(wheels_out_dir, exist_ok=True)
             for fname in os.listdir(built_whl_dir):
@@ -115,5 +140,7 @@ def test_source_wheels():
 
 
 if __name__ == '__main__':
-    test_extension()
-    test_source_wheels()
+    with tempfile.TemporaryDirectory() as whl_dir:
+        whl_dir = Path(whl_dir)
+        test_source_wheels(whl_dir=whl_dir)
+        test_extension(whl_dir=whl_dir)
