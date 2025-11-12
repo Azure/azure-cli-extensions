@@ -31,10 +31,12 @@ class ContainerappFunctionTests(ScenarioTest):
     
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="northcentralus")
+    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_function_list_show_basic(self, resource_group):
         """Test basic function list functionality with various scenarios"""
         location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus2"
         self.cmd('configure --defaults location={}'.format(location))
 
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -54,6 +56,10 @@ class ContainerappFunctionTests(ScenarioTest):
         
         time.sleep(30)
         result = self.cmd(f'containerapp function list -g {resource_group} -n {ca_name}').get_output_in_json()
+        self.assertIsInstance(result['value'], list, "Function list value should be a list")
+        self.assertGreaterEqual(len(result['value']), 1, "Function list should contain at least one function")
+        function_names = [func["properties"]["name"] for func in result['value']]
+        self.assertIn(function_name, function_names, f"Function list should contain the function named {function_name}")
 
         # Test successful function show
         function_details = self.cmd(f'containerapp function show -g {resource_group} -n {ca_name} --function-name {function_name}').get_output_in_json()
@@ -65,10 +71,12 @@ class ContainerappFunctionTests(ScenarioTest):
     
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="northcentralus")
+    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_function_list_show_error_scenarios(self, resource_group):
         """Test error scenarios for function list command"""
         location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus2"
         self.cmd('configure --defaults location={}'.format(location))
 
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -130,10 +138,12 @@ class ContainerappFunctionTests(ScenarioTest):
 
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="northcentralus")
+    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_function_list_show_multirevision_scenarios(self, resource_group):
         """Test multiple revisions scenarios for function list command"""
         location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus2"
         self.cmd('configure --defaults location={}'.format(location))
         env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
 
@@ -194,11 +204,17 @@ class ContainerappFunctionTests(ScenarioTest):
 
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="northcentralus")
+    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_function_keys(self, resource_group):
         """Test function keys show/list/set functionality"""
         location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus2"
+        self.cmd('configure --defaults location={}'.format(location))
         functionapp_location = TEST_LOCATION 
+        if format_location(functionapp_location) == format_location(STAGE_LOCATION):
+            functionapp_location = "eastus2"
+
         storage_account_name = self.create_random_name("storageacc", length=24)
         funcapp_name = self.create_random_name("functionapp", length=24)
         image = "mcr.microsoft.com/azure-functions/dotnet8-quickstart-demo:1.0"
@@ -362,11 +378,17 @@ class ContainerappFunctionTests(ScenarioTest):
         
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="northcentralus")
+    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_function_invocations_summary_traces(self, resource_group):
         """Test function keys show/list/set functionality using connection string and App Insights"""
         location = TEST_LOCATION
-        functionapp_location = TEST_LOCATION  
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus2"
+        self.cmd('configure --defaults location={}'.format(location))
+        functionapp_location = TEST_LOCATION 
+        if format_location(functionapp_location) == format_location(STAGE_LOCATION):
+            functionapp_location = "eastus2"
+ 
         funcapp_name = self.create_random_name("functionapp", length=24)
         image = "mcr.microsoft.com/azure-functions/dotnet8-quickstart-demo:1.0"
         app_insights_name = self.create_random_name("appinsights", length=24)
@@ -387,7 +409,7 @@ class ContainerappFunctionTests(ScenarioTest):
         ).output.strip()
 
         # Step 2: Prepare Container App environment
-        env = prepare_containerapp_env_v1_for_app_e2e_tests(self, location=functionapp_location) # this is temporary and will be removed in future 
+        env = prepare_containerapp_env_v1_for_app_e2e_tests(self, location=functionapp_location) # this is temporary and will be removed in future when this can be used with v2 envs
         time.sleep(100)
 
         # Step 3: Create the function app (container app)
