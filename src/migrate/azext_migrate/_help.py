@@ -71,31 +71,31 @@ helps['migrate local get-discovered-server'] = """
           text: |
             az migrate local get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG
+                --resource-group myRG
         - name: Get a specific discovered server by name
           text: |
             az migrate local get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --name machine-12345
         - name: Filter discovered servers by display name
           text: |
             az migrate local get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --display-name "web-server"
         - name: List VMware servers discovered by a specific appliance
           text: |
             az migrate local get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --appliance-name myVMwareAppliance \\
                 --source-machine-type VMware
         - name: Get a specific server from a specific appliance
           text: |
             az migrate local get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --appliance-name myAppliance \\
                 --name machine-12345 \\
                 --source-machine-type HyperV
@@ -152,14 +152,14 @@ helps['migrate local replication init'] = """
         - name: Initialize replication infrastructure
           text: |
             az migrate local replication init \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --project-name myMigrateProject \\
                 --source-appliance-name myVMwareAppliance \\
                 --target-appliance-name myAzStackHCIAppliance
         - name: Initialize and return success status
           text: |
             az migrate local replication init \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --project-name myMigrateProject \\
                 --source-appliance-name mySourceAppliance \\
                 --target-appliance-name myTargetAppliance \\
@@ -268,7 +268,7 @@ helps['migrate local replication new'] = """
             az migrate local replication new \\
                 --machine-index 1 \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --target-storage-path-id "XZXZ" \\
                 --target-resource-group-id "YZYZ" \\
                 --target-vm-name migratedVM01 \\
@@ -367,7 +367,7 @@ helps['migrate local replication get-job'] = """
           long-summary: >
             Specifies the full ARM resource ID of the job.
             When provided, retrieves the specific job details.
-        - name: --resource-group-name --resource-group -g
+        - name: --resource-group -g
           short-summary: Resource group name where the vault is present.
           long-summary: >
             The name of the resource group containing
@@ -377,7 +377,7 @@ helps['migrate local replication get-job'] = """
           short-summary: Name of the migrate project.
           long-summary: >
             The name of the Azure Migrate project.
-            Required when using --resource-group-name.
+            Required when using --resource-group.
         - name: --job-name --name
           short-summary: Job identifier/name.
           long-summary: >
@@ -396,13 +396,13 @@ helps['migrate local replication get-job'] = """
         - name: Get a specific job by name
           text: |
             az migrate local replication get-job \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --project-name myMigrateProject \\
                 --job-name myJobName
         - name: List all jobs in a project
           text: |
             az migrate local replication get-job \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --project-name myMigrateProject
         - name: Get job using short parameter names
           text: |

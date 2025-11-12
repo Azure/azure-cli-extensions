@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 
 def get_discovered_server(cmd,
                           project_name,
-                          resource_group_name,
+                          resource_group,
                           display_name=None,
                           source_machine_type=None,
                           subscription_id=None,
@@ -26,7 +26,7 @@ def get_discovered_server(cmd,
     Args:
         cmd: The CLI command context
         project_name (str): Specifies the migrate project name (required)
-        resource_group_name (str): Specifies the resource group name
+        resource_group (str): Specifies the resource group name
             (required)
         display_name (str, optional): Specifies the source machine
             display name
@@ -56,7 +56,7 @@ def get_discovered_server(cmd,
 
     # Validate required parameters
     validate_get_discovered_server_params(
-        project_name, resource_group_name, source_machine_type)
+        project_name, resource_group, source_machine_type)
 
     # Use current subscription if not provided
     if not subscription_id:
@@ -66,7 +66,7 @@ def get_discovered_server(cmd,
 
     # Build the base URI
     base_uri = build_base_uri(
-        subscription_id, resource_group_name, project_name,
+        subscription_id, resource_group, project_name,
         appliance_name, name, source_machine_type)
 
     # Use the correct API version
@@ -105,7 +105,7 @@ def get_discovered_server(cmd,
 
 
 def initialize_replication_infrastructure(cmd,
-                                          resource_group_name,
+                                          resource_group,
                                           project_name,
                                           source_appliance_name,
                                           target_appliance_name,
@@ -120,7 +120,7 @@ def initialize_replication_infrastructure(cmd,
 
     Args:
         cmd: The CLI command context
-        resource_group_name (str): Specifies the Resource Group of the
+        resource_group (str): Specifies the Resource Group of the
             Azure Migrate Project (required)
         project_name (str): Specifies the name of the Azure Migrate
             project to be used for server migration (required)
@@ -152,7 +152,7 @@ def initialize_replication_infrastructure(cmd,
     )
 
     # Validate required parameters
-    validate_required_parameters(resource_group_name,
+    validate_required_parameters(resource_group,
                                  project_name,
                                  source_appliance_name,
                                  target_appliance_name)
@@ -165,7 +165,7 @@ def initialize_replication_infrastructure(cmd,
 
         # Execute the complete setup workflow
         return execute_replication_infrastructure_setup(
-            cmd, subscription_id, resource_group_name, project_name,
+            cmd, subscription_id, resource_group, project_name,
             source_appliance_name, target_appliance_name,
             cache_storage_account_id, pass_thru
         )
@@ -187,7 +187,7 @@ def new_local_server_replication(cmd,
                                  machine_id=None,
                                  machine_index=None,
                                  project_name=None,
-                                 resource_group_name=None,
+                                 resource_group=None,
                                  target_vm_cpu_core=None,
                                  target_virtual_switch_id=None,
                                  target_test_virtual_switch_id=None,
@@ -224,7 +224,7 @@ def new_local_server_replication(cmd,
             machine_id not provided)
         project_name (str, optional): Specifies the migrate project name
             (required when using machine_index)
-        resource_group_name (str, optional): Specifies the resource group
+        resource_group (str, optional): Specifies the resource group
             name (required when using machine_index)
         target_vm_cpu_core (int, optional): Specifies the number of CPU
             cores
@@ -283,7 +283,7 @@ def new_local_server_replication(cmd,
         machine_id,
         machine_index,
         project_name,
-        resource_group_name,
+        resource_group,
         source_appliance_name,
         subscription_id)
 
@@ -461,7 +461,7 @@ def new_local_server_replication(cmd,
 
 def get_local_replication_job(cmd,
                               job_id=None,
-                              resource_group_name=None,
+                              resource_group=None,
                               project_name=None,
                               job_name=None,
                               subscription_id=None):
@@ -475,7 +475,7 @@ def get_local_replication_job(cmd,
         cmd: The CLI command context
         job_id (str, optional): Specifies the job ARM ID for which
             the details need to be retrieved
-        resource_group_name (str, optional): The name of the resource
+        resource_group (str, optional): The name of the resource
             group where the recovery services vault is present
         project_name (str, optional): The name of the migrate project
         job_name (str, optional): Job identifier/name
@@ -512,13 +512,14 @@ def get_local_replication_job(cmd,
         # Mode: Get job by ID
         vault_name, resource_group_name, job_name = \
             parse_job_id(job_id)
-    elif resource_group_name and project_name:
+    elif resource_group and project_name:
         # Mode: Get job by name or list jobs
         vault_name = get_vault_name_from_project(
-            cmd, resource_group_name, project_name, subscription_id)
+            cmd, resource_group, project_name, subscription_id)
+        resource_group_name = resource_group
     else:
         raise CLIError(
-            "Either --job-id or both --resource-group-name and "
+            "Either --job-id or both --resource-group and "
             "--project-name must be provided.")
 
     # Get a specific job or list all jobs

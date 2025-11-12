@@ -87,7 +87,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         get_discovered_server(
             cmd=mock_cmd,
             project_name=self.mock_project_name,
-            resource_group_name=self.mock_rg_name
+            resource_group=self.mock_rg_name
         )
 
         # Verify the fetch_all_servers was called correctly
@@ -120,7 +120,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         get_discovered_server(
             cmd=mock_cmd,
             project_name=self.mock_project_name,
-            resource_group_name=self.mock_rg_name,
+            resource_group=self.mock_rg_name,
             display_name=target_display_name
         )
 
@@ -147,7 +147,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         get_discovered_server(
             cmd=mock_cmd,
             project_name=self.mock_project_name,
-            resource_group_name=self.mock_rg_name,
+            resource_group=self.mock_rg_name,
             appliance_name=self.mock_appliance_name,
             source_machine_type="VMware"
         )
@@ -175,7 +175,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         get_discovered_server(
             cmd=mock_cmd,
             project_name=self.mock_project_name,
-            resource_group_name=self.mock_rg_name,
+            resource_group=self.mock_rg_name,
             appliance_name=self.mock_appliance_name,
             source_machine_type="HyperV"
         )
@@ -204,7 +204,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         get_discovered_server(
             cmd=mock_cmd,
             project_name=self.mock_project_name,
-            resource_group_name=self.mock_rg_name,
+            resource_group=self.mock_rg_name,
             name=specific_name
         )
 
@@ -234,7 +234,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         get_discovered_server(
             cmd=mock_cmd,
             project_name=self.mock_project_name,
-            resource_group_name=self.mock_rg_name
+            resource_group=self.mock_rg_name
         )
 
         # Verify fetch_all_servers was called once
@@ -251,7 +251,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
             get_discovered_server(
                 cmd=mock_cmd,
                 project_name=None,
-                resource_group_name=self.mock_rg_name
+                resource_group=self.mock_rg_name
             )
 
         self.assertIn("project_name", str(context.exception))
@@ -266,7 +266,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
             get_discovered_server(
                 cmd=mock_cmd,
                 project_name=self.mock_project_name,
-                resource_group_name=None
+                resource_group=None
             )
 
         self.assertIn("resource_group_name", str(context.exception))
@@ -281,7 +281,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
             get_discovered_server(
                 cmd=mock_cmd,
                 project_name=self.mock_project_name,
-                resource_group_name=self.mock_rg_name,
+                resource_group=self.mock_rg_name,
                 source_machine_type="InvalidType"
             )
 
@@ -514,7 +514,7 @@ class MigrateReplicationInitTests(ScenarioTest):
         with self.assertRaises(Exception):
             initialize_replication_infrastructure(
                 cmd=mock_cmd,
-                resource_group_name=self.mock_rg_name,
+                resource_group=self.mock_rg_name,
                 project_name=self.mock_project_name,
                 source_appliance_name=self.mock_source_appliance,
                 target_appliance_name=self.mock_target_appliance
@@ -536,7 +536,7 @@ class MigrateReplicationInitTests(ScenarioTest):
         with self.assertRaises((CLIError, KnackCLIError)) as context:
             initialize_replication_infrastructure(
                 cmd=mock_cmd,
-                resource_group_name=None,
+                resource_group=None,
                 project_name=self.mock_project_name,
                 source_appliance_name=self.mock_source_appliance,
                 target_appliance_name=self.mock_target_appliance
@@ -554,7 +554,7 @@ class MigrateReplicationInitTests(ScenarioTest):
         with self.assertRaises((CLIError, KnackCLIError)) as context:
             initialize_replication_infrastructure(
                 cmd=mock_cmd,
-                resource_group_name=self.mock_rg_name,
+                resource_group=self.mock_rg_name,
                 project_name=None,
                 source_appliance_name=self.mock_source_appliance,
                 target_appliance_name=self.mock_target_appliance
@@ -572,7 +572,7 @@ class MigrateReplicationInitTests(ScenarioTest):
         with self.assertRaises((CLIError, KnackCLIError)) as context:
             initialize_replication_infrastructure(
                 cmd=mock_cmd,
-                resource_group_name=self.mock_rg_name,
+                resource_group=self.mock_rg_name,
                 project_name=self.mock_project_name,
                 source_appliance_name=None,
                 target_appliance_name=self.mock_target_appliance
@@ -590,7 +590,7 @@ class MigrateReplicationInitTests(ScenarioTest):
         with self.assertRaises((CLIError, KnackCLIError)) as context:
             initialize_replication_infrastructure(
                 cmd=mock_cmd,
-                resource_group_name=self.mock_rg_name,
+                resource_group=self.mock_rg_name,
                 project_name=self.mock_project_name,
                 source_appliance_name=self.mock_source_appliance,
                 target_appliance_name=None
@@ -666,7 +666,7 @@ class MigrateReplicationNewTests(ScenarioTest):
                 machine_id=None,
                 machine_index=1,
                 project_name=None,  # Missing
-                resource_group_name=None,  # Missing
+                resource_group=None,  # Missing
                 target_storage_path_id=("/subscriptions/sub/resourceGroups"
                                         "/rg/providers/"
                                         "Microsoft.AzureStackHCI"
@@ -741,7 +741,7 @@ class MigrateReplicationNewTests(ScenarioTest):
                 machine_id=None,
                 machine_index=1,
                 project_name=self.mock_project_name,
-                resource_group_name=self.mock_rg_name,
+                resource_group=self.mock_rg_name,
                 target_storage_path_id=("/subscriptions/sub/resourceGroups/"
                                         "rg/providers/"
                                         "Microsoft.AzureStackHCI/"
