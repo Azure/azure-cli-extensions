@@ -17,6 +17,7 @@ import shutil
 import shlex
 
 from subprocess import check_output, CalledProcessError, run
+from typing import Optional
 from util import SRC_PATH
 
 logger = logging.getLogger(__name__)
@@ -66,7 +67,7 @@ def run_command(cmd, check_return_code=False, cwd=None):
         raise RuntimeError(f"{cmd} failed")
 
 
-def test_extension(whl_dir: Path):
+def test_extension(whl_dir: Optional[Path] = None):
     for pkg_name, ext_path in ALL_TESTS:
         ext_name = ext_path.split('/')[-1]
         logger.info(f'installing extension: {ext_name}')
@@ -88,25 +89,26 @@ def test_extension(whl_dir: Path):
         cmd = ['azdev', 'extension', 'remove', ext_name]
         run_command(cmd, check_return_code=True)
 
-        logger.info(f'installing extension wheel: {ext_name}')
-        wheel_path = next(whl_dir.glob(f"{ext_name}*.whl"))
-        subprocess.run(
-            f"az extension add -y -s {wheel_path}".split(" "),
-            check=True,
-        )
-        subprocess.run(
-            f"az {ext_name} --help".split(" "),
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        subprocess.run(
-            f"az extension remove -n {ext_name}".split(" "),
-            check=True,
-        )
+        if whl_dir is not None:
+            logger.info(f'installing extension wheel: {ext_name}')
+            wheel_path = next(whl_dir.glob(f"{ext_name}*.whl"))
+            subprocess.run(
+                f"az extension add -y -s {wheel_path}".split(" "),
+                check=True,
+            )
+            subprocess.run(
+                f"az {ext_name} --help".split(" "),
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            subprocess.run(
+                f"az extension remove -n {ext_name}".split(" "),
+                check=True,
+            )
 
 
-def test_source_wheels(whl_dir: Path):
+def test_source_wheels(whl_dir: Optional[Path] = None):
     # Test we can build all sources into wheels and that metadata from the wheel is valid
     built_whl_dir = tempfile.mkdtemp()
     source_extensions = [os.path.join(SRC_PATH, n) for n in os.listdir(SRC_PATH)
