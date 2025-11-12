@@ -2037,7 +2037,8 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             ctx_5.get_azure_keyvault_kms_key_id()
 
     def test_get_azure_keyvault_kms_key_id_with_pmk_validation(self):
-        # Test PMK-aware validation in _get_azure_keyvault_kms_key_id method
+        # Test that PMK validation is no longer performed in _get_azure_keyvault_kms_key_id method
+        # Since the validation logic was removed, all key ID formats should be accepted
 
         # PMK enabled (infrastructure encryption = "Enabled") - should accept versionless key ID
         versionless_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
@@ -2055,7 +2056,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id)
 
-        # PMK enabled - should reject versioned key ID (4 segments)
+        # PMK enabled - should now accept versioned key ID (4 segments) since validation is removed
         versioned_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname/fakeversion"
         ctx_pmk_versioned = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -2069,9 +2070,8 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        with self.assertRaises(InvalidArgumentValueError) as cm:
-            ctx_pmk_versioned.get_azure_keyvault_kms_key_id()
-        self.assertIn("not a valid versionless Key Vault key ID for PMK", str(cm.exception))
+        # No exception should be raised now that validation is removed
+        self.assertEqual(ctx_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id)
 
         # PMK disabled - should accept versioned key ID (4 segments)
         ctx_no_pmk_versioned = AKSPreviewManagedClusterContext(
@@ -2088,7 +2088,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_no_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id)
 
-        # PMK disabled - should reject versionless key ID (3 segments)
+        # PMK disabled - should now accept versionless key ID (3 segments) since validation is removed
         ctx_no_pmk_versionless = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
@@ -2101,9 +2101,8 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        with self.assertRaises(InvalidArgumentValueError) as cm:
-            ctx_no_pmk_versionless.get_azure_keyvault_kms_key_id()
-        self.assertIn("not a valid Key Vault key ID", str(cm.exception))
+        # No exception should be raised now that validation is removed
+        self.assertEqual(ctx_no_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id)
 
         # Test with existing cluster data (UPDATE mode) - PMK enabled should read from cluster
         ctx_update_pmk = AKSPreviewManagedClusterContext(
@@ -2349,16 +2348,15 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         })
         self.assertEqual(ctx_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id)
 
-        # Test 8: PMK enabled - should reject versioned key ID
+        # Test 8: PMK enabled - should now accept versioned key ID (validation removed)
         versioned_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname/fakeversion"
         ctx_pmk_versioned = self._create_kms_context({
             "enable_azure_keyvault_kms": True,
             "azure_keyvault_kms_key_id": versioned_key_id,
             "kms_infrastructure_encryption": "Enabled",
         })
-        with self.assertRaises(InvalidArgumentValueError) as cm:
-            ctx_pmk_versioned.get_azure_keyvault_kms_key_id()
-        self.assertIn("not a valid versionless Key Vault key ID for PMK", str(cm.exception))
+        # No exception should be raised since PMK validation was removed
+        self.assertEqual(ctx_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id)
 
         # Test 9: PMK disabled - should accept versioned key ID
         ctx_no_pmk_versioned = self._create_kms_context({
@@ -2368,15 +2366,14 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         })
         self.assertEqual(ctx_no_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id)
 
-        # Test 10: PMK disabled - should reject versionless key ID
+        # Test 10: PMK disabled - should now accept versionless key ID (validation removed)
         ctx_no_pmk_versionless = self._create_kms_context({
             "enable_azure_keyvault_kms": True,
             "azure_keyvault_kms_key_id": versionless_key_id,
             "kms_infrastructure_encryption": "Disabled",
         })
-        with self.assertRaises(InvalidArgumentValueError) as cm:
-            ctx_no_pmk_versionless.get_azure_keyvault_kms_key_id()
-        self.assertIn("not a valid Key Vault key ID", str(cm.exception))
+        # No exception should be raised since PMK validation was removed
+        self.assertEqual(ctx_no_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id)
 
         # Test 11: PMK enabled in UPDATE mode - should read PMK status from existing cluster
         ctx_update_pmk = self._create_kms_context({
@@ -8729,6 +8726,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_azure_key_vault_kms_7 = self.models.AzureKeyVaultKms(
             enabled=True,
             key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+            key_vault_network_access="Public",
             key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
         )
         ground_truth_kube_resource_encryption_profile_7 = self.models.KubernetesResourceObjectEncryptionProfile(
@@ -8791,8 +8789,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_mc_9 = dec_9.update_kms_pmk_cmk(mc_9)
 
         # should disable existing Azure Key Vault KMS
-        ground_truth_azure_key_vault_kms_9 = self.models.AzureKeyVaultKms()
-        ground_truth_azure_key_vault_kms_9.enabled = False
+        ground_truth_azure_key_vault_kms_9 = self.models.AzureKeyVaultKms(
+            enabled=False,
+            key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+            key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+        )
         ground_truth_kube_resource_encryption_profile_9 = self.models.KubernetesResourceObjectEncryptionProfile(
             infrastructure_encryption="Enabled"
         )
@@ -8830,6 +8831,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_azure_key_vault_kms_10 = self.models.AzureKeyVaultKms(
             enabled=True,
             key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+            key_vault_network_access="Public",
             key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
         )
         ground_truth_security_profile_10 = self.models.ManagedClusterSecurityProfile(
@@ -8841,6 +8843,51 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             security_profile=ground_truth_security_profile_10,
         )
         self.assertEqual(dec_mc_10, ground_truth_mc_10)
+
+        # test enabling PMK on cluster with disabled CMK
+        dec_11 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "kms_infrastructure_encryption": "Enabled",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # Start with a cluster that has CMK disabled with existing properties
+        existing_security_profile = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=self.models.AzureKeyVaultKms(
+                enabled=False,
+                key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+                key_vault_network_access="Private",
+                key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+            )
+        )
+        mc_11 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=existing_security_profile,
+        )
+        dec_11.context.attach_mc(mc_11)
+        dec_mc_11 = dec_11.update_kms_pmk_cmk(mc_11)
+
+        # should clear CMK properties and enable PMK
+        ground_truth_azure_key_vault_kms_11 = self.models.AzureKeyVaultKms(
+            enabled=False,
+            key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+            key_vault_network_access="Private",
+            key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
+        )
+        ground_truth_kube_resource_encryption_profile_11 = self.models.KubernetesResourceObjectEncryptionProfile(
+            infrastructure_encryption="Enabled"
+        )
+        ground_truth_security_profile_11 = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=ground_truth_azure_key_vault_kms_11,
+            kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_11,
+        )
+        ground_truth_mc_11 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_11,
+        )
+        self.assertEqual(dec_mc_11, ground_truth_mc_11)
 
     def test_update_workload_auto_scaler_profile(self):
         # Throws exception when incorrect mc object is passed.
@@ -12855,6 +12902,98 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             result_update_to_public.security_profile.azure_key_vault_kms.key_vault_network_access,
             "Public"
         )
+
+    def test_update_agentpool_profile_with_none_agent_pool_profiles(self):
+        """Test update_agentpool_profile handles None agent_pool_profiles with hosted system components"""
+        # Test case 1: None agent_pool_profiles with hosted system components enabled (should succeed)
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Create a managed cluster with None agent_pool_profiles but hosted system components enabled
+        hosted_system_profile = self.models.ManagedClusterHostedSystemProfile(enabled=True)
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=None,  # This is the key scenario
+            hosted_system_profile=hosted_system_profile
+        )
+        dec_1.context.attach_mc(mc_1)
+
+        # Should return the MC unchanged without raising an error
+        result_1 = dec_1.update_agentpool_profile(mc_1)
+        self.assertEqual(result_1, mc_1)
+        self.assertIsNone(result_1.agent_pool_profiles)
+        self.assertTrue(result_1.hosted_system_profile.enabled)
+
+    def test_update_agentpool_profile_with_none_agent_pool_profiles_no_hosted_system(self):
+        """Test update_agentpool_profile raises UnknownError for None agent_pool_profiles without hosted system components"""
+        # Test case 2: None agent_pool_profiles without hosted system components (should raise UnknownError)
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Create a managed cluster with None agent_pool_profiles and no hosted system components
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=None,  # This is the key scenario
+            hosted_system_profile=None
+        )
+        dec_2.context.attach_mc(mc_2)
+
+        # Should raise UnknownError
+        with self.assertRaises(UnknownError):
+            dec_2.update_agentpool_profile(mc_2)
+
+    def test_update_agentpool_profile_with_none_agent_pool_profiles_hosted_system_disabled(self):
+        """Test update_agentpool_profile raises UnknownError for None agent_pool_profiles with hosted system components disabled"""
+        # Test case 3: None agent_pool_profiles with hosted system components disabled (should raise UnknownError)
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Create a managed cluster with None agent_pool_profiles and hosted system components disabled
+        hosted_system_profile_disabled = self.models.ManagedClusterHostedSystemProfile(enabled=False)
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=None,  # This is the key scenario
+            hosted_system_profile=hosted_system_profile_disabled
+        )
+        dec_3.context.attach_mc(mc_3)
+
+        # Should raise UnknownError
+        with self.assertRaises(UnknownError):
+            dec_3.update_agentpool_profile(mc_3)
+
+    def test_update_agentpool_profile_with_empty_agent_pool_profiles(self):
+        """Test update_agentpool_profile raises UnknownError for empty agent_pool_profiles list"""
+        # Test case 4: Empty agent_pool_profiles list (should raise UnknownError)
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Create a managed cluster with empty agent_pool_profiles
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[],  # Empty list scenario
+            hosted_system_profile=None
+        )
+        dec_4.context.attach_mc(mc_4)
+
+        # Should raise UnknownError
+        with self.assertRaises(UnknownError):
+            dec_4.update_agentpool_profile(mc_4)
 
 if __name__ == "__main__":
     unittest.main()

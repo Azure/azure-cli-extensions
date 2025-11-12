@@ -16,6 +16,31 @@ Pending
  - `az aks applicationloadbalancer disable`: Disable Application Load Balancer add-on for an existing cluster.
  - `az aks applicationloadbalancer update`: Update Application Load Balancer add-on for an existing cluster.
 
+19.0.0b16
++++++++
+* Update --enable-container-network-logs DCR to ContainerNetworkLogs instead of RetinaNetworkFlowLogs
+
+19.0.0b15
++++++++
+* Fix `NoneType` error when performing operations on automatic clusters that have hosted system components enabled.
+
+19.0.0b14
++++++++
+* `az aks safeguards`: Add support for Deployment Safeguards with Pod Security Standards (PSS). New `--pss-level` parameter allows setting PSS enforcement level to Privileged, Baseline, or Restricted. Commands now support both `-g/-n` and `--cluster` argument patterns.
+
+19.0.0b13
++++++++
+* `az aks update`: Set CMK property "enabled" to false and reserve other CMK properties for a PMK-enabled and CMK-disabled cluster.
+
+19.0.0b12
++++++++
+* `az aks create --workload-runtime KataVmIsolation`: Added the KataVmIsolation workload runtime value.
+
+19.0.0b11
++++++++
+* Remove PMK validation for `--azure-keyvault-kms-key-id` parameter.
+* `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when enabling PMK on a CMK-disabled cluster
+
 19.0.0b10
 +++++++
 * Vendor new SDK and bump API version to 2025-08-02-preview.
@@ -37,7 +62,7 @@ Pending
 * `az aks create`: Add new parameter `--enable-container-network-logs` to enable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs`.
 * `az aks update`: Add new parameter `--enable-container-network-logs` and `--disable-container-network-logs` to enable/disable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs` and `--disable-retina-flow-logs`.
 * Support `entraid` for parameter `--ssh-access` to support EntraID feature.
-* `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when "--disable-azure-keyvault-kms" is specified
+* `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when disabling CMK on a PMK-enabled cluster
 
 19.0.0b6
 +++++++
