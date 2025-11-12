@@ -12,26 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor show",
+    "dynatrace observability monitor list",
 )
-class Show(AAZCommand):
-    """Get Dynatrace resource properties including Dynatrace Environment information, SSO properties, resource location, marketplace subscription status and associated user information.
+class List(AAZCommand):
+    """List all MonitorResource by subscriptionId
 
-    :example: Show a monitor
-        az dynatrace monitor show -g rg -n monitor
+    :example: Monitors_ListBySubscriptionId_MaximumSet_Gen
+        az dynatrace observability monitor list
     """
 
     _aaz_info = {
         "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}", "2024-04-24"],
+            ["mgmt-plane", "/subscriptions/{}/providers/dynatrace.observability/monitors", "2024-04-24"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -42,25 +43,11 @@ class Show(AAZCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
-
-        _args_schema = cls._args_schema
-        _args_schema.monitor_name = AAZStrArg(
-            options=["-n", "--name", "--monitor-name"],
-            help="Monitor resource name",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9_-]*$",
-            ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsGet(ctx=self.ctx)()
+        self.MonitorsListBySubscriptionId(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,10 +59,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class MonitorsGet(AAZHttpOperation):
+    class MonitorsListBySubscriptionId(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -89,7 +77,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}",
+                "/subscriptions/{subscriptionId}/providers/Dynatrace.Observability/monitors",
                 **self.url_parameters
             )
 
@@ -104,14 +92,6 @@ class Show(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "monitorName", self.ctx.args.monitor_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -156,29 +136,40 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
             )
-            _schema_on_200.identity = AAZIdentityObjectType()
-            _schema_on_200.location = AAZStrType(
+            _schema_on_200.value = AAZListType(
                 flags={"required": True},
             )
-            _schema_on_200.name = AAZStrType(
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+            _element.identity = AAZIdentityObjectType()
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
                 flags={"required": True, "client_flatten": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200.identity
+            identity = cls._schema_on_200.value.Element.identity
             identity.principal_id = AAZStrType(
                 serialized_name="principalId",
                 flags={"read_only": True},
@@ -194,10 +185,10 @@ class Show(AAZCommand):
                 serialized_name="userAssignedIdentities",
             )
 
-            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
             user_assigned_identities.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
                 serialized_name="clientId",
                 flags={"read_only": True},
@@ -207,7 +198,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.dynatrace_environment_properties = AAZObjectType(
                 serialized_name="dynatraceEnvironmentProperties",
             )
@@ -239,7 +230,7 @@ class Show(AAZCommand):
                 serialized_name="userInfo",
             )
 
-            dynatrace_environment_properties = cls._schema_on_200.properties.dynatrace_environment_properties
+            dynatrace_environment_properties = cls._schema_on_200.value.Element.properties.dynatrace_environment_properties
             dynatrace_environment_properties.account_info = AAZObjectType(
                 serialized_name="accountInfo",
             )
@@ -253,7 +244,7 @@ class Show(AAZCommand):
                 serialized_name="userId",
             )
 
-            account_info = cls._schema_on_200.properties.dynatrace_environment_properties.account_info
+            account_info = cls._schema_on_200.value.Element.properties.dynatrace_environment_properties.account_info
             account_info.account_id = AAZStrType(
                 serialized_name="accountId",
             )
@@ -264,7 +255,7 @@ class Show(AAZCommand):
                 serialized_name="regionId",
             )
 
-            environment_info = cls._schema_on_200.properties.dynatrace_environment_properties.environment_info
+            environment_info = cls._schema_on_200.value.Element.properties.dynatrace_environment_properties.environment_info
             environment_info.environment_id = AAZStrType(
                 serialized_name="environmentId",
             )
@@ -278,7 +269,7 @@ class Show(AAZCommand):
                 serialized_name="logsIngestionEndpoint",
             )
 
-            single_sign_on_properties = cls._schema_on_200.properties.dynatrace_environment_properties.single_sign_on_properties
+            single_sign_on_properties = cls._schema_on_200.value.Element.properties.dynatrace_environment_properties.single_sign_on_properties
             single_sign_on_properties.aad_domains = AAZListType(
                 serialized_name="aadDomains",
             )
@@ -296,10 +287,10 @@ class Show(AAZCommand):
                 serialized_name="singleSignOnUrl",
             )
 
-            aad_domains = cls._schema_on_200.properties.dynatrace_environment_properties.single_sign_on_properties.aad_domains
+            aad_domains = cls._schema_on_200.value.Element.properties.dynatrace_environment_properties.single_sign_on_properties.aad_domains
             aad_domains.Element = AAZStrType()
 
-            plan_data = cls._schema_on_200.properties.plan_data
+            plan_data = cls._schema_on_200.value.Element.properties.plan_data
             plan_data.billing_cycle = AAZStrType(
                 serialized_name="billingCycle",
             )
@@ -313,7 +304,7 @@ class Show(AAZCommand):
                 serialized_name="usageType",
             )
 
-            user_info = cls._schema_on_200.properties.user_info
+            user_info = cls._schema_on_200.value.Element.properties.user_info
             user_info.country = AAZStrType()
             user_info.email_address = AAZStrType(
                 serialized_name="emailAddress",
@@ -328,7 +319,7 @@ class Show(AAZCommand):
                 serialized_name="phoneNumber",
             )
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -348,14 +339,14 @@ class Show(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
+            tags = cls._schema_on_200.value.Element.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Show"]
+__all__ = ["List"]

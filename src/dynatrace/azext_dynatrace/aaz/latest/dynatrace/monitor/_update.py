@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "dynatrace monitor update",
 )
 class Update(AAZCommand):
-    """Update a Dynatrace resource on Azure for monitoring and observability needs.
+    """Update a MonitorResource
 
-    :example: Update monitor
-        az dynatrace monitor update -g {rg} -n {monitor} --tags {{env:dev}}
+    :example: Monitors_Update_MaximumSet_Gen
+        az dynatrace monitor update --resource-group myResourceGroup --monitor-name myMonitor --tags "{Environment:Dev}" --plan-data "{usage-type:Committed,billing-cycle:Monthly,plan-details:dynatraceapitestplan,effective-date:'2019-08-30'}"
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}", "2024-04-24"],
         ]
     }
 
@@ -49,9 +49,61 @@ class Update(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities.",
+            blank=[],
+        )
+
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.plan_data = AAZObjectArg(
+            options=["--plan-data"],
+            arg_group="Properties",
+            help="The new Billing plan information.",
+        )
+
+        plan_data = cls._args_schema.plan_data
+        plan_data.billing_cycle = AAZStrArg(
+            options=["billing-cycle"],
+            help="different billing cycles like MONTHLY/WEEKLY. this could be enum",
+        )
+        plan_data.effective_date = AAZDateTimeArg(
+            options=["effective-date"],
+            help="date when plan was applied",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
+        )
+        plan_data.plan_details = AAZStrArg(
+            options=["plan-details"],
+            help="plan id as published by Dynatrace",
+        )
+        plan_data.usage_type = AAZStrArg(
+            options=["usage-type"],
+            help="different usage type like PAYG/COMMITTED. this could be enum",
         )
 
         # define Arg Group "Resource"
@@ -132,7 +184,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -157,7 +209,29 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZIdentityObjectType)
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("planData", AAZObjectType, ".plan_data")
+
+            plan_data = _builder.get(".properties.planData")
+            if plan_data is not None:
+                plan_data.set_prop("billingCycle", AAZStrType, ".billing_cycle")
+                plan_data.set_prop("effectiveDate", AAZStrType, ".effective_date")
+                plan_data.set_prop("planDetails", AAZStrType, ".plan_details")
+                plan_data.set_prop("usageType", AAZStrType, ".usage_type")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -227,11 +301,11 @@ class Update(AAZCommand):
             _element = cls._schema_on_200.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
                 serialized_name="clientId",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             _element.principal_id = AAZStrType(
                 serialized_name="principalId",
-                flags={"required": True},
+                flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
@@ -240,10 +314,14 @@ class Update(AAZCommand):
             )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",
+                flags={"read_only": True},
             )
             properties.liftr_resource_preference = AAZIntType(
                 serialized_name="liftrResourcePreference",
                 flags={"read_only": True},
+            )
+            properties.marketplace_saas_auto_renew = AAZStrType(
+                serialized_name="marketplaceSaasAutoRenew",
             )
             properties.marketplace_subscription_status = AAZStrType(
                 serialized_name="marketplaceSubscriptionStatus",
@@ -256,6 +334,7 @@ class Update(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.user_info = AAZObjectType(
                 serialized_name="userInfo",
@@ -278,6 +357,9 @@ class Update(AAZCommand):
             account_info = cls._schema_on_200.properties.dynatrace_environment_properties.account_info
             account_info.account_id = AAZStrType(
                 serialized_name="accountId",
+            )
+            account_info.company_name = AAZStrType(
+                serialized_name="companyName",
             )
             account_info.region_id = AAZStrType(
                 serialized_name="regionId",
@@ -306,6 +388,7 @@ class Update(AAZCommand):
             )
             single_sign_on_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             single_sign_on_properties.single_sign_on_state = AAZStrType(
                 serialized_name="singleSignOnState",

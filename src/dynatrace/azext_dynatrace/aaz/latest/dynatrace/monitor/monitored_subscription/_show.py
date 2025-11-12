@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor sso-config show",
+    "dynatrace monitor monitored-subscription show",
 )
 class Show(AAZCommand):
-    """Get information about a specific Dynatrace SSO configuration including SSO state and URL.
+    """Get the subscriptions currently being monitored by the Dynatrace monitor resource.
 
-    :example: Show sso-config
-        az dynatrace monitor sso-config show -g rg --monitor-name monitor -n default
+    :example: Monitors_GetMonitoredSubscriptions
+        az dynatrace monitor monitored-subscription show --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
         "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/singlesignonconfigurations/{}", "2024-04-24"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/monitoredsubscriptions/default", "2024-04-24"],
         ]
     }
 
@@ -44,15 +44,6 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-name"],
-            help="Single Sign On Configuration Name",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z]*$",
-            ),
-        )
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
             help="Monitor resource name",
@@ -69,7 +60,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SingleSignOnGet(ctx=self.ctx)()
+        self.MonitoredSubscriptionsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -84,7 +75,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SingleSignOnGet(AAZHttpOperation):
+    class MonitoredSubscriptionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -98,7 +89,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/singleSignOnConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/monitoredSubscriptions/default",
                 **self.url_parameters
             )
 
@@ -113,10 +104,6 @@ class Show(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "monitorName", self.ctx.args.monitor_name,
                     required=True,
@@ -175,63 +162,102 @@ class Show(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.aad_domains = AAZListType(
-                serialized_name="aadDomains",
-            )
-            properties.enterprise_app_id = AAZStrType(
-                serialized_name="enterpriseAppId",
+            properties.monitored_subscription_list = AAZListType(
+                serialized_name="monitoredSubscriptionList",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.single_sign_on_state = AAZStrType(
-                serialized_name="singleSignOnState",
+
+            monitored_subscription_list = cls._schema_on_200.properties.monitored_subscription_list
+            monitored_subscription_list.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.monitored_subscription_list.Element
+            _element.error = AAZStrType()
+            _element.status = AAZStrType()
+            _element.subscription_id = AAZStrType(
+                serialized_name="subscriptionId",
+                flags={"required": True},
             )
-            properties.single_sign_on_url = AAZStrType(
-                serialized_name="singleSignOnUrl",
+            _element.tag_rules = AAZObjectType(
+                serialized_name="tagRules",
             )
 
-            aad_domains = cls._schema_on_200.properties.aad_domains
-            aad_domains.Element = AAZStrType()
+            tag_rules = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules
+            tag_rules.log_rules = AAZObjectType(
+                serialized_name="logRules",
+            )
+            tag_rules.metric_rules = AAZObjectType(
+                serialized_name="metricRules",
+            )
+            tag_rules.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
 
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
+            log_rules = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.log_rules
+            log_rules.filtering_tags = AAZListType(
+                serialized_name="filteringTags",
             )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
+            log_rules.send_aad_logs = AAZStrType(
+                serialized_name="sendAadLogs",
             )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
+            log_rules.send_activity_logs = AAZStrType(
+                serialized_name="sendActivityLogs",
             )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
+            log_rules.send_subscription_logs = AAZStrType(
+                serialized_name="sendSubscriptionLogs",
             )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
+
+            filtering_tags = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.log_rules.filtering_tags
+            filtering_tags.Element = AAZObjectType()
+            _ShowHelper._build_schema_filtering_tag_read(filtering_tags.Element)
+
+            metric_rules = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.metric_rules
+            metric_rules.filtering_tags = AAZListType(
+                serialized_name="filteringTags",
             )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
+            metric_rules.sending_metrics = AAZStrType(
+                serialized_name="sendingMetrics",
             )
+
+            filtering_tags = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.metric_rules.filtering_tags
+            filtering_tags.Element = AAZObjectType()
+            _ShowHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             return cls._schema_on_200
 
 
 class _ShowHelper:
     """Helper class for Show"""
+
+    _schema_filtering_tag_read = None
+
+    @classmethod
+    def _build_schema_filtering_tag_read(cls, _schema):
+        if cls._schema_filtering_tag_read is not None:
+            _schema.action = cls._schema_filtering_tag_read.action
+            _schema.name = cls._schema_filtering_tag_read.name
+            _schema.value = cls._schema_filtering_tag_read.value
+            return
+
+        cls._schema_filtering_tag_read = _schema_filtering_tag_read = AAZObjectType()
+
+        filtering_tag_read = _schema_filtering_tag_read
+        filtering_tag_read.action = AAZStrType()
+        filtering_tag_read.name = AAZStrType()
+        filtering_tag_read.value = AAZStrType()
+
+        _schema.action = cls._schema_filtering_tag_read.action
+        _schema.name = cls._schema_filtering_tag_read.name
+        _schema.value = cls._schema_filtering_tag_read.value
 
 
 __all__ = ["Show"]

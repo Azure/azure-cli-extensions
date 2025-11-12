@@ -15,12 +15,12 @@ from azure.cli.core.aaz import *
     "dynatrace monitor tag-rule wait",
 )
 class Wait(AAZWaitCommand):
-    """Pauses CLI execution until a specified tag rule operation completes or reaches a defined state.
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2024-04-24"],
         ]
     }
 
@@ -45,6 +45,9 @@ class Wait(AAZWaitCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -54,6 +57,9 @@ class Wait(AAZWaitCommand):
             help="Monitor rule set name",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]*$",
+            ),
         )
         return cls._args_schema
 
@@ -126,7 +132,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -185,6 +191,7 @@ class Wait(AAZWaitCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             log_rules = cls._schema_on_200.properties.log_rules
@@ -208,6 +215,9 @@ class Wait(AAZWaitCommand):
             metric_rules = cls._schema_on_200.properties.metric_rules
             metric_rules.filtering_tags = AAZListType(
                 serialized_name="filteringTags",
+            )
+            metric_rules.sending_metrics = AAZStrType(
+                serialized_name="sendingMetrics",
             )
 
             filtering_tags = cls._schema_on_200.properties.metric_rules.filtering_tags
