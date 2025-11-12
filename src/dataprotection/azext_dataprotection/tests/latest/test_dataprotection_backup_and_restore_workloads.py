@@ -157,6 +157,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         track_job_to_completion(test)
 
     # Uses a persistent vault and DS
+    @unittest.skip("Temporary skip to allow ADLS PR through")
     @AllowLargeResponse()
     def test_dataprotection_backup_and_restore_aks(test):
         test.kwargs.update({

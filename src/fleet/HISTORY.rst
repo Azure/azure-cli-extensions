@@ -160,3 +160,12 @@ Release History
 ++++++
 * Upgrade SDK version to 2025-08-01-preview
 * Add Fleet Managed Namespace support
+
+
+1.8.1
+++++++
+* Ensure role assignment is created for private fleets before fleet creation.
+
+1.8.2
+++++++
+* Fix fleet namespace get-credentials command with fleet member parameter.

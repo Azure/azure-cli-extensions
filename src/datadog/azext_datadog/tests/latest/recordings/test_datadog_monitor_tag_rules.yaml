@@ -1,0 +1,285 @@
+interactions:
+- request:
+    body: '{"properties": {"logRules": {"filteringTags": [{"action": "Include", "name":
+      "Environment", "value": "Prod"}], "sendAadLogs": false, "sendResourceLogs":
+      true, "sendSubscriptionLogs": true}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog tag-rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '190'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --monitor-name --rule-set-name --log-rules
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/tagRules/default?api-version=2025-06-11
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/tagRules/default","name":"default","type":"microsoft.datadog/monitors/tagrules","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-30T21:37:07.2258012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-31T07:59:50.1024961Z"},"properties":{"provisioningState":"Succeeded","logRules":{"sendAadLogs":false,"sendSubscriptionLogs":true,"sendResourceLogs":true,"filteringTags":[{"name":"Environment","value":"Prod","action":"Include"}]},"metricRules":{"filteringTags":[]},"agentRules":{"enableAgentMonitoring":false,"filteringTags":[]},"automuting":true,"customMetrics":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '789'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 07:59:52 GMT
+      etag:
+      - '"120033c6-0000-3300-0000-69046c780000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - fab2bb33-200f-4884-bc68-ee90debb6f7e
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0b211baa-00db-496b-b625-0e3961b2c5bd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/centraluseuap/ee6d62dd-3409-4851-b07a-4ec4a2f8e2ea
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 269C88FED5964C9A8856C798A8E3FC5F Ref B: MAA201060514033 Ref C: 2025-10-31T07:59:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog tag-rule update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --monitor-name --rule-set-name --log-rules
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/tagRules/default?api-version=2025-06-11
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/tagRules/default","name":"default","type":"microsoft.datadog/monitors/tagrules","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-30T21:37:07.2258012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-31T07:59:50.1024961Z"},"properties":{"provisioningState":"Succeeded","logRules":{"sendAadLogs":false,"sendSubscriptionLogs":true,"sendResourceLogs":true,"filteringTags":[{"name":"Environment","value":"Prod","action":"Include"}]},"metricRules":{"filteringTags":[]},"agentRules":{"enableAgentMonitoring":false,"filteringTags":[]},"automuting":true,"customMetrics":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '789'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 07:59:53 GMT
+      etag:
+      - '"120033c6-0000-3300-0000-69046c780000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/eastus2euap/ee0de567-39cd-4a7c-9a88-8b8d9291afdd
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 8E9848D5B06942EDA765BCF7435CF051 Ref B: MAA201060515017 Ref C: 2025-10-31T07:59:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"agentRules": {"enableAgentMonitoring": false, "filteringTags":
+      []}, "automuting": true, "logRules": {"filteringTags": [{"action": "Exclude",
+      "name": "Environment", "value": "Prod"}], "sendAadLogs": false, "sendResourceLogs":
+      true, "sendSubscriptionLogs": true}, "metricRules": {"filteringTags": []}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog tag-rule update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '317'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --monitor-name --rule-set-name --log-rules
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/tagRules/default?api-version=2025-06-11
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/tagRules/default","name":"default","type":"microsoft.datadog/monitors/tagrules","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-30T21:37:07.2258012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-31T07:59:54.6907095Z"},"properties":{"provisioningState":"Succeeded","logRules":{"sendAadLogs":false,"sendSubscriptionLogs":true,"sendResourceLogs":true,"filteringTags":[{"name":"Environment","value":"Prod","action":"Exclude"}]},"metricRules":{"filteringTags":[]},"agentRules":{"enableAgentMonitoring":false,"filteringTags":[]},"automuting":true,"customMetrics":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '789'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 07:59:55 GMT
+      etag:
+      - '"120035c6-0000-3300-0000-69046c7b0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 160f8a7a-9ac4-4f1e-9148-962ba23168f1
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0b211baa-00db-496b-b625-0e3961b2c5bd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/eastus2euap/3ae69fe5-fc9e-4751-8a9a-ceaff541807f
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 1E443551C5364F8DA12F7C63B87D5657 Ref B: MAA201060515039 Ref C: 2025-10-31T07:59:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog tag-rule list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --monitor-name
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/tagRules?api-version=2025-06-11
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/tagRules/default","name":"default","type":"microsoft.datadog/monitors/tagrules","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-30T21:37:07.2258012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-31T07:59:54.6907095Z"},"properties":{"provisioningState":"Succeeded","logRules":{"sendAadLogs":false,"sendSubscriptionLogs":true,"sendResourceLogs":true,"filteringTags":[{"name":"Environment","value":"Prod","action":"Exclude"}]},"metricRules":{"filteringTags":[]},"agentRules":{"enableAgentMonitoring":false,"filteringTags":[]},"automuting":true}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '780'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 07:59:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/eastus2euap/7e599fc9-6148-4eb5-92bd-d2f8d2886469
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: B699027F2E0643D299A0EAC1A6185C36 Ref B: MAA201060513021 Ref C: 2025-10-31T07:59:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog tag-rule show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --monitor-name --rule-set-name
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/tagRules/default?api-version=2025-06-11
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/tagRules/default","name":"default","type":"microsoft.datadog/monitors/tagrules","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-30T21:37:07.2258012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-31T07:59:54.6907095Z"},"properties":{"provisioningState":"Succeeded","logRules":{"sendAadLogs":false,"sendSubscriptionLogs":true,"sendResourceLogs":true,"filteringTags":[{"name":"Environment","value":"Prod","action":"Exclude"}]},"metricRules":{"filteringTags":[]},"agentRules":{"enableAgentMonitoring":false,"filteringTags":[]},"automuting":true,"customMetrics":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '789'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 07:59:57 GMT
+      etag:
+      - '"120035c6-0000-3300-0000-69046c7b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/eastus2euap/aaebb130-42fa-4c3d-8f40-e14904e21a08
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 8D0592D945344192A0D4CE2312538FBE Ref B: MAA201060515031 Ref C: 2025-10-31T07:59:57Z'
+    status:
+      code: 200
+      message: OK
+version: 1

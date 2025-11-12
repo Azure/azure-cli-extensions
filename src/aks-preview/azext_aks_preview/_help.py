@@ -239,7 +239,10 @@ helps['aks create'] = f"""
           short-summary: Used to set the acceleration mode (None or BpfVeth) on a cluster when enabling advanced networking features with "--enable-acns".
         - name: --enable-retina-flow-logs
           type: bool
-          short-summary: Enable advanced network flow log collection functionalities on a cluster.
+          short-summary: Enable advanced network flow log collection functionalities on a cluster. This flag is deprecated in favor of --enable-container-network-logs.
+        - name: --enable-container-network-logs
+          type: bool
+          short-summary: Enable container network log collection functionalities on a cluster.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -1337,10 +1340,16 @@ helps['aks update'] = """
           short-summary: Used to set the acceleration mode (None or BpfVeth) on a cluster when enabling advanced networking features with "--enable-acns".
         - name: --enable-retina-flow-logs
           type: bool
-          short-summary: Enable advanced network flow log collection functionalities on a cluster.
+          short-summary: Enable advanced network flow log collection functionalities on a cluster. This flag is deprecated in favor of --enable-container-network-logs.
+        - name: --enable-container-network-logs
+          type: bool
+          short-summary: Enable container network log collection functionalities on a cluster.
         - name: --disable-retina-flow-logs
           type: bool
-          short-summary: Disable advanced network flow log collection functionalities on a cluster.
+          short-summary: Disable advanced network flow log collection functionalities on a cluster. This flag is deprecated in favor of --disable-container-network-logs.
+        - name: --disable-container-network-logs
+          type: bool
+          short-summary: Disable container network log collection functionalities on a cluster.
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
@@ -1892,9 +1901,9 @@ helps['aks namespace add'] = """
           short-summary: Do not wait for the long-running operation to finish.
     examples:
         - name: Create a namespace in an existing AKS cluster.
-          text: az aks namespace add -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview
+          text: az aks namespace add -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi
         - name: Create a namespace in an existing AKS cluster with labels, annotations and tags
-          text: az aks namespace add -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --labels a=b p=q --annotations a=b p=q --tags a=b p=q --cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview
+          text: az aks namespace add -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --labels a=b p=q --annotations a=b p=q --tags a=b p=q --cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi
 """
 
 helps['aks namespace update'] = """
@@ -1945,7 +1954,7 @@ helps['aks namespace update'] = """
           short-summary: Do not wait for the long-running operation to finish
     examples:
         - name: update namespace in an existing AKS cluster.
-          text: az aks namespace update -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --labels a=b p=q --annotations a=b p=q --tags a=b p=q --cpu-request 600m --cpu-limit 800m --memory-request 2Gi --memory-limit 3Gi --adoption-policy Always --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview
+          text: az aks namespace update -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --labels a=b p=q --annotations a=b p=q --tags a=b p=q --cpu-request 600m --cpu-limit 800m --memory-request 2Gi --memory-limit 3Gi --adoption-policy Always
 """
 
 helps['aks namespace show'] = """
@@ -2609,6 +2618,30 @@ helps['aks machine add'] = """
        - name: --node-public-ip-tags
          type: string
          short-summary: The ipTags of the machine public IPs.
+"""
+
+helps['aks machine update'] = """
+   type: command
+   short-summary: Update the specified machine in an agentpool
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster.
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster.
+       - name: --machine-name
+         type: string
+         short-summary: Host name of the machine.
+       - name: --tags
+         type: string
+         short-summary: The tags of the machine.
+       - name: --labels
+         type: string
+         short-summary: The labels of the machine.
+       - name: --node-taints
+         type: string
+         short-summary: The taints of the machine.
 """
 
 helps['aks machine list'] = """

@@ -9,7 +9,7 @@ from codecs import open as open1
 
 from setuptools import find_packages, setup
 
-VERSION = "1.0.0b7"
+VERSION = "1.0.0b11"
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
@@ -25,6 +25,7 @@ CLASSIFIERS = [
 
 DEPENDENCIES = [
     "rich==13.9.4",
+    "supabase==2.8.0",
     "holmesgpt==0.15.0; python_version >= '3.10'",
 ]
 

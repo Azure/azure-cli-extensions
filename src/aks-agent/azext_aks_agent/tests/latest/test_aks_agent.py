@@ -6,13 +6,10 @@ import logging
 import os
 import sys
 import unittest
-from types import SimpleNamespace
-from unittest.mock import MagicMock, Mock, call, patch
+from unittest.mock import Mock, patch
 
-from azext_aks_agent._consts import (CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY,
-                                     CONST_AGENT_NAME,
-                                     CONST_AGENT_NAME_ENV_KEY)
-from azext_aks_agent.agent.agent import aks_agent, init_log
+from azext_aks_agent.agent.agent import aks_agent
+from azext_aks_agent.agent.logging import init_log
 from azure.cli.core.util import CLIError
 
 # Mock the holmes modules before any imports that might trigger holmes imports
@@ -35,28 +32,6 @@ def setUpModule():
     # Skip all tests in this module for Python versions below 3.10
     if sys.version_info < (3, 10):
         raise unittest.SkipTest("Tests in this module require Python >= 3.10")
-
-
-class TestInitLog(unittest.TestCase):
-    """Test cases for init_log function"""
-
-    @patch('azext_aks_agent.agent.agent.logging.getLogger')
-    def test_init_log_logger_level_setting(self, mock_get_logger):
-        """Test that specific loggers get WARNING level set"""
-        # Arrange
-        mock_logger = Mock()
-        mock_get_logger.return_value = mock_logger
-
-        with patch('holmes.utils.console.logging.init_logging') as mock_init_logging:
-            mock_init_logging.return_value = Mock()
-
-            # Act
-            init_log()
-
-            # Assert that setLevel was called 6 times with WARNING
-            self.assertEqual(mock_logger.setLevel.call_count, 6)
-            for call_args in mock_logger.setLevel.call_args_list:
-                self.assertEqual(call_args[0][0], logging.WARNING)
 
 
 class TestAksAgent(unittest.TestCase):

@@ -5,11 +5,18 @@
 
 
 import requests
+
 from .base import LLMProvider, non_empty
 
 
 class GeminiProvider(LLMProvider):
-    name = "gemini"
+    @property
+    def readable_name(self) -> str:
+        return "Gemini"
+
+    @property
+    def model_route(self) -> str:
+        return "gemini"
 
     @property
     def parameter_schema(self):
