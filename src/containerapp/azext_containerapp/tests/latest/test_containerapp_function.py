@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from subprocess import run
+from time import sleep
 import json
 import os
 import time
@@ -28,6 +30,11 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerappFunctionTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, random_config_dir=True, **kwargs)
+        cmd = ['azdev', 'extension', 'add', 'applicationinsights']
+        run(cmd, check=True)
+        cmd = ['azdev', 'extension', 'add', 'azure-mgmt-applicationinsights']
+        run(cmd, check=True)
+        sleep(120)
     
 
     @AllowLargeResponse(8192)
