@@ -13,7 +13,7 @@ TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "quantinuum/basic1"
 TEST_CAPABILITIES_DEFAULT = "new.quantinuum;submit.quantinuum"
 TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "quantinuum/basic1"
 TEST_TARGET_DEFAULT_PROVIDER = "quantinuum"
-TEST_TARGET_DEFAULT_TARGET = "quantinuum.sim.h1-1sc"
+TEST_TARGET_DEFAULT_TARGET = "quantinuum.sim.h2-1sc"
 
 
 def get_from_os_environment(env_name, default):

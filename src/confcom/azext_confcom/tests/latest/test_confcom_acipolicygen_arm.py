@@ -54,7 +54,6 @@ def test_acipolicygen(sample_directory, generated_policy_path):
 
     for failing_sample_directory, failing_generated_policy_paths in [
         ("multi_container_groups", ("policy_fragment.rego", "policy_fragment_plus_infrastructure_svn.rego")), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9229
-        (None, ("policy_exclude_default_fragment.rego",)), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9198
     ]:
         if (
             (sample_directory == failing_sample_directory or failing_sample_directory is None)
@@ -253,4 +252,45 @@ def test_acipolicygen_arm_diff_with_allow_all():
         }
 
 
+@pytest.mark.parametrize(
+    "container_definitions",
+    [
+        ["{}"], # Single empty container definition (use all default values)
+        ["{}", "{}"], # Two empty container definitions
+        ["[{}]", "{}"], # Two empty container definitions, one in subarray
+        ["[{}, {}]", "{}"], # Three empty container definitions, two in subarray
+        ['{"id": "test"}'], # Single container definition a field changed
+    ]
+)
+def test_acipolicygen_with_containers(container_definitions):
 
+    acipolicygen_confcom(
+        input_path=None,
+        arm_template=None,
+        arm_template_parameters=None,
+        image_name=None,
+        virtual_node_yaml_path=None,
+        infrastructure_svn=None,
+        tar_mapping_location=None,
+        outraw=True,
+        container_definitions=[json.loads(c) for c in container_definitions]
+    )
+
+
+def test_acipolicygen_with_containers_field_changed():
+
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        acipolicygen_confcom(
+            input_path=None,
+            arm_template=None,
+            arm_template_parameters=None,
+            image_name=None,
+            virtual_node_yaml_path=None,
+            infrastructure_svn=None,
+            tar_mapping_location=None,
+            outraw=True,
+            container_definitions=[json.loads('{"id": "test"}')]
+        )
+    actual_policy = buffer.getvalue()
+    assert '"id":"test"' in actual_policy

@@ -115,7 +115,6 @@ from ._clients import (
     SessionCustomContainerPreviewClient,
     DotNetComponentPreviewClient,
     MaintenanceConfigPreviewClient,
-    HttpRouteConfigPreviewClient,
     LabelHistoryPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
@@ -3634,60 +3633,6 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
                 conn.send(SSH_CTRL_C_MSG)
 
 
-def create_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    yaml_http_route_config = load_yaml_file(yaml)
-    # check if the type is dict
-    if not isinstance(yaml_http_route_config, dict):
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
-
-    http_route_config_envelope = {"properties": yaml_http_route_config}
-
-    try:
-        return HttpRouteConfigPreviewClient.create(cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope)
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def update_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    yaml_http_route_config = load_yaml_file(yaml)
-    # check if the type is dict
-    if not isinstance(yaml_http_route_config, dict):
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
-
-    http_route_config_envelope = {"properties": yaml_http_route_config}
-
-    try:
-        return HttpRouteConfigPreviewClient.update(cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope)
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def list_http_route_configs(cmd, resource_group_name, name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        return HttpRouteConfigPreviewClient.list(cmd, resource_group_name, name)
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def show_http_route_config(cmd, resource_group_name, name, http_route_config_name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        return HttpRouteConfigPreviewClient.show(cmd, resource_group_name, name, http_route_config_name)
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def delete_http_route_config(cmd, resource_group_name, name, http_route_config_name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        return HttpRouteConfigPreviewClient.delete(cmd, resource_group_name, name, http_route_config_name)
-    except Exception as e:
-        handle_raw_exception(e)
-
-
 def list_label_history(cmd, resource_group_name, name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
@@ -3855,108 +3800,5 @@ def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
         r = ContainerAppPreviewClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
         return r['properties']['configuration']['ingress']['traffic']
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def show_environment_premium_ingress(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-
-    try:
-        env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
-        ingress_config = safe_get(env, "properties", "ingressConfiguration")
-        if not ingress_config:
-            return {"message": "No premium ingress configuration found for this environment, using default values."}
-
-        return ingress_config
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def add_environment_premium_ingress(cmd, name, resource_group_name, workload_profile_name, min_replicas=None, max_replicas=None, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-
-    try:
-        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
-        env_patch = {}
-        ingress_config = {}
-        safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
-
-        # Required
-        ingress_config["workloadProfileName"] = workload_profile_name
-        # Optional, remove if None
-        ingress_config["terminationGracePeriodSeconds"] = termination_grace_period
-        ingress_config["requestIdleTimeout"] = request_idle_timeout
-        ingress_config["headerCountLimit"] = header_count_limit
-
-        result = ManagedEnvironmentPreviewClient.update(
-            cmd=cmd,
-            resource_group_name=resource_group_name,
-            name=name,
-            managed_environment_envelope=env_patch,
-            no_wait=no_wait
-        )
-
-        return safe_get(result, "properties", "ingressConfiguration")
-
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def update_environment_premium_ingress(cmd, name, resource_group_name, workload_profile_name=None, min_replicas=None, max_replicas=None, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-
-    try:
-        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
-        env_patch = {}
-        ingress_config = {}
-
-        if workload_profile_name is not None:
-            ingress_config["workloadProfileName"] = workload_profile_name
-        if termination_grace_period is not None:
-            ingress_config["terminationGracePeriodSeconds"] = termination_grace_period
-        if request_idle_timeout is not None:
-            ingress_config["requestIdleTimeout"] = request_idle_timeout
-        if header_count_limit is not None:
-            ingress_config["headerCountLimit"] = header_count_limit
-
-        # Only add ingressConfiguration to the patch if any values were specified
-        if ingress_config:
-            safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
-        else:
-            return {"message": "No changes specified for premium ingress configuration"}
-
-        # Update the environment with the patched ingress configuration
-        result = ManagedEnvironmentPreviewClient.update(
-            cmd=cmd,
-            resource_group_name=resource_group_name,
-            name=name,
-            managed_environment_envelope=env_patch,
-            no_wait=no_wait
-        )
-
-        return safe_get(result, "properties", "ingressConfiguration")
-
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def remove_environment_premium_ingress(cmd, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-
-    try:
-        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
-        env_patch = {}
-        # Remove the whole section to restore defaults
-        safe_set(env_patch, "properties", "ingressConfiguration", value=None)
-
-        ManagedEnvironmentPreviewClient.update(
-            cmd=cmd,
-            resource_group_name=resource_group_name,
-            name=name,
-            managed_environment_envelope=env_patch,
-            no_wait=no_wait
-        )
-
     except Exception as e:
         handle_raw_exception(e)
