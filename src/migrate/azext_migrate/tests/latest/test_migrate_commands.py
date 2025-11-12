@@ -84,7 +84,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         mock_cmd = self._create_mock_cmd()
 
         # Execute the command
-        result = get_discovered_server(
+        get_discovered_server(
             cmd=mock_cmd,
             project_name=self.mock_project_name,
             resource_group_name=self.mock_rg_name
@@ -117,7 +117,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
 
         mock_cmd = self._create_mock_cmd()
 
-        result = get_discovered_server(
+        get_discovered_server(
             cmd=mock_cmd,
             project_name=self.mock_project_name,
             resource_group_name=self.mock_rg_name,
@@ -172,7 +172,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
 
         mock_cmd = self._create_mock_cmd()
 
-        result = get_discovered_server(
+        get_discovered_server(
             cmd=mock_cmd,
             project_name=self.mock_project_name,
             resource_group_name=self.mock_rg_name,
@@ -201,7 +201,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
 
         mock_cmd = self._create_mock_cmd()
 
-        result = get_discovered_server(
+        get_discovered_server(
             cmd=mock_cmd,
             project_name=self.mock_project_name,
             resource_group_name=self.mock_rg_name,
@@ -237,7 +237,7 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
             resource_group_name=self.mock_rg_name
         )
 
-        # Verify fetch_all_servers was called once 
+        # Verify fetch_all_servers was called once
         # (the pagination logic is handled inside fetch_all_servers)
         mock_fetch_servers.assert_called_once()
 
@@ -648,7 +648,7 @@ class MigrateReplicationNewTests(ScenarioTest):
                 source_appliance_name="source-appliance",
                 target_appliance_name="target-appliance"
             )
-        except (CLIError, KnackCLIError, Exception) as e:
+        except (CLIError, KnackCLIError, Exception):
             # Expected to fail
             # Either machine_id or machine_index should be provided
             pass
@@ -677,14 +677,14 @@ class MigrateReplicationNewTests(ScenarioTest):
                 source_appliance_name="source-appliance",
                 target_appliance_name="target-appliance"
             )
-        except (CLIError, KnackCLIError, Exception) as e:
+        except (CLIError, KnackCLIError, Exception):
             # Expected to fail
             pass
 
     @mock.patch(
         'azext_migrate.helpers._utils.send_get_request')
     @mock.patch(
-        'azext_migrate._helpers.get_resource_by_id')
+        'azext_migrate.helpers._utils.get_resource_by_id')
     @mock.patch(
         'azure.cli.core.commands.client_factory.get_subscription_id')
     def test_new_replication_with_machine_index(self,
@@ -771,8 +771,8 @@ class MigrateReplicationNewTests(ScenarioTest):
         else:
             # If mocks weren't called, ensure we got some expected exception
             # indicating the function at least tried to execute
-            self.assertIsNotNone(exception_caught, 
-                                "Function should have either called mocks or raised an exception")
+            self.assertIsNotNone(exception_caught,
+                                 "Function should have either called mocks or raised an exception")
 
     def test_new_replication_required_parameters_default_mode(self):
         """Test that required parameters for default user mode are
@@ -805,7 +805,7 @@ class MigrateReplicationNewTests(ScenarioTest):
 
         try:
             new_local_server_replication(**required_params)
-        except Exception as e:
+        except Exception:
             # Expected to fail at later stages
             pass
 
@@ -836,7 +836,7 @@ class MigrateReplicationNewTests(ScenarioTest):
 
         try:
             new_local_server_replication(**required_params)
-        except Exception as e:
+        except Exception:
             # Expected to fail at later stages
             pass
 

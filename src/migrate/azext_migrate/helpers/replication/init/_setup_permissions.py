@@ -11,6 +11,7 @@ from azext_migrate.helpers._utils import (
     RoleDefinitionIds
 )
 
+
 def _get_role_name(role_def_id):
     """Get role name from role definition ID."""
     return ("Contributor" if role_def_id == RoleDefinitionIds.ContributorId

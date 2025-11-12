@@ -187,7 +187,7 @@ def _handle_configuration_validation(cmd,
         if existing_item:
             protection_state = existing_item.get('properties', {}).get('protectionState')
             logger.warning(f"Found existing protected item: {existing_item.get('id', 'unknown')}, state: {protection_state}")
-            
+
             # If in failed state, offer helpful guidance
             if protection_state in ['EnablingFailed', 'DisablingFailed', 'Failed']:
                 raise CLIError(
@@ -245,7 +245,7 @@ def _handle_configuration_validation(cmd,
                 "(12 TB) for Generation 2 VMs.")
 
     return (hyperv_generation, source_cpu_cores, is_source_dynamic_memory,
-            source_memory_mb, protected_item_uri, target_vm_cpu_core, 
+            source_memory_mb, protected_item_uri, target_vm_cpu_core,
             target_vm_ram)
 
 
@@ -389,12 +389,12 @@ def create_protected_item(cmd,
             if 'id' in job_info:
                 job_id = job_info['id'].split('/')[-1]
 
-    print(f"Successfully initiated replication for machine '{machine_name}'.")
+    print("Successfully initiated replication for machine '{}'.".format(machine_name))
     if job_id:
-        print(f"Job ID: {job_id}")
-        print(f"\nTo check job status, run:")
-        print(f"  az migrate local replication get-job --job-name {job_id} "
-              f"--resource-group {resource_group_name} "
-              f"--project-name <project-name>")
-    
+        print("Job ID: {}".format(job_id))
+        print("\nTo check job status, run:")
+        print("  az migrate local replication get-job --job-name {} "
+              "--resource-group {} "
+              "--project-name <project-name>".format(job_id, resource_group_name))
+
     return response

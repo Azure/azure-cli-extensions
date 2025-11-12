@@ -209,15 +209,15 @@ def validate_server_parameters(
             # This is a Migrate Project machine ID, need to resolve to OffAzure machine ID
             migrate_machine = get_resource_by_id(
                 cmd, machine_id, APIVersion.Microsoft_Migrate.value)
-            
+
             if not migrate_machine:
                 raise CLIError(
                     f"Machine not found with ID '{machine_id}'.")
-            
+
             # Get the actual OffAzure machine ID from properties
             machine_props = migrate_machine.get('properties', {})
             discovery_data = machine_props.get('discoveryData', [])
-            
+
             # Find the OS discovery data entry which contains the actual machine reference
             offazure_machine_id = None
             for data in discovery_data:
@@ -226,25 +226,25 @@ def validate_server_parameters(
                     extended_data = data.get('extendedInfo', {})
                     # Try different possible field names for the OffAzure machine ID
                     offazure_machine_id = (
-                        extended_data.get('sdsArmId') or 
-                        extended_data.get('machineArmId') or 
+                        extended_data.get('sdsArmId') or
+                        extended_data.get('machineArmId') or
                         extended_data.get('machineId')
                     )
                     if offazure_machine_id:
                         break
-            
+
             # If not found in discoveryData, check other properties
             if not offazure_machine_id:
                 offazure_machine_id = machine_props.get('machineId') or machine_props.get('machineArmId')
-            
+
             if not offazure_machine_id:
                 raise CLIError(
                     f"Could not resolve the OffAzure machine ID from Migrate machine '{machine_id}'. "
                     "Please provide the machine ID in the format "
                     "'/subscriptions/.../Microsoft.OffAzure/{{HyperVSites|VMwareSites}}/.../machines/...'")
-            
+
             machine_id = offazure_machine_id
-        
+
         # Extract resource_group_name from machine_id if not provided
         if not resource_group_name:
             machine_id_parts = machine_id.split("/")
@@ -252,11 +252,11 @@ def validate_server_parameters(
                 resource_group_name = machine_id_parts[4]
             else:
                 raise CLIError(f"Invalid machine ARM ID format: '{machine_id}'")
-        
+
         rg_uri = (
             f"/subscriptions/{subscription_id}/"
             f"resourceGroups/{resource_group_name}")
-    
+
     return rg_uri, machine_id
 
 

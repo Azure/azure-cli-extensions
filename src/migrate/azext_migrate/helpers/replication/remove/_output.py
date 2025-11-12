@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 
 
 def display_removal_success(protected_item_name, job_name,
-                           resource_group_name):
+                            resource_group_name):
     """
     Display success message with job tracking information.
 
@@ -22,14 +22,14 @@ def display_removal_success(protected_item_name, job_name,
         job_name (str): Name of the removal job
         resource_group_name (str): Resource group name
     """
-    print(f"Successfully initiated removal of replication for "
-          f"'{protected_item_name}'.")
-    print(f"Job ID: {job_name}")
-    print(f"\nTo check removal job status, run:")
-    print(f"  az migrate local replication get-job "
-          f"--job-name {job_name} "
-          f"--resource-group {resource_group_name} "
-          f"--project-name <project-name>")
+    print("Successfully initiated removal of replication for "
+          "'{}'.".format(protected_item_name))
+    print("Job ID: {}".format(job_name))
+    print("\nTo check removal job status, run:")
+    print("  az migrate local replication get-job "
+          "--job-name {} "
+          "--resource-group {} "
+          "--project-name <project-name>".format(job_name, resource_group_name))
 
 
 def display_removal_initiated(protected_item_name):

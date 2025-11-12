@@ -11,17 +11,17 @@ Job formatting utilities for Azure Migrate local replication jobs.
 def calculate_duration(start_time, end_time):
     """
     Calculate duration between two timestamps.
-    
+
     Args:
         start_time (str): ISO format start time
         end_time (str, optional): ISO format end time
-        
+
     Returns:
         str: Formatted duration string or None
     """
     if not start_time:
         return None
-    
+
     from datetime import datetime
     try:
         start = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
@@ -31,7 +31,7 @@ def calculate_duration(start_time, end_time):
             total_seconds = int(duration.total_seconds())
             minutes, seconds = divmod(total_seconds, 60)
             hours, minutes = divmod(minutes, 60)
-            
+
             if hours > 0:
                 return f"{hours}h {minutes}m {seconds}s"
             elif minutes > 0:
@@ -45,7 +45,7 @@ def calculate_duration(start_time, end_time):
             total_seconds = int(duration.total_seconds())
             minutes, seconds = divmod(total_seconds, 60)
             hours, minutes = divmod(minutes, 60)
-            
+
             if hours > 0:
                 return f"{hours}h {minutes}m (in progress)"
             elif minutes > 0:
@@ -59,15 +59,15 @@ def calculate_duration(start_time, end_time):
 def format_job_output(job_details):
     """
     Format job details into a clean, user-friendly output.
-    
+
     Args:
         job_details (dict): Raw job details from the API
-        
+
     Returns:
         dict: Formatted job information
     """
     props = job_details.get('properties', {})
-    
+
     # Extract key information
     formatted = {
         'jobName': job_details.get('name'),
@@ -76,9 +76,10 @@ def format_job_output(job_details):
         'vmName': props.get('objectInternalName'),
         'startTime': props.get('startTime'),
         'endTime': props.get('endTime'),
-        'duration': calculate_duration(props.get('startTime'), props.get('endTime'))
-    }
-    
+        'duration': calculate_duration(
+            props.get('startTime'),
+            props.get('endTime'))}
+
     # Add error information if present
     errors = props.get('errors', [])
     if errors:
@@ -90,7 +91,7 @@ def format_job_output(job_details):
             }
             for err in errors
         ]
-    
+
     # Add task progress
     tasks = props.get('tasks', [])
     if tasks:
@@ -102,23 +103,23 @@ def format_job_output(job_details):
             }
             for task in tasks
         ]
-    
+
     return formatted
 
 
 def format_job_summary(job_details):
     """
     Format job details into a summary for list output.
-    
+
     Args:
         job_details (dict): Raw job details from the API
-        
+
     Returns:
         dict: Formatted job summary
     """
     props = job_details.get('properties', {})
     errors = props.get('errors') or []
-    
+
     return {
         'jobName': job_details.get('name'),
         'displayName': props.get('displayName'),
@@ -126,6 +127,7 @@ def format_job_summary(job_details):
         'vmName': props.get('objectInternalName'),
         'startTime': props.get('startTime'),
         'endTime': props.get('endTime'),
-        'duration': calculate_duration(props.get('startTime'), props.get('endTime')),
-        'hasErrors': len(errors) > 0
-    }
+        'duration': calculate_duration(
+            props.get('startTime'),
+            props.get('endTime')),
+        'hasErrors': len(errors) > 0}

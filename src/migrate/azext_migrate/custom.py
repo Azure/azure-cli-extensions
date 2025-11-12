@@ -526,10 +526,10 @@ def get_local_replication_job(cmd,
         return get_single_job(
             cmd, subscription_id, resource_group_name,
             vault_name, job_name, format_job_output)
-    else:
-        return list_all_jobs(
-            cmd, subscription_id, resource_group_name,
-            vault_name, format_job_summary)
+
+    return list_all_jobs(
+        cmd, subscription_id, resource_group_name,
+        vault_name, format_job_summary)
 
 
 def remove_local_server_replication(cmd,
@@ -566,8 +566,7 @@ def remove_local_server_replication(cmd,
     from azext_migrate.helpers.replication.remove._validate import (
         validate_protected_item
     )
-    from azext_migrate.helpers.replication.remove._execute_delete \
-    import (
+    from azext_migrate.helpers.replication.remove._execute_delete import (
         execute_removal
     )
 
@@ -588,4 +587,3 @@ def remove_local_server_replication(cmd,
         resource_group_name, vault_name,
         protected_item_name, force_remove
     )
-

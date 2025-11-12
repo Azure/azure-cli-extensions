@@ -19,7 +19,7 @@ from azext_migrate.helpers._utils import (
     ReplicationPolicyDetails,
     StorageAccountProvisioningState
 )
-import json
+
 
 def determine_instance_types(source_site_id, target_site_id,
                              source_appliance_name,

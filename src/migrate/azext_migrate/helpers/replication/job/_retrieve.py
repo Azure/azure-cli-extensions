@@ -14,10 +14,10 @@ logger = get_logger(__name__)
 
 
 def get_single_job(cmd, subscription_id, resource_group_name,
-                  vault_name, job_name, format_job_output):
+                   vault_name, job_name, format_job_output):
     """
     Retrieve a single job by name.
-    
+
     Args:
         cmd: The CLI command context
         subscription_id (str): Subscription ID
@@ -25,10 +25,10 @@ def get_single_job(cmd, subscription_id, resource_group_name,
         vault_name (str): Vault name
         job_name (str): Job name
         format_job_output (callable): Function to format job output
-        
+
     Returns:
         dict: Formatted job details
-        
+
     Raises:
         CLIError: If the job is not found or cannot be retrieved
     """
@@ -71,20 +71,20 @@ def get_single_job(cmd, subscription_id, resource_group_name,
 
 
 def list_all_jobs(cmd, subscription_id, resource_group_name,
-                 vault_name, format_job_summary):
+                  vault_name, format_job_summary):
     """
     List all jobs in a vault with pagination support.
-    
+
     Args:
         cmd: The CLI command context
         subscription_id (str): Subscription ID
         resource_group_name (str): Resource group name
         vault_name (str): Vault name
         format_job_summary (callable): Function to format job summaries
-        
+
     Returns:
         list: List of formatted job summaries
-        
+
     Raises:
         CLIError: If jobs cannot be listed
     """
@@ -97,7 +97,7 @@ def list_all_jobs(cmd, subscription_id, resource_group_name,
         raise CLIError(
             "Unable to determine vault name. Please check your project "
             "configuration.")
-        
+
     jobs_uri = (
         f"/subscriptions/{subscription_id}/"
         f"resourceGroups/{resource_group_name}/"
@@ -114,19 +114,19 @@ def list_all_jobs(cmd, subscription_id, resource_group_name,
 
     try:
         response = send_get_request(cmd, request_uri)
-        
+
         if not response:
             logger.warning("Empty response received when listing jobs")
             return []
-        
+
         response_data = response.json() if hasattr(response, 'json') else {}
-        
+
         if not response_data:
             logger.warning("No data in response when listing jobs")
             return []
 
         jobs = response_data.get('value', [])
-        
+
         if not jobs:
             logger.info("No jobs found in vault '%s'", vault_name)
             return []
@@ -142,7 +142,7 @@ def list_all_jobs(cmd, subscription_id, resource_group_name,
 
         logger.info(
             "Retrieved %d jobs from vault '%s'", len(jobs), vault_name)
-        
+
         # Format the jobs for cleaner output
         formatted_jobs = []
         for job in jobs:
@@ -152,7 +152,7 @@ def list_all_jobs(cmd, subscription_id, resource_group_name,
                 logger.warning("Error formatting job: %s", str(format_error))
                 # Skip jobs that fail to format
                 continue
-        
+
         return formatted_jobs
 
     except Exception as e:

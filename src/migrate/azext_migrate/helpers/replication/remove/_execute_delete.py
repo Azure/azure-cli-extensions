@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 
 
 def send_delete_request(cmd, target_object_id, force_remove,
-                       protected_item_name):
+                        protected_item_name):
     """
     Send DELETE request to remove replication.
 
@@ -84,7 +84,7 @@ def send_delete_request(cmd, target_object_id, force_remove,
 
 
 def get_job_details(cmd, subscription_id, resource_group_name,
-                   vault_name, job_name):
+                    vault_name, job_name):
     """
     Retrieve job details after initiating removal.
 
@@ -129,8 +129,8 @@ def get_job_details(cmd, subscription_id, resource_group_name,
 
 
 def execute_removal(cmd, subscription_id, target_object_id,
-                   resource_group_name, vault_name,
-                   protected_item_name, force_remove):
+                    resource_group_name, vault_name,
+                    protected_item_name, force_remove):
     """
     Execute the replication removal workflow.
 
