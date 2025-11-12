@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor tag-rule delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "dynatrace observability monitor upgrade-plan",
 )
-class Delete(AAZCommand):
-    """Remove or delete a tag rule from Dynatrace resource.
+class UpgradePlan(AAZCommand):
+    """Upgrades the billing Plan for Dynatrace monitor resource.
 
-    :example: Delete tag-rule
-        az dynatrace monitor tag-rule delete -g rg --monitor-name monitor -n default -y
+    :example: Monitors_UpgradePlan_MaximumSet_Gen
+        az dynatrace observability monitor upgrade-plan --resource-group myResourceGroup --monitor-name myMonitor --plan-data "{usage-type:Committed,billing-cycle:Monthly,plan-details:dynatraceapitestplan,effective-date:'2019-08-30T15:14:33+02:00'}"
     """
 
     _aaz_info = {
         "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2024-04-24"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/upgradeplan", "2024-04-24"],
         ]
     }
 
@@ -58,20 +57,41 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.rule_set_name = AAZStrArg(
-            options=["-n", "--name", "--rule-set-name"],
-            help="Monitor rule set name",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z]*$",
+
+        # define Arg Group "Request"
+
+        _args_schema = cls._args_schema
+        _args_schema.plan_data = AAZObjectArg(
+            options=["--plan-data"],
+            arg_group="Request",
+            help="The new Billing plan information.",
+        )
+
+        plan_data = cls._args_schema.plan_data
+        plan_data.billing_cycle = AAZStrArg(
+            options=["billing-cycle"],
+            help="different billing cycles like MONTHLY/WEEKLY. this could be enum",
+        )
+        plan_data.effective_date = AAZDateTimeArg(
+            options=["effective-date"],
+            help="date when plan was applied",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
             ),
+        )
+        plan_data.plan_details = AAZStrArg(
+            options=["plan-details"],
+            help="plan id as published by Dynatrace",
+        )
+        plan_data.usage_type = AAZStrArg(
+            options=["usage-type"],
+            help="different usage type like PAYG/COMMITTED. this could be enum",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TagRulesDelete(ctx=self.ctx)()
+        yield self.MonitorsUpgradePlan(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,7 +102,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class TagRulesDelete(AAZHttpOperation):
+    class MonitorsUpgradePlan(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,25 +112,7 @@ class Delete(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
+                    None,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -121,13 +123,13 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/tagRules/{ruleSetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/upgradePlan",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -142,10 +144,6 @@ class Delete(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "ruleSetName", self.ctx.args.rule_set_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -165,15 +163,36 @@ class Delete(AAZCommand):
             }
             return parameters
 
-        def on_204(self, session):
-            pass
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+            }
+            return parameters
 
-        def on_200_201(self, session):
-            pass
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("planData", AAZObjectType, ".plan_data")
+
+            plan_data = _builder.get(".planData")
+            if plan_data is not None:
+                plan_data.set_prop("billingCycle", AAZStrType, ".billing_cycle")
+                plan_data.set_prop("effectiveDate", AAZStrType, ".effective_date")
+                plan_data.set_prop("planDetails", AAZStrType, ".plan_details")
+                plan_data.set_prop("usageType", AAZStrType, ".usage_type")
+
+            return self.serialize_content(_content_value)
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _UpgradePlanHelper:
+    """Helper class for UpgradePlan"""
 
 
-__all__ = ["Delete"]
+__all__ = ["UpgradePlan"]

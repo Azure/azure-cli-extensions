@@ -12,26 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor get-metric-status",
+    "dynatrace observability monitor manage-agent-installation",
 )
-class GetMetricStatus(AAZCommand):
-    """Get status of metrics being sent to the Dynatrace resource.
+class ManageAgentInstallation(AAZCommand):
+    """Performs Dynatrace agent install/uninstall action through the Azure Dynatrace resource on the provided list of resources.
 
-    :example: Monitors_GetMetricStatus_MaximumSet_Gen
-        az dynatrace monitor get-metric-status --resource-group rgDynatrace --monitor-name fhcjxnxumkdlgpwanewtkdnyuz
+    :example: Monitors_ManageAgentInstallation_MaximumSet_Gen
+        az dynatrace observability monitor manage-agent-installation --resource-group myResourceGroup --monitor-name myMonitor --mng-agt-instal-list "[{id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachineScaleSets/vmssName},{id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachineScaleSets/vmssName2}]" --action Install
     """
 
     _aaz_info = {
         "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/getmetricstatus", "2024-04-24"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/manageagentinstallation", "2024-04-24"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
         self._execute_operations()
-        return self._output()
+        return None
 
     _args_schema = None
 
@@ -46,7 +46,7 @@ class GetMetricStatus(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
-            help="Name of the Monitor resource",
+            help="Monitor resource name",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -60,19 +60,33 @@ class GetMetricStatus(AAZCommand):
         # define Arg Group "Request"
 
         _args_schema = cls._args_schema
-        _args_schema.monitored_resource_ids = AAZListArg(
-            options=["--monitored-resource-ids"],
+        _args_schema.action = AAZStrArg(
+            options=["--action"],
             arg_group="Request",
-            help="List of azure resource Id of monitored resources for which we get the metric status",
+            help="Install/Uninstall action.",
+            required=True,
+            enum={"Install": "Install", "Uninstall": "Uninstall"},
+        )
+        _args_schema.mng_agt_instal_list = AAZListArg(
+            options=["--mng-agt-instal-list"],
+            arg_group="Request",
+            help="The list of resources.",
+            required=True,
         )
 
-        monitored_resource_ids = cls._args_schema.monitored_resource_ids
-        monitored_resource_ids.Element = AAZStrArg()
+        mng_agt_instal_list = cls._args_schema.mng_agt_instal_list
+        mng_agt_instal_list.Element = AAZObjectArg()
+
+        _element = cls._args_schema.mng_agt_instal_list.Element
+        _element.id = AAZStrArg(
+            options=["id"],
+            help="The ARM id of the resource to install/uninstall agent.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsGetMetricStatus(ctx=self.ctx)()
+        self.MonitorsManageAgentInstallation(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,25 +97,21 @@ class GetMetricStatus(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class MonitorsGetMetricStatus(AAZHttpOperation):
+    class MonitorsManageAgentInstallation(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [204]:
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/getMetricStatus",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/manageAgentInstallation",
                 **self.url_parameters
             )
 
@@ -147,9 +157,6 @@ class GetMetricStatus(AAZCommand):
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
             }
             return parameters
 
@@ -158,46 +165,27 @@ class GetMetricStatus(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("monitoredResourceIds", AAZListType, ".monitored_resource_ids")
+            _builder.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("manageAgentInstallationList", AAZListType, ".mng_agt_instal_list", typ_kwargs={"flags": {"required": True}})
 
-            monitored_resource_ids = _builder.get(".monitoredResourceIds")
-            if monitored_resource_ids is not None:
-                monitored_resource_ids.set_elements(AAZStrType, ".")
+            manage_agent_installation_list = _builder.get(".manageAgentInstallationList")
+            if manage_agent_installation_list is not None:
+                manage_agent_installation_list.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".manageAgentInstallationList[]")
+            if _elements is not None:
+                _elements.set_prop("id", AAZStrType, ".id")
 
             return self.serialize_content(_content_value)
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.azure_resource_ids = AAZListType(
-                serialized_name="azureResourceIds",
-            )
-
-            azure_resource_ids = cls._schema_on_200.azure_resource_ids
-            azure_resource_ids.Element = AAZStrType()
-
-            return cls._schema_on_200
+        def on_204(self, session):
+            pass
 
 
-class _GetMetricStatusHelper:
-    """Helper class for GetMetricStatus"""
+class _ManageAgentInstallationHelper:
+    """Helper class for ManageAgentInstallation"""
 
 
-__all__ = ["GetMetricStatus"]
+__all__ = ["ManageAgentInstallation"]
