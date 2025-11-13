@@ -304,7 +304,7 @@ class ContainerAppsResiliencyPreviewClient():
 
 
 class ContainerAppFunctionsPreviewClient():
-    api_version = "2025-10-02-preview"
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def list_functions_by_revision(cls, cmd, resource_group_name, container_app_name, revision_name):
