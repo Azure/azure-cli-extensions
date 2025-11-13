@@ -21750,28 +21750,3 @@ spec:
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )
-        rollback_both_cmd = (
-            "aks nodepool rollback "
-            "--resource-group={resource_group} "
-            "--cluster-name={name} "
-            "--name={node_pool_name} "
-            "--kubernetes-version={k8s_version} "
-            "--node-image-version={original_node_image_version}"
-        )
-        
-        rollback_both_result = self.cmd(
-            rollback_both_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-            ],
-        ).get_output_in_json()
-        
-        # Verify that both versions were rolled back
-        assert rollback_both_result["currentOrchestratorVersion"] == original_k8s_version
-        assert rollback_both_result["nodeImageVersion"] == original_node_image_version
-
-        # Cleanup
-        self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
-            checks=[self.is_empty()],
-        )
