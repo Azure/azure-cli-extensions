@@ -12,6 +12,7 @@ upcoming
 * 'az containerapp function keys set': Create a new or update an existing function key in a container app
 * 'az containerapp function invocations summary': Get function invocation summary from Application Insights
 * 'az containerapp function invocations traces': Get function invocation traces from Application Insights
+* 'az containerapp debug': Support `--command` to run a command inside the container and exit
 
 1.2.0b5
 ++++++
@@ -29,7 +30,6 @@ upcoming
 * 'az containerapp env premium-ingress': Deprecate `--min-replicas` and `--max-replicas` parameters, use workload profile scale instead.
 * 'az containerapp sessionpool create/update': Support `--probe-yaml`
 * 'az containerapp session stop': Support stop session for custom container sessions
-* 'az containerapp debug': Support `--command` to run a command inside the container and exit
 
 1.2.0b3
 ++++++
