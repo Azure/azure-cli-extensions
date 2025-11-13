@@ -89,21 +89,25 @@ def test_extension(whl_dir: Optional[Path] = None):
         cmd = ['azdev', 'extension', 'remove', ext_name]
         run_command(cmd, check_return_code=True)
 
+        # This catches code missing in the final wheel package, but until the full
+        # set of extension tests can be run against the wheel, it will not catch
+        # missing files required at runtime.
         if whl_dir is not None:
             logger.info(f'installing extension wheel: {ext_name}')
-            wheel_path = next(whl_dir.glob(f"{ext_name}*.whl"))
+            wheel_path = next(whl_dir.glob(f"{ext_name}*.whl"), None)
+            assert wheel_path is not None, f"Wheel for extension {ext_name} not found in {whl_dir}"
             subprocess.run(
-                f"az extension add -y -s {wheel_path}".split(" "),
+                ["az", "extension", "add", "-y", "-s", wheel_path],
                 check=True,
             )
             subprocess.run(
-                f"az {ext_name} --help".split(" "),
+                ["az", ext_name, "--help"],
                 check=True,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
             subprocess.run(
-                f"az extension remove -n {ext_name}".split(" "),
+                ["az", "extension", "remove", "-n", ext_name],
                 check=True,
             )
 
@@ -124,7 +128,7 @@ def test_source_wheels(whl_dir: Optional[Path] = None):
     # Export built wheels so CI can publish them as artifacts
     wheels_out_dirs = [
         os.environ.get('WHEELS_OUTPUT_DIR'),
-        str(whl_dir),
+        str(whl_dir) if whl_dir else None,
     ]
     for wheels_out_dir in wheels_out_dirs:
         if not wheels_out_dir:
