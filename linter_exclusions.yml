@@ -3504,3 +3504,20 @@ neon postgres organization:
 neon postgres project:
   rule_exclusions:
   - require_wait_command_if_no_wait
+
+cosmosdb update:
+  parameters:
+    soft_deletion_retention_period_in_minutes:
+      rule_exclusions:
+      - unrecognized_help_parameter
+    min_minutes_before_permanent_deletion_allowed:
+      rule_exclusions:
+      - unrecognized_help_parameter
+
+cosmosdb sql softdeleted-database list:
+  rule_exclusions:
+  - no_ids_for_list_commands
+
+cosmosdb sql softdeleted-collection list:
+  rule_exclusions:
+  - no_ids_for_list_commands

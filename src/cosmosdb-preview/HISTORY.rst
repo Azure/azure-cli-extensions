@@ -2,6 +2,13 @@
 Release History
 ===============
 
+1.7.0
++++++
+* Add support for soft-deleted resource operations for SQL API
+* New command group `az cosmosdb sql softdeleted-account` to list, show, delete (purge), and recover soft-deleted accounts
+* New command group `az cosmosdb sql softdeleted-database` to list, show, delete (purge), and recover soft-deleted databases
+* New command group `az cosmosdb sql softdeleted-collection` to list, show, delete (purge), and recover soft-deleted containers
+
 1.6.1
 +++++
 * Fix SQL container throughput update to preserve existing throughput buckets when not explicitly specified.
