@@ -124,6 +124,16 @@ DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world imag
 
 HELLO_WORLD_IMAGE = "mcr.microsoft.com/k8se/quickstart:latest"
 
+# Model runner images
+MODEL_RUNNER_IMAGE = "docker/model-runner:latest"
+MODEL_RUNNER_IMAGE_CUDA = "docker/model-runner:latest-cuda"
+# replace with mcr image when available
+MODEL_RUNNER_CONFIG_IMAGE = "simon.azurecr.io/model-runner-config:latest"
+
+# MCP gateway image
+# default image, currently does not exist publicly
+MCP_GATEWAY_IMAGE = "mcr.microsoft.com/mcp-gateway:latest"
+
 LOGS_STRING = '[{"category":"ContainerAppConsoleLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}},{"category":"ContainerAppSystemLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}}]'  # pylint: disable=line-too-long
 
 DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAME = "containerapp-ext"

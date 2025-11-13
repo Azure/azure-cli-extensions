@@ -520,3 +520,9 @@ def load_arguments(self, _):
     with self.argument_context('containerapp revision set-mode') as c:
         c.argument('mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
         c.argument('target_label', help="The label to apply to new revisions. Required for revision mode 'labels'.", is_preview=True)
+
+    with self.argument_context('containerapp compose create') as c:
+        c.argument('dry_run', options_list=['--dry-run'], arg_type=get_three_state_flag(),
+                   help='Preview deployment without creating actual Azure resources. Generates a detailed report of container apps, workload profiles, role assignments, and environment variable injections.')
+        c.argument('replace_all', options_list=['--replace-all'], arg_type=get_three_state_flag(),
+                   help='Replace all existing container apps in the environment. By default, only matching apps are updated and new ones are created.')

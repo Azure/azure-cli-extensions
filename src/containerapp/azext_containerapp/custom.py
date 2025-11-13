@@ -1540,22 +1540,25 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       registry_pass=None,
                                       transport_mapping=None,
                                       location=None,
-                                      tags=None):
+                                      tags=None,
+                                      dry_run=None,
+                                      replace_all=None):
     from pycomposefile import ComposeFile
 
-    from azure.cli.command_modules.containerapp._compose_utils import (build_containerapp_from_compose_service,
-                                                                       check_supported_platform,
-                                                                       warn_about_unsupported_elements,
-                                                                       resolve_ingress_and_target_port,
-                                                                       resolve_registry_from_cli_args,
-                                                                       resolve_transport_from_cli_args,
-                                                                       resolve_service_startup_command,
-                                                                       resolve_cpu_configuration_from_service,
-                                                                       resolve_memory_configuration_from_service,
-                                                                       resolve_replicas_from_service,
-                                                                       resolve_environment_from_service,
-                                                                       resolve_secret_from_service)
-    from ._compose_utils import validate_memory_and_cpu_setting
+    from ._compose_utils import (build_containerapp_from_compose_service,
+                                 check_supported_platform,
+                                 warn_about_unsupported_elements,
+                                 resolve_ingress_and_target_port,
+                                 resolve_registry_from_cli_args,
+                                 resolve_transport_from_cli_args,
+                                 resolve_service_startup_command,
+                                 resolve_cpu_configuration_from_service,
+                                 resolve_memory_configuration_from_service,
+                                 resolve_replicas_from_service,
+                                 resolve_environment_from_service,
+                                 resolve_secret_from_service,
+                                 validate_memory_and_cpu_setting,
+                                 parse_x_azure_deployment)
 
     # Validate managed environment
     parsed_managed_env = parse_resource_id(managed_env)
@@ -1576,11 +1579,124 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                                          location=location)
 
     compose_yaml = load_yaml_file(compose_file_path)
+    # Make a deep copy to preserve original YAML for x-azure-deployment extraction
+    import copy
+    compose_yaml_original = copy.deepcopy(compose_yaml)
     parsed_compose_file = ComposeFile(compose_yaml)
     logger.info(parsed_compose_file)
     containerapps_from_compose = []
+
+    # ========================================================================
+    # Phase 3: Models Deployment Implementation
+    # ========================================================================
+    
+    # Parse models section from compose file
+    from ._compose_utils import (
+        parse_models_section,
+        validate_models_configuration,
+        create_gpu_workload_profile_if_needed,
+        create_models_container_app,
+        inject_models_environment_variables,
+        detect_mcp_gateway_service,
+        resolve_dependency_graph,
+        print_dry_run_header,
+        print_dry_run_service_plan,
+        print_dry_run_models_deployment,
+        print_dry_run_mcp_gateway,
+        print_dry_run_summary,
+        check_containerapp_exists,
+        collect_dry_run_service_config,
+        get_mcp_gateway_configuration,
+        enable_managed_identity,
+        attempt_role_assignment,
+        detect_configuration_changes,
+        log_update_detection,
+    )
+    
+    models = parse_models_section(compose_yaml_original)
+    models_app = None
+    models_endpoint = None
+    models_list = []
+    
+    # Phase 3: Models Deployment (before services since they depend on it)
+    # If models section exists, validate and create models container app
+    if models and not dry_run:
+        logger.info(f"Models section found with {len(models)} model(s)")
+        
+        # Validate models configuration
+        validate_models_configuration(models)
+        
+        # Get or create GPU workload profile
+        # Extract requested GPU profile type from models x-azure-deployment section
+        # x-azure-deployment is nested inside each model (models.gemma.x-azure-deployment)
+        # IMPORTANT: We need to read from compose_yaml_original because parse_models_section() 
+        # strips out x-azure-deployment from the returned models dict
+        requested_gpu_type = None
+
+        logger.warning(f"[GPU DEBUG] Inspecting RAW models YAML for GPU profile configuration")
+        raw_models = compose_yaml_original.get('models', {})
+        logger.warning(f"[GPU DEBUG] Raw models keys: {list(raw_models.keys())}")
+        
+        for model_name, model_config in raw_models.items():
+            logger.warning(f"[GPU DEBUG] Raw model '{model_name}' config type: {type(model_config)}")
+            if isinstance(model_config, dict):
+                logger.warning(f"[GPU DEBUG] Raw model '{model_name}' has x-azure-deployment: {'x-azure-deployment' in model_config}")
+                if 'x-azure-deployment' in model_config:
+                    azure_deployment = model_config.get('x-azure-deployment', {})
+                    logger.warning(f"[GPU DEBUG] Model '{model_name}' azure_deployment: {azure_deployment}")
+                    workload_profiles = azure_deployment.get('workloadProfiles', {})
+                    logger.warning(f"[GPU DEBUG] Model '{model_name}' workloadProfiles: {workload_profiles}")
+                    requested_gpu_type = workload_profiles.get('workloadProfileType')
+                    logger.warning(f"[GPU DEBUG] Model '{model_name}' requested GPU type: {requested_gpu_type}")
+                    if requested_gpu_type:
+                        logger.info(f"Found GPU profile in model '{model_name}': {requested_gpu_type}")
+                        break
+
+        logger.warning(f"[GPU DEBUG] Final requested_gpu_type to be passed: {requested_gpu_type}")
+        
+        try:
+            gpu_profile_name = create_gpu_workload_profile_if_needed(
+                cmd,
+                resource_group_name,
+                managed_env_name,
+                managed_environment['location'],
+                requested_gpu_type
+            )
+            
+            # Create models container app
+            models_app = create_models_container_app(
+                cmd,
+                resource_group_name,
+                managed_env_name,
+                managed_environment['id'],
+                models,
+                gpu_profile_name,
+                managed_environment['location']
+            )
+            
+            # Set models endpoint for environment variable injection
+            models_endpoint = f"http://models"
+            models_list = list(models.keys())
+            
+            logger.info(f"Models container app created successfully: {models_endpoint}")
+            
+        except Exception as e:
+            logger.error(f"Failed to create models deployment: {str(e)}")
+            raise
+    
+    # Track services that depend on models for environment injection
+    services_needing_models_env = []
+    
     # Using the key to iterate to get the service name
     # pylint: disable=C0201,C0206
+
+    # Phase 5: Dry-run mode initialization
+    if dry_run:
+        print_dry_run_header(compose_file_path, resource_group_name, managed_env_name)
+        dry_run_services = []
+        dry_run_has_models = bool(models)  # True if models section exists
+        dry_run_has_gateway = False
+    
     for service_name in parsed_compose_file.ordered_services.keys():
         service = parsed_compose_file.services[service_name]
         if not check_supported_platform(service.platform):
@@ -1592,12 +1708,43 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         logger.info(  # pylint: disable=W1203
             f"Creating the Container Apps instance for {service_name} under {resource_group_name} in {location}.")
         ingress_type, target_port = resolve_ingress_and_target_port(service)
+        
+        # Enhanced ACA Compose Support: Override ingress for MCP gateway in ACA mode
+
+        # Phase 4: MCP Gateway Detection and Configuration
+        is_mcp_gateway = detect_mcp_gateway_service(service_name, service)
+        mcp_gateway_config = None
+        
+        if is_mcp_gateway:
+            mcp_gateway_config = get_mcp_gateway_configuration(service)
+            ingress_type = mcp_gateway_config['ingress_type']
+            target_port = mcp_gateway_config['port']
+            logger.info(f"MCP gateway detected: {service_name} - setting internal ingress on port {target_port}")
+
         registry, registry_username, registry_password = resolve_registry_from_cli_args(registry_server, registry_user, registry_pass)  # pylint: disable=C0301
         transport_setting = resolve_transport_from_cli_args(service_name, transport_mapping)
         startup_command, startup_args = resolve_service_startup_command(service)
+        
+        # For services with command array (like mcp-gateway), treat as args not command
+        if service.command and isinstance(service.command, list) and len(service.command) > 0:
+            # All elements become args, no startup_command
+            startup_command = None
+            startup_args = service.command
+            logger.info(f"Service '{service_name}' has command array - using as args: {startup_args}")
+        
+        # Get x-azure-deployment overrides for resources
+        raw_service_yaml = compose_yaml_original.get('services', {}).get(service_name, {})
+        overrides = parse_x_azure_deployment(raw_service_yaml)
+        override_cpu = overrides.get('cpu')
+        override_memory = overrides.get('memory')
+        
+        # Apply resource overrides if specified
+        base_cpu = override_cpu if override_cpu is not None else resolve_cpu_configuration_from_service(service)
+        base_memory = override_memory if override_memory is not None else resolve_memory_configuration_from_service(service)
+        
         cpu, memory = validate_memory_and_cpu_setting(
-            resolve_cpu_configuration_from_service(service),
-            resolve_memory_configuration_from_service(service),
+            base_cpu,
+            base_memory,
             managed_environment
         )
         replicas = resolve_replicas_from_service(service)
@@ -1607,6 +1754,226 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             environment.extend(secret_env_ref)
         elif secret_env_ref is not None:
             environment = secret_env_ref
+        
+        # Strip ports from URLs in environment variables for ACA (Envoy handles port mapping)
+        # Also inject proper FQDNs for MCP_GATEWAY_URL references
+        if environment is not None:
+            import re
+            
+            # Check if service depends on mcp-gateway and needs URL injection
+            needs_gateway_url = False
+            gateway_allow_insecure = False
+            mcp_gateway_vars = []  # Track all variables that reference mcp-gateway
+            
+            # Check for any environment variable referencing mcp-gateway by value
+            for env_var in environment:
+                var_name = None
+                var_value = None
+                
+                if isinstance(env_var, dict):
+                    var_name = env_var.get('name')
+                    var_value = env_var.get('value', '')
+                elif isinstance(env_var, str) and '=' in env_var:
+                    var_name, var_value = env_var.split('=', 1)
+                
+                # Check if value contains reference to mcp-gateway service
+                if var_value and '://mcp-gateway' in var_value:
+                    needs_gateway_url = True
+                    mcp_gateway_vars.append(var_name)
+                    logger.info(f"Detected MCP gateway reference in {var_name}: {var_value}")
+            
+            # Determine mcp-gateway allowInsecure setting
+            if needs_gateway_url:
+                for svc_name, svc_config in compose_yaml_original.get('services', {}).items():
+                    if detect_mcp_gateway_service(svc_name, type('Service', (), svc_config)()):
+                        azure_deployment = svc_config.get('x-azure-deployment', {})
+                        ingress_config = azure_deployment.get('ingress', {})
+                        gateway_allow_insecure = ingress_config.get('allowInsecure', False)
+                        break
+            
+            for i, env_var in enumerate(environment):
+                if isinstance(env_var, dict) and 'value' in env_var:
+                    var_name = env_var.get('name')
+                    var_value = env_var.get('value', '')
+                    
+                    # Check if this variable references mcp-gateway and needs FQDN injection
+                    if var_name in mcp_gateway_vars and '://mcp-gateway' in var_value:
+                        from ._compose_utils import get_containerapp_fqdn
+                        # Determine if mcp-gateway has external or internal ingress
+                        gateway_external = False
+                        for svc_name in parsed_compose_file.services.keys():
+                            if detect_mcp_gateway_service(svc_name, parsed_compose_file.services[svc_name]):
+                                raw_gateway_yaml = compose_yaml_original.get('services', {}).get(svc_name, {})
+                                gateway_overrides = parse_x_azure_deployment(raw_gateway_yaml)
+                                if gateway_overrides.get('ingress_type') == 'external':
+                                    gateway_external = True
+                                break
+                        
+                        gateway_fqdn = get_containerapp_fqdn(cmd, resource_group_name, managed_env_name, 'mcp-gateway', is_external=gateway_external)
+                        gateway_protocol = 'http' if gateway_allow_insecure else 'https'
+                        gateway_fqdn = gateway_fqdn.replace('https://', f'{gateway_protocol}://')
+                        
+                        # Extract and preserve the path from the original URL (e.g., /sse from http://mcp-gateway:8811/sse)
+                        path_match = re.search(r'://mcp-gateway(?::\d+)?(/[^\s]*)', var_value)
+                        preserved_path = path_match.group(1) if path_match else ''
+                        
+                        env_var['value'] = gateway_fqdn + preserved_path
+                        logger.info(f"Transformed {var_name} to FQDN with path: {env_var['value']}")
+                    else:
+                        # Match http://hostname:port or https://hostname:port patterns
+                        env_var['value'] = re.sub(r'(https?://[^:/]+):\d+', r'\1', env_var['value'])
+                elif isinstance(env_var, str) and '=' in env_var:
+                    # Handle string format "KEY=VALUE"
+                    key, value = env_var.split('=', 1)
+                    
+                    if key in mcp_gateway_vars and '://mcp-gateway' in value:
+                        from ._compose_utils import get_containerapp_fqdn
+                        gateway_external = False
+                        for svc_name in parsed_compose_file.services.keys():
+                            if detect_mcp_gateway_service(svc_name, parsed_compose_file.services[svc_name]):
+                                raw_gateway_yaml = compose_yaml_original.get('services', {}).get(svc_name, {})
+                                gateway_overrides = parse_x_azure_deployment(raw_gateway_yaml)
+                                if gateway_overrides.get('ingress_type') == 'external':
+                                    gateway_external = True
+                                break
+                        
+                        gateway_fqdn = get_containerapp_fqdn(cmd, resource_group_name, managed_env_name, 'mcp-gateway', is_external=gateway_external)
+                        gateway_protocol = 'http' if gateway_allow_insecure else 'https'
+                        gateway_fqdn = gateway_fqdn.replace('https://', f'{gateway_protocol}://')
+                        
+                        # Extract and preserve the path from the original URL
+                        path_match = re.search(r'://mcp-gateway(?::\d+)?(/[^\s]*)', value)
+                        preserved_path = path_match.group(1) if path_match else ''
+                        
+                        environment[i] = f"{key}={gateway_fqdn}{preserved_path}"
+                        logger.info(f"Transformed {key} to FQDN with path: {gateway_fqdn}{preserved_path}")
+                    else:
+                        value = re.sub(r'(https?://[^:/]+):\d+', r'\1', value)
+                        environment[i] = f"{key}={value}"
+
+        
+        # Phase 4.5: Inject MCP Gateway Environment Variables
+        if is_mcp_gateway:
+            logger.info(f"Injecting required MCP gateway environment variables for {service_name}")
+            
+            # Ensure environment list exists
+            if environment is None:
+                environment = []
+            
+            # Get Azure subscription ID and tenant ID from CLI context
+            from azure.cli.core._profile import Profile
+            profile = Profile(cli_ctx=cmd.cli_ctx)
+            subscription_id = profile.get_subscription_id()
+            
+            # Get tenant ID from subscription
+            subscription_info = profile.get_subscription(subscription_id)
+            tenant_id = subscription_info.get('tenantId', '')
+            
+            # Required environment variables for MCP gateway in ACA mode
+            mcp_env_vars = {
+                'MCP_RUNTIME': 'ACA',
+                'AZURE_SUBSCRIPTION_ID': subscription_id,
+                'AZURE_RESOURCE_GROUP': resource_group_name,
+                'AZURE_APP_NAME': service_name,
+                'AZURE_TENANT_ID': tenant_id
+            }
+            
+            # Add environment variables (check for duplicates)
+            for var_name, var_value in mcp_env_vars.items():
+                # Check if variable already exists
+                var_exists = any(
+                    env.get('name') == var_name for env in environment if isinstance(env, dict)
+                )
+                
+                if not var_exists:
+                    environment.append({
+                        'name': var_name,
+                        'value': var_value
+                    })
+                    logger.info(f"  Set {var_name}={var_value if var_name not in ['AZURE_SUBSCRIPTION_ID', 'AZURE_TENANT_ID'] else var_value[:8] + '...'}")
+                else:
+                    logger.info(f"  {var_name} already exists in environment, skipping")
+            
+            # Override CPU and memory for MCP gateway
+            logger.info(f"Setting MCP gateway resources to 2.0 CPU / 4Gi memory")
+            cpu = 2.0
+            memory = "4Gi"
+
+        
+        # Phase 3: Inject environment variables for services with models declarations
+        # Services with "models:" section and endpoint_var/model_var get those specific variables injected
+        # Note: pycomposefile sets models=None if not present, so we just check if service.models is truthy
+        service_models = getattr(service, 'models', None)
+        if service_models:
+            logger.info(f"Service '{service_name}' has models section - processing endpoint_var and model_var")
+            
+            # Ensure environment list exists
+            if environment is None:
+                environment = []
+            
+            # Generate proper MODEL_RUNNER_URL with FQDN and /engines/v1/ suffix
+            # Check if models app has allowInsecure set
+            models_allow_insecure = False
+            for model_name, model_spec in models.items():
+                if isinstance(model_spec, dict) and 'x-azure-deployment' in model_spec:
+                    ingress_config = model_spec['x-azure-deployment'].get('ingress', {})
+                    models_allow_insecure = ingress_config.get('allowInsecure', False)
+                    break
+            
+            from ._compose_utils import get_containerapp_fqdn
+            models_fqdn = get_containerapp_fqdn(cmd, resource_group_name, managed_env_name, 'models', is_external=False)
+            
+            # Use http if allowInsecure, otherwise https
+            models_protocol = 'http' if models_allow_insecure else 'https'
+            models_fqdn = models_fqdn.replace('https://', f'{models_protocol}://')
+            models_endpoint_with_path = f"{models_fqdn}/engines/v1/"
+            
+            logger.info(f"Generated MODEL_RUNNER_URL: {models_endpoint_with_path}")
+            
+            # Process each model reference
+            for model_name, model_config in service_models.items():
+                if isinstance(model_config, dict):
+                    endpoint_var = model_config.get('endpoint_var')
+                    model_var = model_config.get('model_var')
+                    
+                    # Inject endpoint_var if specified
+                    if endpoint_var:
+                        # Check if variable already exists (handle both string and dict formats)
+                        var_exists = any(
+                            (isinstance(env, dict) and env.get('name') == endpoint_var) or
+                            (isinstance(env, str) and env.startswith(f"{endpoint_var}="))
+                            for env in environment
+                        )
+                        
+                        if not var_exists:
+                            environment.append({
+                                'name': endpoint_var,
+                                'value': models_endpoint_with_path
+                            })
+                            logger.info(f"  Injected {endpoint_var}={models_endpoint_with_path}")
+                    
+                    # Inject model_var if specified
+                    if model_var:
+                        # Try to get model path from top-level models section, fallback to model name
+                        model_path = models.get(model_name, {}).get('model', model_name) if models else model_name
+                        
+                        # Check if variable already exists
+                        var_exists = any(
+                            (isinstance(env, dict) and env.get('name') == model_var) or
+                            (isinstance(env, str) and env.startswith(f"{model_var}="))
+                            for env in environment
+                        )
+                        
+                        if not var_exists:
+                            environment.append({
+                                'name': model_var,
+                                'value': model_path
+                            })
+                            logger.info(f"  Injected {model_var}={model_path}")
+
+        
+        # Phase 4: No automatic environment variable injection for mcp-gateway dependencies
+        # Services should explicitly define any needed environment variables in their compose file
         if service.build is not None:
             logger.warning("Build configuration defined for this service.")
             logger.warning("The build will be performed by Azure Container Registry.")
@@ -1629,29 +1996,222 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                 registry_username,
                 registry_password,
                 environment)
-        containerapps_from_compose.append(
-            create_containerapp(cmd,
-                                service_name,
-                                resource_group_name,
-                                image=image,
-                                container_name=service.container_name,
-                                managed_env=managed_environment["id"],
-                                ingress=ingress_type,
-                                target_port=target_port,
-                                registry_server=registry,
-                                registry_user=registry_username,
-                                registry_pass=registry_password,
-                                transport=transport_setting,
-                                startup_command=startup_command,
-                                args=startup_args,
-                                cpu=cpu,
-                                memory=memory,
-                                env_vars=environment,
-                                secrets=secret_vars,
-                                min_replicas=replicas,
-                                max_replicas=replicas, )
+
+        # Phase 7: Check if container app exists and detect changes (skip in dry-run)
+        if not dry_run:
+            # Determine final ingress type using x-azure-deployment overrides
+            # Get raw service YAML for override parsing
+            raw_service_yaml = compose_yaml_original.get('services', {}).get(service_name, {})
+            overrides = parse_x_azure_deployment(raw_service_yaml)
+
+            # Check if this service has models section
+            has_models = service_name == 'models'
+
+            # Priority: x-azure-deployment override > default based on service type > default based on ports
+            # NOTE: We ignore ingress_type from resolve_ingress_and_target_port because it always returns 'external'
+            if overrides.get('ingress_type') is not None:
+                final_ingress_type = overrides['ingress_type']
+            elif is_mcp_gateway or has_models:
+                # MCP gateway and models apps default to internal ingress
+                final_ingress_type = 'internal'
+            elif service.ports:
+                final_ingress_type = 'internal'  # Default to internal if ports exist
+            else:
+                final_ingress_type = None
+            
+            # Apply image override if specified in x-azure-deployment
+            final_image = overrides.get('image') or image
+
+            # Extract allowInsecure from x-azure-deployment.ingress
+            allow_insecure = overrides.get('allow_insecure', False)
+
+            # Check if container app already exists
+            try:
+                existing_app = show_containerapp(cmd=cmd, resource_group_name=resource_group_name, name=service_name)
+            except Exception:
+                existing_app = None
+        
+            if existing_app:
+                # Build new configuration for comparison
+                new_config = {
+                    'image': final_image,
+                    'cpu': cpu,
+                    'memory': memory,
+                    'min_replicas': replicas,
+                    'max_replicas': replicas,
+                    'env_vars': environment
+                }
+            
+                # Detect changes
+                changes = detect_configuration_changes(existing_app, new_config)
+                log_update_detection(service_name, changes, logger)
+            
+                # If changes detected, update instead of create
+                if changes['has_changes']:
+                    logger.info(f"Updating existing container app: {service_name}")
+                    updated_app = update_containerapp_from_compose(
+                        cmd=cmd,
+                        resource_group_name=resource_group_name,
+                        app_name=service_name,
+                        image=final_image if changes['image_changed'] else None,
+                        env_vars=environment if changes['env_vars_changed'] else None,
+                        cpu=cpu if changes['resources_changed'] else None,
+                        memory=memory if changes['resources_changed'] else None,
+                        min_replicas=replicas if changes['replicas_changed'] else None,
+                        max_replicas=replicas if changes['replicas_changed'] else None,
+                        logger=logger
+                    )
+                    containerapps_from_compose.append(updated_app)
+                    continue  # Skip creation, move to next service
+        
+            # Convert environment variables from dict format to CLI string format (KEY=VALUE)
+            env_vars_cli_format = None
+            if environment:
+                env_vars_cli_format = []
+                for env in environment:
+                    if isinstance(env, dict) and "name" in env and "value" in env:
+                        env_vars_cli_format.append(f"{env['name']}={env['value']}")
+                    elif isinstance(env, str):
+                        env_vars_cli_format.append(env)
+            
+            # Determine final replica count with appropriate defaults
+            # - MCP gateway and models: min 1 replica (always)
+            # - Other services: default to 1 if not specified
+            final_min_replicas = replicas if replicas is not None else 1
+            final_max_replicas = replicas if replicas is not None else 1
+            
+            # Ensure MCP gateway always has at least 1 replica
+            if is_mcp_gateway and final_min_replicas < 1:
+                logger.info(f"MCP gateway {service_name}: forcing min replicas to 1")
+                final_min_replicas = 1
+                final_max_replicas = max(1, final_max_replicas)
+            
+            containerapps_from_compose.append(
+                create_containerapp(cmd,
+                                    service_name,
+                                    resource_group_name,
+                                    image=final_image,
+                                    container_name=service.container_name,
+                                    managed_env=managed_environment["id"],
+                                    ingress=final_ingress_type,
+                                    target_port=target_port,
+                                    registry_server=registry,
+                                    registry_user=registry_username,
+                                    registry_pass=registry_password,
+                                    transport=transport_setting,
+                                    allow_insecure=allow_insecure,
+                                    startup_command=startup_command,
+                                    args=startup_args,
+                                    cpu=cpu,
+                                    memory=memory,
+                                    env_vars=env_vars_cli_format,
+                                    secrets=secret_vars,
+                                    min_replicas=final_min_replicas,
+                                    max_replicas=final_max_replicas, )
+            )
+
+        
+        # Phase 5: Dry-run mode - collect service config instead of deploying
+        if dry_run:
+            # Get raw service YAML for x-azure-deployment parsing (use original, unmodified YAML)
+            raw_service_yaml = compose_yaml_original.get('services', {}).get(service_name, {})
+            
+            # In dry-run mode, don't pass ingress_type from resolve_ingress_and_target_port
+            # because it always returns 'external', which interferes with x-azure-deployment overrides
+            # Instead, pass None and let collect_dry_run_service_config determine ingress from overrides or ports
+            service_config = collect_dry_run_service_config(
+                service_name=service_name,
+                service=service,
+                image=image,
+                ingress_type=None,  # Don't pass - let function use override logic
+                target_port=target_port,
+                cpu=cpu,
+                memory=memory,
+                environment=environment,
+                replicas=replicas,
+                is_models_service=(service_name == 'models'),
+                is_mcp_gateway=is_mcp_gateway,
+                gpu_type=raw_service_yaml.get('x-azure-deployment', {}).get('workloadProfiles', {}).get('workloadProfileType') if service_name == 'models' else None,
+                raw_service=raw_service_yaml,
+                models_config=models
+            )
+            dry_run_services.append(service_config)
+            
+            if is_mcp_gateway:
+                dry_run_has_gateway = True
+
+        
+        # Phase 4: MCP Gateway Post-Creation Setup
+        if is_mcp_gateway and not dry_run:
+            logger.info(f"Configuring MCP gateway: {service_name}")
+            
+            # Enable system-assigned managed identity
+            try:
+                identity = enable_managed_identity(cmd, resource_group_name, service_name)
+                principal_id = identity.get('principalId')
+                
+                if principal_id:
+                    # Attempt role assignment (graceful fallback if it fails)
+                    attempt_role_assignment(cmd, principal_id, resource_group_name, service_name)
+                else:
+                    logger.warning(f"Principal ID not available yet for '{service_name}' - skipping role assignment")
+                
+                # Inject MCP gateway environment variables
+                from azure.cli.core.commands.client_factory import get_subscription_id
+                subscription_id = get_subscription_id(cmd.cli_ctx)
+                
+                # Note: Environment variables are injected during initial creation
+                # For updates, would need to retrieve and update the app
+                logger.info(f"MCP gateway '{service_name}' configured successfully")
+                
+            except Exception as e:
+                logger.error(f"Failed to configure MCP gateway '{service_name}': {str(e)}")
+                # Don't fail deployment - gateway is created, just not fully configured
+                logger.warning("MCP gateway created but requires manual configuration")
+        
+        # Check if this service depends on MCP gateway
+        service_depends_on_gateway = False
+        if hasattr(service, 'depends_on') and service.depends_on:
+            if isinstance(service.depends_on, list):
+                service_depends_on_gateway = any('mcp-gateway' in str(dep).lower() for dep in service.depends_on)
+            elif isinstance(service.depends_on, dict):
+                service_depends_on_gateway = any('mcp-gateway' in str(dep).lower() for dep in service.depends_on.keys())
+        
+        # Inject MCP_GATEWAY_URL if service depends on gateway
+        if service_depends_on_gateway:
+            # MCP gateway URL format: http://mcp-gateway:8811
+            gateway_url = "http://mcp-gateway:8811"
+            logger.info(f"Service '{service_name}' depends on MCP gateway - will inject MCP_GATEWAY_URL")
+            # Note: Environment was already set during creation above
+            # If needed to update, would retrieve the created app and update it
+
+    # Phase 5: Dry-run mode - print preview and return early
+    if dry_run:
+        # Print each service plan
+        for service_config in dry_run_services:
+            print_dry_run_service_plan(service_config['service_name'], service_config)
+
+        # Print models deployment if present
+        if dry_run_has_models and models:
+            # Extract GPU profile from x-azure-deployment
+            x_azure = models.get("x-azure-deployment", {})
+            workload_profiles = x_azure.get("workloadProfiles", {})
+            profile_type = workload_profiles.get("workloadProfileType", "Consumption")
+            gpu_profile_info = {
+                "type": profile_type,
+                "name": profile_type
+            }
+            print_dry_run_models_deployment(models, gpu_profile_info)
+
+        # Print summary
+        print_dry_run_summary(
+            total_services=len(dry_run_services),
+            has_models=dry_run_has_models,
+            has_gateway=dry_run_has_gateway
         )
-    return containerapps_from_compose
+
+        # Return empty list (no actual deployment)
+        return None  # Dry-run complete, no resources created
 
 
 def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
