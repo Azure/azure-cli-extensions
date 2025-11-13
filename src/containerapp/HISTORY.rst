@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+*  Upgrade api-version to 2025-10-02-preview
 
 1.2.0b5
 ++++++

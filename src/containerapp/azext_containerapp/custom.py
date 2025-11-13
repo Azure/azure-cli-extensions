@@ -1996,7 +1996,7 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
     try:
         deserializer = create_deserializer(CONTAINER_APPS_SDK_MODELS)
-        daprcomponent_def = deserializer('ConnectedEnvironmentDaprComponent', yaml_dapr_component)
+        daprcomponent_def = deserializer('DaprComponent', yaml_dapr_component)
     except DeserializationError as ex:
         raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
 
