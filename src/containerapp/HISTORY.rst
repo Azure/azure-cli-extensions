@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+*  Upgrade api-version to 2025-10-02-preview
 * 'az containerapp function list': List functions in a container app
 * 'az containerapp function show': Show specific function in a container app
 * 'az containerapp function keys show': Show specific function key in a container app
