@@ -32,8 +32,6 @@ class ContainerappFunctionTests(ScenarioTest):
         super().__init__(*arg, random_config_dir=True, **kwargs)
         cmd = ['azdev', 'extension', 'add', 'application-insights']
         run(cmd, check=True)
-        # cmd = ['azdev', 'extension', 'add', 'azure-mgmt-applicationinsights']
-        # run(cmd, check=True)
         sleep(120)
     
 
