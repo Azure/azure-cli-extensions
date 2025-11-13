@@ -1207,6 +1207,14 @@ import-export update:
     backup_drive_manifest:
       rule_exclusions:
       - option_length_too_long
+iot adr ns policy update:
+  parameters:
+    certificate_key_type:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    certificate_validity_days:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
 iot central enrollment-group update:
   parameters:
     api_version:
@@ -1315,21 +1323,52 @@ iot central user update:
 iot du update:
   rule_exclusions:
     - require_wait_command_if_no_wait
+iot dps enrollment list:
+  rule_exclusions:
+  - no_ids_for_list_commands
 iot dps enrollment update:
   parameters:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot dps enrollment-group list:
+  rule_exclusions:
+  - no_ids_for_list_commands
+iot dps enrollment-group registration list:
+  rule_exclusions:
+  - no_ids_for_list_commands
 iot dps enrollment-group update:
   parameters:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot dps linked-hub create:
+  parameters:
+    apply_allocation_policy:
+      rule_exclusions:
+      - option_length_too_long
+    hub_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot dps linked-hub update:
+  parameters:
+    apply_allocation_policy:
+      rule_exclusions:
+      - option_length_too_long
+iot dps registration list:
+  rule_exclusions:
+  - no_ids_for_list_commands
+iot hub certificate list:
+  rule_exclusions:
+  - no_ids_for_list_commands
 iot hub configuration update:
   parameters:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot hub consumer-group list:
+  rule_exclusions:
+  - no_ids_for_list_commands
 iot hub device-identity update:
   parameters:
     auth_type_dataplane:
@@ -1370,6 +1409,9 @@ iot hub message-endpoint create storage-container:
     endpoint_resource_group:
       rule_exclusions:
       - parameter_should_not_end_in_resource_group
+iot hub message-endpoint list:
+  rule_exclusions:
+  - no_ids_for_list_commands
 iot hub message-endpoint update cosmosdb-container:
   parameters:
     endpoint_resource_group:
@@ -1395,6 +1437,12 @@ iot hub message-endpoint update storage-container:
     endpoint_resource_group:
       rule_exclusions:
       - parameter_should_not_end_in_resource_group
+iot hub message-enrichment list:
+  rule_exclusions:
+  - no_ids_for_list_commands
+iot hub message-route list:
+  rule_exclusions:
+  - no_ids_for_list_commands
 iot hub module-identity update:
   parameters:
     auth_type_dataplane:
@@ -1405,6 +1453,20 @@ iot hub module-twin update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot hub policy list:
+  rule_exclusions:
+  - no_ids_for_list_commands
+iot hub route list:
+  rule_exclusions:
+  - no_ids_for_list_commands
+iot hub routing-endpoint create:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub routing-endpoint list:
+  rule_exclusions:
+  - no_ids_for_list_commands
 iot hub state migrate:
   parameters:
     orig_resource_group_name:
