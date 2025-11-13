@@ -1025,6 +1025,7 @@ def aks_create(
     enable_sgxquotehelper=False,
     enable_secret_rotation=False,
     rotation_poll_interval=None,
+    enable_application_load_balancer=False,
     enable_app_routing=False,
     app_routing_default_nginx_controller=None,
     # nodepool paramerters

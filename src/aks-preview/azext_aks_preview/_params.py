@@ -782,6 +782,7 @@ def load_arguments(self, _):
         c.argument("enable_secret_rotation", action="store_true")
         c.argument("rotation_poll_interval")
         c.argument("enable_sgxquotehelper", action="store_true")
+        c.argument("enable_application_load_balancer", action="store_true", is_preview=True)
         c.argument("enable_app_routing", action="store_true", is_preview=True)
         c.argument(
             "app_routing_default_nginx_controller",
