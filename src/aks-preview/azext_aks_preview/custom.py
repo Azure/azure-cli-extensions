@@ -14,7 +14,6 @@ import sys
 import threading
 import time
 import webbrowser
-import subprocess
 
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
@@ -73,8 +72,6 @@ from azext_aks_preview._helpers import (
     get_all_extensions_in_allow_list,
     raise_validation_error_if_extension_type_not_in_allow_list,
     get_extension_in_allow_list,
-    uses_kubelogin_devicecode,
-    which,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -120,7 +117,6 @@ from azext_aks_preview.managednamespace import (
 )
 from azext_aks_preview.machine import (
     add_machine,
-    update_machine,
 )
 from azext_aks_preview.jwtauthenticator import (
     aks_jwtauthenticator_add_internal,
@@ -1092,7 +1088,6 @@ def aks_create(
     acns_advanced_networkpolicies=None,
     acns_transit_encryption_type=None,
     enable_retina_flow_logs=None,
-    enable_container_network_logs=None,
     acns_datapath_acceleration_mode=None,
     # nodepool
     crg_id=None,
@@ -1156,9 +1151,6 @@ def aks_create(
     # managed system pool
     enable_managed_system_pool=False,
     enable_upstream_kubescheduler_user_configuration=False,
-    # managed gateway installation
-    enable_gateway_api=False,
-    enable_hosted_system=False
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1362,8 +1354,6 @@ def aks_update(
     acns_transit_encryption_type=None,
     enable_retina_flow_logs=None,
     disable_retina_flow_logs=None,
-    enable_container_network_logs=None,
-    disable_container_network_logs=None,
     acns_datapath_acceleration_mode=None,
     # metrics profile
     enable_cost_analysis=False,
@@ -1396,9 +1386,6 @@ def aks_update(
     migrate_vmas_to_vms=False,
     enable_upstream_kubescheduler_user_configuration=False,
     disable_upstream_kubescheduler_user_configuration=False,
-    # managed gateway installation
-    enable_gateway_api=False,
-    disable_gateway_api=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1533,29 +1520,6 @@ def aks_get_credentials(
             encoding='UTF-8')
         print_or_merge_credentials(
             path, kubeconfig, overwrite_existing, context_name)
-        # Check if kubeconfig requires kubelogin with devicecode and convert it
-        if uses_kubelogin_devicecode(kubeconfig):
-            if which("kubelogin"):
-                try:
-                    # Run kubelogin convert-kubeconfig -l azurecli
-                    subprocess.run(
-                        ["kubelogin", "convert-kubeconfig", "-l", "azurecli"],
-                        cwd=os.path.dirname(path),
-                        check=True,
-                    )
-                    logger.warning("Converted kubeconfig to use Azure CLI authentication.")
-                except subprocess.CalledProcessError as e:
-                    logger.warning("Failed to convert kubeconfig with kubelogin: %s", str(e))
-                except Exception as e:  # pylint: disable=broad-except
-                    logger.warning("Error running kubelogin: %s", str(e))
-            else:
-                logger.warning(
-                    "The kubeconfig uses devicecode authentication which requires kubelogin. "
-                    "Please install kubelogin from https://github.com/Azure/kubelogin or run "
-                    "'az aks install-cli' to install both kubectl and kubelogin. "
-                    "If devicecode login fails, try running "
-                    "'kubelogin convert-kubeconfig -l azurecli' to unblock yourself."
-                )
     except (IndexError, ValueError) as exc:
         raise CLIError("Fail to find kubeconfig file.") from exc
 
@@ -1578,8 +1542,8 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
             "Please specify nodepool name or use az aks nodepool command to scale node pool"
         )
 
-    for agent_profile in (instance.agent_pool_profiles or []):
-        if agent_profile.name == nodepool_name or (nodepool_name == "" and instance.agent_pool_profiles and len(instance.agent_pool_profiles) == 1):
+    for agent_profile in instance.agent_pool_profiles:
+        if agent_profile.name == nodepool_name or (nodepool_name == "" and len(instance.agent_pool_profiles) == 1):
             if agent_profile.enable_auto_scaling:
                 raise CLIError(
                     "Cannot scale cluster autoscaler enabled node pool.")
@@ -1629,7 +1593,7 @@ def aks_upgrade(cmd,
     _fill_defaults_for_pod_identity_profile(instance.pod_identity_profile)
 
     vmas_cluster = False
-    for agent_profile in (instance.agent_pool_profiles or []):
+    for agent_profile in instance.agent_pool_profiles:
         if agent_profile.type.lower() == "availabilityset":
             vmas_cluster = True
             break
@@ -1646,7 +1610,7 @@ def aks_upgrade(cmd,
 
         # This only provide convenience for customer at client side so they can run az aks upgrade to upgrade all
         # nodepools of a cluster. The SDK only support upgrade single nodepool at a time.
-        for agent_pool_profile in (instance.agent_pool_profiles or []):
+        for agent_pool_profile in instance.agent_pool_profiles:
             if vmas_cluster:
                 raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation '
                                'can only be applied on VirtualMachineScaleSets and VirtualMachines(Preview) cluster.')
@@ -1715,7 +1679,7 @@ def aks_upgrade(cmd,
                 return None
 
     if upgrade_all:
-        for agent_profile in (instance.agent_pool_profiles or []):
+        for agent_profile in instance.agent_pool_profiles:
             agent_profile.orchestrator_version = kubernetes_version
             agent_profile.creation_data = None
 
@@ -2230,29 +2194,46 @@ def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
                            resource_group_name,
                            cluster_name,
                            nodepool_name,
-                           kubernetes_version=None,
-                           node_image_version=None,
                            aks_custom_headers=None,
                            if_match=None,
                            if_none_match=None,
                            no_wait=False):
-    """Rollback a nodepool to a previously used configuration."""
+    """Rollback a nodepool to the most recent previous version configuration."""
 
-    # Require at least one version to be specified
-    if not kubernetes_version and not node_image_version:
-        raise RequiredArgumentMissingError(
-            "Please specify at least one of --kubernetes-version or --node-image-version. "
-            "Use 'az aks nodepool get-rollback-versions' to see available rollback versions."
+    logger.info("Fetching the most recent rollback version...")
+    
+    # Get upgrade profile to retrieve recently used versions
+    upgrade_profile = client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
+    
+    if not upgrade_profile.recently_used_versions or len(upgrade_profile.recently_used_versions) == 0:
+        raise CLIError(
+            "No rollback versions available. The nodepool must have been upgraded at least once "
+            "to have rollback history available."
         )
+    
+    # Sort by timestamp (most recent first) and get the most recent version
+    sorted_versions = sorted(
+        upgrade_profile.recently_used_versions,
+        key=lambda v: v.timestamp if v.timestamp else datetime.datetime.min,
+        reverse=True
+    )
+    most_recent = sorted_versions[0]
+    
+    kubernetes_version = most_recent.orchestrator_version
+    node_image_version = most_recent.node_image_version
+    
+    logger.info(
+        "Rolling back to the most recent version: "
+        "Kubernetes version: %s, Node image version: %s (timestamp: %s)",
+        kubernetes_version, node_image_version, most_recent.timestamp
+    )
 
     # Get the current agent pool
     current_agentpool = client.get(resource_group_name, cluster_name, nodepool_name)
 
     # Update the agent pool configuration with rollback versions
-    if kubernetes_version:
-        current_agentpool.orchestrator_version = kubernetes_version
-    if node_image_version:
-        current_agentpool.node_image_version = node_image_version
+    current_agentpool.orchestrator_version = kubernetes_version
+    current_agentpool.node_image_version = node_image_version
 
     # Set custom headers if provided
     headers = get_aks_custom_headers(aks_custom_headers)
@@ -2671,33 +2652,6 @@ def aks_machine_add(
     return add_machine(cmd, client, raw_parameters, no_wait)
 
 
-# pylint: disable=unused-argument
-def aks_machine_update(
-    cmd,
-    client,
-    resource_group_name,
-    cluster_name,
-    nodepool_name,
-    machine_name=None,
-    tags=None,
-    node_taints=None,
-    labels=None,
-    no_wait=False,
-):
-    existedMachine = None
-    try:
-        existedMachine = client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
-    except ResourceNotFoundError:
-        raise ClientRequestError(
-            f"Machine '{machine_name}' does not exist. Please use 'az aks machine list' to get current list of machines."
-        )
-
-    if existedMachine:
-        # DO NOT MOVE: get all the original parameters and save them as a dictionary
-        raw_parameters = locals()
-        return update_machine(client, raw_parameters, existedMachine, no_wait)
-
-
 def aks_addon_list_available():
     available_addons = []
     for k, v in ADDONS.items():
@@ -3103,13 +3057,12 @@ def aks_enable_addons(
         if enable_virtual_node:
             # All agent pool will reside in the same vnet, we will grant vnet level Contributor role
             # in later function, so using a random agent pool here is OK
-            if result.agent_pool_profiles and len(result.agent_pool_profiles) > 0:
-                random_agent_pool = result.agent_pool_profiles[0]
-                if random_agent_pool.vnet_subnet_id != "":
-                    add_virtual_node_role_assignment(
-                        cmd, result, random_agent_pool.vnet_subnet_id)
-                # Else, the cluster is not using custom VNet, the permission is already granted in AKS RP,
-                # we don't need to handle it in client side in this case.
+            random_agent_pool = result.agent_pool_profiles[0]
+            if random_agent_pool.vnet_subnet_id != "":
+                add_virtual_node_role_assignment(
+                    cmd, result, random_agent_pool.vnet_subnet_id)
+            # Else, the cluster is not using custom VNet, the permission is already granted in AKS RP,
+            # we don't need to handle it in client side in this case.
 
     else:
         result = sdk_no_wait(no_wait, client.begin_create_or_update,
@@ -4063,38 +4016,6 @@ def aks_mesh_upgrade_rollback(
         mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK)
 
 
-def aks_mesh_enable_istio_cni(
-        cmd,
-        client,
-        resource_group_name,
-        name,
-):
-    """Enable Istio CNI chaining for the Azure Service Mesh proxy redirection mechanism."""
-    return _aks_mesh_update(
-        cmd,
-        client,
-        resource_group_name,
-        name,
-        enable_istio_cni=True,
-    )
-
-
-def aks_mesh_disable_istio_cni(
-        cmd,
-        client,
-        resource_group_name,
-        name,
-):
-    """Disable Istio CNI chaining for the Azure Service Mesh proxy redirection mechanism."""
-    return _aks_mesh_update(
-        cmd,
-        client,
-        resource_group_name,
-        name,
-        disable_istio_cni=True,
-    )
-
-
 def _aks_mesh_get_supported_revisions(
         cmd,
         client,
@@ -4129,8 +4050,6 @@ def _aks_mesh_update(
         revision=None,
         yes=False,
         mesh_upgrade_command=None,
-        enable_istio_cni=None,
-        disable_istio_cni=None,
 ):
     raw_parameters = locals()
 
@@ -4529,9 +4448,6 @@ def aks_check_network_outbound(
     cluster = aks_show(cmd, client, resource_group_name, cluster_name, None)
     if not cluster:
         raise ValidationError("Can not get cluster information!")
-
-    if not cluster.agent_pool_profiles or len(cluster.agent_pool_profiles) == 0:
-        raise ValidationError("No agent pool profiles found in the cluster!")
 
     vm_set_type = cluster.agent_pool_profiles[0].type
     if not vm_set_type:

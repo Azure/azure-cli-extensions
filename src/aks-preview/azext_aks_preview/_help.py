@@ -2466,17 +2466,12 @@ examples:
 
 helps['aks nodepool rollback'] = """
 type: command
-short-summary: Rollback an agent pool to a previously used configuration.
+short-summary: Rollback an agent pool to the most recently used configuration (N-1).
 long-summary: |
-    Rollback an agent pool to a previously used Kubernetes version or node image version.
-    At least one of --kubernetes-version or --node-image-version must be specified.
+    Rollback an agent pool to the most recently used version based on rollback history.
+    This will rollback both the Kubernetes version and node image version to their most recent previous state.
+    For downgrades to older versions (N-2 or earlier), use a separate downgrade operation.
 parameters:
-  - name: --kubernetes-version -k
-    type: string
-    short-summary: Target Kubernetes version for rollback.
-  - name: --node-image-version
-    type: string
-    short-summary: Target node image version for rollback.
   - name: --aks-custom-headers
     type: string
     short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.
@@ -2487,14 +2482,9 @@ parameters:
     type: string
     short-summary: Set to '*' to allow a new resource to be created, but to prevent updating an existing resource.
 examples:
-  - name: Rollback a nodepool to a specific Kubernetes version.
-    text: az aks nodepool rollback --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool --kubernetes-version 1.28.5
+  - name: Rollback a nodepool to the most recently used version.
+    text: az aks nodepool rollback --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool
     crafted: true
-  - name: Rollback a nodepool to specific Kubernetes and node image versions.
-    text: az aks nodepool rollback --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool --kubernetes-version 1.28.5 --node-image-version AKSUbuntu-1804gen2containerd-2024.01.15
-    crafted: true
-  - name: Rollback a nodepool to a specific node image version.
-    text: az aks nodepool rollback --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool --node-image-version AKSUbuntu-1804gen2containerd-2024.01.15
     crafted: true
 """
 
