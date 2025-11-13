@@ -22,7 +22,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerapp_job_executionstest_e2e(self, resource_group):
-        
+
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         job = self.create_random_name(prefix='job2', length=24)
@@ -59,11 +59,11 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         # get list of all executions for the job
         executionList = self.cmd("az containerapp job execution list --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()
         self.assertTrue(len(executionList) == 1)
-        
+
         # get single execution for the job
         singleExecution = self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name'])).get_output_in_json()
         self.assertEqual(job in singleExecution['name'], True)
-        
+
         # start a job execution and stop it
         execution = self.cmd("az containerapp job start --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()
         if "id" in execution:
@@ -75,7 +75,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
 
         # stop the most recently started execution
         self.cmd("az containerapp job stop --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name'])).get_output_in_json()
-        
+
         # get stopped execution for the job and check status
         singleExecution = self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name'])).get_output_in_json()
         self.assertEqual(job in singleExecution['name'], True)
@@ -157,7 +157,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         # start job execution with yaml file
         execution = self.cmd("az containerapp job start --resource-group {} --name {} --yaml {}".format(resource_group, job, containerappjob_file_name)).get_output_in_json()
         self.assertEqual(job in execution['id'], True)
-        self.assertEqual(job in execution['name'], True)            
+        self.assertEqual(job in execution['name'], True)
 
         # get the execution and check if the custom container information is present
         self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name']), checks=[
@@ -209,7 +209,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         # get list of all executions for the job
         executionList = self.cmd("az containerapp job execution list --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()
         self.assertTrue(len(executionList) == 1)
-    
+
         replicas = self.cmd("az containerapp job replica list -g {} -n {} --execution {}".format(resource_group, job, execution['name'])).get_output_in_json()
         print(replicas)
 

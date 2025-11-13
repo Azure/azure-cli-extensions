@@ -57,7 +57,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
         # List Java Components
         java_component_list = self.cmd("containerapp env java-component list -g {} --environment {}".format(resource_group, env_name)).get_output_in_json()
         self.assertTrue(len(java_component_list) == 2)
-     
+
         # Create SBA and bind with eureka
         self.cmd('containerapp env java-component admin-for-spring create -g {} -n {} --environment {} --min-replicas 2 --max-replicas 2 --configuration'.format(resource_group, sba_name, env_name), checks=[
             JMESPathCheck('name', sba_name),
@@ -67,7 +67,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
                 JMESPathCheck('properties.scale.minReplicas', 2),
                 JMESPathCheck('properties.scale.maxReplicas', 2)
         ])
-   
+
         # List Java Components
         java_component_list = self.cmd("containerapp env java-component list -g {} --environment {}".format(resource_group, env_name)).get_output_in_json()
         self.assertTrue(len(java_component_list) == 3)
@@ -165,7 +165,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
 
         # Delete Java Components
         self.cmd('containerapp env java-component config-server-for-spring delete -g {} -n {} --environment {} --yes'.format(resource_group, config_name, env_name), expect_failure=False)
-        self.cmd('containerapp env java-component eureka-server-for-spring delete -g {} -n {} --environment {} --yes'.format(resource_group, eureka_name, env_name), expect_failure=False)      
+        self.cmd('containerapp env java-component eureka-server-for-spring delete -g {} -n {} --environment {} --yes'.format(resource_group, eureka_name, env_name), expect_failure=False)
         self.cmd('containerapp env java-component admin-for-spring delete -g {} -n {} --environment {} --yes'.format(resource_group, sba_name, env_name), expect_failure=False)
 
         # List Java Components
@@ -306,7 +306,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck('length(properties.configurations)', 2),
             ])
-        
+
         self.cmd(
             'containerapp env java-component eureka-server-for-spring update -g {} -n {} --environment {} --set-configurations eureka.server.renewal-percent-threshold=0.95 eureka.server.renewal-threshold-update-interval-ms=1000'.format(
                 resource_group, eureka_name, env_name), checks=[
@@ -343,7 +343,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
                 JMESPathCheck('length(properties.configurations)', 0)
             ])
 
-        self.cmd('containerapp env java-component eureka-server-for-spring delete -g {} -n {} --environment {} --yes'.format(resource_group, eureka_name, env_name), expect_failure=False)  
+        self.cmd('containerapp env java-component eureka-server-for-spring delete -g {} -n {} --environment {} --yes'.format(resource_group, eureka_name, env_name), expect_failure=False)
 
         # List Java Components
         java_component_list = self.cmd("containerapp env java-component list -g {} --environment {}".format(resource_group, env_name)).get_output_in_json()

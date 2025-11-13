@@ -30,7 +30,7 @@ class ContainerappResiliencyTests(ScenarioTest):
         bad_rg = "bad-rg"
         bad_capp = "bad-capp"
         resil_policy_count = 1
-        
+
         create_containerapp_env(self, env_name, resource_group)
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
@@ -225,7 +225,7 @@ class DaprComponentResiliencyTests(ScenarioTest):
 
         with open(dapr_file, 'w') as outfile:
             yaml.dump(daprloaded, outfile, default_flow_style=False)
-        
+
         self.cmd('containerapp env dapr-component set -n {} -g {} --dapr-component-name {} --yaml {}'.format(env_name, resource_group, dapr_comp_name, dapr_file.replace(os.sep, os.sep + os.sep)), checks=[
             JMESPathCheck('name', dapr_comp_name),
         ])

@@ -312,7 +312,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
         identity_json = self.cmd('identity create -g {} -n {} -l {}'.format(resource_group, user_identity_name, location)).get_output_in_json()
         user_identity_id = identity_json["id"]
         principal_id = identity_json["principalId"]
-        
+
         env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
         self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none -s {}'.format(resource_group, env_name, location, subnet_id), expect_failure=False)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
@@ -328,10 +328,10 @@ class ContainerappSessionPoolTests(ScenarioTest):
         self.cmd(f'acr import -n {acr} --source {image_source}')
         roleAssignmentName = self.create_guid()
         self.cmd(f'role assignment create --role acrpull --assignee {principal_id} --scope {acr_resource_id} --name {roleAssignmentName}')
-       
+
         # wait for role assignment take effect
         time.sleep(30)
-        
+
         # Create CustomContainer SessionPool
         sessionpool_name_custom = self.create_random_name(prefix='spcc', length=24)
         ready_instances = 2
@@ -371,7 +371,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck("properties.managedIdentitySettings[0].identity", user_identity_id),
                 JMESPathCheck("properties.managedIdentitySettings[0].lifecycle", "None"),
             ])
-        
+
         # Update session pool image
         self.cmd(
             f'containerapp sessionpool update -g {resource_group} -n {sessionpool_name_custom} -l {location} --image {image_name} --registry-server {acr}.azurecr.io --registry-identity {user_identity_id}',
@@ -382,7 +382,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck("properties.managedIdentitySettings[0].identity", user_identity_id),
                 JMESPathCheck("properties.managedIdentitySettings[0].lifecycle", "None"),
             ])
-        
+
 
         self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
 
@@ -506,7 +506,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_sessionpool_health_probe(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
- 
+
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-sp-env-probe', length=24)

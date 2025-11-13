@@ -325,13 +325,13 @@ class ContainerappIngressTests(ScenarioTest):
         self.cmd('containerapp update -g {} -n {} --cpu 1.0 --memory 2Gi --target-label label2'.format(resource_group, ca_name))
 
         # it may take a minute for the new revision to be created and added to traffic.
-        traffic = self.cmd('containerapp ingress traffic show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()    
+        traffic = self.cmd('containerapp ingress traffic show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
         for _ in range(100):
             if len(traffic) >= 2:
                 break
             time.sleep(5)
             traffic = self.cmd('containerapp ingress traffic show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
-        
+
         self.assertEqual(len(traffic), 2)
 
         revisions_list = self.cmd('containerapp revision list -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
@@ -1636,7 +1636,7 @@ class ContainerappRevisionTests(ScenarioTest):
 
         self.cmd(f"containerapp create -g {resource_group} -n {ca_name} --environment {env} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80",
                  checks=[
-                    JMESPathCheck('properties.configuration.activeRevisionsMode', "Single"),                     
+                    JMESPathCheck('properties.configuration.activeRevisionsMode', "Single"),
                  ])
 
         try:

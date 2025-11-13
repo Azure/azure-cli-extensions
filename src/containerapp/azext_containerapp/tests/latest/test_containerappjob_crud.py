@@ -22,7 +22,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     @ResourceGroupPreparer(location="northcentralus")
     # test for CRUD operations on Container App Job resource with trigger type as manual
     def test_containerapp_manualjob_crudoperations_e2e(self, resource_group):
-        
+
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         job = self.create_random_name(prefix='job1', length=24)
@@ -80,7 +80,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         # verify the Container App Job resource is deleted
         jobs_list = self.cmd("az containerapp job list --resource-group {}".format(resource_group)).get_output_in_json()
         self.assertTrue(len(jobs_list) == 0)
-        
+
         ## test for CRUD operations on Container App Job resource with trigger type as schedule
         job2 = self.create_random_name(prefix='job2', length=24)
 
@@ -197,7 +197,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     # test for CRUD operations on Container App Job resource with trigger type as manual
-    def test_containerapp_eventjob_defaults_e2e(self, resource_group): 
+    def test_containerapp_eventjob_defaults_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         job = self.create_random_name(prefix='job3', length=24)
@@ -232,7 +232,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     # test for CRUD operations on Container App Job resource with trigger type as manual
-    def test_containerapp_manualjob_defaults_e2e(self, resource_group): 
+    def test_containerapp_manualjob_defaults_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         job = self.create_random_name(prefix='job4', length=24)
@@ -264,7 +264,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     # test for CRUD operations on Container App Job resource with trigger type as manual
-    def test_containerapp_cronjob_defaults_e2e(self, resource_group): 
+    def test_containerapp_cronjob_defaults_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         job = self.create_random_name(prefix='job5', length=24)

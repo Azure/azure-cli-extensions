@@ -27,10 +27,10 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
     def test_basic_models_deployment(self, resource_group):
         """
         Test US1 Acceptance Scenario 1: Deploy compose file with models section.
-        
+
         Expected: Creates models container app with model-runner and model-runner-config containers.
         Services receive MODELS_ENDPOINT and MODELS_AVAILABLE environment variables.
-        
+
         This test MUST FAIL until T013-T027 are implemented.
         """
         self.kwargs.update({
@@ -48,7 +48,7 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
         # Verify models container app was created
         models_app = self.cmd('containerapp show -g {rg} -n models').get_output_in_json()
         self.assertIsNotNone(models_app)
-        
+
         # Verify models app has 2 containers
         containers = models_app['properties']['template']['containers']
         self.assertEqual(len(containers), 2)
@@ -73,10 +73,10 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
     def test_gpu_profile_creation(self, resource_group):
         """
         Test US1 Acceptance Scenario 2: GPU workload profile creation.
-        
+
         Expected: System checks for GPU profile, creates if doesn't exist,
         deploys models app to that profile.
-        
+
         This test MUST FAIL until T016-T019 are implemented.
         """
         self.kwargs.update({
@@ -102,9 +102,9 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
     def test_models_environment_injection(self, resource_group):
         """
         Test US1 Acceptance Scenario 3: Environment variable injection.
-        
+
         Expected: Services that depend on models receive MODELS_ENDPOINT and MODELS_AVAILABLE.
-        
+
         This test MUST FAIL until T023-T027 are implemented.
         """
         self.kwargs.update({
@@ -119,13 +119,13 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
         # Check web service has environment variables
         web_app = self.cmd('containerapp show -g {rg} -n web').get_output_in_json()
         env_vars = {e['name']: e.get('value', '') for e in web_app['properties']['template']['containers'][0].get('env', [])}
-        
+
         self.assertIn('MODELS_ENDPOINT', env_vars)
         self.assertIn('MODELS_AVAILABLE', env_vars)
-        
+
         # Verify MODELS_ENDPOINT format
         self.assertIn('models', env_vars['MODELS_ENDPOINT'].lower())
-        
+
         # Verify MODELS_AVAILABLE contains expected model names
         self.assertIn('phi', env_vars['MODELS_AVAILABLE'].lower())
 
@@ -134,9 +134,9 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
     def test_gpu_unavailable_error(self, resource_group):
         """
         Test FR-065: GPU unavailable error handling.
-        
+
         Expected: Raises ResourceNotFoundError with helpful message.
-        
+
         This test MUST FAIL until proper error handling is implemented.
         """
         # This test would attempt deployment in a region without GPU support
@@ -148,9 +148,9 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
     def test_dry_run_no_resources(self, resource_group):
         """
         Test US3 Acceptance Scenario 1-2: Dry-run generates preview without creating resources.
-        
+
         Expected: No actual Azure resources created, detailed report generated.
-        
+
         This test MUST FAIL until T048-T056 are implemented.
         """
         self.kwargs.update({
@@ -182,9 +182,9 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
     def test_custom_image_override(self, resource_group):
         """
         Test US4 Acceptance Scenario 1: Custom image via x-azure-deployment.
-        
+
         Expected: Container app uses custom image from x-azure-deployment.image.
-        
+
         This test MUST FAIL until T059-T064 are implemented.
         """
         # This would need a compose file with x-azure-deployment.image override
@@ -196,9 +196,9 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
     def test_custom_workload_profile_override(self, resource_group):
         """
         Test US4 Acceptance Scenario 3: Custom workload profile via x-azure-deployment.
-        
+
         Expected: Models app uses specified workload profile type.
-        
+
         This test MUST FAIL until T063 is implemented.
         """
         self.kwargs.update({
@@ -221,9 +221,9 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
     def test_declarative_update(self, resource_group):
         """
         Test Declarative Update: Deploy, modify compose, redeploy.
-        
+
         Expected: Existing apps updated, new apps created, unmanaged apps preserved.
-        
+
         This test MUST FAIL until T067-T071 are implemented.
         """
         # Placeholder for declarative update test
@@ -234,9 +234,9 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
     def test_replace_all_flag(self, resource_group):
         """
         Test --replace-all flag.
-        
+
         Expected: All matching container apps are deleted and recreated.
-        
+
         This test MUST FAIL until T070 is implemented.
         """
         # Placeholder for replace-all test
@@ -247,14 +247,14 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
     def test_error_types_compliance(self, resource_group):
         """
         Test FR-064 through FR-071: Error handling with proper error types.
-        
+
         Expected: Specific error types from azure.cli.core.azclierror used:
         - ResourceNotFoundError for GPU unavailable (FR-065)
         - InvalidArgumentValueError for schema validation (FR-066)
         - UnauthorizedError for role assignment failures (FR-067)
         - CLIInternalError for model-runner failures (FR-068)
         - FileOperationError for compose file issues (FR-070)
-        
+
         This test MUST FAIL until proper error handling is implemented.
         """
         self.kwargs.update({
@@ -271,7 +271,7 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
     def test_posix_compliance(self, resource_group):
         """
         Test FR-072, FR-073, FR-075-078: POSIX compliance.
-        
+
         Expected:
         - Command output to stdout (FR-072)
         - Status/errors to stderr (FR-073)
@@ -279,7 +279,7 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
         - Exit code 1 for errors (FR-076)
         - Exit code 2 for parser errors (FR-077)
         - Exit code 3 for missing resources (FR-078)
-        
+
         This test MUST FAIL until POSIX compliance is implemented.
         """
         # This test validates CLI behavior at the shell level
@@ -291,9 +291,9 @@ class ContainerAppComposeModelsScenarioTest(ScenarioTest):
     def test_logger_usage(self, resource_group):
         """
         Test FR-074: logger.error() and logger.warning() used instead of print().
-        
+
         Expected: All user messages use logger, not print().
-        
+
         This test validates implementation follows logging standards.
         """
         # This is a code inspection test - validates no print() calls in implementation

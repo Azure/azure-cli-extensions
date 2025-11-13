@@ -21,7 +21,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     @ResourceGroupPreparer(location="northcentralus")
     # test for CRUD operations on Container App Job resource with trigger type as event
     def test_containerapp_eventjob_crudoperations_e2e(self, resource_group):
-        
+
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         job = self.create_random_name(prefix='job1', length=24)

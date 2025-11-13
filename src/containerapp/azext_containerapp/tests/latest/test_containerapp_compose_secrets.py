@@ -39,7 +39,7 @@ secrets:
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
         write_test_file(compose_file_name, compose_text)
-        
+
         secrets_file_name = "./my_secret.txt"
         secrets_text = "Lorem Ipsum\n"
         write_test_file(secrets_file_name, secrets_text)
@@ -145,7 +145,7 @@ secrets:
             'environment': env_id,
             'compose': compose_file_name,
         })
-        
+
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
         command_string += ' --resource-group {rg}'

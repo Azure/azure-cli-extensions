@@ -139,7 +139,7 @@ services:
             'environment': env_id,
             'compose': compose_file_name,
         })
-        
+
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
         command_string += ' --resource-group {rg}'

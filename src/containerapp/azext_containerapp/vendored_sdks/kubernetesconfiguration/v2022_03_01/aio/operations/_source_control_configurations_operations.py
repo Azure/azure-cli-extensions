@@ -83,7 +83,7 @@ class SourceControlConfigurationsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        
+
         request = build_get_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
@@ -208,7 +208,7 @@ class SourceControlConfigurationsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        
+
         request = build_delete_request_initial(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
@@ -345,7 +345,7 @@ class SourceControlConfigurationsOperations:
         error_map.update(kwargs.pop('error_map', {}))
         def prepare_request(next_link=None):
             if not next_link:
-                
+
                 request = build_list_request(
                     subscription_id=self._config.subscription_id,
                     resource_group_name=resource_group_name,
@@ -358,7 +358,7 @@ class SourceControlConfigurationsOperations:
                 request.url = self._client.format_url(request.url)
 
             else:
-                
+
                 request = build_list_request(
                     subscription_id=self._config.subscription_id,
                     resource_group_name=resource_group_name,

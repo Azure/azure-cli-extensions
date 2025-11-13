@@ -93,7 +93,7 @@ class Operations(object):
         error_map.update(kwargs.pop('error_map', {}))
         def prepare_request(next_link=None):
             if not next_link:
-                
+
                 request = build_list_request(
                     template_url=self.list.metadata['url'],
                 )
@@ -101,7 +101,7 @@ class Operations(object):
                 request.url = self._client.format_url(request.url)
 
             else:
-                
+
                 request = build_list_request(
                     template_url=next_link,
                 )

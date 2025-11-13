@@ -29,7 +29,7 @@ class ContainerappAuthIdentityTests(ScenarioTest):
 
         env = prepare_containerapp_env_for_app_e2e_tests(self, location)
         self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80 --system-assigned --user-assigned {}'.format(resource_group, app, env, user_identity_name))
-        
+
         client_id = 'c0d23eb5-ea9f-4a4d-9519-bfa0a422c491'
         client_secret = 'c0d23eb5-ea9f-4a4d-9519-bfa0a422c491'
         issuer = 'https://sts.windows.net/54826b22-38d6-4fb2-bad9-b7983a3e9c5a/'
@@ -43,7 +43,7 @@ class ContainerappAuthIdentityTests(ScenarioTest):
                               "microsoft-provider-authentication-secret"),
                 JMESPathCheck('registration.openIdIssuer', issuer),
             ])
-        
+
         self.cmd(
             'containerapp auth update  -g {} -n {} --token-store true --blob-container-uri {} --yes'
             .format(resource_group, app, blobContainerUri), checks=[
@@ -51,7 +51,7 @@ class ContainerappAuthIdentityTests(ScenarioTest):
                 JMESPathCheck('properties.login.tokenStore.azureBlobStorage.blobContainerUri', blobContainerUri),
                 JMESPathCheckNotExists('properties.login.tokenStore.azureBlobStorage.managedIdentityResourceId'),
             ])
-        
+
         self.cmd(
             'containerapp auth update -g {} -n {} --token-store true --blob-container-uri {} --blob-container-identity {}'
             .format(resource_group, app, blobContainerUri, user_identity_id), checks=[

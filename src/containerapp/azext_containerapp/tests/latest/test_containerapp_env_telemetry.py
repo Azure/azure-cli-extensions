@@ -47,7 +47,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-        
+
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -100,7 +100,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         ])
 
         self.cmd(f'containerapp env telemetry data-dog show -g {resource_group} -n {env_name}', expect_failure=True)
-        
+
         self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes --no-wait')
 
 
@@ -132,7 +132,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-        
+
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -145,7 +145,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
             JMESPathCheck('enableOpenTelemetryTraces', True),
             JMESPathCheck('connectionString', None),
         ])
-        
+
         self.cmd(f'containerapp env telemetry app-insights set -g {resource_group} -n {env_name} --enable-open-telemetry-traces false')
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -211,7 +211,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         otlp_insecure = False
         otlp_headers = "api-key=test"
         otlp_incorrect_headers="key"
-        
+
         self.cmd(f'containerapp env telemetry otlp add -g {resource_group} -n {env_name} --otlp-name {otlp_name} --endpoint {otlp_endpoint} --insecure {otlp_insecure} --headers {otlp_incorrect_headers} --enable-open-telemetry-traces true --enable-open-telemetry-logs true --enable-open-telemetry-metrics true', expect_failure=True)
 
         self.cmd(f'containerapp env telemetry otlp add -g {resource_group} -n {env_name} --otlp-name {otlp_name} --endpoint {otlp_endpoint} --insecure {otlp_insecure} --headers {otlp_headers} --enable-open-telemetry-traces true --enable-open-telemetry-logs true --enable-open-telemetry-metrics true')
@@ -220,7 +220,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-        
+
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -249,7 +249,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-        
+
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.provisioningState', "Succeeded"),

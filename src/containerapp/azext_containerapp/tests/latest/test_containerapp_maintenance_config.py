@@ -25,10 +25,10 @@ class ContainerAppMaintenanceConfigTest(ScenarioTest):
     @ResourceGroupPreparer(location="eastus")
     @SubnetPreparer(location="centralus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_maintenanceconfig_crudoperations_e2e(self, resource_group, subnet_id):
-        
+
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        
-        
+
+
         env_name = self.create_random_name(prefix='aca-maintenance-config-env', length=30)
         self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles -s {}'.format(resource_group, env_name, TEST_LOCATION, subnet_id))
 
@@ -70,7 +70,7 @@ class ContainerAppMaintenanceConfigTest(ScenarioTest):
 
         # delete the Container App Maintenance Config resource
         self.cmd("az containerapp env maintenance-config remove --resource-group {} --environment {} -y".format(resource_group, env_name))
-        
+
         self.cmd("az containerapp env maintenance-config list --resource-group {} --environment {}".format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])

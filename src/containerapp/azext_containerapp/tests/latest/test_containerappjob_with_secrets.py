@@ -99,4 +99,3 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck('[0].value', "testsecretvaluev2"),
             ]).get_output_in_json()
         self.assertTrue(len(job_secret_list) == 1)
-        

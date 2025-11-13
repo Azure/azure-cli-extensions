@@ -186,7 +186,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         user_identity_name = self.create_random_name(prefix='env-msi', length=24)
         identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
         user_identity_id = identity_json["id"]
-        
+
         self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --mi-user-assigned {} --logs-destination none'.format(resource_group, env_name, user_identity_id))
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":

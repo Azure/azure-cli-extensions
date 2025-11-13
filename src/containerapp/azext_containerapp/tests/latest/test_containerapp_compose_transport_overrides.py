@@ -29,14 +29,14 @@ services:
         compose_file_name = f"{self._testMethodName}_compose.yml"
         write_test_file(compose_file_name, compose_text)
         env_id = prepare_containerapp_env_for_app_e2e_tests(self)
-        
+
         self.kwargs.update({
             'environment': env_id,
             'compose': compose_file_name,
             'transport': f"foo=http2 bar=auto",
             'second_transport': "baz=http",
         })
-        
+
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
         command_string += ' --resource-group {rg}'

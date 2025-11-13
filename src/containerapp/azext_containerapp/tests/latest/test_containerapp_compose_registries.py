@@ -76,7 +76,7 @@ services:
             'compose': compose_file_name,
             'registry_server': "foobar.azurecr.io",
         })
-        
+
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
         command_string += ' --resource-group {rg}'

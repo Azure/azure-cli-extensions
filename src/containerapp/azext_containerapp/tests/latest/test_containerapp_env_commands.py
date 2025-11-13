@@ -39,7 +39,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --mi-user-assigned {} {} --logs-destination none'.format(resource_group, env_name, user_identity_id1, user_identity_id2))
-        
+
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
@@ -90,7 +90,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
-        
+
         self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --logs-destination none'.format(resource_group, env_name))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
@@ -150,12 +150,12 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         self.cmd('containerapp env identity assign --system-assigned -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('type', 'SystemAssigned, UserAssigned'),
         ])
-        
+
         self.cmd('containerapp env identity remove --user-assigned {} -g {} -n {}'.format(user_identity_name1, resource_group, env_name), checks=[
             JMESPathCheck('type', 'SystemAssigned, UserAssigned'),
             JMESPathCheckExists(f'userAssignedIdentities."{user_identity_id2}"')
         ])
-        
+
         self.cmd('containerapp env identity remove --user-assigned {} -g {} -n {}'.format(user_identity_name2, resource_group, env_name), checks=[
             JMESPathCheck('type', 'SystemAssigned'),
         ])
@@ -205,11 +205,11 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         hostname_1 = "{}.{}".format(subdomain_1, zone_name)
         self.cmd("appservice domain create -g {} --hostname {} --contact-info=@'{}' --accept-terms".format(resource_group, zone_name, contacts)).get_output_in_json()
         self.cmd('network dns record-set txt add-record -g {} -z {} -n {} -v {}'.format(resource_group, zone_name, txt_name_1, verification_id)).get_output_in_json()
-    
+
         defaultPolicy = self.cmd("keyvault certificate get-default-policy").get_output_in_json()
         defaultPolicy["x509CertificateProperties"]["subject"] = f"CN=*.{hostname_1}"
         defaultPolicy["secretProperties"]["contentType"] = "application/x-pem-file"
-        
+
         temp = tempfile.NamedTemporaryFile(prefix='capp_', suffix='_tmp', mode="w+", delete=False)
         temp.write(json.dumps(defaultPolicy, default=lambda o: dict((key, value) for key, value in o.__dict__.items() if value), allow_nan=False))
         temp.close()
@@ -292,7 +292,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         defaultPolicy = self.cmd("keyvault certificate get-default-policy").get_output_in_json()
         defaultPolicy["x509CertificateProperties"]["subject"] = f"CN=*.contoso.com"
         defaultPolicy["secretProperties"]["contentType"] = "application/x-pem-file"
-        
+
         temp = tempfile.NamedTemporaryFile(prefix='capp_', suffix='_tmp', mode="w+", delete=False)
         temp.write(json.dumps(defaultPolicy, default=lambda o: dict((key, value) for key, value in o.__dict__.items() if value), allow_nan=False))
         temp.close()
@@ -303,7 +303,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         # create an environment with custom domain and user assigned identity
         self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --logs-destination none'.format(
             resource_group, env_name))
-        
+
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
@@ -312,7 +312,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         principal_id = containerapp_env["identity"]["principalId"]
         roleAssignmentName2 = self.create_guid()
         self.cmd(f'role assignment create --role "Key Vault Secrets User" --assignee {principal_id} --scope {kv["id"]} --name {roleAssignmentName2}')
-        
+
         containerapp_cert_name = self.create_random_name(prefix='containerapp-cert', length=24)
         cert = self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} -c {containerapp_cert_name}  --akv-url {akv_secret_url}", checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
@@ -338,7 +338,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
                 JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
                 JMESPathCheck('properties.certificateKeyVaultProperties', None),
             ])
-        
+
         containerapp_cert_name = self.create_random_name(prefix='containerapp-cert', length=24)
         self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} -c {containerapp_cert_name} --akv-url {akv_secret_url}", checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
@@ -370,7 +370,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         defaultPolicy = self.cmd("keyvault certificate get-default-policy").get_output_in_json()
         defaultPolicy["x509CertificateProperties"]["subject"] = f"CN=*.contoso.com"
         defaultPolicy["secretProperties"]["contentType"] = "application/x-pem-file"
-        
+
         temp = tempfile.NamedTemporaryFile(prefix='capp_', suffix='_tmp', mode="w+", delete=False)
         temp.write(json.dumps(defaultPolicy, default=lambda o: dict((key, value) for key, value in o.__dict__.items() if value), allow_nan=False))
         temp.close()
@@ -392,12 +392,12 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         # create an environment with custom domain and user assigned identity
         self.cmd('containerapp env create -g {} -n {} --mi-user-assigned {} --logs-destination none'.format(
             resource_group, env_name, user_identity_id))
-        
+
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-        
+
         cert = self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} --akv-url {akv_secret_url} --identity {user_identity_id}", checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
         ]).get_output_in_json()
@@ -415,7 +415,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
                 JMESPathCheck('[0].name', containerapp_cert_name),
                 JMESPathCheck('[0].id', containerapp_cert_id),
             ])
-    
+
 
 class ContainerappEnvScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)

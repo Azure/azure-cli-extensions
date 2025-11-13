@@ -25,9 +25,9 @@ class ContainerAppComposeMCPGatewayScenarioTest(ScenarioTest):
     def test_mcp_gateway_deployment(self, resource_group):
         """
         Test US2 Acceptance Scenario 1: Deploy compose file with MCP gateway.
-        
+
         Expected: MCP gateway service is created without being assigned to GPU profile.
-        
+
         This test MUST FAIL until T032-T043 are implemented.
         """
         self.kwargs.update({
@@ -53,9 +53,9 @@ class ContainerAppComposeMCPGatewayScenarioTest(ScenarioTest):
     def test_managed_identity_enablement(self, resource_group):
         """
         Test US2 Acceptance Scenario 2: System-assigned managed identity enabled for MCP gateway.
-        
+
         Expected: MCP gateway container app has system-assigned managed identity enabled.
-        
+
         This test MUST FAIL until T034-T037 are implemented.
         """
         self.kwargs.update({
@@ -78,9 +78,9 @@ class ContainerAppComposeMCPGatewayScenarioTest(ScenarioTest):
     def test_role_assignment(self, resource_group):
         """
         Test US2 Acceptance Scenario 3: Azure AI Developer role assigned to MCP gateway identity.
-        
+
         Expected: MCP gateway managed identity has "Azure AI Developer" role on resource group.
-        
+
         This test MUST FAIL until T038-T043 are implemented.
         """
         self.kwargs.update({
@@ -105,9 +105,9 @@ class ContainerAppComposeMCPGatewayScenarioTest(ScenarioTest):
     def test_mcp_environment_injection(self, resource_group):
         """
         Test US2 Acceptance Scenario 4: Environment variable injection for MCP gateway dependencies.
-        
+
         Expected: Services that depend on MCP gateway receive MCP_ENDPOINT environment variable.
-        
+
         This test MUST FAIL until T040-T043 are implemented.
         """
         self.kwargs.update({
@@ -122,6 +122,6 @@ class ContainerAppComposeMCPGatewayScenarioTest(ScenarioTest):
         # Check web service has MCP_ENDPOINT
         web_app = self.cmd('containerapp show -g {rg} -n web').get_output_in_json()
         env_vars = {e['name']: e.get('value', '') for e in web_app['properties']['template']['containers'][0].get('env', [])}
-        
+
         self.assertIn('MCP_ENDPOINT', env_vars)
         self.assertIn('mcp-gateway', env_vars['MCP_ENDPOINT'].lower())

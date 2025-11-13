@@ -117,6 +117,6 @@ class ContainerAppSessionCodeInterperterFilesTests(ScenarioTest):
             sessionpool_name_python,
             resource_group,
             ))
-        
+
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
         self.assertTrue(len(sessionpool_list) == 0)
