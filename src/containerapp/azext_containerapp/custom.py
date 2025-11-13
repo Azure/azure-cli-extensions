@@ -1814,7 +1814,6 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                         gateway_fqdn = gateway_fqdn.replace('https://', f'{gateway_protocol}://')
                         
                         # Extract and preserve the path from the original URL (e.g., /sse from http://mcp-gateway:8811/sse)
-                        import re
                         path_match = re.search(r'://mcp-gateway(?::\d+)?(/[^\s]*)', var_value)
                         preserved_path = path_match.group(1) if path_match else ''
                         
@@ -1843,7 +1842,6 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                         gateway_fqdn = gateway_fqdn.replace('https://', f'{gateway_protocol}://')
                         
                         # Extract and preserve the path from the original URL
-                        import re
                         path_match = re.search(r'://mcp-gateway(?::\d+)?(/[^\s]*)', value)
                         preserved_path = path_match.group(1) if path_match else ''
                         
@@ -2133,14 +2131,12 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                 replicas=replicas,
                 is_models_service=(service_name == 'models'),
                 is_mcp_gateway=is_mcp_gateway,
-                gpu_type=gpu_profile.get('type') if (service_name == 'models' and 'gpu_profile' in locals()) else None,
+                gpu_type=raw_service_yaml.get('x-azure-deployment', {}).get('workloadProfiles', {}).get('workloadProfileType') if service_name == 'models' else None,
                 raw_service=raw_service_yaml,
                 models_config=models
             )
             dry_run_services.append(service_config)
             
-            # if service_name == 'models':
-            # dry_run_has_models = True
             if is_mcp_gateway:
                 dry_run_has_gateway = True
 
@@ -2215,7 +2211,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         )
 
         # Return empty list (no actual deployment)
-        return None  # Dry-run complete, no resources created    return containerapps_from_compose
+        return None  # Dry-run complete, no resources created
 
 
 def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):

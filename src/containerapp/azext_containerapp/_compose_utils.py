@@ -104,7 +104,7 @@ def warn_about_unsupported_build_configuration(compose_service):
                                  "target", "secrets", "tags"]
     if compose_service.build is not None:
         config_list = resolve_configuration_element_list(compose_service, unsupported_configuration, 'build')
-        message = "These build configuration settings from the docker-compose file are yet supported."
+        message = "These build configuration settings from the docker-compose file are not yet supported."
         message += " Currently, we support supplying a build context and optionally target Dockerfile for a service."
         message += " See https://aka.ms/containerapp/compose/build_support for more information or to add feedback."
         if len(config_list) >= 1:
@@ -314,12 +314,15 @@ def resolve_memory_configuration_from_service(service):
 
 
 def resolve_port_or_expose_list(ports, name):
-    if len(ports) > 1:
+    if len(ports) == 1:
+        return ports[0]
+    elif len(ports) > 1:
         message = f"You have more than one {name} mapping defined in your docker-compose file."
         message += " Which port would you like to use? "
         choice_index = prompt_choice_list(message, ports)
-
-    return ports[choice_index]
+        return ports[choice_index]
+    else:
+        raise ValueError(f"No {name} mappings defined.")
 
 
 def resolve_ingress_and_target_port(service):
