@@ -12,10 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b16
++++++++
+* Update --enable-container-network-logs DCR to ContainerNetworkLogs instead of RetinaNetworkFlowLogs
+
 19.0.0b15
 +++++++
 * Fix `NoneType` error when performing operations on automatic clusters that have hosted system components enabled.
-
 
 19.0.0b14
 +++++++
