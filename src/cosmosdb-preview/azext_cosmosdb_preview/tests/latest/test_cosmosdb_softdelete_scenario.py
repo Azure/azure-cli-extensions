@@ -46,7 +46,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         logger.info("Enabling soft delete on account")
         self.cmd(
             'az cosmosdb update -n {acc} -g {rg} '
-            '--enabled-soft-deletion true '
+            '--enable-soft-deletion true '
             '--sd-retention 0 '
             '--min-purge-minutes 0'
         )

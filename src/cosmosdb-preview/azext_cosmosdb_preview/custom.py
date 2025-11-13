@@ -956,7 +956,7 @@ def cli_cosmosdb_update(client,
                         enable_prpp_autoscale=None,
                         enable_partition_merge=None,
                         capacity_mode=None,
-                        enabled_soft_deletion=None,
+                        enable_soft_deletion=None,
                         soft_deletion_retention_period_in_minutes=None,
                         min_minutes_before_permanent_deletion_allowed=None):
     """Update an existing Azure Cosmos DB database account. """
@@ -1026,12 +1026,12 @@ def cli_cosmosdb_update(client,
         analytical_storage_configuration.schema_type = analytical_storage_schema_type
 
     soft_delete_configuration = None
-    if enabled_soft_deletion is not None or \
+    if enable_soft_deletion is not None or \
             soft_deletion_retention_period_in_minutes is not None or \
             min_minutes_before_permanent_deletion_allowed is not None:
         from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteConfiguration
         soft_delete_configuration = SoftDeleteConfiguration(
-            enabled_soft_deletion=enabled_soft_deletion,
+            enable_soft_deletion=enable_soft_deletion,
             soft_deletion_retention_period_in_minutes=soft_deletion_retention_period_in_minutes,
             min_minutes_before_permanent_deletion_allowed=min_minutes_before_permanent_deletion_allowed
         )
@@ -1216,7 +1216,7 @@ def _create_database_account(client,
                              disable_ttl=None,
                              enable_partition_merge=None,
                              capacity_mode=None,
-                             enabled_soft_deletion=None,
+                             enable_soft_deletion=None,
                              soft_deletion_retention_period_in_minutes=None,
                              min_minutes_before_permanent_deletion_allowed=None):
     consistency_policy = None
@@ -1299,12 +1299,12 @@ def _create_database_account(client,
         analytical_storage_configuration.schema_type = analytical_storage_schema_type
 
     soft_delete_configuration = None
-    if enabled_soft_deletion is not None or \
+    if enable_soft_deletion is not None or \
             soft_deletion_retention_period_in_minutes is not None or \
             min_minutes_before_permanent_deletion_allowed is not None:
         from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteConfiguration
         soft_delete_configuration = SoftDeleteConfiguration(
-            enabled_soft_deletion=enabled_soft_deletion,
+            enabled_soft_deletion=enable_soft_deletion,
             soft_deletion_retention_period_in_minutes=soft_deletion_retention_period_in_minutes,
             min_minutes_before_permanent_deletion_allowed=min_minutes_before_permanent_deletion_allowed
         )
