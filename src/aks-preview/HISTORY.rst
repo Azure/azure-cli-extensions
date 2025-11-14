@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks bastion`: Correctly configure `$KUBECONFIG` values for tunneling traffic into a private AKS cluster.
 
 19.0.0b16
 +++++++
