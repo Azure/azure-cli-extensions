@@ -56,7 +56,8 @@ def containers_from_radius(
         "Applications.Core/containers",
     }]
 
-    container = supported_resources[container_index].get("properties", {}).get("container", {})
+    resource = supported_resources[container_index].get("properties", {})
+    container = resource.get("container", {})
     image = container.get("image")
 
     mounts = {
@@ -81,6 +82,15 @@ def containers_from_radius(
             "required": False,
         }
         for k, v in container.get("env", {}).items()
+    ]
+    image_config["env_rules"] += [
+        {
+            "name": f"CONNECTIONS_{k.upper()}_.+",
+            "value": ".+",
+            "strategy": "re2",
+            "required": True,
+        }
+        for k in resource.get("connections", {}).keys()
     ]
 
     return json.dumps({
