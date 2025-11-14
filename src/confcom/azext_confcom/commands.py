@@ -13,3 +13,9 @@ def load_command_table(self, _):
 
     with self.command_group("confcom"):
         pass
+
+    with self.command_group("confcom containers") as g:
+        g.custom_command("from_radius", "containers_from_radius")
+
+    with self.command_group("confcom radius policy") as g:
+        g.custom_command("insert", "radius_policy_insert")

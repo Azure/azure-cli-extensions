@@ -4,8 +4,11 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+import argparse
 import json
+import sys
 from knack.arguments import CLIArgumentType
+from argcomplete.completers import FilesCompleter
 from azext_confcom._validators import (
     validate_params_file,
     validate_diff,
@@ -433,4 +436,60 @@ def load_arguments(self, _):
             required=False,
             help="Path to containerd socket if not using the default",
             validator=validate_katapolicygen_input,
+        )
+
+    with self.argument_context("confcom containers from_radius") as c:
+        c.positional(
+            "template",
+            type=str,
+            help="Template to create container definitions from",
+        )
+        c.argument(
+            "parameters",
+            options_list=['--parameters', '-p'],
+            action='append',
+            nargs='+',
+            completer=FilesCompleter(),
+            required=False,
+            default=[],
+            help='The parameters for the radius template'
+        )
+        c.argument(
+            "container_index",
+            options_list=['--idx'],
+            required=False,
+            default=0,
+            type=int,
+            help='The index of the container definition in the template to use'
+        )
+        c.argument(
+            "platform",
+            options_list=["--platform"],
+            required=False,
+            default="aci",
+            type=str,
+            help="Platform to create container definition for",
+        )
+
+    with self.argument_context("confcom radius policy insert") as c:
+        c.positional(
+            "policy_file",
+            nargs='?',
+            type=argparse.FileType('rb'),
+            default=sys.stdin.buffer,
+            help="Policy to add to the template",
+        )
+        c.argument(
+            "template_path",
+            options_list=("--template-file", '-f'),
+            required=False,
+            help="Path to the template file"
+        )
+        c.argument(
+            "container_index",
+            options_list=['--idx'],
+            required=False,
+            default=0,
+            type=int,
+            help='The index of the container definition in the template to use'
         )
