@@ -481,7 +481,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "template_path",
-            options_list=("--template_file", '-f'),
+            options_list=("--template-file", '-f'),
             required=False,
             help="Path to the template file"
         )
