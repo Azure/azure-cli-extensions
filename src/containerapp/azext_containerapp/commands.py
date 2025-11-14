@@ -12,7 +12,12 @@ from ._transformers import (transform_sensitive_values,
                             transform_telemetry_data_dog_values,
                             transform_telemetry_app_insights_values,
                             transform_telemetry_otlp_values,
-                            transform_telemetry_otlp_values_by_name_wrapper)
+                            transform_telemetry_otlp_values_by_name_wrapper,
+                            transform_function_list,
+                            transform_function_show,
+                            transform_function_traces,
+                            transform_function_keys_show_set,
+                            transform_function_keys_list)
 from ._utils import is_cloud_supported_by_connected_env
 from ._validators import validate_debug
 
@@ -287,3 +292,16 @@ def load_command_table(self, args):
     with self.command_group('containerapp revision label') as g:
         g.custom_command('add', 'add_revision_label')
         g.custom_command('remove', 'remove_revision_label')
+
+    with self.command_group('containerapp function', is_preview=True) as g:
+        g.custom_command('list', 'list_containerapp_functions', table_transformer=transform_function_list)
+        g.custom_show_command('show', 'show_containerapp_function', table_transformer=transform_function_show)
+
+    with self.command_group('containerapp function keys', is_preview=True) as g:
+        g.custom_show_command('show', 'show_containerapp_function_keys', table_transformer=transform_function_keys_show_set)
+        g.custom_command('list', 'list_containerapp_function_keys', table_transformer=transform_function_keys_list)
+        g.custom_command('set', 'set_containerapp_function_keys', table_transformer=transform_function_keys_show_set)
+
+    with self.command_group('containerapp function invocations', is_preview=True) as g:
+        g.custom_command('summary', 'get_function_invocations_summary')
+        g.custom_command('traces', 'get_function_invocations_traces', table_transformer=transform_function_traces)
