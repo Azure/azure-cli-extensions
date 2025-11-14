@@ -186,8 +186,13 @@ def aks_bastion_set_kubeconfig(kubeconfig_path, port):
     with open(kubeconfig_path, "r") as f:
         data = yaml.load(f, Loader=yaml.SafeLoader)
     current_context = data["current-context"]
+    current_cluster = ""
+    for context in data["contexts"]:
+        if context["name"] == current_context:
+            current_cluster = context["context"]["cluster"]
+
     for cluster in data["clusters"]:
-        if cluster["name"] == current_context:
+        if cluster["name"] == current_cluster:
             server = cluster["cluster"]["server"]
             hostname = urlparse(server).hostname
             # update the server URL to point to the local port
