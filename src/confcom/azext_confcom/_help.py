@@ -278,3 +278,83 @@ helps[
         - name: Input a Kubernetes YAML file with a custom containerd socket path
           text: az confcom katapolicygen --yaml "./pod.json" --containerd-pull --containerd-socket-path "/my/custom/containerd.sock"
 """
+
+
+helps[
+    "confcom containers"
+] = """
+    type: group
+    short-summary: Commands which generate Security Policy Container Definitions.
+"""
+
+
+helps[
+    "confcom containers from_radius"
+] = """
+    type: command
+    short-summary: Create a Security Policy Container Definition based on a Radius app template.
+
+    parameters:
+        - name: --parameters -p
+          type: string
+          short-summary: 'Input parameters file to optionally accompany a Bicep Template'
+
+        - name: --idx
+          type: int
+          short-summary: 'The index of the container resource in the template to generate the policy for. Default is 0'
+
+        - name: --platform
+          type: str
+          short-summary: 'The name of the platform the container definition will run on'
+
+
+    examples:
+        - name: Input a Bicep Template and generate container definitions
+          text: az confcom containers from_radius app.bicep
+        - name: Input a Bicep Template with a bicepparam file and generate container definitions
+          text: az confcom containers from_radius app.bicep --parameters app.bicepparam
+        - name: Input a Bicep Template with inline parameter and generate container definitions
+          text: az confcom containers from_radius app.bicep --parameters image=my.azurecr.io/myimage:tag
+        - name: Input a Bicep Template and generate container definitions for the second container resource
+          text: az confcom containers from_radius app.bicep --idx 1
+"""
+
+
+helps[
+    "confcom radius"
+] = """
+    type: group
+    short-summary: Commands related to Radius.
+"""
+
+
+helps[
+    "confcom radius policy"
+] = """
+    type: group
+    short-summary: Commands related to Radius policies.
+"""
+
+
+helps[
+    "confcom radius policy insert"
+] = """
+    type: command
+    short-summary: Inserts a Security Policy into a Radius app template.
+
+    parameters:
+        - name: --template -f
+          type: string
+          short-summary: 'Input parameters file to optionally accompany a Bicep Template'
+
+        - name: --idx
+          type: int
+          short-summary: 'The index of the container resource in the template to generate the policy for. Default is 0'
+
+
+    examples:
+        - name: Insert a Security Policy into a Radius app template
+          text: az confcom radius policy insert policy.rego app.bicep
+        - name: Insert a Security Policy into a Radius app template for the second container resource
+          text: az confcom radius policy insert policy.rego app.bicep --idx 1
+"""
