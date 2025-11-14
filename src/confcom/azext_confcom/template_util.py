@@ -1177,7 +1177,6 @@ def print_func(x: dict) -> str:
 
 
 def pretty_print_func(x: dict) -> str:
-    # assert False, f"{x=}"
     return json.dumps(x, indent=2, sort_keys=True)
 
 

@@ -11,4 +11,3 @@ def get_binaries_dir():
     if not os.path.exists(binaries_dir):
         os.makedirs(binaries_dir)
     return binaries_dir
-

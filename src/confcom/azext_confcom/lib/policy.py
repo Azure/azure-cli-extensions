@@ -74,7 +74,6 @@ class FragmentReference:
     path: Optional[str] = None
 
 
-
 @dataclass
 class Container:
     allow_elevated: bool = False
@@ -116,8 +115,3 @@ class Fragment:
     framework_version: str = "0.2.3"
     fragments: List[FragmentReference] = OrderlessField(default_factory=list)
     containers: List[Container] = OrderlessField(default_factory=list)
-
-if __name__ == "__main__":
-    x = ContainerCapabilities(ambient=["a", "b"])
-    y = ContainerCapabilities(ambient=["a", "b"])
-    print(x == y)
