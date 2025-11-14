@@ -94,6 +94,18 @@ from .containerapp_session_code_interpreter_decorator import SessionCodeInterpre
 from .containerapp_session_custom_container_decorator import SessionCustomContainerCommandsPreviewDecorator
 from .containerapp_job_registry_decorator import ContainerAppJobRegistryPreviewSetDecorator
 from .containerapp_env_maintenance_config_decorator import ContainerAppEnvMaintenanceConfigPreviewDecorator
+from .containerapp_functions_decorator import (
+    ContainerAppFunctionsListDecorator,
+    ContainerAppFunctionsShowDecorator,
+    ContainerAppFunctionInvocationsDecorator
+)
+from .containerapp_function_keys_decorator import (
+    ContainerAppFunctionKeysShowDecorator,
+    ContainerAppFunctionKeysListDecorator,
+    ContainerAppFunctionKeysSetDecorator
+)
+
+from .containerapp_debug_command_decorator import ContainerAppDebugCommandDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -115,7 +127,8 @@ from ._clients import (
     SessionCustomContainerPreviewClient,
     DotNetComponentPreviewClient,
     MaintenanceConfigPreviewClient,
-    LabelHistoryPreviewClient
+    LabelHistoryPreviewClient,
+    ContainerAppFunctionsPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -3600,8 +3613,27 @@ def list_maintenance_config(cmd, resource_group_name, env_name):
     return r
 
 
-def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None):
+def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None, debug_command=None):
     logger.warning("Connecting...")
+    if debug_command is not None:
+        raw_parameters = {
+            'resource_group_name': resource_group_name,
+            'container_app_name': name,
+            'revision_name': revision,
+            'replica_name': replica,
+            'container_name': container,
+            'command': debug_command
+        }
+        debug_command_decorator = ContainerAppDebugCommandDecorator(
+            cmd=cmd,
+            client=ContainerAppPreviewClient,
+            raw_parameters=raw_parameters,
+            models=CONTAINER_APPS_SDK_MODELS
+        )
+        debug_command_decorator.validate_arguments()
+        logger.debug("Executing command: %s", debug_command)
+        return debug_command_decorator.execute_Command(cmd=cmd)
+
     conn = DebugWebSocketConnection(
         cmd=cmd,
         resource_group_name=resource_group_name,
@@ -3802,3 +3834,138 @@ def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
         return r['properties']['configuration']['ingress']['traffic']
     except Exception as e:
         handle_raw_exception(e)
+
+
+# Container App Functions commands
+def list_containerapp_functions(cmd, resource_group_name, name, revision_name=None):
+    """List functions for a container app or specific revision"""
+    containerapp_functions_list_decorator = ContainerAppFunctionsListDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters={
+            'resource_group_name': resource_group_name,
+            'container_app_name': name,
+            'revision_name': revision_name
+        },
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_functions_list_decorator.list()
+
+
+def show_containerapp_function(cmd, resource_group_name, name, function_name, revision_name=None):
+    """Show details of a specific function for a container app or revision"""
+    containerapp_functions_show_decorator = ContainerAppFunctionsShowDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters={
+            'resource_group_name': resource_group_name,
+            'container_app_name': name,
+            'function_name': function_name,
+            'revision_name': revision_name
+        },
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_functions_show_decorator.show()
+
+
+def show_containerapp_function_keys(cmd, resource_group_name, name, key_type, key_name, function_name=None, revision_name=None):
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'key_type': key_type,
+        'key_name': key_name,
+        'function_name': function_name,
+        'revision_name': revision_name
+    }
+
+    containerapp_function_keys_show_decorator = ContainerAppFunctionKeysShowDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_function_keys_show_decorator.show_keys()
+
+
+def list_containerapp_function_keys(cmd, resource_group_name, name, key_type, function_name=None, revision_name=None):
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'key_type': key_type,
+        'function_name': function_name,
+        'revision_name': revision_name
+    }
+
+    containerapp_function_keys_list_decorator = ContainerAppFunctionKeysListDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_function_keys_list_decorator.list_keys()
+
+
+def set_containerapp_function_keys(cmd, resource_group_name, name, key_type, key_name, key_value, function_name=None, revision_name=None):
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'key_type': key_type,
+        'key_name': key_name,
+        'key_value': key_value,
+        'function_name': function_name,
+        'revision_name': revision_name
+    }
+
+    containerapp_function_keys_set_decorator = ContainerAppFunctionKeysSetDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_function_keys_set_decorator.set_keys()
+
+
+def get_function_invocations_summary(cmd, resource_group_name, name, function_name, revision_name=None, timespan="30d"):
+    """Get function invocation summary from Application Insights."""
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'revision_name': revision_name,
+        'function_name': function_name,
+        'timespan': timespan
+    }
+    function_app_decorator = ContainerAppFunctionInvocationsDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    function_app_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    result = function_app_decorator.get_summary()
+    return result
+
+
+def get_function_invocations_traces(cmd, resource_group_name, name, function_name, revision_name=None, timespan="30d", limit=20):
+    """Get function invocation traces from Application Insights."""
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'revision_name': revision_name,
+        'function_name': function_name,
+        'timespan': timespan,
+        'limit': limit
+    }
+    function_app_decorator = ContainerAppFunctionInvocationsDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    function_app_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    result = function_app_decorator.get_traces()
+    return result

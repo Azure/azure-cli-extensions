@@ -5,6 +5,14 @@ Release History
 upcoming
 ++++++
 *  Upgrade api-version to 2025-10-02-preview
+* 'az containerapp function list': List functions in a container app
+* 'az containerapp function show': Show specific function in a container app
+* 'az containerapp function keys show': Show specific function key in a container app
+* 'az containerapp function keys list': List function keys in a container app
+* 'az containerapp function keys set': Create a new or update an existing function key in a container app
+* 'az containerapp function invocations summary': Get function invocation summary from Application Insights
+* 'az containerapp function invocations traces': Get function invocation traces from Application Insights
+* 'az containerapp debug': Support `--command` to run a command inside the container and exit
 
 1.2.0b5
 ++++++
