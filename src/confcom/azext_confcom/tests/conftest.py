@@ -25,7 +25,7 @@ def run_on_wheel(request):
     extensions_to_build = {module.__name__.split(".")[0] for module in modules_to_test}
     extension_dirs = {Path(a.split("/azext_")[0]) for a in request.config.args}
 
-    with tempfile.TemporaryDirectory(delete=True) as build_dir:
+    with tempfile.TemporaryDirectory() as build_dir:
 
         # Delete the extensions build dir, as azdev extension build doesn't
         # reliably handle changes
