@@ -77,7 +77,7 @@ def containers_from_radius(
     image_config = get_image_config(image)
     image_config["env_rules"] += [
         {
-            "pattern": f"{k}={v["value"]}",
+            "pattern": f'{k}={v["value"]}',
             "strategy": "string",
             "required": False,
         }
