@@ -3504,3 +3504,15 @@ neon postgres organization:
 neon postgres project:
   rule_exclusions:
   - require_wait_command_if_no_wait
+
+confcom containers from_radius:
+  parameters:
+    template:
+      rule_exclusions:
+        - no_positional_parameters
+
+confcom radius policy insert:
+  parameters:
+    policy_file:
+      rule_exclusions:
+        - no_positional_parameters
