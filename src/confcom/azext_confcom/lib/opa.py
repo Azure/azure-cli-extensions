@@ -16,7 +16,7 @@ import requests
 from azext_confcom.lib.binaries import get_binaries_dir
 
 _opa_pathh = os.path.abspath(os.path.join(get_binaries_dir(), "opa"))
-_expected_sha256 = "c6e9689c5dbb91f81a957f216dbece57e213b9c614cd77cb2927176c38077f86"
+_expected_sha256 = "fe8e191d44fec33db2a3d0ca788b9f83f866d980c5371063620c3c6822792877"
 
 
 def opa_get():
