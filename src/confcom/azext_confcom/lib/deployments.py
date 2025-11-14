@@ -7,7 +7,6 @@ import json
 import re
 
 from azure.cli.command_modules.resource.custom import (
-    _find_missing_parameters,
     _prepare_deployment_properties_unmodified,
 )
 from azure.cli.core.profiles import ResourceType
@@ -57,7 +56,7 @@ def eval_parameters(
 
 def eval_variables(
     arm_template: dict,
-    arm_template_parameters: dict,
+    _arm_template_parameters: dict,
 ) -> dict:
 
     variables = arm_template.get("variables", {})
@@ -71,6 +70,7 @@ EVAL_FUNCS = [
     eval_parameters,
     eval_variables,
 ]
+
 
 def parse_deployment_template(
     az_cli_command,
@@ -91,4 +91,3 @@ def parse_deployment_template(
         template = eval_func(template, parameters)
 
     return template
-

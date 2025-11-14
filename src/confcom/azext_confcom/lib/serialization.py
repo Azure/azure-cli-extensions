@@ -1,5 +1,7 @@
-
-
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 
 from dataclasses import asdict
 import json
@@ -37,8 +39,7 @@ def policy_serialize(policy: Union[Policy, Fragment]):
     fragments_json = json.dumps(policy_dict.pop("fragments"), indent=2)
     containers_json = json.dumps(policy_dict.pop("containers"), indent=2)
 
-    return dedent(
-f"""
+    return dedent(f"""
 package {policy_dict.pop('package')}
 
 api_version := "{policy_dict.pop('api_version')}"
@@ -70,7 +71,7 @@ scratch_unmount := data.framework.scratch_unmount
 
 reason := {{"errors": data.framework.errors}}
 """
-        )
+    )
 
 
 def fragment_serialize(fragment: Fragment):
@@ -79,8 +80,7 @@ def fragment_serialize(fragment: Fragment):
     fragments_json = json.dumps(fragment_dict.pop("fragments"), indent=2)
     containers_json = json.dumps(fragment_dict.pop("containers"), indent=2)
 
-    return dedent(
-f"""
+    return dedent(f"""
 package {fragment_dict.pop('package')}
 
 svn := "{fragment_dict.pop('svn')}"
@@ -90,7 +90,7 @@ fragments := {fragments_json}
 
 containers := {containers_json}
 """
-        )
+    )
 
 
 def policy_deserialize(file_path: str):

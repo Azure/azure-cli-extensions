@@ -70,9 +70,11 @@ class ContainerMount:
 
 @dataclass
 class ContainerUser:
-    group_idnames: list[ContainerRule] = field(default_factory=lambda: [ContainerRulePattern(pattern="", strategy="any")])
+    group_idnames: list[ContainerRule] = \
+        field(default_factory=lambda: [ContainerRulePattern(pattern="", strategy="any")])
     umask: str = "0022"
-    user_idname: ContainerRule = field(default_factory=lambda: ContainerRulePattern(pattern="", strategy="any"))
+    user_idname: ContainerRule = \
+        field(default_factory=lambda: ContainerRulePattern(pattern="", strategy="any"))
 
 
 @dataclass

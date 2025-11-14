@@ -58,7 +58,6 @@ def radius_policy_insert(
     else:
         updated_content = template_content
 
-
     # Write the updated content back to the template file
     with open(template_path, 'w') as template_file:
         template_file.write(updated_content)
