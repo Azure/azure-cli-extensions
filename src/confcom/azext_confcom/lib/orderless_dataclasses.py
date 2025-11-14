@@ -41,8 +41,7 @@ def dataclass(cls=None, **dataclass_kwargs):
                         sorted(getattr(self, name), key=repr) ==
                         sorted(getattr(other, name), key=repr)
                     )
-                else:
-                    return getattr(self, name) == getattr(other, name)
+                return getattr(self, name) == getattr(other, name)
 
             return (
                 type(self) is type(other) and
@@ -58,8 +57,7 @@ def dataclass(cls=None, **dataclass_kwargs):
     # This adds support for using the decorator with or without parentheses.
     if cls is None:
         return wrap
-    else:
-        return wrap(cls)
+    return wrap(cls)
 
 
 def OrderlessField(**kwargs: Any):

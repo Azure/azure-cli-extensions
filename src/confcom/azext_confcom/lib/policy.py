@@ -59,9 +59,11 @@ class ContainerMount:
 
 @dataclass
 class ContainerUser:
-    group_idnames: List[ContainerRule] = OrderlessField(default_factory=lambda: [ContainerRule(pattern="", strategy="any")])
+    group_idnames: List[ContainerRule] = \
+        OrderlessField(default_factory=lambda: [ContainerRule(pattern="", strategy="any")])
     umask: str = "0022"
-    user_idname: ContainerRule = Field(default_factory=lambda: ContainerRule(pattern="", strategy="any"))
+    user_idname: ContainerRule = \
+        Field(default_factory=lambda: ContainerRule(pattern="", strategy="any"))
 
 
 @dataclass
@@ -69,7 +71,8 @@ class FragmentReference:
     feed: str
     issuer: str
     minimum_svn: str
-    includes: List[Literal["containers", "fragments", "namespace", "external_processes"]] = OrderlessField(default_factory=list)
+    includes: List[Literal["containers", "fragments", "namespace", "external_processes"]] = \
+        OrderlessField(default_factory=list)
     path: Optional[str] = None
 
 

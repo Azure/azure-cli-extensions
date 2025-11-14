@@ -50,12 +50,3 @@ def opa_eval(data_path: Path, query: str):
         "--data", str(data_path),
         query,
     ]).stdout.strip())
-
-
-def opa_eval(data_path: Path, query: str):
-    return json.loads(opa_run([
-        "eval",
-        "--format", "json",
-        "--data", str(data_path),
-        query,
-    ]).stdout.strip())
