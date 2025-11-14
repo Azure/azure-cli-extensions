@@ -70,8 +70,7 @@ scratch_mount := data.framework.scratch_mount
 scratch_unmount := data.framework.scratch_unmount
 
 reason := {{"errors": data.framework.errors}}
-"""
-    )
+""")
 
 
 def fragment_serialize(fragment: Fragment):
@@ -89,8 +88,7 @@ framework_version := "{fragment_dict.pop('framework_version')}"
 fragments := {fragments_json}
 
 containers := {containers_json}
-"""
-    )
+""")
 
 
 def policy_deserialize(file_path: str):
