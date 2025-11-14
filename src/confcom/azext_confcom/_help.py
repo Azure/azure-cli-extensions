@@ -343,7 +343,7 @@ helps[
     short-summary: Inserts a Security Policy into a Radius app template.
 
     parameters:
-        - name: --template -f
+        - name: --template-file -f
           type: string
           short-summary: 'Input parameters file to optionally accompany a Bicep Template'
 
@@ -354,7 +354,7 @@ helps[
 
     examples:
         - name: Insert a Security Policy into a Radius app template
-          text: az confcom radius policy insert policy.rego app.bicep
+          text: az confcom radius policy insert policy.rego -f app.bicep
         - name: Insert a Security Policy into a Radius app template for the second container resource
-          text: az confcom radius policy insert policy.rego app.bicep --idx 1
+          text: az confcom radius policy insert policy.rego -f app.bicep --idx 1
 """
