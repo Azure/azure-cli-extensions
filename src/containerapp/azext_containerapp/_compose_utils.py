@@ -847,8 +847,6 @@ def create_gpu_workload_profile_if_needed(
 
     logger = get_logger(__name__)
     # Check if environment already has a GPU profile that matches the request
-    logger.warning(
-        f"[GPU DEBUG] create_gpu_workload_profile_if_needed called with requested_gpu_profile_type: {requested_gpu_profile_type}")
     try:
         # Use class methods directly - no instantiation needed
         env = ManagedEnvironmentClient.show(cmd, resource_group_name, env_name)
@@ -893,17 +891,11 @@ def create_gpu_workload_profile_if_needed(
         # The API returns profiles with 'name' field containing the workload
         # profile type
         available_types = [p.get('name') for p in available_gpu]
-        logger.warning(
-            f"[GPU DEBUG] Requested GPU profile: {requested_gpu_profile_type}")
-        logger.warning(
-            f"[GPU DEBUG] Available GPU profiles in {location}: {available_types}")
 
         # Pass through the requested type as-is - it's already the API value
         # (e.g., Consumption-GPU-NC8as-T4, Consumption-GPU-NC24-A100, Consumption, Flex)
         if requested_gpu_profile_type in available_types:
             gpu_profile_type = requested_gpu_profile_type
-            logger.warning(
-                f"[GPU DEBUG] ✅ Requested profile IS available, using: {gpu_profile_type}")
             logger.info(
                 f"Using requested GPU profile type: {gpu_profile_type}")
         else:
@@ -911,8 +903,6 @@ def create_gpu_workload_profile_if_needed(
             logger.error(
                 f"Requested GPU profile '{requested_gpu_profile_type}' not available in {location}")
             logger.error(f"Available GPU profiles: {available_types}")
-            logger.warning(
-                "[GPU DEBUG] ❌ Requested profile NOT available - will raise error")
             raise ResourceNotFoundError(
                 f"Requested workload profile type '{requested_gpu_profile_type}' is not available in region '{location}'. "
                 f"Available types: {', '.join(available_types)}")
@@ -921,23 +911,15 @@ def create_gpu_workload_profile_if_needed(
         available_types = [p.get('name') for p in available_gpu]
         if 'Consumption-GPU-NC8as-T4' in available_types:
             gpu_profile_type = 'Consumption-GPU-NC8as-T4'
-            logger.warning(
-                f"[GPU DEBUG] ⚠️ No specific GPU profile requested, defaulting to T4: {gpu_profile_type}")
         else:
             gpu_profile_type = available_gpu[0].get('name')
-            logger.warning(
-                f"[GPU DEBUG] ⚠️ No specific GPU profile requested, T4 not available, defaulting to first: {gpu_profile_type}")
         logger.info(
             f"No specific GPU profile requested, using: {gpu_profile_type}")
 
     # Check if it's a consumption-based GPU profile
-    logger.warning(
-        f"[GPU DEBUG] Selected gpu_profile_type: {gpu_profile_type}")
     if gpu_profile_type.startswith('Consumption-'):
         # Consumption profiles need to be added to the environment's
         # workloadProfiles array
-        logger.warning(
-            "[GPU DEBUG] Profile is consumption-based, will add to environment")
         logger.info(
             f"Adding consumption-based GPU profile to environment: {gpu_profile_type}")
 
@@ -1122,13 +1104,6 @@ def create_models_container_app(
     logger = get_logger(__name__)
 
     app_name = 'models'
-    logger.info(
-        f"Creating models container app '{app_name}' with GPU profile '{gpu_profile_name}'")
-
-    # MODEL_RUNNER_URL uses localhost since model-runner and model-runner-config
-    # are in the same container app (in-app communication)
-    model_runner_url = "http://localhost:12434"
-    logger.info(f"Model runner URL (localhost): {model_runner_url}")
 
     # Determine model-runner image based on x-azure-deployment.image or GPU
     # profile
@@ -1140,8 +1115,6 @@ def create_models_container_app(
             azure_deployment = model_config.get('x-azure-deployment', {})
             if 'image' in azure_deployment:
                 model_runner_image = azure_deployment['image']
-                logger.info(
-                    f"Using custom model-runner image from x-azure-deployment: {model_runner_image}")
                 break
 
     # Default to GPU-aware image selection if not specified
@@ -1149,8 +1122,6 @@ def create_models_container_app(
         from ._constants import MODEL_RUNNER_IMAGE, MODEL_RUNNER_IMAGE_CUDA
         is_gpu_profile = 'GPU' in gpu_profile_name.upper()
         model_runner_image = MODEL_RUNNER_IMAGE_CUDA if is_gpu_profile else MODEL_RUNNER_IMAGE
-        logger.info(
-            f"Using default model-runner image: {model_runner_image} (GPU profile: {is_gpu_profile})")
 
     # Determine GPU-appropriate resources based on profile type
     # T4 GPU: 8 vCPUs, 56GB memory (NC8as_T4_v3)
@@ -1158,14 +1129,10 @@ def create_models_container_app(
     if 'A100' in gpu_profile_name.upper():
         gpu_cpu = 24.0
         gpu_memory = '220Gi'
-        logger.info(
-            f"Detected A100 GPU profile - setting resources to {gpu_cpu} CPU / {gpu_memory}")
     else:
         # Default to T4 resources
         gpu_cpu = 8.0
         gpu_memory = '56Gi'
-        logger.info(
-            f"Detected T4 GPU profile - setting resources to {gpu_cpu} CPU / {gpu_memory}")
 
     # Build model configuration for model-runner-config
     model_config = {
@@ -1265,9 +1232,15 @@ def create_models_container_app(
                     ingress_config['external'] = ingress_override['external']
                 if 'allowInsecure' in ingress_override:
                     ingress_config['allowInsecure'] = ingress_override['allowInsecure']
-                logger.info(
-                    f"Applied ingress overrides from model '{model_name}': {ingress_override}")
                 break  # Use first model's ingress settings
+
+    # Log clean [models] deployment info
+    ingress_str = f"{'external' if ingress_config['external'] else 'internal'}, allowInsecure={ingress_config['allowInsecure']}"
+    models_list = ', '.join(models.keys())
+    logger.info(f"[models] Deploying image: {model_runner_image}")
+    logger.info(f"[models] Ingress: {ingress_str}")
+    logger.info(f"[models] Configured models: {models_list}")
+    logger.info(f"[models] Workload profile: {gpu_profile_name}")
 
     # Build container app definition
     container_app_def = {
@@ -1312,7 +1285,6 @@ def create_models_container_app(
             request_url,
             body=json.dumps(container_app_def))
         models_app = r.json()
-        logger.info(f"Successfully created models container app: {app_name}")
         return models_app
     except Exception as e:
         logger.error(f"Failed to create models container app: {str(e)}")

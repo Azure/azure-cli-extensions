@@ -2192,38 +2192,19 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         # strips out x-azure-deployment from the returned models dict
         requested_gpu_type = None
 
-        logger.warning(
-            "[GPU DEBUG] Inspecting RAW models YAML for GPU profile configuration")
         raw_models = compose_yaml_original.get('models', {})
-        logger.warning(
-            f"[GPU DEBUG] Raw models keys: {list(raw_models.keys())}")
 
         for model_name, model_config in raw_models.items():
-            logger.warning(
-                f"[GPU DEBUG] Raw model '{model_name}' config type: {type(model_config)}")
             if isinstance(model_config, dict):
-                logger.warning(
-                    f"[GPU DEBUG] Raw model '{model_name}' has x-azure-deployment: {'x-azure-deployment' in model_config}")
                 if 'x-azure-deployment' in model_config:
                     azure_deployment = model_config.get(
                         'x-azure-deployment', {})
-                    logger.warning(
-                        f"[GPU DEBUG] Model '{model_name}' azure_deployment: {azure_deployment}")
                     workload_profiles = azure_deployment.get(
                         'workloadProfiles', {})
-                    logger.warning(
-                        f"[GPU DEBUG] Model '{model_name}' workloadProfiles: {workload_profiles}")
                     requested_gpu_type = workload_profiles.get(
                         'workloadProfileType')
-                    logger.warning(
-                        f"[GPU DEBUG] Model '{model_name}' requested GPU type: {requested_gpu_type}")
                     if requested_gpu_type:
-                        logger.info(
-                            f"Found GPU profile in model '{model_name}': {requested_gpu_type}")
                         break
-
-        logger.warning(
-            f"[GPU DEBUG] Final requested_gpu_type to be passed: {requested_gpu_type}")
 
         try:
             gpu_profile_name = create_gpu_workload_profile_if_needed(
@@ -2280,8 +2261,6 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             raise InvalidArgumentValueError(message)
         image = service.image
         warn_about_unsupported_elements(service)
-        logger.info(  # pylint: disable=W1203
-            f"Creating the Container Apps instance for {service_name} under {resource_group_name} in {location}.")
         ingress_type, target_port = resolve_ingress_and_target_port(service)
 
         # Enhanced ACA Compose Support: Override ingress for MCP gateway in ACA
@@ -2295,8 +2274,6 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             mcp_gateway_config = get_mcp_gateway_configuration(service)
             ingress_type = mcp_gateway_config['ingress_type']
             target_port = mcp_gateway_config['port']
-            logger.info(
-                f"MCP gateway detected: {service_name} - setting internal ingress on port {target_port}")
 
         registry, registry_username, registry_password = resolve_registry_from_cli_args(
             registry_server, registry_user, registry_pass)  # pylint: disable=C0301
@@ -2313,8 +2290,6 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             # All elements become args, no startup_command
             startup_command = None
             startup_args = service.command
-            logger.info(
-                f"Service '{service_name}' has command array - using as args: {startup_args}")
 
         # Get x-azure-deployment overrides for resources
         raw_service_yaml = compose_yaml_original.get(
@@ -2478,9 +2453,6 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
 
         # Phase 4.5: Inject MCP Gateway Environment Variables
         if is_mcp_gateway:
-            logger.info(
-                f"Injecting required MCP gateway environment variables for {service_name}")
-
             # Ensure environment list exists
             if environment is None:
                 environment = []
@@ -2515,19 +2487,10 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                         'name': var_name,
                         'value': var_value
                     })
-                    logger.info(
-                        f"  Set {var_name}={var_value if var_name not in ['AZURE_SUBSCRIPTION_ID', 'AZURE_TENANT_ID'] else var_value[:8] + '...'}")
-                else:
-                    logger.info(
-                        f"  {var_name} already exists in environment, skipping")
 
             # Override CPU and memory for MCP gateway
-            logger.info(
-                "Setting MCP gateway resources to 2.0 CPU / 4Gi memory")
             cpu = 2.0
-            memory = "4Gi"
-
-        # Phase 3: Inject environment variables for services with models declarations
+            memory = "4Gi"        # Phase 3: Inject environment variables for services with models declarations
         # Services with "models:" section and endpoint_var/model_var get those specific variables injected
         # Note: pycomposefile sets models=None if not present, so we just check
         # if service.models is truthy
@@ -2730,10 +2693,27 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
 
             # Ensure MCP gateway always has at least 1 replica
             if is_mcp_gateway and final_min_replicas < 1:
-                logger.info(
-                    f"MCP gateway {service_name}: forcing min replicas to 1")
                 final_min_replicas = 1
                 final_max_replicas = max(1, final_max_replicas)
+
+            # Add clean logging for mcp-gateway
+            if is_mcp_gateway:
+                from azure.cli.core._profile import Profile
+                profile = Profile(cli_ctx=cmd.cli_ctx)
+                subscription_id = profile.get_subscription_id()
+                ingress_str = f"{'external' if final_ingress_type == 'external' else 'internal'}, allowInsecure={allow_insecure}"
+                args_str = ', '.join(startup_args) if startup_args else 'none'
+                logger.info(f"[mcp-gateway] Deploying image: {final_image}")
+                logger.info(f"[mcp-gateway] Ingress: {ingress_str}")
+                logger.info(f"[mcp-gateway] Args: {args_str}")
+                logger.info(f"[mcp-gateway] Subscription for mcp-tooling: {subscription_id}")
+            # Add clean logging for other services (skip models as it's created separately)
+            elif service_name != 'models':
+                ingress_str = f"{'external' if final_ingress_type == 'external' else 'internal'}, allowInsecure={allow_insecure}" if final_ingress_type else 'disabled'
+                env_count = len(env_vars_cli_format) if env_vars_cli_format else 0
+                logger.info(f"[{service_name}] Deploying image: {final_image}")
+                logger.info(f"[{service_name}] Ingress: {ingress_str}")
+                logger.info(f"[{service_name}] Environment variables: {env_count} injected")
 
             containerapps_from_compose.append(
                 create_containerapp(cmd,
