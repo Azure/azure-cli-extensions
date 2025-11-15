@@ -2123,18 +2123,27 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
     managed_env_name = parsed_managed_env['name']
     env_rg = parsed_managed_env.get('resource_group', resource_group_name)
 
+    # Import helper for environment status logging
+    from ._compose_utils import log_environment_status
+
     try:
         managed_environment = show_managed_environment(
             cmd=cmd, name=managed_env_name, resource_group_name=env_rg)
+        logger.info(f"[env: {managed_env_name}] Environment found")
+        # Log comprehensive environment status
+        log_environment_status(cmd, env_rg, managed_env_name, managed_environment)
     except CLIInternalError:  # pylint: disable=W0702
-        logger.info(  # pylint: disable=W1203
-            f"Creating the Container Apps managed environment {managed_env_name} under {env_rg} in {location}.")
+        logger.info(f"[env: {managed_env_name}] Environment does not exist, will create")
+        logger.info(f"[env: {managed_env_name}] Creating in resource group '{env_rg}', location '{location}'")
         managed_environment = create_managed_environment(
             cmd,
             name=managed_env_name,
             resource_group_name=env_rg,
             tags=tags,
             location=location)
+        logger.info(f"[env: {managed_env_name}] Environment created successfully")
+        # Log status of newly created environment
+        log_environment_status(cmd, env_rg, managed_env_name, managed_environment)
 
     compose_yaml = load_yaml_file(compose_file_path)
     # Make a deep copy to preserve original YAML for x-azure-deployment

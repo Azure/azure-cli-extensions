@@ -31,6 +31,76 @@ logger = get_logger(__name__)
 # ============================================================================
 
 
+def log_environment_status(cmd, resource_group_name, env_name, env):
+    """
+    Log comprehensive environment status with [env: <name>] prefix.
+    
+    Args:
+        cmd: Azure CLI command context
+        resource_group_name: Resource group name
+        env_name: Environment name
+        env: Environment resource object
+    """
+    logger = get_logger(__name__)
+    
+    # Log environment status
+    provisioning_state = env.get('properties', {}).get('provisioningState', 'Unknown')
+    location = env.get('location', 'Unknown')
+    logger.info(f"[env: {env_name}] Status: {provisioning_state}")
+    logger.info(f"[env: {env_name}] Location: {location}")
+    
+    # Get and log workload profiles
+    workload_profiles = env.get('properties', {}).get('workloadProfiles', [])
+    if workload_profiles:
+        logger.info(f"[env: {env_name}] Workload profiles ({len(workload_profiles)}):")
+        for profile in workload_profiles:
+            profile_name = profile.get('name', 'Unknown')
+            profile_type = profile.get('workloadProfileType', 'Unknown')
+            logger.info(f"[env: {env_name}]   - {profile_name}: {profile_type}")
+    else:
+        logger.info(f"[env: {env_name}] Workload profiles: None (Consumption only)")
+    
+    # Get and log running container apps
+    try:
+        from azure.cli.core.util import send_raw_request
+        from azure.cli.core.commands.client_factory import get_subscription_id
+        
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        api_version = "2024-03-01"
+        
+        # List container apps in the environment
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            api_version
+        )
+        
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        apps_response = r.json()
+        
+        # Filter apps by environment
+        env_id = env.get('id', '')
+        apps_in_env = []
+        for app in apps_response.get('value', []):
+            app_env_id = app.get('properties', {}).get('environmentId', '')
+            if app_env_id == env_id:
+                apps_in_env.append(app)
+        
+        if apps_in_env:
+            logger.info(f"[env: {env_name}] Running apps ({len(apps_in_env)}):")
+            for app in apps_in_env:
+                app_name = app.get('name', 'Unknown')
+                replica_count = app.get('properties', {}).get('template', {}).get('scale', {}).get('minReplicas', 'Unknown')
+                logger.info(f"[env: {env_name}]   - {app_name} (min replicas: {replica_count})")
+        else:
+            logger.info(f"[env: {env_name}] Running apps: None")
+    except Exception as e:
+        logger.warning(f"[env: {env_name}] Could not retrieve running apps: {str(e)}")
+
+
 def build_containerapp_from_compose_service(cmd,
                                             name,
                                             source,
@@ -938,13 +1008,13 @@ def create_gpu_workload_profile_if_needed(
         for profile in existing_profiles:
             if profile.get('workloadProfileType') == gpu_profile_type:
                 profile_exists = True
-                logger.info(f"GPU profile already exists: {gpu_profile_type}")
+                logger.info(f"[env: {env_name}] GPU profile '{gpu_profile_type}' already exists")
                 break
 
         # If profile already exists, skip PATCH and return early
         if profile_exists:
             logger.info(
-                f"Skipping environment update - profile '{gpu_profile_type}' already configured")
+                f"[env: {env_name}] Skipping environment update - profile '{gpu_profile_type}' already configured")
             # Wait for environment to be ready in case it's still provisioning
             # from a previous operation
             wait_for_environment_provisioning(
@@ -953,7 +1023,10 @@ def create_gpu_workload_profile_if_needed(
 
         # Profile doesn't exist - add it to the environment
         logger.info(
-            f"Adding new GPU profile '{gpu_profile_type}' to environment")
+            f"[env: {env_name}] Adding new GPU profile '{gpu_profile_type}' to environment")
+        logger.info(f"[env: {env_name}] Existing profiles: {len(existing_profiles)}")
+        for profile in existing_profiles:
+            logger.info(f"[env: {env_name}]   - {profile.get('name')}: {profile.get('workloadProfileType')}")
 
         new_profile = {
             "name": gpu_profile_type,
@@ -980,6 +1053,12 @@ def create_gpu_workload_profile_if_needed(
             cleaned_profiles.append(cleaned)
 
         cleaned_profiles.append(new_profile)
+
+        # Log what will be sent in PATCH
+        logger.info(f"[env: {env_name}] PATCH operation: updating workload profiles")
+        logger.info(f"[env: {env_name}] Total profiles after update: {len(cleaned_profiles)}")
+        for profile in cleaned_profiles:
+            logger.info(f"[env: {env_name}]   - {profile.get('name')}: {profile.get('workloadProfileType')}")
 
         # Update the environment
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -1008,10 +1087,12 @@ def create_gpu_workload_profile_if_needed(
             "PATCH",
             request_url,
             body=json.dumps(env_update))
-        logger.info(f"Added GPU profile to environment: {gpu_profile_type}")
+        logger.info(f"[env: {env_name}] Successfully added GPU profile: {gpu_profile_type}")
 
         # Wait for environment to be provisioned before continuing
+        logger.info(f"[env: {env_name}] Waiting for environment provisioning to complete...")
         wait_for_environment_provisioning(cmd, resource_group_name, env_name)
+        logger.info(f"[env: {env_name}] Environment is ready")
 
         return gpu_profile_type
 
