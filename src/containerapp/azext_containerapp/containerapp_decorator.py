@@ -133,6 +133,9 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
     def get_argument_target_label(self):
         return self.get_param("target_label")
 
+    def get_argument_suppress_ingress_warning(self):
+        return self.get_param("suppress_ingress_warning")
+
     def validate_arguments(self):
         self.containerapp_def = None
         try:
@@ -1089,15 +1092,18 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not self.get_argument_no_wait():
             not self.get_argument_disable_warnings() and logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(self.get_argument_name(), self.get_argument_resource_group_name()))
 
+        suppress_ingress_warning = bool(self.get_argument_suppress_ingress_warning())
+
         if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and \
                 r["properties"]["configuration"]["ingress"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
             not self.get_argument_disable_warnings() and logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
         else:
-            target_port = self.get_argument_target_port() or "<port>"
-            not self.get_argument_disable_warnings() and logger.warning(
-                "\nContainer app created. To access it over HTTPS, enable ingress: "
-                "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
-                " --transport auto\n", self.get_argument_name(), self.get_argument_resource_group_name(), target_port)
+            if not suppress_ingress_warning:
+                target_port = self.get_argument_target_port() or "<port>"
+                not self.get_argument_disable_warnings() and logger.warning(
+                    "\nContainer app created. To access it over HTTPS, enable ingress: "
+                    "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
+                    " --transport auto\n", self.get_argument_name(), self.get_argument_resource_group_name(), target_port)
 
         if self.get_argument_service_connectors_def_list() is not None:
             linker_client = get_linker_client(self.cmd)

@@ -1940,7 +1940,8 @@ def get_mcp_gateway_configuration(service):
 
 def enable_managed_identity(cmd, resource_group_name, app_name):
     """
-    Enable system-assigned managed identity for a container app.
+    Enable system-assigned managed identity for a container app using a scoped PATCH
+    so that existing secrets (which are write-only) are not re-sent without values.
 
     Args:
         cmd: Azure CLI command context
@@ -1950,36 +1951,42 @@ def enable_managed_identity(cmd, resource_group_name, app_name):
     Returns:
         Dictionary with identity information including principal_id
     """
+    import json
     from knack.log import get_logger
-    from ._clients import ContainerAppClient
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    from azure.cli.core.util import send_raw_request
+
+    from ._clients import PREVIEW_API_VERSION
 
     logger = get_logger(__name__)
 
-    logger.info(f"Enabling system-assigned managed identity for '{app_name}'")
+    logger.info(f"Enabling system-assigned managed identity for '{app_name}' via PATCH")
+
+    management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+    subscription_id = get_subscription_id(cmd.cli_ctx)
+    request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}".format(
+        management_hostname.strip('/'),
+        subscription_id,
+        resource_group_name,
+        app_name,
+        PREVIEW_API_VERSION)
+
+    payload = {
+        "identity": {
+            "type": "SystemAssigned"
+        }
+    }
 
     try:
-        # Get current app using show classmethod
-        app = ContainerAppClient.show(cmd, resource_group_name, app_name)
-
-        # Set identity type to SystemAssigned
-        if 'identity' not in app:
-            app['identity'] = {}
-
-        app['identity']['type'] = 'SystemAssigned'
-
-        # Update the app using create_or_update classmethod
-        updated_app = ContainerAppClient.create_or_update(
-            cmd, resource_group_name, app_name, app)
-
+        response = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(payload))
+        updated_app = response.json()
         identity = updated_app.get('identity', {})
         principal_id = identity.get('principalId')
 
         if principal_id:
-            logger.info(
-                f"Successfully enabled managed identity. Principal ID: {principal_id}")
+            logger.info(f"Successfully enabled managed identity. Principal ID: {principal_id}")
         else:
-            logger.warning(
-                "Managed identity enabled but principal ID not yet available")
+            logger.warning("Managed identity enabled but principal ID not yet available")
 
         return identity
 

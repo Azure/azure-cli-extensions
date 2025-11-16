@@ -773,7 +773,8 @@ def create_containerapp(cmd,
                         runtime=None,
                         enable_java_metrics=None,
                         enable_java_agent=None,
-                        kind=None):
+                        kind=None,
+                        suppress_ingress_warning=False):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -2759,7 +2760,8 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                     env_vars=env_vars_cli_format,
                                     secrets=secret_vars,
                                     min_replicas=final_min_replicas,
-                                    max_replicas=final_max_replicas, )
+                                    max_replicas=final_max_replicas,
+                                    suppress_ingress_warning=True)
             )
 
         # Phase 5: Dry-run mode - collect service config instead of deploying
