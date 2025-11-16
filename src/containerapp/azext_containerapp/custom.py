@@ -17,6 +17,7 @@ from urllib.parse import urlparse
 import json
 import requests
 import copy
+import os
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 
@@ -2131,7 +2132,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             cmd=cmd, name=managed_env_name, resource_group_name=env_rg)
         logger.info(f"[env: {managed_env_name}] Environment found")
         # Log comprehensive environment status
-        log_environment_status(cmd, env_rg, managed_env_name, managed_environment)
+        log_environment_status(cmd, env_rg, managed_env_name, managed_environment, log_level='warning')
     except CLIInternalError:  # pylint: disable=W0702
         logger.info(f"[env: {managed_env_name}] Environment does not exist, will create")
         logger.info(f"[env: {managed_env_name}] Creating in resource group '{env_rg}', location '{location}'")
@@ -2143,8 +2144,10 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             location=location)
         logger.info(f"[env: {managed_env_name}] Environment created successfully")
         # Log status of newly created environment
-        log_environment_status(cmd, env_rg, managed_env_name, managed_environment)
+        log_environment_status(cmd, env_rg, managed_env_name, managed_environment, log_level='warning')
 
+    compose_file_path = os.path.abspath(compose_file_path)
+    compose_directory = os.path.dirname(compose_file_path)
     compose_yaml = load_yaml_file(compose_file_path)
     # Make a deep copy to preserve original YAML for x-azure-deployment
     # extraction
@@ -2597,7 +2600,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         if service.build is not None:
             logger.warning("Build configuration defined for this service.")
             logger.warning(
-                "The build will be performed by Azure Container Registry.")
+                "Attempting local Docker build; will fall back to Azure Container Registry if needed.")
             context = service.build.context
             dockerfile = "Dockerfile"
             if service.build.dockerfile is not None:
@@ -2616,7 +2619,9 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                 registry,
                 registry_username,
                 registry_password,
-                environment)
+                environment,
+                compose_directory=compose_directory,
+                build_configuration=service.build)
 
         # Phase 7: Check if container app exists and detect changes (skip in
         # dry-run)

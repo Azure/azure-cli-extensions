@@ -110,44 +110,85 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             self.managed_env_def["identity"] = identity_def
 
     def set_up_workload_profiles(self):
-        if self.get_argument_enable_workload_profiles():
-            # If the environment exists, infer the environment type
-            existing_environment = None
-            try:
-                existing_environment = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
-            except Exception as e:
-                handle_non_404_status_code_exception(e)
+        if not self.get_argument_enable_workload_profiles():
+            return
 
-            if existing_environment and safe_get(existing_environment, "properties", "workloadProfiles") is None:
-                # check if input params include -w/--enable-workload-profiles
+        def _profile_exists(profiles, profile_type):
+            return any(p.get("workloadProfileType") == profile_type for p in profiles)
+
+        requested_profiles = []
+        if self.get_argument_enable_dedicated_gpu():
+            requested_profiles.append({
+                "workloadProfileType": "NC24-A100",
+                "name": "gpu",
+                "minimumCount": 1,
+                "maximumCount": 1
+            })
+
+        if self.is_env_for_azml_app() and not self.get_argument_enable_dedicated_gpu():
+            wp_type = self.get_argument_workload_profile_type()
+            if wp_type is None or wp_type.lower() == "consumption-gpu-nc24-a100":
+                requested_profiles.append({
+                    "workloadProfileType": "Consumption-GPU-NC24-A100",
+                    "name": self.get_argument_workload_profile_name() if self.get_argument_workload_profile_name() else "serverless-A100",
+                })
+            else:
+                requested_profiles.append({
+                    "workloadProfileType": wp_type,
+                    "name": self.get_argument_workload_profile_name() if self.get_argument_workload_profile_name() else "serverless-gpu",
+                })
+
+        # If the environment exists, infer the environment type and reuse profiles
+        existing_environment = None
+        try:
+            existing_environment = self.client.show(cmd=self.cmd,
+                                                    resource_group_name=self.get_argument_resource_group_name(),
+                                                    name=self.get_argument_name())
+        except Exception as e:
+            handle_non_404_status_code_exception(e)
+
+        if existing_environment:
+            existing_profiles = safe_get(existing_environment, "properties", "workloadProfiles")
+            if existing_profiles is None:
                 if self.cmd.cli_ctx.data.get('safe_params') and ('-w' in self.cmd.cli_ctx.data.get('safe_params') or '--enable-workload-profiles' in self.cmd.cli_ctx.data.get('safe_params')):
                     raise ValidationError(f"Existing environment {self.get_argument_name()} cannot enable workload profiles. If you want to use Consumption and Dedicated environment, please create a new one.")
                 return
 
-            workload_profiles = get_default_workload_profiles(self.cmd, self.get_argument_location())
-            if self.get_argument_enable_dedicated_gpu():
-                gpu_profile = {
-                    "workloadProfileType": "NC24-A100",
-                    "name": "gpu",
-                    "minimumCount": 1,
-                    "maximumCount": 1
+            cleaned_profiles = []
+            for profile in existing_profiles:
+                cleaned = {
+                    "name": profile.get("name"),
+                    "workloadProfileType": profile.get("workloadProfileType")
                 }
-                workload_profiles.append(gpu_profile)
-            if self.is_env_for_azml_app() and not self.get_argument_enable_dedicated_gpu():
-                wp_type = self.get_argument_workload_profile_type()
-                if wp_type is None or wp_type.lower() == "consumption-gpu-nc24-a100":
-                    serverless_a100_profile = {
-                        "workloadProfileType": "Consumption-GPU-NC24-A100",
-                        "name": self.get_argument_workload_profile_name() if self.get_argument_workload_profile_name() else "serverless-A100",
-                    }
-                    workload_profiles.append(serverless_a100_profile)
-                else:
-                    serverless_gpu_profile = {
-                        "workloadProfileType": wp_type,
-                        "name": self.get_argument_workload_profile_name() if self.get_argument_workload_profile_name() else "serverless-gpu",
-                    }
-                    workload_profiles.append(serverless_gpu_profile)
-            self.managed_env_def["properties"]["workloadProfiles"] = workload_profiles
+                if profile.get("minimumCount") is not None:
+                    cleaned["minimumCount"] = profile.get("minimumCount")
+                if profile.get("maximumCount") is not None:
+                    cleaned["maximumCount"] = profile.get("maximumCount")
+                cleaned_profiles.append(cleaned)
+
+            added_profile = False
+            for profile in requested_profiles:
+                if not _profile_exists(cleaned_profiles, profile.get("workloadProfileType")):
+                    cleaned_profiles.append(profile)
+                    added_profile = True
+
+            if added_profile:
+                logger.warning("Environment %s already exists; appending %d workload profile(s) without removing existing ones",
+                               self.get_argument_name(), len(cleaned_profiles) - len(existing_profiles))
+            else:
+                logger.warning("Environment %s already has the requested workload profiles; reusing existing configuration",
+                               self.get_argument_name())
+
+            if cleaned_profiles:
+                self.managed_env_def["properties"]["workloadProfiles"] = cleaned_profiles
+            return
+
+        # No existing environment, fall back to defaults and append requested profiles
+        workload_profiles = get_default_workload_profiles(self.cmd, self.get_argument_location())
+        for profile in requested_profiles:
+            if not _profile_exists(workload_profiles, profile.get("workloadProfileType")):
+                workload_profiles.append(profile)
+        self.managed_env_def["properties"]["workloadProfiles"] = workload_profiles
 
     def set_up_custom_domain_configuration(self):
         if self.get_argument_hostname():

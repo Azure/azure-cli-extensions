@@ -7,9 +7,14 @@
 # too-many-locals, logging-fstring-interpolation, arguments-differ,
 # abstract-method, logging-format-interpolation, broad-except
 
+import os
+import shutil
+import subprocess
+from datetime import datetime
+
 from knack.log import get_logger
 from knack.prompting import prompt, prompt_choice_list
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import CLIError, InvalidArgumentValueError
 
 from ._compose_ported import (
     calculate_model_runner_resources as _ported_calculate_model_runner_resources,
@@ -23,8 +28,318 @@ from ._compose_ported import (
     parse_service_models_config as _ported_parse_service_models_config,
     should_deploy_model_runner as _ported_should_deploy_model_runner,
 )
+from ._utils import is_docker_running
 
 logger = get_logger(__name__)
+
+
+def _docker_cli_available():
+    return shutil.which('docker') is not None
+
+
+def _ensure_local_docker_ready():
+    if not _docker_cli_available():
+        return False, "Docker CLI not found in PATH"
+    if not is_docker_running():
+        return False, "Docker daemon is not running"
+    return True, None
+
+
+def _sanitize_registry_server(registry_server):
+    if not registry_server:
+        return None
+    sanitized = registry_server.strip()
+    if sanitized.startswith('https://'):
+        sanitized = sanitized[len('https://'):]
+    elif sanitized.startswith('http://'):
+        sanitized = sanitized[len('http://'):]
+    return sanitized.rstrip('/')
+
+
+def _extract_registry_from_image(image_name):
+    if not image_name:
+        return None
+    first_segment = image_name.split('/', 1)[0]
+    if '.' in first_segment or ':' in first_segment or first_segment == 'localhost':
+        return first_segment
+    return None
+
+
+def _current_timestamp_tag():
+    return datetime.utcnow().strftime('%Y%m%d%H%M%S')
+
+
+def _resolve_build_context_path(context_value, compose_directory):
+    candidate = context_value or '.'
+    if isinstance(candidate, dict):
+        candidate = candidate.get('path') or candidate.get('context') or '.'
+    base_dir = compose_directory or os.getcwd()
+    resolved = candidate if os.path.isabs(candidate) else os.path.abspath(os.path.join(base_dir, candidate))
+    if not os.path.exists(resolved):
+        raise CLIError(f"Build context directory '{resolved}' does not exist.")
+    return resolved
+
+
+def _resolve_dockerfile_path(dockerfile_value, context_path):
+    dockerfile_name = dockerfile_value or 'Dockerfile'
+    resolved = dockerfile_name if os.path.isabs(dockerfile_name) else os.path.abspath(os.path.join(context_path, dockerfile_name))
+    if not os.path.exists(resolved):
+        raise CLIError(f"Dockerfile '{resolved}' does not exist.")
+    return resolved
+
+
+def _ensure_iterable(obj):
+    if obj is None:
+        return []
+    if isinstance(obj, (list, tuple, set)):
+        return list(obj)
+    return [obj]
+
+
+def _iter_key_value_pairs(value):
+    if value is None:
+        return []
+    if isinstance(value, dict):
+        return [f"{k}={v}" if v is not None else str(k) for k, v in value.items()]
+
+    pairs = []
+    for entry in _ensure_iterable(value):
+        if isinstance(entry, dict):
+            for k, v in entry.items():
+                pairs.append(f"{k}={v}" if v is not None else str(k))
+        else:
+            pairs.append(str(entry))
+    return pairs
+
+
+def _serialize_cache_entry(entry):
+    if isinstance(entry, dict):
+        serialized = []
+        for key, value in entry.items():
+            if value is None:
+                continue
+            serialized.append(f"{key}={value}")
+        return ','.join(serialized)
+    return str(entry)
+
+
+def _normalize_extra_hosts(extra_hosts):
+    hosts = []
+    for entry in _ensure_iterable(extra_hosts):
+        if isinstance(entry, dict):
+            for host, addr in entry.items():
+                hosts.append(f"{host}:{addr}")
+        else:
+            hosts.append(str(entry))
+    return hosts
+
+
+def _normalize_ssh_entries(ssh_value):
+    entries = []
+    for entry in _ensure_iterable(ssh_value):
+        if isinstance(entry, dict):
+            for key, val in entry.items():
+                entries.append(f"{key}={val}")
+        else:
+            entries.append(str(entry))
+    return entries
+
+
+def _apply_registry_to_tag(tag, registry_server):
+    if not tag:
+        return None
+    registry = _extract_registry_from_image(tag)
+    normalized_registry = _sanitize_registry_server(registry_server)
+    candidate = tag
+    if not registry and normalized_registry:
+        candidate = f"{normalized_registry}/{tag.lstrip('/')}"
+    if ':' not in candidate.split('/')[-1]:
+        candidate = f"{candidate}:{_current_timestamp_tag()}"
+    return candidate
+
+
+def _prepare_image_name(image_name, registry_server, default_repo):
+    candidate = image_name or default_repo
+    normalized_registry = _sanitize_registry_server(registry_server)
+    image_registry = _extract_registry_from_image(candidate)
+    if normalized_registry and not image_registry:
+        candidate = f"{normalized_registry}/{candidate.lstrip('/')}"
+    if ':' not in candidate.split('/')[-1]:
+        candidate = f"{candidate}:{_current_timestamp_tag()}"
+    return candidate
+
+
+def _collect_docker_build_options(build_config, registry_server):
+    if build_config is None:
+        return [], [], []
+
+    flags = []
+    extra_tags = []
+    unsupported = []
+
+    if getattr(build_config, 'target', None):
+        flags.extend(['--target', build_config.target])
+
+    for arg in _iter_key_value_pairs(getattr(build_config, 'args', None)):
+        flags.extend(['--build-arg', arg])
+
+    for label in _iter_key_value_pairs(getattr(build_config, 'labels', None)):
+        flags.extend(['--label', label])
+
+    if getattr(build_config, 'no_cache', None):
+        flags.append('--no-cache')
+
+    if getattr(build_config, 'pull', None):
+        flags.append('--pull')
+
+    for cache_from in _ensure_iterable(getattr(build_config, 'cache_from', None)):
+        flags.extend(['--cache-from', _serialize_cache_entry(cache_from)])
+
+    for cache_to in _ensure_iterable(getattr(build_config, 'cache_to', None)):
+        flags.extend(['--cache-to', _serialize_cache_entry(cache_to)])
+
+    for host_entry in _normalize_extra_hosts(getattr(build_config, 'extra_hosts', None)):
+        flags.extend(['--add-host', host_entry])
+
+    for ssh_entry in _normalize_ssh_entries(getattr(build_config, 'ssh', None)):
+        flags.extend(['--ssh', ssh_entry])
+
+    if getattr(build_config, 'shm_size', None):
+        flags.extend(['--shm-size', str(build_config.shm_size)])
+
+    if getattr(build_config, 'isolation', None):
+        flags.extend(['--isolation', str(build_config.isolation)])
+
+    if getattr(build_config, 'tags', None):
+        for tag in _ensure_iterable(build_config.tags):
+            normalized_tag = _apply_registry_to_tag(str(tag), registry_server)
+            if normalized_tag:
+                extra_tags.append(normalized_tag)
+
+    if getattr(build_config, 'secrets', None):
+        unsupported.append('services.<name>.build.secrets')
+
+    return flags, extra_tags, unsupported
+
+
+def _stream_command_output(command, env=None):
+    logger.debug("Running command: %s", ' '.join(command))
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, env=env)
+    output_lines = []
+    while True:
+        line = process.stdout.readline()
+        if not line:
+            break
+        output_lines.append(line.rstrip())
+        logger.info(line.rstrip())
+    process.wait()
+    if process.returncode != 0:
+        raise CLIError(f"Command '{' '.join(command)}' failed with exit code {process.returncode}.")
+    return output_lines
+
+
+def _docker_login_with_credentials(registry_server, username, password):
+    if not username or not password:
+        raise CLIError(f"Credentials are required to push to registry '{registry_server}'.")
+    command = ['docker', 'login', registry_server, '--username', username, '--password-stdin']
+    logger.debug("Logging into registry %s with docker CLI", registry_server)
+    process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    stdout, stderr = process.communicate(password)
+    if process.returncode != 0:
+        raise CLIError(f"Failed to login to registry '{registry_server}': {stderr.strip()}")
+    logger.info("Authenticated docker client for registry '%s'", registry_server)
+
+
+def _ensure_acr_login(cmd, registry_server):
+    from azure.cli.command_modules.acr.custom import acr_login
+    from azure.cli.core.profiles import ResourceType
+
+    registry_name = registry_server.split('.')[0]
+    task_command_kwargs = {"resource_type": ResourceType.MGMT_CONTAINERREGISTRY, 'operation_group': 'webhooks'}
+    old_command_kwargs = {}
+    for key in task_command_kwargs:
+        old_command_kwargs[key] = cmd.command_kwargs.get(key)
+        cmd.command_kwargs[key] = task_command_kwargs[key]
+    try:
+        acr_login(cmd, registry_name)
+    finally:
+        for k, v in old_command_kwargs.items():
+            cmd.command_kwargs[k] = v
+    logger.info("Docker client authenticated with ACR '%s'", registry_name)
+
+
+def _docker_push_image(cmd, image_name, registry_server, registry_user, registry_pass):
+    registry_host = _extract_registry_from_image(image_name) or _sanitize_registry_server(registry_server)
+    if registry_host and registry_host.endswith('.azurecr.io'):
+        _ensure_acr_login(cmd, registry_host)
+    elif registry_host and (registry_user or registry_pass):
+        _docker_login_with_credentials(registry_host, registry_user, registry_pass)
+    command = ['docker', 'push', image_name]
+    _stream_command_output(command)
+    logger.info("Pushed image '%s'", image_name)
+
+
+def _build_with_local_docker(cmd,
+                             app,
+                             service_name,
+                             image_name,
+                             build_configuration,
+                             context_value,
+                             dockerfile_value,
+                             compose_directory,
+                             registry_server,
+                             registry_user,
+                             registry_pass):
+    build_context = _resolve_build_context_path(context_value, compose_directory)
+    dockerfile_path = _resolve_dockerfile_path(dockerfile_value, build_context)
+
+    requested_registry = _sanitize_registry_server(registry_server)
+    image_registry = _extract_registry_from_image(image_name)
+    fallback_registry = _sanitize_registry_server(app.registry_server)
+
+    target_registry = image_registry or requested_registry or fallback_registry
+
+    if target_registry is None:
+        logger.warning("[%s] No registry information available; skipping local Docker push. Use --registry-server to enable local image publishing.", service_name)
+        return None
+
+    if target_registry.endswith('.azurecr.io'):
+        from ._up_utils import _get_registry_details
+        app.registry_server = target_registry
+        _get_registry_details(cmd, app, False)
+        app.create_acr_if_needed()
+        registry_user = app.registry_user
+        registry_pass = app.registry_pass
+
+    final_image = _prepare_image_name(image_name, target_registry, service_name)
+    tags_to_push = [final_image]
+
+    default_registry_for_tags = _extract_registry_from_image(final_image) or target_registry
+    build_flags, additional_tags, unsupported = _collect_docker_build_options(build_configuration, default_registry_for_tags)
+    tags_to_push.extend(additional_tags)
+
+    if unsupported:
+        logger.warning("These build configuration settings from the docker-compose file are not yet supported. See https://aka.ms/containerapp/compose/build_support for details.")
+        for item in unsupported:
+            logger.warning("     %s", item)
+
+    build_env = os.environ.copy()
+    build_env.setdefault('DOCKER_BUILDKIT', '1')
+
+    command = ['docker', 'build', '--file', dockerfile_path]
+    for tag in tags_to_push:
+        command.extend(['--tag', tag])
+    command.extend(build_flags)
+    command.append(build_context)
+
+    logger.info("[%s] Building image locally with Docker (context: %s, dockerfile: %s)", service_name, build_context, dockerfile_path)
+    _stream_command_output(command, env=build_env)
+
+    for tag in tags_to_push:
+        _docker_push_image(cmd, tag, default_registry_for_tags or target_registry, registry_user, registry_pass)
+
+    app.image = final_image
+    return final_image, default_registry_for_tags or target_registry, registry_user, registry_pass
 
 # ============================================================================
 # Functions copied from azure-cli core to make extension self-contained
@@ -32,7 +347,7 @@ logger = get_logger(__name__)
 # ============================================================================
 
 
-def log_environment_status(cmd, resource_group_name, env_name, env):
+def log_environment_status(cmd, resource_group_name, env_name, env, log_level='info'):
     """
     Log comprehensive environment status with [env: <name>] prefix.
     
@@ -41,25 +356,27 @@ def log_environment_status(cmd, resource_group_name, env_name, env):
         resource_group_name: Resource group name
         env_name: Environment name
         env: Environment resource object
+        log_level: Logger method name ("info", "warning", etc.) used for status lines
     """
     logger = get_logger(__name__)
+    log_method = getattr(logger, log_level, logger.info)
     
     # Log environment status
     provisioning_state = env.get('properties', {}).get('provisioningState', 'Unknown')
     location = env.get('location', 'Unknown')
-    logger.info(f"[env: {env_name}] Status: {provisioning_state}")
-    logger.info(f"[env: {env_name}] Location: {location}")
+    log_method(f"[env: {env_name}] Status: {provisioning_state}")
+    log_method(f"[env: {env_name}] Location: {location}")
     
     # Get and log workload profiles
     workload_profiles = env.get('properties', {}).get('workloadProfiles', [])
     if workload_profiles:
-        logger.info(f"[env: {env_name}] Workload profiles ({len(workload_profiles)}):")
+        log_method(f"[env: {env_name}] Workload profiles ({len(workload_profiles)}):")
         for profile in workload_profiles:
             profile_name = profile.get('name', 'Unknown')
             profile_type = profile.get('workloadProfileType', 'Unknown')
-            logger.info(f"[env: {env_name}]   - {profile_name}: {profile_type}")
+            log_method(f"[env: {env_name}]   - {profile_name}: {profile_type}")
     else:
-        logger.info(f"[env: {env_name}] Workload profiles: None (Consumption only)")
+        log_method(f"[env: {env_name}] Workload profiles: None (Consumption only)")
     
     # Get and log running container apps
     try:
@@ -91,13 +408,13 @@ def log_environment_status(cmd, resource_group_name, env_name, env):
                 apps_in_env.append(app)
         
         if apps_in_env:
-            logger.info(f"[env: {env_name}] Running apps ({len(apps_in_env)}):")
+            log_method(f"[env: {env_name}] Running apps ({len(apps_in_env)}):")
             for app in apps_in_env:
                 app_name = app.get('name', 'Unknown')
                 replica_count = app.get('properties', {}).get('template', {}).get('scale', {}).get('minReplicas', 'Unknown')
-                logger.info(f"[env: {env_name}]   - {app_name} (min replicas: {replica_count})")
+                log_method(f"[env: {env_name}]   - {app_name} (min replicas: {replica_count})")
         else:
-            logger.info(f"[env: {env_name}] Running apps: None")
+            log_method(f"[env: {env_name}] Running apps: None")
     except Exception as e:
         logger.warning(f"[env: {env_name}] Could not retrieve running apps: {str(e)}")
 
@@ -117,7 +434,9 @@ def build_containerapp_from_compose_service(cmd,
                                             registry_pass,
                                             env_vars,
                                             logs_key=None,
-                                            logs_customer_id=None):
+                                            logs_customer_id=None,
+                                            compose_directory=None,
+                                            build_configuration=None):
     from .custom import create_managed_environment
     from ._up_utils import (ContainerApp,
                             ContainerAppEnvironment,
@@ -126,6 +445,7 @@ def build_containerapp_from_compose_service(cmd,
                             _get_registry_details,
                             _get_acr_from_image)
 
+    compose_directory = os.path.abspath(compose_directory) if compose_directory else None
     resource_group = ResourceGroup(
         cmd, name=resource_group_name, location=location)
     env = ContainerAppEnvironment(cmd,
@@ -152,6 +472,26 @@ def build_containerapp_from_compose_service(cmd,
 
     if app.registry_server is None and app.image is not None:
         _get_acr_from_image(cmd, app)
+
+    if build_configuration is not None:
+        docker_ready, docker_reason = _ensure_local_docker_ready()
+        if docker_ready:
+            local_result = _build_with_local_docker(cmd,
+                                                    app,
+                                                    name,
+                                                    image,
+                                                    build_configuration,
+                                                    source,
+                                                    dockerfile,
+                                                    compose_directory,
+                                                    registry_server,
+                                                    registry_user,
+                                                    registry_pass)
+            if local_result is not None:
+                return local_result
+            logger.warning("[%s] Local Docker build was skipped; falling back to Azure Container Registry build.", name)
+        logger.warning("[%s] %s. Falling back to Azure Container Registry build.", name, docker_reason)
+
     _get_registry_details(cmd, app, True)
 
     app.create_acr_if_needed()
@@ -179,24 +519,11 @@ def resolve_configuration_element_list(
 
 def warn_about_unsupported_build_configuration(compose_service):
     unsupported_configuration = [
-        "args",
-        "ssh",
-        "cache_from",
-        "cache_to",
-        "extra_hosts",
-        "isolation",
-        "labels",
-        "no_cache",
-        "pull",
-        "shm_size",
-        "target",
-        "secrets",
-        "tags"]
+        "secrets"]
     if compose_service.build is not None:
         config_list = resolve_configuration_element_list(
             compose_service, unsupported_configuration, 'build')
         message = "These build configuration settings from the docker-compose file are not yet supported."
-        message += " Currently, we support supplying a build context and optionally target Dockerfile for a service."
         message += " See https://aka.ms/containerapp/compose/build_support for more information or to add feedback."
         if len(config_list) >= 1:
             logger.warning(message)
@@ -974,6 +1301,14 @@ def create_gpu_workload_profile_if_needed(
         # Use class methods directly - no instantiation needed
         env = ManagedEnvironmentClient.show(cmd, resource_group_name, env_name)
 
+        # Always inspect/log current environment before mutating it
+        log_environment_status(
+            cmd,
+            resource_group_name,
+            env_name,
+            env,
+            log_level='warning')
+
         workload_profiles = env.get(
             'properties', {}).get(
             'workloadProfiles', [])
@@ -983,9 +1318,12 @@ def create_gpu_workload_profile_if_needed(
             for profile in workload_profiles:
                 if profile.get(
                         'workloadProfileType') == requested_gpu_profile_type:
+                    existing_name = profile.get('name', requested_gpu_profile_type)
                     logger.info(
                         f"Found requested GPU profile in environment: {requested_gpu_profile_type}")
-                    return requested_gpu_profile_type
+                    logger.warning(
+                        f"[env: {env_name}] Reusing existing workload profile '{existing_name}'")
+                    return existing_name
         else:
             # No specific request, return any GPU profile found
             for profile in workload_profiles:
@@ -993,6 +1331,8 @@ def create_gpu_workload_profile_if_needed(
                 if 'GPU' in profile_type.upper():
                     logger.info(
                         f"Found existing GPU profile: {profile.get('name')}")
+                    logger.warning(
+                        f"[env: {env_name}] Reusing GPU workload profile '{profile.get('name')}'")
                     return profile.get('name')
     except Exception as e:
         logger.warning(f"Failed to check existing profiles: {str(e)}")
@@ -1058,21 +1398,23 @@ def create_gpu_workload_profile_if_needed(
             'properties', {}).get(
             'workloadProfiles', [])
         profile_exists = False
+        existing_profile_name = gpu_profile_type
         for profile in existing_profiles:
             if profile.get('workloadProfileType') == gpu_profile_type:
                 profile_exists = True
+                existing_profile_name = profile.get('name', gpu_profile_type)
                 logger.info(f"[env: {env_name}] GPU profile '{gpu_profile_type}' already exists")
                 break
 
         # If profile already exists, skip PATCH and return early
         if profile_exists:
-            logger.info(
-                f"[env: {env_name}] Skipping environment update - profile '{gpu_profile_type}' already configured")
+            logger.warning(
+                f"[env: {env_name}] Skipping workload profile update; using '{existing_profile_name}'")
             # Wait for environment to be ready in case it's still provisioning
             # from a previous operation
             wait_for_environment_provisioning(
                 cmd, resource_group_name, env_name)
-            return gpu_profile_type
+            return existing_profile_name
 
         # Profile doesn't exist - add it to the environment
         logger.info(
