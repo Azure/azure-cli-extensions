@@ -124,15 +124,23 @@ DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world imag
 
 HELLO_WORLD_IMAGE = "mcr.microsoft.com/k8se/quickstart:latest"
 
-# Model runner images
-MODEL_RUNNER_IMAGE = "docker/model-runner:latest"
-MODEL_RUNNER_IMAGE_CUDA = "docker/model-runner:latest-cuda"
-# replace with mcr image when available
-MODEL_RUNNER_CONFIG_IMAGE = "simon.azurecr.io/model-runner-config:latest"
+# ============================================================================
+# Default Container Images for Azure Container Apps Compose
+# ============================================================================
 
-# MCP gateway image
-# default image, currently does not exist publicly
-MCP_GATEWAY_IMAGE = "mcr.microsoft.com/mcp-gateway:latest"
+# Model Runner Images (for AI/ML model hosting)
+# NOTE: These are placeholder images - update to your registry/versions as needed
+MODEL_RUNNER_IMAGE = "docker/model-runner:latest"  # CPU-only model runner
+MODEL_RUNNER_IMAGE_CUDA = "docker/model-runner:latest-cuda"  # GPU-enabled model runner
+MODEL_RUNNER_CONFIG_IMAGE = "acateam.azurecr.io/preview-ai-compose/model-runner-config:latest"  # Model configuration sidecar
+# TODO: Replace with public MCR images when available
+
+# MCP Gateway Image (Model Context Protocol gateway)
+# NOTE: This image does not exist publicly yet - update to your registry
+MCP_GATEWAY_IMAGE = "acateam.azurecr.io/preview-ai-compose/mcp-gateway:latest"
+# TODO: Replace with actual public MCR image when available
+
+# ============================================================================
 
 LOGS_STRING = '[{"category":"ContainerAppConsoleLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}},{"category":"ContainerAppSystemLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}}]'  # pylint: disable=line-too-long
 

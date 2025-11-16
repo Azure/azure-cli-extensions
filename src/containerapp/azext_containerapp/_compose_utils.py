@@ -1185,6 +1185,11 @@ def create_models_container_app(
     logger = get_logger(__name__)
 
     app_name = 'models'
+    logger.info(f"[models] Using model runner config image: {MODEL_RUNNER_CONFIG_IMAGE}")
+
+    # MODEL_RUNNER_URL uses localhost since model-runner and model-runner-config
+    # are in the same container app (in-app communication)
+    model_runner_url = "http://localhost:12434"
 
     # Determine model-runner image based on x-azure-deployment.image or GPU
     # profile
@@ -1203,6 +1208,7 @@ def create_models_container_app(
         from ._constants import MODEL_RUNNER_IMAGE, MODEL_RUNNER_IMAGE_CUDA
         is_gpu_profile = 'GPU' in gpu_profile_name.upper()
         model_runner_image = MODEL_RUNNER_IMAGE_CUDA if is_gpu_profile else MODEL_RUNNER_IMAGE
+        logger.info(f"[models] Using default {'GPU' if is_gpu_profile else 'CPU'} model runner image: {model_runner_image}")
 
     # Determine GPU-appropriate resources based on profile type
     # T4 GPU: 8 vCPUs, 56GB memory (NC8as_T4_v3)
@@ -1506,6 +1512,12 @@ def get_mcp_gateway_configuration(service):
         'ingress_type': 'internal',  # MCP gateway should be internal-only
         'image': service.image if hasattr(service, 'image') else MCP_GATEWAY_IMAGE
     }
+    
+    # Log which image is being used
+    if hasattr(service, 'image') and service.image:
+        logger.info(f"[mcp-gateway] Using custom image from compose: {service.image}")
+    else:
+        logger.info(f"[mcp-gateway] Using default image: {MCP_GATEWAY_IMAGE}")
 
     # Check for custom port in service ports
     if hasattr(service, 'ports') and service.ports:
