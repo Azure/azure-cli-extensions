@@ -2320,12 +2320,21 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         )
         replicas = resolve_replicas_from_service(service)
         environment = resolve_environment_from_service(service)
-        secret_vars, secret_env_ref = resolve_secret_from_service(
-            service, parsed_compose_file.secrets)
+        secret_vars, secret_env_ref, secret_usage = resolve_secret_from_service(
+            service, parsed_compose_file.secrets, service_name)
         if environment is not None and secret_env_ref is not None:
             environment.extend(secret_env_ref)
         elif secret_env_ref is not None:
             environment = secret_env_ref
+
+        if secret_usage:
+            for usage in secret_usage:
+                logger.info(
+                    "[%s] Secret '%s' stored as '%s' and injected via env '%s'",
+                    service_name,
+                    usage.get('compose_source'),
+                    usage.get('secret_name'),
+                    usage.get('env_var'))
 
         # Strip ports from URLs in environment variables for ACA (Envoy handles port mapping)
         # Also inject proper FQDNs for MCP_GATEWAY_URL references

@@ -9,6 +9,7 @@
 
 from knack.log import get_logger
 from knack.prompting import prompt, prompt_choice_list
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from ._compose_ported import (
     calculate_model_runner_resources as _ported_calculate_model_runner_resources,
@@ -368,32 +369,84 @@ def resolve_environment_from_service(service):
     return env_array
 
 
-def resolve_secret_from_service(service, secrets_map):
-    secret_array = []
-    secret_env_ref = []
+def _normalize_secret_store_name(raw_name):
+    """Normalize secret names to a Container Apps friendly format."""
+    if raw_name is None:
+        return "secret"
+    sanitized = str(raw_name).strip()
+    if not sanitized:
+        sanitized = "secret"
+    sanitized = sanitized.replace(' ', '-').replace('_', '-').lower()
+    cleaned = []
+    for char in sanitized:
+        if char.isalnum() or char == '-':
+            cleaned.append(char)
+        else:
+            cleaned.append('-')
+    normalized = ''.join(cleaned).strip('-')
+    return normalized or "secret"
 
-    if service.secrets is None:
-        return (None, None)
+
+def _normalize_env_var_name(raw_name):
+    """Keep the requested environment variable name, falling back to the secret name."""
+    if raw_name is None:
+        return "SECRET_VALUE"
+    candidate = str(raw_name).strip()
+    return candidate or "SECRET_VALUE"
+
+
+def resolve_secret_from_service(service, secrets_map, service_name=None):
+    secret_value_map = {}
+    secret_env_ref = []
+    secret_usage = []
+
+    if not getattr(service, 'secrets', None):
+        return (None, None, None)
+
+    if not secrets_map:
+        logger.warning(
+            "Service '%s' references secrets but none are defined in the compose file. Skipping secret injection.",
+            service_name or getattr(service, 'compose_path', 'unknown'))
+        return (None, None, None)
 
     for secret in service.secrets:
+        source_name = getattr(secret, 'source', None)
+        if not source_name:
+            logger.warning("A secret entry without a source was found on service '%s' and will be ignored.",
+                           service_name or getattr(service, 'compose_path', 'unknown'))
+            continue
 
-        secret_config = secrets_map[secret.source]
-        if secret_config is not None and secret_config.file is not None:
-            value = secret_config.file.readFile()
-            if secret.target is None:
-                secret_name = secret.source.replace('_', '-')
-            else:
-                secret_name = secret.target.replace('_', '-')
-            secret_array.append(f"{secret_name}={value}")
-            secret_env_ref.append(f"{secret_name}=secretref:{secret_name}")
+        secret_config = secrets_map.get(source_name)
+        if secret_config is None:
+            raise InvalidArgumentValueError(
+                f"Secret '{source_name}' referenced by service '{service_name}' is not defined under compose secrets.")
 
-    if len(secret_array) == 0:
-        return (None, None)
+        if getattr(secret_config, 'file', None) is None:
+            raise InvalidArgumentValueError(
+                f"Secret '{source_name}' must specify a file path to be used with Azure Container Apps.")
 
-    logger.warning(
-        "Note: Secrets will be mapped as secure environment variables in Azure Container Apps.")
+        value = secret_config.file.readFile()
+        aca_secret_name = _normalize_secret_store_name(source_name)
+        env_var_candidate = getattr(secret, 'target', None) or source_name
+        env_var_name = _normalize_env_var_name(env_var_candidate)
 
-    return (secret_array, secret_env_ref)
+        # Deduplicate secret storage per service while allowing multiple env refs
+        secret_value_map[aca_secret_name] = value
+        secret_env_ref.append(f"{env_var_name}=secretref:{aca_secret_name}")
+        secret_usage.append({
+            "compose_source": source_name,
+            "secret_name": aca_secret_name,
+            "env_var": env_var_name
+        })
+
+    if not secret_value_map:
+        return (None, None, None)
+
+    logger.info("Secrets detected for service '%s'; values will be stored securely and referenced via env vars.",
+                service_name or getattr(service, 'compose_path', 'unknown'))
+
+    secret_array = [f"{name}={value}" for name, value in secret_value_map.items()]
+    return (secret_array, secret_env_ref or None, secret_usage or None)
 
 
 def resolve_replicas_from_service(service):
