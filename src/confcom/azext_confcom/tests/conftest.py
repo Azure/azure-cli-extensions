@@ -4,12 +4,13 @@
 # --------------------------------------------------------------------------------------------
 
 import importlib
-from pathlib import Path
 import subprocess
 import tempfile
 import pytest
 import sys
 import shutil
+
+from pathlib import Path
 
 
 # This fixture ensures tests are run against final built wheels of the extension
