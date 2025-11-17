@@ -2113,27 +2113,27 @@ helps['containerapp sessionpool create'] = """
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --container-type CustomContainer --environment MyEnvironment \\
-              --cpu 0.5 --memory 1Gi --target-port 80 --image MyImage \\
+              --cpu 0.5 --memory 1Gi --target-port 80 --image myregistry.azurecr.io/MyImage:Tag \\
               --env-vars GREETING="Hello, world" SECRETENV=secretref:anothersecret \\
               --secrets mysecret=secretvalue1 anothersecret="secret value 2" --location eastasia
     - name: Create or update a Session Pool with container type CustomContainer that from private registry
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
-              --container-type CustomContainer --environment MyEnvironment --image MyImage \\
+              --container-type CustomContainer --environment MyEnvironment --image myregistry.azurecr.io/MyImage:Tag \\
               --cpu 0.5 --memory 1Gi --target-port 80 --registry-server myregistry.azurecr.io \\
               --registry-username myregistry --registry-password $REGISTRY_PASSWORD \\
               --location eastasia
     - name: Create or update a Session Pool with container type CustomContainer and Managed Identity to authenticate Azure container registry
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
-              --container-type CustomContainer --environment MyEnvironment --image MyImage \\
+              --container-type CustomContainer --environment MyEnvironment --image myregistry.azurecr.io/MyImage:Tag \\
               --cpu 0.5 --memory 1Gi --target-port 80 --registry-server myregistry.azurecr.io \\
               --registry-identity  MyUserIdentityResourceId \\
               --location eastasia
     - name: Create or update a Session Pool with container type CustomContainer with system assigned and user assigned identity.
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
-              --container-type CustomContainer --environment MyEnvironment --image MyImage \\
+              --container-type CustomContainer --environment MyEnvironment --image myregistry.azurecr.io/MyImage:Tag \\
               --cpu 0.5 --memory 1Gi --target-port 80 \\
               --mi-system-assigned --mi-user-assigned MyUserIdentityResourceId \\
               --location eastasia
