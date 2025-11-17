@@ -87,6 +87,49 @@ class Create(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        # Check if Deployment Safeguards already exists BEFORE attempting create
+        from azure.cli.core.util import send_raw_request
+        from knack.util import CLIError
+        
+        # Get the resource URI - check if managed_cluster is set, otherwise build from -g/-n
+        resource_uri = self.ctx.args.managed_cluster
+        
+        # If managed_cluster is "Undefined" or not set, build from resource_group and cluster_name
+        if not resource_uri or str(resource_uri) == "Undefined":
+            # Access raw data which has resource_group and cluster_name from -g/-n
+            data = self.ctx.args._data
+            if 'resource_group' in data and 'cluster_name' in data:
+                subscription = self.ctx.subscription_id
+                resource_uri = f"/subscriptions/{subscription}/resourceGroups/{data['resource_group']}/providers/Microsoft.ContainerService/managedClusters/{data['cluster_name']}"
+        
+        if not resource_uri or str(resource_uri) == "Undefined":
+            raise CLIError("Resource URI not found. Please provide either --managed-cluster or both --resource-group and --name.")
+        
+        # Construct the GET URL to check if resource already exists
+        safeguards_url = f"https://management.azure.com{resource_uri}/providers/Microsoft.ContainerService/deploymentSafeguards/default?api-version=2025-05-02-preview"
+        
+        # Check if resource already exists
+        resource_exists = False
+        try:
+            response = send_raw_request(self.ctx.cli_ctx, "GET", safeguards_url)
+            if response.status_code == 200:
+                resource_exists = True
+        except Exception as ex:
+            # Any exception (404, etc) means resource doesn't exist - that's fine for create
+            error_str = str(ex).lower()
+            if "404" not in error_str and "not found" not in error_str and "resourcenotfound" not in error_str:
+                # If it's not a "not found" error, it might be a real problem - but let the create operation handle it
+                pass
+        
+        # If resource exists, block the create
+        if resource_exists:
+            raise CLIError(
+                f"Deployment Safeguards instance already exists for this cluster. "
+                f"Please use 'az aks safeguards update' to modify the configuration, "
+                f"or 'az aks safeguards delete' to remove it before creating a new one."
+            )
+        
+        # If we get here, resource doesn't exist - proceed with create
         self.pre_operations()
         yield self.DeploymentSafeguardsCreate(ctx=self.ctx)()
         self.post_operations()
