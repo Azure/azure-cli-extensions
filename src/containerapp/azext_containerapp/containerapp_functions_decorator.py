@@ -274,24 +274,17 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
             # Fetch the app insights resource app id
             app_id = self._get_app_insights_id(resource_group_name, container_app_name, revision_name)
 
-            # Build query based on active revision mode
-            if self.active_revision_mode.lower() == "single":
-                invocation_summary_query = (
-                    f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
-                    f"| where timestamp >= ago({timespan}) "
-                    f"| where cloud_RoleName =~ '{container_app_name}' "
-                    f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
-                    f"| summarize SuccessCount = coalesce(countif(success == true), 0), ErrorCount = coalesce(countif(success == false), 0)"
-                )
-            else:
-                invocation_summary_query = (
-                    f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
-                    f"| where timestamp >= ago({timespan}) "
-                    f"| where cloud_RoleName =~ '{container_app_name}' "
-                    f"| where cloud_RoleInstance contains '{revision_name}' "
-                    f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
-                    f"| summarize SuccessCount = coalesce(countif(success == true), 0), ErrorCount = coalesce(countif(success == false), 0)"
-                )
+            # Set revision_name to empty string for single mode, keep it for multiple mode
+            revision_name = "" if self.active_revision_mode.lower() == "single" else revision_name
+
+            invocation_summary_query = (
+                f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
+                f"| where timestamp >= ago({timespan}) "
+                f"| where cloud_RoleName =~ '{container_app_name}' "
+                f"| where isempty(\"{revision_name}\") or cloud_RoleInstance contains '{revision_name}' "
+                f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
+                f"| summarize SuccessCount = coalesce(countif(success == true), 0), ErrorCount = coalesce(countif(success == false), 0)"
+            )
 
             result = self._execute_app_insights_query(app_id, invocation_summary_query, "getLast30DaySummary")
 
@@ -315,30 +308,20 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
             # Fetch the app insights resource app id
             app_id = self._get_app_insights_id(resource_group_name, container_app_name, revision_name)
 
-            # Build query based on active revision mode
-            if self.active_revision_mode.lower() == "single":
-                invocation_traces_query = (
-                    f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
-                    f"| project timestamp, id, operation_Name, success, resultCode, duration, operation_Id, functionNameFromCustomDimension, "
-                    f"cloud_RoleName, cloud_RoleInstance, invocationId=coalesce(tostring(customDimensions['InvocationId']), tostring(customDimensions['faas.invocation_id'])) "
-                    f"| where timestamp > ago({timespan}) "
-                    f"| where cloud_RoleName =~ '{container_app_name}' "
-                    f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
-                    f"| order by timestamp desc | take {limit} "
-                    f"| project timestamp, success, resultCode, durationInMilliSeconds=duration, invocationId, operationId=operation_Id, operationName=operation_Name, functionNameFromCustomDimension "
-                )
-            else:
-                invocation_traces_query = (
-                    f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
-                    f"| project timestamp, id, operation_Name, success, resultCode, duration, operation_Id, functionNameFromCustomDimension, "
-                    f"cloud_RoleName, cloud_RoleInstance, invocationId=coalesce(tostring(customDimensions['InvocationId']), tostring(customDimensions['faas.invocation_id'])) "
-                    f"| where timestamp > ago({timespan}) "
-                    f"| where cloud_RoleName =~ '{container_app_name}' "
-                    f"| where cloud_RoleInstance contains '{revision_name}' "
-                    f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
-                    f"| order by timestamp desc | take {limit} "
-                    f"| project timestamp, success, resultCode, durationInMilliSeconds=duration, invocationId, operationId=operation_Id, operationName=operation_Name, functionNameFromCustomDimension "
-                )
+            # Set revision_name to empty string for single mode, keep it for multiple mode
+            revision_name = "" if self.active_revision_mode.lower() == "single" else revision_name
+
+            invocation_traces_query = (
+                f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
+                f"| project timestamp, id, operation_Name, success, resultCode, duration, operation_Id, functionNameFromCustomDimension, "
+                f"cloud_RoleName, cloud_RoleInstance, invocationId=coalesce(tostring(customDimensions['InvocationId']), tostring(customDimensions['faas.invocation_id'])) "
+                f"| where timestamp > ago({timespan}) "
+                f"| where cloud_RoleName =~ '{container_app_name}' "
+                f"| where isempty(\"{revision_name}\") or cloud_RoleInstance contains '{revision_name}' "
+                f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
+                f"| order by timestamp desc | take {limit} "
+                f"| project timestamp, success, resultCode, durationInMilliSeconds=duration, invocationId, operationId=operation_Id, operationName=operation_Name, functionNameFromCustomDimension "
+            )
 
             result = self._execute_app_insights_query(app_id, invocation_traces_query, "getInvocationTraces")
 

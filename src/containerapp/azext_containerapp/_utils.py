@@ -870,7 +870,7 @@ def get_random_replica(cmd, resource_group_name, container_app_name, revision_na
             container_app_name,
             revision_name
         )
-        if min_replicas is not None and min_replicas == 0:
+        if min_replicas is None or min_replicas == 0:
             logger.debug(f"The revision '{revision_name}' has minReplicas set to 0.")
             raise CLIError(f"The revision '{revision_name}' has minReplicas set to 0. Ensure that there is at least one replica. To update minimum replica: Run 'az containerapp update --name {container_app_name} --resource-group {resource_group_name} --min-replica 1'")
 
