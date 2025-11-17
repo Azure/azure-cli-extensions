@@ -835,6 +835,17 @@ def create_acrpull_role_assignment_if_needed(cmd, registry_server, registry_iden
                     time.sleep(5)
 
 
+def get_min_replicas_from_revision(cmd, resource_group_name, container_app_name, revision_name):
+    revision_def = ContainerAppClient.show_revision(
+        cmd=cmd,
+        resource_group_name=resource_group_name,
+        container_app_name=container_app_name,
+        name=revision_name
+    )
+    min_replicas = revision_def.get("properties", {}).get("template", {}).get("scale", {}).get("minReplicas")
+    return min_replicas
+
+
 def get_random_replica(cmd, resource_group_name, container_app_name, revision_name):
     logger.debug(f"Getting random replica for container app: name='{container_app_name}', resource_group='{resource_group_name}', revision='{revision_name}'")
 
@@ -853,13 +864,12 @@ def get_random_replica(cmd, resource_group_name, container_app_name, revision_na
         logger.debug(f"No replicas found for revision '{revision_name}' - unable to proceed")
         logger.debug(f"checking min replica count for revision='{revision_name}'")
 
-        revision_def = ContainerAppClient.show_revision(
-            cmd=cmd,
-            resource_group_name=resource_group_name,
-            container_app_name=container_app_name,
-            name=revision_name
+        min_replicas = get_min_replicas_from_revision(
+            cmd,
+            resource_group_name,
+            container_app_name,
+            revision_name
         )
-        min_replicas = revision_def.get("properties", {}).get("template", {}).get("scale", {}).get("minReplicas")
         if min_replicas is not None and min_replicas == 0:
             logger.debug(f"The revision '{revision_name}' has minReplicas set to 0.")
             raise CLIError(f"The revision '{revision_name}' has minReplicas set to 0. Ensure that there is at least one replica. To update minimum replica: Run 'az containerapp update --name {container_app_name} --resource-group {resource_group_name} --min-replica 1'")

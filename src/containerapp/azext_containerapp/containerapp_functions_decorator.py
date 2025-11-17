@@ -16,6 +16,7 @@ from ._client_factory import handle_raw_exception
 from ._validators import validate_basic_arguments, validate_revision_and_get_name, validate_functionapp_kind
 from ._transformers import process_app_insights_response
 from ._clients import ContainerAppPreviewClient
+from ._utils import get_min_replicas_from_revision
 
 logger = get_logger(__name__)
 
@@ -191,6 +192,15 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
             container_app_name=self.get_argument_container_app_name(),
             provided_revision_name=revision_name
         )
+
+        min_replicas = get_min_replicas_from_revision(
+            cmd=self.cmd,
+            resource_group_name=self.get_argument_resource_group_name(),
+            container_app_name=self.get_argument_container_app_name(),
+            revision_name=revision_name
+        )
+        if min_replicas is not None and min_replicas == 0:
+            raise CLIError(f"The revision '{revision_name}' has minimum replicas set to 0. Ensure that there is at least one replica to fetch invocation details. To update minimum replica: Run 'az containerapp update --name {self.get_argument_container_app_name()} --resource-group {self.get_argument_resource_group_name()} --min-replica 1'")
         # Update the revision name with the validated value
         self.set_argument_revision_name(revision_name)
         self.validate_function_name_requirement()
