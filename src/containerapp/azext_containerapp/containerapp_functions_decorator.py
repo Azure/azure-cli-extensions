@@ -16,7 +16,6 @@ from ._client_factory import handle_raw_exception
 from ._validators import validate_basic_arguments, validate_revision_and_get_name, validate_functionapp_kind
 from ._transformers import process_app_insights_response
 from ._clients import ContainerAppPreviewClient
-from ._utils import get_min_replicas_from_revision
 
 logger = get_logger(__name__)
 
@@ -170,6 +169,10 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
     """Decorator for showing function invocation"""
 
     APP_INSIGHTS_API_VERSION = "2018-04-20"
+
+    def __init__(self, cmd, client, raw_parameters, models):
+        super().__init__(cmd, client, raw_parameters, models)
+        self.active_revision_mode = None
 
     def validate_arguments(self):
         """Validate arguments required for function invocation operations"""
