@@ -22,7 +22,9 @@ _expected_sha256 = "fe8e191d44fec33db2a3d0ca788b9f83f866d980c5371063620c3c682279
 def opa_get():
 
     opa_fetch_resp = requests.get(
-        f"https://openpolicyagent.org/downloads/v1.10.1/opa_{platform.system().lower()}_amd64")
+        f"https://openpolicyagent.org/downloads/v1.10.1/opa_{platform.system().lower()}_amd64",
+        verify=True,
+    )
     opa_fetch_resp.raise_for_status()
 
     assert hashlib.sha256(opa_fetch_resp.content).hexdigest() == _expected_sha256
