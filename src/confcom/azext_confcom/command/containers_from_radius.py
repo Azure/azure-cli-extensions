@@ -75,7 +75,9 @@ def containers_from_radius(
     ]
 
     image_config = get_image_config(image)
-    image_config["env_rules"] += [
+
+    env_rules = image_config.pop("env_rules", [])
+    env_rules += [
         {
             "pattern": f'{k}={v["value"]}',
             "strategy": "string",
@@ -83,7 +85,7 @@ def containers_from_radius(
         }
         for k, v in container.get("env", {}).items()
     ]
-    image_config["env_rules"] += [
+    env_rules += [
         {
             "name": f"CONNECTIONS_{k.upper()}_.+",
             "value": ".+",
@@ -98,5 +100,6 @@ def containers_from_radius(
         "name": image,
         "layers": get_image_layers(image),
         **({"mounts": mounts} if mounts else {}),
+        "env_rules": env_rules,
         **image_config,
     })
