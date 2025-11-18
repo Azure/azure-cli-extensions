@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudexadatainfrastructures/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudexadatainfrastructures/{}", "2025-09-01"],
         ]
     }
 
@@ -70,6 +70,15 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The list of customer email addresses that receive information from Oracle about the specified OCI Database service resource. Oracle uses these email addresses to send notifications about planned and unplanned software maintenance updates, information about system hardware, and other information needed by administrators. Up to 10 email addresses can be added to the customer contacts for a cloud Exadata infrastructure instance. ",
         )
+        _args_schema.database_server_type = AAZStrArg(
+            options=["--database-server-type"],
+            arg_group="Properties",
+            help="The database server model type of the cloud Exadata infrastructure resource.",
+            fmt=AAZStrArgFormat(
+                max_length=255,
+                min_length=1,
+            ),
+        )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
             arg_group="Properties",
@@ -93,6 +102,15 @@ class Create(AAZCommand):
             options=["--storage-count"],
             arg_group="Properties",
             help="The number of storage servers for the cloud Exadata infrastructure.",
+        )
+        _args_schema.storage_server_type = AAZStrArg(
+            options=["--storage-server-type"],
+            arg_group="Properties",
+            help="The storage server model type of the cloud Exadata infrastructure resource.",
+            fmt=AAZStrArgFormat(
+                max_length=255,
+                min_length=1,
+            ),
         )
 
         customer_contacts = cls._args_schema.customer_contacts
@@ -296,7 +314,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -322,7 +340,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.set_prop("zones", AAZListType, ".zones", typ_kwargs={"flags": {"required": True}})
 
@@ -330,10 +348,12 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("computeCount", AAZIntType, ".compute_count")
                 properties.set_prop("customerContacts", AAZListType, ".customer_contacts")
+                properties.set_prop("databaseServerType", AAZStrType, ".database_server_type")
                 properties.set_prop("displayName", AAZStrType, ".display_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("maintenanceWindow", AAZObjectType, ".maintenance_window")
                 properties.set_prop("shape", AAZStrType, ".shape", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("storageCount", AAZIntType, ".storage_count")
+                properties.set_prop("storageServerType", AAZStrType, ".storage_server_type")
 
             customer_contacts = _builder.get(".properties.customerContacts")
             if customer_contacts is not None:
@@ -417,9 +437,7 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -448,6 +466,10 @@ class Create(AAZCommand):
             properties.compute_count = AAZIntType(
                 serialized_name="computeCount",
             )
+            properties.compute_model = AAZStrType(
+                serialized_name="computeModel",
+                flags={"read_only": True},
+            )
             properties.cpu_count = AAZIntType(
                 serialized_name="cpuCount",
                 flags={"read_only": True},
@@ -459,6 +481,9 @@ class Create(AAZCommand):
                 serialized_name="dataStorageSizeInTbs",
                 flags={"read_only": True},
             )
+            properties.database_server_type = AAZStrType(
+                serialized_name="databaseServerType",
+            )
             properties.db_node_storage_size_in_gbs = AAZIntType(
                 serialized_name="dbNodeStorageSizeInGbs",
                 flags={"read_only": True},
@@ -467,15 +492,25 @@ class Create(AAZCommand):
                 serialized_name="dbServerVersion",
                 flags={"read_only": True},
             )
+            properties.defined_file_system_configuration = AAZListType(
+                serialized_name="definedFileSystemConfiguration",
+                flags={"read_only": True},
+            )
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
                 flags={"required": True},
             )
             properties.estimated_patching_time = AAZObjectType(
                 serialized_name="estimatedPatchingTime",
+                flags={"read_only": True},
+            )
+            properties.exascale_config = AAZObjectType(
+                serialized_name="exascaleConfig",
+                flags={"read_only": True},
             )
             properties.last_maintenance_run_id = AAZStrType(
                 serialized_name="lastMaintenanceRunId",
+                flags={"read_only": True},
             )
             properties.lifecycle_details = AAZStrType(
                 serialized_name="lifecycleDetails",
@@ -483,6 +518,7 @@ class Create(AAZCommand):
             )
             properties.lifecycle_state = AAZStrType(
                 serialized_name="lifecycleState",
+                flags={"read_only": True},
             )
             properties.maintenance_window = AAZObjectType(
                 serialized_name="maintenanceWindow",
@@ -517,12 +553,15 @@ class Create(AAZCommand):
             )
             properties.next_maintenance_run_id = AAZStrType(
                 serialized_name="nextMaintenanceRunId",
+                flags={"read_only": True},
             )
             properties.oci_url = AAZStrType(
                 serialized_name="ociUrl",
                 flags={"read_only": True},
             )
-            properties.ocid = AAZStrType()
+            properties.ocid = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -532,6 +571,9 @@ class Create(AAZCommand):
             )
             properties.storage_count = AAZIntType(
                 serialized_name="storageCount",
+            )
+            properties.storage_server_type = AAZStrType(
+                serialized_name="storageServerType",
             )
             properties.storage_server_version = AAZStrType(
                 serialized_name="storageServerVersion",
@@ -554,6 +596,23 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
 
+            defined_file_system_configuration = cls._schema_on_200_201.properties.defined_file_system_configuration
+            defined_file_system_configuration.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.defined_file_system_configuration.Element
+            _element.is_backup_partition = AAZBoolType(
+                serialized_name="isBackupPartition",
+            )
+            _element.is_resizable = AAZBoolType(
+                serialized_name="isResizable",
+            )
+            _element.min_size_gb = AAZIntType(
+                serialized_name="minSizeGb",
+            )
+            _element.mount_point = AAZStrType(
+                serialized_name="mountPoint",
+            )
+
             estimated_patching_time = cls._schema_on_200_201.properties.estimated_patching_time
             estimated_patching_time.estimated_db_server_patching_time = AAZIntType(
                 serialized_name="estimatedDbServerPatchingTime",
@@ -570,6 +629,15 @@ class Create(AAZCommand):
             estimated_patching_time.total_estimated_patching_time = AAZIntType(
                 serialized_name="totalEstimatedPatchingTime",
                 flags={"read_only": True},
+            )
+
+            exascale_config = cls._schema_on_200_201.properties.exascale_config
+            exascale_config.available_storage_in_gbs = AAZIntType(
+                serialized_name="availableStorageInGbs",
+            )
+            exascale_config.total_storage_in_gbs = AAZIntType(
+                serialized_name="totalStorageInGbs",
+                flags={"required": True},
             )
 
             maintenance_window = cls._schema_on_200_201.properties.maintenance_window
