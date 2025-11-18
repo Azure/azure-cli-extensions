@@ -1,9 +1,9 @@
 {
     "env_rules": [
         {
-            "pattern":"MY_VAR=MY_VAL",
-            "required":false,
-            "strategy":"string"
+            "pattern": "MY_VAR=MY_VAL",
+            "required": false,
+            "strategy": "string"
         },
         {
             "pattern": "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
