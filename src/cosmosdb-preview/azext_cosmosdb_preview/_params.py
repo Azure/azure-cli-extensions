@@ -459,7 +459,7 @@ def load_arguments(self, _):
             c.argument('ip_range_filter', nargs='+', options_list=['--ip-range-filter'], validator=validate_ip_range_filter, help="firewall support. Specifies the set of IP addresses or IP address ranges in CIDR form to be included as the allowed list of client IPs for a given database account. IP addresses/ranges must be comma-separated and must not contain any spaces")
             c.argument('kind', arg_type=get_enum_type(DatabaseAccountKind), help='The type of Cosmos DB database account to create')
             c.argument('enable_automatic_failover', arg_type=get_three_state_flag(), help='Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account.')
-            c.argument('capabilities', nargs='+', validator=validate_capabilities, help='set custom capabilities on the Cosmos DB database account.')
+            c.argument('capabilities', nargs='*', validator=validate_capabilities, help='set custom capabilities on the Cosmos DB database account.')
             c.argument('enable_virtual_network', arg_type=get_three_state_flag(), help='Enables virtual network on the Cosmos DB database account')
             c.argument('virtual_network_rules', nargs='+', validator=validate_virtual_network_rules, help='ACL\'s for virtual network')
             c.argument('enable_multiple_write_locations', arg_type=get_three_state_flag(), help="Enable Multiple Write Locations")
@@ -868,3 +868,4 @@ def load_arguments(self, _):
 
     with self.argument_context('cosmosdb fleetspace account create') as c:
         c.argument('fleetspace_account_body', options_list=['--body', '-b'], validator=validate_fleetspaceAccount_body, completer=FilesCompleter(), help="Fleetspace Account body with properties.globalDatabaseAccountProperties (fields: armLocation, resourceId). You can enter it as a string or as a file, e.g., --body @fleetspaceAccount.json or " + FLEETSPACE_ACCOUNT_PROPERTIES_EXAMPLE)
+
