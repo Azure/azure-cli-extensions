@@ -3,18 +3,18 @@
 Release History
 ===============
 
-1.0.0
+3.0.0b2
 +++++++++++++++
-* Initial release.
-
-2.0.0
-+++++++++++++++
-* New version.
+* Refactor codebase for improved readability and maintainability.
 
 2.0.0b1
 +++++++++++++++
 * Switch to experimental version.
 
-3.0.0b1
+2.0.0
 +++++++++++++++
-* Refactor codebase for improved readability and maintainability.
+* New version.
+
+1.0.0
++++++++++++++++
+* Initial release.
