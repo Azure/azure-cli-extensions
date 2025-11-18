@@ -4,6 +4,8 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp function invocations': modifications to app-insights query 
+* 'az containerapp function keys': updating min-replica check 
 
 1.3.0b1
 ++++++
