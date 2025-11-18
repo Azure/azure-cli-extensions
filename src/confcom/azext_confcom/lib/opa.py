@@ -15,7 +15,7 @@ import requests
 
 from azext_confcom.lib.binaries import get_binaries_dir
 
-_opa_pathh = os.path.abspath(os.path.join(get_binaries_dir(), "opa"))
+_opa_path = os.path.abspath(os.path.join(get_binaries_dir(), "opa"))
 _expected_sha256 = "fe8e191d44fec33db2a3d0ca788b9f83f866d980c5371063620c3c6822792877"
 
 
@@ -27,16 +27,16 @@ def opa_get():
 
     assert hashlib.sha256(opa_fetch_resp.content).hexdigest() == _expected_sha256
 
-    with open(_opa_pathh, "wb") as f:
+    with open(_opa_path, "wb") as f:
         f.write(opa_fetch_resp.content)
 
-    os.chmod(_opa_pathh, 0o755)
-    return _opa_pathh
+    os.chmod(_opa_path, 0o755)
+    return _opa_path
 
 
 def opa_run(args: Iterable[str]) -> subprocess.CompletedProcess:
     return subprocess.run(
-        [_opa_pathh, *args],
+        [_opa_path, *args],
         check=True,
         stdout=subprocess.PIPE,
         text=True,
