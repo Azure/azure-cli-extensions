@@ -842,7 +842,7 @@ def get_min_replicas_from_revision(cmd, resource_group_name, container_app_name,
         container_app_name=container_app_name,
         name=revision_name
     )
-    min_replicas = safe_get(revision_def, "properties", {}).get("template", {}).get("scale", {}).get("minReplicas")
+    min_replicas = safe_get(revision_def, "properties", "template", "scale", "minReplicas", default=None)
     return min_replicas
 
 
