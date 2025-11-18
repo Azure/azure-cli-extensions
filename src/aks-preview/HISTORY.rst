@@ -16,10 +16,10 @@ Pending
 +++++++
 * `az aks safeguards create`: Add pre-existence check to prevent duplicate resource creation and guide users to use update command instead.
 * `az aks safeguards`: Fix verb tense in help text and examples to use first-person imperative verbs per Azure CLI guidelines.
+* `az aks bastion`: Correctly configure `$KUBECONFIG` values for tunneling traffic into a private AKS cluster.
 
 19.0.0b16
 +++++++
-* `az aks bastion`: Correctly configure `$KUBECONFIG` values for tunneling traffic into a private AKS cluster.
 * Update --enable-container-network-logs DCR to ContainerNetworkLogs instead of RetinaNetworkFlowLogs
 
 19.0.0b15
