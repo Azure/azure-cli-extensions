@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.10.12
+1.11.0
 +++++
 * Removed deprecated '--app-id' and '--app-secret' RBAC parameters from the extension.
 * Update cluster diagnostics image to comply with Pod Security Standards-Restricted level( Updated image version:1.31.2).
