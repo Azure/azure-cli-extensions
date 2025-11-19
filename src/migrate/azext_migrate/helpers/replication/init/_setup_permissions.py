@@ -222,6 +222,9 @@ def update_amh_solution_storage(cmd,
 
         solution_body = {
             "properties": {
+                "tool": "ServerMigration_DataReplication",
+                "purpose": "Migration",
+                "goal": "Servers",
                 "details": {
                     "extendedDetails": extended_details
                 }
