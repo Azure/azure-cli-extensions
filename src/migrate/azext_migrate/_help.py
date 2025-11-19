@@ -71,31 +71,31 @@ helps['migrate local get-discovered-server'] = """
           text: |
             az migrate local get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG
+                --resource-group myRG
         - name: Get a specific discovered server by name
           text: |
             az migrate local get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --name machine-12345
         - name: Filter discovered servers by display name
           text: |
             az migrate local get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --display-name "web-server"
         - name: List VMware servers discovered by a specific appliance
           text: |
             az migrate local get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --appliance-name myVMwareAppliance \\
                 --source-machine-type VMware
         - name: Get a specific server from a specific appliance
           text: |
             az migrate local get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --appliance-name myAppliance \\
                 --name machine-12345 \\
                 --source-machine-type HyperV
@@ -152,14 +152,14 @@ helps['migrate local replication init'] = """
         - name: Initialize replication infrastructure
           text: |
             az migrate local replication init \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --project-name myMigrateProject \\
                 --source-appliance-name myVMwareAppliance \\
                 --target-appliance-name myAzStackHCIAppliance
         - name: Initialize and return success status
           text: |
             az migrate local replication init \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --project-name myMigrateProject \\
                 --source-appliance-name mySourceAppliance \\
                 --target-appliance-name myTargetAppliance \\
@@ -268,7 +268,7 @@ helps['migrate local replication new'] = """
             az migrate local replication new \\
                 --machine-index 1 \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --target-storage-path-id "XZXZ" \\
                 --target-resource-group-id "YZYZ" \\
                 --target-vm-name migratedVM01 \\
@@ -302,4 +302,117 @@ helps['migrate local replication new'] = """
                 --target-virtual-switch-id "XYXY" \\
                 --target-test-virtual-switch-id "XYXY" \\
                 --os-disk-id "disk-0"
+"""
+
+helps['migrate local replication remove'] = """
+    type: command
+    short-summary: Stop replication for a migrated server.
+    long-summary: |
+        Stops the replication for a migrated server and removes
+        the replication configuration.
+        This command disables protection for the specified server.
+
+        Note: This command uses a preview API version
+        and may experience breaking changes in future releases.
+    parameters:
+        - name: --target-object-id --id
+          short-summary: Replicating server ARM ID to disable replication.
+          long-summary: >
+            Specifies the ARM resource ID of the replicating server
+            for which replication needs to be disabled.
+            The ID should be retrieved using a get or list command
+            for replication items.
+        - name: --force-remove --force
+          short-summary: Force remove the replication.
+          long-summary: >
+            Specifies whether the replication needs to be
+            force removed. Default is false.
+            Use this option to remove replication even if
+            the cleanup process encounters errors.
+        - name: --subscription-id
+          short-summary: Azure subscription ID.
+          long-summary: >
+            The subscription containing the replication resources.
+            Uses the current subscription if not specified.
+    examples:
+        - name: Stop replication for a migrated server
+          text: |
+            az migrate local replication remove \\
+                --target-object-id "XXXX"
+        - name: Force remove replication for a server
+          text: |
+            az migrate local replication remove \\
+                --target-object-id "XXXX" \\
+                --force-remove true
+        - name: Stop replication using short parameter names
+          text: |
+            az migrate local replication remove \\
+                --id "XXXX" \\
+                --force
+"""
+
+helps['migrate local replication get-job'] = """
+    type: command
+    short-summary: Retrieve the status of an Azure Migrate job.
+    long-summary: |
+        Get the status and details of an Azure Migrate replication job.
+        You can retrieve a specific job by its ARM ID or name,
+        or list all jobs in a migrate project.
+
+        Note: This command uses a preview API version
+        and may experience breaking changes in future releases.
+    parameters:
+        - name: --job-id --id
+          short-summary: Job ARM ID for which details need to be retrieved.
+          long-summary: >
+            Specifies the full ARM resource ID of the job.
+            When provided, retrieves the specific job details.
+        - name: --resource-group -g
+          short-summary: Resource group name where the vault is present.
+          long-summary: >
+            The name of the resource group containing
+            the recovery services vault.
+            Required when using --project-name.
+        - name: --project-name
+          short-summary: Name of the migrate project.
+          long-summary: >
+            The name of the Azure Migrate project.
+            Required when using --resource-group.
+        - name: --job-name --name
+          short-summary: Job identifier/name.
+          long-summary: >
+            The name of the specific job to retrieve.
+            If not provided, lists all jobs in the project.
+        - name: --subscription-id
+          short-summary: Azure subscription ID.
+          long-summary: >
+            The subscription containing the migrate project.
+            Uses the current subscription if not specified.
+    examples:
+        - name: Get a specific job by ARM ID
+          text: |
+            az migrate local replication get-job \\
+                --job-id "/subscriptions/{sub-id}/resourceGroups/{rg}/providers/Microsoft.DataReplication/replicationVaults/{vault}/jobs/{job-name}"
+        - name: Get a specific job by name
+          text: |
+            az migrate local replication get-job \\
+                --resource-group myRG \\
+                --project-name myMigrateProject \\
+                --job-name myJobName
+        - name: List all jobs in a project
+          text: |
+            az migrate local replication get-job \\
+                --resource-group myRG \\
+                --project-name myMigrateProject
+        - name: Get job using short parameter names
+          text: |
+            az migrate local replication get-job \\
+                --id "/subscriptions/{sub-id}/resourceGroups/{rg}/providers/Microsoft.DataReplication/replicationVaults/{vault}/jobs/{job-name}"
+        - name: Get job with specific subscription
+          text: |
+            az migrate local replication get-job \\
+                -g myRG \\
+                --project-name myMigrateProject \\
+                --name myJobName \\
+                --subscription-id "12345678-1234-1234-1234-123456789012"
 """

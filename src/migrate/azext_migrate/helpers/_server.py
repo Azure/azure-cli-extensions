@@ -93,6 +93,7 @@ def extract_server_info(server, index):
 
     # Default values
     machine_name = "N/A"
+    machine_id = "N/A"
     ip_addresses_str = 'N/A'
     os_name = "N/A"
     boot_type = "N/A"
@@ -101,6 +102,7 @@ def extract_server_info(server, index):
     if discovery_data:
         latest_discovery = discovery_data[0]
         machine_name = latest_discovery.get('machineName', 'N/A')
+        machine_id = server.get('id', 'N/A')
         ip_addresses = latest_discovery.get('ipAddresses', [])
         ip_addresses_str = ', '.join(ip_addresses) if ip_addresses else 'N/A'
         os_name = latest_discovery.get('osName', 'N/A')
@@ -116,6 +118,7 @@ def extract_server_info(server, index):
     return {
         'index': index,
         'machine_name': machine_name,
+        'machine_id': machine_id,
         'ip_addresses': ip_addresses_str,
         'operating_system': os_name,
         'boot_type': boot_type,
@@ -128,6 +131,8 @@ def print_server_info(server_info):
     index_str = f"[{server_info['index']}]"
     print(f"{index_str} Machine Name: "
           f"{server_info['machine_name']}")
+    print(f"{' ' * len(index_str)} Machine Id: "
+          f"{server_info['machine_id']}")
     print(f"{' ' * len(index_str)} IP Addresses: "
           f"{server_info['ip_addresses']}")
     print(f"{' ' * len(index_str)} Operating System: "

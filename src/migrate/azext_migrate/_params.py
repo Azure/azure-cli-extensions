@@ -26,11 +26,11 @@ def load_arguments(self, _):
     with self.argument_context('migrate') as c:
         c.argument('subscription_id', subscription_id_type)
 
-    with self.argument_context('migrate local get-discovered-server') as c:
+    with self.argument_context('migrate get-discovered-server') as c:
         c.argument('project_name', project_name_type, required=True)
         c.argument(
-            'resource_group_name',
-            options_list=['--resource-group-name', '--resource-group', '-g'],
+            'resource_group',
+            options_list=['--resource-group', '-g'],
             help='Name of the resource group containing the Azure Migrate '
                  'project.',
             required=True)
@@ -50,8 +50,8 @@ def load_arguments(self, _):
 
     with self.argument_context('migrate local replication init') as c:
         c.argument(
-            'resource_group_name',
-            options_list=['--resource-group-name', '--resource-group', '-g'],
+            'resource_group',
+            options_list=['--resource-group', '-g'],
             help='Specifies the Resource Group of the Azure Migrate '
                  'Project.',
             required=True)
@@ -106,8 +106,8 @@ def load_arguments(self, _):
             help='Name of the Azure Migrate project. Required when using '
                  '--machine-index.')
         c.argument(
-            'resource_group_name',
-            options_list=['--resource-group-name', '--resource-group', '-g'],
+            'resource_group',
+            options_list=['--resource-group', '-g'],
             help='Name of the resource group containing the Azure Migrate '
                  'project. Required when using --machine-index.')
         c.argument(
@@ -182,4 +182,40 @@ def load_arguments(self, _):
             help='Specifies the target appliance name for the AzLocal '
                  'scenario.',
             required=True)
+        c.argument('subscription_id', subscription_id_type)
+
+    with self.argument_context('migrate local replication remove') as c:
+        c.argument(
+            'target_object_id',
+            options_list=['--target-object-id', '--id'],
+            help='Specifies the replicating server ARM ID for which '
+                 'replication needs to be disabled. The ID should be '
+                 'retrieved using the get command.')
+        c.argument(
+            'force_remove',
+            options_list=['--force-remove', '--force'],
+            arg_type=get_three_state_flag(),
+            help='Specifies whether the replication needs to be force '
+                 'removed. Default is false.')
+        c.argument('subscription_id', subscription_id_type)
+
+    with self.argument_context('migrate local replication get-job') as c:
+        c.argument(
+            'job_id',
+            options_list=['--job-id', '--id'],
+            help='Specifies the job ARM ID for which the details need to '
+                 'be retrieved.')
+        c.argument(
+            'resource_group',
+            options_list=['--resource-group', '-g'],
+            help='The name of the resource group where the recovery '
+                 'services vault is present.')
+        c.argument(
+            'project_name',
+            project_name_type,
+            help='The name of the migrate project.')
+        c.argument(
+            'job_name',
+            options_list=['--job-name', '--name'],
+            help='Job identifier.')
         c.argument('subscription_id', subscription_id_type)

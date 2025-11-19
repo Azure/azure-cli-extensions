@@ -5,7 +5,7 @@
 
 from knack.util import CLIError
 from knack.log import get_logger
-from azext_migrate._helpers import (
+from azext_migrate.helpers._utils import (
     send_get_request,
 )
 
@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 
 def get_discovered_server(cmd,
                           project_name,
-                          resource_group_name,
+                          resource_group,
                           display_name=None,
                           source_machine_type=None,
                           subscription_id=None,
@@ -26,7 +26,7 @@ def get_discovered_server(cmd,
     Args:
         cmd: The CLI command context
         project_name (str): Specifies the migrate project name (required)
-        resource_group_name (str): Specifies the resource group name
+        resource_group (str): Specifies the resource group name
             (required)
         display_name (str, optional): Specifies the source machine
             display name
@@ -45,8 +45,8 @@ def get_discovered_server(cmd,
         CLIError: If required parameters are missing or the API request
             fails
     """
-    from azext_migrate._helpers import APIVersion
-    from azext_migrate._get_discovered_server_helpers import (
+    from azext_migrate.helpers._utils import APIVersion
+    from azext_migrate.helpers._server import (
         validate_get_discovered_server_params,
         build_base_uri,
         fetch_all_servers,
@@ -56,7 +56,7 @@ def get_discovered_server(cmd,
 
     # Validate required parameters
     validate_get_discovered_server_params(
-        project_name, resource_group_name, source_machine_type)
+        project_name, resource_group, source_machine_type)
 
     # Use current subscription if not provided
     if not subscription_id:
@@ -66,7 +66,7 @@ def get_discovered_server(cmd,
 
     # Build the base URI
     base_uri = build_base_uri(
-        subscription_id, resource_group_name, project_name,
+        subscription_id, resource_group, project_name,
         appliance_name, name, source_machine_type)
 
     # Use the correct API version
@@ -105,7 +105,7 @@ def get_discovered_server(cmd,
 
 
 def initialize_replication_infrastructure(cmd,
-                                          resource_group_name,
+                                          resource_group,
                                           project_name,
                                           source_appliance_name,
                                           target_appliance_name,
@@ -120,7 +120,7 @@ def initialize_replication_infrastructure(cmd,
 
     Args:
         cmd: The CLI command context
-        resource_group_name (str): Specifies the Resource Group of the
+        resource_group (str): Specifies the Resource Group of the
             Azure Migrate Project (required)
         project_name (str): Specifies the name of the Azure Migrate
             project to be used for server migration (required)
@@ -145,12 +145,14 @@ def initialize_replication_infrastructure(cmd,
     """
     from azure.cli.core.commands.client_factory import \
         get_subscription_id
-    from azext_migrate._initialize_replication_infrastructure_helpers import (
-        validate_required_parameters,
+    from azext_migrate.helpers.replication.init._execute_init import (
         execute_replication_infrastructure_setup)
+    from azext_migrate.helpers.replication.init._validate import (
+        validate_required_parameters,
+    )
 
     # Validate required parameters
-    validate_required_parameters(resource_group_name,
+    validate_required_parameters(resource_group,
                                  project_name,
                                  source_appliance_name,
                                  target_appliance_name)
@@ -163,7 +165,7 @@ def initialize_replication_infrastructure(cmd,
 
         # Execute the complete setup workflow
         return execute_replication_infrastructure_setup(
-            cmd, subscription_id, resource_group_name, project_name,
+            cmd, subscription_id, resource_group, project_name,
             source_appliance_name, target_appliance_name,
             cache_storage_account_id, pass_thru
         )
@@ -185,7 +187,7 @@ def new_local_server_replication(cmd,
                                  machine_id=None,
                                  machine_index=None,
                                  project_name=None,
-                                 resource_group_name=None,
+                                 resource_group=None,
                                  target_vm_cpu_core=None,
                                  target_virtual_switch_id=None,
                                  target_test_virtual_switch_id=None,
@@ -222,7 +224,7 @@ def new_local_server_replication(cmd,
             machine_id not provided)
         project_name (str, optional): Specifies the migrate project name
             (required when using machine_index)
-        resource_group_name (str, optional): Specifies the resource group
+        resource_group (str, optional): Specifies the resource group
             name (required when using machine_index)
         target_vm_cpu_core (int, optional): Specifies the number of CPU
             cores
@@ -252,11 +254,15 @@ def new_local_server_replication(cmd,
     Raises:
         CLIError: If required parameters are missing or validation fails
     """
-    from azext_migrate._helpers import SiteTypes
-    from azext_migrate._new_local_server_replication_helpers import (
+    from azext_migrate.helpers._utils import SiteTypes
+    from azext_migrate.helpers.replication.new._validate import (
         validate_server_parameters,
         validate_required_parameters,
         validate_ARM_id_formats,
+        validate_replication_extension,
+        validate_target_VM_name
+    )
+    from azext_migrate.helpers.replication.new._process_inputs import (
         process_site_type_hyperV,
         process_site_type_vmware,
         process_amh_solution,
@@ -264,19 +270,20 @@ def new_local_server_replication(cmd,
         process_replication_policy,
         process_appliance_map,
         process_source_fabric,
-        process_target_fabric,
-        validate_replication_extension,
+        process_target_fabric
+    )
+    from azext_migrate.helpers.replication.new._execute_new import (
         get_ARC_resource_bridge_info,
-        validate_target_VM_name,
         construct_disk_and_nic_mapping,
-        create_protected_item)
+        create_protected_item
+    )
 
-    rg_uri = validate_server_parameters(
+    rg_uri, machine_id = validate_server_parameters(
         cmd,
         machine_id,
         machine_index,
         project_name,
-        resource_group_name,
+        resource_group,
         source_appliance_name,
         subscription_id)
 
@@ -450,3 +457,134 @@ def new_local_server_replication(cmd,
     except Exception as e:
         logger.error("Error creating replication: %s", str(e))
         raise
+
+
+def get_local_replication_job(cmd,
+                              job_id=None,
+                              resource_group=None,
+                              project_name=None,
+                              job_name=None,
+                              subscription_id=None):
+    """
+    Retrieve the status of an Azure Migrate job.
+
+    This cmdlet is based on a preview API version and may experience
+    breaking changes in future releases.
+
+    Args:
+        cmd: The CLI command context
+        job_id (str, optional): Specifies the job ARM ID for which
+            the details need to be retrieved
+        resource_group (str, optional): The name of the resource
+            group where the recovery services vault is present
+        project_name (str, optional): The name of the migrate project
+        job_name (str, optional): Job identifier/name
+        subscription_id (str, optional): Azure Subscription ID. Uses
+            current subscription if not provided
+
+    Returns:
+        dict or list: Job details (single job or list of jobs)
+
+    Raises:
+        CLIError: If required parameters are missing or the job is not found
+    """
+    from azure.cli.core.commands.client_factory import \
+        get_subscription_id
+    from azext_migrate.helpers.replication.job._parse import (
+        parse_job_id,
+        get_vault_name_from_project
+    )
+    from azext_migrate.helpers.replication.job._retrieve import (
+        get_single_job,
+        list_all_jobs
+    )
+    from azext_migrate.helpers.replication.job._format import (
+        format_job_output,
+        format_job_summary
+    )
+
+    # Use current subscription if not provided
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Determine the operation mode based on provided parameters
+    if job_id:
+        # Mode: Get job by ID
+        vault_name, resource_group_name, job_name = \
+            parse_job_id(job_id)
+    elif resource_group and project_name:
+        # Mode: Get job by name or list jobs
+        vault_name = get_vault_name_from_project(
+            cmd, resource_group, project_name, subscription_id)
+        resource_group_name = resource_group
+    else:
+        raise CLIError(
+            "Either --job-id or both --resource-group and "
+            "--project-name must be provided.")
+
+    # Get a specific job or list all jobs
+    if job_name:
+        return get_single_job(
+            cmd, subscription_id, resource_group_name,
+            vault_name, job_name, format_job_output)
+
+    return list_all_jobs(
+        cmd, subscription_id, resource_group_name,
+        vault_name, format_job_summary)
+
+
+def remove_local_server_replication(cmd,
+                                    target_object_id,
+                                    force_remove=False,
+                                    subscription_id=None):
+    """
+    Stop replication for a migrated server.
+
+    This cmdlet is based on a preview API version and may experience
+    breaking changes in future releases.
+
+    Args:
+        cmd: The CLI command context
+        target_object_id (str): Specifies the replicating server ARM ID
+            for which replication needs to be disabled (required)
+        force_remove (bool, optional): Specifies whether the replication
+            needs to be force removed. Default is False
+        subscription_id (str, optional): Azure Subscription ID. Uses
+            current subscription if not provided
+
+    Returns:
+        dict: The job model from the API response
+
+    Raises:
+        CLIError: If the protected item is not found or cannot be
+            removed in its current state
+    """
+    from azure.cli.core.commands.client_factory import \
+        get_subscription_id
+    from azext_migrate.helpers.replication.remove._parse import (
+        parse_protected_item_id
+    )
+    from azext_migrate.helpers.replication.remove._validate import (
+        validate_protected_item
+    )
+    from azext_migrate.helpers.replication.remove._execute_delete import (
+        execute_removal
+    )
+
+    # Use current subscription if not provided
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Parse the protected item ID to extract components
+    resource_group_name, vault_name, protected_item_name = \
+        parse_protected_item_id(target_object_id)
+
+    # Validate the protected item exists and can be removed
+    validate_protected_item(cmd, target_object_id)
+
+    # Execute the removal workflow
+    return execute_removal(
+        cmd, subscription_id, target_object_id,
+        resource_group_name, vault_name,
+        protected_item_name, force_remove
+    )
