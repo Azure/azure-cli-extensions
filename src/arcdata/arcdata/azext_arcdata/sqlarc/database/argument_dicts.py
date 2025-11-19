@@ -36,12 +36,22 @@ dest_name = {
 time = {
     "argument_dest": "time",
     "options_list": ["--time", "-t"],
-    "help": "The point in time of the source database that will be restored to create the new database. Must be more recent than or equal to the source database's earliest restore date/time value. Time should be in following format: YYYY-MM-DDTHH:MM:SSZ . The given time value must be in UTC. If no time is provided, the most recent backup will be restored. The given time value must be in UTC.",
+    "help": (
+        "The point in time of the source database that will be restored to "
+        "create the new database. Must be more recent than or equal to the "
+        "source database's earliest restore date/time value. Time should be "
+        "in following format: YYYY-MM-DDTHH:MM:SSZ . The given time value "
+        "must be in UTC. If no time is provided, the most recent backup "
+        "will be restored. The given time value must be in UTC."
+    ),
 }
 dry_run = {
     "argument_dest": "dry_run",
     "options_list": ["--dry-run"],
-    "help": "Validates if the restore operation can be successful or not by returning earliest and latest restore time window. ",
+    "help": (
+        "Validates if the restore operation can be successful or not by "
+        "returning earliest and latest restore time window. "
+    ),
     "action": "store_true",
 }
 no_wait = {

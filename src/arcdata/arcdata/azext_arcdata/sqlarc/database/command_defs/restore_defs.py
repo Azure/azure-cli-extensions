@@ -45,7 +45,8 @@ def restore(client):
 
         validate_fci_is_inactive(instance_arm_model)
 
-        # We want to get a 404 Error here as it means the database does not exist, and if it does exist we want to create an error saying that the database already exists.
+        # We want to get a 404 Error here as it means the database does not exist, and if it does
+        # exist we want to create an error saying that the database already exists.
         try:
             arm_model = client.services.sqlarc.get_database_config(
                 cvo.resource_group, full_instance_name, cvo.dest_name

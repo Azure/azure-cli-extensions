@@ -185,9 +185,22 @@ def backups_policy_delete(client, instance=None, database_name=None):
         if not cvo.yes:
             instance_name = instance_arm_model.properties.instance_name
             if not database_name:
-                confirmation_dialogue = f"Deleting the backup policy for the instance will cause all databases in this instance that do not have their own database level backup policy set, to stop taking automated backups. Are you sure you want to delete the backup policy for the instance '{instance_name}'? [Y/N] "
+                confirmation_dialogue = (
+                    f"Deleting the backup policy for the instance will cause all "
+                    f"databases in this instance that do not have their own database "
+                    f"level backup policy set, to stop taking automated backups. "
+                    f"Are you sure you want to delete the backup policy for the "
+                    f"instance '{instance_name}'? [Y/N] "
+                )
             else:
-                confirmation_dialogue = f"Deleting the backup policy for a the database will cause the database to use the instance's backup policy. If there is no instance backup policy set, there will no longer be any automated backups taken for the database. Are you sure you want to delete the backup policy for the database '{database_name}' on the instance '{instance_name}'?  [Y/N] "
+                confirmation_dialogue = (
+                    f"Deleting the backup policy for a the database will cause the "
+                    f"database to use the instance's backup policy. If there is no "
+                    f"instance backup policy set, there will no longer be any "
+                    f"automated backups taken for the database. Are you sure you "
+                    f"want to delete the backup policy for the database "
+                    f"'{database_name}' on the instance '{instance_name}'?  [Y/N] "
+                )
 
             validAnswer = False
             user_input = input(confirmation_dialogue)

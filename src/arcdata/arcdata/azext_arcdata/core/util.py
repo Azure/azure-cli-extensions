@@ -23,12 +23,10 @@ from knack.log import get_logger
 from knack.cli import CLIError
 
 from kubernetes import config as kconfig
-from kubernetes.config.config_exception import ConfigException
 from jsonpatch import JsonPatch
 from jsonpath_ng.ext import parse
 from humanfriendly.terminal.spinners import AutomaticSpinner
 from jinja2 import Template as JinjaTemplate
-from pathlib import Path, PureWindowsPath
 from string import Template
 from functools import wraps
 
@@ -1248,113 +1246,6 @@ class DeploymentConfigUtil(object):
         for sep in old_sep:
             new_path = new_path.replace(sep, new_sep)
         return new_path
-
-
-# ---------------------------------------------------------------------------- #
-# ---------------------------------------------------------------------------- #
-# ---------------------------------------------------------------------------- #
-
-
-def check_and_set_kubectl_context():
-    """
-    Check and set environment var for kubectl command context
-    """
-    try:
-        if os.getenv("KUBERNETES_SERVICE_HOST"):
-            try:
-                kconfig.load_incluster_config()
-            except ConfigException:
-                load_kube_config()
-        elif os.getenv("KUBECTL_CONTEXT") is None:
-            load_kube_config()
-        else:
-            load_kube_config(os.environ["KUBECTL_CONTEXT"])
-    except Exception as e:
-        logger.debug(e)
-        raise CLIError("Failed to complete kube config setup.")
-
-
-def load_kube_config(context=None):
-    #
-    # Python Kubernetes Library does not handle cases where the KUBECONFIG
-    # environment variable can have multiple
-    # kubeconfig files listed. It's an open issue on github -
-    # https://github.com/kubernetes-client/python-base/pull/94
-    # This is a temporary workaround until this change gets checked in.
-    #
-    DEFAULT_KUBE_CONFIG_LOCATION = None
-    FILE_SEPARATOR = None
-    if platform.system() == "Windows":
-        DEFAULT_KUBE_CONFIG_LOCATION = str(
-            PureWindowsPath(str(Path.home()) + "/.kube/config")
-        )
-        FILE_SEPARATOR = ";"
-    else:
-        DEFAULT_KUBE_CONFIG_LOCATION = str(Path.home()) + "/.kube/config"
-        FILE_SEPARATOR = ":"
-    kube_config_files = os.environ.get("KUBECONFIG")
-    kube_context_loaded = False
-    config_file = None
-
-    if kube_config_files:
-        config_file = None
-        for config_file in kube_config_files.split(FILE_SEPARATOR):
-            if config_file and os.path.exists(config_file):
-                # kubectl gives precedence to the order in which the files
-                # are listed.
-                #
-                try:
-                    kconfig.load_kube_config(
-                        config_file=config_file, context=context
-                    )
-                    kube_context_loaded = True
-                    break
-                except Exception:
-                    logger.debug(
-                        "Could not find context %s in file - %s"
-                        % (context, config_file)
-                    )
-            else:
-                msg = "No such file or directory '{}'".format(config_file)
-                logger.debug(msg)
-
-        if not kube_context_loaded:
-            msg = (
-                "Failed to load context '{0}' from the listed kubeconfig "
-                "files: \n{1}".format(
-                    context, kube_config_files.split(FILE_SEPARATOR)
-                )
-            )
-
-            logger.debug(msg)
-            raise Exception(msg)
-        else:
-            logger.debug("Loaded kube config from %s" % (config_file))
-    else:
-        logger.debug(
-            "Loading default kube config from %s "
-            % DEFAULT_KUBE_CONFIG_LOCATION
-        )
-        kconfig.load_kube_config(context=context)
-
-    # set kubectl context to current context if not set
-    #
-    if context is None:
-        contexts, current_context = kconfig.list_kube_config_contexts(
-            config_file=config_file
-        )
-        if current_context:
-            os.environ["KUBECTL_CONTEXT"] = current_context["name"]
-        else:
-            logger.debug("No active context is set in kubeconfig.")
-            raise Exception("No active context is set in kubeconfig.")
-    else:
-        contexts, current_context = kconfig.list_kube_config_contexts(
-            config_file=config_file
-        )
-    logger.debug("Kubectl context set to %s" % os.environ["KUBECTL_CONTEXT"])
-
-    return current_context.get("context")
 
 
 # ---------------------------------------------------------------------------- #

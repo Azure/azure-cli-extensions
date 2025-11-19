@@ -61,7 +61,9 @@ def parse_skip_instances(value: str) -> List[str]:
     return value.split(",")
 
 
-# These are Reusable argument dicts for all Sqlarc command groups, if the argument you are adding can not be used by 2 or more command groups do not add them here
+# These are Reusable argument dicts for all Sqlarc command groups,
+# if the argument you are adding can not be used by 2 or more command
+# groups do not add them here
 name = {
     "argument_dest": "name",
     "options_list": ["--name", "-n"],
@@ -102,7 +104,10 @@ backups_tlog_backup_mins = {
 backups_default_policy = {
     "argument_dest": "backups_default_policy",
     "options_list": ["--default-policy"],
-    "help": "Set the default policy of weekly retention period, weekly full, daily differential, and 5 min transaction log backups.",
+    "help": (
+        "Set the default policy of weekly retention period, weekly full, "
+        "daily differential, and 5 min transaction log backups."
+    ),
     "default": False,
     "action": "store_true",
 }

@@ -592,7 +592,8 @@ class KubernetesDataControllerServiceProxy(
         retention_hours=None,
     ):
         """
-        Enables or disables Change Data Capture for 'controller' Database and supported system tables - requires kube config
+        Enables or disables Change Data Capture for 'controller' Database
+        and supported system tables - requires kube config
         """
         from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.debug import controldb_cdc
 

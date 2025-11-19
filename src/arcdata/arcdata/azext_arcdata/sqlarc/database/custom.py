@@ -32,9 +32,12 @@ def db_backups_policy_set(
     Sets the Backups
     :param client:
     :param name: The name of the database
-    :param server: The Server Name for the SQL Server, this is also overloaded to handle instances so [server name]/[instnace name] can be used for an instance in a server
+    :param server: The Server Name for the SQL Server, this is also
+        overloaded to handle instances so [server name]/[instnace name]
+        can be used for an instance in a server
     :param resource_group: The resource group for the SQL Server
-    :param backups_retention_days: The length of retention days for the backups policy. 0-35 are the only valid values.
+    :param backups_retention_days: The length of retention days for the
+        backups policy. 0-35 are the only valid values.
     :return: No Return
     """
     backups_policy_set(client, server, name)
@@ -45,7 +48,9 @@ def db_backups_policy_show(client, name=None, server=None, resource_group=None):
     Show the backups policy
     :param client:
     :param name: The name of the database
-    :param server: The Server Name for the SQL Server, this is also overloaded to handle instances so [server name]/[instnace name] can be used for an instance in a server
+    :param server: The Server Name for the SQL Server, this is also
+        overloaded to handle instances so [server name]/[instnace name]
+        can be used for an instance in a server
     :param resource_group: The resource group for the SQL Server
     :return: JSON/Dict of the backups policy
     """
@@ -60,7 +65,9 @@ def db_backups_policy_delete(
     Delete the backups policy
     :param client:
     :param name: The name of the database
-    :param server: The Server Name for the SQL Server, this is also overloaded to handle instances so [server name]/[instnace name] can be used for an instance in a server
+    :param server: The Server Name for the SQL Server, this is also
+        overloaded to handle instances so [server name]/[instnace name]
+        can be used for an instance in a server
     :param resource_group: The resource group for the SQL Server
     :return: JSON/Dict of the backups policy
     """

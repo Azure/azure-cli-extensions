@@ -4,7 +4,7 @@
 # license information.
 # ------------------------------------------------------------------------------
 
-from azext_arcdata.sqlmidb.client import beget, beget_no_namespace
+from azext_arcdata.sqlmidb.client import beget
 from azure.cli.core.commands import CliCommandType
 
 

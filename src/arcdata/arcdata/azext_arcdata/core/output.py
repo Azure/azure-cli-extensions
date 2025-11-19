@@ -173,12 +173,6 @@ class StdIO(str):
                 obj = str(obj)
 
             self.io.write(color_output(obj, color))
-        except ValueError:
-            # -- pytest --
-            sys.stdout.write(obj)
-            if end:
-                sys.stdout.write(end)
-            return
         except UnicodeEncodeError:
             # Fallback shim to ascii with replace with backslashed escape
             # sequences
@@ -187,6 +181,12 @@ class StdIO(str):
                 self.io.buffer.write(bytes_string)
             else:
                 self.io.write(bytes_string.decode(self.io.encoding, "strict"))
+        except ValueError:
+            # -- pytest --
+            sys.stdout.write(obj)
+            if end:
+                sys.stdout.write(end)
+            return
         if end:
             self.io.write(end)
 

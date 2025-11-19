@@ -23,7 +23,10 @@ def validate_database_name(database_name):
         pass
     else:
         raise CLIError(
-            'The database name "{0}" is invalid. We support the regular identifiers found at https://learn.microsoft.com/en-us/sql/relational-databases/databases/database-identifiers?view=sql-server-ver16#rules-for-regular-identifiers with the exclusion of the following characters[@,#,$]'.format(
+            'The database name "{0}" is invalid. We support the regular identifiers found at '
+            'https://learn.microsoft.com/en-us/sql/relational-databases/databases/database-identifiers'
+            '?view=sql-server-ver16#rules-for-regular-identifiers '
+            'with the exclusion of the following characters[@,#,$]'.format(
                 database_name
             )
         )
@@ -34,7 +37,8 @@ def validate_restore_arguments(namespace):
     partially_validate_time(namespace.time)
 
 
-# We do not have the Restore Window, but we can check that the date is not in the future which is 1 of the 2 bounds for the restore window. And we can check it is in the correct format.
+# We do not have the Restore Window, but we can check that the date is not in the future
+# which is 1 of the 2 bounds for the restore window. And we can check it is in the correct format.
 def partially_validate_time(given_time):
     if given_time is None:
         return
@@ -57,7 +61,8 @@ def partially_validate_time(given_time):
 
     if given_time is not None and given_time > current_time:
         raise CLIError(
-            "The selected time is invalid as it is currently set for the future. Given time: '{0}' Current time: '{1}'".format(
+            "The selected time is invalid as it is currently set for the future. "
+            "Given time: '{0}' Current time: '{1}'".format(
                 given_time, current_time
             )
         )
@@ -79,7 +84,8 @@ def validate_time(backup_information, given_time):
     )
     if given_time < last_full_backup_time:
         raise ValueError(
-            "The selected time is invalid as it is prior to the Last Full Backup. Given time: '{0}' Last Full Backup time: '{1}'".format(
+            "The selected time is invalid as it is prior to the Last Full Backup. "
+            "Given time: '{0}' Last Full Backup time: '{1}'".format(
                 given_time, last_full_backup_time
             )
         )

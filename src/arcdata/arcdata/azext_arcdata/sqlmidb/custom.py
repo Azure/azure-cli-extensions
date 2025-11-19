@@ -30,11 +30,11 @@ def arc_sql_midb_restore(
     namespace=None,
     managed_instance=None,
     name=None,
-    dest_name=None,
-    time=None,
+    dest_name=None,  # pylint: disable=unused-argument
+    restore_time=None,
     use_k8s=None,
     nowait=None,
-    dry_run=None,
+    dry_run=None,  # pylint: disable=unused-argument
 ):
     """
     Restores SQL MI to a PITR
@@ -44,7 +44,7 @@ def arc_sql_midb_restore(
     :param name: The source db from where the backups should be restored.
     :param dest_name: The name of the database at the destination server
                       where backup is to be restored to.
-    :param time: "The Point in time, within the retention time to
+    :param restore_time: "The Point in time, within the retention time to
                   restore to, specified as a timestamp in UTC format.
                   If not provided current
                   timestamp will be used and thus last available
@@ -63,8 +63,8 @@ def arc_sql_midb_restore(
         # if dest_mi is None:
         #     dest_mi = managed_instance
 
-        if time is None:
-            time = str(datetime.now())
+        if restore_time is None:
+            restore_time = str(datetime.now())
 
         task_name = "sql-restore-" + str(datetime.timestamp(datetime.now()))
         spec_object = {
@@ -129,8 +129,8 @@ def _check_restore_status(client, task_name: str, namespace=None):
             state = status.get("state")
             if state == "Completed":
                 return task
-            elif state == "Failed":
-                raise Exception(
+            if state == "Failed":
+                raise RuntimeError(
                     "Failed to restore the backup. {}".format(
                         status.get("message")
                     )
@@ -141,12 +141,7 @@ def _check_restore_status(client, task_name: str, namespace=None):
 
 def _get_json_output(cr: CustomResource):
     output_dict = {
-        "sourceDatabase": cr.get("spec", {})
-        .get("source", {})
-        .get("database", {}),
-                    if other_condition:
-                        return other_value
-        .get("database", {}),
+        "sourceDatabase": cr.get("spec", {}).get("source", {}).get("database", {}),
         "restorePoint": cr.get("spec", {}).get("restorePoint", {}),
     }
     output_dict.update(cr.get("status", {}))

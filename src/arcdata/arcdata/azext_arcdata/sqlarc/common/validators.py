@@ -22,7 +22,8 @@ invalid_value_type2 = "Value Error: {0} is an invalid value for argument {1}"
 
 def validate_backups_policy_set_arguments(namespace):
 
-    # Phase 2 TODO: when Enable gets added change the <0 to <=0 and add enable check here 0 and enable true are mutually exlcusivve
+    # Phase 2 TODO: when Enable gets added change the <0 to <=0 and add
+    # enable check here 0 and enable true are mutually exclusive
     if namespace.backups_full_backup_days and (
         namespace.backups_full_backup_days < 0
         or namespace.backups_full_backup_days > 7
@@ -85,11 +86,19 @@ def validate_backups_policy_set_arguments(namespace):
     if is_a_disable_arguement:
         return
     if atleast_one_value_is_entered and namespace.backups_default_policy:
-        error_msg = "You can either do --default-policy to use the default policy or setup a custom policy using --full-backup-days, --diff-backup-hours, --tlog-backup-mins, and --retention-days but you can not do both."
+        error_msg = (
+            "You can either do --default-policy to use the default policy "
+            "or setup a custom policy using --full-backup-days, "
+            "--diff-backup-hours, --tlog-backup-mins, and --retention-days "
+            "but you can not do both."
+        )
         raise CLIError(error_msg)
 
     if not all_values_are_entered and not namespace.backups_default_policy:
-        error_msg = "Please enter all the following parameter(s): {0}. Or you can do --default-policy to use the default policy."
+        error_msg = (
+            "Please enter all the following parameter(s): {0}. Or you can "
+            "do --default-policy to use the default policy."
+        )
         error_list = ""
         if namespace.backups_full_backup_days is None:
             error_list += "--full-backup-days,"
@@ -105,14 +114,20 @@ def validate_backups_policy_set_arguments(namespace):
 def validate_license_type(license, allowed_licenses_list=["paid", "payg"]):
     if license is None:
         raise CLIError(
-            "LicenseType could not be found at the expected location. Please visit: https://learn.microsoft.com/en-us/sql/sql-server/azure-arc/manage-license-type?view=sql-server-ver16&tabs=azure#modify-license-type to fix this issue!"
+            "LicenseType could not be found at the expected location. "
+            "Please visit: https://learn.microsoft.com/en-us/sql/sql-server/"
+            "azure-arc/manage-license-type?view=sql-server-ver16&tabs=azure"
+            "#modify-license-type to fix this issue!"
         )
     license = license.lower()
     if license in allowed_licenses_list:
         return
     formatted_licenses_list = format_license_list(allowed_licenses_list)
     raise CLIError(
-        "LicenseType : {0} is not a valid license Type for this command, you must have {1} license type to use this command. Please visit: https://learn.microsoft.com/en-us/sql/sql-server/azure-arc/manage-license-type?view=sql-server-ver16&tabs=azure#modify-license-type to learn more.".format(
+        "LicenseType : {0} is not a valid license Type for this command, you must have {1} "
+        "license type to use this command. Please visit: "
+        "https://learn.microsoft.com/en-us/sql/sql-server/azure-arc/manage-license-type"
+        "?view=sql-server-ver16&tabs=azure#modify-license-type to learn more.".format(
             license, formatted_licenses_list
         )
     )
@@ -152,7 +167,8 @@ def validate_fci_is_inactive(instance_model):
     )
     if is_fci_enabled:
         raise CLIError(
-            "FCI is enabled on this instance. Backups and restore are currently not compatible with FCI. Please turn off FCI if you want to use backups or restore functionality."
+            "FCI is enabled on this instance. Backups and restore are currently not compatible "
+            "with FCI. Please turn off FCI if you want to use backups or restore functionality."
         )
 
 

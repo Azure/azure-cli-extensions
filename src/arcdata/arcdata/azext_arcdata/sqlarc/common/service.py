@@ -41,8 +41,14 @@ class AzureArcSqlWebService(object):
             "https://management.azure.com/{0}/extensions/{1}{2}"
         )
         self._instance_config_url = "https://management.azure.com/{0}/{1}"
-        self._server_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.HybridCompute/machines/{2}"
-        self._instance_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AzureArcData/sqlServerInstances/{2}"
+        self._server_resource_id = (
+            "/subscriptions/{0}/resourceGroups/{1}/providers/"
+            "Microsoft.HybridCompute/machines/{2}"
+        )
+        self._instance_resource_id = (
+            "/subscriptions/{0}/resourceGroups/{1}/providers/"
+            "Microsoft.AzureArcData/sqlServerInstances/{2}"
+        )
 
     def get_sqlarc_server_config_url(self, url_path):
         return self._server_config_url.format(
@@ -61,7 +67,8 @@ class AzureArcSqlWebService(object):
         )
         self.response_pass_checking(
             response,
-            "Error: An Error has occurred while looking for the SQL Arc Server. Check logs for more information.",
+            "Error: An Error has occurred while looking for the "
+            "SQL Server - Azure Arc. Check logs for more information.",
         )
         return response.json()
 
@@ -83,7 +90,8 @@ class AzureArcSqlWebService(object):
         )
         self.response_pass_checking(
             response,
-            "Error: An Error has occurred while looking for the SQL Server - Azure Arc. Check logs for more information.",
+            "Error: An Error has occurred while looking for the "
+            "SQL Server - Azure Arc. Check logs for more information.",
         )
         return response.json()
 
@@ -111,7 +119,10 @@ class AzureArcSqlWebService(object):
         if response.status_code < 200 or response.status_code > 299:
             if response.status_code == 409:
                 raise Exception(
-                    '{"code":"HCRP409","message":"An extension of type WindowsAgent.SqlServer is still processing. Only one instance of an extension may be in progress at a time for the same resource. Please retry after sometime."}'
+                    '{"code":"HCRP409","message":"An extension of type '
+                    'WindowsAgent.SqlServer is still processing. Only one '
+                    'instance of an extension may be in progress at a time for '
+                    'the same resource. Please retry after sometime."}'
                 )
             else:
                 raise Exception(response.text)
@@ -123,7 +134,10 @@ class AzureArcSqlWebService(object):
         except Exception as e:
             logger.info(e)
             raise RuntimeError(
-                "LicenseType could not be found at the expected location. Please visit: https://learn.microsoft.com/en-us/sql/sql-server/azure-arc/manage-license-type?view=sql-server-ver16&tabs=azure#modify-license-type to fix this issue!"
+                "LicenseType could not be found at the expected location. "
+                "Please visit: https://learn.microsoft.com/en-us/sql/sql-server/"
+                "azure-arc/manage-license-type?view=sql-server-ver16&tabs=azure"
+                "#modify-license-type to fix this issue!"
             )
 
     # Gets the Config of an instance
@@ -291,13 +305,17 @@ class AzureArcSqlWebService(object):
             )
         if "(ResourceNotFound)" in str(e) and "/Databases/" not in str(e):
             raise Exception(
-                'Could not find Sql Server instance "{0}" in the resource group "{1}". For more details please go to https://aka.ms/ARMResourceNotFoundFix'.format(
+                'Could not find Sql Server instance "{0}" in the resource '
+                'group "{1}". For more details please go to '
+                'https://aka.ms/ARMResourceNotFoundFix'.format(
                     instance_name, resource_group
                 )
             )
         if "(ResourceNotFound)" in str(e) and "/Databases/" in str(e):
             raise Exception(
-                'Could not find a database called "{0}" in the Sql Server Instance "{1}" in the resource group "{2}". For more details please go to https://aka.ms/ARMResourceNotFoundFix'.format(
+                'Could not find a database called "{0}" in the Sql Server '
+                'Instance "{1}" in the resource group "{2}". For more details '
+                'please go to https://aka.ms/ARMResourceNotFoundFix'.format(
                     database_name, instance_name, resource_group
                 )
             )

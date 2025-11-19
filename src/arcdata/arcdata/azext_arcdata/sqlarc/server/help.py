@@ -33,16 +33,32 @@ helps["sql server-arc"] = help_format_short.format(
 helps["sql server-arc backups-policy"] = HELP_BACKUPS_POLICY
 
 helps["sql server-arc backups-policy set"] = HELP_BACKUPS_POLICY_SET.format(
-    example="az sql server-arc backups-policy set --name myServerName --resource-group myResourceGroup --retention-days 7 --full-backup-days 7 --diff-backup-hours 12 --tlog-backup-mins 5",
-    example2="az sql server-arc backups-policy set --name myServerName --resource-group myResourceGroup --default-policy",
-    example3="az sql server-arc backups-policy set --name myServerName --resource-group myResourceGroup --retention-days 0",
+    example=(
+        "az sql server-arc backups-policy set --name myServerName "
+        "--resource-group myResourceGroup --retention-days 7 "
+        "--full-backup-days 7 --diff-backup-hours 12 --tlog-backup-mins 5"
+    ),
+    example2=(
+        "az sql server-arc backups-policy set --name myServerName "
+        "--resource-group myResourceGroup --default-policy"
+    ),
+    example3=(
+        "az sql server-arc backups-policy set --name myServerName "
+        "--resource-group myResourceGroup --retention-days 0"
+    ),
 )
 helps["sql server-arc backups-policy show"] = HELP_BACKUPS_POLICY_SHOW.format(
-    example="az sql server-arc backups-policy show --name myServerName --resource-group myResourceGroup",
+    example=(
+        "az sql server-arc backups-policy show --name myServerName "
+        "--resource-group myResourceGroup"
+    ),
 )
 helps["sql server-arc backups-policy delete"] = (
     HELP_BACKUPS_POLICY_DELETE.format(
-        example="az sql server-arc backups-policy delete --name myServerName --resource-group myResourceGroup",
+        example=(
+            "az sql server-arc backups-policy delete --name myServerName "
+            "--resource-group myResourceGroup"
+        ),
     )
 )
 # ------------AG Command Group----------------
@@ -60,7 +76,11 @@ helps["sql server-arc availability-group create"] = (
 )
 helps["sql server-arc availability-group failover"] = (
     HELP_AVAILABILITY_GROUP_FAILOVER.format(
-        example="az sql server-arc availability-group failover --name myAvailabilityGroupName --resource-group myResourceGroup --server-name myServerName "
+        example=(
+            "az sql server-arc availability-group failover "
+            "--name myAvailabilityGroupName --resource-group myResourceGroup "
+            "--server-name myServerName "
+        )
     )
 )
 

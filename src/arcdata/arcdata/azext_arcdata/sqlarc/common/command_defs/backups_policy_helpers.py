@@ -46,7 +46,9 @@ def apply_policy_changes_to_backups_policy(cvo, arm_model):
         )
 
 
-# Make a Displayable version of the backups policy, In essence it hides certain Null values from the user and any other information not intented to be for the user.
+# Make a Displayable version of the backups policy, In essence it hides
+# certain Null values from the user and any other information not intended
+# to be for the user.
 def displayable_backups_policy_config(
     arm_model, instance_name, database_name="", policy_level=""
 ):
@@ -85,6 +87,7 @@ def delete_backups_policy_config(arm_model):
     arm_model.properties.backup_policy = None
 
 
-# This function is not exposed to the user; it is can be used for quickly changing license types for manual testing reasons.
+# This function is not exposed to the user; it is can be used for quickly
+# changing license types for manual testing reasons.
 def delete_backups_policy(arm_model):
     arm_model.properties.backup_policy = None
