@@ -20,7 +20,10 @@ import json
 
 def get_or_check_existing_extension(cmd, extension_uri,
                                     replication_extension_name,
-                                    storage_account_id):
+                                    storage_account_id,
+                                    instance_type,
+                                    source_fabric_id,
+                                    target_fabric_id):
     """Get existing extension and check if it's in a good state."""
     # Try to get existing extension, handle not found gracefully
     try:
@@ -36,7 +39,7 @@ def get_or_check_existing_extension(cmd, extension_uri,
                 f"Extension '{replication_extension_name}' does not exist, "
                 f"will create it."
             )
-            return None, False
+            return None, False, False
         # Some other error occurred, re-raise it
         raise
 
@@ -46,38 +49,69 @@ def get_or_check_existing_extension(cmd, extension_uri,
             replication_extension.get('properties', {})
             .get('provisioningState')
         )
-        existing_storage_id = (replication_extension
-                               .get('properties', {})
-                               .get('customProperties', {})
-                               .get('storageAccountId'))
+        custom_props = (replication_extension
+                       .get('properties', {})
+                       .get('customProperties', {}))
+        existing_storage_id = custom_props.get('storageAccountId')
+        existing_instance_type = custom_props.get('instanceType')
+        
+        # Get fabric IDs based on instance type
+        if instance_type == AzLocalInstanceTypes.VMwareToAzLocal.value:
+            existing_source_fabric = custom_props.get('vmwareFabricArmId')
+        else:  # HyperVToAzLocal
+            existing_source_fabric = custom_props.get('hyperVFabricArmId')
+        existing_target_fabric = custom_props.get('azStackHciFabricArmId')
 
         print(
             f"Found existing extension '{replication_extension_name}' in "
             f"state: {existing_state}"
         )
 
-        # If it's succeeded with the correct storage account, we're done
+        # Check if configuration matches
+        config_matches = (
+            existing_storage_id == storage_account_id and
+            existing_instance_type == instance_type and
+            existing_source_fabric == source_fabric_id and
+            existing_target_fabric == target_fabric_id
+        )
+
+        # If it's succeeded with the correct configuration, we're done
         if (existing_state == ProvisioningState.Succeeded.value and
-                existing_storage_id == storage_account_id):
+                config_matches):
             print(
                 "Replication Extension already exists with correct "
                 "configuration."
             )
             print("Successfully initialized replication infrastructure")
-            return None, True  # Signal that we're done
+            return None, True, False  # Signal that we're done
 
-        # If it's in a bad state or has wrong storage account, delete it
-        if (existing_state in [ProvisioningState.Failed.value,
-                               ProvisioningState.Canceled.value] or
-                existing_storage_id != storage_account_id):
+        # If configuration doesn't match, we need to update it
+        if existing_state == ProvisioningState.Succeeded.value and not config_matches:
+            print(
+                f"Extension exists but configuration doesn't match. "
+                f"Will update it."
+            )
+            if existing_storage_id != storage_account_id:
+                print(f"  - Storage account mismatch")
+            if existing_instance_type != instance_type:
+                print(f"  - Instance type mismatch")
+            if existing_source_fabric != source_fabric_id:
+                print(f"  - Source fabric mismatch")
+            if existing_target_fabric != target_fabric_id:
+                print(f"  - Target fabric mismatch")
+            return replication_extension, False, True  # Signal to update
+
+        # If it's in a bad state, delete it
+        if existing_state in [ProvisioningState.Failed.value,
+                              ProvisioningState.Canceled.value]:
             print(f"Removing existing extension (state: {existing_state})")
             delete_resource(
                 cmd, extension_uri, APIVersion.Microsoft_DataReplication.value
             )
             time.sleep(120)
-            return None, False
+            return None, False, False
 
-    return replication_extension, False
+    return replication_extension, False, False
 
 
 def verify_extension_prerequisites(cmd, rg_uri, replication_vault_name,
@@ -307,9 +341,11 @@ def setup_replication_extension(cmd, rg_uri, replication_vault_name,
     )
 
     # Get or check existing extension
-    replication_extension, is_complete = get_or_check_existing_extension(
+    (replication_extension, is_complete, 
+     needs_update) = get_or_check_existing_extension(
         cmd, extension_uri, replication_extension_name,
-        storage_account_id
+        storage_account_id, instance_type, source_fabric_id,
+        target_fabric_id
     )
 
     if is_complete:
@@ -322,10 +358,11 @@ def setup_replication_extension(cmd, rg_uri, replication_vault_name,
         target_fabric_id
     )
 
-    # Create extension if needed
-    if not replication_extension:
+    # Create or update extension if needed
+    if not replication_extension or needs_update:
+        action = "Updating" if needs_update else "Creating"
         print(
-            f"Creating Replication Extension "
+            f"{action} Replication Extension "
             f"'{replication_extension_name}'...")
 
         # List existing extensions for context
@@ -337,7 +374,7 @@ def setup_replication_extension(cmd, rg_uri, replication_vault_name,
             storage_account_id
         )
 
-        # Create the extension
+        # Create/update the extension
         create_replication_extension(cmd, extension_uri, extension_body)
 
     print("Successfully initialized replication infrastructure")

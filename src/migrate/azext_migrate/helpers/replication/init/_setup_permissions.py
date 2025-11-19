@@ -201,17 +201,30 @@ def update_amh_solution_storage(cmd,
                                 project_uri,
                                 amh_solution,
                                 storage_account_id):
-    """Update AMH solution with storage account ID if needed."""
+    """Update AMH solution with storage account ID and correct tool name."""
     amh_solution_uri = (
         f"{project_uri}/solutions/"
         f"Servers-Migration-ServerMigration_DataReplication"
     )
 
-    if (amh_solution
-        .get('properties', {})
-        .get('details', {})
-        .get('extendedDetails', {})
-            .get('replicationStorageAccountId')) != storage_account_id:
+    # Check if we need to update storage account or tool name
+    current_storage_id = (amh_solution
+                         .get('properties', {})
+                         .get('details', {})
+                         .get('extendedDetails', {})
+                         .get('replicationStorageAccountId'))
+    current_tool = amh_solution.get('properties', {}).get('tool')
+    
+    needs_update = False
+    if current_storage_id != storage_account_id:
+        print(f"Storage account needs update: {current_storage_id} -> {storage_account_id}")
+        needs_update = True
+    
+    if current_tool != "ServerMigration_DataReplication":
+        print(f"Tool name needs update: {current_tool} -> ServerMigration_DataReplication")
+        needs_update = True
+
+    if needs_update:
         extended_details = (amh_solution
                             .get('properties', {})
                             .get('details', {})
@@ -231,6 +244,7 @@ def update_amh_solution_storage(cmd,
             }
         }
 
+        print("Updating AMH solution with correct configuration...")
         create_or_update_resource(
             cmd, amh_solution_uri, APIVersion.Microsoft_Migrate.value,
             solution_body
@@ -238,5 +252,6 @@ def update_amh_solution_storage(cmd,
 
         # Wait for the AMH solution update to fully propagate
         time.sleep(60)
+        print("AMH solution updated successfully")
 
     return amh_solution_uri
