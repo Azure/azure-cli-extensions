@@ -278,3 +278,29 @@ helps[
         - name: Input a Kubernetes YAML file with a custom containerd socket path
           text: az confcom katapolicygen --yaml "./pod.json" --containerd-pull --containerd-socket-path "/my/custom/containerd.sock"
 """
+
+
+helps[
+    "confcom containers"
+] = """
+    type: group
+    short-summary: Commands which generate Security Policy Container Definitions.
+"""
+
+
+helps[
+    "confcom containers from_vn2"
+] = """
+    type: command
+    short-summary: Create a Security Policy Container Definition based on a VN2 template.
+
+    parameters:
+        - name: --container-name -n
+          type: string
+          short-summary: 'The name of the container to generate the policy for'
+
+
+    examples:
+        - name: Input a VN2 Template and generate container definitions
+          text: az confcom containers from_vn2 vn2.yaml --container-name mycontainer
+"""

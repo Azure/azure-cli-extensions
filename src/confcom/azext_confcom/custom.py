@@ -22,6 +22,7 @@ from azext_confcom.template_util import (
     get_image_name, inject_policy_into_template, inject_policy_into_yaml,
     pretty_print_func, print_existing_policy_from_arm_template,
     print_existing_policy_from_yaml, print_func, str_to_sha256)
+from azext_confcom.command.containers_from_vn2 import containers_from_vn2 as _containers_from_vn2
 from knack.log import get_logger
 from pkg_resources import parse_version
 
@@ -512,3 +513,14 @@ def get_fragment_output_type(outraw):
     if outraw:
         output_type = security_policy.OutputType.RAW
     return output_type
+
+
+def containers_from_vn2(
+    cmd,
+    template: str,
+    container_name: int,
+) -> None:
+    print(_containers_from_vn2(
+        template=template,
+        container_name=container_name,
+    ))

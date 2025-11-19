@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.5.0
+++++++
+* Add containers from_vn2 command to generate container definitions from a VN2 template.
+
 1.4.0
 ++++++
 * Add --with-containers flag to acipolicygen and acifragmentgen to allow passing container policy definitions directly

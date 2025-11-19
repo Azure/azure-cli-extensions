@@ -13,3 +13,6 @@ def load_command_table(self, _):
 
     with self.command_group("confcom"):
         pass
+
+    with self.command_group("confcom containers") as g:
+        g.custom_command("from_vn2", "containers_from_vn2")
