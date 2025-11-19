@@ -278,7 +278,14 @@ def new_local_server_replication(cmd,
         create_protected_item
     )
 
-    rg_uri, machine_id = validate_server_parameters(
+    # Use current subscription if not provided
+    if not subscription_id:
+        from azure.cli.core.commands.client_factory import \
+            get_subscription_id
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        print(f"Selected Subscription Id: '{subscription_id}'")
+
+    rg_uri, machine_id, subscription_id = validate_server_parameters(
         cmd,
         machine_id,
         machine_index,
