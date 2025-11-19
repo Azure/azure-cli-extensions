@@ -58,7 +58,7 @@ class ContainerAppFunctionKeysDecorator(BaseResource):
         )
 
         # Validate revision and get the appropriate revision name
-        revision_name = validate_revision_and_get_name(
+        revision_name, _ = validate_revision_and_get_name(
             cmd=self.cmd,
             resource_group_name=resource_group_name,
             container_app_name=name,
