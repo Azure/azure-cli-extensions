@@ -434,3 +434,17 @@ def load_arguments(self, _):
             help="Path to containerd socket if not using the default",
             validator=validate_katapolicygen_input,
         )
+
+    with self.argument_context("confcom containers from_vn2") as c:
+        c.positional(
+            "template",
+            type=str,
+            help="Template to create container definitions from",
+        )
+        c.argument(
+            "container_name",
+            options_list=['--name', "-n"],
+            required=True,
+            type=str,
+            help='The name of the container in the template to use'
+        )
