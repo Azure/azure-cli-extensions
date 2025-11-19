@@ -516,9 +516,8 @@ def get_fragment_output_type(outraw):
 
 
 def containers_from_vn2(
-    cmd,
     template: str,
-    container_name: int,
+    container_name: str,
 ) -> None:
     print(_containers_from_vn2(
         template=template,
