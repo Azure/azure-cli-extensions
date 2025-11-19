@@ -3,7 +3,7 @@
 Release History
 ===============
 
-3.0.0b2
+3.0.0b1
 +++++++++++++++
 * Refactor codebase for improved readability and maintainability.
 
