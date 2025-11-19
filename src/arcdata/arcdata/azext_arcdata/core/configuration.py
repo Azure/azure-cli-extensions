@@ -20,46 +20,7 @@ logger = get_logger(__name__)
 
 
 @singleton
-class Configuration(object):
-    """
-    The CLI Configuration singleton.
-    """
-
-    EXT_NAME = "arcdata"
-    """
-    The name of the CLI extension.
-    """
-
-    def __init__(self):
-        """
-        Configuration runtime constructor.
-        """
-        pass
-
-    @property
-    def extension_dir(self):
-        ext_dir = os.environ.get("AZURE_EXTENSION_DIR")
-        logger.debug("AZURE_EXTENSION_DIR: %s", ext_dir)
-
-        if not ext_dir:
-            az_config_dir = os.getenv("AZURE_CONFIG_DIR")
-            logger.debug("AZURE_CONFIG_DIR: %s", az_config_dir)
-            if not az_config_dir:
-                az_config_dir = os.path.expanduser(os.path.join("~", ".azure"))
-
-            logger.debug(".azure location: %s", az_config_dir)
-            ext_dir = os.path.join(az_config_dir, "cliextensions")
-            logger.debug("Extension location: %s", ext_dir)
-
-        return os.path.join(ext_dir, self.EXT_NAME)
-
-    @property
-    def version(self):
-        """
-        Gets the client CLI version.
-        """
-        return __version__
-
+class Configuration:
     def to_debug_report(self):
         """
         Gets the essential information for debugging.
@@ -76,3 +37,35 @@ class Configuration(object):
                 pyversion=sys.version,
             )
         )
+
+    EXT_NAME = "arcdata"
+
+    def __init__(self):
+        """
+        Configuration runtime constructor.
+        """
+        # Initialization logic can be added here if needed
+        return
+
+    @property
+    def extension_dir(self):
+        ext_dir = os.environ.get("AZURE_EXTENSION_DIR")
+        logger.debug("AZURE_EXTENSION_DIR: %s", ext_dir)
+
+        if not ext_dir:
+            az_config_dir = os.getenv("AZURE_CONFIG_DIR")
+            logger.debug("AZURE_CONFIG_DIR: %s", az_config_dir)
+            if not az_config_dir:
+                az_config_dir = os.path.expanduser(os.path.join("~", ".azure"))
+
+            logger.debug(".azure location: %s", az_config_dir)
+
+            ext_dir = os.path.join(az_config_dir, "cliextensions")
+        logger.debug("Extension location: %s", ext_dir)
+
+    @property
+    def version(self):
+        """
+        Gets the client CLI version.
+        """
+        return __version__

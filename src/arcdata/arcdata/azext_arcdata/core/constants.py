@@ -352,9 +352,7 @@ UNIT_TABLE = {
 INTEGER = r"[0-9]+"
 STRICT_POS_INTEGER = r"[0-9]*[1-9]+[0-9]*"
 FLOAT = r"[0-9]*\.[0-9]+"
-STRICT_POS_FLOAT = r"({}\.[0-9]*)|([0-9]*\.{})".format(
-    STRICT_POS_INTEGER, STRICT_POS_INTEGER
-)
+STRICT_POS_FLOAT = r"({0}\.[0-9]*)|([0-9]*\.{0})".format(STRICT_POS_INTEGER)
 NUMBER = r"{}|{}".format(INTEGER, FLOAT)
 STRICT_POS_NUMBER = r"({})|({})".format(STRICT_POS_FLOAT, STRICT_POS_INTEGER)
 

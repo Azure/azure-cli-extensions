@@ -30,7 +30,7 @@ def ad_connector_create(
     no_wait=False,
     # -- indirect --
     namespace=None,
-    use_k8s=None,
+    _use_k8s=None,
     # -- direct --
     data_controller_name=None,
     resource_group=None,
@@ -70,7 +70,7 @@ def ad_connector_show(
     name,
     # -- indirect --
     namespace=None,
-    use_k8s=None,
+    _use_k8s=None,
     # -- direct --
     data_controller_name=None,
     resource_group=None,
@@ -108,7 +108,7 @@ def ad_connector_update(
     no_wait=False,
     # -- indirect --
     namespace=None,
-    use_k8s=None,
+    _use_k8s=None,
     # -- direct --
     data_controller_name=None,
     resource_group=None,
@@ -147,7 +147,7 @@ def ad_connector_delete(
     no_wait=False,
     # -- indirect --
     namespace=None,
-    use_k8s=None,
+    _use_k8s=None,
     # -- direct --
     data_controller_name=None,
     resource_group=None,
@@ -178,7 +178,7 @@ def ad_connector_list(
     client,
     # -- indirect --
     namespace=None,
-    use_k8s=None,
+    _use_k8s=None,
     # -- direct --
     data_controller_name=None,
     resource_group=None,

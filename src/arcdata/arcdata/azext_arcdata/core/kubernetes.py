@@ -99,8 +99,7 @@ def wrap_404(func):
     except ApiException as ex:
         if ex.status == 404:
             return
-        else:
-            raise
+        raise
 
 
 def namespace_is_empty(cluster_name, label=None):
@@ -142,8 +141,7 @@ def namespace_is_empty(cluster_name, label=None):
             > 0
         ):
             return False
-        else:
-            return True
+        return True
     except K8sApiException as e:
         logger.error(e.body)
         return False

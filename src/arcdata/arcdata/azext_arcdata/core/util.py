@@ -200,11 +200,9 @@ def read_environment_variables(target, arc=False):
                 if arc and env == AZDATA_PASSWORD:
                     msg = "Monitoring administrator password:"
                 result = prompt_pass(msg, True)
-            else:
-                if arc and env == AZDATA_USERNAME:
-                    msg = "Monitoring administrator username:"
-                result = prompt(msg)
-
+            if arc and env == AZDATA_USERNAME:
+                msg = "Monitoring administrator username:"
+            result = prompt(msg)
             os.environ[env] = result.strip()
 
 
@@ -1467,7 +1465,7 @@ def parse_cert_files(
 
 
 def generate_certificate_and_key(
-    hostname: str, common_name: str, sans: List[str] = []
+    hostname: str, common_name: str, sans: List[str] = None
 ) -> Tuple:
     """
     Generates an RSA public/private key pair and uses them to create
@@ -1488,6 +1486,8 @@ def generate_certificate_and_key(
     )
 
     cn = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, common_name)])
+    if sans is None:
+        sans = []
     additional_sans = x509.SubjectAlternativeName(
         [x509.DNSName(name) for name in sans]
     )

@@ -18,7 +18,7 @@ __all__ = ["Env"]
 logger = get_logger(__name__)
 
 
-class Env(object):
+class Env:
     CONTROLLER_ENV_LIST = [const.AZDATA_USERNAME, const.AZDATA_PASSWORD]
     """
     Get the list of environment variables required for the controller
@@ -143,9 +143,7 @@ class Env(object):
                     username_var, password_var
                 )
             )
-        elif (
-            username and password and not is_valid_password(password, username)
-        ):
+        if username and password and not is_valid_password(password, username):
             raise ValueError(
                 "Invalid password from "
                 + password_var

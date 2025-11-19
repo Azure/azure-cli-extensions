@@ -4,9 +4,11 @@
 # license information.
 # ------------------------------------------------------------------------------
 
-from azext_arcdata.core.cli_client import beget
+
 from azure.cli.core.commands import CliCommandType
-import azext_arcdata.ad_connector.validators as validators
+
+from azext_arcdata.core.cli_client import beget
+from azext_arcdata.ad_connector import validators
 
 
 def load_commands(self, _):

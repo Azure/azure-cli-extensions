@@ -25,7 +25,6 @@ class SanitizerRule:
     def sanitize_value(self, property_path, value):
         if self.is_property_match(property_path):
             return self._filter(property_path, value)
-        else:
             return value
 
 

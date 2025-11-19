@@ -1,63 +1,26 @@
+from datetime import datetime
+import json
+import time
+from knack.log import get_logger
+from knack.cli import CLIError
+from humanfriendly.terminal.spinners import AutomaticSpinner
+
 # ------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # ------------------------------------------------------------------------------
-import base64
-import json
-import os
-import re
-import shutil
-import sys
-import time
-from datetime import datetime
 
-import azext_arcdata.core.kubernetes as kubernetes_util
-import yaml
-from azext_arcdata.core.constants import (
-    ARC_GROUP,
-    AZDATA_PASSWORD,
-    AZDATA_USERNAME,
-    DATA_CONTROLLER_CRD_VERSION,
-    DATA_CONTROLLER_PLURAL,
-    USE_K8S_EXCEPTION_TEXT,
-)
-from azext_arcdata.core.labels import parse_labels
-from azext_arcdata.core.prompt import prompt, prompt_pass
-from azext_arcdata.core.util import (
-    FileUtil,
-    check_and_set_kubectl_context,
-    get_config_from_template,
-    is_windows,
-    retry,
-)
-from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
-    K8sApiException,
-    KubernetesError,
-    http_status_codes,
-)
-from azext_arcdata.vendored_sdks.kubernetes_sdk.errors.K8sAdmissionReviewError import (
-    K8sAdmissionReviewError,
-)
+from azext_arcdata.core.constants import USE_K8S_EXCEPTION_TEXT
+from azext_arcdata.core.util import check_and_set_kubectl_context, is_windows
 from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
-from azext_arcdata.vendored_sdks.kubernetes_sdk.models.data_controller_custom_resource import (
-    DataControllerCustomResource,
-)
 from azext_arcdata.sqlmidb.constants import (
     RESTORE_TASK_RESOURCE_KIND,
     RESTORE_TASK_RESOURCE_KIND_PLURAL,
     TASK_API_GROUP,
     TASK_API_VERSION,
 )
-from azext_arcdata.sqlmidb.exceptions import SqlmidbError
-from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.restore_cr_model import (
-    SqlmiRestoreTaskCustomResource,
-)
-from azext_arcdata.sqlmidb.util import parse_restore_time
-from humanfriendly.terminal.spinners import AutomaticSpinner
-from knack.cli import CLIError
-from knack.log import get_logger
-from urllib3.exceptions import MaxRetryError, NewConnectionError
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.restore_cr_model import SqlmiRestoreTaskCustomResource
 
 logger = get_logger(__name__)
 
@@ -101,7 +64,7 @@ def arc_sql_midb_restore(
         #     dest_mi = managed_instance
 
         if time is None:
-            time = parse_restore_time(str(datetime.now()))
+            time = str(datetime.now())
 
         task_name = "sql-restore-" + str(datetime.timestamp(datetime.now()))
         spec_object = {
@@ -114,14 +77,8 @@ def arc_sql_midb_restore(
                 "source": {
                     "name": managed_instance,
                     "database": name,
-                },
-                "restorePoint": time,
-                "dryRun": dry_run,
-                "destination": {
-                    "name": managed_instance,
-                    "database": dest_name,
-                },
-            },
+                }
+            }
         }
 
         cr = CustomResource.decode(SqlmiRestoreTaskCustomResource, spec_object)
@@ -187,8 +144,8 @@ def _get_json_output(cr: CustomResource):
         "sourceDatabase": cr.get("spec", {})
         .get("source", {})
         .get("database", {}),
-        "destDatabase": cr.get("spec", {})
-        .get("destination", {})
+                    if other_condition:
+                        return other_value
         .get("database", {}),
         "restorePoint": cr.get("spec", {}).get("restorePoint", {}),
     }

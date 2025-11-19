@@ -34,7 +34,7 @@ def validate(self, client):
     """
     Invokes all methods marked as validators on this instance
     """
-    for name in self._validators:
+    for name in getattr(self, "_validators", []):
         getattr(self, name)(client)
 
 
@@ -47,20 +47,14 @@ def enforcetype(cls):
 
     def decorator(f):
         def wrapper(self, val, *args, **kwargs):
-            if (
-                not isinstance(val, cls)
-                and type(val) is not cls
-                and not issubclass(type(val), cls)
-            ):
+            if not isinstance(val, cls):
                 raise TypeError(
                     "Type '{}' is not compatible with property {}. Requires {}".format(
                         type(val), f.__name__, cls
                     )
                 )
             return f(self, val, *args, **kwargs)
-
         return wrapper
-
     return decorator
 
 

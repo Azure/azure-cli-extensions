@@ -8,6 +8,7 @@ from six import add_metaclass
 from abc import ABCMeta, abstractmethod
 from tabulate import tabulate
 from collections import OrderedDict
+from prompt_toolkit import print_formatted_text as pft, ANSI
 import string
 import os
 
@@ -87,7 +88,7 @@ class BoxLayout(BaseLayout):
         return self._rendered_data
 
     def has_children(self):
-        for key, value in self._data.items():
+        for _, value in self._data.items():
             if isinstance(value, list) and len(value) > 0:
                 return True
         return False
@@ -101,7 +102,7 @@ class BoxLayout(BaseLayout):
         headers = self._config["headers"]
         identifiers = self._config["identifiers"]
 
-        for key, value in self._stack_boxes().items():
+        for _, value in self._stack_boxes().items():
             depth = value["depth"]
             if not value["parent"]:
                 br()
@@ -311,7 +312,6 @@ class BoxLayout(BaseLayout):
     def __repr__(self):
         return self.render()
 
-        class BaseLayout:
 # ---------------------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
@@ -352,11 +352,8 @@ class Box:
 
 def print_formatted_text(text, end="\n"):
     try:
-        from prompt_toolkit import print_formatted_text as pft
         pft(text, end=end)
     except ImportError:
-        print(text, end=end)
-    except Exception:
         print(text, end=end)
 
 
@@ -373,7 +370,6 @@ def indention(depth):
 def badge(text, depth=0, end="", identifiers=None):
     def background(label, color):
         try:
-            from prompt_toolkit import print_formatted_text as pft, ANSI
             style = {"green": 102, "red": 101}[color]
             pft(
                 ANSI(
@@ -386,8 +382,6 @@ def badge(text, depth=0, end="", identifiers=None):
             init(strip=False)
             style = {"green": Back.GREEN, "red": Back.RED}[color]
             print("{}{}".format(style, label) + Back.RESET, end="")
-        except Exception:
-            print(label)
 
     margin_left = "".ljust(indention(depth))
 

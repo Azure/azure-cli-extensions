@@ -1,3 +1,4 @@
+# pylint: disable=unused-argument
 # ------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
@@ -15,9 +16,7 @@ def pytest_configure(config):
     Called after command line options have been parsed and all plugins and
     initial conftest files been loaded.
     """
-    pass
-
-
+    # pylint: disable=unused-argument
 # ------------------------------------------------------------------------------
 # Common ARM
 # ------------------------------------------------------------------------------

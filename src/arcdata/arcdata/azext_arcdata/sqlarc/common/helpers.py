@@ -12,7 +12,7 @@ def convert_string_to_bool(s):
 
     if s.casefold() == "true":
         return True
-    elif s.casefold() == "false":
+    if s.casefold() == "false":
         return False
 
 

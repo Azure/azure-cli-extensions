@@ -110,7 +110,6 @@ class BaseServiceProxy:
         }
 
     @staticmethod
-
     def get_spec_file_dict():
         import azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants as dc_constants
 
@@ -246,7 +245,6 @@ class ArmMixin:
                 subscription = profile.get_subscription_id()
             except Exception:  # pylint:disable=broad-except
                 logger.debug("To not see this warning, first login to Azure.")
-                pass
         else:
             try:
                 profile = Profile(cli_ctx=az_cli.local_context.cli_ctx)
@@ -292,7 +290,7 @@ class KubernetesMixin:
         if not namespace:
             namespace = prompt("Kubernetes Namespace: ")
 
-        logger.debug("Using Kubernetes namespace = {0}".format(namespace))
+        logger.debug("Using Kubernetes namespace = %s", namespace)
 
         return namespace
 
@@ -308,7 +306,7 @@ class KubernetesMixin:
 
 
 class ArmManagedInstanceServiceProxy(BaseManagedInstanceServiceProxy, ArmMixin):
-    def __init__(self, az_cli):
+    def __init__(self):
         super(ArmManagedInstanceServiceProxy, self).__init__()
 
     def create(self, command_value_object: tuple):
@@ -366,7 +364,6 @@ class ArmDataControllerServiceProxy(BaseDataControllerServiceProxy, ArmMixin):
                 polling=polling,
                 least_privilege=command_value_object.least_privilege,
             )
-        else:
             return self._arm_client.__create_depreciated_dc__(
                 command_value_object.resource_group,
                 command_value_object.name,
@@ -711,12 +708,12 @@ class BasePostgresServiceProxy(BaseServiceProxy):
 
 
 class ArmPostgresServiceProxy(BasePostgresServiceProxy):
-    def __init__(self, az_cli):
+    def __init__(self):
         super(ArmPostgresServiceProxy, self).__init__()
 
 
 class KubernetesPostgresServiceProxy(BasePostgresServiceProxy, KubernetesMixin):
-    def __init__(self, az_cli):
+    def __init__(self):
         from azext_arcdata.vendored_sdks.kubernetes_sdk.postgres.client import (
             PostgreSqlClient,
         )
@@ -854,7 +851,7 @@ class BaseActiveDirectoryConnectorServiceProxy(BaseServiceProxy):
 class KubernetesActiveDirectoryConnectorServiceProxy(
     BaseActiveDirectoryConnectorServiceProxy, KubernetesMixin
 ):
-    def __init__(self, az_cli):
+    def __init__(self):
         from azext_arcdata.vendored_sdks.kubernetes_sdk.ad_connector.client import (
             ActiveDirectoryConnectorClient,
         )
@@ -1206,7 +1203,7 @@ class BaseFailoverGroupServiceProxy(BaseServiceProxy):
 class KubernetesFailoverGroupServiceProxy(
     BaseFailoverGroupServiceProxy, KubernetesMixin
 ):
-    def __init__(self, az_cli):
+    def __init__(self):
         from azext_arcdata.vendored_sdks.kubernetes_sdk.failover_group.client import (
             FailoverGroupClient,
         )

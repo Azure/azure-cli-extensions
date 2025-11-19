@@ -33,9 +33,9 @@ def beget(az_cli, kwargs):
 
 
 @add_metaclass(ABCMeta)
-class BaseCliClient(object):
+class BaseCliClient:
     def __init__(self):
-        pass
+        ...
 
     @property
     def stdout(self):
@@ -76,7 +76,7 @@ class CliClient(BaseCliClient):
         self._utils = None
         self._terminal = None
 
-        logger.debug(self._args)
+        logger.debug("%r", self._args)
 
         if check_namespace is None:  # tmp for dc
             self._az_cli.data["arcdata_command_args"] = self._args
@@ -99,23 +99,15 @@ class CliClient(BaseCliClient):
             if self._args.get("use_k8s"):
                 try:
                     namespace = self._args.get("namespace")
-                    logger.debug(
-                        "Provided k8s-namespace = {0}".format(namespace)
-                    )
-                    logger.debug(
-                        "Force namespace    = {0}".format(check_namespace)
-                    )
+                    logger.debug("Provided k8s-namespace = %s", namespace)
+                    logger.debug("Force namespace    = %s", check_namespace)
 
                     if not namespace and check_namespace:
                         namespace = load_kube_config().get("namespace")
                         if not namespace:
                             namespace = prompt("Kubernetes Namespace: ")
                     self._namespace = namespace
-                    logger.debug(
-                        "Using Kubernetes namespace = {0}".format(
-                            self.namespace
-                        )
-                    )
+                    logger.debug("Using Kubernetes namespace = %s", self.namespace)
                 except NoTTYException:
                     raise NoTTYException(
                         "You must have a tty to prompt "
@@ -125,9 +117,7 @@ class CliClient(BaseCliClient):
                 except (ConfigException, Exception) as ex:
                     raise CLIError(ex)
 
-                logger.debug(
-                    "Using Kubernetes namespace = {0}".format(namespace)
-                )
+                logger.debug("Using Kubernetes namespace = %s", namespace)
 
                 self._namespace = namespace
             ###############################################################
@@ -229,7 +219,7 @@ class CliClient(BaseCliClient):
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
 
-        class Progress(object):
+        class Progress:
             """
             Show a spinner on the terminal that automatically
             starts animating around a provided worker function.
@@ -283,11 +273,10 @@ class CliClient(BaseCliClient):
                     if not is_windows():
                         with AutomaticSpinner(message, show_time=show_time):
                             return worker_fn(**arguments)
-                    else:
-                        # TODO: Make the same experience for windows ps1/dos
-                        OutputStream().stdout.write(message)
-                        result = worker_fn(**arguments)
-                        return result
+                    # TODO: Make the same experience for windows ps1/dos
+                    OutputStream().stdout.write(message)
+                    result = worker_fn(**arguments)
+                    return result
                 finally:
                     self._defaults()  # reset
 

@@ -1,3 +1,4 @@
+# pylint: disable=unused-argument
 # ------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # ------------------------------------------------------------------------------
@@ -19,4 +20,3 @@ def pytest_configure(config):
     Called after command line options have been parsed and all plugins and
     initial conftest files been loaded.
     """
-    pass

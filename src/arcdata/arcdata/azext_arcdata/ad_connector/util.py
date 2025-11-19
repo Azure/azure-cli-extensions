@@ -4,15 +4,23 @@
 # license information.
 # ------------------------------------------------------------------------------
 
+
+# Standard library imports
 import base64
 import os
 import sys
+
+# Third-party imports
+from urllib3.exceptions import MaxRetryError, NewConnectionError
+import yaml
+
+# Local application/library imports
 from azext_arcdata.ad_connector.constants import (
     AD_CONNECTOR_RESOURCE_KIND_PLURAL,
     AD_CONNECTOR_API_GROUP,
     ACCOUNT_PROVISIONING_MODE_MANUAL,
 )
-from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.ad_connector_cr_model import (
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.ad_connector_cr_model import (
     ActiveDirectoryConnectorCustomResource,
 )
 from azext_arcdata.ad_connector.validators import (
@@ -36,9 +44,7 @@ from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import (
     TEMPLATE_DIR,
 )
 from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
-from urllib3.exceptions import MaxRetryError, NewConnectionError
 from azext_arcdata.vendored_sdks.kubernetes_sdk.util import check_secret_exists_with_retries
-import yaml
 
 
 def _parse_primary_domain_controller(primary_domain_controller):
@@ -116,7 +122,7 @@ def _parse_prefer_k8s_dns(prefer_k8s_dns):
             "The allowed values for --prefer-k8s-dns are 'true' or 'false'"
         )
 
-    return not prefer_k8s_dns == "false"
+    return prefer_k8s_dns != "false"
 
 
 def _get_ad_connector_custom_resource(client, name, namespace):
@@ -178,8 +184,7 @@ def _get_ad_connector_status(client, name, namespace):
     except Exception as e:
         if "does not exist" in str(e):
             return
-        else:
-            raise e
+        raise
 
 
 def validate_domain_service_account_secret(
@@ -226,15 +231,13 @@ def _get_domain_account_user_pass(stdout):
             username = prompt("AD domain service account username:")
         else:
             raise ValueError(
-                "Please provide the Active Directory domain service account username through the env variable {}.".format(
-                    DOMAIN_SERVICE_ACCOUNT_USERNAME
-                )
+                "Please provide the Active Directory domain service account username through the env variable {}."
+                .format(DOMAIN_SERVICE_ACCOUNT_USERNAME)
             )
     else:
         stdout(
-            "Using the {0} environment variable for Active Directory domain service account username.".format(
-                DOMAIN_SERVICE_ACCOUNT_USERNAME
-            )
+            "Using the {} environment variable for Active Directory domain service account username."
+            .format(DOMAIN_SERVICE_ACCOUNT_USERNAME)
         )
     while username == "":
         username = prompt(
@@ -249,15 +252,13 @@ def _get_domain_account_user_pass(stdout):
                 pw = prompt_pass("AD domain service account password:", True)
         else:
             raise ValueError(
-                "Please provide the Active Directory domain service account password through the env variable {}.".format(
-                    DOMAIN_SERVICE_ACCOUNT_PASSWORD
-                )
+                "Please provide the Active Directory domain service account password through the env variable {}."
+                .format(DOMAIN_SERVICE_ACCOUNT_PASSWORD)
             )
     else:
         stdout(
-            "Using the {0} environment variable for password.".format(
-                DOMAIN_SERVICE_ACCOUNT_PASSWORD
-            )
+            "Using the {} environment variable for password."
+            .format(DOMAIN_SERVICE_ACCOUNT_PASSWORD)
         )
 
     return username, pw
@@ -289,41 +290,40 @@ def _get_or_create_domain_service_account_secret(
             client, namespace, domain_service_account_secret
         )
         return domain_service_account_secret
-    else:
-        username, pw = _get_domain_account_user_pass(stdout)
+    username, pw = _get_domain_account_user_pass(stdout)
 
-        secrets = dict()
-        encoding = "utf-8"
-        secrets["secretName"] = domain_service_account_secret
-        secrets[DOMAIN_SERVICE_ACCOUNT_USERNAME] = base64.b64encode(
-            bytes(username, encoding)
-        ).decode(encoding)
-        secrets[DOMAIN_SERVICE_ACCOUNT_PASSWORD] = base64.b64encode(
-            bytes(pw, encoding)
-        ).decode(encoding)
-        temp = get_config_from_template(
-            os.path.join(
-                TEMPLATE_DIR, "domain-service-account-secret.yaml.tmpl"
+    secrets = dict()
+    encoding = "utf-8"
+    secrets["secretName"] = domain_service_account_secret
+    secrets[DOMAIN_SERVICE_ACCOUNT_USERNAME] = base64.b64encode(
+        bytes(username, encoding)
+    ).decode(encoding)
+    secrets[DOMAIN_SERVICE_ACCOUNT_PASSWORD] = base64.b64encode(
+        bytes(pw, encoding)
+    ).decode(encoding)
+    temp = get_config_from_template(
+        os.path.join(
+            TEMPLATE_DIR, "domain-service-account-secret.yaml.tmpl"
+        ),
+        secrets,
+    )
+    domain_account_secret = yaml.safe_load(temp)
+
+    try:
+        retry(
+            lambda: client.create_secret(
+                namespace,
+                domain_account_secret,
+                ignore_conflict=True,
             ),
-            secrets,
+            retry_method="create secret",
+            retry_on_exceptions=(
+                NewConnectionError,
+                MaxRetryError,
+                K8sApiException,
+            ),
         )
-        domain_account_secret = yaml.safe_load(temp)
-
-        try:
-            retry(
-                lambda: client.create_secret(
-                    namespace,
-                    domain_account_secret,
-                    ignore_conflict=True,
-                ),
-                retry_method="create secret",
-                retry_on_exceptions=(
-                    NewConnectionError,
-                    MaxRetryError,
-                    K8sApiException,
-                ),
-            )
-        except K8sApiException as e:
-            if e.status != http_status_codes.conflict:
-                raise
-        return domain_service_account_secret
+    except K8sApiException as e:
+        if e.status != http_status_codes.conflict:
+            raise
+    return domain_service_account_secret
