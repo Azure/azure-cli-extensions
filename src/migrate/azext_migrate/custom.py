@@ -274,6 +274,7 @@ def new_local_server_replication(cmd,
     )
     from azext_migrate.helpers.replication.new._execute_new import (
         get_ARC_resource_bridge_info,
+        ensure_target_resource_group_exists,
         construct_disk_and_nic_mapping,
         create_protected_item
     )
@@ -414,14 +415,23 @@ def new_local_server_replication(cmd,
         # 3. Get ARC Resource Bridge info
         custom_location_id, custom_location_region, \
             target_cluster_id = get_ARC_resource_bridge_info(
+                cmd,
                 target_fabric,
                 migrate_project
             )
 
-        # 4. Validate target VM name
+        # 4. Ensure target resource group exists
+        ensure_target_resource_group_exists(
+            cmd,
+            target_resource_group_id,
+            custom_location_region,
+            project_name
+        )
+
+        # 5. Validate target VM name
         validate_target_VM_name(target_vm_name)
 
-        # 5. Construct disk and NIC mappings
+        # 6. Construct disk and NIC mappings
         disks, nics = construct_disk_and_nic_mapping(
             is_power_user_mode,
             disk_to_include,
@@ -432,7 +442,7 @@ def new_local_server_replication(cmd,
             target_virtual_switch_id,
             target_test_virtual_switch_id)
 
-        # 6. Create the protected item
+        # 7. Create the protected item
         create_protected_item(
             cmd,
             subscription_id,
