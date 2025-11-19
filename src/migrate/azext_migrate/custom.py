@@ -550,6 +550,55 @@ def get_local_replication_job(cmd,
         vault_name, format_job_summary)
 
 
+def list_local_server_replications(cmd,
+                                   resource_group=None,
+                                   project_name=None,
+                                   subscription_id=None):
+    """
+    List all protected items (replicating servers) in an Azure Migrate project.
+
+    This cmdlet is based on a preview API version and may experience
+    breaking changes in future releases.
+
+    Args:
+        cmd: The CLI command context
+        resource_group (str, optional): The name of the resource group where
+            the migrate project is present (required)
+        project_name (str, optional): The name of the migrate project (required)
+        subscription_id (str, optional): Azure Subscription ID. Uses
+            current subscription if not provided
+
+    Returns:
+        list: List of protected items with their replication status
+
+    Raises:
+        CLIError: If required parameters are missing or the vault is not found
+    """
+    from azure.cli.core.commands.client_factory import \
+        get_subscription_id
+    from azext_migrate.helpers.replication.list._execute_list import (
+        get_vault_name_from_project,
+        list_protected_items
+    )
+
+    # Validate required parameters
+    if not resource_group or not project_name:
+        raise CLIError(
+            "Both --resource-group and --project-name are required.")
+
+    # Use current subscription if not provided
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Get the vault name from the project
+    vault_name = get_vault_name_from_project(
+        cmd, resource_group, project_name, subscription_id)
+
+    # List all protected items
+    list_protected_items(
+        cmd, subscription_id, resource_group, vault_name)
+
+
 def remove_local_server_replication(cmd,
                                     target_object_id,
                                     force_remove=False,

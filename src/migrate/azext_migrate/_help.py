@@ -304,6 +304,55 @@ helps['migrate local replication new'] = """
                 --os-disk-id "disk-0"
 """
 
+helps['migrate local replication list'] = """
+    type: command
+    short-summary: List all protected items (replicating servers) in a project.
+    long-summary: |
+        Lists all servers that have replication enabled
+        in an Azure Migrate project.
+        This command shows the replication status, health,
+        and configuration details for each protected server.
+
+        The command returns information including:
+        - Protection state (e.g., Protected, ProtectedReplicating, EnablingFailed)
+        - Replication health (Normal, Warning, Critical)
+        - Source machine name and target VM name
+        - Replication policy name
+        - Resource IDs (used for remove command)
+        - Health errors if any
+
+        Note: This command uses a preview API version
+        and may experience breaking changes in future releases.
+    parameters:
+        - name: --resource-group -g
+          short-summary: Resource group containing the Azure Migrate project.
+          long-summary: >
+            The name of the resource group where
+            the Azure Migrate project is located.
+        - name: --project-name
+          short-summary: Name of the Azure Migrate project.
+          long-summary: >
+            The Azure Migrate project that contains
+            the replicating servers.
+        - name: --subscription-id
+          short-summary: Azure subscription ID.
+          long-summary: >
+            The subscription containing the Azure Migrate project.
+            Uses the default subscription if not specified.
+    examples:
+        - name: List all replicating servers in a project
+          text: |
+            az migrate local replication list \\
+                --resource-group myRG \\
+                --project-name myMigrateProject
+        - name: List replicating servers with a specific subscription
+          text: |
+            az migrate local replication list \\
+                --resource-group myRG \\
+                --project-name myMigrateProject \\
+                --subscription-id 00000000-0000-0000-0000-000000000000
+"""
+
 helps['migrate local replication remove'] = """
     type: command
     short-summary: Stop replication for a migrated server.

@@ -184,6 +184,20 @@ def load_arguments(self, _):
             required=True)
         c.argument('subscription_id', subscription_id_type)
 
+    with self.argument_context('migrate local replication list') as c:
+        c.argument(
+            'resource_group',
+            options_list=['--resource-group', '-g'],
+            help='The name of the resource group where the migrate '
+                 'project is present.',
+            required=True)
+        c.argument(
+            'project_name',
+            project_name_type,
+            help='The name of the migrate project.',
+            required=True)
+        c.argument('subscription_id', subscription_id_type)
+
     with self.argument_context('migrate local replication remove') as c:
         c.argument(
             'target_object_id',
