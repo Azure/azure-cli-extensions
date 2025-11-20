@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import base64
 import os
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck, ScenarioTest
 
@@ -145,7 +146,6 @@ class EdgeActionScenarioTest(ScenarioTest):
             resource_group, edge_action_name, version_name))
 
         # Test deploy with base64 content
-        import base64
         test_content = base64.b64encode(b'function handler(event) { return event; }').decode('utf-8')
         self.cmd('edge-action version deploy-version-code -g {} --edge-action-name {} --version {} --name testcode --content "{}"'.format(
             resource_group, edge_action_name, version_name, test_content))
