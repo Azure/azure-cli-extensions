@@ -58,9 +58,9 @@ def run_on_wheel(request):
                     if (extension_dir / "build").exists():
                         shutil.rmtree((extension_dir / "build").as_posix(), ignore_errors=True)
 
-                if not any(build_dir.glob(f"{extension_name}*.whl")):
+                if not any(build_dir.glob(f"*{extension_name}*.whl")):
                     subprocess.run(
-                        ["azdev", "extension", "build", extension.replace("azext_", ""), "--dist-dir", build_dir.as_posix()],
+                        ["azdev", "extension", "build", extension_name, "--dist-dir", build_dir.as_posix()],
                         check=True,
                     )
 
