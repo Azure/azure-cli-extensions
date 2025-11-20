@@ -1,0 +1,173 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"isOracleDnsForwardingEndpointEnabled":
+      false, "isOracleDnsListeningEndpointEnabled": false, "isOracleToAzureDnsZoneSyncEnabled":
+      false, "resourceAnchorId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/resourceAnchors/AzureCliTestRA",
+      "subnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Microsoft.Network/virtualNetworks/AzureCliVnet/subnets/delegated"},
+      "zones": ["2"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database network-anchor create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '513'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --location --resource-anchor-id --subnet-id --zone
+        --no-wait
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTestF?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTestF","name":"AzureCliTestF","type":"oracle.database/networkanchors","location":"eastus","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-20T15:44:29.0477591Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-11-20T15:44:29.0477591Z"},"properties":{"resourceAnchorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/resourceAnchors/AzureCliTestRA","provisioningState":"Accepted","vnetId":null,"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Microsoft.Network/virtualNetworks/AzureCliVnet/subnets/delegated","cidrBlock":null,"ociVcnId":null,"ociVcnDnsLabel":null,"ociSubnetId":null,"ociBackupCidrBlock":null,"isOracleToAzureDnsZoneSyncEnabled":false,"isOracleDnsListeningEndpointEnabled":false,"isOracleDnsForwardingEndpointEnabled":false,"dnsListeningEndpointIpAddress":null,"dnsForwardingEndpointIpAddress":null,"dnsForwardingRulesUrl":null,"dnsListeningEndpointNsgRulesUrl":null,"dnsForwardingEndpointNsgRulesUrl":null}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/17dfff61-8417-40cf-854c-c68830810c1e*93BB2CDED35CC53F9DE4E6312AF12904C63A7B36E326414F1F18254F3780A8B0?api-version=2025-09-01&t=638992502817041476&c=MIIHhzCCBm-gAwIBAgITfAlY2NhYWz_rkiYT0gAACVjY2DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDE5MDMwMTUzWhcNMjYwNDE3MDMwMTUzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALb7q8LgkqS_7Sa915WSEvu_LerzErVZMTTkw7KXLAdnIWMjvrOw1RefK_Xe_cFp1_e2xVZM1Zog0tE-_XlllqRwZapoZJTL14Kmh7C0GvefEv-5GdvOnMy695cBHvQJTv1mqxiuvsmhJdB5__zphMuTvy0lF2K1ceor52XBk_VLEQtBcMhz8UUKVZ2KboqO1b56fjCSzbjn-sv5cQ7zx0_GZYADJbddS7dvpIwmb3QZzHcEcbAec_ouQ-YyxmKTpGa17K6DB_CoquSZ2A0TRHJqBpgeGjL0b652ekPbj9oy-sOOusDnwfN95QPWCJFjmNz1aKdnUhXmx8FU134pOkUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSi0lU0HWkl1SHwyRBzQPtbjPmHfTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACdnVC4tNlyw3EyuiJTFX5692Q_SgsQB7SjH2__G8q1XVJ0GiNSI4NKXoC8rVoxrLDL28sgifuyaEjoA9IYoahBs9l6DzxOxA0fDaBOTteaFuniOzVtW6WubmshP_yDd1pFPJydCOEtgKApCNY8y5eo8GzdatHpMEID7E2ZDrxTnq7PtzLXpoeF0A5W6qhqGypYabh7ugJ5-R8hb1iOlFYy2yvCrBaAW9wwnUPpO3DQRyoxnbzomyTIbrxEJuuaalADYKnu7GVtfL43Srrrx_HEfhy1rsf0ZK9CmJ64NOTHXIRG0kYIl5LhwZVZSEDqBPTAAy9oAm1i5D1jbVw2FPF8&s=g0D-dbpnfMxIby7FsBBqfm6_5QgitOEALj_bw1IKAFpPD2t_IvN7nHyvQiHuMFX82d4eqYBJheiAmpaINtj-WHLhcy-snS0Q1dpcSCKzb6qlOBHxQTJA5DSPp33U9rz9XKFTrW59foRv5xr5uqqvFdvM22PNepst3M3Go-eoN8l_XI7ra4MLEFrJzwZkcgCqvGsNN7zrV7wgbCwAcSmA_1DSjWhu6xeyyYUjtL1J_emIhxftx_-iA0m21qnaC2JXH02FYL3zD-h30Ob6_-MTyl2CCBOUjc2SO79cKs-y26csk3NsbGPJL_dYmbMB4nRvuM7nqHkw8yQp9IkHz5YbyQ&h=8HxnxdObAnV6Ka8OVfpWJ-DHK_xBdKXk505T0odSy18
+      cache-control:
+      - no-cache
+      content-length:
+      - '1268'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Nov 2025 15:44:40 GMT
+      etag:
+      - '"2b08c7c5-0000-0100-0000-691f37690000"'
+      expires:
+      - '-1'
+      opc-request-id:
+      - oci-CE9D33DB5DD93C9-202511201544/D7FCCF1E8C4347B15D371F69494144C3/4A053175C89C10DCA61FE7D656B959E9
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Origin,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT4H
+      x-ms-operation-identifier:
+      - tenantId=9ef05df2-ad7c-4737-aba9-a5e1b3fa5ae1,objectId=ed0404db-6d52-44c6-a09d-182ac122b912/eastus/824569f0-4815-4b7e-9696-d4a008b7fdcd
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: B3E2FD620DC940988143F67E0AB40934 Ref B: BY1AA1072315025 Ref C: 2025-11-20T15:44:27Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database network-anchor show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTestF?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTestF","name":"AzureCliTestF","type":"oracle.database/networkanchors","location":"eastus","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-20T15:44:29.0477591Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-11-20T15:44:29.0477591Z"},"properties":{"resourceAnchorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/resourceAnchors/AzureCliTestRA","provisioningState":"Accepted","vnetId":null,"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Microsoft.Network/virtualNetworks/AzureCliVnet/subnets/delegated","cidrBlock":null,"ociVcnId":null,"ociVcnDnsLabel":null,"ociSubnetId":null,"ociBackupCidrBlock":null,"isOracleToAzureDnsZoneSyncEnabled":false,"isOracleDnsListeningEndpointEnabled":false,"isOracleDnsForwardingEndpointEnabled":false,"dnsListeningEndpointIpAddress":null,"dnsForwardingEndpointIpAddress":null,"dnsForwardingRulesUrl":null,"dnsListeningEndpointNsgRulesUrl":null,"dnsForwardingEndpointNsgRulesUrl":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1268'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Nov 2025 15:44:43 GMT
+      etag:
+      - '"2b08c7c5-0000-0100-0000-691f37690000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: F5E18330874742018B0695C2F5E81513 Ref B: BY1AA1072317029 Ref C: 2025-11-20T15:44:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database network-anchor list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors?api-version=2025-09-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTest","name":"AzureCliTest","type":"oracle.database/networkanchors","location":"eastus","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-19T18:06:18.8650818Z","lastModifiedBy":"a50e6610-5416-4c2a-88b6-172c7f376f7d","lastModifiedByType":"Application","lastModifiedAt":"2025-11-19T18:15:07.9370154Z"},"properties":{"resourceAnchorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/resourceAnchors/AzureCliTestRA","provisioningState":"Succeeded","subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Microsoft.Network/virtualNetworks/AzureCliVnet/subnets/delegated","cidrBlock":"10.0.1.0/24","ociVcnId":"ocid1.vcn.oc1.iad.amaaaaaa2edokzya7dm3jji2soep4b2gudme4ea37crwmseezzxtl6emzgrq","ociVcnDnsLabel":"ociAzureCliVne","ociSubnetId":"ocid1.subnet.oc1.iad.aaaaaaaaby5ktinssdgjomcl34m35dgewbrcxq7ryimeououymu6am53xkmq","isOracleToAzureDnsZoneSyncEnabled":false,"isOracleDnsListeningEndpointEnabled":false,"isOracleDnsForwardingEndpointEnabled":false}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTestF","name":"AzureCliTestF","type":"oracle.database/networkanchors","location":"eastus","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-20T15:44:29.0477591Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-11-20T15:44:29.0477591Z"},"properties":{"resourceAnchorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/resourceAnchors/AzureCliTestRA","provisioningState":"Accepted","subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Microsoft.Network/virtualNetworks/AzureCliVnet/subnets/delegated","isOracleToAzureDnsZoneSyncEnabled":false,"isOracleDnsListeningEndpointEnabled":false,"isOracleDnsForwardingEndpointEnabled":false}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2223'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Nov 2025 15:44:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 962d852d-d36b-4c35-babc-1bcfdabdf539
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 343EDD8B1F74470E80AF451985F199A0 Ref B: BY1AA1072319054 Ref C: 2025-11-20T15:44:46Z'
+    status:
+      code: 200
+      message: OK
+version: 1

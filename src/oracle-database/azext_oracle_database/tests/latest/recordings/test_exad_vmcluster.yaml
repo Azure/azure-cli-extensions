@@ -1,0 +1,153 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database exascale-db-storage-vault show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testAzureCLi/providers/Oracle.Database/exascaleDbStorageVaults/Ofake_AzCli_vaultTe?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testAzureCLi/providers/Oracle.Database/exascaleDbStorageVaults/Ofake_AzCli_vaultTe","name":"Ofake_AzCli_vaultTe","type":"oracle.database/exascaledbstoragevaults","location":"eastus","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-19T17:42:52.1416114Z","lastModifiedBy":"a50e6610-5416-4c2a-88b6-172c7f376f7d","lastModifiedByType":"Application","lastModifiedAt":"2025-11-19T17:44:31.5921851Z"},"properties":{"additionalFlashCacheInPercent":0,"description":"Test
+        Description","displayName":"test-vault","highCapacityDatabaseStorage":{"totalSizeInGbs":300},"highCapacityDatabaseStorageInput":{"totalSizeInGbs":300},"timeZone":"UTC","provisioningState":"Succeeded","lifecycleState":"Available","vmClusterCount":0,"ocid":"ocid1.exascaledbstoragevault.oc1.iad.anuwcljt2edokzya6neglqifamkxessbq7laxly5nviudmwptut4b4m6sw3a","attachedShapeAttributes":[],"ociUrl":"https://cloud.oracle.com/dbaas/exadb-xs/exascaleStorageVaults/ocid1.exascaledbstoragevault.oc1.iad.anuwcljt2edokzya6neglqifamkxessbq7laxly5nviudmwptut4b4m6sw3a?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1290'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Nov 2025 22:22:53 GMT
+      etag:
+      - '"0d005148-0000-0100-0000-691e01ff0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 04170F5B1D5C4358AB77D55B6ECAAB83 Ref B: BY1AA1072319040 Ref C: 2025-11-19T22:22:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"displayName": "Ofake_AzCli_exadbcluster",
+      "enabledEcpuCount": 16, "exascaleDbStorageVaultId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testAzureCLi/providers/Oracle.Database/exascaleDbStorageVaults/Ofake_AzCli_vaultTe",
+      "gridImageOcid": "ocid1.dbpatch.oc1.iad.anuwcljtt5t4sqqaoajnkveobp3ryw7zlfrrcf6tb2ndvygp54z2gbds2hxa",
+      "hostname": "test-host", "nodeCount": 2, "shape": "EXADBXS", "sshPublicKeys":
+      ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHJDAu814QnRaYFbuFswJX1IdpFAa8yVk4sneI3Q+QLoTyE4W5GR5f6TR5FqA03zxp41chkvjLysnc+EYJmjXQIbvrsEfaUenGu2AbYE3szBK9v+8iUy8JLgjoGuuxTU3BNCvMlTd00yw/qrOYbEDU9ZBnZVY/0nv2E03AzGUUObZJ8IUgNRUmNdWVFQiVUcmkRRM+XsIEUpuh0S6YJLLweZd+H50Y1mhKWXnZZH8Ed/5EmkSr7cO5WEKU2O/KSbavybkjUVWi6dcQMfwmNLBH9aByqAW8QvcZkZDvxLmimLnm3Jd/QDVvGesjyLbUrWfpbsaDXs+DgjTlFlxyqLPYMON5cfSg8wBj3Y176yWxwmrPnkro8X1Y93poSDQZb9SU68DsTrgVa6FoXWPkbUXz/nZX9GkTwE1Nhy2EPL4J+J50ZUZWG0bK25dFTKrzimLn1Qmvrx3so9qDId9LWbpYI6cJYxDTkGdGpuaHqDqGAi+5HeeXxx3/zO8pErPxy20=
+      generated-by-azure"], "subnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated",
+      "totalEcpuCount": 32, "vmFileSystemStorage": {"totalSizeInGbs": 1024}, "vnetId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet"},
+      "zones": ["2"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database exadb-vm-cluster create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1455'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --location --zone --exascale-db-storage-vault-id --display-name
+        --enabled-ecpu-count --grid-image-ocid --hostname --node-count --shape --ssh-public-keys
+        --vnet-id --subnet-id --total-ecpu-count --vm-file-system-storage --no-wait
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testAzureCLi/providers/Oracle.Database/exadbVmClusters/Ofake_AzCli_exadbcluster?api-version=2025-09-01
+  response:
+    body:
+      string: '{"error":{"code":"400","message":"Error returned by CreateExadbVmCluster
+        operation in Database service.(400, InvalidParameter, false) Both Exadb VM
+        Cluster and Exascale Database Storage Vault either should be real or fake
+        resources. Exascale Database Storage Vault ocid1.exascaledbstoragevault.oc1.iad.anuwcljt2edokzya6neglqifamkxessbq7laxly5nviudmwptut4b4m6sw3a
+        is null resource, but VM Cluster Resource needs to be created as Fake resource.
+        (opc-request-id: oci-82A263793475A39-202511192222/6CC50DC6356C6E39898AFFFA5D14230E/5EADFCE0D2641619F5BEEA473C46FE51)\nTimestamp:
+        2025-11-19T22:23:11.332Z\nClient version: Oracle-JavaSDK/2.85.1-preview1-SNAPSHOT\nRequest
+        Endpoint: https://database.us-ashburn-1.oraclecloud.com/20160918/exadbVmClusters\nTroubleshooting
+        Tips: See https://docs.oracle.com/en-us/iaas/Content/API/References/apierrors.htm#apierrors_400__400_invalidparameter
+        for more information about resolving this error\nAlso see https://docs.oracle.com/iaas/api/#/en/database/20160918/ExadbVmCluster/CreateExadbVmCluster
+        for details on this operation''s requirements.\nTo get more info on the failing
+        request, you can enable debug level logs as mentioned in `Using SLF4J for
+        Logging section` in https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdkconfig.htm.\nIf
+        you are unable to resolve this Database issue, please contact Oracle support
+        and provide them this full error message.","details":[{"code":"400","target":"CreateCloudVmClusterDetails","message":"Error
+        returned by CreateExadbVmCluster operation in Database service.(400, InvalidParameter,
+        false) Both Exadb VM Cluster and Exascale Database Storage Vault either should
+        be real or fake resources. Exascale Database Storage Vault ocid1.exascaledbstoragevault.oc1.iad.anuwcljt2edokzya6neglqifamkxessbq7laxly5nviudmwptut4b4m6sw3a
+        is null resource, but VM Cluster Resource needs to be created as Fake resource.
+        (opc-request-id: oci-82A263793475A39-202511192222/6CC50DC6356C6E39898AFFFA5D14230E/5EADFCE0D2641619F5BEEA473C46FE51)\nTimestamp:
+        2025-11-19T22:23:11.332Z\nClient version: Oracle-JavaSDK/2.85.1-preview1-SNAPSHOT\nRequest
+        Endpoint: https://database.us-ashburn-1.oraclecloud.com/20160918/exadbVmClusters\nTroubleshooting
+        Tips: See https://docs.oracle.com/en-us/iaas/Content/API/References/apierrors.htm#apierrors_400__400_invalidparameter
+        for more information about resolving this error\nAlso see https://docs.oracle.com/iaas/api/#/en/database/20160918/ExadbVmCluster/CreateExadbVmCluster
+        for details on this operation''s requirements.\nTo get more info on the failing
+        request, you can enable debug level logs as mentioned in `Using SLF4J for
+        Logging section` in https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdkconfig.htm.\nIf
+        you are unable to resolve this Database issue, please contact Oracle support
+        and provide them this full error message."}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2844'
+      content-type:
+      - application/json
+      date:
+      - Wed, 19 Nov 2025 22:23:11 GMT
+      expires:
+      - '-1'
+      opc-request-id:
+      - oci-82A263793475A39-202511192222/3B18D552D781B7CE41431E69494144F6/870FCA6FABAD8A6AF3CC8238155F01BC
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Origin,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-operation-identifier:
+      - tenantId=9ef05df2-ad7c-4737-aba9-a5e1b3fa5ae1,objectId=ed0404db-6d52-44c6-a09d-182ac122b912/westus3/f61659e9-6e8f-4423-9e1a-eb673f5a375a
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 2B277A7B9F904CA8BA568816DE970BB7 Ref B: BY1AA1072315060 Ref C: 2025-11-19T22:22:55Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
