@@ -28,6 +28,9 @@ _expected_sha256 = {
 
 def opa_get():
 
+    if not all(platform.system() in mapping for mapping in [_opa_url, _expected_sha256]):
+        raise RuntimeError(f"OPA is not supported on platform: {platform.system()}")
+
     opa_fetch_resp = requests.get(_opa_url[platform.system()], verify=True)
     opa_fetch_resp.raise_for_status()
 
