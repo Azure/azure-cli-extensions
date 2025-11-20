@@ -3,12 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from dataclasses import dataclass, field
-from typing import Literal, Optional
+from typing import Literal, Optional, List
+from azext_confcom.lib.orderless_dataclasses import dataclass, OrderlessField, Field
 
 
 def get_default_capabilities():
-    return [
+    return (
         "CAP_AUDIT_WRITE",
         "CAP_CHOWN",
         "CAP_DAC_OVERRIDE",
@@ -23,16 +23,16 @@ def get_default_capabilities():
         "CAP_SETPCAP",
         "CAP_SETUID",
         "CAP_SYS_CHROOT"
-    ]
+    )
 
 
 @dataclass
 class ContainerCapabilities:
-    ambient: list[str] = field(default_factory=list)
-    bounding: list[str] = field(default_factory=get_default_capabilities)
-    effective: list[str] = field(default_factory=get_default_capabilities)
-    inheritable: list[str] = field(default_factory=list)
-    permitted: list[str] = field(default_factory=get_default_capabilities)
+    ambient: List[str] = OrderlessField(default_factory=list)
+    bounding: List[str] = OrderlessField(default_factory=get_default_capabilities)
+    effective: List[str] = OrderlessField(default_factory=get_default_capabilities)
+    inheritable: List[str] = OrderlessField(default_factory=list)
+    permitted: List[str] = OrderlessField(default_factory=get_default_capabilities)
 
 
 @dataclass
@@ -44,24 +44,26 @@ class ContainerRule:
 
 @dataclass
 class ContainerExecProcesses:
-    command: list[str]
-    signals: Optional[list[str]] = None
+    command: List[str]
+    signals: Optional[List[str]] = OrderlessField(default=None)
     allow_stdio_access: bool = True
 
 
-@dataclass
+@dataclass()
 class ContainerMount:
     destination: str
     source: str
     type: str
-    options: list[str] = field(default_factory=list)
+    options: List[str] = OrderlessField(default_factory=list)
 
 
 @dataclass
 class ContainerUser:
-    group_idnames: list[ContainerRule] = field(default_factory=lambda: [ContainerRule(pattern="", strategy="any")])
+    group_idnames: List[ContainerRule] = \
+        OrderlessField(default_factory=lambda: [ContainerRule(pattern="", strategy="any")])
     umask: str = "0022"
-    user_idname: ContainerRule = field(default_factory=lambda: ContainerRule(pattern="", strategy="any"))
+    user_idname: ContainerRule = \
+        Field(default_factory=lambda: ContainerRule(pattern="", strategy="any"))
 
 
 @dataclass
@@ -69,7 +71,8 @@ class FragmentReference:
     feed: str
     issuer: str
     minimum_svn: str
-    includes: list[Literal["containers", "fragments", "namespace", "external_processes"]]
+    includes: List[Literal["containers", "fragments", "namespace", "external_processes"]] = \
+        OrderlessField(default_factory=list)
     path: Optional[str] = None
 
 
@@ -78,18 +81,18 @@ class FragmentReference:
 class Container:
     allow_elevated: bool = False
     allow_stdio_access: bool = True
-    capabilities: ContainerCapabilities = field(default_factory=ContainerCapabilities)
-    command: Optional[list[str]] = None
-    env_rules: list[ContainerRule] = field(default_factory=list)
-    exec_processes: list[ContainerExecProcesses] = field(default_factory=list)
+    capabilities: ContainerCapabilities = Field(default_factory=ContainerCapabilities)
+    command: Optional[List[str]] = None
+    env_rules: List[ContainerRule] = OrderlessField(default_factory=list)
+    exec_processes: List[ContainerExecProcesses] = OrderlessField(default_factory=list)
     id: Optional[str] = None
-    layers: list[str] = field(default_factory=list)
-    mounts: list[ContainerMount] = field(default_factory=list)
+    layers: List[str] = Field(default_factory=list)
+    mounts: List[ContainerMount] = OrderlessField(default_factory=list)
     name: Optional[str] = None
     no_new_privileges: bool = False
     seccomp_profile_sha256: str = ""
-    signals: list[str] = field(default_factory=list)
-    user: ContainerUser = field(default_factory=ContainerUser)
+    signals: List[str] = OrderlessField(default_factory=list)
+    user: ContainerUser = Field(default_factory=ContainerUser)
     working_dir: str = "/"
 
 
@@ -99,8 +102,8 @@ class Policy:
     package: str = "policy"
     api_version: str = "0.10.0"
     framework_version: str = "0.2.3"
-    fragments: list[FragmentReference] = field(default_factory=list)
-    containers: list[Container] = field(default_factory=list)
+    fragments: List[FragmentReference] = OrderlessField(default_factory=list)
+    containers: List[Container] = OrderlessField(default_factory=list)
     allow_properties_access: bool = True
     allow_dump_stacks: bool = False
     allow_runtime_logging: bool = False
@@ -114,5 +117,5 @@ class Fragment:
     package: str = "fragment"
     svn: str = "0"
     framework_version: str = "0.2.3"
-    fragments: list[FragmentReference] = field(default_factory=list)
-    containers: list[Container] = field(default_factory=list)
+    fragments: List[FragmentReference] = OrderlessField(default_factory=list)
+    containers: List[Container] = OrderlessField(default_factory=list)
