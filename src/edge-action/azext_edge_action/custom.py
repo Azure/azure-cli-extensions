@@ -85,6 +85,7 @@ def deploy_edge_action_version(cmd, resource_group, edge_action_name, version,
     logger.info("Processing file: %s (deployment type: %s)", file_path, deployment_type)
 
     # Process file based on deployment type and file extension
+    encoded_content = None
     if deployment_type == 'file':
         # 'file' deployment type: JS file, encode as-is without zipping
         logger.info("Reading JavaScript file for 'file' deployment type (no zipping)")
