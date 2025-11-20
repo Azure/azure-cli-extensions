@@ -16,5 +16,5 @@ class OracleDatabaseAdbsGetScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbsget(self, resource_group):
         subscription_id = self.get_subscription_id()
-        self.cmd('az oracle-database autonomous-database show --name eamonterraformtest501 --resource-group eamonterraformtest500 ')
-        self.cmd('az oracle-database autonomous-database list --resource-group eamonterraformtest500 ')
+        self.cmd('az oracle-database autonomous-database show --name ADBScli1 --resource-group PowerShellTestRg ')
+        self.cmd('az oracle-database autonomous-database list --resource-group PowerShellTestRg ')

@@ -1,0 +1,30 @@
+from azure.cli.testsdk import ScenarioTest, JMESPathCheck
+
+class OracleResourceAnchorScenarioTest(ScenarioTest):
+    def setUp(self):
+        super().setUp()
+        self.kwargs.update({
+            'resource_group': 'AzureCliNew',
+            'resource_anchor_name': 'AzureCliTestRAF',
+            'location': 'global',
+        })
+
+    def test_create_resource_anchor(self):
+     self.cmd(
+            'az oracle-database resource-anchor create '
+            '--name {resource_anchor_name} '
+            '--resource-group {resource_group} '
+            '--location {location} '
+            '--no-wait')
+     # Show
+     self.cmd(
+         'az oracle-database resource-anchor show '
+         '--name {resource_anchor_name} '
+         '--resource-group {resource_group} '
+     )
+
+     # List
+     self.cmd(
+         'az oracle-database resource-anchor list '
+         '--resource-group {resource_group} '
+     )

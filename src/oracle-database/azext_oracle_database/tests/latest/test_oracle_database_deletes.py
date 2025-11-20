@@ -17,23 +17,23 @@ class OracleDatabaseDeleteScenario(ScenarioTest):
     def test_oracledatabase_exadata_deletes(self, resource_group):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
-            'infra_name': 'OFake_Infra_AzCLI',
+            'infra_name': 'OFake_PowerShellExaInfra',
             'location': 'eastus',
             'shape': 'Exadata.X9M',
             'tags': '{tagk1:tagv1}'
         })
         self.cmd('az oracle-database cloud-exadata-infrastructure delete '
-                         '--resource-group ObsTestingFra '
-                         '--name OFake_ppratees_0216_2 '
+                         '--resource-group PowerShellTestRg '
+                         '--name {infra_name} '
                          '--no-wait '
                          '--yes ')
         self.cmd('az oracle-database cloud-vm-cluster show '
-                                 '--resource-group SDKTestRG '
-                                 '--name OFakeVmTestA ')
+                                 '--resource-group PowerShellTestRg '
+                                 '--name OfakeDNDVM ')
         self.cmd('az oracle-database cloud-vm-cluster list '
-                                 '--resource-group SDKTestRG ')
+                                 '--resource-group PowerShellTestRg ')
         self.cmd('az oracle-database cloud-vm-cluster delete '
-                         '--resource-group SDKTestRG '
-                         '--name OFakeVmTestA '
+                         '--resource-group PowerShellTestRg '
+                         '--name OfakeDNDVM '
                          '--no-wait '
                          '--yes ')

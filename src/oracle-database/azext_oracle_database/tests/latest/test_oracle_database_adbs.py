@@ -24,15 +24,15 @@ class OracleDatabaseAdbsScenario(ScenarioTest):
         self.cmd('az oracle-database dns-private-zone list --location eastus ')
         self.cmd('az oracle-database dns-private-view list --location eastus ')
         self.cmd('az oracle-database autonomous-database create --location eastus '
-                '--autonomousdatabasename ADBScli1 '
-                '--resource-group SDKTestRG '
-                '--subnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet/subnets/SDKSubnet '
+                '--autonomousdatabasename ADBScli '
+                '--resource-group PowerShellTestRg '
+                '--subnet-id /subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated '
                 '--display-name ADBScli1 '
                 '--compute-model ECPU --compute-count 2 '
                 '--data-storage-size-in-gbs 32 --license-model BringYourOwnLicense '
                 '--db-workload OLTP --admin-password TestPass#2024# '
                 '--db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 '
-                '--vnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet --regular --no-wait ')
+                '--vnet-id /subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet  --regular --no-wait ')
         self.cmd('az oracle-database autonomous-database delete '
                 '--autonomousdatabasename ADBScli '
-                '--resource-group SDKTestRG --yes --no-wait ')
+                '--resource-group PowerShellTestRg --yes --no-wait ')
