@@ -5,7 +5,7 @@
 
 import os
 import sys
-from typing import Optional
+from typing import BinaryIO, Optional
 
 from azext_confcom import oras_proxy, os_util, security_policy
 from azext_confcom._validators import resolve_stdio
@@ -18,6 +18,8 @@ from azext_confcom.fragment_util import get_all_fragment_contents
 from azext_confcom.init_checks import run_initial_docker_checks
 from azext_confcom.kata_proxy import KataPolicyGenProxy
 from azext_confcom.security_policy import AciPolicy, OutputType
+from azext_confcom.command.radius_policy_insert import radius_policy_insert as _radius_policy_insert
+from azext_confcom.command.containers_from_radius import containers_from_radius as _containers_from_radius
 from azext_confcom.template_util import (
     get_image_name, inject_policy_into_template, inject_policy_into_yaml,
     pretty_print_func, print_existing_policy_from_arm_template,
@@ -512,3 +514,31 @@ def get_fragment_output_type(outraw):
     if outraw:
         output_type = security_policy.OutputType.RAW
     return output_type
+
+
+def containers_from_radius(
+    cmd,
+    template: str,
+    parameters: dict,
+    container_index: int,
+    platform: str,
+) -> None:
+    print(_containers_from_radius(
+        az_cli_command=cmd,
+        template=template,
+        parameters=parameters,
+        container_index=container_index,
+        platform=platform,
+    ))
+
+
+def radius_policy_insert(
+    policy_file: BinaryIO,
+    template_path: str,
+    container_index: int,
+) -> None:
+    _radius_policy_insert(
+        policy_file=policy_file,
+        template_path=template_path,
+        container_index=container_index,
+    )
