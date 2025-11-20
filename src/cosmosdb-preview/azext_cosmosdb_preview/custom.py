@@ -3415,8 +3415,8 @@ def cli_cosmosdb_sql_softdeleted_account_list(client,
                                               location=None):
     """List soft-deleted Cosmos DB accounts."""
     if location is not None:
-        return client.list_by_location(resource_group, location)
-    return client.list(resource_group)
+        return client.list_by_location(location)
+    return client.list()
 
 
 def cli_cosmosdb_sql_softdeleted_account_show(client,
@@ -3424,7 +3424,7 @@ def cli_cosmosdb_sql_softdeleted_account_show(client,
                                               location,
                                               account_name):
     """Get a soft-deleted Cosmos DB account."""
-    return client.get(resource_group, location, account_name)
+    return client.get_by_location(location, account_name)
 
 
 def cli_cosmosdb_sql_softdeleted_account_delete(client,
@@ -3432,7 +3432,7 @@ def cli_cosmosdb_sql_softdeleted_account_delete(client,
                                                 location,
                                                 account_name):
     """Purge a soft-deleted Cosmos DB account."""
-    return client.begin_delete(resource_group, location, account_name)
+    return client.begin_purge(resource_group, account_name)
 
 
 def cli_cosmosdb_sql_softdeleted_account_recover(client,
@@ -3440,7 +3440,7 @@ def cli_cosmosdb_sql_softdeleted_account_recover(client,
                                                  location,
                                                  account_name):
     """Recover a soft-deleted Cosmos DB account."""
-    return client.begin_restore(resource_group, location, account_name)
+    return client.begin_restore(resource_group, account_name)
 
 
 # Soft-deleted Database operations
@@ -3467,7 +3467,7 @@ def cli_cosmosdb_sql_softdeleted_database_delete(client,
                                                  account_name,
                                                  database_name):
     """Purge a soft-deleted database."""
-    return client.begin_delete(resource_group, location, account_name, database_name)
+    return client.begin_purge(resource_group, location, account_name, database_name)
 
 
 def cli_cosmosdb_sql_softdeleted_database_recover(client,
@@ -3506,7 +3506,7 @@ def cli_cosmosdb_sql_softdeleted_collection_delete(client,
                                                    database_name,
                                                    container_name):
     """Purge a soft-deleted container."""
-    return client.begin_delete(resource_group, location, account_name, database_name, container_name)
+    return client.begin_purge(resource_group, location, account_name, database_name, container_name)
 
 
 def cli_cosmosdb_sql_softdeleted_collection_recover(client,

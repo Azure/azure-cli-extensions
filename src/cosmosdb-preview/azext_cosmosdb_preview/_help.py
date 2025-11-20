@@ -1854,11 +1854,14 @@ short-summary: Manage soft-deleted Azure Cosmos DB accounts.
 
 helps['cosmosdb sql softdeleted-account list'] = """
 type: command
-short-summary: List all soft-deleted Azure Cosmos DB accounts in a subscription.
+short-summary: List soft-deleted Azure Cosmos DB accounts.
 examples:
   - name: List all soft-deleted Azure Cosmos DB accounts in a subscription.
     text: |
-      az cosmosdb sql softdeleted-account list --location westus --resource-group MyResourceGroup
+      az cosmosdb sql softdeleted-account list
+  - name: List soft-deleted Azure Cosmos DB accounts in a specific location.
+    text: |
+      az cosmosdb sql softdeleted-account list --location westus
 """
 
 helps['cosmosdb sql softdeleted-account show'] = """
@@ -1867,7 +1870,7 @@ short-summary: Show details of a soft-deleted Azure Cosmos DB account.
 examples:
   - name: Show details of a soft-deleted Azure Cosmos DB account.
     text: |
-      az cosmosdb sql softdeleted-account show --location westus --account-name MyAccount --resource-group MyResourceGroup
+      az cosmosdb sql softdeleted-account show --location westus --account-name MyAccount
 """
 
 helps['cosmosdb sql softdeleted-account delete'] = """

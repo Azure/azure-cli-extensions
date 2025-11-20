@@ -29,7 +29,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
     Note: These tests require a CosmosDB account with soft-delete feature enabled.
     """
 
-    def _create_account_with_soft_delete(self, account_name, resource_group, location):
+    def _update_account_with_soft_delete(self, account_name, resource_group, location):
         """
         Helper function to create a CosmosDB account and enable soft delete.
         Sets retention period and minimum purge minutes to 0 for testing.
@@ -77,7 +77,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
         logger.info("Listing soft-deleted accounts")
         soft_deleted_accounts = self.cmd(
-            'az cosmosdb softdeleted-account list '
+            'az cosmosdb sql softdeleted-account list '
             '--location {loc} -g {rg}'
         ).get_output_in_json()
         
@@ -86,14 +86,14 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
         logger.info("Showing soft-deleted account details")
         soft_deleted_account = self.cmd(
-            'az cosmosdb softdeleted-account show '
+            'az cosmosdb sql softdeleted-account show '
             '--location {loc} --account-name {acc} -g {rg}'
         ).get_output_in_json()
         assert soft_deleted_account is not None
 
         logger.info("Recovering the soft-deleted account")
         self.cmd(
-            'az cosmosdb softdeleted-account recover '
+            'az cosmosdb sql softdeleted-account recover '
             '--location {loc} --account-name {acc} -g {rg}'
         )
         
@@ -106,7 +106,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         
         logger.info("Verifying account is no longer in soft-deleted list")
         soft_deleted_accounts_after = self.cmd(
-            'az cosmosdb softdeleted-account list '
+            'az cosmosdb sql softdeleted-account list '
             '--location {loc} -g {rg}'
         ).get_output_in_json()
         
@@ -138,7 +138,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
         logger.info("Listing soft-deleted accounts")
         soft_deleted_accounts = self.cmd(
-            'az cosmosdb softdeleted-account list '
+            'az cosmosdb sql softdeleted-account list '
             '--location {loc} -g {rg}'
         ).get_output_in_json()
         
@@ -147,14 +147,14 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
         logger.info("Showing soft-deleted account details")
         soft_deleted_account = self.cmd(
-            'az cosmosdb softdeleted-account show '
+            'az cosmosdb sql softdeleted-account show '
             '--location {loc} --account-name {acc} -g {rg}'
         ).get_output_in_json()
         assert soft_deleted_account is not None
 
         logger.info("Purging the soft-deleted account")
         self.cmd(
-            'az cosmosdb softdeleted-account delete '
+            'az cosmosdb sql softdeleted-account delete '
             '--location {loc} --account-name {acc} -g {rg} --yes'
         )
         
@@ -165,7 +165,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         
         logger.info("Verifying account is no longer in soft-deleted list")
         soft_deleted_accounts_after = self.cmd(
-            'az cosmosdb softdeleted-account list '
+            'az cosmosdb sql softdeleted-account list '
             '--location {loc} -g {rg}'
         ).get_output_in_json()
         
