@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.4.2
+++++++
+* Update policy model to use pydantic and explicitly declare collections where order doesn't affect function. These fields will serialize in alphabetical order and comparisons will ignore order.
+
 1.4.0
 ++++++
 * Add --with-containers flag to acipolicygen and acifragmentgen to allow passing container policy definitions directly

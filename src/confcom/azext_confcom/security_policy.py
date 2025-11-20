@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import copy
-from dataclasses import asdict
 import json
 import warnings
 from enum import Enum, auto
 from typing import Any, Dict, List, Optional, Tuple, Union
+from pydantic import TypeAdapter
 
 import deepdiff
 from azext_confcom import config, os_util
@@ -411,7 +411,10 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 for container in policy:
                     container[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS] = False
 
-        policy += [asdict(Container(**c)) for c in self._container_definitions]
+        policy += [
+            TypeAdapter(Container).dump_python(Container(**c), mode="json")
+            for c in self._container_definitions
+        ]
 
         if pretty_print:
             return pretty_print_func(policy)
