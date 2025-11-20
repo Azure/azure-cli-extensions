@@ -16,18 +16,22 @@ import requests
 from azext_confcom.lib.binaries import get_binaries_dir
 
 _opa_path = os.path.abspath(os.path.join(get_binaries_dir(), "opa"))
-_expected_sha256 = "fe8e191d44fec33db2a3d0ca788b9f83f866d980c5371063620c3c6822792877"
+_opa_url = {
+    "Linux": "https://github.com/open-policy-agent/opa/releases/download/v1.10.1/opa_linux_amd64",
+    "Windows": "https://github.com/open-policy-agent/opa/releases/download/v1.10.1/opa_windows_amd64.exe",
+}
+_expected_sha256 = {
+    "Linux": "fe8e191d44fec33db2a3d0ca788b9f83f866d980c5371063620c3c6822792877",
+    "Windows": "4c932053350eabca47681208924046fbf3ad9de922d6853fb12cddf59aef15ce",
+}
 
 
 def opa_get():
 
-    opa_fetch_resp = requests.get(
-        f"https://openpolicyagent.org/downloads/v1.10.1/opa_{platform.system().lower()}_amd64",
-        verify=True,
-    )
+    opa_fetch_resp = requests.get(_opa_url[platform.system()], verify=True)
     opa_fetch_resp.raise_for_status()
 
-    assert hashlib.sha256(opa_fetch_resp.content).hexdigest() == _expected_sha256
+    assert hashlib.sha256(opa_fetch_resp.content).hexdigest() == _expected_sha256[platform.system()]
 
     with open(_opa_path, "wb") as f:
         f.write(opa_fetch_resp.content)
