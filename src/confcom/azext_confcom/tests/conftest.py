@@ -14,6 +14,7 @@ import sys
 import shutil
 
 from pathlib import Path
+import zipfile
 
 
 # This fixture ensures tests are run against final built wheels of the extension
@@ -68,7 +69,15 @@ def run_on_wheel(request):
 
     # Add the wheel to the path and reload extension modules so the
     # tests pick up the wheel code over the unbuilt code
-    sys.path.insert(0, build_dir.glob("*.whl").__next__().as_posix())
+    wheel_path = next(build_dir.glob("*.whl"))
+
+    expanded_dir = build_dir / f"{wheel_path.stem}_expanded"
+    if not expanded_dir.exists():
+        expanded_dir.mkdir(exist_ok=True)
+        with zipfile.ZipFile(wheel_path, "r") as z:
+            z.extractall(expanded_dir)
+
+    sys.path.insert(0, expanded_dir.resolve().as_posix())
     for module in list(sys.modules.values()):
         if extension in module.__name__ and module not in modules_to_test:
             del sys.modules[module.__name__]
