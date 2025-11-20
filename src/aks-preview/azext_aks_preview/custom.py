@@ -18,6 +18,7 @@ import webbrowser
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
+    cf_managed_clusters,
     get_compute_client,
 )
 from azext_aks_preview._consts import (
@@ -2199,6 +2200,37 @@ def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
                            if_none_match=None,
                            no_wait=False):
     """Rollback a nodepool to the most recent previous version configuration."""
+
+    # Warn users when auto-upgrade is enabled 
+    if cmd and getattr(cmd, "cli_ctx", None):
+        try:
+            managed_clusters_client = cf_managed_clusters(cmd.cli_ctx)
+            managed_cluster = managed_clusters_client.get(resource_group_name, cluster_name)
+            auto_upgrade_profile = getattr(managed_cluster, "auto_upgrade_profile", None)
+
+            upgrade_channel = getattr(auto_upgrade_profile, "upgrade_channel", None) if auto_upgrade_profile else None
+            node_os_upgrade_channel = (
+                getattr(auto_upgrade_profile, "node_os_upgrade_channel", None)
+                if auto_upgrade_profile
+                else None
+            )
+
+            upgrade_channel_enabled = upgrade_channel and str(upgrade_channel).lower() != "none"
+            node_os_channel_enabled = node_os_upgrade_channel and str(node_os_upgrade_channel).lower() not in [
+                "none",
+                "unmanaged",
+            ]
+
+            if upgrade_channel_enabled or node_os_channel_enabled:
+                logger.warning(
+                    "Auto-upgrade is enabled on cluster '%s' (upgradeChannel=%s, nodeOSUpgradeChannel=%s). "
+                    "Rollback will not succeed until auto-upgrade is disabled. Please disable auto-upgrade to roll back the node pool.",
+                    cluster_name,
+                    upgrade_channel or "none",
+                    node_os_upgrade_channel or "Unmanaged",
+                )
+        except Exception as ex:  # pylint: disable=broad-except
+            logger.debug("Unable to retrieve auto-upgrade configuration before rollback: %s", ex)
 
     logger.info("Fetching the most recent rollback version...")
     
@@ -4929,7 +4961,6 @@ def aks_loadbalancer_rebalance_nodes(
     from azext_aks_preview.loadbalancerconfiguration import (
         aks_loadbalancer_rebalance_internal,
     )
-    from azext_aks_preview._client_factory import cf_managed_clusters
 
     # Get the load balancers client
     managed_clusters_client = cf_managed_clusters(cmd.cli_ctx)
