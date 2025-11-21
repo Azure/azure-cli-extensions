@@ -310,7 +310,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -362,9 +362,7 @@ class _UpdateHelper:
         deployment_safeguard_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        deployment_safeguard_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
+        deployment_safeguard_read.properties = AAZObjectType()
         deployment_safeguard_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
