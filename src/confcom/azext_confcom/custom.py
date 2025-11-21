@@ -5,7 +5,7 @@
 
 import os
 import sys
-from typing import BinaryIO
+from typing import Optional, BinaryIO
 
 from azext_confcom import oras_proxy, os_util, security_policy
 from azext_confcom._validators import resolve_stdio
