@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+from pathlib import Path
 import platform
 import stat
 import subprocess
@@ -12,9 +13,34 @@ import sys
 import requests
 from azext_confcom.config import DATA_FOLDER
 from azext_confcom.errors import eprint
+from azext_confcom.lib.paths import get_binaries_dir, get_data_dir
 
 host_os = platform.system()
 machine = platform.machine()
+
+
+_binaries_dir = get_binaries_dir()
+_kata_binaries = {
+    "Linux": {
+        "path": _binaries_dir / "genpolicy-linux",
+        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/genpolicy",
+    },
+    "Windows": {
+        "path": _binaries_dir / "genpolicy-windows.exe",
+        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl1.genpolicy0/genpolicy.exe",
+    },
+}
+_data_dir = get_data_dir()
+_kata_data = [
+    {
+        "path": _data_dir / "genpolicy-settings.json",
+        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/genpolicy-settings.json",
+    },
+    {
+        "path": _data_dir / "rules.rego",
+        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/rules.rego",
+    },
+]
 
 
 class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
@@ -23,61 +49,13 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def download_binaries():
-        dir_path = os.path.dirname(os.path.realpath(__file__))
 
-        bin_folder = os.path.join(dir_path, "bin")
-        if not os.path.exists(bin_folder):
-            os.makedirs(bin_folder)
+        for binary_info in list(_kata_binaries.values()) + _kata_data:
+            kata_fetch_resp = requests.get(binary_info["url"], verify=True)
+            kata_fetch_resp.raise_for_status()
 
-        data_folder = os.path.join(dir_path, "data")
-        if not os.path.exists(data_folder):
-            os.makedirs(data_folder)
-
-        # get the most recent release artifacts from github
-        r = requests.get("https://api.github.com/repos/microsoft/kata-containers/releases")
-        r.raise_for_status()
-        bin_flag = False
-        needed_assets = ["genpolicy", "genpolicy.exe"]
-        # search for genpolicy in the assets from kata-container releases
-        for release in r.json():
-            is_target = (
-                "genpolicy" in release.get("tag_name") and
-                not release.get("draft") and
-                not release.get("prerelease")
-            )
-            if is_target:
-                # these should be newest to oldest
-                for asset in release["assets"]:
-                    # download the file if it contains genpolicy
-                    if asset["name"] in needed_assets:
-                        # say which version we're downloading
-                        print(f"Downloading genpolicy version {release['tag_name']}")
-                        save_name = ""
-                        if ".exe" in asset["name"]:
-                            save_name = "genpolicy-windows.exe"
-                        else:
-                            save_name = "genpolicy-linux"
-                        bin_flag = True
-                        # get the download url for the genpolicy file
-                        exe_url = asset["browser_download_url"]
-                        # download the file
-                        r = requests.get(exe_url)
-                        r.raise_for_status()
-                        # save the file to the bin folder
-                        with open(os.path.join(bin_folder, save_name), "wb") as f:
-                            f.write(r.content)
-
-                    # download the rules.rego and genpolicy-settings.json files
-                    if asset["name"] == "rules.rego" or asset["name"] == "genpolicy-settings.json":
-                        # download the rules.rego file
-                        exe_url = asset["browser_download_url"]
-                        # download the file
-                        r = requests.get(exe_url)
-                        # save the file to the data folder
-                        with open(os.path.join(data_folder, asset["name"]), "wb") as f:
-                            f.write(r.content)
-            if bin_flag:
-                break
+            with open(binary_info["path"], "wb") as f:
+                f.write(kata_fetch_resp.content)
 
     def __init__(self):
         script_directory = os.path.dirname(os.path.realpath(__file__))

@@ -15,9 +15,24 @@ import requests
 from azext_confcom.errors import eprint
 from knack.log import get_logger
 
+from azext_confcom.lib.paths import get_binaries_dir
+
 host_os = platform.system()
 machine = platform.machine()
 logger = get_logger(__name__)
+
+
+_binaries_dir = get_binaries_dir()
+_dmverity_vhd_binaries = {
+    "Linux": {
+        "path": _binaries_dir / "dmverity-vhd",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v1.6/dmverity-vhd",
+    },
+    "Windows": {
+        "path": _binaries_dir / "dmverity-vhd.exe",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v1.6/dmverity-vhd.exe",
+    },
+}
 
 
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
@@ -26,34 +41,14 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def download_binaries():
-        dir_path = os.path.dirname(os.path.realpath(__file__))
 
-        bin_folder = os.path.join(dir_path, "bin")
-        if not os.path.exists(bin_folder):
-            os.makedirs(bin_folder)
+        for binary_info in _dmverity_vhd_binaries.values():
+            dmverity_vhd_fetch_resp = requests.get(binary_info["url"], verify=True)
+            dmverity_vhd_fetch_resp.raise_for_status()
 
-        # get the most recent release artifacts from github
-        r = requests.get("https://api.github.com/repos/microsoft/integrity-vhd/releases")
-        r.raise_for_status()
-        needed_assets = ["dmverity-vhd", "dmverity-vhd.exe"]
-        # these should be newest to oldest
-        for release in r.json():
-            # search for both windows and linux binaries
-            needed_asset_info = [asset for asset in release["assets"] if asset["name"] in needed_assets]
-            if len(needed_asset_info) == len(needed_assets):
-                for asset in needed_asset_info:
-                    # say which version we're downloading
-                    print(f"Downloading integrity-vhd version {release['tag_name']}")
-                    # get the download url for the dmverity-vhd file
-                    exe_url = asset["browser_download_url"]
-                    # download the file
-                    r = requests.get(exe_url)
-                    r.raise_for_status()
-                    # save the file to the bin folder
-                    with open(os.path.join(bin_folder, asset["name"]), "wb") as f:
-                        f.write(r.content)
-                # stop iterating through releases
-                break
+            with open(binary_info["path"], "wb") as f:
+                f.write(dmverity_vhd_fetch_resp.content)
+
 
     def __init__(self):
         script_directory = os.path.dirname(os.path.realpath(__file__))
