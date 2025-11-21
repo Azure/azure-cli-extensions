@@ -194,7 +194,7 @@ SQL_GREMLIN_CONFLICT_RESOLUTION_POLICY_EXAMPLE = """--conflict-resolution-policy
 
 SQL_THROUGHPUT_BUCKETS_EXAMPLE = """--throughput-buckets "[
     { \\"id\\": 1, \\"maxThroughputPercentage\\" : 10 },
-    { \\"id\\": 2, \\"maxThroughputPercentage\\" : 20 }
+    { \\"id\\": 2, \\"maxThroughputPercentage\\" : 20, \\"isDefaultBucket\\": true }
 ]"
 """
 

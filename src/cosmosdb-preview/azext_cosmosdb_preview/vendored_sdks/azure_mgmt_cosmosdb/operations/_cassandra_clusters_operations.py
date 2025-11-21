@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, Callable, Dict, IO, Iterable, Iterator, Optional, TypeVar, Union, cast, overload
+from typing import Any, Callable, IO, Iterator, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core import PipelineClient
@@ -36,7 +36,8 @@ from .._configuration import CosmosDBManagementClientConfiguration
 from .._utils.serialization import Deserializer, Serializer
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
@@ -46,7 +47,7 @@ def build_list_by_subscription_request(subscription_id: str, **kwargs: Any) -> H
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -72,7 +73,7 @@ def build_list_by_resource_group_request(resource_group_name: str, subscription_
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -102,7 +103,7 @@ def build_get_request(resource_group_name: str, cluster_name: str, subscription_
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -137,7 +138,7 @@ def build_delete_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -172,7 +173,7 @@ def build_create_update_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -210,7 +211,7 @@ def build_update_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -248,7 +249,7 @@ def build_invoke_command_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -286,7 +287,7 @@ def build_invoke_command_async_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -324,7 +325,7 @@ def build_list_command_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -359,7 +360,7 @@ def build_get_command_async_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -397,7 +398,7 @@ def build_list_backups_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -432,7 +433,7 @@ def build_get_backup_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -473,7 +474,7 @@ def build_deallocate_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -510,7 +511,7 @@ def build_start_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -545,7 +546,7 @@ def build_status_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-11-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -586,7 +587,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
 
     models = _models
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
         self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: CosmosDBManagementClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
@@ -594,18 +595,19 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list_by_subscription(self, **kwargs: Any) -> Iterable["_models.ClusterResource"]:
+    def list_by_subscription(self, **kwargs: Any) -> ItemPaged["_models.ClusterResourceAutoGenerated"]:
         """List all managed Cassandra clusters in this subscription.
 
-        :return: An iterator like instance of either ClusterResource or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :return: An iterator like instance of either ClusterResourceAutoGenerated or the result of
+         cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ListClusters] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ListClustersAutoGenerated] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -644,7 +646,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             return _request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("ListClusters", pipeline_response)
+            deserialized = self._deserialize("ListClustersAutoGenerated", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
@@ -668,21 +670,24 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         return ItemPaged(get_next, extract_data)
 
     @distributed_trace
-    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> Iterable["_models.ClusterResource"]:
+    def list_by_resource_group(
+        self, resource_group_name: str, **kwargs: Any
+    ) -> ItemPaged["_models.ClusterResourceAutoGenerated"]:
         """List all managed Cassandra clusters in this resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :return: An iterator like instance of either ClusterResource or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :return: An iterator like instance of either ClusterResourceAutoGenerated or the result of
+         cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ListClusters] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ListClustersAutoGenerated] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -722,7 +727,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             return _request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("ListClusters", pipeline_response)
+            deserialized = self._deserialize("ListClustersAutoGenerated", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
@@ -746,7 +751,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         return ItemPaged(get_next, extract_data)
 
     @distributed_trace
-    def get(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> _models.ClusterResource:
+    def get(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> _models.ClusterResourceAutoGenerated:
         """Get the properties of a managed Cassandra cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -754,8 +759,8 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :type resource_group_name: str
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
-        :return: ClusterResource or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.ClusterResource
+        :return: ClusterResourceAutoGenerated or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -770,7 +775,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ClusterResourceAutoGenerated] = kwargs.pop("cls", None)
 
         _request = build_get_request(
             resource_group_name=resource_group_name,
@@ -793,7 +798,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ClusterResource", pipeline_response.http_response)
+        deserialized = self._deserialize("ClusterResourceAutoGenerated", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -905,7 +910,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: Union[_models.ClusterResource, IO[bytes]],
+        body: Union[_models.ClusterResourceAutoGenerated, IO[bytes]],
         **kwargs: Any
     ) -> Iterator[bytes]:
         error_map: MutableMapping = {
@@ -929,7 +934,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         if isinstance(body, (IOBase, bytes)):
             _content = body
         else:
-            _json = self._serialize.body(body, "ClusterResource")
+            _json = self._serialize.body(body, "ClusterResourceAutoGenerated")
 
         _request = build_create_update_request(
             resource_group_name=resource_group_name,
@@ -972,11 +977,11 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: _models.ClusterResource,
+        body: _models.ClusterResourceAutoGenerated,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
+    ) -> LROPoller[_models.ClusterResourceAutoGenerated]:
         """Create or update a managed Cassandra cluster. When updating, you must specify all writable
         properties. To update only some properties, use PATCH.
 
@@ -987,13 +992,13 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :type cluster_name: str
         :param body: The properties specifying the desired state of the managed Cassandra cluster.
          Required.
-        :type body: ~azure.mgmt.cosmosdb.models.ClusterResource
+        :type body: ~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :return: An instance of LROPoller that returns either ClusterResourceAutoGenerated or the
+         result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -1006,7 +1011,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
+    ) -> LROPoller[_models.ClusterResourceAutoGenerated]:
         """Create or update a managed Cassandra cluster. When updating, you must specify all writable
         properties. To update only some properties, use PATCH.
 
@@ -1021,9 +1026,9 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :return: An instance of LROPoller that returns either ClusterResourceAutoGenerated or the
+         result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -1032,9 +1037,9 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: Union[_models.ClusterResource, IO[bytes]],
+        body: Union[_models.ClusterResourceAutoGenerated, IO[bytes]],
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
+    ) -> LROPoller[_models.ClusterResourceAutoGenerated]:
         """Create or update a managed Cassandra cluster. When updating, you must specify all writable
         properties. To update only some properties, use PATCH.
 
@@ -1044,11 +1049,11 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
         :param body: The properties specifying the desired state of the managed Cassandra cluster. Is
-         either a ClusterResource type or a IO[bytes] type. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.ClusterResource or IO[bytes]
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+         either a ClusterResourceAutoGenerated type or a IO[bytes] type. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated or IO[bytes]
+        :return: An instance of LROPoller that returns either ClusterResourceAutoGenerated or the
+         result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -1056,7 +1061,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ClusterResourceAutoGenerated] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -1076,7 +1081,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ClusterResource", pipeline_response.http_response)
+            deserialized = self._deserialize("ClusterResourceAutoGenerated", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -1088,13 +1093,13 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller[_models.ClusterResource].from_continuation_token(
+            return LROPoller[_models.ClusterResourceAutoGenerated].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller[_models.ClusterResource](
+        return LROPoller[_models.ClusterResourceAutoGenerated](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
@@ -1102,7 +1107,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: Union[_models.ClusterResource, IO[bytes]],
+        body: Union[_models.ClusterResourceAutoGenerated, IO[bytes]],
         **kwargs: Any
     ) -> Iterator[bytes]:
         error_map: MutableMapping = {
@@ -1126,7 +1131,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         if isinstance(body, (IOBase, bytes)):
             _content = body
         else:
-            _json = self._serialize.body(body, "ClusterResource")
+            _json = self._serialize.body(body, "ClusterResourceAutoGenerated")
 
         _request = build_update_request(
             resource_group_name=resource_group_name,
@@ -1169,11 +1174,11 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: _models.ClusterResource,
+        body: _models.ClusterResourceAutoGenerated,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
+    ) -> LROPoller[_models.ClusterResourceAutoGenerated]:
         """Updates some of the properties of a managed Cassandra cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -1182,13 +1187,13 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
         :param body: Parameters to provide for specifying the managed Cassandra cluster. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.ClusterResource
+        :type body: ~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :return: An instance of LROPoller that returns either ClusterResourceAutoGenerated or the
+         result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -1201,7 +1206,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
+    ) -> LROPoller[_models.ClusterResourceAutoGenerated]:
         """Updates some of the properties of a managed Cassandra cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -1214,9 +1219,9 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :return: An instance of LROPoller that returns either ClusterResourceAutoGenerated or the
+         result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -1225,9 +1230,9 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: Union[_models.ClusterResource, IO[bytes]],
+        body: Union[_models.ClusterResourceAutoGenerated, IO[bytes]],
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
+    ) -> LROPoller[_models.ClusterResourceAutoGenerated]:
         """Updates some of the properties of a managed Cassandra cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -1236,11 +1241,11 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
         :param body: Parameters to provide for specifying the managed Cassandra cluster. Is either a
-         ClusterResource type or a IO[bytes] type. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.ClusterResource or IO[bytes]
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+         ClusterResourceAutoGenerated type or a IO[bytes] type. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated or IO[bytes]
+        :return: An instance of LROPoller that returns either ClusterResourceAutoGenerated or the
+         result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -1248,7 +1253,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ClusterResourceAutoGenerated] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -1268,7 +1273,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ClusterResource", pipeline_response.http_response)
+            deserialized = self._deserialize("ClusterResourceAutoGenerated", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -1280,13 +1285,13 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller[_models.ClusterResource].from_continuation_token(
+            return LROPoller[_models.ClusterResourceAutoGenerated].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller[_models.ClusterResource](
+        return LROPoller[_models.ClusterResourceAutoGenerated](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
@@ -1539,7 +1544,10 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
@@ -1685,7 +1693,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_command(
         self, resource_group_name: str, cluster_name: str, **kwargs: Any
-    ) -> Iterable["_models.CommandPublicResource"]:
+    ) -> ItemPaged["_models.CommandPublicResource"]:
         """List all commands currently running on ring info.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -1829,7 +1837,7 @@ class CassandraClustersOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_backups(
         self, resource_group_name: str, cluster_name: str, **kwargs: Any
-    ) -> Iterable["_models.BackupResource"]:
+    ) -> ItemPaged["_models.BackupResource"]:
         """List the backups of this cluster that are available to restore.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
