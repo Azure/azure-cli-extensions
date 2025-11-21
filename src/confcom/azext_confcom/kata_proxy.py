@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import hashlib
 import os
 import platform
 import stat
@@ -23,10 +24,12 @@ _kata_binaries = {
     "Linux": {
         "path": _binaries_dir / "genpolicy-linux",
         "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/genpolicy",
+        "sha256": "4cd497ca5e995ddacb53af4da47449c16291aea62e9f8b8ee0fe36ca8d41fe66",
     },
     "Windows": {
         "path": _binaries_dir / "genpolicy-windows.exe",
         "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl1.genpolicy0/genpolicy.exe",
+        "sha256": "caa9d8ee21b5819cc42b5c0967b14e166c715f6d4c87b574edabeaaeebf3573c",
     },
 }
 _data_dir = get_data_dir()
@@ -34,10 +37,12 @@ _kata_data = [
     {
         "path": _data_dir / "genpolicy-settings.json",
         "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/genpolicy-settings.json",  # pylint: disable=line-too-long
+        "sha256": "c38be1474b133d49800a43bd30c40e7585b5f302179a307f9c6d89f195daee94",
     },
     {
         "path": _data_dir / "rules.rego",
         "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/rules.rego",
+        "sha256": "2ca6c0e9617f97a922724112bd738fd73881d35b9ae5d31d573f0871d1ecf897",
     },
 ]
 
@@ -52,6 +57,8 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
         for binary_info in list(_kata_binaries.values()) + _kata_data:
             kata_fetch_resp = requests.get(binary_info["url"], verify=True)
             kata_fetch_resp.raise_for_status()
+
+            assert hashlib.sha256(kata_fetch_resp.content).hexdigest() == binary_info["sha256"], hashlib.sha256(kata_fetch_resp.content).hexdigest()
 
             with open(binary_info["path"], "wb") as f:
                 f.write(kata_fetch_resp.content)

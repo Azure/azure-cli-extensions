@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import hashlib
 import os
 import platform
 import stat
@@ -32,10 +33,12 @@ _cosesign1_binaries = {
     "Linux": {
         "path": _binaries_dir / "sign1util",
         "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.4.0/sign1util",
+        "sha256": "526b54aeb6293fc160e8fa1f81be6857300aba9641d45955f402f8b082a4d4a5",
     },
     "Windows": {
         "path": _binaries_dir / "sign1util.exe",
         "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.4.0/sign1util.exe",
+        "sha256": "f33cccf2b1bb8c3a495c730984b47d0f0715678981dbfe712248a2452dd53303",
     },
 }
 
@@ -57,6 +60,8 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
         for binary_info in _cosesign1_binaries.values():
             cosesign1_fetch_resp = requests.get(binary_info["url"], verify=True)
             cosesign1_fetch_resp.raise_for_status()
+
+            assert hashlib.sha256(cosesign1_fetch_resp.content).hexdigest() == binary_info["sha256"], hashlib.sha256(cosesign1_fetch_resp.content).hexdigest()
 
             with open(binary_info["path"], "wb") as f:
                 f.write(cosesign1_fetch_resp.content)

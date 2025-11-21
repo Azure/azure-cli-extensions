@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 
+import hashlib
 import os
 import platform
 import stat
@@ -27,10 +28,12 @@ _dmverity_vhd_binaries = {
     "Linux": {
         "path": _binaries_dir / "dmverity-vhd",
         "url": "https://github.com/microsoft/integrity-vhd/releases/download/v1.6/dmverity-vhd",
+        "sha256": "b8cf3fa3594e48070a31aa538d5b4b40d5b33b8ac18bc25a1816245159648fb0",
     },
     "Windows": {
         "path": _binaries_dir / "dmverity-vhd.exe",
         "url": "https://github.com/microsoft/integrity-vhd/releases/download/v1.6/dmverity-vhd.exe",
+        "sha256": "ca0f95d798323f3ef26feb036112be9019f5ceaa6233ee2a65218d5a143ae474",
     },
 }
 
@@ -45,6 +48,8 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         for binary_info in _dmverity_vhd_binaries.values():
             dmverity_vhd_fetch_resp = requests.get(binary_info["url"], verify=True)
             dmverity_vhd_fetch_resp.raise_for_status()
+
+            assert hashlib.sha256(dmverity_vhd_fetch_resp.content).hexdigest() == binary_info["sha256"], hashlib.sha256(dmverity_vhd_fetch_resp.content).hexdigest()
 
             with open(binary_info["path"], "wb") as f:
                 f.write(dmverity_vhd_fetch_resp.content)
