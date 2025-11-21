@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from pathlib import Path
 import platform
 import stat
 import subprocess
@@ -34,7 +33,7 @@ _data_dir = get_data_dir()
 _kata_data = [
     {
         "path": _data_dir / "genpolicy-settings.json",
-        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/genpolicy-settings.json",
+        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/genpolicy-settings.json",  # pylint: disable=line-too-long
     },
     {
         "path": _data_dir / "rules.rego",

@@ -13,9 +13,9 @@ from typing import List
 
 import requests
 from azext_confcom.errors import eprint
+from azext_confcom.lib.paths import get_binaries_dir
 from knack.log import get_logger
 
-from azext_confcom.lib.paths import get_binaries_dir
 
 host_os = platform.system()
 machine = platform.machine()
@@ -48,7 +48,6 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
 
             with open(binary_info["path"], "wb") as f:
                 f.write(dmverity_vhd_fetch_resp.content)
-
 
     def __init__(self):
         script_directory = os.path.dirname(os.path.realpath(__file__))

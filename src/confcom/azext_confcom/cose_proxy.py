@@ -18,9 +18,9 @@ from azext_confcom.config import (
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN,
     REGO_CONTAINER_START, REGO_FRAGMENT_START)
 from azext_confcom.errors import eprint
+from azext_confcom.lib.paths import get_binaries_dir
 from knack.log import get_logger
 
-from azext_confcom.lib.paths import get_binaries_dir
 
 logger = get_logger(__name__)
 host_os = platform.system()
