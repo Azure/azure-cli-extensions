@@ -49,7 +49,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             dmverity_vhd_fetch_resp = requests.get(binary_info["url"], verify=True)
             dmverity_vhd_fetch_resp.raise_for_status()
 
-            assert hashlib.sha256(dmverity_vhd_fetch_resp.content).hexdigest() == binary_info["sha256"], hashlib.sha256(dmverity_vhd_fetch_resp.content).hexdigest()
+            assert hashlib.sha256(dmverity_vhd_fetch_resp.content).hexdigest() == binary_info["sha256"]
 
             with open(binary_info["path"], "wb") as f:
                 f.write(dmverity_vhd_fetch_resp.content)

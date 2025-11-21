@@ -58,7 +58,7 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
             kata_fetch_resp = requests.get(binary_info["url"], verify=True)
             kata_fetch_resp.raise_for_status()
 
-            assert hashlib.sha256(kata_fetch_resp.content).hexdigest() == binary_info["sha256"], hashlib.sha256(kata_fetch_resp.content).hexdigest()
+            assert hashlib.sha256(kata_fetch_resp.content).hexdigest() == binary_info["sha256"]
 
             with open(binary_info["path"], "wb") as f:
                 f.write(kata_fetch_resp.content)
