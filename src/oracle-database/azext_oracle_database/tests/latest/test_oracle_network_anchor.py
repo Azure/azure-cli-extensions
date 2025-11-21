@@ -8,8 +8,8 @@ class OracleNetworkAnchorScenarioTest(ScenarioTest):
             'resource_group': 'AzureCli',
             'network_anchor_name': 'AzureCliTestF',
             'location': 'eastus',
-            'resource_anchor_id': '/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/resourceAnchors/AzureCliTestRA',
-            'subnet_id': '/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Microsoft.Network/virtualNetworks/AzureCliVnet/subnets/delegated',
+            'resource_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/resourceAnchors/AzureCliTestRA',
+            'subnet_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Microsoft.Network/virtualNetworks/AzureCliVnet/subnets/delegated',
             'zone': '2',
         })
 

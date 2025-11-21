@@ -4,15 +4,16 @@ class OracleDbSystemScenarioTest(ScenarioTest):
 
     def setUp(self):
         super().setUp()
+        subscription_id = self.get_subscription_id()
         self.kwargs.update({
-            'db_system_name': 'AzureCliSdkNewDb',
+            'db_system_name': 'AzureCliSdkNewDdT',
             'resource_group': 'AzureCli',
             'location': 'eastus',
             'zone': '1',
             'database_edition': 'EnterpriseEdition',
             'admin_password': 'TesT##1234',
-            'resource_anchor_id': '/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/resourceAnchors/AzureCliTestRA',
-            'network_anchor_id': '/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTest',
+            'resource_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/resourceAnchors/AzureCliTestRA',
+            'network_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTest',
             'hostname': 'basedbNew',
             'shape': 'VM.Standard.E5.Flex',
             'display_name': 'BaseDbWhitelisMih',
