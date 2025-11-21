@@ -17,13 +17,13 @@ class OracleDatabaseScenario(ScenarioTest):
     def test_oracledatabase_exadata(self, resource_group):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
-            'infra_name': 'OFake_Infra_AzCLI',
+            'infra_name': 'OFake_Infra_AzCLINew',
             'location': 'eastus',
             'shape': 'Exadata.X9M',
             'tags': '{tagk1:tagv1}'
         })
         self.cmd('az oracle-database cloud-exadata-infrastructure create '
-                         '--resource-group {rg} '
+                         '--resource-group testAzureCLi '
                          '--name {infra_name} '
                          '--zones 2 '
                          '--compute-count 2 '
@@ -33,21 +33,21 @@ class OracleDatabaseScenario(ScenarioTest):
                          '--storage-count 3 --no-wait')
         self.cmd('az oracle-database cloud-exadata-infrastructure show '
                          '--resource-group PowerShellTestRg '
-                         '--name OFake_PowerShellTestExaInfra ')
+                         '--name OFake_PowerShellExaInfra ')
         self.cmd('az oracle-database cloud-exadata-infrastructure list '
                           '--resource-group PowerShellTestRg ')
         self.cmd('az oracle-database cloud-exadata-infrastructure database-server list '
-                          '--cloudexadatainfrastructurename OFake_PowerShellTestExaInfra '
+                          '--cloudexadatainfrastructurename OFake_PowerShellExaInfra '
                           '--resource-group PowerShellTestRg ')
         self.cmd('az oracle-database cloud-vm-cluster create '
-                          '--cloud-exadata-infrastructure-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestRG/providers/Oracle.Database/cloudExadataInfrastructures/DemoExaInfra '
-                          '--resource-group SDKTestRG '
+                          '--cloud-exadata-infrastructure-id /subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OFake_PowerShellExaInfra '
+                          '--resource-group PowerShellTestRg '
                           '--location eastus '
                           '--cpu-core-count 6 '
                           '--data-storage-percentage 80 '
                           '--data-storage-size-in-tbs 2 '
                           '--db-node-storage-size-in-gbs 120 '
-                          '--db-servers [\'ocid1.dbserver.oc1.iad.xxxxx\',\'ocid1.dbserver.oc1.iad.xxxxx\',\'ocid1.dbserver.oc1.iad.xxxxx\'] '
+                          '--db-servers [\'ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yaaqsjbublndya2sya52aaggapq6adfjfv5vglphfr6pwa\',\'ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yavhxxltixijkexwgvdiez3rjzajlt4p422ajm2ojfdgaa\'] '
                           '--display-name OFake_VMC_AzCLI3 '
                           '--name OFake_VMC_AzCLI3 '
                           '--gi-version 19.0.0.0 '
@@ -56,9 +56,9 @@ class OracleDatabaseScenario(ScenarioTest):
                           '--is-sparse-diskgroup-enabled False '
                           '--license-model LicenseIncluded '
                           '--memory-size-in-gbs 60 '
-                          '--ssh-public-keys \'ssh-rsa keykeykeykeykey generated-by-azure\' '
-                          '--subnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet/subnets/SDKSubnet  '
+                          '--ssh-public-keys \'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHJDAu814QnRaYFbuFswJX1IdpFAa8yVk4sneI3Q+QLoTyE4W5GR5f6TR5FqA03zxp41chkvjLysnc+EYJmjXQIbvrsEfaUenGu2AbYE3szBK9v+8iUy8JLgjoGuuxTU3BNCvMlTd00yw/qrOYbEDU9ZBnZVY/0nv2E03AzGUUObZJ8IUgNRUmNdWVFQiVUcmkRRM+XsIEUpuh0S6YJLLweZd+H50Y1mhKWXnZZH8Ed/5EmkSr7cO5WEKU2O/KSbavybkjUVWi6dcQMfwmNLBH9aByqAW8QvcZkZDvxLmimLnm3Jd/QDVvGesjyLbUrWfpbsaDXs+DgjTlFlxyqLPYMON5cfSg8wBj3Y176yWxwmrPnkro8X1Y93poSDQZb9SU68DsTrgVa6FoXWPkbUXz/nZX9GkTwE1Nhy2EPL4J+J50ZUZWG0bK25dFTKrzimLn1Qmvrx3so9qDId9LWbpYI6cJYxDTkGdGpuaHqDqGAi+5HeeXxx3/zO8pErPxy20= generated-by-azure\' '
+                          '--subnet-id /subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated  '
                           '--time-zone UTC '
-                          '--vnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet '
+                          '--vnet-id /subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet '
                           '--no-wait ')
 
