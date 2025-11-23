@@ -2201,7 +2201,7 @@ def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
                            no_wait=False):
     """Rollback a nodepool to the most recent previous version configuration."""
 
-    # Warn users when auto-upgrade is enabled 
+    # Warn users when auto-upgrade is enabled
     if cmd and getattr(cmd, "cli_ctx", None):
         try:
             managed_clusters_client = cf_managed_clusters(cmd.cli_ctx)
@@ -2233,16 +2233,16 @@ def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
             logger.debug("Unable to retrieve auto-upgrade configuration before rollback: %s", ex)
 
     logger.info("Fetching the most recent rollback version...")
-    
+
     # Get upgrade profile to retrieve recently used versions
     upgrade_profile = client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
-    
+
     if not upgrade_profile.recently_used_versions or len(upgrade_profile.recently_used_versions) == 0:
         raise CLIError(
             "No rollback versions available. The nodepool must have been upgraded at least once "
             "to have rollback history available."
         )
-    
+
     # Sort by timestamp (most recent first) and get the most recent version
     sorted_versions = sorted(
         upgrade_profile.recently_used_versions,
@@ -2250,10 +2250,10 @@ def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
         reverse=True
     )
     most_recent = sorted_versions[0]
-    
+
     kubernetes_version = most_recent.orchestrator_version
     node_image_version = most_recent.node_image_version
-    
+
     logger.info(
         "Rolling back to the most recent version: "
         "Kubernetes version: %s, Node image version: %s (timestamp: %s)",
