@@ -3308,10 +3308,10 @@ def cli_cosmosdb_fleetspace_create(client,
     # Extract service_tier and data_regions from base level (mandatory for create)
     service_tier = fleetspace_body['properties'].get('serviceTier')
     data_regions = fleetspace_body['properties'].get('dataRegions')
-    
+
     if not service_tier:
         raise CLIError('Missing required field "serviceTier" in properties.')
-    
+
     if not data_regions:
         raise CLIError('Missing required field "dataRegions" in properties.')
 
