@@ -261,18 +261,19 @@ class GarnetClustersOperations:
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list_by_subscription(self, **kwargs: Any) -> ItemPaged["_models.ClusterResource"]:
+    def list_by_subscription(self, **kwargs: Any) -> ItemPaged["_models.GarnetClusterResource"]:
         """List all Garnet clusters in this subscription.
 
-        :return: An iterator like instance of either ClusterResource or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :return: An iterator like instance of either GarnetClusterResource or the result of
+         cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.GarnetClusterResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ListClusters] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ListGarnetClusters] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -311,7 +312,7 @@ class GarnetClustersOperations:
             return _request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("ListClusters", pipeline_response)
+            deserialized = self._deserialize("ListGarnetClusters", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
@@ -339,21 +340,24 @@ class GarnetClustersOperations:
         return ItemPaged(get_next, extract_data)
 
     @distributed_trace
-    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> ItemPaged["_models.ClusterResource"]:
+    def list_by_resource_group(
+        self, resource_group_name: str, **kwargs: Any
+    ) -> ItemPaged["_models.GarnetClusterResource"]:
         """List all Garnet clusters in this resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :return: An iterator like instance of either ClusterResource or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :return: An iterator like instance of either GarnetClusterResource or the result of
+         cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.GarnetClusterResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ListClusters] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ListGarnetClusters] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -393,7 +397,7 @@ class GarnetClustersOperations:
             return _request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("ListClusters", pipeline_response)
+            deserialized = self._deserialize("ListGarnetClusters", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
@@ -421,7 +425,7 @@ class GarnetClustersOperations:
         return ItemPaged(get_next, extract_data)
 
     @distributed_trace
-    def get(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> _models.ClusterResource:
+    def get(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> _models.GarnetClusterResource:
         """Get the properties of a Garnet cache cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -429,8 +433,8 @@ class GarnetClustersOperations:
         :type resource_group_name: str
         :param cluster_name: Garnet cache cluster name. Required.
         :type cluster_name: str
-        :return: ClusterResource or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.ClusterResource
+        :return: GarnetClusterResource or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.GarnetClusterResource
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -445,7 +449,7 @@ class GarnetClustersOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        cls: ClsType[_models.GarnetClusterResource] = kwargs.pop("cls", None)
 
         _request = build_get_request(
             resource_group_name=resource_group_name,
@@ -472,7 +476,7 @@ class GarnetClustersOperations:
             )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ClusterResource", pipeline_response.http_response)
+        deserialized = self._deserialize("GarnetClusterResource", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -595,7 +599,7 @@ class GarnetClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: Union[_models.ClusterResource, IO[bytes]],
+        body: Union[_models.GarnetClusterResource, IO[bytes]],
         **kwargs: Any
     ) -> Iterator[bytes]:
         error_map: MutableMapping = {
@@ -619,7 +623,7 @@ class GarnetClustersOperations:
         if isinstance(body, (IOBase, bytes)):
             _content = body
         else:
-            _json = self._serialize.body(body, "ClusterResource")
+            _json = self._serialize.body(body, "GarnetClusterResource")
 
         _request = build_create_update_request(
             resource_group_name=resource_group_name,
@@ -666,11 +670,11 @@ class GarnetClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: _models.ClusterResource,
+        body: _models.GarnetClusterResource,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
+    ) -> LROPoller[_models.GarnetClusterResource]:
         """Create or update a Garnet cache cluster. When updating, you must specify all writable
         properties.
 
@@ -680,13 +684,13 @@ class GarnetClustersOperations:
         :param cluster_name: Garnet cache cluster name. Required.
         :type cluster_name: str
         :param body: The properties specifying the desired state of the Garnet cache cluster. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.ClusterResource
+        :type body: ~azure.mgmt.cosmosdb.models.GarnetClusterResource
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
+        :return: An instance of LROPoller that returns either GarnetClusterResource or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.GarnetClusterResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -699,7 +703,7 @@ class GarnetClustersOperations:
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
+    ) -> LROPoller[_models.GarnetClusterResource]:
         """Create or update a Garnet cache cluster. When updating, you must specify all writable
         properties.
 
@@ -713,9 +717,9 @@ class GarnetClustersOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
+        :return: An instance of LROPoller that returns either GarnetClusterResource or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.GarnetClusterResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -724,9 +728,9 @@ class GarnetClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: Union[_models.ClusterResource, IO[bytes]],
+        body: Union[_models.GarnetClusterResource, IO[bytes]],
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
+    ) -> LROPoller[_models.GarnetClusterResource]:
         """Create or update a Garnet cache cluster. When updating, you must specify all writable
         properties.
 
@@ -736,11 +740,11 @@ class GarnetClustersOperations:
         :param cluster_name: Garnet cache cluster name. Required.
         :type cluster_name: str
         :param body: The properties specifying the desired state of the Garnet cache cluster. Is either
-         a ClusterResource type or a IO[bytes] type. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.ClusterResource or IO[bytes]
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
+         a GarnetClusterResource type or a IO[bytes] type. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.GarnetClusterResource or IO[bytes]
+        :return: An instance of LROPoller that returns either GarnetClusterResource or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.GarnetClusterResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -748,7 +752,7 @@ class GarnetClustersOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        cls: ClsType[_models.GarnetClusterResource] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -768,7 +772,7 @@ class GarnetClustersOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ClusterResource", pipeline_response.http_response)
+            deserialized = self._deserialize("GarnetClusterResource", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -780,13 +784,13 @@ class GarnetClustersOperations:
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller[_models.ClusterResource].from_continuation_token(
+            return LROPoller[_models.GarnetClusterResource].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller[_models.ClusterResource](
+        return LROPoller[_models.GarnetClusterResource](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
@@ -794,7 +798,7 @@ class GarnetClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: Union[_models.ClusterResourcePatch, IO[bytes]],
+        body: Union[_models.GarnetClusterResourcePatch, IO[bytes]],
         **kwargs: Any
     ) -> Iterator[bytes]:
         error_map: MutableMapping = {
@@ -818,7 +822,7 @@ class GarnetClustersOperations:
         if isinstance(body, (IOBase, bytes)):
             _content = body
         else:
-            _json = self._serialize.body(body, "ClusterResourcePatch")
+            _json = self._serialize.body(body, "GarnetClusterResourcePatch")
 
         _request = build_update_request(
             resource_group_name=resource_group_name,
@@ -872,11 +876,11 @@ class GarnetClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: _models.ClusterResourcePatch,
+        body: _models.GarnetClusterResourcePatch,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
+    ) -> LROPoller[_models.GarnetClusterResource]:
         """Updates some of the properties of a garnet cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -885,13 +889,13 @@ class GarnetClustersOperations:
         :param cluster_name: Garnet cache cluster name. Required.
         :type cluster_name: str
         :param body: Parameters to provide for updating the Garnet cluster. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.ClusterResourcePatch
+        :type body: ~azure.mgmt.cosmosdb.models.GarnetClusterResourcePatch
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
+        :return: An instance of LROPoller that returns either GarnetClusterResource or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.GarnetClusterResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -904,7 +908,7 @@ class GarnetClustersOperations:
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
+    ) -> LROPoller[_models.GarnetClusterResource]:
         """Updates some of the properties of a garnet cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -917,9 +921,9 @@ class GarnetClustersOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
+        :return: An instance of LROPoller that returns either GarnetClusterResource or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.GarnetClusterResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -928,9 +932,9 @@ class GarnetClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        body: Union[_models.ClusterResourcePatch, IO[bytes]],
+        body: Union[_models.GarnetClusterResourcePatch, IO[bytes]],
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
+    ) -> LROPoller[_models.GarnetClusterResource]:
         """Updates some of the properties of a garnet cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -939,11 +943,11 @@ class GarnetClustersOperations:
         :param cluster_name: Garnet cache cluster name. Required.
         :type cluster_name: str
         :param body: Parameters to provide for updating the Garnet cluster. Is either a
-         ClusterResourcePatch type or a IO[bytes] type. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.ClusterResourcePatch or IO[bytes]
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
+         GarnetClusterResourcePatch type or a IO[bytes] type. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.GarnetClusterResourcePatch or IO[bytes]
+        :return: An instance of LROPoller that returns either GarnetClusterResource or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.GarnetClusterResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -951,7 +955,7 @@ class GarnetClustersOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        cls: ClsType[_models.GarnetClusterResource] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -971,7 +975,7 @@ class GarnetClustersOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ClusterResource", pipeline_response.http_response)
+            deserialized = self._deserialize("GarnetClusterResource", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -983,12 +987,12 @@ class GarnetClustersOperations:
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller[_models.ClusterResource].from_continuation_token(
+            return LROPoller[_models.GarnetClusterResource].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller[_models.ClusterResource](
+        return LROPoller[_models.GarnetClusterResource](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )

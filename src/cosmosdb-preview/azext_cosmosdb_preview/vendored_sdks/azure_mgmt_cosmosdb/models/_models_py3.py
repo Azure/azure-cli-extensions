@@ -3375,124 +3375,6 @@ class ClusterKey(_serialization.Model):
         self.order_by = order_by
 
 
-class TrackedResource(Resource):
-    """The resource model definition for an Azure Resource Manager tracked top level resource which
-    has 'tags' and a 'location'.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to server.
-
-    :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
-    :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
-     information.
-    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives. Required.
-    :vartype location: str
-    """
-
-    _validation = {
-        "id": {"readonly": True},
-        "name": {"readonly": True},
-        "type": {"readonly": True},
-        "system_data": {"readonly": True},
-        "location": {"required": True},
-    }
-
-    _attribute_map = {
-        "id": {"key": "id", "type": "str"},
-        "name": {"key": "name", "type": "str"},
-        "type": {"key": "type", "type": "str"},
-        "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
-        "location": {"key": "location", "type": "str"},
-    }
-
-    def __init__(self, *, location: str, tags: Optional[dict[str, str]] = None, **kwargs: Any) -> None:
-        """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives. Required.
-        :paramtype location: str
-        """
-        super().__init__(**kwargs)
-        self.tags = tags
-        self.location = location
-
-
-class ClusterResource(TrackedResource):
-    """Representation of a Garnet cache cluster.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to server.
-
-    :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
-    :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
-     information.
-    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives. Required.
-    :vartype location: str
-    :ivar properties: Properties of a Garnet cache cluster.
-    :vartype properties: ~azure.mgmt.cosmosdb.models.ClusterResourceProperties
-    """
-
-    _validation = {
-        "id": {"readonly": True},
-        "name": {"readonly": True},
-        "type": {"readonly": True},
-        "system_data": {"readonly": True},
-        "location": {"required": True},
-    }
-
-    _attribute_map = {
-        "id": {"key": "id", "type": "str"},
-        "name": {"key": "name", "type": "str"},
-        "type": {"key": "type", "type": "str"},
-        "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
-        "location": {"key": "location", "type": "str"},
-        "properties": {"key": "properties", "type": "ClusterResourceProperties"},
-    }
-
-    def __init__(
-        self,
-        *,
-        location: str,
-        tags: Optional[dict[str, str]] = None,
-        properties: Optional["_models.ClusterResourceProperties"] = None,
-        **kwargs: Any
-    ) -> None:
-        """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives. Required.
-        :paramtype location: str
-        :keyword properties: Properties of a Garnet cache cluster.
-        :paramtype properties: ~azure.mgmt.cosmosdb.models.ClusterResourceProperties
-        """
-        super().__init__(tags=tags, location=location, **kwargs)
-        self.properties = properties
-
-
 class ManagedCassandraARMResourceProperties(_serialization.Model):
     """The core properties of ARM resources.
 
@@ -3562,7 +3444,7 @@ class ManagedCassandraARMResourceProperties(_serialization.Model):
         self.identity = identity
 
 
-class ClusterResourceAutoGenerated(ManagedCassandraARMResourceProperties):
+class ClusterResource(ManagedCassandraARMResourceProperties):
     """Representation of a managed Cassandra cluster.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -3585,7 +3467,7 @@ class ClusterResourceAutoGenerated(ManagedCassandraARMResourceProperties):
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedCassandraManagedServiceIdentity
     :ivar properties: Properties of a managed Cassandra cluster.
-    :vartype properties: ~azure.mgmt.cosmosdb.models.ClusterResourcePropertiesAutoGenerated
+    :vartype properties: ~azure.mgmt.cosmosdb.models.ClusterResourceProperties
     """
 
     _validation = {
@@ -3601,7 +3483,7 @@ class ClusterResourceAutoGenerated(ManagedCassandraARMResourceProperties):
         "location": {"key": "location", "type": "str"},
         "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedCassandraManagedServiceIdentity"},
-        "properties": {"key": "properties", "type": "ClusterResourcePropertiesAutoGenerated"},
+        "properties": {"key": "properties", "type": "ClusterResourceProperties"},
     }
 
     def __init__(
@@ -3610,7 +3492,7 @@ class ClusterResourceAutoGenerated(ManagedCassandraARMResourceProperties):
         location: Optional[str] = None,
         tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedCassandraManagedServiceIdentity"] = None,
-        properties: Optional["_models.ClusterResourcePropertiesAutoGenerated"] = None,
+        properties: Optional["_models.ClusterResourceProperties"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3626,182 +3508,13 @@ class ClusterResourceAutoGenerated(ManagedCassandraARMResourceProperties):
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedCassandraManagedServiceIdentity
         :keyword properties: Properties of a managed Cassandra cluster.
-        :paramtype properties: ~azure.mgmt.cosmosdb.models.ClusterResourcePropertiesAutoGenerated
+        :paramtype properties: ~azure.mgmt.cosmosdb.models.ClusterResourceProperties
         """
         super().__init__(location=location, tags=tags, identity=identity, **kwargs)
         self.properties = properties
 
 
-class ClusterResourcePatch(_serialization.Model):
-    """Representation of a Garnet cache cluster for updates.
-
-    :ivar properties: Properties of a Garnet cache cluster for updates.
-    :vartype properties: ~azure.mgmt.cosmosdb.models.ClusterResourcePatchProperties
-    """
-
-    _attribute_map = {
-        "properties": {"key": "properties", "type": "ClusterResourcePatchProperties"},
-    }
-
-    def __init__(self, *, properties: Optional["_models.ClusterResourcePatchProperties"] = None, **kwargs: Any) -> None:
-        """
-        :keyword properties: Properties of a Garnet cache cluster for updates.
-        :paramtype properties: ~azure.mgmt.cosmosdb.models.ClusterResourcePatchProperties
-        """
-        super().__init__(**kwargs)
-        self.properties = properties
-
-
-class ClusterResourcePatchProperties(_serialization.Model):
-    """Properties of a Garnet cache cluster for updates.
-
-    :ivar cluster_type: Type of the cluster. If set to Production, some operations might not be
-     permitted on cluster. Known values are: "Production" and "NonProduction".
-    :vartype cluster_type: str or ~azure.mgmt.cosmosdb.models.ClusterType
-    :ivar extensions: Extensions to be added or updated on cluster.
-    :vartype extensions: list[str]
-    """
-
-    _attribute_map = {
-        "cluster_type": {"key": "clusterType", "type": "str"},
-        "extensions": {"key": "extensions", "type": "[str]"},
-    }
-
-    def __init__(
-        self,
-        *,
-        cluster_type: Optional[Union[str, "_models.ClusterType"]] = None,
-        extensions: Optional[list[str]] = None,
-        **kwargs: Any
-    ) -> None:
-        """
-        :keyword cluster_type: Type of the cluster. If set to Production, some operations might not be
-         permitted on cluster. Known values are: "Production" and "NonProduction".
-        :paramtype cluster_type: str or ~azure.mgmt.cosmosdb.models.ClusterType
-        :keyword extensions: Extensions to be added or updated on cluster.
-        :paramtype extensions: list[str]
-        """
-        super().__init__(**kwargs)
-        self.cluster_type = cluster_type
-        self.extensions = extensions
-
-
 class ClusterResourceProperties(_serialization.Model):
-    """Properties of a Garnet cache cluster.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar provisioning_state: The status of the resource at the time the operation was called.
-     Known values are: "Creating", "Updating", "Deleting", "Succeeded", "Failed", and "Canceled".
-    :vartype provisioning_state: str or ~azure.mgmt.cosmosdb.models.GarnetCacheProvisioningState
-    :ivar subnet_id: Resource id of a subnet that this cluster's management service should have its
-     network interface attached to. The subnet must be routable to all subnets that will be
-     delegated to data centers. The resource id must be of the form '/subscriptions/\\
-     :code:`<subscription id>`/resourceGroups/\\ :code:`<resource
-     group>`/providers/Microsoft.Network/virtualNetworks/\\ :code:`<virtual network>`/subnets/\\
-     :code:`<subnet>`'.
-    :vartype subnet_id: str
-    :ivar end_points: endpoints for clients to connect to the cluster.
-    :vartype end_points: list[~azure.mgmt.cosmosdb.models.ClusterResourcePropertiesEndPointsItem]
-    :ivar replication_factor: Number of copies of data maintained by the cluster.
-    :vartype replication_factor: int
-    :ivar node_count: Number of nodes.
-    :vartype node_count: int
-    :ivar node_sku: Virtual Machine SKU used for clusters. Default value is Standard_DS14_v2.
-    :vartype node_sku: str
-    :ivar availability_zone: If the data center has Availability Zone support, apply it to the
-     Virtual Machine ScaleSet that host the garnet cluster virtual machines.
-    :vartype availability_zone: bool
-    :ivar allocation_state: Allocation state of the cluster and data center resources. Active
-     implies the virtual machines of the cluster are allocated, deallocated implies virtual machines
-     and resources are deallocated. Known values are: "Active" and "Deallocated".
-    :vartype allocation_state: str or ~azure.mgmt.cosmosdb.models.AllocationState
-    :ivar cluster_type: Type of the cluster. If set to Production, some operations might not be
-     permitted on cluster. Known values are: "Production" and "NonProduction".
-    :vartype cluster_type: str or ~azure.mgmt.cosmosdb.models.ClusterType
-    :ivar provision_error: Error related to resource provisioning.
-    :vartype provision_error: ~azure.mgmt.cosmosdb.models.ErrorDetailAutoGenerated
-    :ivar extensions: Extensions to be added or updated on cluster.
-    :vartype extensions: list[str]
-    """
-
-    _validation = {
-        "provisioning_state": {"readonly": True},
-        "end_points": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "provisioning_state": {"key": "provisioningState", "type": "str"},
-        "subnet_id": {"key": "subnetId", "type": "str"},
-        "end_points": {"key": "endPoints", "type": "[ClusterResourcePropertiesEndPointsItem]"},
-        "replication_factor": {"key": "replicationFactor", "type": "int"},
-        "node_count": {"key": "nodeCount", "type": "int"},
-        "node_sku": {"key": "nodeSku", "type": "str"},
-        "availability_zone": {"key": "availabilityZone", "type": "bool"},
-        "allocation_state": {"key": "allocationState", "type": "str"},
-        "cluster_type": {"key": "clusterType", "type": "str"},
-        "provision_error": {"key": "provisionError", "type": "ErrorDetailAutoGenerated"},
-        "extensions": {"key": "extensions", "type": "[str]"},
-    }
-
-    def __init__(
-        self,
-        *,
-        subnet_id: Optional[str] = None,
-        replication_factor: Optional[int] = None,
-        node_count: Optional[int] = None,
-        node_sku: Optional[str] = None,
-        availability_zone: Optional[bool] = None,
-        allocation_state: Optional[Union[str, "_models.AllocationState"]] = None,
-        cluster_type: Optional[Union[str, "_models.ClusterType"]] = None,
-        provision_error: Optional["_models.ErrorDetailAutoGenerated"] = None,
-        extensions: Optional[list[str]] = None,
-        **kwargs: Any
-    ) -> None:
-        """
-        :keyword subnet_id: Resource id of a subnet that this cluster's management service should have
-         its network interface attached to. The subnet must be routable to all subnets that will be
-         delegated to data centers. The resource id must be of the form '/subscriptions/\\
-         :code:`<subscription id>`/resourceGroups/\\ :code:`<resource
-         group>`/providers/Microsoft.Network/virtualNetworks/\\ :code:`<virtual network>`/subnets/\\
-         :code:`<subnet>`'.
-        :paramtype subnet_id: str
-        :keyword replication_factor: Number of copies of data maintained by the cluster.
-        :paramtype replication_factor: int
-        :keyword node_count: Number of nodes.
-        :paramtype node_count: int
-        :keyword node_sku: Virtual Machine SKU used for clusters. Default value is Standard_DS14_v2.
-        :paramtype node_sku: str
-        :keyword availability_zone: If the data center has Availability Zone support, apply it to the
-         Virtual Machine ScaleSet that host the garnet cluster virtual machines.
-        :paramtype availability_zone: bool
-        :keyword allocation_state: Allocation state of the cluster and data center resources. Active
-         implies the virtual machines of the cluster are allocated, deallocated implies virtual machines
-         and resources are deallocated. Known values are: "Active" and "Deallocated".
-        :paramtype allocation_state: str or ~azure.mgmt.cosmosdb.models.AllocationState
-        :keyword cluster_type: Type of the cluster. If set to Production, some operations might not be
-         permitted on cluster. Known values are: "Production" and "NonProduction".
-        :paramtype cluster_type: str or ~azure.mgmt.cosmosdb.models.ClusterType
-        :keyword provision_error: Error related to resource provisioning.
-        :paramtype provision_error: ~azure.mgmt.cosmosdb.models.ErrorDetailAutoGenerated
-        :keyword extensions: Extensions to be added or updated on cluster.
-        :paramtype extensions: list[str]
-        """
-        super().__init__(**kwargs)
-        self.provisioning_state: Optional[Union[str, "_models.GarnetCacheProvisioningState"]] = None
-        self.subnet_id = subnet_id
-        self.end_points: Optional[list["_models.ClusterResourcePropertiesEndPointsItem"]] = None
-        self.replication_factor = replication_factor
-        self.node_count = node_count
-        self.node_sku = node_sku
-        self.availability_zone = availability_zone
-        self.allocation_state = allocation_state
-        self.cluster_type = cluster_type
-        self.provision_error = provision_error
-        self.extensions = extensions
-
-
-class ClusterResourcePropertiesAutoGenerated(_serialization.Model):
     """Properties of a managed Cassandra cluster.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -4066,32 +3779,6 @@ class ClusterResourcePropertiesAutoGenerated(_serialization.Model):
         self.scheduled_event_strategy = scheduled_event_strategy
         self.azure_connection_method = azure_connection_method
         self.private_link_resource_id: Optional[str] = None
-
-
-class ClusterResourcePropertiesEndPointsItem(_serialization.Model):
-    """ClusterResourcePropertiesEndPointsItem.
-
-    :ivar ip_address: Ipv4 address of the endpoint.
-    :vartype ip_address: str
-    :ivar port: Port number.
-    :vartype port: int
-    """
-
-    _attribute_map = {
-        "ip_address": {"key": "ipAddress", "type": "str"},
-        "port": {"key": "port", "type": "int"},
-    }
-
-    def __init__(self, *, ip_address: Optional[str] = None, port: Optional[int] = None, **kwargs: Any) -> None:
-        """
-        :keyword ip_address: Ipv4 address of the endpoint.
-        :paramtype ip_address: str
-        :keyword port: Port number.
-        :paramtype port: int
-        """
-        super().__init__(**kwargs)
-        self.ip_address = ip_address
-        self.port = port
 
 
 class Column(_serialization.Model):
@@ -8141,7 +7828,68 @@ class FleetAnalyticsListResult(_serialization.Model):
         self.next_link: Optional[str] = None
 
 
-class FleetAnalyticsResource(ProxyResource):
+class ResourceAutoGenerated2(_serialization.Model):
+    """Common fields that are returned in the response for all Azure Resource Manager resources.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
+        self.system_data: Optional["_models.SystemData"] = None
+
+
+class ProxyResourceAutoGenerated2(ResourceAutoGenerated2):
+    """The resource model definition for a Azure Resource Manager proxy resource. It will not have
+    tags and a location.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    """
+
+
+class FleetAnalyticsResource(ProxyResourceAutoGenerated2):
     """An Azure Cosmos DB FleetAnalytics.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -8238,6 +7986,60 @@ class FleetListResult(_serialization.Model):
         super().__init__(**kwargs)
         self.value: Optional[list["_models.FleetResource"]] = None
         self.next_link: Optional[str] = None
+
+
+class TrackedResource(ResourceAutoGenerated2):
+    """The resource model definition for an Azure Resource Manager tracked top level resource which
+    has 'tags' and a 'location'.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar location: The geo-location where the resource lives. Required.
+    :vartype location: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "location": {"required": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
+    }
+
+    def __init__(self, *, location: str, tags: Optional[dict[str, str]] = None, **kwargs: Any) -> None:
+        """
+        :keyword tags: Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
+        """
+        super().__init__(**kwargs)
+        self.tags = tags
+        self.location = location
 
 
 class FleetResource(TrackedResource):
@@ -8388,7 +8190,7 @@ class FleetspaceAccountPropertiesGlobalDatabaseAccountProperties(_serialization.
         self.arm_location = arm_location
 
 
-class FleetspaceAccountResource(ProxyResource):
+class FleetspaceAccountResource(ProxyResourceAutoGenerated2):
     """An Azure Cosmos DB Fleetspace Account.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -8541,7 +8343,7 @@ class FleetspacePropertiesThroughputPoolConfiguration(_serialization.Model):  # 
         self.max_consumable_r_us = max_consumable_r_us
 
 
-class FleetspaceResource(ProxyResource):
+class FleetspaceResource(ProxyResourceAutoGenerated2):
     """An Azure Cosmos DB Fleetspace.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -8798,6 +8600,268 @@ class FullTextPolicy(_serialization.Model):
         super().__init__(**kwargs)
         self.default_language = default_language
         self.full_text_paths = full_text_paths
+
+
+class GarnetClusterResource(TrackedResource):
+    """Representation of a Garnet cache cluster.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar location: The geo-location where the resource lives. Required.
+    :vartype location: str
+    :ivar properties: Properties of a Garnet cache cluster.
+    :vartype properties: ~azure.mgmt.cosmosdb.models.GarnetClusterResourceProperties
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "location": {"required": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
+        "properties": {"key": "properties", "type": "GarnetClusterResourceProperties"},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        tags: Optional[dict[str, str]] = None,
+        properties: Optional["_models.GarnetClusterResourceProperties"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword tags: Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
+        :keyword properties: Properties of a Garnet cache cluster.
+        :paramtype properties: ~azure.mgmt.cosmosdb.models.GarnetClusterResourceProperties
+        """
+        super().__init__(tags=tags, location=location, **kwargs)
+        self.properties = properties
+
+
+class GarnetClusterResourcePatch(_serialization.Model):
+    """Representation of a Garnet cache cluster for updates.
+
+    :ivar properties: Properties of a Garnet cache cluster for updates.
+    :vartype properties: ~azure.mgmt.cosmosdb.models.GarnetClusterResourcePatchProperties
+    """
+
+    _attribute_map = {
+        "properties": {"key": "properties", "type": "GarnetClusterResourcePatchProperties"},
+    }
+
+    def __init__(
+        self, *, properties: Optional["_models.GarnetClusterResourcePatchProperties"] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword properties: Properties of a Garnet cache cluster for updates.
+        :paramtype properties: ~azure.mgmt.cosmosdb.models.GarnetClusterResourcePatchProperties
+        """
+        super().__init__(**kwargs)
+        self.properties = properties
+
+
+class GarnetClusterResourcePatchProperties(_serialization.Model):
+    """Properties of a Garnet cache cluster for updates.
+
+    :ivar cluster_type: Type of the cluster. If set to Production, some operations might not be
+     permitted on cluster. Known values are: "Production" and "NonProduction".
+    :vartype cluster_type: str or ~azure.mgmt.cosmosdb.models.ClusterType
+    :ivar extensions: Extensions to be added or updated on cluster.
+    :vartype extensions: list[str]
+    """
+
+    _attribute_map = {
+        "cluster_type": {"key": "clusterType", "type": "str"},
+        "extensions": {"key": "extensions", "type": "[str]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        cluster_type: Optional[Union[str, "_models.ClusterType"]] = None,
+        extensions: Optional[list[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword cluster_type: Type of the cluster. If set to Production, some operations might not be
+         permitted on cluster. Known values are: "Production" and "NonProduction".
+        :paramtype cluster_type: str or ~azure.mgmt.cosmosdb.models.ClusterType
+        :keyword extensions: Extensions to be added or updated on cluster.
+        :paramtype extensions: list[str]
+        """
+        super().__init__(**kwargs)
+        self.cluster_type = cluster_type
+        self.extensions = extensions
+
+
+class GarnetClusterResourceProperties(_serialization.Model):
+    """Properties of a Garnet cache cluster.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provisioning_state: The status of the resource at the time the operation was called.
+     Known values are: "Creating", "Updating", "Deleting", "Succeeded", "Failed", and "Canceled".
+    :vartype provisioning_state: str or ~azure.mgmt.cosmosdb.models.GarnetCacheProvisioningState
+    :ivar subnet_id: Resource id of a subnet that this cluster's management service should have its
+     network interface attached to. The subnet must be routable to all subnets that will be
+     delegated to data centers. The resource id must be of the form '/subscriptions/\\
+     :code:`<subscription id>`/resourceGroups/\\ :code:`<resource
+     group>`/providers/Microsoft.Network/virtualNetworks/\\ :code:`<virtual network>`/subnets/\\
+     :code:`<subnet>`'.
+    :vartype subnet_id: str
+    :ivar end_points: endpoints for clients to connect to the cluster.
+    :vartype end_points:
+     list[~azure.mgmt.cosmosdb.models.GarnetClusterResourcePropertiesEndPointsItem]
+    :ivar replication_factor: Number of copies of data maintained by the cluster.
+    :vartype replication_factor: int
+    :ivar node_count: Number of nodes.
+    :vartype node_count: int
+    :ivar node_sku: Virtual Machine SKU used for clusters. Default value is Standard_DS14_v2.
+    :vartype node_sku: str
+    :ivar availability_zone: If the data center has Availability Zone support, apply it to the
+     Virtual Machine ScaleSet that host the garnet cluster virtual machines.
+    :vartype availability_zone: bool
+    :ivar allocation_state: Allocation state of the cluster and data center resources. Active
+     implies the virtual machines of the cluster are allocated, deallocated implies virtual machines
+     and resources are deallocated. Known values are: "Active" and "Deallocated".
+    :vartype allocation_state: str or ~azure.mgmt.cosmosdb.models.AllocationState
+    :ivar cluster_type: Type of the cluster. If set to Production, some operations might not be
+     permitted on cluster. Known values are: "Production" and "NonProduction".
+    :vartype cluster_type: str or ~azure.mgmt.cosmosdb.models.ClusterType
+    :ivar provision_error: Error related to resource provisioning.
+    :vartype provision_error: ~azure.mgmt.cosmosdb.models.ErrorDetailAutoGenerated
+    :ivar extensions: Extensions to be added or updated on cluster.
+    :vartype extensions: list[str]
+    """
+
+    _validation = {
+        "provisioning_state": {"readonly": True},
+        "end_points": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "subnet_id": {"key": "subnetId", "type": "str"},
+        "end_points": {"key": "endPoints", "type": "[GarnetClusterResourcePropertiesEndPointsItem]"},
+        "replication_factor": {"key": "replicationFactor", "type": "int"},
+        "node_count": {"key": "nodeCount", "type": "int"},
+        "node_sku": {"key": "nodeSku", "type": "str"},
+        "availability_zone": {"key": "availabilityZone", "type": "bool"},
+        "allocation_state": {"key": "allocationState", "type": "str"},
+        "cluster_type": {"key": "clusterType", "type": "str"},
+        "provision_error": {"key": "provisionError", "type": "ErrorDetailAutoGenerated"},
+        "extensions": {"key": "extensions", "type": "[str]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        subnet_id: Optional[str] = None,
+        replication_factor: Optional[int] = None,
+        node_count: Optional[int] = None,
+        node_sku: Optional[str] = None,
+        availability_zone: Optional[bool] = None,
+        allocation_state: Optional[Union[str, "_models.AllocationState"]] = None,
+        cluster_type: Optional[Union[str, "_models.ClusterType"]] = None,
+        provision_error: Optional["_models.ErrorDetailAutoGenerated"] = None,
+        extensions: Optional[list[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword subnet_id: Resource id of a subnet that this cluster's management service should have
+         its network interface attached to. The subnet must be routable to all subnets that will be
+         delegated to data centers. The resource id must be of the form '/subscriptions/\\
+         :code:`<subscription id>`/resourceGroups/\\ :code:`<resource
+         group>`/providers/Microsoft.Network/virtualNetworks/\\ :code:`<virtual network>`/subnets/\\
+         :code:`<subnet>`'.
+        :paramtype subnet_id: str
+        :keyword replication_factor: Number of copies of data maintained by the cluster.
+        :paramtype replication_factor: int
+        :keyword node_count: Number of nodes.
+        :paramtype node_count: int
+        :keyword node_sku: Virtual Machine SKU used for clusters. Default value is Standard_DS14_v2.
+        :paramtype node_sku: str
+        :keyword availability_zone: If the data center has Availability Zone support, apply it to the
+         Virtual Machine ScaleSet that host the garnet cluster virtual machines.
+        :paramtype availability_zone: bool
+        :keyword allocation_state: Allocation state of the cluster and data center resources. Active
+         implies the virtual machines of the cluster are allocated, deallocated implies virtual machines
+         and resources are deallocated. Known values are: "Active" and "Deallocated".
+        :paramtype allocation_state: str or ~azure.mgmt.cosmosdb.models.AllocationState
+        :keyword cluster_type: Type of the cluster. If set to Production, some operations might not be
+         permitted on cluster. Known values are: "Production" and "NonProduction".
+        :paramtype cluster_type: str or ~azure.mgmt.cosmosdb.models.ClusterType
+        :keyword provision_error: Error related to resource provisioning.
+        :paramtype provision_error: ~azure.mgmt.cosmosdb.models.ErrorDetailAutoGenerated
+        :keyword extensions: Extensions to be added or updated on cluster.
+        :paramtype extensions: list[str]
+        """
+        super().__init__(**kwargs)
+        self.provisioning_state: Optional[Union[str, "_models.GarnetCacheProvisioningState"]] = None
+        self.subnet_id = subnet_id
+        self.end_points: Optional[list["_models.GarnetClusterResourcePropertiesEndPointsItem"]] = None
+        self.replication_factor = replication_factor
+        self.node_count = node_count
+        self.node_sku = node_sku
+        self.availability_zone = availability_zone
+        self.allocation_state = allocation_state
+        self.cluster_type = cluster_type
+        self.provision_error = provision_error
+        self.extensions = extensions
+
+
+class GarnetClusterResourcePropertiesEndPointsItem(_serialization.Model):  # pylint: disable=name-too-long
+    """GarnetClusterResourcePropertiesEndPointsItem.
+
+    :ivar ip_address: Ipv4 address of the endpoint.
+    :vartype ip_address: str
+    :ivar port: Port number.
+    :vartype port: int
+    """
+
+    _attribute_map = {
+        "ip_address": {"key": "ipAddress", "type": "str"},
+        "port": {"key": "port", "type": "int"},
+    }
+
+    def __init__(self, *, ip_address: Optional[str] = None, port: Optional[int] = None, **kwargs: Any) -> None:
+        """
+        :keyword ip_address: Ipv4 address of the endpoint.
+        :paramtype ip_address: str
+        :keyword port: Port number.
+        :paramtype port: int
+        """
+        super().__init__(**kwargs)
+        self.ip_address = ip_address
+        self.port = port
 
 
 class GraphAPIComputeRegionalServiceResource(RegionalServiceResource):
@@ -10422,48 +10486,20 @@ class ListBackups(_serialization.Model):
 
 
 class ListClusters(_serialization.Model):
-    """List of Garnet clusters.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar value: Container for the array of clusters.
-    :vartype value: list[~azure.mgmt.cosmosdb.models.ClusterResource]
-    :ivar next_link: The link used to get the next page of results.
-    :vartype next_link: str
-    """
-
-    _validation = {
-        "value": {"readonly": True},
-        "next_link": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "value": {"key": "value", "type": "[ClusterResource]"},
-        "next_link": {"key": "nextLink", "type": "str"},
-    }
-
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
-        self.value: Optional[list["_models.ClusterResource"]] = None
-        self.next_link: Optional[str] = None
-
-
-class ListClustersAutoGenerated(_serialization.Model):
     """List of managed Cassandra clusters.
 
     :ivar value: Container for the array of clusters.
-    :vartype value: list[~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated]
+    :vartype value: list[~azure.mgmt.cosmosdb.models.ClusterResource]
     """
 
     _attribute_map = {
-        "value": {"key": "value", "type": "[ClusterResourceAutoGenerated]"},
+        "value": {"key": "value", "type": "[ClusterResource]"},
     }
 
-    def __init__(self, *, value: Optional[list["_models.ClusterResourceAutoGenerated"]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: Optional[list["_models.ClusterResource"]] = None, **kwargs: Any) -> None:
         """
         :keyword value: Container for the array of clusters.
-        :paramtype value: list[~azure.mgmt.cosmosdb.models.ClusterResourceAutoGenerated]
+        :paramtype value: list[~azure.mgmt.cosmosdb.models.ClusterResource]
         """
         super().__init__(**kwargs)
         self.value = value
@@ -10513,6 +10549,34 @@ class ListDataCenters(_serialization.Model):
         """ """
         super().__init__(**kwargs)
         self.value: Optional[list["_models.DataCenterResource"]] = None
+
+
+class ListGarnetClusters(_serialization.Model):
+    """List of Garnet clusters.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: Container for the array of clusters.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.GarnetClusterResource]
+    :ivar next_link: The link used to get the next page of results.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[GarnetClusterResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[list["_models.GarnetClusterResource"]] = None
+        self.next_link: Optional[str] = None
 
 
 class Location(_serialization.Model):
@@ -19799,7 +19863,61 @@ class ThroughputPoolAccountsListResult(_serialization.Model):
         self.next_link: Optional[str] = None
 
 
-class ThroughputPoolResource(TrackedResource):
+class TrackedResourceAutoGenerated(Resource):
+    """The resource model definition for an Azure Resource Manager tracked top level resource which
+    has 'tags' and a 'location'.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar location: The geo-location where the resource lives. Required.
+    :vartype location: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "location": {"required": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
+    }
+
+    def __init__(self, *, location: str, tags: Optional[dict[str, str]] = None, **kwargs: Any) -> None:
+        """
+        :keyword tags: Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
+        """
+        super().__init__(**kwargs)
+        self.tags = tags
+        self.location = location
+
+
+class ThroughputPoolResource(TrackedResourceAutoGenerated):
     """An Azure Cosmos DB Throughputpool.
 
     Variables are only populated by the server, and will be ignored when sending a request.
