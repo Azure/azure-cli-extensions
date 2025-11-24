@@ -3,10 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class Cosmosdb_previewmongoMIRbacAssignmentScenarioTest(ScenarioTest):
 
+    @live_only('Existing role assignment got deleted, will enable in next release')
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongoMI_role_assignment', location='westus2')
     def test_cosmosdb_mongoMI_role_assignment(self, resource_group):
         acc_name = self.create_random_name(prefix='cli', length=15)
