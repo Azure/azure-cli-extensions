@@ -3305,23 +3305,33 @@ def cli_cosmosdb_fleetspace_create(client,
 
     """Creates an Azure Cosmos DB Fleetspace."""
 
+    # Extract service_tier and data_regions from base level (mandatory for create)
+    service_tier = fleetspace_body['properties'].get('serviceTier')
+    data_regions = fleetspace_body['properties'].get('dataRegions')
+    
+    if not service_tier:
+        raise CLIError('Missing required field "serviceTier" in properties.')
+    
+    if not data_regions:
+        raise CLIError('Missing required field "dataRegions" in properties.')
+
     throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
         min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],
-        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput'],
-        service_tier=fleetspace_body['properties']['throughputPoolConfiguration']['serviceTier'],
-        data_regions=fleetspace_body['properties']['throughputPoolConfiguration']['dataRegions']
+        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput']
     )
 
-    fleetspace_body = FleetspaceResource(
+    fleetspace_resource = FleetspaceResource(
         fleetspace_api_kind="NoSQL",
-        throughput_pool_configuration=throughput_pool_config
+        throughput_pool_configuration=throughput_pool_config,
+        service_tier=service_tier,
+        data_regions=data_regions
     )
 
     return client.begin_create(
         resource_group_name=resource_group_name,
         fleet_name=fleet_name,
         fleetspace_name=fleetspace_name,
-        body=fleetspace_body
+        body=fleetspace_resource
     )
 
 
@@ -3333,22 +3343,27 @@ def cli_cosmosdb_fleetspace_update(client,
 
     """Updates an existing Azure Cosmos DB Fleetspace."""
 
+    # Extract service_tier and data_regions from base level (optional for update)
+    service_tier = fleetspace_body['properties'].get('serviceTier')
+    data_regions = fleetspace_body['properties'].get('dataRegions')
+
     throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
         min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],
-        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput'],
-        service_tier=fleetspace_body['properties']['throughputPoolConfiguration']['serviceTier']
+        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput']
     )
 
-    fleetspace_body = FleetspaceResource(
+    fleetspace_resource = FleetspaceResource(
         fleetspace_api_kind="NoSQL",
-        throughput_pool_configuration=throughput_pool_config
+        throughput_pool_configuration=throughput_pool_config,
+        service_tier=service_tier,
+        data_regions=data_regions
     )
 
     return client.begin_update(
         resource_group_name=resource_group_name,
         fleet_name=fleet_name,
         fleetspace_name=fleetspace_name,
-        body=fleetspace_body
+        body=fleetspace_resource
     )
 
 
