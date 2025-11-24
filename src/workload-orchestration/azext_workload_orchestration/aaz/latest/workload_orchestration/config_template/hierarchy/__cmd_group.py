@@ -8,8 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._config_set import *
-from ._config_show import *
-from ._config_download import *
-from ._schema_show import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "workload-orchestration config-template hierarchy",
+)
+class __CMDGroup(AAZCommandGroup):
+    """workload-orchestration config-template hierarchy helps to manage config template hierarchies
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

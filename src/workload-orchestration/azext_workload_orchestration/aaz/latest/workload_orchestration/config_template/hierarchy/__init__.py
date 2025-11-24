@@ -9,7 +9,4 @@
 # flake8: noqa
 
 from .__cmd_group import *
-from ._config_set import *
-from ._config_show import *
-from ._config_download import *
-from ._schema_show import *
+from ._show import *

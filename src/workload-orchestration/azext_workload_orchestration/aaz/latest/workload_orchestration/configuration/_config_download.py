@@ -10,6 +10,8 @@
 
 import os
 from azure.cli.core.aaz import *
+from azure.cli.core.azclierror import CLIInternalError
+from ._config_helper import ConfigurationHelper
 
 
 @register_command(
@@ -19,7 +21,9 @@ from azure.cli.core.aaz import *
 class Download(AAZCommand):
     """Download configurations available at specified hierarchical entity
     :example: Download configuration
-            az workload-orchestration configuration download -g rg1 --target-name target1 --solution-template-name solutionTemplate1
+              az workload-orchestration configuration download -g rg1 --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0
+    :example: Download a Solution Template Configuration  
+              az workload-orchestration configuration download -g rg1 --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
     """
 
     _aaz_info = {
@@ -45,37 +49,56 @@ class Download(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.target_name = AAZStrArg(
-            options=["--target-name"],
-            help="The name of the Configuration",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
-            ),
-        )
-        _args_schema.solution_template_name = AAZStrArg(
-            options=["--solution-template-name"],
-            help="The name of the DynamicConfiguration",
-            required=False,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
-            ),
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        
+        _args_schema.hierarchy_id = AAZStrArg(
+            options=["--hierarchy-id"],
+            help="The ARM ID for the target or site at which values needs to be downloaded",
+            required=True
+        )
+
+        _args_schema.template_subscription = AAZStrArg(
+            options=["--template_subscription"],
+            help="Subscription ID for the template. Only needed if the subscription ID for the template is different than the current subscription ID.",
+            required=False,
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            ),
+        )
+
+        _args_schema.template_resource_group = AAZStrArg(
+            options=["--template-resource-group"],
+            help="Resource group name for the template.",
+            required=True,
+        )
+
+        _args_schema.template_name = AAZStrArg(
+            options=["--template-name"],
+            help="The name of the Template (Solution template or Configuration template) to download.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,24}$",
+            ),
+        )
+
+        _args_schema.version = AAZStrArg(
+            options=["--version"],
+            help="Version of the template.",
+            required=True
+        )
+
+        _args_schema.solution = AAZBoolArg(
+            options=["--solution"],
+            help="Flag to indicate that we are downloading a solution. If not provided, we are downloading a config template.",
+            required=False,
+        )
+        
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        config_name = str(self.ctx.args.target_name)
-        if len(config_name) > 18:
-            config_name = config_name[:18] + "Config"
-        else:
-            config_name = config_name + "Config"
-        self.ctx.args.target_name = config_name
         self.DynamicConfigurationVersionsGet(ctx=self.ctx)()
         self.post_operations()
 
@@ -96,14 +119,16 @@ class Download(AAZCommand):
             print("No config found.")
             return
         
-        # Create filename based on target_name and solution_template_name
-        target_name = str(self.ctx.args.target_name)
-        if target_name.endswith("Config"):
-            # Remove the "Config" suffix for the filename
-            target_name = target_name[:len(target_name)-6]
+        # Create filename based on template name and version
+        template_name = str(self.ctx.args.template_name)
+        version = str(self.ctx.args.version)
+        solution_suffix = "_solution" if self.ctx.args.solution else ""
         
-        solution_name = str(self.ctx.args.solution_template_name)
-        filename = f"{target_name}_{solution_name}.yaml"
+        # Use custom output file if provided
+        if hasattr(self.ctx.args, 'output_file') and self.ctx.args.output_file:
+            filename = str(self.ctx.args.output_file)
+        else:
+            filename = f"{template_name}_{version}{solution_suffix}_config.yaml"
         
         # Get absolute path
         absolute_path = os.path.abspath(filename)
@@ -114,20 +139,36 @@ class Download(AAZCommand):
                 file.write(config_values)
             print(f"Configuration saved to: {absolute_path}")
         except Exception as e:
-            print(f"Error saving configuration to file: {str(e)}")            
+            print(f"Error saving configuration to file: {str(e)}")
 
     class DynamicConfigurationVersionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
+            # Get configuration ID using the existing client
+            self.configuration_id = ConfigurationHelper.getConfigurationId(self.ctx.args.hierarchy_id, self.client)
+            
+            # Get template unique identifier for dynamic configuration name
+            template_subscription = self.ctx.args.template_subscription if self.ctx.args.template_subscription else self.ctx.subscription_id
+            solution_flag = self.ctx.args.solution if self.ctx.args.solution else False
+            self.dynamic_configuration_name = ConfigurationHelper.getTemplateUniqueIdentifier(
+                template_subscription,
+                self.ctx.args.template_resource_group,
+                self.ctx.args.template_name,
+                solution_flag,
+                self.client
+            )
+            
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
-            config = dict()
-            config["properties"] = dict()
-            config["properties"]["values"] = "{}"
-            if session.http_response.status_code in [404]:
+            elif session.http_response.status_code in [404]:
+                # Return empty config for 404
+                config = dict()
+                config["properties"] = dict()
+                config["properties"]["values"] = "{}"
                 self.ctx.set_var(
                     "instance",
                     config,
@@ -136,13 +177,12 @@ class Download(AAZCommand):
             else:
                 return self.on_error(session.http_response)
 
-
         @property
         def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configurations/{configurationName}/dynamicConfigurations/{dynamicConfigurationName}/versions/version1",
-                **self.url_parameters
-            )
+            # Use the configuration ID and append the dynamic configuration path
+            base_url = self.configuration_id
+            dynamic_config_path = f"/dynamicConfigurations/{self.dynamic_configuration_name}/versions/{self.ctx.args.version}"
+            return base_url + dynamic_config_path
 
         @property
         def method(self):
@@ -151,32 +191,6 @@ class Download(AAZCommand):
         @property
         def error_format(self):
             return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            solution_template_name = "common"
-            if has_value(self.ctx.args.solution_template_name):
-                solution_template_name = self.ctx.args.solution_template_name
-
-            parameters = {
-                **self.serialize_url_param(
-                    "configurationName", self.ctx.args.target_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "dynamicConfigurationName", solution_template_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
 
         @property
         def query_parameters(self):
@@ -214,7 +228,6 @@ class Download(AAZCommand):
             _schema_on_200.properties = AAZFreeFormDictType()
             return cls._schema_on_200
 
-
         @classmethod
         def _build_schema_on_200(cls):
             if cls._schema_on_200 is not None:
@@ -226,29 +239,20 @@ class Download(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZFreeFormDictType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.schema_id = AAZStrType(
-                serialized_name="schemaId",
-                flags={"read_only": True},
-            )
-            properties.values = AAZStrType(
-                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.system_data
@@ -270,6 +274,9 @@ class Download(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
