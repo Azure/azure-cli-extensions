@@ -226,13 +226,10 @@ class ShowConfig2(AAZCommand):
                 
                 # Step 1: Create dynamic configuration (without version)
                 dynamic_config_url = f"{self.configuration_id}/dynamicConfigurations/{self.dynamic_configuration_name}"
-                dynamic_config_model = "Application" if (self.ctx.args.solution if self.ctx.args.solution else False) else "Common"
                 
                 dynamic_config_content = {
                     "properties": {
-                        "currentVersion": str(self.ctx.args.version),
-                        "dynamicConfigurationType": "Hierarchy",
-                        "dynamicConfigurationModel": dynamic_config_model
+                        "currentVersion": str(self.ctx.args.version)
                     }
                 }
                 
