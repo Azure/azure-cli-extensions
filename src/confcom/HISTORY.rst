@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.4.4
+++++++
+* Improve the package building process
+
 1.4.3
 ++++++
 * Fix installing OPA on Windows and in strict networking environments

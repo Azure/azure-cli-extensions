@@ -3,11 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
+from pathlib import Path
 
 
 def get_binaries_dir():
-    binaries_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "bin")
-    if not os.path.exists(binaries_dir):
-        os.makedirs(binaries_dir)
+    binaries_dir = Path(__file__).parent.parent / "bin"
+    binaries_dir.mkdir(parents=True, exist_ok=True)
     return binaries_dir
+
+
+def get_data_dir():
+    data_dir = Path(__file__).parent.parent / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    return data_dir
