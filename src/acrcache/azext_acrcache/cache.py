@@ -164,8 +164,10 @@ def acr_cache_create(cmd,
     sync_str = sync if sync else None
     sync_referrers_str = "Enabled" if sync_referrers and sync_referrers.lower() == 'enabled' else "Disabled"
 
-    if sync_referrers and sync_referrers.lower() == 'enabled' and sync and sync.lower() != 'activesync':
-        raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
+    # Validate sync_referrers requires activesync - check both when sync is provided and when it's not
+    if sync_referrers and sync_referrers.lower() == 'enabled':
+        if not sync or sync.lower() != 'activesync':
+            raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
 
     if include_artifact_types and exclude_artifact_types:
         raise CLIError("You cannot specify both include_artifact_types and exclude_artifact_types. Please choose one.")
@@ -305,7 +307,8 @@ def acr_cache_update_custom(cmd,
     #check both existing sync mode (when not changing sync) AND new sync value (when updating sync)
     isActiveSync = (sync is None and sync_mode and sync_mode.lower() == 'activesync') or (sync and sync.lower() == 'activesync')
 
-    if sync_referrers and sync_referrers.lower() == 'enabled' and not isActiveSync and sync and sync.lower() != 'activesync':
+    # Validate sync_referrers requires activesync
+    if sync_referrers and sync_referrers.lower() == 'enabled' and not isActiveSync:
         raise CLIError("Syncing referrers requires sync to be set to 'activesync'. Please update your cache rule configuration.")
 
     # Warn if mutually exclusive parameters are provided

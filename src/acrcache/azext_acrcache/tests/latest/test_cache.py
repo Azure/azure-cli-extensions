@@ -138,6 +138,22 @@ class TestCacheCreateValidation(unittest.TestCase):
                 sync_referrers="enabled"
             )
 
+    @mock.patch('azext_acrcache.cache.get_registry_by_name')
+    def test_acr_cache_create_sync_referrers_without_sync_parameter_fails(self, mock_get_registry):
+        """Test that sync referrers fails when no sync parameter is provided"""
+        mock_registry = mock.Mock()
+        mock_registry.id = "/subscriptions/xxx/resourceGroups/rg1/providers/xxx"
+        mock_get_registry.return_value = (mock_registry, None)
+        
+        with self.assertRaises(CLIError) as cm:
+            cache.acr_cache_create(
+                self.cmd, self.client, "mockRegistry", "mockCacheRule1", "mockRepo1", "mockRepo2", 
+                resource_group_name="mockrg", 
+                sync_referrers="enabled"  # No sync parameter provided
+            )
+        
+        self.assertIn("Syncing referrers requires sync to be set to 'activesync'", str(cm.exception))
+
 
 class TestCacheUpdateValidation(unittest.TestCase):
     """Test cache update validation logic"""

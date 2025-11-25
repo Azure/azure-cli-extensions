@@ -23,9 +23,6 @@ examples:
 helps['acr cache list'] = """
 type: command
 short-summary: List the cache rules in an Azure Container Registry.
-long-summary: |
-  NOTE: The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types are not yet implemented. Using any of these parameters will return a 'not implemented' error message.
-
 examples:
   - name: List the cache rules in an Azure Container Registry.
     text: az acr cache list -r myregistry
@@ -34,6 +31,16 @@ examples:
 helps['acr cache create'] = """
 type: command
 short-summary: Create a cache rule.
+parameters:
+  - name: --assign-identity
+    short-summary: Resource ID of the user-assigned managed identity.
+    long-summary: |
+      Resource ID of the user-assigned managed identity for authenticating with the ACR source registry. 
+      Must be in the same tenant as both registries. 
+      Format: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}
+  - name: --sync-referrers
+    short-summary: Enable or disable sync referrers.
+    long-summary: Requires --sync activesync to be enabled.
 examples:
   - name: Create a cache rule without a credential set.
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu
@@ -57,10 +64,17 @@ examples:
 
 helps['acr cache update'] = """
 type: command
-short-summary: Update the credential set on a cache rule.
-long-summary: |
-  NOTE: The parameters --platforms, --sync-referrers, --include-artifact-types, and --exclude-artifact-types are not yet implemented. Using any of these parameters will return a 'not implemented' error message.
-
+short-summary: Update a cache rule.
+parameters:
+  - name: --assign-identity
+    short-summary: Resource ID of the user-assigned managed identity.
+    long-summary: |
+      Resource ID of the user-assigned managed identity for authenticating with the ACR source registry. 
+      Must be in the same tenant as both registries. 
+      Format: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}
+  - name: --sync-referrers
+    short-summary: Enable or disable syncing of referrers.
+    long-summary: Requires --sync activesync to be enabled.
 examples:
   - name: Change or add a credential set to an existing cache rule.
     text: az acr cache update -r myregistry -n MyRule -c NewCredSet
