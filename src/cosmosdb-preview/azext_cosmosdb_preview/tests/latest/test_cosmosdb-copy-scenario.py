@@ -8,7 +8,7 @@ import unittest
 
 from knack.util import CLIError
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 from datetime import datetime, timedelta, timezone
 from dateutil import parser
 
