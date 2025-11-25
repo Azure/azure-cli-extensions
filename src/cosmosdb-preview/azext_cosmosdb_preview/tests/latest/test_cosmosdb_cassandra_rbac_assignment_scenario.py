@@ -7,7 +7,8 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class Cosmosdb_previewcassandraRbacAssignmentScenarioTest(ScenarioTest):
 
-    @live_only('Existing role assignment got deleted, will enable in next release')
+    # Existing role assignment got deleted, will enable in next release
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_cassandra_role_assignment', location='westus2')
     def test_cosmosdb_cassandra_role_assignment(self, resource_group):
         acc_name = self.create_random_name(prefix='cli', length=15)

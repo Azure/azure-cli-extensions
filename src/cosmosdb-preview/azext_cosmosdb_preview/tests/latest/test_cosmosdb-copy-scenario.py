@@ -15,6 +15,8 @@ from dateutil import parser
 
 class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
 
+    # This needs a custom subscription. Will be generalized in next release.
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_copy', location='eastus')
     @AllowLargeResponse(size_kb=9999)
     def test_cosmosdb_copy_nosql(self, resource_group):
