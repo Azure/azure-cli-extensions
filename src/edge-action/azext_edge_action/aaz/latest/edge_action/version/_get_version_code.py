@@ -165,7 +165,10 @@ class GetVersionCode(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Accept", "application/json",
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
+                    "Accept", "application/json, text/plain, */*",
                 ),
             }
             return parameters

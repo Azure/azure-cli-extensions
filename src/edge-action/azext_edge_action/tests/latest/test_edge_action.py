@@ -154,3 +154,34 @@ class EdgeActionScenarioTest(ScenarioTest):
         self.cmd('edge-action version delete -g {} --edge-action-name {} -n {} -y'.format(
             resource_group, edge_action_name, version_name))
         self.cmd('edge-action delete -g {} -n {} -y'.format(resource_group, edge_action_name))
+
+    @ResourceGroupPreparer(additional_tags={'owner': 'edgeaction'})
+    def test_edge_action_version_get_version_code(self, resource_group):
+        """Test Edge Action Version get-version-code command"""
+        edge_action_name = self.create_random_name(prefix='edgeaction', length=20)
+        version_name = 'v1'
+
+        # Create edge action and version
+        self.cmd('edge-action create -g {} -n {} --sku name=Standard tier=Standard --location global'.format(
+            resource_group, edge_action_name))
+        self.cmd('edge-action version create -g {} --edge-action-name {} -n {} --deployment-type file --location global --is-default-version False'.format(
+            resource_group, edge_action_name, version_name))
+
+        # Deploy version code
+        test_content = base64.b64encode(b'function handler(event) { return event; }').decode('utf-8')
+        self.cmd('edge-action version deploy-version-code -g {} --edge-action-name {} --version {} --name testcode --content "{}"'.format(
+            resource_group, edge_action_name, version_name, test_content))
+
+        # Test get-version-code command (this tests the fix for Unsupported Media Type error)
+        result = self.cmd('edge-action version get-version-code -g {} --edge-action-name {} --version {}'.format(
+            resource_group, edge_action_name, version_name)).get_output_in_json()
+        
+        # Verify the response contains expected fields
+        self.assertIsNotNone(result)
+        self.assertIn('content', result)
+        self.assertIn('name', result)
+
+        # Clean up
+        self.cmd('edge-action version delete -g {} --edge-action-name {} -n {} -y'.format(
+            resource_group, edge_action_name, version_name))
+        self.cmd('edge-action delete -g {} -n {} -y'.format(resource_group, edge_action_name))
