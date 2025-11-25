@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
+from typing import Any, AsyncIterator, Callable, IO, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -70,7 +70,8 @@ from ...operations._mongo_db_resources_operations import (
 from .._configuration import CosmosDBManagementClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 
 class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
@@ -95,7 +96,7 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_mongo_db_databases(
         self, resource_group_name: str, account_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.MongoDBDatabaseGetResults"]:
+    ) -> AsyncItemPaged["_models.MongoDBDatabaseGetResults"]:
         """Lists the MongoDB databases under an existing Azure Cosmos DB database account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -2008,7 +2009,7 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_mongo_db_collections(
         self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.MongoDBCollectionGetResults"]:
+    ) -> AsyncItemPaged["_models.MongoDBCollectionGetResults"]:
         """Lists the MongoDB collection under an existing Azure Cosmos DB database account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -3891,7 +3892,7 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_mongo_role_definitions(
         self, resource_group_name: str, account_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.MongoRoleDefinitionGetResults"]:
+    ) -> AsyncItemPaged["_models.MongoRoleDefinitionGetResults"]:
         """Retrieves the list of all Azure Cosmos DB Mongo Role Definitions.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -4364,7 +4365,7 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_mongo_user_definitions(
         self, resource_group_name: str, account_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.MongoUserDefinitionGetResults"]:
+    ) -> AsyncItemPaged["_models.MongoUserDefinitionGetResults"]:
         """Retrieves the list of all Azure Cosmos DB Mongo User Definition.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
