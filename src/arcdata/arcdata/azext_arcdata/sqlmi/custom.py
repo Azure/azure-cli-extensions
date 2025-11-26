@@ -130,61 +130,12 @@ def arc_sql_mi_create(
                     kwargs.get("custom_location"), kwargs.get("resource_group")
                 )
             )
-            azure_location = (
-                armclients.dc.get_custom_location_region(
-                    kwargs.get("custom_location"), kwargs.get("resource_group")
-                )
-            )
 
             # Note: might not be equal in a cross-namespace scenario
             #
             ad_connector_namespace = sqlmi_namespace
 
-            return armclient.create_sqlmi(
-                name=name,
-                path=path,
-                replicas=replicas,
-                orchestrator_replicas=kwargs.get("orchestrator_replicas"),
-                readable_secondaries=readable_secondaries,
-                sync_secondary_to_commit=kwargs.get("sync_secondary_to_commit"),
-                cores_limit=kwargs.get("cores_limit"),
-                cores_request=kwargs.get("cores_request"),
-                memory_limit=kwargs.get("memory_limit"),
-                memory_request=kwargs.get("memory_request"),
-                storage_class_data=kwargs.get("storage_class_data"),
-                storage_class_logs=kwargs.get("storage_class_logs"),
-                storage_class_datalogs=kwargs.get("storage_class_datalogs"),
-                storage_class_backups=storage_class_backups,
-                storage_class_orchestrator_logs=kwargs.get("storage_class_orchestrator_logs"),
-                volume_size_data=kwargs.get("volume_size_data"),
-                volume_size_logs=kwargs.get("volume_size_logs"),
-                volume_size_datalogs=kwargs.get("volume_size_datalogs"),
-                volume_size_backups=kwargs.get("volume_size_backups"),
-                volume_size_orchestrator_logs=kwargs.get("volume_size_orchestrator_logs"),
-                license_type=kwargs.get("license_type"),
-                tier=tier,
-                dev=kwargs.get("dev"),
-                location=azure_location,
-                custom_location=kwargs.get("custom_location"),
-                resource_group=kwargs.get("resource_group"),
-                ad_connector_name=kwargs.get("ad_connector_name"),
-                ad_connector_namespace=ad_connector_namespace,
-                ad_account_name=kwargs.get("ad_account_name"),
-                keytab_secret=kwargs.get("keytab_secret"),
-                ad_encryption_types=kwargs.get("ad_encryption_types"),
-                tde_mode=kwargs.get("tde_mode"),
-                tde_protector_secret=kwargs.get("tde_protector_secret"),
-                primary_dns_name=kwargs.get("primary_dns_name"),
-                primary_port_number=kwargs.get("primary_port_number"),
-                secondary_dns_name=kwargs.get("secondary_dns_name"),
-                secondary_port_number=kwargs.get("secondary_port_number"),
-                polling=not no_wait,
-                retention_days=retention_days,
-                time_zone=kwargs.get("time_zone"),
-                service_type=kwargs.get("service_type"),
-                trace_flags=kwargs.get("trace_flags"),
-                private_key_file=kwargs.get("private_key_file"),
-            )
+            return armclient.create_sqlmi(kwargs)
 
         check_and_set_kubectl_context()
         namespace = client.namespace
@@ -347,11 +298,9 @@ def arc_sql_mi_create(
                         "No data controller exists in namespace `{}`. Cannot set "
                         "external endpoint argument.".format(namespace)
                     )
-                else:
-                    dc_cr = CustomResource.decode(
-                        DataControllerCustomResource, dcs[0]
-                    )
-                    service_type = dc_cr.get_controller_service().serviceType
+
+                dc_cr = CustomResource.decode(DataControllerCustomResource, dcs[0])
+                service_type = dc_cr.get_controller_service().serviceType
 
             cr.spec.services.primary.serviceType = service_type
             cr.spec.services.readable_secondaries.serviceType = service_type

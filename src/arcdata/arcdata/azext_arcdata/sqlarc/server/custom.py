@@ -30,12 +30,7 @@ logger = get_logger(__name__)
 def server_backups_policy_set(
     client,
     name=None,
-    resource_group=None,
-    backups_full_backup_days=None,
-    backups_diff_backup_hours=None,
-    backups_tlog_backup_mins=None,
-    backups_default_policy=None,
-    backups_retention_days=None,
+    **kwargs
 ):
     """
     Sets the Backups
@@ -48,6 +43,9 @@ def server_backups_policy_set(
 
     :return:
     """
+    if not kwargs.get("resource_group"):
+        raise ValueError("Please provide a resource group.")
+
     backups_policy_set(client, name)
 
 
@@ -60,11 +58,14 @@ def server_backups_policy_show(client, name=None, resource_group=None):
     :param resource_group: The resource group for the SQL Server
     :return: JSON/Dict of the backups policy
     """
+    if not resource_group:
+        raise ValueError("Please provide a resource group.")
+
     return backups_policy_show(client, name)
 
 
 def server_backups_policy_delete(
-    client, name=None, resource_group=None, yes=False
+    client, name=None, **kwargs
 ):
     """
     Show the Backups
@@ -74,6 +75,9 @@ def server_backups_policy_delete(
     :param resource_group: The resource group for the SQL Server
     :return: JSON/Dict of the backups policy
     """
+    if not kwargs.get("resource_group"):
+        raise ValueError("Please provide a resource group.")
+
     return backups_policy_delete(client, name)
 
 
@@ -107,30 +111,7 @@ def server_failover_ag(
 
 def server_create_ag(
     client,
-    resource_group: str,
-    name: str,
-    replica_ids: str,
-    databases: str,
-    mirroring_port: int,
-    endpoint_login: str,
-    endpoint_auth_mode: str,
-    certificate_name: str,
-    listener_name: str,
-    listener_port: int,
-    listener_ipv4_addresses: str,
-    listener_ipv4_masks: str,
-    listener_ipv6_addresses: str,
-    availability_mode: str,
-    failover_mode: str,
-    seeding_mode: str,
-    automated_backup_preference: str,
-    failure_condition_level: int,
-    health_check_timeout: int,
-    db_failover: bool,
-    dtc_support: bool,
-    required_synchronized_secondaries: int,
-    cluster_type: str,
-    no_wait: bool = False,
+    **kwargs
 ):
     """
     Create a new SQL Availability Group.
@@ -183,6 +164,9 @@ def server_create_ag(
     :param no_wait: Do not wait for the long-running operation to finish.
     :type no_wait: bool
     """
+    if not kwargs.get("resource_group"):
+        raise ValueError("Please provide a resource group.")
+
     return create_ag(client=client)
 
 
@@ -190,10 +174,7 @@ def server_create_ag(
 def server_host_featureflag_set(
     client,
     name=None,
-    enable=None,
-    resource_group=None,
-    machine_name=None,
-    sql_server_arc_name=None,
+    **kwargs
 ):
     """
     Sets the feature flag.
@@ -206,15 +187,16 @@ def server_host_featureflag_set(
 
     :return:
     """
+    if not kwargs.get("resource_group"):
+        raise ValueError("Please provide a resource group.")
+
     feature_flag_set(client, name)
 
 
 def server_host_featureflag_delete(
     client,
     name=None,
-    resource_group=None,
-    machine_name=None,
-    sql_server_arc_name=None,
+    **kwargs
 ):
     """
     Deletes the feature flag.
@@ -226,15 +208,16 @@ def server_host_featureflag_delete(
 
     :return:
     """
+    if not kwargs.get("resource_group"):
+        raise ValueError("Please provide a resource group.")
+
     feature_flag_delete(client, name)
 
 
 def server_host_featureflag_show(
     client,
     name=None,
-    resource_group=None,
-    machine_name=None,
-    sql_server_arc_name=None,
+    **kwargs
 ):
     """
     Shows the feature flag.
@@ -246,17 +229,15 @@ def server_host_featureflag_show(
 
     :return:
     """
+    if not kwargs.get("resource_group"):
+        raise ValueError("Please provide a resource group.")
+
     return feature_flag_show(client, name)
 
 
 def server_host_properties_set(
     client,
-    resource_group=None,
-    machine_name=None,
-    sql_server_arc_name=None,
-    license_type=None,
-    esu_enabled=None,
-    skip_instances=None,
+    **kwargs
 ):
     """
     Sets common host properties.
@@ -270,14 +251,15 @@ def server_host_properties_set(
 
     :return:
     """
+    if not kwargs.get("resource_group"):
+        raise ValueError("Please provide a resource group.")
+
     return host_properties_set(client)
 
 
 def server_host_properties_show(
     client,
-    resource_group=None,
-    machine_name=None,
-    sql_server_arc_name=None,
+    **kwargs
 ):
     """
     Shows the host properties.
@@ -288,4 +270,7 @@ def server_host_properties_show(
 
     :return:
     """
+    if not kwargs.get("resource_group"):
+        raise ValueError("Please provide a resource group.")
+
     return host_properties_show(client)

@@ -21,12 +21,7 @@ def db_backups_policy_set(
     client,
     name=None,
     server=None,
-    resource_group=None,
-    backups_full_backup_days=None,
-    backups_diff_backup_hours=None,
-    backups_tlog_backup_mins=None,
-    backups_default_policy=None,
-    backups_retention_days=None,
+    **kwargs
 ):
     """
     Sets the Backups
@@ -40,10 +35,13 @@ def db_backups_policy_set(
         backups policy. 0-35 are the only valid values.
     :return: No Return
     """
+    if not kwargs.get("resource_group"):
+        raise ValueError("Please provide a resource group.")
+
     backups_policy_set(client, server, name)
 
 
-def db_backups_policy_show(client, name=None, server=None, resource_group=None):
+def db_backups_policy_show(client, name=None, server=None, **kwargs):
     """
     Show the backups policy
     :param client:
@@ -54,12 +52,14 @@ def db_backups_policy_show(client, name=None, server=None, resource_group=None):
     :param resource_group: The resource group for the SQL Server
     :return: JSON/Dict of the backups policy
     """
+    if not kwargs.get("resource_group"):
+        raise ValueError("Please provide a resource group.")
 
     return backups_policy_show(client, server, name)
 
 
 def db_backups_policy_delete(
-    client, name=None, server=None, resource_group=None, yes=False
+    client, name=None, server=None, **kwargs
 ):
     """
     Delete the backups policy
@@ -71,6 +71,8 @@ def db_backups_policy_delete(
     :param resource_group: The resource group for the SQL Server
     :return: JSON/Dict of the backups policy
     """
+    if not kwargs.get("resource_group"):
+        raise ValueError("Please provide a resource group.")
 
     return backups_policy_delete(client, server, name)
 
@@ -78,16 +80,14 @@ def db_backups_policy_delete(
 # ------------Restore Commands----------------
 def db_restore(
     client,
-    resource_group=None,
-    dest_name=None,
-    # dry_run=None,
-    time=None,
-    name=None,
-    server=None,
+    **kwargs
 ):
     """
     Restore a database from the built-in automatic backups.
     :param client:
     :return: JSON of the Restore response
     """
+    if not kwargs.get("resource_group"):
+        raise ValueError("Please provide a resource group.")
+
     return restore(client)

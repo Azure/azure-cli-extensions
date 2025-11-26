@@ -14,6 +14,7 @@ from azext_arcdata.vendored_sdks.arm_sdk.swagger.swagger_latest.models import (
     AvailabilityGroupCreateUpdateConfiguration,
     SqlServerAvailabilityGroupResource,
 )
+from azure.core.exceptions import HttpResponseError
 
 __all__ = ["AzureArcSqlWebService"]
 logger = get_logger(__name__)
@@ -118,14 +119,14 @@ class AzureArcSqlWebService(object):
         # Raise exception if http request was not successful.
         if response.status_code < 200 or response.status_code > 299:
             if response.status_code == 409:
-                raise Exception(
+                raise RuntimeError(
                     '{"code":"HCRP409","message":"An extension of type '
                     'WindowsAgent.SqlServer is still processing. Only one '
                     'instance of an extension may be in progress at a time for '
                     'the same resource. Please retry after sometime."}'
                 )
             else:
-                raise Exception(response.text)
+                raise RuntimeError(response.text)
 
     def get_license_type(self, url):
         config = self.get_sqlarc_server_config(url)
@@ -147,7 +148,7 @@ class AzureArcSqlWebService(object):
                 resource_group, instance_name
             )
             return response
-        except Exception as e:
+        except HttpResponseError as e:
             logger.info(e)
             self.generic_raise_exception(e, resource_group, instance_name)
 
@@ -158,7 +159,7 @@ class AzureArcSqlWebService(object):
                 resource_group, instance, config
             )
             return response
-        except Exception as e:
+        except HttpResponseError as e:
             logger.info(e)
             self.generic_raise_exception(e, resource_group, instance)
 
@@ -180,7 +181,7 @@ class AzureArcSqlWebService(object):
 
         except Exception as e:
             logger.info(e)
-            raise Exception(
+            raise RuntimeError(
                 "Unable to find a arc server resource for the arc sql instance name provided."
             )
 
@@ -190,7 +191,7 @@ class AzureArcSqlWebService(object):
                 resource_group, instance, database
             )
             return response
-        except Exception as e:
+        except HttpResponseError as e:
             logger.info(e)
             self.generic_raise_exception(e, resource_group, instance, database)
 
@@ -203,7 +204,7 @@ class AzureArcSqlWebService(object):
                 resource_group, instance, database, config
             )
             return response
-        except Exception as e:
+        except HttpResponseError as e:
             logger.info(e)
             self.generic_raise_exception(e, resource_group, instance)
 
@@ -215,7 +216,7 @@ class AzureArcSqlWebService(object):
                 resource_group, instance, database, config
             )
             return response
-        except Exception as e:
+        except HttpResponseError as e:
             logger.info(e)
             self.generic_raise_exception(e, resource_group, instance, database)
 
@@ -224,12 +225,12 @@ class AzureArcSqlWebService(object):
     ):
         if response.status_code == status_code:
             logger.info(response.text)
-            raise Exception(error_message)
+            raise HttpResponseError(error_message)
 
     def response_pass_checking(self, response, error_message):
         if not (response.status_code >= 200 and response.status_code < 300):
             logger.info(response.text)
-            raise Exception(error_message)
+            raise HttpResponseError(error_message)
 
     def get_ag_details(
         self,
@@ -300,11 +301,11 @@ class AzureArcSqlWebService(object):
         self, e, resource_group, instance_name, database_name=None
     ):
         if "(ResourceGroupNotFound)" in str(e):
-            raise Exception(
+            raise RuntimeError(
                 'Could not find resource group "{0}".'.format(resource_group)
             )
         if "(ResourceNotFound)" in str(e) and "/Databases/" not in str(e):
-            raise Exception(
+            raise RuntimeError(
                 'Could not find Sql Server instance "{0}" in the resource '
                 'group "{1}". For more details please go to '
                 'https://aka.ms/ARMResourceNotFoundFix'.format(
@@ -312,13 +313,13 @@ class AzureArcSqlWebService(object):
                 )
             )
         if "(ResourceNotFound)" in str(e) and "/Databases/" in str(e):
-            raise Exception(
+            raise RuntimeError(
                 'Could not find a database called "{0}" in the Sql Server '
                 'Instance "{1}" in the resource group "{2}". For more details '
                 'please go to https://aka.ms/ARMResourceNotFoundFix'.format(
                     database_name, instance_name, resource_group
                 )
             )
-        raise Exception(
+        raise RuntimeError(
             f"An error has occured: {e} \nPlease look at the logs for more information."
         )
