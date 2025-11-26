@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudexadatainfrastructures/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudexadatainfrastructures/{}", "2025-09-01"],
         ]
     }
 
@@ -123,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -165,9 +165,7 @@ class Show(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -196,6 +194,10 @@ class Show(AAZCommand):
             properties.compute_count = AAZIntType(
                 serialized_name="computeCount",
             )
+            properties.compute_model = AAZStrType(
+                serialized_name="computeModel",
+                flags={"read_only": True},
+            )
             properties.cpu_count = AAZIntType(
                 serialized_name="cpuCount",
                 flags={"read_only": True},
@@ -207,6 +209,9 @@ class Show(AAZCommand):
                 serialized_name="dataStorageSizeInTbs",
                 flags={"read_only": True},
             )
+            properties.database_server_type = AAZStrType(
+                serialized_name="databaseServerType",
+            )
             properties.db_node_storage_size_in_gbs = AAZIntType(
                 serialized_name="dbNodeStorageSizeInGbs",
                 flags={"read_only": True},
@@ -215,15 +220,25 @@ class Show(AAZCommand):
                 serialized_name="dbServerVersion",
                 flags={"read_only": True},
             )
+            properties.defined_file_system_configuration = AAZListType(
+                serialized_name="definedFileSystemConfiguration",
+                flags={"read_only": True},
+            )
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
                 flags={"required": True},
             )
             properties.estimated_patching_time = AAZObjectType(
                 serialized_name="estimatedPatchingTime",
+                flags={"read_only": True},
+            )
+            properties.exascale_config = AAZObjectType(
+                serialized_name="exascaleConfig",
+                flags={"read_only": True},
             )
             properties.last_maintenance_run_id = AAZStrType(
                 serialized_name="lastMaintenanceRunId",
+                flags={"read_only": True},
             )
             properties.lifecycle_details = AAZStrType(
                 serialized_name="lifecycleDetails",
@@ -231,6 +246,7 @@ class Show(AAZCommand):
             )
             properties.lifecycle_state = AAZStrType(
                 serialized_name="lifecycleState",
+                flags={"read_only": True},
             )
             properties.maintenance_window = AAZObjectType(
                 serialized_name="maintenanceWindow",
@@ -265,12 +281,15 @@ class Show(AAZCommand):
             )
             properties.next_maintenance_run_id = AAZStrType(
                 serialized_name="nextMaintenanceRunId",
+                flags={"read_only": True},
             )
             properties.oci_url = AAZStrType(
                 serialized_name="ociUrl",
                 flags={"read_only": True},
             )
-            properties.ocid = AAZStrType()
+            properties.ocid = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -280,6 +299,9 @@ class Show(AAZCommand):
             )
             properties.storage_count = AAZIntType(
                 serialized_name="storageCount",
+            )
+            properties.storage_server_type = AAZStrType(
+                serialized_name="storageServerType",
             )
             properties.storage_server_version = AAZStrType(
                 serialized_name="storageServerVersion",
@@ -302,6 +324,23 @@ class Show(AAZCommand):
                 flags={"required": True},
             )
 
+            defined_file_system_configuration = cls._schema_on_200.properties.defined_file_system_configuration
+            defined_file_system_configuration.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.defined_file_system_configuration.Element
+            _element.is_backup_partition = AAZBoolType(
+                serialized_name="isBackupPartition",
+            )
+            _element.is_resizable = AAZBoolType(
+                serialized_name="isResizable",
+            )
+            _element.min_size_gb = AAZIntType(
+                serialized_name="minSizeGb",
+            )
+            _element.mount_point = AAZStrType(
+                serialized_name="mountPoint",
+            )
+
             estimated_patching_time = cls._schema_on_200.properties.estimated_patching_time
             estimated_patching_time.estimated_db_server_patching_time = AAZIntType(
                 serialized_name="estimatedDbServerPatchingTime",
@@ -318,6 +357,15 @@ class Show(AAZCommand):
             estimated_patching_time.total_estimated_patching_time = AAZIntType(
                 serialized_name="totalEstimatedPatchingTime",
                 flags={"read_only": True},
+            )
+
+            exascale_config = cls._schema_on_200.properties.exascale_config
+            exascale_config.available_storage_in_gbs = AAZIntType(
+                serialized_name="availableStorageInGbs",
+            )
+            exascale_config.total_storage_in_gbs = AAZIntType(
+                serialized_name="totalStorageInGbs",
+                flags={"required": True},
             )
 
             maintenance_window = cls._schema_on_200.properties.maintenance_window
