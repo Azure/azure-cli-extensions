@@ -157,6 +157,23 @@ class SwapDefault(AAZCommand):
             }
             return parameters
 
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
+                    "Accept", "application/json, text/plain, */*",
+                ),
+            }
+            return parameters
+
+        @property
+        def content(self):
+            # Return empty JSON object as bytes (required by the API)
+            return b'{}'
+
         def on_204(self, session):
             pass
 
