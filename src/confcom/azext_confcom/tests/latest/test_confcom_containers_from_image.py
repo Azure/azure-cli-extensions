@@ -3,23 +3,19 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import fcntl
-import hashlib
-from itertools import product
 import json
-import os
 import tempfile
-import time
-import uuid
-from pathlib import Path
-
 import docker
 import pytest
+import portalocker
+
+from contextlib import redirect_stdout
+from io import StringIO
+from itertools import product
+from pathlib import Path
+from deepdiff import DeepDiff
 
 from azext_confcom.command.containers_from_image import containers_from_image
-from azext_confcom.lib.platform import ACI_MOUNTS
-from deepdiff import DeepDiff
-import portalocker
 
 
 TEST_DIR = Path(__file__).parent
@@ -59,10 +55,14 @@ def test_containers_from_image(sample_directory: str, platform: str):
     with expected_container_def_path.open("r", encoding="utf-8") as handle:
         expected_container_def = json.load(handle)
 
-    actual_container_def = json.loads(containers_from_image(
-        image=f"confcom_test_{sample_directory.name}",
-        platform=platform,
-    ))
+    buffer = StringIO()
+    with redirect_stdout(buffer):
+        containers_from_image(
+            image=f"confcom_test_{sample_directory.name}",
+            platform=platform,
+        )
+
+    actual_container_def = json.loads(buffer.getvalue())
 
     diff = DeepDiff(
         actual_container_def,
