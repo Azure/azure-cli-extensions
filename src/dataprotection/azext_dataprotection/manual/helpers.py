@@ -543,6 +543,7 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
             raise RequiredArgumentMissingError("Please input parameter restore_configuration for AKS cluster restore.\n\
                                                Use command initialize-restoreconfig for creating the RestoreConfiguration")
         restore_criteria_list.append(restore_criteria)
+        return restore_criteria_list
     else:
         # For non-AKS workloads (blobs (non-vaulted)), we need either a prefix-pattern or a container-list. Accordingly, the restore
         # criteria's min_matching_value and max_matching_value are set. We need to provide one, but can't provide both
@@ -559,14 +560,14 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
             raise RequiredArgumentMissingError("Provide ContainersList or Prefixes for Item Level Recovery")
 
         # Process based on the provided parameter type
-    if container_list_present:
-        return _process_container_list(container_list, recovery_point_id)
+        if container_list_present:
+            return _process_container_list(container_list, recovery_point_id)
 
-    if prefix_pattern_present:
-        return _process_prefix_pattern(from_prefix_pattern, to_prefix_pattern)
+        if prefix_pattern_present:
+            return _process_prefix_pattern(from_prefix_pattern, to_prefix_pattern)
 
-    if vaulted_pattern_present:
-        return _process_vaulted_blob_pattern(vaulted_blob_prefix_pattern)
+        if vaulted_pattern_present:
+            return _process_vaulted_blob_pattern(vaulted_blob_prefix_pattern)
 
     # This should never be reached due to the validation above, but included for completeness
     return []
