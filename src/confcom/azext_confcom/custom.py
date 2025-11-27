@@ -541,7 +541,7 @@ def containers_from_image(
     image: str,
     platform: str,
 ) -> None:
-    print(_containers_from_image(
+    _containers_from_image(
         image=image,
         platform=platform,
-    ))
+    )

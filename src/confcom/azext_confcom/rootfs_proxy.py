@@ -54,6 +54,8 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             with open(binary_info["path"], "wb") as f:
                 f.write(dmverity_vhd_fetch_resp.content)
 
+            os.chmod(binary_info["path"], 0o755)
+
     def __init__(self):
         script_directory = os.path.dirname(os.path.realpath(__file__))
         DEFAULT_LIB = "./bin/dmverity-vhd"
