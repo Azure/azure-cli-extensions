@@ -48,9 +48,6 @@ class ShowConfig(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
         
         _args_schema.hierarchy_id = AAZStrArg(
             options=["--hierarchy-id"],
@@ -68,7 +65,7 @@ class ShowConfig(AAZCommand):
         )
 
         _args_schema.template_resource_group = AAZStrArg(
-            options=["--template-resource-group"],
+            options=["--template-resource-group", "-g"],
             help="Resource group name for the template.",
             required=True,
         )
