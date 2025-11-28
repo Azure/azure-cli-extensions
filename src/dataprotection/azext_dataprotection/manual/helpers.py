@@ -544,30 +544,31 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
                                                Use command initialize-restoreconfig for creating the RestoreConfiguration")
         restore_criteria_list.append(restore_criteria)
         return restore_criteria_list
-    else:
-        # For non-AKS workloads (blobs (non-vaulted)), we need either a prefix-pattern or a container-list. Accordingly, the restore
-        # criteria's min_matching_value and max_matching_value are set. We need to provide one, but can't provide both
-        # vaulted blobs also take container list or a different prefix pattern format. These also need to be exclusive.
-        container_list_present = container_list is not None
-        prefix_pattern_present = (from_prefix_pattern is not None or to_prefix_pattern is not None)
-        vaulted_pattern_present = vaulted_blob_prefix_pattern is not None
 
-        if are_multiple_true(container_list_present, prefix_pattern_present, vaulted_pattern_present):
-            raise MutuallyExclusiveArgumentError("Please specify only one of container list, prefix pattern, or "
-                                                 "vaulted blob's prefix patterns")
+    # implicit else:
+    # For non-AKS workloads (blobs (non-vaulted)), we need either a prefix-pattern or a container-list. Accordingly, the restore
+    # criteria's min_matching_value and max_matching_value are set. We need to provide one, but can't provide both
+    # vaulted blobs also take container list or a different prefix pattern format. These also need to be exclusive.
+    container_list_present = container_list is not None
+    prefix_pattern_present = (from_prefix_pattern is not None or to_prefix_pattern is not None)
+    vaulted_pattern_present = vaulted_blob_prefix_pattern is not None
 
-        if not any([container_list_present, prefix_pattern_present, vaulted_pattern_present]):
-            raise RequiredArgumentMissingError("Provide ContainersList or Prefixes for Item Level Recovery")
+    if are_multiple_true(container_list_present, prefix_pattern_present, vaulted_pattern_present):
+        raise MutuallyExclusiveArgumentError("Please specify only one of container list, prefix pattern, or "
+                                             "vaulted blob's prefix patterns")
 
-        # Process based on the provided parameter type
-        if container_list_present:
-            return _process_container_list(container_list, recovery_point_id)
+    if not any([container_list_present, prefix_pattern_present, vaulted_pattern_present]):
+        raise RequiredArgumentMissingError("Provide ContainersList or Prefixes for Item Level Recovery")
 
-        if prefix_pattern_present:
-            return _process_prefix_pattern(from_prefix_pattern, to_prefix_pattern)
+    # Process based on the provided parameter type
+    if container_list_present:
+        return _process_container_list(container_list, recovery_point_id)
 
-        if vaulted_pattern_present:
-            return _process_vaulted_blob_pattern(vaulted_blob_prefix_pattern)
+    if prefix_pattern_present:
+        return _process_prefix_pattern(from_prefix_pattern, to_prefix_pattern)
+
+    if vaulted_pattern_present:
+        return _process_vaulted_blob_pattern(vaulted_blob_prefix_pattern)
 
     # This should never be reached due to the validation above, but included for completeness
     return []
