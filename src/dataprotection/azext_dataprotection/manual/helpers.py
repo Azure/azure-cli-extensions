@@ -1002,8 +1002,8 @@ def convert_backup_instance_show_to_input(backup_instance):
             if datasource_property in backup_instance['properties']:
                 datasource_info = backup_instance['properties'][datasource_property]
                 if (isinstance(datasource_info, dict) and
-                    'resourceProperties' in datasource_info and
-                    isinstance(datasource_info['resourceProperties'], dict)):
+                        'resourceProperties' in datasource_info and
+                        isinstance(datasource_info['resourceProperties'], dict)):
                     if datasource_info['resourceProperties'].get('objectType') is None:
                         # Cleaning up resourceProperties when objectType is null to avoid schema validation error
                         del backup_instance['properties'][datasource_property]['resourceProperties']
