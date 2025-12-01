@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "elastic elastic-version",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Retrieve a list of all available Elastic versions for a specified region, helping you choose the best version for your deployment.
+    """Manage the version of Elastic, including upgrades and compatibility checks.
     """
     pass
 

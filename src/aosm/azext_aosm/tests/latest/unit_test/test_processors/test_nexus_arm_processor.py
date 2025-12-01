@@ -146,11 +146,14 @@ class NexusArmProcessorTest(TestCase):
         """ Test generate artifact profile returned correctly with generate_nf_application."""
         nf_application = self.processor.generate_nf_application()
         mock_template_params = json.dumps({
+            "location": "[resourceGroup().location]",
             "subnetName": "{deployParameters.test-name.subnetName}",
+            "ubuntuVmName": "ubuntu-vm",
             "virtualNetworkId": "{deployParameters.test-name.virtualNetworkId}",
             "sshPublicKeyAdmin": "{deployParameters.test-name.sshPublicKeyAdmin}",
-            "imageName": "{deployParameters.test-name.imageName}"
+            "imageName": "{deployParameters.test-name.imageName}",
         })
+
         expected_arm_mapping_profile = ArmTemplateMappingRuleProfile(
             template_parameters=mock_template_params)
         expected_nexus_arm_mapping_profile = AzureOperatorNexusArmTemplateDeployMappingRuleProfile(

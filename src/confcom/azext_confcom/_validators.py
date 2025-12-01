@@ -4,7 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
+from knack.log import get_logger
 from azext_confcom.config import RESERVED_FRAGMENT_NAMES, SUPPORTED_ALGOS
+
+
+logger = get_logger(__name__)
 
 
 def validate_params_file(namespace):
@@ -34,7 +38,8 @@ def validate_aci_source(namespace):
         namespace.input_path,
         namespace.arm_template,
         namespace.image_name,
-        namespace.virtual_node_yaml_path
+        namespace.virtual_node_yaml_path,
+        namespace.container_definitions is not None,
     ])) != 1:
         raise CLIError("Can only generate CCE policy from one source at a time")
 
@@ -67,7 +72,11 @@ def validate_fragment_key_and_chain(namespace):
 
 
 def validate_fragment_source(namespace):
-    if not namespace.generate_import and sum(map(bool, [namespace.image_name, namespace.input_path])) != 1:
+    if not namespace.generate_import and sum(map(bool, [
+        namespace.image_name,
+        namespace.input_path,
+        namespace.container_definitions is not None,
+    ])) != 1:
         raise CLIError("Must provide either an image name or an input file to generate a fragment")
 
 
@@ -131,3 +140,27 @@ def validate_fragment_path(namespace):
 def validate_fragment_json(namespace):
     if namespace.fragments_json and not namespace.generate_import:
         raise CLIError("Must provide --fragment-path to place a fragment import into a file")
+
+
+def validate_stdio(namespace):
+    if namespace.enable_stdio and namespace.disable_stdio:
+        raise CLIError('Use only one of --enable-stdio or --disable-stdio.')
+
+
+def resolve_stdio(enable_stdio_flag, disable_stdio_flag, default=True):
+
+    stdio_enabled = default
+    if enable_stdio_flag is None and disable_stdio_flag is None:
+        logger.warning(
+            "WARNING: Using default stdio setting (Enabled)\n"
+            "For the most secure deployments, ensure stdio is disabled. "
+            "Default behaviour may change in the future, you can set stdio with:\n"
+            "    --disable-stdio\n"
+            "    --enable-stdio\n"
+        )
+    elif enable_stdio_flag is not None:
+        stdio_enabled = enable_stdio_flag
+    elif disable_stdio_flag is not None:
+        stdio_enabled = not disable_stdio_flag
+
+    return stdio_enabled

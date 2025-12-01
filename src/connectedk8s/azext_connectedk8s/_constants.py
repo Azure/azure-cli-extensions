@@ -418,7 +418,7 @@ SigningKey_CR_Snapshot = "signingkey_cr_snapshot.txt"
 
 # Connect Precheck Diagnoser constants
 Cluster_Diagnostic_Checks_Job_Registry_Path = (
-    "azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.2.2"
+    "azurearck8s/helmchart/stable/clusterdiagnosticchecks:1.31.2"
 )
 Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = (
     "Error while installing cluster diagnostic checks helm release"
@@ -476,7 +476,7 @@ Outbound_Connectivity_Check_Failed_For_Cluster_Connect = (
 )
 DNS_Check_Result_String = "DNS Result:"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = "2.30.0"
-CLIENT_PROXY_VERSION = "1.3.029301"
+CLIENT_PROXY_VERSION = "1.3.032281"
 CLIENT_PROXY_FOLDER = ".clientproxy"
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010
@@ -525,3 +525,9 @@ Doc_Agent_Version_Support_Policy_Url = "https://learn.microsoft.com/en-us/azure/
 # "Application code shouldn't block the creation of resources for a resource provider that is in the registering state."
 # See https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-providers-and-types#register-resource-provider
 allowed_rp_registration_states = ["Registering", "Registered"]
+
+GATEWAY_LINK_FAULT_TYPE = "gateway-link-error"
+Gateway_Cluster_Resource_Update_Failed_Fault_Type = (
+    "Gateway-Cluster-Resource-Update-Failed"
+)
+GATEWAY_ASSOCIATE_URL = "https://management.azure.com/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/providers/Microsoft.HybridCompute/settings/Default?api-version={api_version}"

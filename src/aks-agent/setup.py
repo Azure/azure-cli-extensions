@@ -9,7 +9,7 @@ from codecs import open as open1
 
 from setuptools import find_packages, setup
 
-VERSION = "1.0.0b3"
+VERSION = "1.0.0b11"
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
@@ -24,8 +24,9 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "holmesgpt==0.12.6; python_version >= '3.10'",
-    "pytest-asyncio>=1.1.0",
+    "rich==13.9.4",
+    "supabase==2.8.0",
+    "holmesgpt==0.15.0; python_version >= '3.10'",
 ]
 
 with open1("README.rst", "r", encoding="utf-8") as f:
@@ -43,7 +44,7 @@ setup(
     author_email="azpycli@microsoft.com",
     url="https://github.com/Azure/azure-cli-extensions/tree/main/src/aks-agent",
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(exclude=["*.tests", "*.tests.*"]),
     package_data={"azext_aks_agent": ["azext_metadata.json"]},
     install_requires=DEPENDENCIES,
 )

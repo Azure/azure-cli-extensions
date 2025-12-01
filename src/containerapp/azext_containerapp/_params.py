@@ -31,7 +31,7 @@ def load_arguments(self, _):
         c.argument('revisions_mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
 
     with self.argument_context('containerapp') as c:
-        c.argument('kind', arg_type=get_enum_type(['functionapp']), help="Set to 'functionapp' to enable built-in support and autoscaling for Azure Functions on Azure Container Apps.", is_preview=True)
+        c.argument('kind', arg_type=get_enum_type(['functionapp']), help="Set to 'functionapp' to enable built-in support and autoscaling for Azure Functions on Container Apps.", is_preview=True)
 
     with self.argument_context('containerapp create') as c:
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://aka.ms/SourceToCloudSupportedVersions.", is_preview=True)
@@ -91,12 +91,6 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env', arg_group='Monitoring') as c:
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
-
-    # HttpRouteConfig
-    with self.argument_context('containerapp env http-route-config') as c:
-        c.argument('http_route_config_name', options_list=['--http-route-config-name', '-r'], help="The name of the http route configuration.")
-        c.argument('yaml', help="The path to the YAML input file.")
-        c.argument('name', id_part=None)
 
     # Telemetry
     with self.argument_context('containerapp env telemetry') as c:
@@ -451,7 +445,7 @@ def load_arguments(self, _):
         c.argument('network_status', arg_type=get_enum_type(["EgressEnabled", "EgressDisabled"]), help="Egress is enabled for the Sessions or not.")
 
     with self.argument_context('containerapp sessionpool create', arg_group='Configuration') as c:
-        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS", "NodeLTS"]), help="The pool type of the Session Pool, default='PythonLTS'")
+        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS", "NodeLTS", "Shell"]), help="The pool type of the Session Pool, default='PythonLTS'")
         c.argument('lifecycle_type', arg_type=get_enum_type(["Timed", "OnContainerExit"]), help="The lifecycle type of the Session Pool", default='Timed')
 
     with self.argument_context('containerapp sessionpool update', arg_group='Configuration') as c:
@@ -507,6 +501,8 @@ def load_arguments(self, _):
         c.argument('all', help="The flag to indicate all logger settings.", action="store_true")
 
     with self.argument_context('containerapp debug') as c:
+        c.argument('debug_command', options_list=['--command'],
+                   help="The command to run inside the debug container and exit. If specified, the command is run and the session ends. If not specified, an interactive bash shell is started.")
         c.argument('container',
                    help="The container name that the debug console will connect to. Default to the first container of first replica.")
         c.argument('replica',
@@ -527,12 +523,42 @@ def load_arguments(self, _):
         c.argument('mode', arg_type=get_enum_type(['single', 'multiple', 'labels']), help="The active revisions mode for the container app.")
         c.argument('target_label', help="The label to apply to new revisions. Required for revision mode 'labels'.", is_preview=True)
 
-    with self.argument_context('containerapp env premium-ingress') as c:
+    with self.argument_context('containerapp function') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('name', options_list=['--name', '-n'], help="The name of the managed environment.")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="The workload profile to run ingress replicas on. This profile must not be shared with any container app or job.")
-        c.argument('min_replicas', options_list=['--min-replicas'], type=int, deprecate_info=c.deprecate(hide=True, expiration='2.78.0'), help="The workload profile minimum instances is used instead.")
-        c.argument('max_replicas', options_list=['--max-replicas'], type=int, deprecate_info=c.deprecate(hide=True, expiration='2.78.0'), help="The workload profile maximum instances is used instead.")
-        c.argument('termination_grace_period', options_list=['--termination-grace-period', '-t'], type=int, help="Time in seconds to drain requests during ingress shutdown. Default 500, minimum 0, maximum 3600.")
-        c.argument('request_idle_timeout', options_list=['--request-idle-timeout'], type=int, help="Timeout in minutes for idle requests. Default 4, minimum 4, maximum 30.")
-        c.argument('header_count_limit', options_list=['--header-count-limit'], type=int, help="Limit of http headers per request. Default 100, minimum 1.")
+        c.argument('name', name_type, id_part=None, options_list=['--name', '-n'], help="The name of the Container App.")
+
+    with self.argument_context('containerapp function list') as c:
+        c.argument('revision_name', options_list=['--revision', '-r'], help="The name of the revision to list functions from. It is required if container app is running in multiple or labels revision mode.")
+
+    with self.argument_context('containerapp function show') as c:
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function to show details for.")
+        c.argument('revision_name', options_list=['--revision', '-r'], help="The name of the revision to get the function from. It is required if container app is running in multiple or labels revision mode.")
+
+    with self.argument_context('containerapp function keys show') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKey', 'hostKey', 'masterKey', 'systemKey']), help="The type of the key to show.", required=True)
+        c.argument('key_name', options_list=['--key-name'], help="The name of the key to show.", required=True)
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")
+
+    with self.argument_context('containerapp function keys list') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKey', 'hostKey', 'masterKey', 'systemKey']), help="The type of the keys to list.", required=True)
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")
+
+    with self.argument_context('containerapp function keys set') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('key_type', options_list=['--key-type'], arg_type=get_enum_type(['functionKey', 'hostKey', 'masterKey', 'systemKey']), help="The type of the key to set/update.", required=True)
+        c.argument('key_name', options_list=['--key-name'], help="The name of the key to create or update.", required=True)
+        c.argument('key_value', options_list=['--key-value'], help="The value of the key to create or update. Do not provide this argument to regenerate the key with a new value.", required=False)
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function. Required only when key-type is functionKey.")
+
+    with self.argument_context('containerapp function invocations summary') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function.", required=True)
+        c.argument('timespan', options_list=['--timespan'], help="The timespan for which to query the invocation data (e.g., '30d', '7d', '24h', '1h'). Default is '30d'.")
+
+    with self.argument_context('containerapp function invocations traces') as c:
+        c.argument('revision_name', options_list=['--revision'], help="The name of the container app revision. It is required if container app is running in multiple or labels revision mode.")
+        c.argument('function_name', options_list=['--function-name'], help="The name of the function.", required=True)
+        c.argument('timespan', options_list=['--timespan'], help="The timespan for which to query the invocation traces (e.g., '30d', '7d', '24h', '1h'). Default is '30d'.")
+        c.argument('limit', options_list=['--limit'], help="The maximum number of traces to return. Default is 20", type=int, default=20)

@@ -48,7 +48,7 @@ if TYPE_CHECKING:
     from kubernetes.client import CoreV1Api, V1NodeList
     from requests import Response
 
-    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.models import (
+    from azext_connectedk8s.vendored_sdks.preview_2025_08_01.models import (
         ConnectedCluster,
     )
 
@@ -58,11 +58,15 @@ logger = get_logger(__name__)
 # pylint: disable=bare-except
 
 
-def get_mcr_path(cmd: CLICommand) -> str:
-    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+def get_mcr_path(active_directory_endpoint: str) -> str:
+    active_directory_array = active_directory_endpoint.split(".")
 
-    # default for public, mc, ff clouds
-    mcr_postfix = active_directory_array[2]
+    # For US Government and China clouds, use public mcr
+    if active_directory_endpoint.endswith((".us", ".cn")):
+        return "mcr.microsoft.com"
+
+    # Default MCR postfix
+    mcr_postfix = "com"
     # special cases for USSec, exclude part of suffix
     if len(active_directory_array) == 4 and active_directory_array[2] == "microsoft":
         mcr_postfix = active_directory_array[3]
@@ -823,7 +827,7 @@ def get_helm_values(
     chart_location_url = f"{config_dp_endpoint}/{chart_location_url_segment}"
     dp_request_identity = connected_cluster.identity
     identity = connected_cluster.id
-    request_dict = connected_cluster.serialize()
+    request_dict = connected_cluster.as_dict()
     request_dict["identity"]["tenantId"] = dp_request_identity.tenant_id
     request_dict["identity"]["principalId"] = dp_request_identity.principal_id
     request_dict["id"] = identity
@@ -901,6 +905,70 @@ def health_check_dp(cmd: CLICommand, config_dp_endpoint: str) -> bool:
         summary="Error while performing DP health check",
     )
     raise CLIInternalError("Error while performing DP health check")
+
+
+def update_gateway_cluster_link(
+    cmd: CLICommand,
+    subscription_id: str,
+    resource_group: str,
+    cluster_name: str,
+    gateway_resource_id: str | None = None,
+) -> bool:
+    """
+    Associates or disassociates a gateway with a cluster.
+
+    If `gateway_resource_id` is provided, performs association.
+    If `gateway_resource_id` is None, performs disassociation.
+    """
+    api_version = "2025-02-19-preview"
+    is_association = gateway_resource_id is not None
+    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
+    url = consts.GATEWAY_ASSOCIATE_URL.format(
+        subscription_id=subscription_id,
+        resource_group=resource_group,
+        cluster_name=cluster_name,
+        api_version=api_version,
+    )
+
+    headers = ["Content-Type=application/json", "Accept=application/json"]
+
+    token = os.getenv("AZURE_ACCESS_TOKEN")
+    if token:
+        headers.append(f"Authorization=Bearer {token}")
+
+    operation_type = "association" if is_association else "disassociation"
+    body = {
+        "properties": {
+            "gatewayProperties": {
+                "gatewayResourceId": gateway_resource_id  # None in case of disassociation
+            }
+        }
+    }
+    response = send_request_with_retries(
+        cmd.cli_ctx,
+        method="put",
+        url=url,
+        headers=headers,
+        fault_type=consts.GATEWAY_LINK_FAULT_TYPE,
+        summary=f"Error during gateway {operation_type}",
+        request_body=json.dumps(body),
+        resource=resource,
+    )
+
+    if response.status_code == 200:
+        logger.info(
+            f"Gateway {operation_type} succeeded for cluster '{cluster_name}' in resource group '{resource_group}'."
+        )
+        return True
+
+    telemetry.set_exception(
+        exception=f"Gateway {operation_type} failed",
+        fault_type=consts.GATEWAY_LINK_FAULT_TYPE,
+        summary=f"Gateway {operation_type} failed",
+    )
+    raise CLIInternalError(
+        f"Gateway {operation_type} failed for cluster '{cluster_name}'."
+    )
 
 
 def send_request_with_retries(
@@ -992,10 +1060,10 @@ def arm_exception_handler(
         status_code = ex.status_code
         if status_code == 404 and return_if_not_found:
             return
-        if status_code // 100 == 4:
+        if status_code and status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        if status_code // 100 == 5:
+        if status_code and status_code // 100 == 5:
             raise AzureInternalError(
                 "Http response error occured while making ARM request: "
                 + str(ex)
@@ -1247,6 +1315,7 @@ def helm_install_release(
     ]
 
     # Special configurations from 2022-09-01 ARM metadata.
+    # "dataplaneEndpoints" property does not appear in arm_metadata structure for public and AGC clouds.
     if "dataplaneEndpoints" in arm_metadata:
         if "arcConfigEndpoint" in arm_metadata["dataplaneEndpoints"]:
             notification_endpoint = arm_metadata["dataplaneEndpoints"][
@@ -1295,6 +1364,10 @@ def helm_install_release(
             logger.debug(
                 "'arcConfigEndpoint' doesn't exist under 'dataplaneEndpoints' in the ARM metadata."
             )
+
+    # Add overrides for AGC Scenario
+    if cloud_name.lower() == "ussec" or cloud_name.lower() == "usnat":
+        add_agc_endpoint_overrides(location, cloud_name, arm_metadata, cmd_helm_install)
 
     # Add helmValues content response from DP
     cmd_helm_install = parse_helm_values(helm_content_values, cmd_helm=cmd_helm_install)
@@ -1354,7 +1427,7 @@ def helm_install_release(
             "Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' "
             "to check if all the pods are in running state. A possible cause for pods stuck in pending "
             "state could be insufficient resources on the kubernetes cluster to onboard to arc."
-            " Also pod logs can be checked using kubectl logs <pod-name> -n azure-arc.\n"
+            "Also pod logs can be checked using kubectl logs <pod-name> -n azure-arc.\n"
         )
         logger.warning(warn_msg)
         raise CLIInternalError(
@@ -1771,3 +1844,51 @@ def helm_update_agent(
     logger.info(str.format(consts.Update_Agent_Success, cluster_name))
     with contextlib.suppress(OSError):
         os.remove(user_values_location)
+
+
+def add_agc_endpoint_overrides(
+    location: str,
+    cloud_name: str,
+    arm_metadata: dict[str, Any],
+    cmd_helm_install: list[str],
+) -> None:
+    logger.debug("Adding AGC scenario overrides.")
+
+    arm_metadata_endpoint_array = (
+        arm_metadata["authentication"]["loginEndpoint"].strip("/").split(".")
+    )
+    if len(arm_metadata_endpoint_array) < 4:
+        raise CLIInternalError("Unexpected loginEndpoint format for AGC")
+
+    cloud_suffix = arm_metadata_endpoint_array[3]
+    endpoint_suffix = (
+        arm_metadata_endpoint_array[2] + "." + arm_metadata_endpoint_array[3]
+    )
+    if cloud_name.lower() == "usnat":
+        cloud_suffix = (
+            arm_metadata_endpoint_array[2]
+            + "."
+            + arm_metadata_endpoint_array[3]
+            + "."
+            + arm_metadata_endpoint_array[4]
+        )
+        endpoint_suffix = cloud_suffix
+
+    cmd_helm_install.extend(
+        [
+            "--set",
+            f"global.microsoftArtifactRepository=mcr.microsoft.{cloud_suffix}",
+            "--set",
+            f"systemDefaultValues.activeDirectoryEndpoint=https://login.microsoftonline.{endpoint_suffix}",
+            "--set",
+            f"systemDefaultValues.azureArcAgents.config_dp_endpoint_override=https://{location}.dp.kubernetesconfiguration.azure.{endpoint_suffix}",
+            "--set",
+            f"systemDefaultValues.clusterconnect-agent.notification_dp_endpoint_override=https://guestnotificationservice.azure.{endpoint_suffix}",
+            "--set",
+            f"systemDefaultValues.clusterconnect-agent.relay_endpoint_suffix_override=.servicebus.cloudapi.{endpoint_suffix}",
+            "--set",
+            f"systemDefaultValues.clusteridentityoperator.his_endpoint_override=https://gbl.his.arc.azure.{endpoint_suffix}/discovery?location={location}&api-version=1.1-preview",
+            "--set",
+            f"systemDefaultValues.image.repository=mcr.microsoft.{cloud_suffix}",
+        ]
+    )

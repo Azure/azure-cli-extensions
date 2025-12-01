@@ -6,12 +6,10 @@
 # pylint: disable=too-many-statements,too-many-lines
 import os.path
 
+from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
+from azext_aks_agent._validators import validate_agent_config_file
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.commands.parameters import get_three_state_flag
-
-from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
-
-from azext_aks_agent._validators import validate_agent_config_file
 
 
 def load_arguments(self, _):
@@ -37,7 +35,7 @@ def load_arguments(self, _):
         c.argument(
             "max_steps",
             type=int,
-            default=10,
+            default=40,
             required=False,
             help="Maximum number of steps the LLM can take to investigate the issue.",
         )
@@ -90,10 +88,7 @@ def load_arguments(self, _):
             "use_aks_mcp",
             options_list=["--aks-mcp"],
             default=False,
-            arg_type=get_three_state_flag(
-                positive_label="Enable AKS MCP integration",
-                negative_label="Disable AKS MCP integration",
-            ),
+            arg_type=get_three_state_flag(),
             help=(
                 "Enable AKS MCP integration for enhanced capabilities. "
                 "Traditional mode is the default. Use --aks-mcp to enable MCP mode, or "

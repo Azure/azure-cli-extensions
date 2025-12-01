@@ -3,10 +3,16 @@
 Release History
 ===============
 
-1.6.1
+1.7.1
 +++++
+* `az dataprotection backup-instance restore initialize-for-item-recovery`: Fixed a bug where the command would fail for AKS Scenarios.
 * `az dataprotection backup-instance update`: New parameters: `--backup-configuration` to update AKS datasource parameters.
 * Fix in `helpers.py` to correctly prepare/normalize AKS backup-configuration payloads passed via the CLI.
+
+1.7.0
++++++
+* Added support for Azure Data Lake Storage as a backup datasource.
+* `az dataprotection backup-instance restore initialize-for-item-recovery`: Exisiting parameter `--vaulted-blob-prefix-pattern` now allows users to rename blob containers during restore.
 
 1.6.0
 +++++

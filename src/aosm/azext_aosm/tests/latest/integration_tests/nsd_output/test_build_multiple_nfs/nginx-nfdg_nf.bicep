@@ -40,23 +40,23 @@ var identityObject = (managedIdentity == '')  ? {
   }
 }
 
-resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing = {
+resource publisher 'Microsoft.HybridNetwork/publishers@2024-04-15' existing = {
   name: publisherName
   scope: resourceGroup(publisherResourceGroup)
 }
 
-resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2023-09-01' existing = {
+resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2024-04-15' existing = {
   parent: publisher
   name: networkFunctionDefinitionGroupName
 }
 
-resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2023-09-01' existing = {
+resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2024-04-15' existing = {
   parent: nfdg
   name: nginx_nfdg_nfd_version
 
 }
 
-resource nf_resource 'Microsoft.HybridNetwork/networkFunctions@2023-09-01' = [for (values, i) in deployParameters: {
+resource nf_resource 'Microsoft.HybridNetwork/networkFunctions@2024-04-15' = [for (values, i) in deployParameters: {
   name: 'nginx-nfdg${i}'
   location: location
   identity: identityObject
