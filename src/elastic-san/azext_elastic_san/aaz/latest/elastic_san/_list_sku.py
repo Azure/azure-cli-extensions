@@ -22,9 +22,9 @@ class ListSku(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01-preview",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/skus", "2024-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/skus", "2025-09-01"],
         ]
     }
 
@@ -110,7 +110,7 @@ class ListSku(AAZCommand):
                     "$filter", self.ctx.args.filter,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01-preview",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -145,7 +145,6 @@ class ListSku(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
-                flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
