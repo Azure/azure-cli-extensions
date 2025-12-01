@@ -10,6 +10,7 @@ import unittest
 from azure.cli.testsdk import ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import time
+import copy
 
 
 def reset_softdelete_base_state(test):
@@ -279,3 +280,57 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
         # Once protection elsewhere is stopped, we can resume protection on the undeleted BI
         time.sleep(60)
         reset_softdelete_base_state(test)
+    
+    @AllowLargeResponse()
+    def test_dataprotection_backup_instance_update_aks_configuration(test):
+        # Update with AKS backup configuration using simple az CLI commands.
+        test.kwargs.update({
+            'location': 'eastus2euap',
+            'rg': 'clitest-dpp-rg',
+            'vaultName': 'clitest-bkp-vault-aks-donotdelete',
+            'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupPolicies/akspolicy',
+            'dataSourceType': 'AzureKubernetesService',
+            'aksClusterName': 'clitest-cluster1-donotdelete',
+            'aksClusterId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.ContainerService/managedClusters/clitest-cluster1-donotdelete',
+            'friendlyName': 'clitest-friendly-aks',
+            'backupInstanceName': 'clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e'
+        })
+
+        # Fetch original BI backupDatasourceParametersList (if any) to allow resetting later
+        original_bi = test.cmd('az dataprotection backup-instance show -g "{rg}" --vault-name "{vaultName}" --name "{backupInstanceName}"').get_output_in_json()
+        original_bi_backup_config_json = original_bi['properties']['policyInfo']['policyParameters'].get('backupDatasourceParametersList')[0]
+        test.kwargs.update({
+            'backupConfig': original_bi_backup_config_json
+        })
+
+        # Generate the AKS backup configuration using the dedicated CLI helper
+        new_backup_config_json = test.cmd('az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService').get_output_in_json()
+
+        # mutate a visible field to make the change observable
+        new_backup_config_json['included_namespaces'] = ["nsA", "nsB"]
+        new_backup_config_json['label_selectors'] = ["app=web"]
+        new_backup_config_json['excluded_resource_types'] = ["ResourceX"]
+        new_backup_config_json['include_cluster_scope_resources'] = False
+        new_backup_config_json['snapshot_volumes'] = False
+        test.kwargs.update({
+            'tempBackupConfig': new_backup_config_json
+        })
+
+        # Apply temp configuration
+        test.cmd('az dataprotection backup-instance update -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --backup-configuration "{tempBackupConfig}"', checks=[
+            test.check('name', "{backupInstanceName}")
+        ])
+
+        # Fetch the BI and verify that the backupDatasourceParametersList was updated to reflect the AKS config
+        test.cmd('az dataprotection backup-instance show -g "{rg}" --vault-name "{vaultName}" --name "{backupInstanceName}"', checks=[
+            test.check("properties.policyInfo.policyParameters.backupDatasourceParametersList[0].included_namespaces", ['nsA', 'nsB']),
+            test.check("properties.policyInfo.policyParameters.backupDatasourceParametersList[0].label_selectors", ['app=web']),
+            test.check("properties.policyInfo.policyParameters.backupDatasourceParametersList[0].excluded_resource_types", ['ResourceX']),
+            test.check("properties.policyInfo.policyParameters.backupDatasourceParametersList[0].include_cluster_scope_resources", False),
+            test.check("properties.policyInfo.policyParameters.backupDatasourceParametersList[0].snapshot_volumes", False)
+        ])
+        
+        # Reset to original configuration
+        test.cmd('az dataprotection backup-instance update -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --backup-configuration "{backupConfig}"', checks=[
+            test.check('name', "{backupInstanceName}")
+        ])

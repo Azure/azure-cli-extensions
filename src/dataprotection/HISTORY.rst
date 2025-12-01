@@ -6,6 +6,8 @@ Release History
 1.7.1
 +++++
 * `az dataprotection backup-instance restore initialize-for-item-recovery`: Fixed a bug where the command would fail for AKS Scenarios.
+* `az dataprotection backup-instance update`: New parameters: `--backup-configuration` to update AKS datasource parameters.
+* Fix in `helpers.py` to correctly prepare/normalize AKS backup-configuration payloads passed via the CLI.
 
 1.7.0
 +++++
