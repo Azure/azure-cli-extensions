@@ -10,7 +10,6 @@ import unittest
 from azure.cli.testsdk import ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import time
-import copy
 
 
 def reset_softdelete_base_state(test):

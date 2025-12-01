@@ -135,7 +135,7 @@ def load_arguments(self, _):
                    help="Enter the container list to modify a vaulted blob backup. The output for "
                    "'az dataprotection backup-instance initialize-backupconfig' needs to be provided as input")
         c.argument('backup_configuration', type=validate_file_or_dict, 
-                    help="Enter the Backup configuration to modify AKS backup datasource parameters. "
+                    help="Enter the backup configuration to modify AKS backup datasource parameters. "
                     "The output for 'az dataprotection backup-instance initialize-backupconfig' needs to be provided as input.")
         c.argument('use_system_assigned_identity', options_list=['--system-assigned', '--use-system-identity', '--use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
         c.argument('user_assigned_identity_arm_url', options_list=['--user-assigned', '--user-assigned-identity-arm-url', '--uami'], type=str, help="ARM ID of the User Assigned Managed Identity")

@@ -14,6 +14,7 @@
 # pylint: disable=no-else-continue
 # pylint: disable=no-else-raise
 import time
+import json
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
@@ -279,20 +280,21 @@ def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, 
             elif backup_configuration is not None:
                 # Allow passing JSON string or already-parsed object
                 if isinstance(backup_configuration, str):
-                    import json
                     try:
                         backup_configuration = json.loads(backup_configuration)
+                    except json.JSONDecodeError:
+                        raise InvalidArgumentValueError("Provided --backup-configuration is not valid JSON.")
                     except Exception:
-                        raise InvalidArgumentValueError("Provided --backup-configuration is not valid JSON")
+                        raise InvalidArgumentValueError("Provided --backup-configuration is not valid.")
                 backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = [backup_configuration]
         elif datasource_type == "Microsoft.Storage/storageAccounts/blobServices":
             if backup_configuration is not None:
                 raise InvalidArgumentValueError('Invalid argument --backup-configuration for given datasource type.')
             elif vaulted_blob_container_list is not None:
-                backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = [vaulted_blob_container_list,]
+                backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = [vaulted_blob_container_list]
         else:
-            raise InvalidArgumentValueError('Setting backup datasource parameters is not supported for given DataSourceType')
-
+            raise InvalidArgumentValueError("Setting backup datasource parameters is not supported for given DataSourceType.\n "
+                                            "Supported datasource types are Microsoft.ContainerService/managedClusters and Microsoft.Storage/storageAccounts/blobServices.")
 
     backup_instance = helper.convert_backup_instance_show_to_input(backup_instance)
 
