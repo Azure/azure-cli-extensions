@@ -134,9 +134,9 @@ def load_arguments(self, _):
         c.argument('vaulted_blob_container_list', type=validate_file_or_dict, options_list=['--vaulted-blob-container-list', '--container-blob-list'],
                    help="Enter the container list to modify a vaulted blob backup. The output for "
                    "'az dataprotection backup-instance initialize-backupconfig' needs to be provided as input")
-        c.argument('backup_configuration', type=validate_file_or_dict,
-                   help="Enter the backup configuration to modify AKS backup datasource parameters. "
-                   "The output for 'az dataprotection backup-instance initialize-backupconfig' needs to be provided as input.")
+        c.argument('aks_backup_configuration', type=validate_file_or_dict,
+                   help="Enter the AKS backup configuration to modify AKS backup datasource parameters. "
+                   "The output for 'az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService' needs to be provided as input.")
         c.argument('use_system_assigned_identity', options_list=['--system-assigned', '--use-system-identity', '--use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
         c.argument('user_assigned_identity_arm_url', options_list=['--user-assigned', '--user-assigned-identity-arm-url', '--uami'], type=str, help="ARM ID of the User Assigned Managed Identity")
 

@@ -316,7 +316,7 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
         })
 
         # Apply temp configuration
-        test.cmd('az dataprotection backup-instance update -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --backup-configuration "{tempBackupConfig}"', checks=[
+        test.cmd('az dataprotection backup-instance update -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --aks-backup-configuration "{tempBackupConfig}"', checks=[
             test.check('name', "{backupInstanceName}")
         ])
 
@@ -330,6 +330,6 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
         ])
         
         # Reset to original configuration
-        test.cmd('az dataprotection backup-instance update -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --backup-configuration "{backupConfig}"', checks=[
+        test.cmd('az dataprotection backup-instance update -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --aks-backup-configuration "{backupConfig}"', checks=[
             test.check('name', "{backupInstanceName}")
         ])
