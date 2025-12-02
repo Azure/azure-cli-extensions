@@ -275,10 +275,11 @@ def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, 
     # If user provided any of the datasource parameter update inputs, handle according to datasource type
     if vaulted_blob_container_list is not None or aks_backup_configuration is not None:
         if datasource_type == "Microsoft.ContainerService/managedClusters":
+            # AKS scenario (only --aks-backup-configuration is valid)
             if vaulted_blob_container_list is not None:
-                raise InvalidArgumentValueError('Invalid argument --vaulted-blob-container-list for given datasource type.')
+                raise InvalidArgumentValueError(f'Invalid argument --vaulted-blob-container-list for AKS datasource type: {datasource_type}. Use --aks-backup-configuration instead.')
             elif aks_backup_configuration is not None:
-                # Allow passing JSON string or already-parsed object
+                # Allow passing JSON string or already-parsed object for AKS backup configuration
                 if isinstance(aks_backup_configuration, str):
                     try:
                         aks_backup_configuration = json.loads(aks_backup_configuration)
@@ -288,13 +289,14 @@ def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, 
                         raise InvalidArgumentValueError("Provided --aks-backup-configuration is not valid.")
                 backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = [aks_backup_configuration]
         elif datasource_type == "Microsoft.Storage/storageAccounts/blobServices":
+            # Blob scenario (only --vaulted-blob-container-list is valid)
             if aks_backup_configuration is not None:
-                raise InvalidArgumentValueError('Invalid argument --aks-backup-configuration for given datasource type.')
+                raise InvalidArgumentValueError(f'Invalid argument --aks-backup-configuration for Blob datasource type: {datasource_type}. Use --vaulted-blob-container-list instead.')
             elif vaulted_blob_container_list is not None:
                 backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = [vaulted_blob_container_list]
         else:
-            raise InvalidArgumentValueError("Setting backup datasource parameters is not supported for given DataSourceType.\n "
-                                            "Supported datasource types are Microsoft.ContainerService/managedClusters and Microsoft.Storage/storageAccounts/blobServices.")
+            raise InvalidArgumentValueError(f"Setting backup datasource parameters is not supported for datasource type: {datasource_type}.\n "
+                                            "Supported datasource types are Microsoft.ContainerService/managedClusters (AKS) and Microsoft.Storage/storageAccounts/blobServices (Blob).")
 
     backup_instance = helper.convert_backup_instance_show_to_input(backup_instance)
 
