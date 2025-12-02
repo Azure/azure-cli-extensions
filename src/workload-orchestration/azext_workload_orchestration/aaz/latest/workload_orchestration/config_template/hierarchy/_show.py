@@ -78,7 +78,6 @@ class Show(AAZCommand):
         if result and "value" in result:
             for metadata in result["value"]:
                 context_info = {
-                    "contextId": metadata.get("id", ""),
                     "linkedHierarchies": []
                 }
                 
