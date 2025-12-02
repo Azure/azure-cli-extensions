@@ -297,20 +297,15 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
 
         # Fetch original BI backupDatasourceParametersList (if any) to allow resetting later
         original_bi = test.cmd('az dataprotection backup-instance show -g "{rg}" --vault-name "{vaultName}" --name "{backupInstanceName}"').get_output_in_json()
-        original_bi_backup_config_json = original_bi['properties']['policyInfo']['policyParameters'].get('backupDatasourceParametersList')[0]
+        originalBackupConfig = original_bi['properties']['policyInfo']['policyParameters'].get('backupDatasourceParametersList')[0]
         test.kwargs.update({
-            'backupConfig': original_bi_backup_config_json
+            'backupConfig': originalBackupConfig
         })
 
-        # Generate the AKS backup configuration using the dedicated CLI helper
-        new_backup_config_json = test.cmd('az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService').get_output_in_json()
-
-        # mutate a visible field to make the change observable
-        new_backup_config_json['included_namespaces'] = ["nsA", "nsB"]
-        new_backup_config_json['label_selectors'] = ["app=web"]
-        new_backup_config_json['excluded_resource_types'] = ["ResourceX"]
-        new_backup_config_json['include_cluster_scope_resources'] = False
-        new_backup_config_json['snapshot_volumes'] = False
+        # Generate the AKS backup configuration with specific values in a single command to make the change observable
+        new_backup_config_json = test.cmd('az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService '
+                                          '--included-namespaces "nsA" "nsB" --label-selectors "app=web" --excluded-resource-types "ResourceX" '
+                                          '--include-cluster-scope-resources false --snapshot-volumes false').get_output_in_json()
         test.kwargs.update({
             'tempBackupConfig': new_backup_config_json
         })
