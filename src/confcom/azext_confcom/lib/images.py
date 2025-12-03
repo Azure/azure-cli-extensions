@@ -5,6 +5,7 @@
 
 import functools
 import os
+import re
 import subprocess
 import docker
 
@@ -62,3 +63,7 @@ def get_image_config(image: str) -> dict:
         config["working_dir"] = image_config.get("WorkingDir")
 
     return config
+
+
+def sanitize_image_reference(image_reference: str) -> str:
+    return re.sub(f"[{re.escape(r'<>:"/\\|?*@\0')}]", "-", image_reference)

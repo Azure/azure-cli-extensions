@@ -235,6 +235,14 @@ def load_arguments(self, _):
             required=False,
             help='Container definitions to include in the policy'
         )
+        c.argument(
+            "fragment_definitions",
+            options_list=['--with-fragments'],
+            action='append',
+            type=json.loads,
+            required=False,
+            help='Fragment definitions to include in the policy'
+        )
 
     with self.argument_context("confcom acifragmentgen") as c:
         c.argument(
@@ -483,4 +491,17 @@ def load_arguments(self, _):
             default="aci",
             type=str,
             help="Platform to create container definition for",
+        )
+
+    with self.argument_context("confcom fragment references from_image") as c:
+        c.positional(
+            "image",
+            type=str,
+            help="Image to create container definition from",
+        )
+        c.argument(
+            "minimum_svn",
+            required=False,
+            type=str,
+            help="Minimum Allowed Software Version Number for Fragment",
         )
