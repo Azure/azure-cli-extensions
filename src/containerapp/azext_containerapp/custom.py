@@ -94,6 +94,18 @@ from .containerapp_session_code_interpreter_decorator import SessionCodeInterpre
 from .containerapp_session_custom_container_decorator import SessionCustomContainerCommandsPreviewDecorator
 from .containerapp_job_registry_decorator import ContainerAppJobRegistryPreviewSetDecorator
 from .containerapp_env_maintenance_config_decorator import ContainerAppEnvMaintenanceConfigPreviewDecorator
+from .containerapp_functions_decorator import (
+    ContainerAppFunctionsListDecorator,
+    ContainerAppFunctionsShowDecorator,
+    ContainerAppFunctionInvocationsDecorator
+)
+from .containerapp_function_keys_decorator import (
+    ContainerAppFunctionKeysShowDecorator,
+    ContainerAppFunctionKeysListDecorator,
+    ContainerAppFunctionKeysSetDecorator
+)
+
+from .containerapp_debug_command_decorator import ContainerAppDebugCommandDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -115,8 +127,8 @@ from ._clients import (
     SessionCustomContainerPreviewClient,
     DotNetComponentPreviewClient,
     MaintenanceConfigPreviewClient,
-    HttpRouteConfigPreviewClient,
-    LabelHistoryPreviewClient
+    LabelHistoryPreviewClient,
+    ContainerAppFunctionsPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -1997,7 +2009,7 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
     try:
         deserializer = create_deserializer(CONTAINER_APPS_SDK_MODELS)
-        daprcomponent_def = deserializer('ConnectedEnvironmentDaprComponent', yaml_dapr_component)
+        daprcomponent_def = deserializer('DaprComponent', yaml_dapr_component)
     except DeserializationError as ex:
         raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
 
@@ -3601,8 +3613,27 @@ def list_maintenance_config(cmd, resource_group_name, env_name):
     return r
 
 
-def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None):
+def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None, debug_command=None):
     logger.warning("Connecting...")
+    if debug_command is not None:
+        raw_parameters = {
+            'resource_group_name': resource_group_name,
+            'container_app_name': name,
+            'revision_name': revision,
+            'replica_name': replica,
+            'container_name': container,
+            'command': debug_command
+        }
+        debug_command_decorator = ContainerAppDebugCommandDecorator(
+            cmd=cmd,
+            client=ContainerAppPreviewClient,
+            raw_parameters=raw_parameters,
+            models=CONTAINER_APPS_SDK_MODELS
+        )
+        debug_command_decorator.validate_arguments()
+        logger.debug("Executing command: %s", debug_command)
+        return debug_command_decorator.execute_Command(cmd=cmd)
+
     conn = DebugWebSocketConnection(
         cmd=cmd,
         resource_group_name=resource_group_name,
@@ -3632,60 +3663,6 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
             if conn.is_connected:
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
                 conn.send(SSH_CTRL_C_MSG)
-
-
-def create_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    yaml_http_route_config = load_yaml_file(yaml)
-    # check if the type is dict
-    if not isinstance(yaml_http_route_config, dict):
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
-
-    http_route_config_envelope = {"properties": yaml_http_route_config}
-
-    try:
-        return HttpRouteConfigPreviewClient.create(cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope)
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def update_http_route_config(cmd, resource_group_name, name, http_route_config_name, yaml):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    yaml_http_route_config = load_yaml_file(yaml)
-    # check if the type is dict
-    if not isinstance(yaml_http_route_config, dict):
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
-
-    http_route_config_envelope = {"properties": yaml_http_route_config}
-
-    try:
-        return HttpRouteConfigPreviewClient.update(cmd, resource_group_name, name, http_route_config_name, http_route_config_envelope)
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def list_http_route_configs(cmd, resource_group_name, name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        return HttpRouteConfigPreviewClient.list(cmd, resource_group_name, name)
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def show_http_route_config(cmd, resource_group_name, name, http_route_config_name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        return HttpRouteConfigPreviewClient.show(cmd, resource_group_name, name, http_route_config_name)
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def delete_http_route_config(cmd, resource_group_name, name, http_route_config_name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        return HttpRouteConfigPreviewClient.delete(cmd, resource_group_name, name, http_route_config_name)
-    except Exception as e:
-        handle_raw_exception(e)
 
 
 def list_label_history(cmd, resource_group_name, name):
@@ -3859,104 +3836,136 @@ def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
         handle_raw_exception(e)
 
 
-def show_environment_premium_ingress(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+# Container App Functions commands
+def list_containerapp_functions(cmd, resource_group_name, name, revision_name=None):
+    """List functions for a container app or specific revision"""
+    containerapp_functions_list_decorator = ContainerAppFunctionsListDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters={
+            'resource_group_name': resource_group_name,
+            'container_app_name': name,
+            'revision_name': revision_name
+        },
+        models=CONTAINER_APPS_SDK_MODELS
+    )
 
-    try:
-        env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
-        ingress_config = safe_get(env, "properties", "ingressConfiguration")
-        if not ingress_config:
-            return {"message": "No premium ingress configuration found for this environment, using default values."}
-
-        return ingress_config
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def add_environment_premium_ingress(cmd, name, resource_group_name, workload_profile_name, min_replicas=None, max_replicas=None, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-
-    try:
-        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
-        env_patch = {}
-        ingress_config = {}
-        safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
-
-        # Required
-        ingress_config["workloadProfileName"] = workload_profile_name
-        # Optional, remove if None
-        ingress_config["terminationGracePeriodSeconds"] = termination_grace_period
-        ingress_config["requestIdleTimeout"] = request_idle_timeout
-        ingress_config["headerCountLimit"] = header_count_limit
-
-        result = ManagedEnvironmentPreviewClient.update(
-            cmd=cmd,
-            resource_group_name=resource_group_name,
-            name=name,
-            managed_environment_envelope=env_patch,
-            no_wait=no_wait
-        )
-
-        return safe_get(result, "properties", "ingressConfiguration")
-
-    except Exception as e:
-        handle_raw_exception(e)
+    return containerapp_functions_list_decorator.list()
 
 
-def update_environment_premium_ingress(cmd, name, resource_group_name, workload_profile_name=None, min_replicas=None, max_replicas=None, termination_grace_period=None, request_idle_timeout=None, header_count_limit=None, no_wait=False):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+def show_containerapp_function(cmd, resource_group_name, name, function_name, revision_name=None):
+    """Show details of a specific function for a container app or revision"""
+    containerapp_functions_show_decorator = ContainerAppFunctionsShowDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters={
+            'resource_group_name': resource_group_name,
+            'container_app_name': name,
+            'function_name': function_name,
+            'revision_name': revision_name
+        },
+        models=CONTAINER_APPS_SDK_MODELS
+    )
 
-    try:
-        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
-        env_patch = {}
-        ingress_config = {}
-
-        if workload_profile_name is not None:
-            ingress_config["workloadProfileName"] = workload_profile_name
-        if termination_grace_period is not None:
-            ingress_config["terminationGracePeriodSeconds"] = termination_grace_period
-        if request_idle_timeout is not None:
-            ingress_config["requestIdleTimeout"] = request_idle_timeout
-        if header_count_limit is not None:
-            ingress_config["headerCountLimit"] = header_count_limit
-
-        # Only add ingressConfiguration to the patch if any values were specified
-        if ingress_config:
-            safe_set(env_patch, "properties", "ingressConfiguration", value=ingress_config)
-        else:
-            return {"message": "No changes specified for premium ingress configuration"}
-
-        # Update the environment with the patched ingress configuration
-        result = ManagedEnvironmentPreviewClient.update(
-            cmd=cmd,
-            resource_group_name=resource_group_name,
-            name=name,
-            managed_environment_envelope=env_patch,
-            no_wait=no_wait
-        )
-
-        return safe_get(result, "properties", "ingressConfiguration")
-
-    except Exception as e:
-        handle_raw_exception(e)
+    return containerapp_functions_show_decorator.show()
 
 
-def remove_environment_premium_ingress(cmd, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+def show_containerapp_function_keys(cmd, resource_group_name, name, key_type, key_name, function_name=None, revision_name=None):
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'key_type': key_type,
+        'key_name': key_name,
+        'function_name': function_name,
+        'revision_name': revision_name
+    }
 
-    try:
-        ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
-        env_patch = {}
-        # Remove the whole section to restore defaults
-        safe_set(env_patch, "properties", "ingressConfiguration", value=None)
+    containerapp_function_keys_show_decorator = ContainerAppFunctionKeysShowDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
 
-        ManagedEnvironmentPreviewClient.update(
-            cmd=cmd,
-            resource_group_name=resource_group_name,
-            name=name,
-            managed_environment_envelope=env_patch,
-            no_wait=no_wait
-        )
+    return containerapp_function_keys_show_decorator.show_keys()
 
-    except Exception as e:
-        handle_raw_exception(e)
+
+def list_containerapp_function_keys(cmd, resource_group_name, name, key_type, function_name=None, revision_name=None):
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'key_type': key_type,
+        'function_name': function_name,
+        'revision_name': revision_name
+    }
+
+    containerapp_function_keys_list_decorator = ContainerAppFunctionKeysListDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_function_keys_list_decorator.list_keys()
+
+
+def set_containerapp_function_keys(cmd, resource_group_name, name, key_type, key_name, key_value, function_name=None, revision_name=None):
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'key_type': key_type,
+        'key_name': key_name,
+        'key_value': key_value,
+        'function_name': function_name,
+        'revision_name': revision_name
+    }
+
+    containerapp_function_keys_set_decorator = ContainerAppFunctionKeysSetDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_function_keys_set_decorator.set_keys()
+
+
+def get_function_invocations_summary(cmd, resource_group_name, name, function_name, revision_name=None, timespan="30d"):
+    """Get function invocation summary from Application Insights."""
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'revision_name': revision_name,
+        'function_name': function_name,
+        'timespan': timespan
+    }
+    function_app_decorator = ContainerAppFunctionInvocationsDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    function_app_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    result = function_app_decorator.get_summary()
+    return result
+
+
+def get_function_invocations_traces(cmd, resource_group_name, name, function_name, revision_name=None, timespan="30d", limit=20):
+    """Get function invocation traces from Application Insights."""
+    raw_parameters = {
+        'resource_group_name': resource_group_name,
+        'container_app_name': name,
+        'revision_name': revision_name,
+        'function_name': function_name,
+        'timespan': timespan,
+        'limit': limit
+    }
+    function_app_decorator = ContainerAppFunctionInvocationsDecorator(
+        cmd=cmd,
+        client=ContainerAppFunctionsPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    function_app_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    result = function_app_decorator.get_traces()
+    return result

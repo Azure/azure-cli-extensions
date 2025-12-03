@@ -1,0 +1,36 @@
+user_prompt: 'port forward to grafana pod in app-03'
+expected_output:
+  - Must find the actual grafana pod name (grafana-7f8b9c6d5-x2m4n)
+  - Must include the correct port (3000)
+  - "Full kubectl port-forward command like: kubectl port-forward -n app-03 grafana-7f8b9c6d5-x2m4n 3000:3000"
+  - Should NOT just say "find grafana in your cluster" or give generic instructions
+tags:
+  - kubernetes
+  - medium
+  - answer-given-wrong-place # LLM gave the answer in intermediate steps, not final answer, so harder for user to see
+before_test: |
+  kubectl create namespace app-03
+  cat <<EOF | kubectl apply -f -
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: grafana-7f8b9c6d5-x2m4n
+    namespace: app-03
+    labels:
+      app: grafana
+  spec:
+    containers:
+    - name: grafana
+      image: busybox:1.35
+      command: ['sh', '-c', 'while true; do nc -l -p 3000; done']
+      ports:
+      - containerPort: 3000
+        name: http
+  EOF
+  kubectl wait --for=condition=Ready pod/grafana-7f8b9c6d5-x2m4n -n app-03 --timeout=60s
+
+after_test: |
+  kubectl delete namespace app-03 --ignore-not-found --wait=false
+
+evaluation:
+  correctness: loose
