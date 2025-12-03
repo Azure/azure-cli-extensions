@@ -17,3 +17,6 @@ def load_command_table(self, _):
 
     with self.command_group("confcom"):
         pass
+
+    with self.command_group("confcom fragment references") as g:
+        g.custom_command("from_image", "fragment_references_from_image")

@@ -25,6 +25,7 @@ from azext_confcom.template_util import (
     print_existing_policy_from_yaml, print_func, str_to_sha256)
 from azext_confcom.command.fragment_attach import fragment_attach as _fragment_attach
 from azext_confcom.command.fragment_push import fragment_push as _fragment_push
+from azext_confcom.command.fragment_references_from_image import fragment_references_from_image as _fragment_references_from_image
 from knack.log import get_logger
 from pkg_resources import parse_version
 
@@ -57,6 +58,7 @@ def acipolicygen_confcom(
     include_fragments: bool = False,
     fragments_json: str = None,
     exclude_default_fragments: bool = False,
+    fragment_definitions: Optional[list] = None,
 ):
     if print_existing_policy or outraw or outraw_pretty_print:
         logger.warning(
@@ -164,6 +166,10 @@ def acipolicygen_confcom(
             disable_stdio=disable_stdio,
             container_definitions=container_definitions,
         )
+
+    if fragment_definitions:
+        for fragment_definition in fragment_definitions:
+            container_group_policies._fragments.extend(fragment_definition)  # pylint: disable=protected-access
 
     exit_code = 0
 
@@ -551,4 +557,14 @@ def fragment_push(
     _fragment_push(
         signed_fragment=signed_fragment,
         manifest_tag=manifest_tag
+    )
+
+
+def fragment_references_from_image(
+    image: str,
+    minimum_svn: Optional[str],
+) -> None:
+    _fragment_references_from_image(
+        image=image,
+        minimum_svn=minimum_svn,
     )
