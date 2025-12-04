@@ -11,10 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* `az aks bastion`: Correctly configure `$KUBECONFIG` values for tunneling traffic into a private AKS cluster.
 
 19.0.0b17
 +++++++
+* `az aks bastion`: Correctly configure `$KUBECONFIG` values for tunneling traffic into a private AKS cluster.
 * Update user prompt for `az aks upgrade` command to clarify the implication of the `--control-plane-only` options.
 
 19.0.0b16
