@@ -16,9 +16,6 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List DbSystem resources by subscription ID
-
-    :example: DbSystems_List
-        az oracle-database db-system list
     """
 
     _aaz_info = {
@@ -165,9 +162,7 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -212,6 +207,7 @@ class List(AAZCommand):
             properties.domain = AAZStrType()
             properties.grid_image_ocid = AAZStrType(
                 serialized_name="gridImageOcid",
+                flags={"read_only": True},
             )
             properties.hostname = AAZStrType(
                 flags={"required": True},
@@ -421,9 +417,7 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -468,6 +462,7 @@ class List(AAZCommand):
             properties.domain = AAZStrType()
             properties.grid_image_ocid = AAZStrType(
                 serialized_name="gridImageOcid",
+                flags={"read_only": True},
             )
             properties.hostname = AAZStrType(
                 flags={"required": True},

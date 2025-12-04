@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class AddAzureSubscription(AAZCommand):
     """Add Azure Subscriptions
+
+    :example: Add Azure Subscriptions to the OracleSubscription
+        az oracle-database oracle-subscription add-azure-subscription --azure-subscription-ids "[00000000-0000-0000-0000-000000000001]"
     """
 
     _aaz_info = {
