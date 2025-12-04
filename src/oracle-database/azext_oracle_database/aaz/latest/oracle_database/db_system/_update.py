@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a DbSystem
+
+    :example: DbSystems_CreateOrUpdate_MaximumSet
+        az oracle-database db-system update --resource-group rg --db-system-name dbsystem1 --zones "[2]" --tags "{example:test}"
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List DbSystem resources by subscription ID
+
+    :example: DbSystems_List
+        az oracle-database db-system list
     """
 
     _aaz_info = {

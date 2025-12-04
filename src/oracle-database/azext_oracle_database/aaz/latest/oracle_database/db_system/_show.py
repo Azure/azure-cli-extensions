@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a DbSystem
+
+    :example: DbSystems_Get
+        az oracle-database db-system show --resource-group rg --db-system-name dbsystem1
     """
 
     _aaz_info = {

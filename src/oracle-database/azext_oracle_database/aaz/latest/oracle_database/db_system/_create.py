@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a DbSystem
+
+    :example: DbSystems_Create
+        az oracle-database db-system create --resource-group rgo --db-system-name dbsystem1 --database-edition StandardEdition --admin-password ******** --db-version 19.0.0.0 --resource-anchor-id /subscriptions/00000000-0000-4025-0000-000000000000/resourceGroups/rg001/providers/Oracle.Database/resourceAnchors/resourceanchor1 --network-anchor-id /subscriptions/00000000-0000-4025-0000-000000000000/resourceGroups/rg001/providers/Oracle.Database/networkAnchors/networkanchor1 --cluster-name example --display-name example --initial-data-storage-size-in-gb 19 --db-system-options "{storage-management:LVM}" --disk-redundancy High --hostname krixp --node-count 24 --shape VM.Standard.E5.Flex --ssh-public-keys "[sha-xx]" --storage-volume-performance-mode Balanced --time-zone utc --compute-model ECPU --compute-count 28 --zones "[2]" --tags "{tag:test}" --location eastus
     """
 
     _aaz_info = {

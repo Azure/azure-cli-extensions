@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a DbSystem
+
+    :example: DbSystems_Delete_MaximumSet
+        az oracle-database db-system delete --resource-group rg --db-system-name dbsystem1
     """
 
     _aaz_info = {
