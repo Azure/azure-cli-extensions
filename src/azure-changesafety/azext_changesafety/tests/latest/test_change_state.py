@@ -6,7 +6,11 @@
 # --------------------------------------------------------------------------------------------
 
 import copy
+import datetime
+import json
+import os
 import sys
+import tempfile
 import types
 from types import SimpleNamespace
 from unittest import mock
@@ -89,7 +93,18 @@ class ChangeStateScenario(ScenarioTest):
         return arg.to_serialized_data()
 
     @staticmethod
-    def _build_mock_instance(name, resource_group, subscription_id, change_type, rollout_type, targets, comments=None):
+    def _build_mock_instance(
+            name,
+            resource_group,
+            subscription_id,
+            change_type,
+            rollout_type,
+            targets,
+            comments=None,
+            change_definition=None,
+            stage_map=None,
+            anticipated_start_time=None,
+            anticipated_end_time=None):
         return {
             "id": f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.ChangeSafety/changeStates/{name}",
             "name": name,
@@ -99,7 +114,10 @@ class ChangeStateScenario(ScenarioTest):
                 "changeType": change_type,
                 "rolloutType": rollout_type,
                 "comments": comments,
-                "changeDefinition": {
+                "anticipatedStartTime": anticipated_start_time,
+                "anticipatedEndTime": anticipated_end_time,
+                "stageMap": stage_map,
+                "changeDefinition": change_definition or {
                     "kind": "Targets",
                     "name": name,
                     "details": {
@@ -120,6 +138,20 @@ class ChangeStateScenario(ScenarioTest):
         rollout_type = cls._get_arg_value(cmd, "rollout_type", "Normal")
         comments = cls._get_arg_value(cmd, "comments")
         targets = copy.deepcopy(cmd._parsed_targets or [])
+        change_definition_var = getattr(cmd.ctx.vars, "change_definition", None)
+        change_definition_value = change_definition_var.to_serialized_data() if change_definition_var else None
+        stage_map_arg = getattr(cmd.ctx.args, "stage_map", None)
+        stage_map_value = None
+        if stage_map_arg is not None:
+            if hasattr(stage_map_arg, "to_serialized_data") and has_value(stage_map_arg):
+                stage_map_value = stage_map_arg.to_serialized_data()
+            elif isinstance(stage_map_arg, dict):
+                stage_map_value = stage_map_arg
+        if isinstance(stage_map_value, dict) and "resource_id" in stage_map_value and "resourceId" not in stage_map_value:
+            stage_map_value = {**stage_map_value}
+            stage_map_value["resourceId"] = stage_map_value.pop("resource_id")
+        start_time = cls._get_arg_value(cmd, "anticipated_start_time")
+        end_time = cls._get_arg_value(cmd, "anticipated_end_time")
         instance = cls._build_mock_instance(
             name=name,
             resource_group=resource_group,
@@ -128,6 +160,10 @@ class ChangeStateScenario(ScenarioTest):
             rollout_type=rollout_type,
             targets=targets,
             comments=comments,
+            change_definition=change_definition_value,
+            stage_map=stage_map_value,
+            anticipated_start_time=start_time,
+            anticipated_end_time=end_time,
         )
         cls._SCENARIO_STATE["instance"] = copy.deepcopy(instance)
         cmd.ctx.set_var("instance", copy.deepcopy(instance), schema_builder=lambda: AAZAnyType())
@@ -155,13 +191,35 @@ class ChangeStateScenario(ScenarioTest):
         new_change_type = cls._get_arg_value(cmd, "change_type")
         new_rollout = cls._get_arg_value(cmd, "rollout_type")
         new_comments = cls._get_arg_value(cmd, "comments")
+        new_start = cls._get_arg_value(cmd, "anticipated_start_time")
+        new_end = cls._get_arg_value(cmd, "anticipated_end_time")
+        stage_map_arg = getattr(cmd.ctx.args, "stage_map", None)
+        stage_map_value = None
+        if stage_map_arg is not None:
+            if hasattr(stage_map_arg, "to_serialized_data") and has_value(stage_map_arg):
+                stage_map_value = stage_map_arg.to_serialized_data()
+            elif isinstance(stage_map_arg, dict):
+                stage_map_value = stage_map_arg
+        if isinstance(stage_map_value, dict) and "resource_id" in stage_map_value and "resourceId" not in stage_map_value:
+            stage_map_value = {**stage_map_value}
+            stage_map_value["resourceId"] = stage_map_value.pop("resource_id")
+        change_definition_var = getattr(cmd.ctx.vars, "change_definition", None)
+        change_definition_value = change_definition_var.to_serialized_data() if change_definition_var else None
         if new_change_type:
             current["properties"]["changeType"] = new_change_type
         if new_rollout:
             current["properties"]["rolloutType"] = new_rollout
         if new_comments is not None:
             current["properties"]["comments"] = new_comments
-        if cmd._parsed_targets:  # pylint: disable=protected-access
+        if new_start is not None:
+            current["properties"]["anticipatedStartTime"] = new_start
+        if new_end is not None:
+            current["properties"]["anticipatedEndTime"] = new_end
+        if stage_map_value is not None:
+            current["properties"]["stageMap"] = stage_map_value
+        if change_definition_value is not None:
+            current["properties"]["changeDefinition"] = change_definition_value
+        elif cmd._parsed_targets:  # pylint: disable=protected-access
             current["properties"]["changeDefinition"]["details"]["targets"] = copy.deepcopy(cmd._parsed_targets)  # pylint: disable=protected-access
         cls._SCENARIO_STATE["instance"] = copy.deepcopy(current)
         cmd.ctx.set_var("instance", copy.deepcopy(current), schema_builder=lambda: AAZAnyType())
@@ -273,6 +331,102 @@ class ChangeStateScenario(ScenarioTest):
         _inject_targets_into_result(data, new_targets)
 
         assert data["changeDefinition"]["details"]["targets"] == existing
+
+    def test_default_schedule_times_applied_on_create(self):
+        resource_group = "rgScheduleDefaults"
+        change_state_name = self.create_random_name('chg', 12)
+        target_resource = (
+            f"/subscriptions/{self.FAKE_SUBSCRIPTION_ID}/resourceGroups/{resource_group}/"
+            "providers/Microsoft.Compute/virtualMachines/myVm"
+        )
+        self.kwargs.update({
+            "rg": resource_group,
+            "name": change_state_name,
+            "change_type": "ManualTouch",
+            "rollout_type": "Normal",
+            "targets": f"resourceId={target_resource},operation=PATCH",
+        })
+
+        result = self.cmd(
+            'az changesafety changestate create -g {rg} -n {name} '
+            '--change-type {change_type} --rollout-type {rollout_type} '
+            '--targets "{targets}"',
+        ).get_output_in_json()
+
+        start = datetime.datetime.fromisoformat(result['properties']['anticipatedStartTime'].replace('Z', '+00:00'))
+        end = datetime.datetime.fromisoformat(result['properties']['anticipatedEndTime'].replace('Z', '+00:00'))
+        delta_seconds = abs((end - start).total_seconds() - 8 * 3600)
+        self.assertLessEqual(delta_seconds, 5)
+
+    def test_create_with_change_definition_without_targets(self):
+        resource_group = "rgChangeDefinition"
+        change_state_name = self.create_random_name('chg', 12)
+        target_resource = (
+            f"/subscriptions/{self.FAKE_SUBSCRIPTION_ID}/resourceGroups/{resource_group}/"
+            "providers/Microsoft.Compute/virtualMachines/myVm"
+        )
+        change_definition = {
+            "kind": "Targets",
+            "name": change_state_name,
+            "details": {
+                "targets": [
+                    {"resourceId": target_resource, "httpMethod": "DELETE"}
+                ]
+            }
+        }
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as handle:
+            json.dump(change_definition, handle)
+            change_def_path = handle.name
+        self.addCleanup(lambda: os.path.exists(change_def_path) and os.remove(change_def_path))
+        self.kwargs.update({
+            "rg": resource_group,
+            "name": change_state_name,
+            "change_type": "ManualTouch",
+            "rollout_type": "Hotfix",
+            "change_definition": change_def_path,
+        })
+
+        result = self.cmd(
+            'az changesafety changestate create -g {rg} -n {name} '
+            '--change-type {change_type} --rollout-type {rollout_type} '
+            '--change-definition "@{change_definition}"',
+        ).get_output_in_json()
+
+        self.assertEqual(
+            result["properties"]["changeDefinition"]["details"]["targets"][0]["resourceId"],
+            target_resource,
+        )
+        self.assertEqual(
+            result["properties"]["changeDefinition"]["details"]["targets"][0]["httpMethod"],
+            "DELETE",
+        )
+
+    def test_stage_map_name_shortcut(self):
+        resource_group = "rgStageMapShortcut"
+        change_state_name = self.create_random_name('chg', 12)
+        stage_map_name = "rollout-plan"
+        target_resource = (
+            f"/subscriptions/{self.FAKE_SUBSCRIPTION_ID}/resourceGroups/{resource_group}/"
+            "providers/Microsoft.Storage/storageAccounts/demo"
+        )
+        expected_stage_map = f"/subscriptions/{self.FAKE_SUBSCRIPTION_ID}/providers/Microsoft.ChangeSafety/stageMaps/{stage_map_name}"
+        self.kwargs.update({
+            "rg": resource_group,
+            "name": change_state_name,
+            "change_type": "ManualTouch",
+            "rollout_type": "Normal",
+            "targets": f"resourceId={target_resource},operation=PATCH",
+            "stage_map_name": stage_map_name,
+            "subscription": self.FAKE_SUBSCRIPTION_ID,
+        })
+
+        result = self.cmd(
+            'az changesafety changestate create -g {rg} -n {name} '
+            '--change-type {change_type} --rollout-type {rollout_type} '
+            '--targets "{targets}" --stagemap-name {stage_map_name} --subscription {subscription}',
+        ).get_output_in_json()
+
+        self.assertEqual(result["properties"]["stageMap"]["resourceId"], expected_stage_map)
 
     def test_change_state_cli_scenario(self):
         resource_group = "rgChangeSafetyScenario"

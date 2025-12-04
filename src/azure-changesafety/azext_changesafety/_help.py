@@ -27,16 +27,23 @@ helps['changesafety changestate create'] = """
         Provide at least one target definition to describe which resources or operations the ChangeState
         will affect. Targets are expressed as comma or semicolon separated key=value pairs such as
         resourceId=RESOURCE_ID,operation=DELETE. The command is also available through the alias
-        `az change-safety change-state`.
+        `az change-safety change-state`. If you omit scheduling flags, the anticipated start time defaults
+        to now and the anticipated end time defaults to eight hours later (UTC).
     parameters:
       - name: --targets
         short-summary: >
             One or more target definitions expressed as key=value pairs (for example
             resourceId=RESOURCE_ID,operation=CREATE,resourceType=Microsoft.Compute/virtualMachines).
+      - name: --anticipated-start-time
+        short-summary: Expected start time in ISO 8601 format. Defaults to current UTC time when omitted.
+      - name: --anticipated-end-time
+        short-summary: Expected completion time in ISO 8601 format. Defaults to eight hours after the anticipated start time when omitted.
       - name: --change-type
         short-summary: Classify the change such as AppDeployment, Config, ManualTouch, or PolicyDeployment.
       - name: --rollout-type
         short-summary: Specify the rollout urgency (Normal, Hotfix, or Emergency).
+      - name: --stage-map-name --stagemap-name
+        short-summary: StageMap name in the current subscription scope; the resource ID is built for you.
       - name: --stage-map
         short-summary: Reference an existing StageMap resource using resource-id=RESOURCE_ID and optional parameters key=value pairs.
       - name: --links
@@ -52,6 +59,9 @@ helps['changesafety changestate create'] = """
       - name: Create with staging rollout configuration
         text: |-
           az changesafety changestate create -g MyResourceGroup -n opsChange01 --rollout-type Hotfix --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Web/sites/myApp,operation=POST"
+      - name: Reference a StageMap by name
+        text: |-
+          az changesafety changestate create -g MyResourceGroup -n changestate003 --change-type ManualTouch --rollout-type Normal --stagemap-name rolloutStageMap --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=DELETE"
 """
 
 helps['changesafety changestate update'] = """
@@ -66,12 +76,16 @@ helps['changesafety changestate update'] = """
         short-summary: >
             Optional target definitions to replace the existing list. Provide key=value pairs such as
             resourceId=RESOURCE_ID,operation=DELETE.
+      - name: --stage-map-name --stagemap-name
+        short-summary: StageMap name in the current subscription scope; the resource ID is built for you.
+      - name: --stage-map
+        short-summary: Reference an existing StageMap resource using resource-id=RESOURCE_ID and optional parameters key=value pairs.
       - name: --comments
         short-summary: Provide notes about the latest update to the change state.
       - name: --anticipated-start-time
-        short-summary: Update the expected start time in ISO 8601 format.
+        short-summary: Update the expected start time in ISO 8601 format. If omitted, the current value is preserved.
       - name: --anticipated-end-time
-        short-summary: Update the expected completion time in ISO 8601 format.
+        short-summary: Update the expected completion time in ISO 8601 format. If omitted, the current value is preserved.
     examples:
       - name: Adjust rollout type and add a comment
         text: |-
