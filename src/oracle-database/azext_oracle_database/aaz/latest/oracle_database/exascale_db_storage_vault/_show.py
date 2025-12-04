@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a ExascaleDbStorageVault
+
+    :example: ExascaleDbStorageVaults_Show
+        az oracle-database exascale-db-storage-vault show --resource-group rgopenapi --exascale-db-storage-vault-name storagevault1
     """
 
     _aaz_info = {

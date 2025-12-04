@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a ExascaleDbStorageVault
+
+    :example: ExascaleDbStorageVaults_Update
+        az oracle-database exascale-db-storage-vault update --resource-group rgopenapi --exascale-db-storage-vault-name storagevault1 --zones "[eastus]" --tags "{key4521:New}"
     """
 
     _aaz_info = {

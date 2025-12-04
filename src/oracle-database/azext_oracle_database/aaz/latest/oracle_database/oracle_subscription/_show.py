@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a OracleSubscription
+
+    :example: Get Oracle Subscription
+        az oracle-database oracle-subscription show
     """
 
     _aaz_info = {

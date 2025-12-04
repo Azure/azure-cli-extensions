@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a ExascaleDbStorageVault
+
+    :example: ExascaleDbStorageVaults_Delete
+        az oracle-database exascale-db-storage-vault delete --resource-group rgopenapi --exascale-db-storage-vault-name storagevault1
     """
 
     _aaz_info = {

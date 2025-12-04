@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class RemoveVm(AAZCommand):
     """Remove VMs from the VM Cluster
+
+    :example: ExadbVmClusters_RemoveVms
+        az oracle-database exadb-vm-cluster remove-vm --resource-group rgopenapi --exadb-vm-cluster-name exadbVmClusterName1 --db-nodes "[{db-node-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Oracle.Database/exadbVmClusters/vmCluster/dbNodes/dbNodeName}]"
     """
 
     _aaz_info = {

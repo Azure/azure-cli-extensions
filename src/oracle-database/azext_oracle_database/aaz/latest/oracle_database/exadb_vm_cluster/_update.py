@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a ExadbVmCluster
+
+    :example: ExadbVmClusters_Update
+        az oracle-database exadb-vm-cluster update --resource-group rgopenapi --exadb-vm-cluster-name vmcluster1 --node-count 30 --zones "[ozwhowofqaq]" --tags "{key8577:xkdpkp}"
     """
 
     _aaz_info = {

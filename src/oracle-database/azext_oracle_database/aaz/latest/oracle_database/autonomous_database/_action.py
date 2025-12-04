@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Action(AAZCommand):
     """Perform Lifecycle Management Action on Autonomous Database
+
+    :example: AutonomousDatabases_Action
+        az oracle-database autonomous-database action --resource-group rgopenapi --autonomousdatabasename databasedb1 --action Start
     """
 
     _aaz_info = {

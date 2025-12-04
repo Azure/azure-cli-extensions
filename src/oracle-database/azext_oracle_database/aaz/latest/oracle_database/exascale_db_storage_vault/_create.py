@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a ExascaleDbStorageVault
+
+    :example: ExascaleDbStorageVaults_Create
+        az oracle-database exascale-db-storage-vault create --resource-group rgopenapi --exascale-db-storage-vault-name storagevault1 --additional-flash-cache-in-percent 0 --description test --display-name test --high-capacity-database-storage-input "{total-size-in-gbs:1}" --time-zone UTC --zones "[2]" --tags "{key4521:test}" --location eastus
     """
 
     _aaz_info = {

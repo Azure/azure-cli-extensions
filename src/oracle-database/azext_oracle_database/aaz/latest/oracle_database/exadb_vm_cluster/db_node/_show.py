@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a ExascaleDbNode
+
+    :example: ExascaleDbNodes_Get
+        az oracle-database exadb-vm-cluster db-node show --resource-group rgopenapi --exadb-vm-cluster-name exadbvmcluster1 --exascale-db-node-name exascaledbnode1
     """
 
     _aaz_info = {

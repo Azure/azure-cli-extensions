@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List NetworkAnchor resources by subscription ID
+
+    :example: NetworkAnchors_List
+        az oracle-database network-anchor list
     """
 
     _aaz_info = {

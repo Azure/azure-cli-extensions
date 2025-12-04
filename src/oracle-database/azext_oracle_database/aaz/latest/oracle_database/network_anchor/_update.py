@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a NetworkAnchor
+
+    :example: NetworkAnchors_Update
+        az oracle-database network-anchor update --resource-group rgopenapi --network-anchor-name networkAnchor1 --oci-backup-cidr-block i --is-oracle-to-azure-dns-zone-sync-enabled True --is-oracle-dns-listening-endpoint-enabled True --is-oracle-dns-forwarding-endpoint-enabled True --zones "[2]" --tags "{key4863:New}"
     """
 
     _aaz_info = {

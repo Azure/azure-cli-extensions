@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a OracleSubscription
+
+    :example: Create or Update Oracle Subscription
+        az oracle-database oracle-subscription create --plan "{name:plan1,publisher:publisher1,product:product1,promotion-code:none,version:alpha}"
     """
 
     _aaz_info = {

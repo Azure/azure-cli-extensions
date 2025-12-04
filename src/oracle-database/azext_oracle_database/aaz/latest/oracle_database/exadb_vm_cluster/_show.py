@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a ExadbVmCluster
+
+    :example: ExadbVmClusters_ show
+        az oracle-database exadb-vm-cluster show --resource-group rgopenapi --exadb-vm-cluster-name exadbVmClusterName1
     """
 
     _aaz_info = {

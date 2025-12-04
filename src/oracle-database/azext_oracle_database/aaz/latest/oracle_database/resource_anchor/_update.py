@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a ResourceAnchor
+
+    :example: ResourceAnchors_Update
+        az oracle-database resource-anchor update --resource-group rgopenapi --resource-anchor-name resourceanchor1 --tags "{key236:new}"
     """
 
     _aaz_info = {

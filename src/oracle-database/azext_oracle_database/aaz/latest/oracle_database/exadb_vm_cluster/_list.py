@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List ExadbVmCluster resources by subscription ID
+
+    :example: ExadbVmClusters_List
+        az oracle-database exadb-vm-cluster list
     """
 
     _aaz_info = {

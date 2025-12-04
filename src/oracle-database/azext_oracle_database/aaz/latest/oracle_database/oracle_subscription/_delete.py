@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a OracleSubscription
+
+    :example: Delete Oracle Subscription
+        az oracle-database oracle-subscription delete
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List ExascaleDbStorageVault resources by subscription ID
+
+    :example: ExascaleDbStorageVaults_List
+        az oracle-database exascale-db-storage-vault list
     """
 
     _aaz_info = {

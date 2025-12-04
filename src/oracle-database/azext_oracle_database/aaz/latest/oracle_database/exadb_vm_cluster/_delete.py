@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a ExadbVmCluster
+
+    :example: ExadbVmClusters_Delete_MaximumSet
+        az oracle-database exadb-vm-cluster delete --resource-group rgopenapi --exadb-vm-cluster-name exadaVmClusterName1
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListSaasSubscriptionDetail(AAZCommand):
     """List Saas Subscription Details
+
+    :example: List Saas Subscription details for the Oracle Subscription
+        az oracle-database oracle-subscription list-saas-subscription-detail
     """
 
     _aaz_info = {

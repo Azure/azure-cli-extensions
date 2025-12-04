@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List ExascaleDbNode resources by ExadbVmCluster
+
+    :example: ExascaleDbNodes_ListByParent
+        az oracle-database exadb-vm-cluster db-node list --resource-group rgopenapi --exadb-vm-cluster-name vmcluster
     """
 
     _aaz_info = {

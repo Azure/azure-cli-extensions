@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a NetworkAnchor
+
+    :example: NetworkAnchors_Show
+        az oracle-database network-anchor show --resource-group rgopenapi --network-anchor-name networkanchor1
     """
 
     _aaz_info = {

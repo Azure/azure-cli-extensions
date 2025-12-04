@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a ResourceAnchor
+
+    :example: ResourceAnchors_Show
+        az oracle-database resource-anchor show --resource-group rgopenapi --resource-anchor-name resourceanchor1
     """
 
     _aaz_info = {

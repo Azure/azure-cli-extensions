@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ChangeDisasterRecoveryConfiguration(AAZCommand):
     """Perform ChangeDisasterRecoveryConfiguration action on Autonomous Database
+
+    :example: AutonomousDatabases_ChangeDisasterRecoveryConfiguration
+        az oracle-database autonomous-database change-disaster-recovery-configuration --resource-group rg000 --autonomousdatabasename databasedb1 --disaster-recovery-type Adg --is-replicate-automatic-backups False
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListActivationLink(AAZCommand):
     """List Activation Links
+
+    :example: List Activation Links for the Oracle Subscription
+        az oracle-database oracle-subscription list-activation-link
     """
 
     _aaz_info = {

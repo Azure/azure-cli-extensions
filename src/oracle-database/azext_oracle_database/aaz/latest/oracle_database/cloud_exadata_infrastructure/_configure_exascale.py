@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ConfigureExascale(AAZCommand):
     """Configures Exascale on Cloud exadata infrastructure resource
+
+    :example: CloudExadataInfrastructures_ConfigureExascale
+        az oracle-database cloud-exadata-infrastructure configure-exascale --resource-group rgopenapi --cloudexadatainfrastructurename OfakeTest RegExp .* --total-storage-in-gbs 19
     """
 
     _aaz_info = {

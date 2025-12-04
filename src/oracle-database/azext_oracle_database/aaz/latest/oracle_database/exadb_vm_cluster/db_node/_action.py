@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Action(AAZCommand):
     """VM actions on DbNode of ExadbVmCluster by the provided filter
+
+    :example: ExascaleDbNodes_Action
+        az oracle-database exadb-vm-cluster db-node action --resource-group rgopenapi --exadb-vm-cluster-name exadbvmcluster1 --exascale-db-node-name exascaledbnode1 --action Start
     """
 
     _aaz_info = {

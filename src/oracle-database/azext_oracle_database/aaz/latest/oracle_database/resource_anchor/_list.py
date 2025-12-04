@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List ResourceAnchor resources by subscription ID
+
+    :example: ResourceAnchors_List
+        az oracle-database resource-anchor list
     """
 
     _aaz_info = {

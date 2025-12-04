@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a NetworkAnchor
+
+    :example: NetworkAnchors_Delete
+        az oracle-database network-anchor delete --resource-group rgopenapi --network-anchor-name networkAnchor1
     """
 
     _aaz_info = {

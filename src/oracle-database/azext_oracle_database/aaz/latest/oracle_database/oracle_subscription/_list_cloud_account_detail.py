@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListCloudAccountDetail(AAZCommand):
     """List Cloud Account Details
+
+    :example: List Cloud Account details for the Oracle Subscription
+        az oracle-database oracle-subscription list-cloud-account-detail
     """
 
     _aaz_info = {

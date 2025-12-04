@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a ResourceAnchor
+
+    :example: ResourceAnchors_Create
+        az oracle-database resource-anchor create --resource-group rgopenapi --resource-anchor-name resourceanchor1 --tags "{key236:wbucrnidikivbujndfk}" --location at
     """
 
     _aaz_info = {

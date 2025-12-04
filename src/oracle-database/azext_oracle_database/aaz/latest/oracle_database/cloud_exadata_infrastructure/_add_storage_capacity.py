@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class AddStorageCapacity(AAZCommand):
     """Perform add storage capacity on exadata infra
+
+    :example: Perform add storage capacity on exadata infra
+        az oracle-database cloud-exadata-infrastructure add-storage-capacity --resource-group rg000 --cloudexadatainfrastructurename infra1
     """
 
     _aaz_info = {

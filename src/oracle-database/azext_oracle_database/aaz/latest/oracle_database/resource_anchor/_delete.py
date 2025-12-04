@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a ResourceAnchor
+
+    :example: ResourceAnchors_Delete
+        az oracle-database resource-anchor delete --resource-group rgopenapi --resource-anchor-name resourceanchor1
     """
 
     _aaz_info = {
