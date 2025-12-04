@@ -478,7 +478,6 @@ class TestMonitoring(object):
             logsui_key_pem,
             logsui_fp,
         ) = generate_certificate_and_key(
-            "logsui-external-svc.test.svc.cluster.local",
             "logsui-svc",
             sans=["logsui-svc"],
         )
@@ -487,7 +486,6 @@ class TestMonitoring(object):
             metricsui_key_pem,
             metricsui_fp,
         ) = generate_certificate_and_key(
-            "metricsui-external-svc.test.svc.cluster.local",
             "metricsui-svc",
             sans=["metricsui-svc"],
         )

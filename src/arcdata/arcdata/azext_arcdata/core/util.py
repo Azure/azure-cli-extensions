@@ -23,7 +23,7 @@ from knack.log import get_logger
 from knack.cli import CLIError
 
 from kubernetes import config as kconfig
-from jsonpatch import JsonPatch
+from jsonpatch import JsonPatch, InvalidJsonPatch
 from jsonpath_ng.ext import parse
 from humanfriendly.terminal.spinners import AutomaticSpinner
 from jinja2 import Template as JinjaTemplate
@@ -86,11 +86,10 @@ def traceback():
     Get the exection stacktrace.
     :return: The exception stacktrace.
     """
-    import traceback
-    import sys
+    import traceback as _traceback
 
     ex_t, ex_v, ex_tb = sys.exc_info()
-    return traceback.format_exception(ex_t, ex_v, ex_tb)
+    return _traceback.format_exception(ex_t, ex_v, ex_tb)
 
 
 def color_wrapper(color):
@@ -170,10 +169,9 @@ def get_environment_list_by_target(target):
     return env_list
 
 
-def read_environment_variables(target, arc=False):
+def read_environment_variables(arc=False):
     """
     Reads environment variables for the given target
-    :param target: target to read environment variables
     :param arc: boolean determining whether it is an arc deployment
     """
 
@@ -212,7 +210,7 @@ def is_set(env_var: str) -> bool:
     return var is not None and len(var.strip()) != 0
 
 
-def check_environment_variables(target):
+def check_environment_variables():
     """
     Check if all necessary environment variables are set.
     """
@@ -224,18 +222,18 @@ def check_environment_variables(target):
 
     if len(missing_env) > 0:
         logger.error(
-            "Please set the following environment variable(s): %s."
-            % missing_env
+            "Please set the following environment variable(s): %s.",
+            missing_env
         )
         sys.exit(1)
 
 
-def env_vars_are_set(vars: List[str]) -> bool:
+def env_vars_are_set(env_vars: List[str]) -> bool:
     """
     Checks if the given list of environment variables are set or not.
     :returns: True if all of the variables are set, false otherwise.
     """
-    for var in vars:
+    for var in env_vars:
         if not is_set(var):
             return False
 
@@ -477,7 +475,7 @@ def check_and_set_kubectl_context():
     except Exception as e:
         logger.debug(e)
         logger.error("Failed to complete kube config setup.")
-        raise Exception("Failed to complete kube config setup.")
+        raise RuntimeError("Failed to complete kube config setup.")
 
 
 def load_kube_config(context=None):
@@ -525,13 +523,13 @@ def load_kube_config(context=None):
     # set kubectl context to current context if not set
     #
     if context is None:
-        contexts, current_context = kconfig.list_kube_config_contexts(
+        _, current_context = kconfig.list_kube_config_contexts(
             config_file=config_file
         )
         if current_context:
             os.environ["KUBECTL_CONTEXT"] = current_context["name"]
         else:
-            raise Exception("No active context is set in kubeconfig.")
+            raise RuntimeError("No active context is set in kubeconfig.")
 
 
 # ---------------------------------------------------------------------------- #
@@ -547,15 +545,14 @@ class FileUtil(object):
         :param file_path: The path to the JSON document.
         :return: A `dict` of JSON otherwise `None` if file not found.
         """
-        from codecs import open
-        import json
+        from codecs import open as _open
 
         content = None
         # for encoding in ['utf-8-sig', 'utf-8', 'utf-16', 'utf-16le',
         # 'utf-16be']:
         for encoding in ["utf-8"]:
             try:
-                with open(file_path, encoding=encoding) as f:
+                with _open(file_path, encoding=encoding) as f:
                     content = f.read()
             except (UnicodeError, UnicodeDecodeError):
                 pass
@@ -646,7 +643,7 @@ def retry(func, *func_args, **kwargs):
 
     retry_count = kwargs.get("retry_count", connection_retry_attempts)
     retry_delay = kwargs.get("retry_delay", connection_retry_interval_seconds)
-    retry_method = kwargs.get("retry_method", None)
+    retry_method_fn = kwargs.get("retry_method", None)
     retry_on_exceptions = kwargs.get("retry_on_exceptions", None)
     exception_caused = None
     for i in range(retry_count):
@@ -656,8 +653,8 @@ def retry(func, *func_args, **kwargs):
         except retry_on_exceptions as e:
             exception_caused = e
             logger.debug(
-                "Waiting for %d seconds before trying to %s again"
-                % (retry_delay, retry_method)
+                "Waiting for %d seconds before trying to %s again (attempt %d)",
+                retry_delay, retry_method_fn, i + 1
             )
             time.sleep(retry_delay)
             continue
@@ -667,16 +664,12 @@ def retry(func, *func_args, **kwargs):
             _.get(exception_caused, ["reason", "__context__"], exception_caused)
         ),
         "Failed to %s after retrying for %d minute(s)."
-        % (retry_method, (retry_count * retry_delay) / 60),
+        % (retry_method_fn, (retry_count * retry_delay) / 60),
     )
-    raise Exception(
+    raise RuntimeError(
         "Failed to %s after retrying for %d minute(s)."
-        % (retry_method, (retry_count * retry_delay) / 60)
+        % (retry_method_fn, (retry_count * retry_delay) / 60)
     )
-
-
-class TimeoutError(Exception):
-    pass
 
 
 def handle_timeout(signum, frame):
@@ -1119,7 +1112,7 @@ class DeploymentConfigUtil(object):
                     value = value.replace("\\=", "=")
                     try:
                         value = json.loads(value)
-                    except Exception as e:
+                    except json.JSONDecodeError as e:
                         if value.startswith("{"):
                             raise ValueError(e)
             DeploymentConfigUtil.patch_value(
@@ -1223,7 +1216,7 @@ class DeploymentConfigUtil(object):
                     [{"op": "replace", "path": json_path, "value": value}]
                 )
                 patch.apply(config_object, True)
-            except:
+            except InvalidJsonPatch:
                 # If replace did not work, attempt an add
                 patch = JsonPatch(
                     [{"op": "add", "path": json_path, "value": value}]
@@ -1336,7 +1329,7 @@ def parse_cert_files(
     # Ensure that certificate is of type pem._core.Certificate and private key
     # is of type pem._core.RSAPrivateKey.
     #
-    if not isinstance(parsed_certificates[0], pem._core.Certificate):
+    if not isinstance(parsed_certificates[0], pem.Certificate):
         raise ValueError(
             "Certificate data in file '"
             + certificate_public_key_file
@@ -1344,8 +1337,8 @@ def parse_cert_files(
         )
 
     if not isinstance(
-        parsed_privatekeys[0], pem._core.RSAPrivateKey
-    ) and not isinstance(parsed_privatekeys[0], pem._core.PrivateKey):
+        parsed_privatekeys[0], pem.RSAPrivateKey
+    ) and not isinstance(parsed_privatekeys[0], pem.PrivateKey):
         raise ValueError(
             "Private key data in file '"
             + certificate_private_key_file
@@ -1356,7 +1349,7 @@ def parse_cert_files(
 
 
 def generate_certificate_and_key(
-    hostname: str, common_name: str, sans: List[str] = None
+    common_name: str, sans: List[str] = None
 ) -> Tuple:
     """
     Generates an RSA public/private key pair and uses them to create
