@@ -32,7 +32,7 @@ class BaseTokenMixin(abc.ABC):
         super(BaseTokenMixin, self).__init__(*args, **kwargs)  # type: ignore
 
     @abc.abstractmethod
-    def acquire_token(self, *scopes, **kwargs):
+    def acquire_token(self, *scopes):
         # type: (*str, **Any) -> Optional[Any]
         """
         Attempt to acquire an access token from a cache or by redeeming a

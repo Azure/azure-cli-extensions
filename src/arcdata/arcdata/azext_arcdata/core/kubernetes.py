@@ -109,37 +109,22 @@ def namespace_is_empty(cluster_name, label=None):
 
     try:
         kwargs = {"label_selector": label} if label else {}
-
-        if (
-            len(
-                k8sClient.AppsV1Api().list_namespaced_stateful_set(namespace=cluster_name, **kwargs).items
-            )
-            > 0 or
-            len(
-                k8sClient.AppsV1Api().list_namespaced_daemon_set(namespace=cluster_name, **kwargs).items
-            )
-            > 0 or
-            len(
-                k8sClient.AppsV1Api().list_namespaced_deployment(namespace=cluster_name, **kwargs).items
-            )
-            > 0 or
-            len(
-                k8sClient.AppsV1Api().list_namespaced_replica_set(namespace=cluster_name, **kwargs).items
-            )
-            > 0 or
-            len(
-                k8sClient.CoreV1Api().list_namespaced_service(namespace=cluster_name, **kwargs).items
-            )
-            > 0 or
-            len(
-                k8sClient.CoreV1Api().list_namespaced_persistent_volume_claim(namespace=cluster_name, **kwargs).items
-            )
-            > 0 or
-            len(
-                k8sClient.CoreV1Api().list_namespaced_pod(namespace=cluster_name, **kwargs).items
-            )
-            > 0
-        ):
+        namespaced_obj_count = len(
+            k8sClient.AppsV1Api().list_namespaced_stateful_set(namespace=cluster_name, **kwargs).items
+        ) + len(
+            k8sClient.AppsV1Api().list_namespaced_daemon_set(namespace=cluster_name, **kwargs).items
+        ) + len(
+            k8sClient.AppsV1Api().list_namespaced_deployment(namespace=cluster_name, **kwargs).items
+        ) + len(
+            k8sClient.AppsV1Api().list_namespaced_replica_set(namespace=cluster_name, **kwargs).items
+        ) + len(
+            k8sClient.CoreV1Api().list_namespaced_service(namespace=cluster_name, **kwargs).items
+        ) + len(
+            k8sClient.CoreV1Api().list_namespaced_persistent_volume_claim(namespace=cluster_name, **kwargs).items
+        ) + len(
+            k8sClient.CoreV1Api().list_namespaced_pod(namespace=cluster_name, **kwargs).items
+        )
+        if (namespaced_obj_count > 0):
             return False
         return True
     except K8sApiException as e:
@@ -867,20 +852,20 @@ def validate_rwx_storage_class(name: str, storage_type: str, instance_type: str)
                     name
                 )
             )
-        else:
-            # ToDo: update the list based on validation with dynamic provisioners
-            if (
-                re.match(
-                    r".*(nfs|glusterfs|azure-file|file.csi.azure|ceph|quobyte|postworx|vsphere).*",
-                    storageClass.provisioner,
-                )
-            ) is None:
-                logger.warning(
-                    "%s creation will fail if the storage class specified for the '%s' volume does not support the "
-                    "ReadWriteMany (RWX) access mode. Please check if the %s storage class supports ReadWriteMany "
-                    "(RWX) access mode. "
-                    "Please see https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes",
-                    instance_type,
-                    storage_type,
-                    storage_type
-                )
+
+        # ToDo: update the list based on validation with dynamic provisioners
+        if (
+            re.match(
+                r".*(nfs|glusterfs|azure-file|file.csi.azure|ceph|quobyte|postworx|vsphere).*",
+                storageClass.provisioner,
+            )
+        ) is None:
+            logger.warning(
+                "%s creation will fail if the storage class specified for the '%s' volume does not support the "
+                "ReadWriteMany (RWX) access mode. Please check if the %s storage class supports ReadWriteMany "
+                "(RWX) access mode. "
+                "Please see https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes",
+                instance_type,
+                storage_type,
+                storage_type
+            )

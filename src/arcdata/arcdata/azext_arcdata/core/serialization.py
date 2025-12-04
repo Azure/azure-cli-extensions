@@ -13,10 +13,10 @@ __all__ = ["Sanitizer"]
 
 class SanitizerRule:
     def __init__(
-        self, property_path_pattern="", filter=lambda property_path, value: None
+        self, property_path_pattern="", filter_fn=lambda property_path, value: None
     ):
         self._property_path_pattern = property_path_pattern
-        self._filter = filter
+        self._filter = filter_fn
         self._regex = re.compile(self._property_path_pattern)
 
     def is_property_match(self, property_path):
@@ -25,7 +25,8 @@ class SanitizerRule:
     def sanitize_value(self, property_path, value):
         if self.is_property_match(property_path):
             return self._filter(property_path, value)
-            return value
+
+        return value
 
 
 class Sanitizer:
@@ -34,7 +35,7 @@ class Sanitizer:
     configurable filters
     """
 
-    def __init__(self, filters: List[SanitizerRule] = None, *args, **kwargs):
+    def __init__(self, *args, filters: List[SanitizerRule] = None, **kwargs):
         """
         Initializer with additional parameters for managing serialized content
 
@@ -92,10 +93,10 @@ class Sanitizer:
                 result[key] = self.sanitize(obj[key], ".".join([path, key]))
 
             return result
-        else:
-            # if the object is not a dict by this point, it is going to be a
-            # simple type, so we can just return it.
-            return self.sanitize_value(path, obj)
+
+        # if the object is not a dict by this point, it is going to be a
+        # simple type, so we can just return it.
+        return self.sanitize_value(path, obj)
 
     @staticmethod
     def sanitize_object(obj, filters: List[SanitizerRule] = None):

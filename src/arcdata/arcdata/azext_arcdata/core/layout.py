@@ -8,7 +8,7 @@ from six import add_metaclass
 from abc import ABCMeta, abstractmethod
 from tabulate import tabulate
 from collections import OrderedDict
-from prompt_toolkit import print_formatted_text as pft, ANSI
+from prompt_toolkit import print_formatted_text as pft, ANSI  # pyright: ignore[reportMissingImports]
 import string
 import os
 

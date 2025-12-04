@@ -85,21 +85,21 @@ class Env:
         return var is not None and len(var.strip()) != 0
 
     @staticmethod
-    def check_environment_variables(target):
+    def check_environment_variables():
         """
         Check if all necessary environment variables are set.
         """
 
         env_list = Env.CONTROLLER_ENV_LIST
-        missing_env = list()
+        missing_env = []
         for env in env_list:
             if not Env.is_set(env):
                 missing_env.append(env)
 
         if len(missing_env) > 0:
             logger.error(
-                "Please set the following environment variable(s): %s."
-                % missing_env
+                "Please set the following environment variable(s): %s.",
+                missing_env
             )
             sys.exit(1)
 
@@ -117,15 +117,15 @@ class Env:
         return True
 
     @staticmethod
-    def _set_credential_vars(vars: List[str], msg: str):
+    def _set_credential_vars(credential_vars: List[str], msg: str):
         """
         Prompts the user to enter values for the given vars. Expecting
         a username var to be first in the list and password second.
         """
-        if not Env.is_set(vars[0]):
-            os.environ[vars[0]] = prompt(msg.strip() + " username: ")
-        if not Env.is_set(vars[1]):
-            os.environ[vars[1]] = prompt_pass(msg.strip() + " password: ", True)
+        if not Env.is_set(credential_vars[0]):
+            os.environ[credential_vars[0]] = prompt(msg.strip() + " username: ")
+        if not Env.is_set(credential_vars[1]):
+            os.environ[credential_vars[1]] = prompt_pass(msg.strip() + " password: ", True)
 
     @staticmethod
     def _validate_creds_from_env(username_var: str, password_var: str):

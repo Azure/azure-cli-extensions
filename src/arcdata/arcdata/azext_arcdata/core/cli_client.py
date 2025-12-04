@@ -239,7 +239,9 @@ class CliClient(BaseCliClient):
             """
 
             def __init__(self):
-                self._defaults()
+                self._show_time = True
+                self._worker = {"fn": None, "args": {}}
+                self._message = ""
 
             def _defaults(self):
                 self._show_time = True
@@ -382,15 +384,15 @@ class CliClient(BaseCliClient):
             # -- download and show progress indicator --
             if not show_progress:
                 return _download(url, filename, destination)
-            else:
-                return (
-                    self.terminal.progress_indicator.worker(
-                        _download,
-                        {"uri": url, "name": filename, "dest": destination},
-                    )
-                    .message(label)
-                    .start()
+
+            return (
+                self.terminal.progress_indicator.worker(
+                    _download,
+                    {"uri": url, "name": filename, "dest": destination},
                 )
+                .message(label)
+                .start()
+            )
 
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------

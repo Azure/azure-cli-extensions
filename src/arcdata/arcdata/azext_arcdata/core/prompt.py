@@ -29,9 +29,9 @@ def prompt_y_n(msg):
     """
     Prompts [y/n] to the user with the given message.
     """
-    from knack.prompting import prompt_y_n
+    from knack.prompting import prompt_y_n as _prompt_y_n
 
-    return prompt_y_n(msg)
+    return _prompt_y_n(msg)
 
 
 @interactive
@@ -39,9 +39,9 @@ def prompt(msg):
     """
     Basic prompt to the user with the given message.
     """
-    from knack.prompting import prompt
+    from knack.prompting import prompt as _prompt
 
-    return prompt(msg)
+    return _prompt(msg)
 
 
 @interactive
@@ -49,10 +49,10 @@ def prompt_assert(msg):
     """
     Prompts to the user with the given message and forces them to enter it.
     """
-    from knack.prompting import prompt
+    from knack.prompting import prompt as _prompt
 
     while True:
-        result = prompt(msg)
+        result = _prompt(msg)
         if result:
             return result
 
@@ -62,13 +62,13 @@ def prompt_pass(msg, confirm=False, allow_empty=True):
     """
     Prompts to the user with the given message and masks the input.
     """
-    from knack.prompting import prompt_pass
+    from knack.prompting import prompt_pass as _prompt_pass
 
     while True:
-        password = prompt_pass(msg, confirm)
+        password = _prompt_pass(msg, confirm)
         if password or allow_empty:
             return password
-        logger.warn("Password must not be empty.")
+        logger.warning("Password must not be empty.")
 
 
 @interactive
@@ -77,9 +77,9 @@ def prompt_for_input(question, default=None, padding=True, strip=True):
     More complex prompt to the user with default value and ability to control
     white space.
     """
-    from humanfriendly.prompts import prompt_for_input
+    from humanfriendly.prompts import prompt_for_input as _prompt_for_input
 
-    return prompt_for_input(question, default, padding, strip)
+    return _prompt_for_input(question, default, padding, strip)
 
 
 @interactive
@@ -87,6 +87,6 @@ def prompt_for_choice(choices, default=None, padding=True):
     """
     Gives the user choices in a prompt.
     """
-    from humanfriendly.prompts import prompt_for_choice
+    from humanfriendly.prompts import prompt_for_choice as _prompt_for_choice
 
-    return prompt_for_choice(choices, default, padding)
+    return _prompt_for_choice(choices, default, padding)

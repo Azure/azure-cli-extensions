@@ -33,7 +33,11 @@ class OutputStream:
     terminator = "\n"
 
     def __init__(self):
-        self.repurpose()
+        stdout = Stdout()
+        stderr = Stderr()
+
+        self._stdout = stdout
+        self._stderr = stderr
 
     @property
     def stdout(self):
@@ -194,12 +198,12 @@ class StdIO(str):
 
 
 class Stdout(StdIO):
-    def __new__(cls):
-        return super(Stdout, cls).__new__(cls, io=sys.stdout)
+    def __new__(cls, io=sys.stdout, color=None):
+        return super(Stdout, cls).__new__(cls, io=io, color=color)
 
 
 class Stderr(StdIO):
-    def __new__(cls):
+    def __new__(cls, io=sys.stderr, color=None):
         from colorama import Fore
 
-        return super(Stderr, cls).__new__(cls, io=sys.stderr, color=Fore.RED)
+        return super(Stderr, cls).__new__(cls, io=io, color=color or Fore.RED)

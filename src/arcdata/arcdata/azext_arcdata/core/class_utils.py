@@ -12,11 +12,11 @@ def validatedclass(cls):
     Decorator that monkey patches a given class to be "validatable"
     :param cls: class to patch
     """
-    cls._validators = []
+    cls.validators = []
     for name in dir(cls):
         method = getattr(cls, name)
         if hasattr(method, "_validator"):
-            cls._validators.append(name)
+            cls.validators.append(name)
     setattr(cls, "validate", validate)
     return cls
 
@@ -26,7 +26,7 @@ def validator(fn):
     Decorator that marks a class method as a validator
     :param fn: function to patch
     """
-    fn._validator = True
+    fn.validator = True
     return fn
 
 
