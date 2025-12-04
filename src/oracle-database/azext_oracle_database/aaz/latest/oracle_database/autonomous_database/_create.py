@@ -717,6 +717,9 @@ class Create(AAZCommand):
             properties.customer_contacts = AAZListType(
                 serialized_name="customerContacts",
             )
+            properties.data_base_type = AAZStrType(
+                serialized_name="dataBaseType",
+            )
             properties.data_safe_status = AAZStrType(
                 serialized_name="dataSafeStatus",
                 flags={"read_only": True},
