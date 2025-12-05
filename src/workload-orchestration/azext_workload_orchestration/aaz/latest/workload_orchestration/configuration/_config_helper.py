@@ -250,6 +250,53 @@ class ConfigurationHelper:
         except Exception as e:
             raise CLIInternalError(f"Error getting schema for template {template_version_id}: {str(e)}")
 
+    @staticmethod
+    def validateTemplateVersion(subscription_id, resource_group, template_name, version, solution_flag, client):
+        """
+        Validate that a template version exists
+        
+        Args:
+            subscription_id (str): The subscription ID for the template
+            resource_group (str): The resource group name for the template  
+            template_name (str): The template name
+            version (str): The template version
+            solution_flag (bool): True for solution template, False for configuration template
+            client: HTTP client for making the request
+            
+        Raises:
+            CLIInternalError: If template version doesn't exist or request fails
+        """
+        from azure.cli.core.azclierror import CLIInternalError
+        
+        # Build template version ID
+        if solution_flag:
+            template_type = "solutionTemplates"
+        else:
+            template_type = "configTemplates"
+        
+        template_version_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Edge/{template_type}/{template_name}/versions/{version}"
+        
+        try:
+            # Make GET request to template version endpoint
+            request = client._request("GET", template_version_id, {
+                "api-version": "2025-08-01"
+            }, {
+                "Accept": "application/json"
+            }, None, {}, None)
+            
+            response = client.send_request(request=request, stream=False)
+            
+            if response.http_response.status_code == 404:
+                raise CLIInternalError(f"Template version doesn't exist: {template_version_id}")
+            elif response.http_response.status_code != 200:
+                raise CLIInternalError(f"Failed to validate template version: {template_version_id}. Status code: {response.http_response.status_code}")
+                
+        except CLIInternalError:
+            # Re-raise CLI errors as-is
+            raise
+        except Exception as e:
+            raise CLIInternalError(f"Error validating template version {template_version_id}: {str(e)}")
+
     # Add your helper methods here
 
 

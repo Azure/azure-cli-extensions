@@ -52,7 +52,8 @@ class ShowConfig2(AAZCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
-        
+
+        _args_schema = cls._args_schema
         _args_schema.hierarchy_id = AAZStrArg(
             options=["--hierarchy-id"],
             help="The ARM ID for the target or site at which values needs to be set",
@@ -218,6 +219,16 @@ class ShowConfig2(AAZCommand):
                     
             elif session.http_response.status_code in [404]:
                 # Dynamic configuration version doesn't exist - create flow
+                
+                # Step 0: Validate that the template version exists
+                ConfigurationHelper.validateTemplateVersion(
+                    template_subscription,
+                    self.ctx.args.template_resource_group,
+                    self.ctx.args.template_name,
+                    self.ctx.args.version,
+                    solution_flag,
+                    self.client
+                )
                 
                 # Step 1: Create dynamic configuration (without version)
                 dynamic_config_url = f"{self.configuration_id}/dynamicConfigurations/{self.dynamic_configuration_name}"

@@ -10,13 +10,13 @@
 
 from azure.cli.core.aaz import *
 from azure.cli.core.azclierror import CLIInternalError
-from ._config_helper import ConfigurationHelper
+from .._config_helper import ConfigurationHelper
 
 @register_command(
     "workload-orchestration configuration schema show",
     is_preview=False,
 )
-class SchemaShow(AAZCommand):
+class Show(AAZCommand):
     """Show the schema placeholder for a configuration template or solution template
     :example: Show schema for a Configuration Template
               az workload-orchestration configuration schema show --template-resource-group rg1 --template-name template1 --version 1.0.0
@@ -229,8 +229,8 @@ class SchemaShow(AAZCommand):
             return cls._schema_on_200
 
 
-class _SchemaShowHelper:
-    """Helper class for SchemaShow"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["SchemaShow"]
+__all__ = ["Show"]
