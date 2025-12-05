@@ -69,7 +69,7 @@ class MeasurementEndpointOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.MeasurementEndpointList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
 
         def prepare_request(next_link=None):
             # Construct headers
@@ -147,7 +147,7 @@ class MeasurementEndpointOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.MeasurementEndpoint"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -252,7 +252,7 @@ class MeasurementEndpointOperations(object):
         error_map.update(kwargs.pop('error_map', {}))
 
         _parameters = models.MeasurementEndpoint(description=description, endpoint=endpoint, measurement_type=measurement_type, weight=weight, experiment_id=experiment_id, object_path=object_path, start_time_utc=start_time_utc, end_time_utc=end_time_utc, hot_path_sampling_percentage_rate=hot_path_sampling_percentage_rate, warm_path_sampling_percentage_rate=warm_path_sampling_percentage_rate, cold_path_sampling_percentage_rate_override=cold_path_sampling_percentage_rate_override, metadata=metadata)
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -325,7 +325,7 @@ class MeasurementEndpointOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
