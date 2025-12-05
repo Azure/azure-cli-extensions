@@ -57,7 +57,7 @@ class OperationOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceProviderOperationList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
 
         def prepare_request(next_link=None):
             # Construct headers
