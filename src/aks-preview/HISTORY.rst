@@ -11,6 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+19.0.0b17
++++++++
+* `az aks safeguards create`: Add pre-existence check to prevent duplicate resource creation and guide users to use update command instead.
+* `az aks safeguards`: Fix verb tense in help text and examples to use first-person imperative verbs per Azure CLI guidelines.
 * `az aks bastion`: Correctly configure `$KUBECONFIG` values for tunneling traffic into a private AKS cluster.
 
 19.0.0b16
