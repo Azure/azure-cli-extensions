@@ -28,7 +28,7 @@ class ShowConfig(AAZCommand):
     _aaz_info = {
         "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutions/{}", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/configurations/{}/dynamicconfigurations/{}/versions/{}", "2025-08-01"],
         ]
     }
 
