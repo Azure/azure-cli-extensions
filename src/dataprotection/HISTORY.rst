@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.8.0
++++++
+* `az dataprotection backup-instance update`: New parameter: `--backup-configuration` to update AKS datasource parameters.
+* Fix in `helpers.py` to correctly prepare/normalize AKS backup-configuration payloads passed via the CLI.
 
 1.7.1
 +++++
