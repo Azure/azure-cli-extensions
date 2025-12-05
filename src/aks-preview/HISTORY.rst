@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b18
++++++++
+* Vendor new SDK and bump API version to 2025-10-02-preview.
+
 19.0.0b17
 +++++++
 * `az aks bastion`: Correctly configure `$KUBECONFIG` values for tunneling traffic into a private AKS cluster.
@@ -44,7 +48,7 @@ Pending
 
 19.0.0b10
 +++++++
-* Vendor new SDK and bump API version to 2025-08-02-preview.
+* Vendor new SDK and bump API version to 2025-09-02-preview.
 * `az aks update`: Fix `--azure-keyvault-kms-key-vault-network-access` parameter not being correctly applied during cluster creation and updates.
 
 19.0.0b9
