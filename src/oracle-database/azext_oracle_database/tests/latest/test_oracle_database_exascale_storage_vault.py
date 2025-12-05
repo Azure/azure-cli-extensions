@@ -8,14 +8,18 @@ import os
 import unittest
 import time
 
-from azure.cli.testsdk import ScenarioTest, JMESPathCheck
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleExaScaleStorageVaultScenarioTest(ScenarioTest):
+    @live_only()
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def setUp(self):
-        super().setUp()
+        subscription_id = self.get_subscription_id()
         self.kwargs.update({
             'resource_group': 'testAzureCLi',
-            'exascale_db_storage_vault_name': 'AzCli_vaultTest',
+            'exascale_db_storage_vault_name': 'AzCli_vaultTestMih',
             'location': 'eastus',
             'zone': '2',
             'description': 'Test Description',

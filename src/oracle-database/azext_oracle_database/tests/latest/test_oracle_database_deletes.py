@@ -9,31 +9,33 @@ import unittest
 import time
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleDatabaseDeleteScenario(ScenarioTest):
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_exadata_deletes(self, resource_group):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
-            'infra_name': 'OFake_PowerShellExaInfra',
+            'infra_name': 'OFake_Infra_AzCLIMi',
             'location': 'eastus',
+            'resource_group': 'PowerShellTestRg',
             'shape': 'Exadata.X9M',
             'tags': '{tagk1:tagv1}'
         })
         self.cmd('az oracle-database cloud-exadata-infrastructure delete '
-                         '--resource-group PowerShellTestRg '
+                         '--resource-group testAzureCLi '
                          '--name {infra_name} '
                          '--no-wait '
                          '--yes ')
         self.cmd('az oracle-database cloud-vm-cluster show '
-                                 '--resource-group PowerShellTestRg '
-                                 '--name OfakeDNDVM ')
+                                 '--resource-group {resource_group} '
+                                 '--name OFake_VMC_AzCLIMih ')
         self.cmd('az oracle-database cloud-vm-cluster list '
-                                 '--resource-group PowerShellTestRg ')
+                                 '--resource-group {resource_group} ')
         self.cmd('az oracle-database cloud-vm-cluster delete '
-                         '--resource-group PowerShellTestRg '
-                         '--name OfakeDNDVM '
+                         '--resource-group {resource_group} '
+                         '--name OFake_VMC_AzCLIMih '
                          '--no-wait '
                          '--yes ')

@@ -9,15 +9,16 @@ import unittest
 import time
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleDatabaseScenario(ScenarioTest):
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_exadata(self, resource_group):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
-            'infra_name': 'OFake_Infra_AzCLINew',
+            'infra_name': 'OFake_Infra_AzCLINe',
             'location': 'eastus',
             'shape': 'Exadata.X9M',
             'tags': '{tagk1:tagv1}'
@@ -33,30 +34,30 @@ class OracleDatabaseScenario(ScenarioTest):
                          '--storage-count 3 --no-wait')
         self.cmd('az oracle-database cloud-exadata-infrastructure show '
                          '--resource-group PowerShellTestRg '
-                         '--name OFake_PowerShellExaInfra ')
+                         '--name OfakeExaDND ')
         self.cmd('az oracle-database cloud-exadata-infrastructure list '
                           '--resource-group PowerShellTestRg ')
         self.cmd('az oracle-database cloud-exadata-infrastructure database-server list '
-                          '--cloudexadatainfrastructurename OFake_PowerShellExaInfra '
+                          '--cloudexadatainfrastructurename OfakeExaDND '
                           '--resource-group PowerShellTestRg ')
         self.cmd('az oracle-database cloud-vm-cluster create '
-                          '--cloud-exadata-infrastructure-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OFake_PowerShellExaInfra '
+                          '--cloud-exadata-infrastructure-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OfakeExaDND '
                           '--resource-group PowerShellTestRg '
                           '--location eastus '
                           '--cpu-core-count 6 '
                           '--data-storage-percentage 80 '
                           '--data-storage-size-in-tbs 2 '
                           '--db-node-storage-size-in-gbs 120 '
-                          '--db-servers [\'ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yaaqsjbublndya2sya52aaggapq6adfjfv5vglphfr6pwa\',\'ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yavhxxltixijkexwgvdiez3rjzajlt4p422ajm2ojfdgaa\'] '
-                          '--display-name OFake_VMC_AzCLI3 '
-                          '--name OFake_VMC_AzCLI3 '
+                          '--db-servers [\'ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yadr5ifpbjesmj72j7mjtiuwmmanoljxrvbg442xjnpqra\',\'ocid1.dbserver.oc1.iad.anuwcljt2xgsw2ya4j553poytgkb7tweyymfo3ydjiaeqdhhduzbtxwunvwq\'] '
+                          '--display-name OFake_VMC_AzCLIMih '
+                          '--name OFake_VMC_AzCLIMih '
                           '--gi-version 19.0.0.0 '
                           '--hostname  rvilathu '
                           '--is-local-backup-enabled False '
                           '--is-sparse-diskgroup-enabled False '
                           '--license-model LicenseIncluded '
                           '--memory-size-in-gbs 60 '
-                          '--ssh-public-keys \'ssh-rsa AAAAB= generated-by-azure\' '
+                          '--ssh-public-keys \'ssh-rsa xxxx\' '
                           '--subnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated  '
                           '--time-zone UTC '
                           '--vnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet '

@@ -9,9 +9,10 @@ import unittest
 import time
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleDatabaseAdbsScenario(ScenarioTest):
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs(self, resource_group):
@@ -24,10 +25,10 @@ class OracleDatabaseAdbsScenario(ScenarioTest):
         self.cmd('az oracle-database dns-private-zone list --location eastus ')
         self.cmd('az oracle-database dns-private-view list --location eastus ')
         self.cmd('az oracle-database autonomous-database create --location eastus '
-                '--autonomousdatabasename ADBScli '
+                '--autonomousdatabasename ADBScliTest '
                 '--resource-group PowerShellTestRg '
                 '--subnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated '
-                '--display-name ADBScli1 '
+                '--display-name ADBScli1Mih '
                 '--compute-model ECPU --compute-count 2 '
                 '--data-storage-size-in-gbs 32 --license-model BringYourOwnLicense '
                 '--db-workload OLTP --admin-password TestPass#2024# '

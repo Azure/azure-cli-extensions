@@ -8,23 +8,27 @@ import os
 import unittest
 import time
 
-from azure.cli.testsdk import ScenarioTest, JMESPathCheck
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleExaDbVmclusterScenarioTest(ScenarioTest):
+    @live_only()
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def setUp(self):
-        super().setUp()
+        subscription_id = self.get_subscription_id()
         self.kwargs.update({
             'resource_group': 'testAzureCLi',
-            'exascale_db_storage_vault_name': 'Ofake_AzCli_vaultTe',
-            'vm_cluster_name': 'Ofake_AzCli_exadbcluster',
+            'exascale_db_storage_vault_name': 'AzCli_vaultTestMih',
+            'vm_cluster_name': 'AzCli_exadbclusterMih',
             'location': 'eastus',
             'zone': '2',
             'description': 'Test Description',
-            'ssh_public_key': 'ssh-rsa AAAAB= generated-by-azure',
+            'ssh_public_key': 'ssh-rsa xxxx',
             'display_name': 'test-vault',
             'high_capacity_database_storage_input': 'total-size-in-gbs=300',
             'enabled_ecpu_count': 16,
-            'grid_image_ocid': 'ocid1.dbpatch.oc1.iad.xxx',
+            'grid_image_ocid': 'ocid.xx',
             'hostname': 'test-host',
             'node_count': 2,
             'shape': 'EXADBXS',

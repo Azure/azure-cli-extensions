@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"location": "eastus", "properties": {"computeCount": 2, "displayName":
-      "OFake_Infra_AzCLINew", "shape": "Exadata.X9M", "storageCount": 3}, "zones":
+      "OFake_Infra_AzCLINe", "shape": "Exadata.X9M", "storageCount": 3}, "zones":
       ["2"]}'
     headers:
       Accept:
@@ -13,36 +13,36 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '155'
+      - '154'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --name --zones --compute-count --display-name --shape --location
         --storage-count --no-wait
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
     method: PUT
-    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testAzureCLi/providers/Oracle.Database/cloudExadataInfrastructures/OFake_Infra_AzCLINew?api-version=2025-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testAzureCLi/providers/Oracle.Database/cloudExadataInfrastructures/OFake_Infra_AzCLINe?api-version=2025-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testAzureCLi/providers/Oracle.Database/cloudExadataInfrastructures/OFake_Infra_AzCLINew","name":"OFake_Infra_AzCLINew","type":"oracle.database/cloudexadatainfrastructures","location":"eastus","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-18T16:46:20.1488289Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-11-18T16:46:20.1488289Z"},"properties":{"definedFileSystemConfiguration":null,"ocid":null,"computeCount":2,"storageCount":3,"totalStorageSizeInGbs":null,"availableStorageSizeInGbs":null,"timeCreated":null,"lifecycleDetails":null,"maintenanceWindow":null,"estimatedPatchingTime":null,"customerContacts":null,"provisioningState":"Accepted","lifecycleState":null,"shape":"Exadata.X9M","ociUrl":null,"displayName":"OFake_Infra_AzCLINew","cpuCount":null,"maxCpuCount":null,"memorySizeInGbs":null,"maxMemoryInGbs":null,"dbNodeStorageSizeInGbs":null,"maxDbNodeStorageSizeInGbs":null,"dataStorageSizeInTbs":null,"maxDataStorageInTbs":null,"dbServerVersion":null,"activatedStorageCount":null,"additionalStorageCount":null,"lastMaintenanceRunId":null,"nextMaintenanceRunId":null,"monthlyDbServerVersion":null,"monthlyStorageServerVersion":null,"storageServerVersion":null,"databaseServerType":null,"storageServerType":null,"computeModel":null,"exascaleConfig":null}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testAzureCLi/providers/Oracle.Database/cloudExadataInfrastructures/OFake_Infra_AzCLINe","name":"OFake_Infra_AzCLINe","type":"oracle.database/cloudexadatainfrastructures","location":"eastus","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-12-05T04:38:40.9160147Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-12-05T04:38:40.9160147Z"},"properties":{"definedFileSystemConfiguration":null,"ocid":null,"computeCount":2,"storageCount":3,"totalStorageSizeInGbs":null,"availableStorageSizeInGbs":null,"timeCreated":null,"lifecycleDetails":null,"maintenanceWindow":null,"estimatedPatchingTime":null,"customerContacts":null,"provisioningState":"Accepted","lifecycleState":null,"shape":"Exadata.X9M","ociUrl":null,"displayName":"OFake_Infra_AzCLINe","cpuCount":null,"maxCpuCount":null,"memorySizeInGbs":null,"maxMemoryInGbs":null,"dbNodeStorageSizeInGbs":null,"maxDbNodeStorageSizeInGbs":null,"dataStorageSizeInTbs":null,"maxDataStorageInTbs":null,"dbServerVersion":null,"activatedStorageCount":null,"additionalStorageCount":null,"lastMaintenanceRunId":null,"nextMaintenanceRunId":null,"monthlyDbServerVersion":null,"monthlyStorageServerVersion":null,"storageServerVersion":null,"databaseServerType":null,"storageServerType":null,"computeModel":null,"exascaleConfig":null}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/e1991822-3052-4b16-8d19-70808dbfe26e*3DFA27DDE0FAE846F528AD44DB7530A6C90FBDB327F9754EAAFFEDF8F9DECEA9?api-version=2025-09-01&t=638990811913520805&c=MIIHhzCCBm-gAwIBAgITfAla5jyv8QRP_5ow7AAACVrmPDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDIwMDQzNjIzWhcNMjYwNDE4MDQzNjIzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMddVfpiBdDmUhIBJwKZ3KQON7oBNDWmOOmY4g1ElyXgEkjon3Gv6o2iUWBTlxPP_EZQJhupEuO2DlNcI72qn4SyWwWct2tCEYRZJerV4rv1id9sCDj3fEamCo4QEH3xMKcGXqtPe3f3eb4VUSK8a2gJFqPiH-B-2oetOTm_-t1_J9TkLUFEUdYIHsylTl0OH2FEQVYAAgRXhe4lJ-WGzZ1ffooW6zFScKcbHC-ij1AA2xiuPbLogZIDjkgpOYoQbn9dJCcXDjro2GtBWEIEIaRIheA5TONmvBvNjwgvM95OihgVouEt3T1X5Jz2jgZVe8XVf5WuHz-a-o1TsKrZzcECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSklsMGrs_eAsv_RTi_q4qgDc9qNDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJ51PdAaul136rrBMSwKBqaPsalRACK88HnU3-MuFwPY3EKcBNfr_DcyIemG6qcdAt6oBTDGXSVm8qGYJ2eHSVBH91yTQvJd5-a7_b9xta0wy4EJYoK-Olj6bE5ygF6klhRzpEyjfq2vFjpc2SF6xPxtXMaj4I7ACMq2QHy3CO_thX0U9_MhBYBb-v3ICmOFIZIBb4wOpeX0BsfrYbqwos0TpMW5k0T0RtCs4mpGUt-7YgEXCPIwlt7JN4fLqGTiEElAPaYcSl4-0aYA_RVN98y83vlGlM0kIjglh8_t1QOAUw0jy8LA4CNtMdgL_ncOt66gFr9ocwuFusQMx11WpTM&s=nOKPRDP-5cj8XklvEkKN_YoSnZ6GuLH_k55jhR6mBF6zPcHE6QRRhlPQ8DBZ7ftTqvxvL8Al-0cD06Zm_okUy3cFrBvOk4ukmxInNG-rpCpMeE73MZWTEiMuXzHOkQKZgCtPLWWKe6bV31zQzr2h35lgZAplfg2bDXHMjGbk9SvK2U2kyDWFJ8q-rSlrECuoplkwf-3Z97FrhTSG6YLTv1ul5yg79nGgNJcU4Rbd8NsDH3BZgK9ZZyISIz8nMLKUVtAKRoZPgQP2Nw2QCCFESytJeRkXuasSchm1hBqE0MeEena-sI0-IBgD9NTSHXqEJALck5lsn6X9YXme93GD5A&h=MpHHUfK6AphE1UMq1pQTlBdAlxW_FTjg-9azLpfcRwA
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/891a4e35-9141-4c6c-a5bd-25632d2d50d2*1B9FE89944607A50048E074441F6FB9CD53C85210EEDBBBB6EAABE2C91DC73A6?api-version=2025-09-01&t=639005063353536010&c=MIIHhzCCBm-gAwIBAgITfAla5jyv8QRP_5ow7AAACVrmPDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDIwMDQzNjIzWhcNMjYwNDE4MDQzNjIzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMddVfpiBdDmUhIBJwKZ3KQON7oBNDWmOOmY4g1ElyXgEkjon3Gv6o2iUWBTlxPP_EZQJhupEuO2DlNcI72qn4SyWwWct2tCEYRZJerV4rv1id9sCDj3fEamCo4QEH3xMKcGXqtPe3f3eb4VUSK8a2gJFqPiH-B-2oetOTm_-t1_J9TkLUFEUdYIHsylTl0OH2FEQVYAAgRXhe4lJ-WGzZ1ffooW6zFScKcbHC-ij1AA2xiuPbLogZIDjkgpOYoQbn9dJCcXDjro2GtBWEIEIaRIheA5TONmvBvNjwgvM95OihgVouEt3T1X5Jz2jgZVe8XVf5WuHz-a-o1TsKrZzcECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSklsMGrs_eAsv_RTi_q4qgDc9qNDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJ51PdAaul136rrBMSwKBqaPsalRACK88HnU3-MuFwPY3EKcBNfr_DcyIemG6qcdAt6oBTDGXSVm8qGYJ2eHSVBH91yTQvJd5-a7_b9xta0wy4EJYoK-Olj6bE5ygF6klhRzpEyjfq2vFjpc2SF6xPxtXMaj4I7ACMq2QHy3CO_thX0U9_MhBYBb-v3ICmOFIZIBb4wOpeX0BsfrYbqwos0TpMW5k0T0RtCs4mpGUt-7YgEXCPIwlt7JN4fLqGTiEElAPaYcSl4-0aYA_RVN98y83vlGlM0kIjglh8_t1QOAUw0jy8LA4CNtMdgL_ncOt66gFr9ocwuFusQMx11WpTM&s=fhjL1TahwUFsC_tihgWaahSwKR2y4yTa6Z9-U69zzc6ZY9e4_0ICBY0xmR72lsVspnIavkCu1aZ8mLHd4401vjktKL4eMoIWipGpR46Iv1uR72CjAlrlreUNHtUAazDZsz6CUtN8Yiy1_4vvJ5ljGHGwsa9spcwNKrE0jwjgt0OBQP49-VBXC3KbvPtBxO9-30qXwZRjI0pI1XVTjDy6sxi0z6_nzUWsX5wNJB9sPN2lqB6KhAINwje13UCQndWPPBg9oVjNwibmwWI-R9xkQn62VyGc18dLo_swMNt4w9-4apdiBVB_PEtdUcveVJFBf_o5YNY2KmiYA6wQ8y13Ew&h=5x6od8kkwIxyy2O_iE5KPOUqtyYNPfn84LsC7MFRDVo
       cache-control:
       - no-cache
       content-length:
-      - '1450'
+      - '1447'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 18 Nov 2025 16:46:30 GMT
+      - Fri, 05 Dec 2025 04:38:54 GMT
       etag:
-      - '"0602d957-0000-0100-0000-691ca2e70000"'
+      - '"b803ed67-0000-0100-0000-693261df0000"'
       expires:
       - '-1'
       opc-request-id:
-      - oci-B2C595470F37A42-202511181646/04EE6AA4044D9A9EDCA21C69494144C5/B317E2C7F10FF87FD683E69947718CDA
+      - oci-74EBB2D833B8C8D-202512050438/7CD3E5003124C85BD161326949414420/9957F770D96BFFAF9404B199D0729096
       pragma:
       - no-cache
       strict-transport-security:
@@ -56,7 +56,7 @@ interactions:
       x-ms-async-operation-timeout:
       - P1D
       x-ms-operation-identifier:
-      - tenantId=9ef05df2-ad7c-4737-aba9-a5e1b3fa5ae1,objectId=ed0404db-6d52-44c6-a09d-182ac122b912/westus/deed7794-b150-475e-b8bb-cd2f6563bce6
+      - tenantId=9ef05df2-ad7c-4737-aba9-a5e1b3fa5ae1,objectId=ed0404db-6d52-44c6-a09d-182ac122b912/westus/254db60c-1dc6-45a8-baf7-25ba3eb267ff
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-writes:
@@ -64,7 +64,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: 5BFFCF1F707746D0BDFACB4AE51516A2 Ref B: BY1AA1072319031 Ref C: 2025-11-18T16:46:18Z'
+      - 'Ref A: 638D8FA894BC4727B0234FD4813BB3AE Ref B: SJC211051205037 Ref C: 2025-12-05T04:38:39Z'
     status:
       code: 201
       message: Created
@@ -82,23 +82,23 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OFake_PowerShellExaInfra?api-version=2025-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OfakeExaDND?api-version=2025-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OFake_PowerShellExaInfra","name":"OFake_PowerShellExaInfra","type":"oracle.database/cloudexadatainfrastructures","location":"eastus","zones":["2"],"tags":{},"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-10-13T16:44:20.8788549Z","lastModifiedBy":"a50e6610-5416-4c2a-88b6-172c7f376f7d","lastModifiedByType":"Application","lastModifiedAt":"2025-11-18T16:22:50.6028029Z"},"properties":{"definedFileSystemConfiguration":[{"isBackupPartition":true,"isResizable":true,"minSizeGb":15,"mountPoint":"/"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":250,"mountPoint":"/u01"},{"isBackupPartition":true,"isResizable":true,"minSizeGb":10,"mountPoint":"/tmp"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":10,"mountPoint":"/var"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":30,"mountPoint":"/var/log"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":4,"mountPoint":"/home"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":10,"mountPoint":"/var/log/audit"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":9,"mountPoint":"reserved"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":16,"mountPoint":"swap"}],"ocid":"ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyanlm76ygtn4apzxcfkuxhpomuesugjwus3im3yhxzxz2a","computeCount":2,"storageCount":3,"totalStorageSizeInGbs":196608,"availableStorageSizeInGbs":196608,"timeCreated":"2025-10-13T16:44:55.854Z","maintenanceWindow":{"preference":"NoPreference","leadTimeInWeeks":0,"patchingMode":"Rolling","customActionTimeoutInMins":0,"isCustomActionTimeoutEnabled":false},"provisioningState":"Succeeded","lifecycleState":"Available","shape":"Exadata.X9M","ociUrl":"https://cloud.oracle.com/dbaas/cloudExadataInfrastructures/ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyanlm76ygtn4apzxcfkuxhpomuesugjwus3im3yhxzxz2a?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","displayName":"OFake_PowerShellExaInfra","cpuCount":0,"maxCpuCount":252,"memorySizeInGbs":0,"maxMemoryInGbs":2780,"dbNodeStorageSizeInGbs":0,"maxDbNodeStorageSizeInGbs":4486,"dataStorageSizeInTbs":0,"maxDataStorageInTbs":192,"dbServerVersion":"25.1.2.0.0.250213.1","activatedStorageCount":3,"additionalStorageCount":0,"storageServerVersion":"25.1.2.0.0.250213.1","computeModel":"OCPU","nextMaintenanceRunId":"ocid1.dbmaintenancerun.oc1.iad.anuwcljt2edokzyadf3wqanhuo2ebwwidmu5db6hqcubehwvqiesqtd5yhqa"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OfakeExaDND","name":"OfakeExaDND","type":"oracle.database/cloudexadatainfrastructures","location":"eastus","zones":["2"],"tags":{},"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-06-26T05:58:15.8831698Z","lastModifiedBy":"a50e6610-5416-4c2a-88b6-172c7f376f7d","lastModifiedByType":"Application","lastModifiedAt":"2025-12-05T04:11:41.0866329Z"},"properties":{"definedFileSystemConfiguration":[{"isBackupPartition":true,"isResizable":true,"minSizeGb":15,"mountPoint":"/"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":250,"mountPoint":"/u01"},{"isBackupPartition":true,"isResizable":true,"minSizeGb":10,"mountPoint":"/tmp"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":10,"mountPoint":"/var"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":30,"mountPoint":"/var/log"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":4,"mountPoint":"/home"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":10,"mountPoint":"/var/log/audit"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":9,"mountPoint":"reserved"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":16,"mountPoint":"swap"}],"ocid":"ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyathomcb7enkv2t2taxunam4qwwwfc2g3fhwd6gdckg4xq","computeCount":3,"storageCount":3,"totalStorageSizeInGbs":196608,"availableStorageSizeInGbs":0,"timeCreated":"2025-06-26T05:58:33.426Z","maintenanceWindow":{"preference":"NoPreference","leadTimeInWeeks":0,"patchingMode":"Rolling","customActionTimeoutInMins":0,"isCustomActionTimeoutEnabled":false},"provisioningState":"Succeeded","lifecycleState":"Available","shape":"Exadata.X9M","ociUrl":"https://cloud.oracle.com/dbaas/cloudExadataInfrastructures/ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyathomcb7enkv2t2taxunam4qwwwfc2g3fhwd6gdckg4xq?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","displayName":"OfakeExaDND","cpuCount":6,"maxCpuCount":378,"memorySizeInGbs":60,"maxMemoryInGbs":4170,"dbNodeStorageSizeInGbs":878,"maxDbNodeStorageSizeInGbs":6729,"dataStorageSizeInTbs":2,"maxDataStorageInTbs":192,"dbServerVersion":"25.1.2.0.0.250213.1","activatedStorageCount":3,"additionalStorageCount":0,"storageServerVersion":"25.1.2.0.0.250213.1","computeModel":"OCPU","nextMaintenanceRunId":"ocid1.dbmaintenancerun.oc1.iad.anuwcljt2edokzyaqrl73k4ugw4h346r7ve6mfeiedjg2hpbtemrfhqfukzq","lastMaintenanceRunId":"ocid1.dbmaintenancerun.oc1.iad.anuwcljt2edokzyapvwvk552egjsobidec2qcktmgnh2rrumqhmcphfgoaeq"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2673'
+      - '2749'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 18 Nov 2025 16:46:31 GMT
+      - Fri, 05 Dec 2025 04:38:56 GMT
       etag:
-      - '"0502cfec-0000-0100-0000-691c9d5a0000"'
+      - '"b8038c48-0000-0100-0000-69325b7d0000"'
       expires:
       - '-1'
       pragma:
@@ -114,7 +114,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: DA34F3E33DE344C296635E364CCD5C5C Ref B: SJC211051203047 Ref C: 2025-11-18T16:46:32Z'
+      - 'Ref A: 9EC4775C56CC4AACB8F85B91DF9BA82A Ref B: BY1AA1072320042 Ref C: 2025-12-05T04:38:56Z'
     status:
       code: 200
       message: OK
@@ -132,21 +132,21 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures?api-version=2025-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures?api-version=2025-09-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OfakeExaDND","name":"OfakeExaDND","type":"oracle.database/cloudexadatainfrastructures","location":"eastus","zones":["2"],"tags":{},"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-06-26T05:58:15.8831698Z","lastModifiedBy":"a50e6610-5416-4c2a-88b6-172c7f376f7d","lastModifiedByType":"Application","lastModifiedAt":"2025-11-18T16:22:52.7907633Z"},"properties":{"definedFileSystemConfiguration":[{"isBackupPartition":true,"isResizable":true,"minSizeGb":15,"mountPoint":"/"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":250,"mountPoint":"/u01"},{"isBackupPartition":true,"isResizable":true,"minSizeGb":10,"mountPoint":"/tmp"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":10,"mountPoint":"/var"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":30,"mountPoint":"/var/log"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":4,"mountPoint":"/home"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":10,"mountPoint":"/var/log/audit"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":9,"mountPoint":"reserved"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":16,"mountPoint":"swap"}],"ocid":"ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyathomcb7enkv2t2taxunam4qwwwfc2g3fhwd6gdckg4xq","computeCount":3,"storageCount":3,"totalStorageSizeInGbs":196608,"availableStorageSizeInGbs":0,"timeCreated":"2025-06-26T05:58:33.426Z","maintenanceWindow":{"preference":"NoPreference","leadTimeInWeeks":0,"patchingMode":"Rolling","customActionTimeoutInMins":0,"isCustomActionTimeoutEnabled":false},"provisioningState":"Succeeded","lifecycleState":"Available","shape":"Exadata.X9M","ociUrl":"https://cloud.oracle.com/dbaas/cloudExadataInfrastructures/ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyathomcb7enkv2t2taxunam4qwwwfc2g3fhwd6gdckg4xq?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","displayName":"OfakeExaDND","cpuCount":4,"maxCpuCount":378,"memorySizeInGbs":60,"maxMemoryInGbs":4170,"dbNodeStorageSizeInGbs":878,"maxDbNodeStorageSizeInGbs":6729,"dataStorageSizeInTbs":2,"maxDataStorageInTbs":192,"dbServerVersion":"25.1.2.0.0.250213.1","activatedStorageCount":3,"additionalStorageCount":0,"storageServerVersion":"25.1.2.0.0.250213.1","computeModel":"OCPU","nextMaintenanceRunId":"ocid1.dbmaintenancerun.oc1.iad.anuwcljt2edokzyaqrl73k4ugw4h346r7ve6mfeiedjg2hpbtemrfhqfukzq","lastMaintenanceRunId":"ocid1.dbmaintenancerun.oc1.iad.anuwcljt2edokzyapvwvk552egjsobidec2qcktmgnh2rrumqhmcphfgoaeq"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OFake_PowerShellExaInfra","name":"OFake_PowerShellExaInfra","type":"oracle.database/cloudexadatainfrastructures","location":"eastus","zones":["2"],"tags":{},"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-10-13T16:44:20.8788549Z","lastModifiedBy":"a50e6610-5416-4c2a-88b6-172c7f376f7d","lastModifiedByType":"Application","lastModifiedAt":"2025-11-18T16:22:50.6028029Z"},"properties":{"definedFileSystemConfiguration":[{"isBackupPartition":true,"isResizable":true,"minSizeGb":15,"mountPoint":"/"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":250,"mountPoint":"/u01"},{"isBackupPartition":true,"isResizable":true,"minSizeGb":10,"mountPoint":"/tmp"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":10,"mountPoint":"/var"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":30,"mountPoint":"/var/log"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":4,"mountPoint":"/home"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":10,"mountPoint":"/var/log/audit"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":9,"mountPoint":"reserved"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":16,"mountPoint":"swap"}],"ocid":"ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyanlm76ygtn4apzxcfkuxhpomuesugjwus3im3yhxzxz2a","computeCount":2,"storageCount":3,"totalStorageSizeInGbs":196608,"availableStorageSizeInGbs":196608,"timeCreated":"2025-10-13T16:44:55.854Z","maintenanceWindow":{"preference":"NoPreference","leadTimeInWeeks":0,"patchingMode":"Rolling","customActionTimeoutInMins":0,"isCustomActionTimeoutEnabled":false},"provisioningState":"Succeeded","lifecycleState":"Available","shape":"Exadata.X9M","ociUrl":"https://cloud.oracle.com/dbaas/cloudExadataInfrastructures/ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyanlm76ygtn4apzxcfkuxhpomuesugjwus3im3yhxzxz2a?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","displayName":"OFake_PowerShellExaInfra","cpuCount":0,"maxCpuCount":252,"memorySizeInGbs":0,"maxMemoryInGbs":2780,"dbNodeStorageSizeInGbs":0,"maxDbNodeStorageSizeInGbs":4486,"dataStorageSizeInTbs":0,"maxDataStorageInTbs":192,"dbServerVersion":"25.1.2.0.0.250213.1","activatedStorageCount":3,"additionalStorageCount":0,"storageServerVersion":"25.1.2.0.0.250213.1","computeModel":"OCPU","nextMaintenanceRunId":"ocid1.dbmaintenancerun.oc1.iad.anuwcljt2edokzyadf3wqanhuo2ebwwidmu5db6hqcubehwvqiesqtd5yhqa"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OfakeExaDND","name":"OfakeExaDND","type":"oracle.database/cloudexadatainfrastructures","location":"eastus","zones":["2"],"tags":{},"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-06-26T05:58:15.8831698Z","lastModifiedBy":"a50e6610-5416-4c2a-88b6-172c7f376f7d","lastModifiedByType":"Application","lastModifiedAt":"2025-12-05T04:11:41.0866329Z"},"properties":{"definedFileSystemConfiguration":[{"isBackupPartition":true,"isResizable":true,"minSizeGb":15,"mountPoint":"/"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":250,"mountPoint":"/u01"},{"isBackupPartition":true,"isResizable":true,"minSizeGb":10,"mountPoint":"/tmp"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":10,"mountPoint":"/var"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":30,"mountPoint":"/var/log"},{"isBackupPartition":false,"isResizable":true,"minSizeGb":4,"mountPoint":"/home"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":10,"mountPoint":"/var/log/audit"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":9,"mountPoint":"reserved"},{"isBackupPartition":false,"isResizable":false,"minSizeGb":16,"mountPoint":"swap"}],"ocid":"ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyathomcb7enkv2t2taxunam4qwwwfc2g3fhwd6gdckg4xq","computeCount":3,"storageCount":3,"totalStorageSizeInGbs":196608,"availableStorageSizeInGbs":0,"timeCreated":"2025-06-26T05:58:33.426Z","maintenanceWindow":{"preference":"NoPreference","leadTimeInWeeks":0,"patchingMode":"Rolling","customActionTimeoutInMins":0,"isCustomActionTimeoutEnabled":false},"provisioningState":"Succeeded","lifecycleState":"Available","shape":"Exadata.X9M","ociUrl":"https://cloud.oracle.com/dbaas/cloudExadataInfrastructures/ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyathomcb7enkv2t2taxunam4qwwwfc2g3fhwd6gdckg4xq?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","displayName":"OfakeExaDND","cpuCount":6,"maxCpuCount":378,"memorySizeInGbs":60,"maxMemoryInGbs":4170,"dbNodeStorageSizeInGbs":878,"maxDbNodeStorageSizeInGbs":6729,"dataStorageSizeInTbs":2,"maxDataStorageInTbs":192,"dbServerVersion":"25.1.2.0.0.250213.1","activatedStorageCount":3,"additionalStorageCount":0,"storageServerVersion":"25.1.2.0.0.250213.1","computeModel":"OCPU","nextMaintenanceRunId":"ocid1.dbmaintenancerun.oc1.iad.anuwcljt2edokzyaqrl73k4ugw4h346r7ve6mfeiedjg2hpbtemrfhqfukzq","lastMaintenanceRunId":"ocid1.dbmaintenancerun.oc1.iad.anuwcljt2edokzyapvwvk552egjsobidec2qcktmgnh2rrumqhmcphfgoaeq"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5435'
+      - '2761'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 18 Nov 2025 16:46:33 GMT
+      - Fri, 05 Dec 2025 04:38:57 GMT
       expires:
       - '-1'
       pragma:
@@ -158,13 +158,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - d5fb9f19-5929-4b02-b94f-c48a8c0652d8
+      - 039f6dcb-5152-436c-9ea8-c65fba77493a
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: BB806D3D2E0A4EF99C7CE6E21302E138 Ref B: BY1AA1072319040 Ref C: 2025-11-18T16:46:33Z'
+      - 'Ref A: AED6CF80AF2B4192B14552CF4CCDF2BC Ref B: BY1AA1072317052 Ref C: 2025-12-05T04:38:57Z'
     status:
       code: 200
       message: OK
@@ -182,25 +182,25 @@ interactions:
       ParameterSetName:
       - --cloudexadatainfrastructurename --resource-group
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OFake_PowerShellExaInfra/dbServers?api-version=2025-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OfakeExaDND/dbServers?api-version=2025-09-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OFake_PowerShellExaInfra/dbServers/ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yaaqsjbublndya2sya52aaggapq6adfjfv5vglphfr6pwa","name":"dbServer-2","type":"Oracle.Database/cloudExadataInfrastructures/dbServers","properties":{"ocid":"ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yaaqsjbublndya2sya52aaggapq6adfjfv5vglphfr6pwa","displayName":"dbServer-2","compartmentId":"ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","exadataInfrastructureId":"ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyanlm76ygtn4apzxcfkuxhpomuesugjwus3im3yhxzxz2a","cpuCoreCount":0,"maxMemoryInGbs":1390,"dbNodeStorageSizeInGbs":0,"vmClusterIds":[],"dbNodeIds":[],"provisioningState":"Available","dbServerPatchingDetails":{"estimatedPatchDuration":90,"patchingStatus":"Scheduled"},"maxCpuCount":126,"autonomousVmClusterIds":[],"autonomousVirtualMachineIds":[],"maxDbNodeStorageInGbs":2243,"memorySizeInGbs":0,"timeCreated":"2025-10-13T16:44:55.862Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OFake_PowerShellExaInfra/dbServers/ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yavhxxltixijkexwgvdiez3rjzajlt4p422ajm2ojfdgaa","name":"dbServer-1","type":"Oracle.Database/cloudExadataInfrastructures/dbServers","properties":{"ocid":"ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yavhxxltixijkexwgvdiez3rjzajlt4p422ajm2ojfdgaa","displayName":"dbServer-1","compartmentId":"ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","exadataInfrastructureId":"ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyanlm76ygtn4apzxcfkuxhpomuesugjwus3im3yhxzxz2a","cpuCoreCount":0,"maxMemoryInGbs":1390,"dbNodeStorageSizeInGbs":0,"vmClusterIds":[],"dbNodeIds":[],"provisioningState":"Available","dbServerPatchingDetails":{"estimatedPatchDuration":90,"patchingStatus":"Scheduled"},"maxCpuCount":126,"autonomousVmClusterIds":[],"autonomousVirtualMachineIds":[],"maxDbNodeStorageInGbs":2243,"memorySizeInGbs":0,"timeCreated":"2025-10-13T16:44:55.859Z"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OfakeExaDND/dbServers/ocid1.dbserver.oc1.iad.anuwcljt2xgsw2ya2ajpysh3j2geyaqhrdayexc45tjbmwkwabolpdye6qhq","name":"dbServer-1","type":"Oracle.Database/cloudExadataInfrastructures/dbServers","properties":{"ocid":"ocid1.dbserver.oc1.iad.anuwcljt2xgsw2ya2ajpysh3j2geyaqhrdayexc45tjbmwkwabolpdye6qhq","displayName":"dbServer-1","compartmentId":"ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","exadataInfrastructureId":"ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyathomcb7enkv2t2taxunam4qwwwfc2g3fhwd6gdckg4xq","cpuCoreCount":0,"maxMemoryInGbs":1390,"dbNodeStorageSizeInGbs":0,"vmClusterIds":[],"dbNodeIds":[],"provisioningState":"Available","dbServerPatchingDetails":{"estimatedPatchDuration":90,"patchingStatus":"Scheduled"},"maxCpuCount":126,"autonomousVmClusterIds":[],"autonomousVirtualMachineIds":[],"maxDbNodeStorageInGbs":2243,"memorySizeInGbs":0,"timeCreated":"2025-06-26T05:58:33.427Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OfakeExaDND/dbServers/ocid1.dbserver.oc1.iad.anuwcljt2xgsw2ya4j553poytgkb7tweyymfo3ydjiaeqdhhduzbtxwunvwq","name":"dbServer-3","type":"Oracle.Database/cloudExadataInfrastructures/dbServers","properties":{"ocid":"ocid1.dbserver.oc1.iad.anuwcljt2xgsw2ya4j553poytgkb7tweyymfo3ydjiaeqdhhduzbtxwunvwq","displayName":"dbServer-3","compartmentId":"ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","exadataInfrastructureId":"ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyathomcb7enkv2t2taxunam4qwwwfc2g3fhwd6gdckg4xq","cpuCoreCount":3,"maxMemoryInGbs":1390,"dbNodeStorageSizeInGbs":439,"vmClusterIds":["ocid1.cloudvmcluster.oc1.iad.anuwcljt2edokzyaicqasxporuiqbuddyjvehrvz3utvyjkpyddrvlkltzhq"],"dbNodeIds":["ocid1.dbnode.oc1.iad.anuwcljt2edokzyaagca535ajbnch4tm2fy5ckaxfacdbdbaskltrld2ri4a"],"provisioningState":"Available","dbServerPatchingDetails":{"estimatedPatchDuration":90,"patchingStatus":"Scheduled"},"maxCpuCount":126,"autonomousVmClusterIds":[],"autonomousVirtualMachineIds":[],"maxDbNodeStorageInGbs":2243,"memorySizeInGbs":30,"timeCreated":"2025-06-26T05:58:33.428Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OfakeExaDND/dbServers/ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yadr5ifpbjesmj72j7mjtiuwmmanoljxrvbg442xjnpqra","name":"dbServer-2","type":"Oracle.Database/cloudExadataInfrastructures/dbServers","properties":{"ocid":"ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yadr5ifpbjesmj72j7mjtiuwmmanoljxrvbg442xjnpqra","displayName":"dbServer-2","compartmentId":"ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","exadataInfrastructureId":"ocid1.cloudexadatainfrastructure.oc1.iad.anuwcljt2edokzyathomcb7enkv2t2taxunam4qwwwfc2g3fhwd6gdckg4xq","cpuCoreCount":3,"maxMemoryInGbs":1390,"dbNodeStorageSizeInGbs":439,"vmClusterIds":["ocid1.cloudvmcluster.oc1.iad.anuwcljt2edokzyaicqasxporuiqbuddyjvehrvz3utvyjkpyddrvlkltzhq"],"dbNodeIds":["ocid1.dbnode.oc1.iad.anuwcljt2edokzyalwpbb2xzktytw5e55dyl43wddlkbj7gnazoycfczm3aa"],"provisioningState":"Available","dbServerPatchingDetails":{"estimatedPatchDuration":90,"patchingStatus":"Scheduled"},"maxCpuCount":126,"autonomousVmClusterIds":[],"autonomousVirtualMachineIds":[],"maxDbNodeStorageInGbs":2243,"memorySizeInGbs":30,"timeCreated":"2025-06-26T05:58:33.428Z"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2213'
+      - '3629'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 18 Nov 2025 16:46:35 GMT
+      - Fri, 05 Dec 2025 04:39:00 GMT
       expires:
       - '-1'
       opc-request-id:
-      - oci-AF097C61A505A6C-202511181646/81F0427CEC78187CEAA21C69494144FB/A2E35B1C4C3EA4925548C8E4BC6C4465
+      - oci-68AB42669DF4529-202512050438/B3ACA9176377D88BE26132694941448B/818BB0EDD61CE22B9C6B1E059B985805
       pragma:
       - no-cache
       strict-transport-security:
@@ -212,24 +212,24 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=9ef05df2-ad7c-4737-aba9-a5e1b3fa5ae1,objectId=ed0404db-6d52-44c6-a09d-182ac122b912/eastus/c5d43448-bccf-4572-b466-4fbe831c5e68
+      - tenantId=9ef05df2-ad7c-4737-aba9-a5e1b3fa5ae1,objectId=ed0404db-6d52-44c6-a09d-182ac122b912/eastus/e2105ef1-6d3a-41dc-bd56-d76f890e3711
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: E1F0C590A8B04943B6726481A0BBD426 Ref B: SJC211051203027 Ref C: 2025-11-18T16:46:34Z'
+      - 'Ref A: B7127F783312431AACAF8A1BCC227638 Ref B: SJC211051205021 Ref C: 2025-12-05T04:38:58Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus", "properties": {"cloudExadataInfrastructureId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OFake_PowerShellExaInfra",
+    body: '{"location": "eastus", "properties": {"cloudExadataInfrastructureId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OfakeExaDND",
       "cpuCoreCount": 6, "dataStoragePercentage": 80, "dataStorageSizeInTbs": 2.0,
-      "dbNodeStorageSizeInGbs": 120, "dbServers": ["ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yaaqsjbublndya2sya52aaggapq6adfjfv5vglphfr6pwa",
-      "ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yavhxxltixijkexwgvdiez3rjzajlt4p422ajm2ojfdgaa"],
-      "displayName": "OFake_VMC_AzCLI3", "giVersion": "19.0.0.0", "hostname": "rvilathu",
+      "dbNodeStorageSizeInGbs": 120, "dbServers": ["ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yadr5ifpbjesmj72j7mjtiuwmmanoljxrvbg442xjnpqra",
+      "ocid1.dbserver.oc1.iad.anuwcljt2xgsw2ya4j553poytgkb7tweyymfo3ydjiaeqdhhduzbtxwunvwq"],
+      "displayName": "OFake_VMC_AzCLIMih", "giVersion": "19.0.0.0", "hostname": "rvilathu",
       "isLocalBackupEnabled": false, "isSparseDiskgroupEnabled": false, "licenseModel":
-      "LicenseIncluded", "memorySizeInGbs": 60, "sshPublicKeys": ["ssh-rsa AAAAB=
+      "LicenseIncluded", "memorySizeInGbs": 60, "sshPublicKeys": ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHJDAu814QnRaYFbuFswJX1IdpFAa8yVk4sneI3Q+QLoTyE4W5GR5f6TR5FqA03zxp41chkvjLysnc+EYJmjXQIbvrsEfaUenGu2AbYE3szBK9v+8iUy8JLgjoGuuxTU3BNCvMlTd00yw/qrOYbEDU9ZBnZVY/0nv2E03AzGUUObZJ8IUgNRUmNdWVFQiVUcmkRRM+XsIEUpuh0S6YJLLweZd+H50Y1mhKWXnZZH8Ed/5EmkSr7cO5WEKU2O/KSbavybkjUVWi6dcQMfwmNLBH9aByqAW8QvcZkZDvxLmimLnm3Jd/QDVvGesjyLbUrWfpbsaDXs+DgjTlFlxyqLPYMON5cfSg8wBj3Y176yWxwmrPnkro8X1Y93poSDQZb9SU68DsTrgVa6FoXWPkbUXz/nZX9GkTwE1Nhy2EPL4J+J50ZUZWG0bK25dFTKrzimLn1Qmvrx3so9qDId9LWbpYI6cJYxDTkGdGpuaHqDqGAi+5HeeXxx3/zO8pErPxy20=
       generated-by-azure"], "subnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated",
       "timeZone": "UTC", "vnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet"}}'
     headers:
@@ -242,7 +242,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1678'
+      - '1667'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -252,31 +252,31 @@ interactions:
         --is-sparse-diskgroup-enabled --license-model --memory-size-in-gbs --ssh-public-keys
         --subnet-id --time-zone --vnet-id --no-wait
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
     method: PUT
-    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudVmClusters/OFake_VMC_AzCLI3?api-version=2025-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudVmClusters/OFake_VMC_AzCLIMih?api-version=2025-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudVmClusters/OFake_VMC_AzCLI3","name":"OFake_VMC_AzCLI3","type":"oracle.database/cloudvmclusters","location":"eastus","systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-18T16:46:38.2644361Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-11-18T16:46:38.2644361Z"},"properties":{"ocid":null,"listenerPort":null,"nodeCount":null,"storageSizeInGbs":null,"fileSystemConfigurationDetails":null,"dataStorageSizeInTbs":2.0,"dbNodeStorageSizeInGbs":120,"memorySizeInGbs":60,"timeCreated":null,"lifecycleDetails":null,"timeZone":"UTC","zoneId":null,"hostname":"rvilathu","domain":null,"cpuCoreCount":6,"ocpuCount":null,"clusterName":null,"dataStoragePercentage":80,"isLocalBackupEnabled":false,"cloudExadataInfrastructureId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OFake_PowerShellExaInfra","isSparseDiskgroupEnabled":false,"systemVersion":null,"sshPublicKeys":["ssh-rsa
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudVmClusters/OFake_VMC_AzCLIMih","name":"OFake_VMC_AzCLIMih","type":"oracle.database/cloudvmclusters","location":"eastus","systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-12-05T04:39:02.2523867Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-12-05T04:39:02.2523867Z"},"properties":{"ocid":null,"listenerPort":null,"nodeCount":null,"storageSizeInGbs":null,"fileSystemConfigurationDetails":null,"dataStorageSizeInTbs":2.0,"dbNodeStorageSizeInGbs":120,"memorySizeInGbs":60,"timeCreated":null,"lifecycleDetails":null,"timeZone":"UTC","zoneId":null,"hostname":"rvilathu","domain":null,"cpuCoreCount":6,"ocpuCount":null,"clusterName":null,"dataStoragePercentage":80,"isLocalBackupEnabled":false,"cloudExadataInfrastructureId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/cloudExadataInfrastructures/OfakeExaDND","isSparseDiskgroupEnabled":false,"systemVersion":null,"sshPublicKeys":["ssh-rsa
         AAAAB3NzaC1yc2EAAAADAQABAAABgQDHJDAu814QnRaYFbuFswJX1IdpFAa8yVk4sneI3Q+QLoTyE4W5GR5f6TR5FqA03zxp41chkvjLysnc+EYJmjXQIbvrsEfaUenGu2AbYE3szBK9v+8iUy8JLgjoGuuxTU3BNCvMlTd00yw/qrOYbEDU9ZBnZVY/0nv2E03AzGUUObZJ8IUgNRUmNdWVFQiVUcmkRRM+XsIEUpuh0S6YJLLweZd+H50Y1mhKWXnZZH8Ed/5EmkSr7cO5WEKU2O/KSbavybkjUVWi6dcQMfwmNLBH9aByqAW8QvcZkZDvxLmimLnm3Jd/QDVvGesjyLbUrWfpbsaDXs+DgjTlFlxyqLPYMON5cfSg8wBj3Y176yWxwmrPnkro8X1Y93poSDQZb9SU68DsTrgVa6FoXWPkbUXz/nZX9GkTwE1Nhy2EPL4J+J50ZUZWG0bK25dFTKrzimLn1Qmvrx3so9qDId9LWbpYI6cJYxDTkGdGpuaHqDqGAi+5HeeXxx3/zO8pErPxy20=
-        generated-by-azure"],"licenseModel":"LicenseIncluded","diskRedundancy":null,"scanIpIds":null,"vipIds":null,"scanDnsName":null,"scanListenerPortTcp":null,"scanListenerPortTcpSsl":null,"scanDnsRecordId":null,"shape":null,"provisioningState":"Accepted","lifecycleState":null,"vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet","giVersion":"19.0.0.0","ociUrl":null,"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated","dataCollectionOptions":null,"displayName":"OFake_VMC_AzCLI3","iormConfigCache":null,"lastUpdateHistoryEntryId":null,"dbServers":["ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yaaqsjbublndya2sya52aaggapq6adfjfv5vglphfr6pwa","ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yavhxxltixijkexwgvdiez3rjzajlt4p422ajm2ojfdgaa"],"compartmentId":null,"subnetOcid":null,"nsgCidrs":null,"nsgUrl":null,"exascaleDbStorageVaultId":null,"storageManagementType":null}}'
+        generated-by-azure"],"licenseModel":"LicenseIncluded","diskRedundancy":null,"scanIpIds":null,"vipIds":null,"scanDnsName":null,"scanListenerPortTcp":null,"scanListenerPortTcpSsl":null,"scanDnsRecordId":null,"shape":null,"provisioningState":"Accepted","lifecycleState":null,"vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet","giVersion":"19.0.0.0","ociUrl":null,"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated","dataCollectionOptions":null,"displayName":"OFake_VMC_AzCLIMih","iormConfigCache":null,"lastUpdateHistoryEntryId":null,"dbServers":["ocid1.dbserver.oc1.iad.anuwcljt2xgsw2yadr5ifpbjesmj72j7mjtiuwmmanoljxrvbg442xjnpqra","ocid1.dbserver.oc1.iad.anuwcljt2xgsw2ya4j553poytgkb7tweyymfo3ydjiaeqdhhduzbtxwunvwq"],"compartmentId":null,"subnetOcid":null,"nsgCidrs":null,"nsgUrl":null,"exascaleDbStorageVaultId":null,"storageManagementType":null}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/bf95795f-9932-4216-8374-36d46c01d1d2*762169479DBC53967D71890F36845FACA697876293C704F6B8593522DB8F12B8?api-version=2025-09-01&t=638990812023116162&c=MIIHhzCCBm-gAwIBAgITfAla5jyv8QRP_5ow7AAACVrmPDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDIwMDQzNjIzWhcNMjYwNDE4MDQzNjIzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMddVfpiBdDmUhIBJwKZ3KQON7oBNDWmOOmY4g1ElyXgEkjon3Gv6o2iUWBTlxPP_EZQJhupEuO2DlNcI72qn4SyWwWct2tCEYRZJerV4rv1id9sCDj3fEamCo4QEH3xMKcGXqtPe3f3eb4VUSK8a2gJFqPiH-B-2oetOTm_-t1_J9TkLUFEUdYIHsylTl0OH2FEQVYAAgRXhe4lJ-WGzZ1ffooW6zFScKcbHC-ij1AA2xiuPbLogZIDjkgpOYoQbn9dJCcXDjro2GtBWEIEIaRIheA5TONmvBvNjwgvM95OihgVouEt3T1X5Jz2jgZVe8XVf5WuHz-a-o1TsKrZzcECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSklsMGrs_eAsv_RTi_q4qgDc9qNDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJ51PdAaul136rrBMSwKBqaPsalRACK88HnU3-MuFwPY3EKcBNfr_DcyIemG6qcdAt6oBTDGXSVm8qGYJ2eHSVBH91yTQvJd5-a7_b9xta0wy4EJYoK-Olj6bE5ygF6klhRzpEyjfq2vFjpc2SF6xPxtXMaj4I7ACMq2QHy3CO_thX0U9_MhBYBb-v3ICmOFIZIBb4wOpeX0BsfrYbqwos0TpMW5k0T0RtCs4mpGUt-7YgEXCPIwlt7JN4fLqGTiEElAPaYcSl4-0aYA_RVN98y83vlGlM0kIjglh8_t1QOAUw0jy8LA4CNtMdgL_ncOt66gFr9ocwuFusQMx11WpTM&s=urCNpN9ZvN8BUw-mbDSF8Yjna5wdPq8t-rZjwi30CnLQQfIyBdJWjDI7kOO_xeLBhvHZBOGFM-sEfqG7-6Aw9pf4V96ZwQJAiyjqjW2PKUKd0n65DZWYcUDHlC4EJyg6ad71_hl_e-H_6xMLlDSE0oRzOJuWbTiKjh6JCiDJd8iTVLDSJrUMbnTQrEPX2cnjHXL-TjEW_2EMsh_1LKBNG4UrESGKDVo5MEBIUSQiQLqcqjOhOBpArv6BMvV1gEwt6oBeTlZpBQpHK_vvy0NyorMFhdp0yHMDL71RG-pJnN0xdjae7K0qD01FgCWT-BUWopStJ6h5J_WLRLKIz_Wk-w&h=xhjztFZyTM1uvpj0io2nNcq6GhmOluBH2GwvHOwXXmw
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/d19bdf2c-0a17-4d39-9dd4-646c64f586df*948BB81A93B23211B966FC1636836C949AFE70FD4175410B3B0FB4F340E3B6E6?api-version=2025-09-01&t=639005063475496295&c=MIIHhzCCBm-gAwIBAgITfAlY2NhYWz_rkiYT0gAACVjY2DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDE5MDMwMTUzWhcNMjYwNDE3MDMwMTUzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALb7q8LgkqS_7Sa915WSEvu_LerzErVZMTTkw7KXLAdnIWMjvrOw1RefK_Xe_cFp1_e2xVZM1Zog0tE-_XlllqRwZapoZJTL14Kmh7C0GvefEv-5GdvOnMy695cBHvQJTv1mqxiuvsmhJdB5__zphMuTvy0lF2K1ceor52XBk_VLEQtBcMhz8UUKVZ2KboqO1b56fjCSzbjn-sv5cQ7zx0_GZYADJbddS7dvpIwmb3QZzHcEcbAec_ouQ-YyxmKTpGa17K6DB_CoquSZ2A0TRHJqBpgeGjL0b652ekPbj9oy-sOOusDnwfN95QPWCJFjmNz1aKdnUhXmx8FU134pOkUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSi0lU0HWkl1SHwyRBzQPtbjPmHfTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACdnVC4tNlyw3EyuiJTFX5692Q_SgsQB7SjH2__G8q1XVJ0GiNSI4NKXoC8rVoxrLDL28sgifuyaEjoA9IYoahBs9l6DzxOxA0fDaBOTteaFuniOzVtW6WubmshP_yDd1pFPJydCOEtgKApCNY8y5eo8GzdatHpMEID7E2ZDrxTnq7PtzLXpoeF0A5W6qhqGypYabh7ugJ5-R8hb1iOlFYy2yvCrBaAW9wwnUPpO3DQRyoxnbzomyTIbrxEJuuaalADYKnu7GVtfL43Srrrx_HEfhy1rsf0ZK9CmJ64NOTHXIRG0kYIl5LhwZVZSEDqBPTAAy9oAm1i5D1jbVw2FPF8&s=IdpRVvq67i1N9tpE8p0-JoYoaVC9g4FHkxBlmCDLHUgiCuSIkB0sJRZata7A1lJ_oJ5GjUrfcC5Iozud-BpE0x4H5nuU31vRbQ-j30lKi5ndhpwiJWq6zo-VzfJQ0g3fwNzVF1IZTg0Sj11TquTftQfYa4qRYgR49NHZcRpm0yo7AFGbpqAC9up6TZe0mJmfWbQLoe0GwmMsg3cW313VZYrtAIBGgFtAoioq2FToaZZVNalRWVoHN3d39ryJsAxmNYA49OiD1SGvXkgvC5DShED_KDXv_iXZaPo5Ugddd4KJf4UM5kIU77n5szBixxEffO0t4UDkquBQlPtyWfCBIA&h=x7xgNrScxIOwC_sOMVAqWAlPyrj38h4k3ZTckhFzgr4
       cache-control:
       - no-cache
       content-length:
-      - '2783'
+      - '2776'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 18 Nov 2025 16:46:42 GMT
+      - Fri, 05 Dec 2025 04:39:06 GMT
       etag:
-      - '"ae05a02c-0000-0100-0000-691ca2f20000"'
+      - '"c4096cfd-0000-0100-0000-693261eb0000"'
       expires:
       - '-1'
       opc-request-id:
-      - oci-DD42585ACE2DD2C-202511181646/C45C040E358A8132EEA21C6949414460/0CEFB95EB4FBC053F342BA71A80A196C
+      - oci-1F27EBB394420CC-202512050439/9ACBEDC942CB2EE4E6613269494144EE/52CF21D3CDA0902AF9CD09499C247E5D
       pragma:
       - no-cache
       strict-transport-security:
@@ -290,7 +290,7 @@ interactions:
       x-ms-async-operation-timeout:
       - P1D
       x-ms-operation-identifier:
-      - tenantId=9ef05df2-ad7c-4737-aba9-a5e1b3fa5ae1,objectId=ed0404db-6d52-44c6-a09d-182ac122b912/westus/f306a05f-4d8f-4495-9cd3-526510205fae
+      - tenantId=9ef05df2-ad7c-4737-aba9-a5e1b3fa5ae1,objectId=ed0404db-6d52-44c6-a09d-182ac122b912/eastus/9c192c5c-b7bb-4185-b1cc-65cba03b93ee
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-writes:
@@ -298,7 +298,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: 3102E4A565994513A35BC5E7A397DC73 Ref B: SJC211051205039 Ref C: 2025-11-18T16:46:36Z'
+      - 'Ref A: F9651728F07B4E4EA22A1A3861C88C17 Ref B: SJC211051201011 Ref C: 2025-12-05T04:39:00Z'
     status:
       code: 201
       message: Created

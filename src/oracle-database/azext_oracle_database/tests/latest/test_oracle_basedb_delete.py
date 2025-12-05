@@ -8,12 +8,14 @@ import os
 import unittest
 import time
 
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 class OracleBaseDbDeleteScenarioTest(ScenarioTest):
-
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def setUp(self):
-        super().setUp()
+        subscription_id = self.get_subscription_id()
         self.kwargs.update({
             'resource_group': 'PowerShellTestRg',
         })

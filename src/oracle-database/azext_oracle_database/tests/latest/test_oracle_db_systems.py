@@ -8,22 +8,24 @@ import os
 import unittest
 import time
 
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleDbSystemScenarioTest(ScenarioTest):
-
+    @live_only()
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def setUp(self):
-        super().setUp()
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
-            'db_system_name': 'AzureCliSdkNewDdT',
-            'resource_group': 'AzureCli',
+            'db_system_name': 'AzureCliSdkNewMih',
+            'resource_group': 'azCliTest',
             'location': 'eastus',
             'zone': '1',
             'database_edition': 'EnterpriseEdition',
             'admin_password': 'TesT##1234',
-            'resource_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/resourceAnchors/AzureCliTestRA',
-            'network_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTest',
+            'resource_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azCliTest/providers/Oracle.Database/resourceAnchors/AzureCliTestMi',
+            'network_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yumfeiTest/providers/Oracle.Database/networkAnchors/1202yumfeiDnsNa1',
             'hostname': 'basedbNew',
             'shape': 'VM.Standard.E5.Flex',
             'display_name': 'BaseDbWhitelisMih',
@@ -57,7 +59,7 @@ class OracleDbSystemScenarioTest(ScenarioTest):
             '--db-version {db_version} '
             '--pdb-name {pdb_name} '
             '--db-system-options storage-management={db_system_option_storage_management} '
-            '--ssh-public-keys \'ssh-rsa AAAAB= generated-by-azure\' '
+            '--ssh-public-keys \'ssh-rsa xxxx\' '
             '--no-wait'
         )
         # Show

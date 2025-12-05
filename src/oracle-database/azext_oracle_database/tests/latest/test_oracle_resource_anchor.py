@@ -8,14 +8,16 @@ import os
 import unittest
 import time
 
-from azure.cli.testsdk import ScenarioTest, JMESPathCheck
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleResourceAnchorScenarioTest(ScenarioTest):
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def setUp(self):
-        super().setUp()
+        subscription_id = self.get_subscription_id()
         self.kwargs.update({
-            'resource_group': 'AzureCliNew',
-            'resource_anchor_name': 'AzureCliTestRAF',
+            'resource_group': 'azCliTest',
+            'resource_anchor_name': 'AzureCliTestMi',
             'location': 'global',
         })
 
