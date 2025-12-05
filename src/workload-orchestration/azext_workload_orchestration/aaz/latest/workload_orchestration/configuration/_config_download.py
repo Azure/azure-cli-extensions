@@ -21,9 +21,9 @@ from ._config_helper import ConfigurationHelper
 class Download(AAZCommand):
     """Download configurations available at specified hierarchical entity
     :example: Download configuration
-              az workload-orchestration configuration download -g rg1 --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0
+              az workload-orchestration configuration download --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0
     :example: Download a Solution Template Configuration  
-              az workload-orchestration configuration download -g rg1 --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
+              az workload-orchestration configuration download --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
     """
 
     _aaz_info = {
@@ -72,7 +72,7 @@ class Download(AAZCommand):
         )
 
         _args_schema.template_name = AAZStrArg(
-            options=["--template-name"],
+            options=["--template-name", "-n"],
             help="The name of the Template (Solution template or Configuration template) to download.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -81,7 +81,7 @@ class Download(AAZCommand):
         )
 
         _args_schema.version = AAZStrArg(
-            options=["--version"],
+            options=["--version", "-v"],
             help="Version of the template.",
             required=True
         )

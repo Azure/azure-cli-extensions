@@ -20,9 +20,9 @@ from ._config_helper import ConfigurationHelper
 class ShowConfig(AAZCommand):
     """To get a configurations available at specified hierarchical entity
     :example: Show a Configuration
-              az workload-orchestration configuration show -g rg1 --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0
+              az workload-orchestration configuration show --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0
     :example: Show a Solution Template Configuration
-              az workload-orchestration configuration show -g rg1 --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
+              az workload-orchestration configuration show --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
     """
 
     _aaz_info = {
@@ -71,7 +71,7 @@ class ShowConfig(AAZCommand):
         )
 
         _args_schema.template_name = AAZStrArg(
-            options=["--template-name"],
+            options=["--template-name", "-n"],
             help="The name of the Template (Solution template or Configuration template) to show.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -89,7 +89,7 @@ class ShowConfig(AAZCommand):
         #     nullable=True,
         # )
         _args_schema.version = AAZStrArg(
-            options=["--version"],
+            options=["--version", "-v"],
             help="Version of the template.",
             required=True
         )

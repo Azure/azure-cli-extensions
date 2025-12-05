@@ -61,13 +61,13 @@ class Show(AAZCommand):
         )
 
         _args_schema.template_resource_group = AAZStrArg(
-            options=["--template-resource-group"],
+            options=["--template-resource-group", "-g"],
             help="Resource group name for the template.",
             required=True,
         )
 
         _args_schema.template_name = AAZStrArg(
-            options=["--template-name"],
+            options=["--template-name", "-n"],
             help="The name of the Template (Solution template or Configuration template) to show schema for.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -76,7 +76,7 @@ class Show(AAZCommand):
         )
 
         _args_schema.version = AAZStrArg(
-            options=["--version"],
+            options=["--version", "-v"],
             help="Version of the template.",
             required=True
         )

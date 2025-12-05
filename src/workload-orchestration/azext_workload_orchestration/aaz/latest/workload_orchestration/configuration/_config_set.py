@@ -24,11 +24,11 @@ from ._config_helper import ConfigurationHelper
 class ShowConfig2(AAZCommand):
     """To set the values to configurations available at specified hierarchical entity
     :example: Set a Configuration through editor
-              az workload-orchestration configuration set -g rg1 --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0
+              az workload-orchestration configuration set --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0
     :example: Set a Configuration through file
-              az workload-orchestration configuration set -g rg1 --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0 --file /path/to/config.yaml
+              az workload-orchestration configuration set --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0 --file /path/to/config.yaml
     :example: Set a Solution Template Configuration
-              az workload-orchestration configuration set -g rg1 --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
+              az workload-orchestration configuration set --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
     """
 
     _aaz_info = {
@@ -76,7 +76,7 @@ class ShowConfig2(AAZCommand):
         )
 
         _args_schema.template_name = AAZStrArg(
-            options=["--template-name"],
+            options=["--template-name", "-n"],
             help="The name of the Template (Solution template or Configuration template) to configure.",
             required=True,
 
@@ -86,7 +86,7 @@ class ShowConfig2(AAZCommand):
         )
 
         _args_schema.version = AAZStrArg(
-            options=["--version"],
+            options=["--version", "-v"],
             help="Version of the template.",
             required=True
         )
