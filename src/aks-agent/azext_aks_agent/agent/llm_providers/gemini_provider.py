@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 
+from typing import Tuple
+
 import requests
 
 from .base import LLMProvider, non_empty
@@ -21,13 +23,13 @@ class GeminiProvider(LLMProvider):
     @property
     def parameter_schema(self):
         return {
-            "GEMINI_API_KEY": {
+            "api_key": {
                 "secret": True,
                 "default": None,
                 "hint": None,
                 "validator": non_empty
             },
-            "MODEL_NAME": {
+            "model": {
                 "secret": False,
                 "default": None,
                 "hint": "gemini-2.5",
@@ -35,12 +37,12 @@ class GeminiProvider(LLMProvider):
             },
         }
 
-    def validate_connection(self, params: dict):
-        api_key = params.get("GEMINI_API_KEY")
-        model_name = params.get("MODEL_NAME")
+    def validate_connection(self, params: dict) -> Tuple[str, str]:
+        api_key = params.get("api_key")
+        model_name = params.get("model")
 
         if not all([api_key, model_name]):
-            return False, "Missing required Gemini parameters.", "retry_input"
+            return "Missing required Gemini parameters.", "retry_input"
 
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
         headers = {"Content-Type": "application/json",
@@ -53,10 +55,10 @@ class GeminiProvider(LLMProvider):
             resp = requests.post(url, headers=headers,
                                  json=payload, timeout=10)
             resp.raise_for_status()
-            return True, "Connection successful.", "save"
+            return None, "save"  # None error means success
         except requests.exceptions.HTTPError as e:
             if 400 <= resp.status_code < 500:
-                return False, f"Client error: {e} - {resp.text}", "retry_input"
-            return False, f"Server error: {e} - {resp.text}", "connection_error"
+                return f"Client error: {e} - {resp.text}", "retry_input"
+            return f"Server error: {e} - {resp.text}", "connection_error"
         except requests.exceptions.RequestException as e:
-            return False, f"Request error: {e}", "connection_error"
+            return f"Request error: {e}", "connection_error"
