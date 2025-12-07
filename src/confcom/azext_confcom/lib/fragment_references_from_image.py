@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import re
 import tempfile
 
 from pathlib import Path
@@ -17,12 +18,13 @@ def fragment_references_from_image(image: str, minimum_svn: Optional[str]):
 
     for signed_fragment in get_fragments_from_image(image):
 
-        package_name = signed_fragment.name.split(".")[0]
         cose_properties = cose_get_properties(signed_fragment)
 
         with tempfile.NamedTemporaryFile("w+b") as payload:
             payload.write(cose_properties["payload"].encode("utf-8"))
             payload.flush()
+
+            package_name = re.search(r"^package\s*(.*)$", cose_properties["payload"], re.MULTILINE).group(1)
             fragment_properties = opa_eval(
                 Path(payload.name),
                 f"data.{package_name}",

@@ -3,70 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import contextlib
 import io
 import json
 import os
 import subprocess
 import tempfile
-import pytest
 
 from azext_confcom.custom import acifragmentgen_confcom, fragment_push, fragment_attach
-
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
-SAMPLES_DIR = os.path.abspath(os.path.join(TEST_DIR, "..", "..", "..", "samples"))
-
-
-@pytest.fixture()
-def docker_image():
-
-    registry_id = subprocess.run(
-        ["docker", "run", "-d", "-p", "0:5000", "registry:2"],
-        stdout=subprocess.PIPE,
-        text=True,
-    ).stdout
-
-    registry_port = subprocess.run(
-        ["docker", "port", registry_id],
-        stdout=subprocess.PIPE,
-        text=True,
-    ).stdout.split(":")[-1].strip()
-
-    test_container_ref = f"localhost:{registry_port}/hello-world:latest"
-    subprocess.run(["docker", "pull", "hello-world"])
-    subprocess.run(["docker", "tag", "hello-world", test_container_ref])
-    subprocess.run(["docker", "push", test_container_ref])
-
-    with tempfile.NamedTemporaryFile(mode="w+", encoding="utf-8", delete=True) as temp_file:
-        json.dump({
-            "version": "1.0.0",
-            "containers": [
-                {
-                    "name": "hello-world",
-                    "properties": {
-                        "image": test_container_ref,
-                    },
-                }
-            ]
-        }, temp_file)
-        temp_file.flush()
-
-        yield test_container_ref, temp_file.name
-
-    subprocess.run(["docker", "stop", registry_id])
-
-
-@pytest.fixture(scope="session")
-def cert_chain():
-    with tempfile.TemporaryDirectory() as temp_dir:
-        subprocess.run(
-            [
-                os.path.join(SAMPLES_DIR, "certs", "create_certchain.sh"),
-                temp_dir
-            ],
-            check=True,
-        )
-        yield temp_dir
 
 
 def test_acifragmentgen_fragment_gen(docker_image):
