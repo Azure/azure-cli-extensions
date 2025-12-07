@@ -4,10 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.cli.core.commands.parameters import get_resources_in_subscription
-from azure.cli.core.profiles import CustomResourceType, ResourceType
-from azure.mgmt.msi import ManagedServiceIdentityClient
-from knack.util import CLIError
+from azure.cli.core.profiles import CustomResourceType
 
 CUSTOM_MGMT_AKS = CustomResourceType('azext_aks_agent.vendored_sdks.azure_mgmt_containerservice.2025_10_01',
                                      'ContainerServiceClient')

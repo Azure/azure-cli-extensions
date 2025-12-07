@@ -15,7 +15,6 @@ from azext_aks_agent._consts import (
 )
 from azext_aks_agent.agent.k8s.helm_manager import HelmManager
 from azext_aks_agent.agent.llm_config_manager import LLMConfigManager
-from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import AzCLIError
 from knack.log import get_logger
 from kubernetes import client, config
@@ -219,14 +218,15 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
             all_pod_items = list(agent_pods.items) + list(mcp_pods.items)
 
             # Create a pod_list-like object with combined items
-            class PodList:
+            class PodList:  # pylint: disable=too-few-public-methods
                 def __init__(self, items):
                     self.items = items
             pod_list = PodList(all_pod_items)
 
             if not pod_list.items:
                 error_msg = (
-                    f"No pods found with label selector '{AGENT_LABEL_SELECTOR}' or '{AKS_MCP_LABEL_SELECTOR}' in namespace '{self.namespace}'. "
+                    f"No pods found with label selector '{AGENT_LABEL_SELECTOR}' or "
+                    f"'{AKS_MCP_LABEL_SELECTOR}' in namespace '{self.namespace}'. "
                     f"This could mean:\n"
                     f"  1. The AKS agent is not deployed in the cluster\n"
                     f"  2. The namespace '{self.namespace}' does not exist\n"
@@ -295,7 +295,8 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
             status_summary = "; ".join(status_details) if status_details else "all pods are in unknown state"
 
             error_msg = (
-                f"No running pods found with label selector '{AGENT_LABEL_SELECTOR}' or '{AKS_MCP_LABEL_SELECTOR}' in namespace '{self.namespace}'. "
+                f"No running pods found with label selector '{AGENT_LABEL_SELECTOR}' or "
+                f"'{AKS_MCP_LABEL_SELECTOR}' in namespace '{self.namespace}'. "
                 f"Found {len(pod_list.items)} pod(s) but none are in Running state: {status_summary}. "
                 f"The AKS agent pods may be starting up, failing to start, or experiencing issues."
             )
@@ -401,7 +402,7 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
 
         return False, output
 
-    def get_agent_status(self) -> Dict:
+    def get_agent_status(self) -> Dict:  # pylint: disable=too-many-locals
         """
         Get the current status of AKS agent deployment.
 
@@ -491,7 +492,7 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
             all_pods = list(agent_pods.items) + list(mcp_pods.items)
 
             # Create a pods-like object with combined items
-            class PodList:
+            class PodList:  # pylint: disable=too-few-public-methods
                 def __init__(self, items):
                     self.items = items
             pods = PodList(all_pods)
@@ -560,10 +561,9 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
                 logger.debug("LLM config secret '%s' not found in namespace '%s'",
                              self.llm_secret_name, self.namespace)
                 return False
-            else:
-                logger.error("Failed to check LLM config existence (API error %s): %s",
-                             e.status, e)
-                raise
+            logger.error("Failed to check LLM config existence (API error %s): %s",
+                         e.status, e)
+            raise
         except Exception as e:  # pylint: disable=broad-exception-caught
             logger.error("Unexpected error checking LLM config existence: %s", e)
             raise AzCLIError(f"Failed to check LLM config existence: {e}")

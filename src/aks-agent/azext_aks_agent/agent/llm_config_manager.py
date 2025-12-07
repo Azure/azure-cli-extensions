@@ -4,10 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 from azext_aks_agent.agent.llm_providers import LLMProvider
-from azure.cli.core.azclierror import AzCLIError
 from knack.log import get_logger
 
 logger = get_logger(__name__)

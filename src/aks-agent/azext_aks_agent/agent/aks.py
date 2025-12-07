@@ -46,7 +46,7 @@ def get_aks_credentials(
     return kubeconfig_path
 
 
-def _get_kubeconfig_file_path(
+def _get_kubeconfig_file_path(  # pylint: disable=unused-argument
     resource_group_name: str,
     cluster_name: str,
     subscription_id: str = None
