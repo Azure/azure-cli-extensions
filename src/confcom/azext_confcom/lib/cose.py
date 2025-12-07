@@ -61,6 +61,6 @@ def cose_get_properties(file_path: Path):
     cose_print_output = cose_print(file_path)
     return {
         "iss": re.search(r"^iss:\s*(.*)$", cose_print_output, re.MULTILINE).group(1),
-        "feed": re.search(r"^feed:\s*(.*)$", cose_print_output, re.MULTILINE).group(1),
+        "feed": re.search(r"^feed:[ \t]*([^\r\n]*)", cose_print_output, re.MULTILINE).group(1),
         "payload": re.search(r"^payload:\s*(.*)", cose_print_output, re.MULTILINE | re.DOTALL).group(1),
     }
