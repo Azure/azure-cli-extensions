@@ -67,10 +67,8 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
         self.cluster_name: Optional[str] = cluster_name
         self.subscription_id: Optional[str] = subscription_id
 
-        # TODO(mainred): replace with actual repo
-        self.chart_repo = "oci://registry-1.docker.io/mainred/aks-agent"
-        # TODO: replace with actual chart version
-        self.chart_version = "0.1.0"  # Use latest version by default
+        self.chart_repo = "oci://mcr.microsoft.com/aks/aks-agent-chart/aks-agent"
+        self.chart_version = "0.1.0"
 
         # credentials for aks-mcp
         # Managed identity client ID for accessing Azure resources
