@@ -3,7 +3,7 @@
   "name": "confcom_test_working_dir",
   "layers": [
     "8b4664979ffe3c5188efbbbb30e31716c03bfe880f15f455be0fc3beb4741de9",
-    "eff9550216100f194b7f04d12ae70e5511ffd7360eec6b947197176701397e60"
+    "1c4128b7270b18b052aff3f68a5611873057aa0b9ce3acfbf273494e67c63254"
   ],
   "mounts": [
     {
