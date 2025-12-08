@@ -66,4 +66,5 @@ def get_image_config(image: str) -> dict:
 
 
 def sanitize_image_reference(image_reference: str) -> str:
-    return re.sub(f"[{re.escape(r'<>:"/\\|?*@\0')}]", "-", image_reference)
+    illegal = r'<>:"/\\|?*@\0'
+    return re.sub(f"[{re.escape(illegal)}]", "-", image_reference)

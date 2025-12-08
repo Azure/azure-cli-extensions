@@ -321,3 +321,28 @@ helps[
         - name: Attach the output of acifragmentgen to a registry
           text: az confcom acifragmentgen --chain my.cert.pem --key my_key.pem --svn "1" --namespace contoso --feed "test-feed" --input ./fragment_spec.json | az confcom fragment attach --manifest-tag myregistry.azurecr.io/image:latest
 """
+
+helps[
+    "confcom fragment references"
+] = """
+    type: group
+    short-summary: Commands which generate Security Policy Fragment References.
+"""
+
+
+helps[
+    "confcom fragment references from_image"
+] = """
+    type: command
+    short-summary: Create a Security Policy Fragment Reference based on an image reference.
+
+    parameters:
+        - name: --minimum-svn
+          type: str
+          short-summary: 'The value of the minimum SVN field in the generated fragment reference, defaults to current fragment reference'
+
+
+    examples:
+        - name: Input an image reference and generate fragment reference
+          text: az confcom fragment references from_image my.azurecr.io/myimage:tag
+"""
