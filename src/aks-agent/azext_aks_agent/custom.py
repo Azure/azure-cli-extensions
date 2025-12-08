@@ -174,7 +174,7 @@ def aks_agent_init(cmd,
 
     except Exception as e:
         console.print(f"❌ Error during initialization: {str(e)}", style=ERROR_COLOR)
-        logger.error("Agent initialization failed: %s", e)
+        raise AzCLIError(f"Agent initialization failed: {str(e)}")
 
 
 def _get_existing_cluster_role(aks_agent_manager):
@@ -431,10 +431,9 @@ def aks_agent_cleanup(
         console.print(
             "❌ Cleanup failed. Please run 'az aks agent --status' to verify cleanup completion.", style=ERROR_COLOR)
 
+
 # pylint: disable=unused-argument
 # pylint: disable=too-many-locals
-
-
 def aks_agent(
     cmd,
     client,

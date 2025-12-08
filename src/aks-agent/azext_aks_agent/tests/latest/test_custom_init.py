@@ -73,6 +73,7 @@ class TestAksAgentInit(unittest.TestCase):
         mock_prompt_managed_identity.assert_called_once()
         mock_agent_manager.deploy_agent.assert_called_once()
 
+    @patch('azext_aks_agent.custom._get_existing_cluster_role')
     @patch('azext_aks_agent.custom._setup_and_create_llm_config')
     @patch('azext_aks_agent.custom.get_aks_credentials')
     @patch('azext_aks_agent.custom.AKSAgentManager')
@@ -80,8 +81,8 @@ class TestAksAgentInit(unittest.TestCase):
     @patch('azext_aks_agent.custom.get_console')
     def test_init_existing_llm_config_user_skips_update(
             self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
-            mock_get_aks_creds, mock_setup_llm):
-        """Test initialization when LLM config exists and user skips update."""
+            mock_get_aks_creds, mock_setup_llm, mock_get_cluster_role):
+        """Test initialization raises AzCLIError when LLM config exists, user skips update, but cluster role not found."""
         # Setup mocks
         mock_console = MagicMock()
         mock_get_console.return_value = mock_console
@@ -98,13 +99,20 @@ class TestAksAgentInit(unittest.TestCase):
         mock_agent_manager.managed_identity_client_id = ""
         mock_aks_manager_class.return_value = mock_agent_manager
 
-        # Execute
-        aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
+        mock_get_cluster_role.return_value = None  # Cannot find cluster role
+
+        # Execute - should raise AzCLIError with wrapped message
+        with self.assertRaises(AzCLIError) as cm:
+            aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
 
         # Assert
         mock_agent_manager.check_llm_config_exists.assert_called_once()
         mock_setup_llm.assert_not_called()
+        # Verify the error message contains the wrapped format
+        self.assertIn("Agent initialization failed:", str(cm.exception))
+        self.assertIn("Could not determine existing cluster role", str(cm.exception))
 
+    @patch('azext_aks_agent.custom._get_existing_cluster_role')
     @patch('azext_aks_agent.custom._setup_and_create_llm_config')
     @patch('azext_aks_agent.custom.get_aks_credentials')
     @patch('azext_aks_agent.custom.AKSAgentManager')
@@ -112,8 +120,8 @@ class TestAksAgentInit(unittest.TestCase):
     @patch('azext_aks_agent.custom.get_console')
     def test_init_existing_llm_config_user_updates(
             self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
-            mock_get_aks_creds, mock_setup_llm):
-        """Test initialization when LLM config exists and user chooses to update."""
+            mock_get_aks_creds, mock_setup_llm, mock_get_cluster_role):
+        """Test initialization raises AzCLIError when LLM config exists, user updates, but cluster role not found."""
         # Setup mocks
         mock_console = MagicMock()
         mock_get_console.return_value = mock_console
@@ -130,12 +138,18 @@ class TestAksAgentInit(unittest.TestCase):
         mock_agent_manager.managed_identity_client_id = ""
         mock_aks_manager_class.return_value = mock_agent_manager
 
-        # Execute
-        aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
+        mock_get_cluster_role.return_value = None  # Cannot find cluster role
+
+        # Execute - should raise AzCLIError with wrapped message
+        with self.assertRaises(AzCLIError) as cm:
+            aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
 
         # Assert
         mock_agent_manager.check_llm_config_exists.assert_called_once()
         mock_setup_llm.assert_called_once_with(mock_console, mock_agent_manager)
+        # Verify the error message contains the wrapped format
+        self.assertIn("Agent initialization failed:", str(cm.exception))
+        self.assertIn("Could not determine existing cluster role", str(cm.exception))
 
     @patch('azext_aks_agent.custom._get_existing_cluster_role')
     @patch('azext_aks_agent.custom._display_cluster_role_rules')
@@ -226,7 +240,7 @@ class TestAksAgentInit(unittest.TestCase):
     def test_init_deployment_failure_logs_error(
             self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
             mock_get_aks_creds, mock_setup_llm):
-        """Test initialization logs error when deployment fails."""
+        """Test initialization raises AzCLIError when deployment fails."""
         # Setup mocks
         mock_console = MagicMock()
         mock_get_console.return_value = mock_console
@@ -239,13 +253,13 @@ class TestAksAgentInit(unittest.TestCase):
         mock_agent_manager.deploy_agent.return_value = (False, "Deployment failed")
         mock_aks_manager_class.return_value = mock_agent_manager
 
-        # Execute - should not raise, but handle the error internally
-        aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
+        # Execute - should raise AzCLIError with wrapped message
+        with self.assertRaises(AzCLIError) as cm:
+            aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
 
-        # Verify error message was printed to console
-        error_calls = [call for call in mock_console.print.call_args_list
-                       if 'Failed to deploy agent' in str(call)]
-        self.assertTrue(len(error_calls) > 0, "Expected error message about deployment failure to be printed")
+        # Verify the error message contains the wrapped format
+        self.assertIn("Agent initialization failed:", str(cm.exception))
+        self.assertIn("Failed to deploy agent", str(cm.exception))
 
     @patch('azext_aks_agent.custom._get_existing_cluster_role')
     @patch('azext_aks_agent.custom._setup_and_create_llm_config')
@@ -256,7 +270,7 @@ class TestAksAgentInit(unittest.TestCase):
     def test_init_deployed_no_cluster_role_logs_error(
             self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
             mock_get_aks_creds, mock_setup_llm, mock_get_cluster_role):
-        """Test initialization logs error when deployed but cannot determine cluster role."""
+        """Test initialization raises AzCLIError when deployed but cannot determine cluster role."""
         # Setup mocks
         mock_console = MagicMock()
         mock_get_console.return_value = mock_console
@@ -271,13 +285,13 @@ class TestAksAgentInit(unittest.TestCase):
 
         mock_get_cluster_role.return_value = None  # Cannot find cluster role
 
-        # Execute - should not raise, but handle the error internally
-        aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
+        # Execute - should raise AzCLIError with wrapped message
+        with self.assertRaises(AzCLIError) as cm:
+            aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
 
-        # Verify error message was printed to console
-        error_calls = [call for call in mock_console.print.call_args_list
-                       if 'Could not determine existing cluster role' in str(call)]
-        self.assertTrue(len(error_calls) > 0, "Expected error message about cluster role to be printed")
+        # Verify the error message contains the wrapped format
+        self.assertIn("Agent initialization failed:", str(cm.exception))
+        self.assertIn("Could not determine existing cluster role", str(cm.exception))
 
     @patch('azext_aks_agent.custom._prompt_managed_identity_configuration')
     @patch('azext_aks_agent.custom._prompt_cluster_role_configuration')

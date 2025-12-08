@@ -105,7 +105,7 @@ Run in non-interactive batch mode
 
 .. code-block:: bash
 
-    az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/my-gpt4.1-deployment
+    az aks agent "Diagnose networking issues" --no-interactive --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
 
 Clean up the AKS agent
 -----------------------

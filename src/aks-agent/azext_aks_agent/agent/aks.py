@@ -39,7 +39,7 @@ def get_aks_credentials(
     kubeconfig_path = _get_kubeconfig_file_path(resource_group_name, cluster_name)
 
     # Ensure the kubeconfig file exists and write kubeconfig to it
-    with os.fdopen(os.open(kubeconfig_path, os.O_CREAT | os.O_WRONLY, 0o600), 'wt') as f:
+    with os.fdopen(os.open(kubeconfig_path, os.O_RDWR | os.O_CREAT | os.O_TRUNC, 0o600), 'wt') as f:
         f.write(kubeconfig)
 
     logger.info("Kubeconfig downloaded successfully to: %s", kubeconfig_path)
@@ -64,7 +64,7 @@ def _get_kubeconfig_file_path(  # pylint: disable=unused-argument
             if ex.errno != errno.EEXIST:
                 raise
 
-    kubeconfig_filename = f"kubeconfig-{cluster_name}"
+    kubeconfig_filename = f"kubeconfig-{resource_group_name}-{cluster_name}"
     kubeconfig_path = os.path.join(kubeconfig_dir, kubeconfig_filename)
 
     return kubeconfig_path

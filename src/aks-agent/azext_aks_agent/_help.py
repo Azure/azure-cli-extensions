@@ -56,7 +56,7 @@ helps[
         - name: Ask about pod issues in the cluster with last configured model
           text: |-
             az aks agent "Why are my pods not starting?" --resource-group myResourceGroup --name myAKSCluster
-          - name: Check AKS agent deployment status
+        - name: Check AKS agent deployment status
           text: |-
             az aks agent --status --resource-group myResourceGroup --name myAKSCluster
         - name: Ask about pod issues in the cluster with Azure OpenAI
