@@ -14,7 +14,7 @@ from azext_confcom.lib.fragments import get_fragments_from_image
 from azext_confcom.lib.opa import opa_eval
 
 
-def fragment_references_from_image(image: str, minimum_svn: Optional[str]):
+def from_image(image: str, minimum_svn: Optional[str]):
 
     for signed_fragment in get_fragments_from_image(image):
 
