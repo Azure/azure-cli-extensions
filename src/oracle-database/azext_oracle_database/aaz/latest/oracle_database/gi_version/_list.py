@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/giversions", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/giversions", "2025-09-01"],
         ]
     }
 
@@ -47,6 +47,23 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             required=True,
+        )
+        _args_schema.shape = AAZStrArg(
+            options=["--shape"],
+            help="If provided, filters the results for the given shape",
+            enum={"ExaDbXS": "ExaDbXS", "Exadata.X11M": "Exadata.X11M", "Exadata.X9M": "Exadata.X9M"},
+            fmt=AAZStrArgFormat(
+                max_length=255,
+                min_length=1,
+            ),
+        )
+        _args_schema.shape_attribute = AAZStrArg(
+            options=["--shape-attribute"],
+            help="Filters the result for the given Shape Attribute, such as BLOCK_STORAGE or SMART_STORAGE.",
+        )
+        _args_schema.zone = AAZStrArg(
+            options=["--zone"],
+            help="Filters the result for the given Azure Availability Zone",
         )
         return cls._args_schema
 
@@ -112,7 +129,16 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "shape", self.ctx.args.shape,
+                ),
+                **self.serialize_query_param(
+                    "shapeAttribute", self.ctx.args.shape_attribute,
+                ),
+                **self.serialize_query_param(
+                    "zone", self.ctx.args.zone,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -162,9 +188,7 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -175,7 +199,7 @@ class List(AAZCommand):
 
             properties = cls._schema_on_200.value.Element.properties
             properties.version = AAZStrType(
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
