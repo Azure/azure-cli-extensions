@@ -785,11 +785,6 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
                 "resources": ["*"],
                 "verbs": ["get", "list", "watch"]
             },
-            {
-                "api_groups": [""],
-                "resources": ["pods/portforward"],
-                "verbs": ["create"]
-            }
         ]
         cluster_role = V1ClusterRole(
             metadata=client.V1ObjectMeta(
