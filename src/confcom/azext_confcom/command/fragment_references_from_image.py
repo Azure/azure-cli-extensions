@@ -7,7 +7,7 @@ import json
 
 from typing import Optional
 
-from azext_confcom.lib.fragment_references_from_image import fragment_references_from_image as lib_fragment_references_from_image
+from azext_confcom.lib.fragment_references import from_image as lib_fragment_references_from_image
 
 
 def fragment_references_from_image(image: str, minimum_svn: Optional[str]) -> str:
