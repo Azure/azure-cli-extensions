@@ -5,7 +5,7 @@
 
 import json
 
-from azext_confcom.lib.containers_from_image import containers_from_image as lib_containers_from_image
+from azext_confcom.lib.containers import from_image as lib_containers_from_image
 
 
 def containers_from_image(image: str, platform: str) -> str:
