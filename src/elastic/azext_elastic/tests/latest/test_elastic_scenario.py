@@ -128,17 +128,17 @@ class ElasticScenario(ScenarioTest):
     def test_elastic_monitor_open_ai_integration(self, resource_group):
         email = self.cmd('account show').get_output_in_json()['user']['name']
         subscription_id = self.get_subscription_id()
-        openai_account_name = 'es-openAi-resource-24092025'
+        openai_account_name = self.create_random_name('openai-test', 20)
 
-        openai_resource_id = f'/subscriptions/{subscription_id}/resourceGroups/es-cloudtests-portal/providers/Microsoft.CognitiveServices/accounts/{openai_account_name}'
-        openai_resource_endpoint = 'https://es-openai-resource-24092025.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview'
+        openai_resource_id = f'/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.CognitiveServices/accounts/{openai_account_name}'
+        openai_resource_endpoint = f'https://{openai_account_name}.openai.azure.com/openai/deployments/test-deployment/chat/completions?api-version=2025-01-01-preview'
 
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 20),
             'rg': resource_group,
             'email': email,
             'integration_name': 'default',
-            'key': '9e1bac69b92242129ad1f2373dd06939',
+            'key': 'mock-api-key-for-testing-purposes-only',
             'openAIResourceId': openai_resource_id,
             'openAIResourceEndpoint': openai_resource_endpoint,
         })
