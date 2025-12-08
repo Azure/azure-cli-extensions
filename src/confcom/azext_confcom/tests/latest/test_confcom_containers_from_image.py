@@ -4,8 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+import os
+import subprocess
 import tempfile
-import docker
 import pytest
 import portalocker
 
@@ -23,18 +24,27 @@ CONFCOM_DIR = TEST_DIR.parent.parent.parent
 SAMPLES_ROOT = CONFCOM_DIR / "samples" / "images"
 DOCKER_LOCK = Path(tempfile.gettempdir()) / "confcom-docker.lock"
 
-
 @pytest.fixture(scope="session", autouse=True)
 def build_test_containers():
 
-    docker_client = docker.from_env()
+    env = os.environ.copy()
+    env["DOCKER_BUILDKIT"] = "1"
+
     with portalocker.Lock(DOCKER_LOCK.as_posix(), timeout=20):
         for image_sample in SAMPLES_ROOT.iterdir():
-            docker_client.images.build(
-                path=str(image_sample),
-                tag=f"confcom_test_{image_sample.name}",
-                quiet=True,
-                rm=True,
+            subprocess.run(
+                [
+                    "docker",
+                    "build",
+                    str(image_sample),
+                    "-t",
+                    f"confcom_test_{image_sample.name}",
+                    "--quiet",
+                ],
+                env=env,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=True,
             )
 
     yield
