@@ -48,8 +48,8 @@ class GetAvsStatus(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.storage_pool_name = AAZStrArg(
-            options=["--storage-pool-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="Name of the storage pool",
             required=True,
             id_part="name",
@@ -112,7 +112,7 @@ class GetAvsStatus(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "storagePoolName", self.ctx.args.storage_pool_name,
+                    "storagePoolName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
