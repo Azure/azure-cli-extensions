@@ -78,6 +78,12 @@ def transform_output(results):
             ('', f"\u007C{barra:<20}\u007C")
         ])
 
+    # Handle Quantum Results v2 format
+    if 'DataFormat' in results and results['DataFormat'] == 'microsoft.quantum-results.v2':
+        total_shots = sum(results['Results'][0]['Histogram'][i]['Count'] for i in range(len(results['Results'][0]['Histogram'])))
+        return [one(results['Results'][0]['Histogram'][i]['Display'], results['Results'][0]['Histogram'][i]['Count'] / total_shots) for i in range(len(results['Results'][0]['Histogram']))]
+
+    # Handle Quantum Results v1 format
     if 'Histogram' in results:
         histogram = results['Histogram']
         # The Histogram serialization is odd entries are key and even entries values
@@ -94,59 +100,6 @@ def transform_output(results):
     elif 'histogram' in results:
         histogram = results['histogram']
         return [one(key, histogram[key]) for key in histogram]
-
-    elif 'reportData' in results:
-        table = []
-        for group in results['reportData']['groups']:
-            table.append(OrderedDict([
-                ("Label", (f"---{group['title']}---")),
-                ('Value', '---'),
-                ('Description', '---')
-            ]))
-            for entry in group['entries']:
-                val = results
-                for key in entry['path'].split("/"):
-                    val = val[key]
-                table.append(OrderedDict([
-                    ("Label", entry['label']),
-                    ('Value', val),
-                    ('Description', entry['description'])
-                ]))
-        return table
-
-    elif isinstance(results, list) and len(results) > 0 and 'reportData' in results[0]:  # pylint: disable=too-many-nested-blocks
-        table = []
-
-        indices = range(len(results))
-
-        for group_index, group in enumerate(results[0]['reportData']['groups']):
-            table.append(OrderedDict([
-                ("Label", f"---{group['title']}---"),
-                *[(f"{i}", '---') for i in indices]
-            ]))
-
-            visited_entries = set()
-
-            for entry in [entry for index in indices for entry in results[index]['reportData']['groups'][group_index]['entries']]:
-                label = entry['label']
-                if label in visited_entries:
-                    continue
-                visited_entries.add(label)
-
-                row = [("Label", label)]
-
-                for index in indices:
-                    val = results[index]
-                    for key in entry['path'].split("/"):
-                        if key in val:
-                            val = val[key]
-                        else:
-                            val = "N/A"
-                            break
-                    row.append((f"{index}", val))
-                table.append(OrderedDict(row))
-
-        return table
 
     elif 'errorData' in results:
         notFound = 'Not found'

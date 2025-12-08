@@ -7,7 +7,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, Callable, IO, Optional, TypeVar, Union, overload
+from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, TypeVar, Union, overload
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -28,7 +28,7 @@ from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ..._serialization import Deserializer, Serializer
 from ...operations._maintenance_configurations_operations import (
     build_create_or_update_request,
     build_delete_request,
@@ -38,8 +38,7 @@ from ...operations._maintenance_configurations_operations import (
 from .._configuration import ContainerServiceClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
 class MaintenanceConfigurationsOperations:
@@ -64,7 +63,7 @@ class MaintenanceConfigurationsOperations:
     @distributed_trace
     def list_by_managed_cluster(
         self, resource_group_name: str, resource_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.MaintenanceConfiguration"]:
+    ) -> AsyncIterable["_models.MaintenanceConfiguration"]:
         """Gets a list of maintenance configurations in the specified managed cluster.
 
         Gets a list of maintenance configurations in the specified managed cluster.
@@ -162,7 +161,8 @@ class MaintenanceConfigurationsOperations:
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param config_name: The name of the maintenance configuration. Required.
+        :param config_name: The name of the maintenance configuration. Supported values are 'default',
+         'aksManagedAutoUpgradeSchedule', or 'aksManagedNodeOSUpgradeSchedule'. Required.
         :type config_name: str
         :return: MaintenanceConfiguration or the result of cls(response)
         :rtype: ~azure.mgmt.containerservice.models.MaintenanceConfiguration
@@ -232,7 +232,8 @@ class MaintenanceConfigurationsOperations:
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param config_name: The name of the maintenance configuration. Required.
+        :param config_name: The name of the maintenance configuration. Supported values are 'default',
+         'aksManagedAutoUpgradeSchedule', or 'aksManagedNodeOSUpgradeSchedule'. Required.
         :type config_name: str
         :param parameters: The maintenance configuration to create or update. Required.
         :type parameters: ~azure.mgmt.containerservice.models.MaintenanceConfiguration
@@ -264,7 +265,8 @@ class MaintenanceConfigurationsOperations:
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param config_name: The name of the maintenance configuration. Required.
+        :param config_name: The name of the maintenance configuration. Supported values are 'default',
+         'aksManagedAutoUpgradeSchedule', or 'aksManagedNodeOSUpgradeSchedule'. Required.
         :type config_name: str
         :param parameters: The maintenance configuration to create or update. Required.
         :type parameters: IO[bytes]
@@ -294,7 +296,8 @@ class MaintenanceConfigurationsOperations:
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param config_name: The name of the maintenance configuration. Required.
+        :param config_name: The name of the maintenance configuration. Supported values are 'default',
+         'aksManagedAutoUpgradeSchedule', or 'aksManagedNodeOSUpgradeSchedule'. Required.
         :type config_name: str
         :param parameters: The maintenance configuration to create or update. Is either a
          MaintenanceConfiguration type or a IO[bytes] type. Required.
@@ -370,7 +373,8 @@ class MaintenanceConfigurationsOperations:
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource. Required.
         :type resource_name: str
-        :param config_name: The name of the maintenance configuration. Required.
+        :param config_name: The name of the maintenance configuration. Supported values are 'default',
+         'aksManagedAutoUpgradeSchedule', or 'aksManagedNodeOSUpgradeSchedule'. Required.
         :type config_name: str
         :return: None or the result of cls(response)
         :rtype: None

@@ -12,6 +12,41 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b11
+++++++++
+* Fix(agent-init): replace max_tokens with max_completion_tokens for connection check of Azure OpenAI service.
+
+1.0.0b10
+++++++++
+* Pin supabase==2.8.0 to avoid "ModuleNotFoundError: No module named 'supabase_auth.http_clients'"
+
+1.0.0b9
++++++++
+* agent-init: replace model name with deployment name for Azure OpenAI service.
+* agent-init: remove importing holmesgpt to resolve the latency issue.
+
+1.0.0b8
++++++++
+* Error handling: dont raise traceback for init prompt and holmesgpt interaction.
+* Improve aks agent-init user experience
+* Improve the user holmesgpt interaction error handling
+* Fix stdin reading hang in CI/CD pipelines by using select with timeout for non-interactive mode.
+* Update pytest marker registration and fix datetime.utcnow() deprecation warning in tests.
+* Improve test framework with real-time stderr output visibility and subprocess timeout.
+
+1.0.0b7
++++++++
+* Bump aks-mcp to v0.0.10 - here are the notable changes:
+  * Fix: Improved server health check endpoints /health for both HTTP and SSE connections for http, sse
+  * Fix: enforce json output for az monitor metrics and aks tools
+  * Fix: Build the resource URL with correct MCP endpoint path based on transport
+* Fix feedback slash command
+
+1.0.0b6
++++++++
+* Introduce the new `az aks agent-init` command for better cli interaction.
+* Separate llm configuration from main agent command for improved clarity and extensibility.
+
 1.0.0b5
 +++++++
 * Bump holmesgpt to 0.15.0 - Enhanced AI debugging experience and bug fixes

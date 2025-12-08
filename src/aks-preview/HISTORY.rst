@@ -12,6 +12,78 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b18
++++++++
+* Vendor new SDK and bump API version to 2025-10-02-preview.
+
+19.0.0b17
++++++++
+* `az aks bastion`: Correctly configure `$KUBECONFIG` values for tunneling traffic into a private AKS cluster.
+* Update user prompt for `az aks upgrade` command to clarify the implication of the `--control-plane-only` options.
+
+19.0.0b16
++++++++
+* Update --enable-container-network-logs DCR to ContainerNetworkLogs instead of RetinaNetworkFlowLogs
+
+19.0.0b15
++++++++
+* Fix `NoneType` error when performing operations on automatic clusters that have hosted system components enabled.
+
+19.0.0b14
++++++++
+* `az aks safeguards`: Add support for Deployment Safeguards with Pod Security Standards (PSS). New `--pss-level` parameter allows setting PSS enforcement level to Privileged, Baseline, or Restricted. Commands now support both `-g/-n` and `--cluster` argument patterns.
+
+19.0.0b13
++++++++
+* `az aks update`: Set CMK property "enabled" to false and reserve other CMK properties for a PMK-enabled and CMK-disabled cluster.
+
+19.0.0b12
++++++++
+* `az aks create --workload-runtime KataVmIsolation`: Added the KataVmIsolation workload runtime value.
+
+19.0.0b11
++++++++
+* Remove PMK validation for `--azure-keyvault-kms-key-id` parameter.
+* `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when enabling PMK on a CMK-disabled cluster
+
+19.0.0b10
++++++++
+* Vendor new SDK and bump API version to 2025-09-02-preview.
+* `az aks update`: Fix `--azure-keyvault-kms-key-vault-network-access` parameter not being correctly applied during cluster creation and updates.
+
+19.0.0b9
++++++++
+* `az aks create --enable-hosted-system`: no longer provision default system node pool when creating an automatic cluster with hosted system enabled.
+* `az aks machine update`: Add support for updating machine tags, node taints and node labels.
+* Fix `az aks bastion` subshell defaulting to cmd on Windows when invoked from PowerShell by implementing grandparent process detection to identify the actual user shell.
+
+19.0.0b8
++++++++
+* Remove the preview flag from `az aks namespace` add/update help command.
+* Remove the feature preview flag AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview from managed namespace e2e test.
+
+19.0.0b7
++++++++
+* `az aks create`: Add new parameter `--enable-container-network-logs` to enable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs`.
+* `az aks update`: Add new parameter `--enable-container-network-logs` and `--disable-container-network-logs` to enable/disable container network logs feature for the cluster and deprecate `--enable-retina-flow-logs` and `--disable-retina-flow-logs`.
+* Support `entraid` for parameter `--ssh-access` to support EntraID feature.
+* `az aks update`: Set CMK property "enabled" to false and remove other CMK properties when disabling CMK on a PMK-enabled cluster
+
+19.0.0b6
++++++++
+* Update the minimum required cli core version to `2.73.0` (actually since `18.0.0b35`).
+
+19.0.0b5
++++++++
+* `az aks get-credentials`: Convert device code mode kubeconfig to Azure CLI token format to bypass conditional access login blocks.
+* Add `enable-istio-cni` and `disable-istio-cni` commands under `az aks mesh`.
+
+19.0.0b4
++++++++
+* `az aks create`: Add new parameter `--enable-hosted-system` to enable hosted system components for automatic clusters.
+* Added `--enable-gateway-api` to `az aks create` to enable managed Gateway API installation
+* Added `--enable-gateway-api` and `--disable-gateway-api` to `az aks update` to enable/disable managed Gateway API installation
+
 19.0.0b3
 +++++++
 * Implement platform-managed-keys (PMK) awared validation for KMS customer-managed-key (CMK)

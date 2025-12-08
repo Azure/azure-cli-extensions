@@ -3,6 +3,26 @@
 Release History
 ===============
 
+1.4.4
+++++++
+* Improve the package building process
+
+1.4.3
+++++++
+* Fix installing OPA on Windows and in strict networking environments
+
+1.4.2
+++++++
+* Update policy model to use pydantic and explicitly declare collections where order doesn't affect function. These fields will serialize in alphabetical order and comparisons will ignore order.
+
+1.4.0
+++++++
+* Add --with-containers flag to acipolicygen and acifragmentgen to allow passing container policy definitions directly
+
+1.3.1
+++++++
+* bugfix for --exclude-default-fragments flag not working as intended
+
 1.3.0
 ++++++
 * Add a new --enable-stdio flag, with a warning if neither this or --disable-stdio is set

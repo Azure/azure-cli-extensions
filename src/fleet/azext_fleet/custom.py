@@ -14,6 +14,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_parse
 from azure.cli.core import get_default_cli
 from azure.mgmt.core.tools import parse_resource_id
+from azure.cli.command_modules.acs._graph import resolve_object_id
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET, cf_fleet_members, cf_fleets
 from azext_fleet._helpers import is_rp_registered, print_or_merge_credentials
@@ -134,7 +135,8 @@ def create_fleet(cmd,
         if not is_rp_registered(cmd):
             raise CLIError("The Microsoft.ContainerService resource provider is not registered."
                            "Run `az provider register -n Microsoft.ContainerService --wait`.")
-        assign_network_contributor_role_to_subnet(cmd, FLEET_1P_APP_ID, agent_subnet_id)
+        object_id = resolve_object_id(cmd.cli_ctx, FLEET_1P_APP_ID)
+        assign_network_contributor_role_to_subnet(cmd, object_id, agent_subnet_id)
 
     if enable_vnet_integration and assign_identity is not None:
         object_id = get_msi_object_id(cmd, assign_identity)
@@ -235,8 +237,8 @@ def get_credentials(cmd,
             fleet_member = fleet_members_client.get(resource_group_name, name, member_name)
 
             parsed_id = parse_resource_id(fleet_member.cluster_resource_id)
-            if (parsed_id.get('resource_type') != 'managedClusters' or
-                    parsed_id.get('namespace') != 'Microsoft.ContainerService'):
+            if (parsed_id.get('resource_type').lower() != 'managedclusters' or
+                    parsed_id.get('namespace').lower() != 'microsoft.containerservice'):
                 raise CLIError(f"Fleet member '{member_name}' is not associated with an AKS managed cluster. "
                                f"Currently, only AKS managed clusters are supported for this command.")
 

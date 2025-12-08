@@ -97,6 +97,37 @@ def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_nam
         os.remove(temp_path)
 
 
+def uses_kubelogin_devicecode(kubeconfig: str) -> bool:
+    try:
+        config = yaml.safe_load(kubeconfig)
+
+        # Check if users section exists and has at least one user
+        if not config or not config.get('users') or len(config['users']) == 0:
+            return False
+
+        first_user = config['users'][0]
+        user_info = first_user.get('user', {})
+        exec_info = user_info.get('exec', {})
+
+        # Check if command is kubelogin
+        command = exec_info.get('command', '')
+        if 'kubelogin' not in command:
+            return False
+
+        # Check if args contains --login and devicecode
+        args = exec_info.get('args', [])
+        # Join args into a string for easier pattern matching
+        args_str = ' '.join(args)
+        # Check for '--login devicecode' or '-l devicecode'
+        if '--login devicecode' in args_str or '-l devicecode' in args_str:
+            return True
+        return False
+    except (yaml.YAMLError, KeyError, TypeError, AttributeError) as e:
+        # If there's any error parsing the kubeconfig, assume it doesn't require kubelogin
+        logger.debug("Error parsing kubeconfig: %s", str(e))
+        return False
+
+
 def _merge_kubernetes_configurations(existing_file, addition_file, replace, context_name=None):
     existing = _load_kubernetes_configuration(existing_file)
     addition = _load_kubernetes_configuration(addition_file)
