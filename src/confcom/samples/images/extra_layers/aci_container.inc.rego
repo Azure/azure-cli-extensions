@@ -2,8 +2,8 @@
   "id": "confcom_test_extra_layers",
   "name": "confcom_test_extra_layers",
   "layers": [
-    "8b4664979ffe3c5188efbbbb30e31716c03bfe880f15f455be0fc3beb4741de9",
-    "19c61360dade7dce5999ec5641dd9ce2f7388f3382ce6bb47ddff72d0dc39b0d"
+    "13f6c367267457d9516d57c493e76b0324979e94cee9de3b310f913708b3667a",
+    "ae7e9183858927a54e0ae33a479948abd16a6f38712b84324191b900270cde8c"
   ],
   "mounts": [
     {
@@ -18,7 +18,7 @@
     }
   ],
   "command": [
-    "/hello"
+    "sh"
   ],
   "env_rules": [
     {
@@ -26,6 +26,5 @@
       "strategy": "string",
       "required": false
     }
-  ],
-  "working_dir": "/"
+  ]
 }

@@ -1,3 +1,3 @@
-FROM hello-world
+FROM busybox
 
-COPY Dockerfile .
+RUN echo "hi" > hi.txt
