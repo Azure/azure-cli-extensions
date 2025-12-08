@@ -1,9 +1,9 @@
 {
-  "id": "confcom_test_working_dir",
-  "name": "confcom_test_working_dir",
+  "id": "confcom_test_extra_layers",
+  "name": "confcom_test_extra_layers",
   "layers": [
     "8b4664979ffe3c5188efbbbb30e31716c03bfe880f15f455be0fc3beb4741de9",
-    "eff9550216100f194b7f04d12ae70e5511ffd7360eec6b947197176701397e60"
+    "19c61360dade7dce5999ec5641dd9ce2f7388f3382ce6bb47ddff72d0dc39b0d"
   ],
   "mounts": [
     {
@@ -27,5 +27,5 @@
       "required": false
     }
   ],
-  "working_dir": "/home"
+  "working_dir": "/"
 }

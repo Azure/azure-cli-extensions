@@ -1,3 +1,3 @@
 FROM hello-world
 
-WORKDIR /home
+COPY Dockerfile .
