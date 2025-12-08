@@ -25,7 +25,9 @@ from azext_confcom.template_util import (
     print_existing_policy_from_yaml, print_func, str_to_sha256)
 from azext_confcom.command.fragment_attach import fragment_attach as _fragment_attach
 from azext_confcom.command.fragment_push import fragment_push as _fragment_push
-from azext_confcom.command.fragment_references_from_image import fragment_references_from_image as _fragment_references_from_image
+from azext_confcom.command.fragment_references_from_image import (
+    fragment_references_from_image as _fragment_references_from_image
+)
 from knack.log import get_logger
 from pkg_resources import parse_version
 

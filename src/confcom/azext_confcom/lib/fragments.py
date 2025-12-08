@@ -18,5 +18,4 @@ def get_fragments_from_image(image_reference: str):
         fragment_path = Path(tempfile.gettempdir()) / sanitize_image_reference(reference)
         pull(reference, fragment_path)
 
-        for fragment_file in fragment_path.glob("*.rego.cose"):
-            yield fragment_file
+        yield from fragment_path.glob("*.rego.cose")
