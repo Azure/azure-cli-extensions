@@ -202,14 +202,14 @@ class LLMProvider(ABC):
         return secret_key
 
     @classmethod
-    def to_model_list_config(cls, params: dict) -> Dict[str, dict]:
+    def to_secured_model_list_config(cls, params: dict) -> Dict[str, dict]:
         """Create a model config dictionary for the model list from the provider parameters.
+        Returns a copy of params with the api_key replaced by environment variable reference.
         """
         secret_key = cls.sanitize_k8s_secret_key(params)
-        model_name = params.get("model")
-        model_list_config = {model_name: params}
-        model_list_config[model_name].update({"api_key": f"{{{{ env.{secret_key} }}}}"})
-        return model_list_config
+        secured_params = params.copy()
+        secured_params.update({"api_key": f"{{{{ env.{secret_key} }}}}"})
+        return secured_params
 
     @classmethod
     def to_env_vars(cls, secret_name, params: dict) -> Dict[str, str]:

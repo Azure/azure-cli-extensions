@@ -24,6 +24,12 @@ class LLMConfigManager:
         params["model"] = model_name
         self.model_list[model_name] = params
 
+    def secured_model_list(self) -> Dict[str, dict]:
+        secured_config = {}
+        for model_name, model_config in self.model_list.items():
+            secured_config[model_name] = LLMProvider.to_secured_model_list_config(model_config)
+        return secured_config
+
     def get_llm_model_secret_data(self) -> Dict[str, str]:
         """
         Get Kubernetes secret data for all LLM models in the configuration.

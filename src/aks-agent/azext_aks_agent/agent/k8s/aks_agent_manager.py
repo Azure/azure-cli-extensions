@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import base64
 import json
 import os
 import time
@@ -80,13 +81,12 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
 
         self.kubeconfig_path = kubeconfig_path
 
+        # Initialize Kubernetes client
+        self._init_k8s_client()
         # Use provided helm manager or create a new one with kubeconfig
         self.helm_manager = helm_manager or HelmManager(kubeconfig_path=self.kubeconfig_path)
 
         self._load_existing_helm_release_config()
-
-        # Initialize Kubernetes client
-        self._init_k8s_client()
 
     def set_aks_context(self, resource_group_name: Optional[str] = None,
                         cluster_name: Optional[str] = None,
@@ -159,7 +159,11 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
                 self.llm_config_manager.model_list = model_list
                 if not model_list:
                     logger.warning("No modelList found in Helm values")
-                logger.debug("LLM configuration loaded from Helm values: %d models found", len(model_list))
+                else:
+                    logger.debug("LLM configuration loaded from Helm values: %d models found", len(model_list))
+
+                    # Read API keys from Kubernetes secret and populate model_list
+                    self._populate_api_keys_from_secret()
 
                 # Load managed identity client ID if present
                 mcp_addons = helm_values.get("mcpAddons", {})
@@ -182,6 +186,59 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
         except Exception as e:  # pylint: disable=broad-exception-caught
             logger.error("Failed to load LLM config from Helm values: %s", e)
             raise AzCLIError(f"Failed to load LLM config from Helm values: {e}")
+
+    def _populate_api_keys_from_secret(self):
+        """
+        Read API keys from Kubernetes secret and populate them into model_list.
+
+        The model_list from Helm values contains environment variable references like
+        '{{ env.AZURE_GPT_4_API_KEY }}'. This method reads the actual API keys from
+        the Kubernetes secret and replaces those references with actual values.
+        """
+        try:
+            # Try to read the secret
+            secret = self.core_v1.read_namespaced_secret(
+                name=self.llm_secret_name,
+                namespace=self.namespace
+            )
+
+            if not secret.data:
+                logger.warning("Secret '%s' exists but has no data", self.llm_secret_name)
+                return
+
+            # Decode secret data (base64 encoded)
+            secret_data = {}
+            for key, value in secret.data.items():
+                decoded_value = base64.b64decode(value).decode("utf-8")
+                secret_data[key] = decoded_value
+
+            logger.debug("Read %d API keys from secret '%s'", len(secret_data), self.llm_secret_name)
+
+            from azext_aks_agent.agent.llm_providers.base import LLMProvider
+
+            # Populate API keys into model_list
+
+            for model_name, model_config in self.llm_config_manager.model_list.items():
+                # Get the expected secret key for this model
+                secret_key = LLMProvider.sanitize_k8s_secret_key(model_config)
+
+                # If the secret contains this key, populate it
+                if secret_key in secret_data:
+                    model_config["api_key"] = secret_data[secret_key]
+                    logger.debug("Populated API key for model '%s' from secret key '%s'",
+                                 model_name, secret_key)
+                else:
+                    logger.warning("API key is not found for model '%s', please update the model '%s' API key.",
+                                   model_name, model_name)
+
+        except ApiException as e:
+            if e.status == 404:
+                logger.debug("Secret '%s' not found in namespace '%s', skipping API key population",
+                             self.llm_secret_name, self.namespace)
+            else:
+                logger.warning("Failed to read secret '%s': %s", self.llm_secret_name, e)
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            logger.warning("Unexpected error reading API keys from secret: %s", e)
 
     def get_agent_pods(self) -> Tuple[bool, Union[List[str], str]]:
         """
@@ -738,7 +795,7 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
         env_vars = self.llm_config_manager.get_env_vars(self.llm_secret_name)
 
         helm_values = {
-            "modelList": self.llm_config_manager.model_list,
+            "modelList": self.llm_config_manager.secured_model_list(),
             "additionalEnvVars": env_vars,
             "nodeSelector": {"kubernetes.io/os": "linux"},
         }
