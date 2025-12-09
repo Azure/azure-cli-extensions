@@ -15,6 +15,7 @@ import zipfile
 from pathlib import Path
 from typing import List, Optional, Tuple
 
+from azext_aks_agent._consts import HELM_VERSION
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -31,13 +32,13 @@ class HelmManager:
     - Share helm functionality across different chart deployments
     """
 
-    def __init__(self, helm_version: str = "3.14.0", local_bin_dir: Optional[str] = None,
+    def __init__(self, helm_version: str = HELM_VERSION, local_bin_dir: Optional[str] = None,
                  kubeconfig_path: Optional[str] = None):
         """
         Initialize the Helm Manager.
 
         Args:
-            helm_version: Helm version to use (default: '3.14.0')
+            helm_version: Helm version to use (default: HELM_VERSION from _consts)
             local_bin_dir: Local directory for helm binary (default: ~/.aks-agent/bin)
             kubeconfig_path: Path to kubeconfig file (default: None - use default config)
         """
@@ -311,13 +312,13 @@ class HelmManager:
         return success
 
 
-def create_helm_manager(helm_version: str = "3.14.0",
+def create_helm_manager(helm_version: str = HELM_VERSION,
                         local_bin_dir: Optional[str] = None) -> HelmManager:
     """
     Factory function to create a HelmManager instance.
 
     Args:
-        helm_version: Helm version to use
+        helm_version: Helm version to use (default: HELM_VERSION from _consts)
         local_bin_dir: Local directory for helm binary
 
     Returns:

@@ -8,13 +8,12 @@ Unit tests for HelmManager.
 """
 
 import os
-import platform
-import subprocess
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, mock_open, patch
+from unittest.mock import Mock, mock_open, patch
 
+from azext_aks_agent._consts import HELM_VERSION
 from azext_aks_agent.agent.k8s.helm_manager import HelmManager
 
 
@@ -23,7 +22,7 @@ class TestHelmManager(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures."""
-        self.test_helm_version = "3.14.0"
+        self.test_helm_version = HELM_VERSION
         self.test_kubeconfig = "/mock/kubeconfig"
         self.test_bin_dir = "/mock/bin"
 
@@ -35,7 +34,7 @@ class TestHelmManager(unittest.TestCase):
 
         manager = HelmManager()
 
-        self.assertEqual(manager.helm_version, "3.14.0")
+        self.assertEqual(manager.helm_version, "3.16.0")
         self.assertIsNone(manager.kubeconfig_path)
         self.assertIsNotNone(manager.local_bin_dir)
         mock_mkdir.assert_called_once()
@@ -171,7 +170,7 @@ class TestHelmManager(unittest.TestCase):
         mock_ensure_helm.return_value = "/mock/helm"
         mock_run.return_value = Mock(
             returncode=0,
-            stdout="version.BuildInfo{Version:\"v3.14.0\"}",
+            stdout="version.BuildInfo{Version:\"v3.16.0\"}",
             stderr=""
         )
 
@@ -179,7 +178,7 @@ class TestHelmManager(unittest.TestCase):
         version = manager.get_version()
 
         self.assertIsNotNone(version)
-        self.assertIn("3.14.0", version)
+        self.assertIn("3.16.0", version)
 
     @patch('azext_aks_agent.agent.k8s.helm_manager.subprocess.run')
     @patch('azext_aks_agent.agent.k8s.helm_manager.Path.mkdir')
@@ -227,7 +226,7 @@ class TestHelmManagerRealDownload(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures."""
-        self.test_helm_version = "3.14.0"
+        self.test_helm_version = HELM_VERSION
         self.temp_dir = None
 
     def tearDown(self):
@@ -249,7 +248,7 @@ class TestHelmManagerRealDownload(unittest.TestCase):
             ("darwin", "amd64"),
             ("darwin", "arm64"),
             ("windows", "amd64"),
-            # ("windows", "arm64"), # The blob does not exist for this platform
+            ("windows", "arm64"),
         ]
 
         for os_name, arch in platforms:

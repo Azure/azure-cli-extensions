@@ -44,3 +44,6 @@ HEARTBEAT_TIMEOUT = (HEARTBEAT_INTERVAL * 12) + 1    # pingReadDeadline: 61 seco
 AGENT_NAMESPACE = "kube-system"
 AGENT_LABEL_SELECTOR = "app.kubernetes.io/name=aks-agent"
 AKS_MCP_LABEL_SELECTOR = "app.kubernetes.io/name=aks-mcp"
+
+# Helm Configuration
+HELM_VERSION = "3.16.0"
