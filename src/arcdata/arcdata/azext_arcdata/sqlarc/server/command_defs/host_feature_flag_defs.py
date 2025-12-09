@@ -16,14 +16,14 @@ from azext_arcdata.core.exceptions import CLIError
 logger = get_logger(__name__)
 
 
-def feature_flag_set(client, server=None):
+def feature_flag_set(client, **kwargs):
     """
     This function is responsible for settings feature flag.
     """
     try:
         # Get Values from given arguments
 
-        cvo = client.args_to_command_value_object()
+        cvo = client.args_to_command_value_object(kwargs)
         machineName = get_machine_name(client)
         current_config = client.services.sqlarc.get_server_config(
             cvo.resource_group, machineName
@@ -45,13 +45,13 @@ def feature_flag_set(client, server=None):
         raise CLIError(e)
 
 
-def feature_flag_delete(client, server=None):
+def feature_flag_delete(client, **kwargs):
     """
     This function is responsible for deleting feature flag.
     """
     try:
         # Get Values from given arguments
-        cvo = client.args_to_command_value_object()
+        cvo = client.args_to_command_value_object(kwargs)
         machineName = get_machine_name(client)
         current_config = client.services.sqlarc.get_server_config(
             cvo.resource_group, machineName
@@ -75,13 +75,13 @@ def feature_flag_delete(client, server=None):
         raise CLIError(e)
 
 
-def feature_flag_show(client, server=None):
+def feature_flag_show(client, **kwargs):
     """
     This function is responsible for displaying feature flag.
     """
     try:
         # Get Values from given arguments
-        cvo = client.args_to_command_value_object()
+        cvo = client.args_to_command_value_object(kwargs)
         machineName = get_machine_name(client)
         current_config = client.services.sqlarc.get_server_config(
             cvo.resource_group, machineName

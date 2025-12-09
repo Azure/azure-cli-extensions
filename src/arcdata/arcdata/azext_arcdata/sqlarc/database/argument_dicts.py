@@ -7,8 +7,8 @@
 # Put any arguments dicts that are exclusively for SQL Arc Database here,
 # if the argument can be reused for other SQL Arc commands put it in
 # Common/argument_dicts instead of here
-import datetime
-from azext_arcdata.sqlarc.common.argument_loading_defs import (
+
+from azext_arcdata.sqlarc.common.argument_dicts import (
     name
 )
 

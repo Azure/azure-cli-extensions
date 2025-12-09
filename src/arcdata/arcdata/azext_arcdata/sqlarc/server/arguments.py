@@ -4,6 +4,23 @@
 # license information.
 # ------------------------------------------------------------------------------
 
+from azext_arcdata.sqlarc.common.argument_dicts import (
+    esu_enabled,
+    feature_flag_value,
+    license_type,
+    resource_group,
+    skip_instances,
+    sql_server_arc_name,
+    get_machine_name_argument,
+    getFeatureNameArgument,
+    getNameArgument,
+    getResourceGroupArgument
+)
+from azext_arcdata.sqlarc.common.argument_loading_defs import (
+    arguments,
+    load_backups_policy_set_arguments,
+    load_confirmation_argument,
+)
 from azext_arcdata.sqlarc.server.argument_dicts import (
     availability_group_automated_backup_preference,
     availability_group_availability_mode,
@@ -29,19 +46,6 @@ from azext_arcdata.sqlarc.server.argument_dicts import (
     availability_group_required_synchronized_secondaries,
     availability_group_seeding_mode,
     availability_group_server_name,
-    esu_enabled,
-    feature_flag_value,
-    license_type,
-    resource_group,
-    skip_instances,
-    sql_server_arc_name,
-    arguments,
-    load_backups_policy_set_arguments,
-    load_confirmation_argument,
-    get_machine_name_argument,
-    getFeatureNameArgument,
-    getNameArgument,
-    getResourceGroupArgument
 )
 from azext_arcdata.sqlarc.server.help_strings import (
     HELP_RG_ARC_SERVER

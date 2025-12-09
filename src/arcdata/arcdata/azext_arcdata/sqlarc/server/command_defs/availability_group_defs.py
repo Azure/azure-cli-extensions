@@ -222,31 +222,31 @@ def _get_listener_config(
 ):
     if not listener_name:
         return None
-    else:
-        _validate_listener_config(
-            listener_name=listener_name,
-            listener_port=listener_port,
-            listener_ipv4_addresses=listener_ipv4_addresses,
-            listener_ipv4_masks=listener_ipv4_masks,
-            listener_ipv6_addresses=listener_ipv6_addresses,
-        )
 
-        ipv4_addresses = []
+    _validate_listener_config(
+        listener_name=listener_name,
+        listener_port=listener_port,
+        listener_ipv4_addresses=listener_ipv4_addresses,
+        listener_ipv4_masks=listener_ipv4_masks,
+        listener_ipv6_addresses=listener_ipv6_addresses,
+    )
 
-        for i, address in enumerate(listener_ipv4_addresses):
-            ipv4_addresses.append(
-                SqlAvailabilityGroupIpV4AddressesAndMasksPropertiesItem(
-                    ip_address=address, mask=listener_ipv4_masks[i]
-                )
+    ipv4_addresses = []
+
+    for i, address in enumerate(listener_ipv4_addresses):
+        ipv4_addresses.append(
+            SqlAvailabilityGroupIpV4AddressesAndMasksPropertiesItem(
+                ip_address=address, mask=listener_ipv4_masks[i]
             )
-
-        listener = SqlAvailabilityGroupStaticIPListenerProperties(
-            dns_name=listener_name,
-            ip_v4_addresses_and_masks=ipv4_addresses,
-            ip_v6_addresses=listener_ipv6_addresses,
-            port=listener_port,
         )
-        return listener
+
+    listener = SqlAvailabilityGroupStaticIPListenerProperties(
+        dns_name=listener_name,
+        ip_v4_addresses_and_masks=ipv4_addresses,
+        ip_v6_addresses=listener_ipv6_addresses,
+        port=listener_port,
+    )
+    return listener
 
 
 def _validate_listener_config(

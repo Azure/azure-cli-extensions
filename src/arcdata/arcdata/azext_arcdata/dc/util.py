@@ -87,7 +87,8 @@ def get_output_file(file_path, force):
                     "non-interactive environment".format(e)
                 )
 
-            overwritten = yes == True
+            if yes:
+                overwritten = True
 
             if not overwritten:
                 file_path = prompt(msg)

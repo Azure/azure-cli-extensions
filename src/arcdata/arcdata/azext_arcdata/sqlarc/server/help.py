@@ -12,7 +12,6 @@ from azext_arcdata.sqlarc.common.help_strings import (
     HELP_BACKUPS_POLICY_SET,
     HELP_BACKUPS_POLICY_SHOW
 )
-from knack.help_files import helps
 from azext_arcdata.sqlarc.server.help_strings import (
     HELP_AVAILABILITY_GROUP,
     HELP_AVAILABILITY_GROUP_CREATE,
@@ -25,6 +24,7 @@ from azext_arcdata.sqlarc.server.help_strings import (
     HELP_HOST_SET,
     HELP_HOST_SHOW
 )
+from knack.help_files import helps
 
 helps["sql server-arc"] = help_format_short.format(
     type="group", short="Manage SQL Server enabled by Azure Arc."

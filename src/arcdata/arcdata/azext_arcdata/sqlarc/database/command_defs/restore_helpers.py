@@ -10,11 +10,11 @@ import time
 from azext_arcdata.core.exceptions import CLIError
 
 
-def create_new_database_model_to_restore_to(arm_model, source, time, name):
+def create_new_database_model_to_restore_to(arm_model, source, restore_point_in_time, name):
     new_database = copy.deepcopy(arm_model)
     new_database.properties.create_mode = "restorePointInTime"
     new_database.properties.source_database_id = source
-    new_database.properties.restore_point_in_time = time
+    new_database.properties.restore_point_in_time = restore_point_in_time
     new_database.id = generate_new_id_from_new_name(arm_model.id, name)
     new_database.name = name
     new_database.properties.backup_information = None
@@ -24,8 +24,8 @@ def create_new_database_model_to_restore_to(arm_model, source, time, name):
     return new_database
 
 
-def generate_new_id_from_new_name(id, name):
-    segments = id.split("/")
+def generate_new_id_from_new_name(resource_id, name):
+    segments = resource_id.split("/")
     segments[-1] = name
     return "/".join(segments)
 
@@ -47,10 +47,12 @@ def poll_restore_status(client, resource_group, full_instance_name, dest_name):
         state = arm_model.properties.provisioning_state
         if state == "Succeeded" or state == "Processing":
             return True
-        elif state == "Canceled" or state == "Failed":
+
+        if state == "Canceled" or state == "Failed":
             break
         else:
             poll_count += 1
+
         if poll_count % 3 == 0:
             client.stdout(
                 "The restore request has been made, waiting for status of the request..."

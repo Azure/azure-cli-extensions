@@ -98,12 +98,14 @@ def validate_backups_are_active(
         raise ValueError(
             "There is no backups policy currently set for this SQL database or SQL Server instance."
         )
-    elif database_backups_policy is None and instance_backups_policy is not None:
+
+    if database_backups_policy is None and instance_backups_policy is not None:
         if instance_backups_policy.retention_period_days == 0:
             raise ValueError(
                 "The backups policy for this database is currently disabled by the SQL Server instance's backup policy."
             )
-    elif database_backups_policy is not None:
+
+    if database_backups_policy is not None:
         if database_backups_policy.retention_period_days == 0:
             raise ValueError(
                 "The backups policy is currently disabled on this SQL database."

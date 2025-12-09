@@ -32,6 +32,8 @@ def host_properties_set(client):
             raise ValueError(
                 "Settings file is empty. Arc resource is in bad state."
             )
+    
+        updated_config = current_config
 
         if cvo.license_type:
             updated_config = update_license_type(

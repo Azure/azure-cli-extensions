@@ -44,10 +44,10 @@ def backups_policy_set(client, instance=None, database_name=None):
         # note: The arm_model can be either a Database or Instance model, for our purposes
         # it does not matter which we are working with as they shapped the exact same way
         # Verify the user has the appropriate licensce type to execute this command
-        license = client.services.sqlarc.get_license_type(
+        sql_license = client.services.sqlarc.get_license_type(
             instance_arm_model.properties.container_resource_id
         )
-        validate_license_type(license)
+        validate_license_type(sql_license)
 
         validate_fci_is_inactive(instance_arm_model)
 
@@ -104,10 +104,10 @@ def backups_policy_show(client, instance=None, database_name=None):
         # note: The arm_model can be either a Database or Instance model, for our purposes
         # it does not matter which we are working with as they shapped the exact same way
         # Verify the user has the appropriate licensce type to execute this command
-        license = client.services.sqlarc.get_license_type(
+        sql_license = client.services.sqlarc.get_license_type(
             instance_arm_model.properties.container_resource_id
         )
-        validate_license_type(license)
+        validate_license_type(sql_license)
 
         validate_fci_is_inactive(instance_arm_model)
 
@@ -167,10 +167,10 @@ def backups_policy_delete(client, instance=None, database_name=None):
         # note: The arm_model can be either a Database or Instance model, for our purposes
         # it does not matter which we are working with as they shapped the exact same way
         # Verify the user has the appropriate licensce type to execute this command
-        license = client.services.sqlarc.get_license_type(
+        sql_license = client.services.sqlarc.get_license_type(
             instance_arm_model.properties.container_resource_id
         )
-        validate_license_type(license)
+        validate_license_type(sql_license)
         validate_fci_is_inactive(instance_arm_model)
         if not arm_model.properties.backup_policy:
             fail_message = (
@@ -209,7 +209,8 @@ def backups_policy_delete(client, instance=None, database_name=None):
                 if answer == "n" or answer == "no":
                     client.stdout("Delete operation canceled.")
                     return
-                elif answer == "y" or answer == "yes":
+
+                if answer == "y" or answer == "yes":
                     validAnswer = True
                 else:
                     user_input = input("Please enter 'Y' or 'N': ")

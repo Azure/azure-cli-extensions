@@ -70,8 +70,8 @@ def show_feature_flag(config, feature_name):
     if "FeatureFlags" in config["properties"]["settings"]:
         if feature_name is None:
             return config["properties"]["settings"]["FeatureFlags"]
-        else:
-            for flag in config["properties"]["settings"]["FeatureFlags"]:
-                if flag.get("Name").casefold() == feature_name.casefold():
-                    return flag
+
+        for flag in config["properties"]["settings"]["FeatureFlags"]:
+            if flag.get("Name").casefold() == feature_name.casefold():
+                return flag
     return None

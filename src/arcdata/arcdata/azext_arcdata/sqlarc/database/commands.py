@@ -4,10 +4,8 @@
 # license information.
 # ------------------------------------------------------------------------------
 
-from azext_arcdata.sqlarc.database.validators import (
-    validate_backups_policy_set_arguments,
-    validate_restore_arguments
-)
+from azext_arcdata.sqlarc.common.validators import validate_backups_policy_set_arguments
+from azext_arcdata.sqlarc.database.validators import validate_restore_arguments
 from azext_arcdata.sqlarc.database.client import beget
 from azure.cli.core.commands import CliCommandType
 

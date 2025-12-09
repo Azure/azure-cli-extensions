@@ -38,10 +38,10 @@ def restore(client):
             cvo.resource_group, full_instance_name
         )
         # Verify the user has the appropriate license type to execute this command
-        license = client.services.sqlarc.get_license_type(
+        sql_license = client.services.sqlarc.get_license_type(
             instance_arm_model.properties.container_resource_id
         )
-        validate_license_type(license)
+        validate_license_type(sql_license)
 
         validate_fci_is_inactive(instance_arm_model)
 
@@ -51,10 +51,10 @@ def restore(client):
             arm_model = client.services.sqlarc.get_database_config(
                 cvo.resource_group, full_instance_name, cvo.dest_name
             )
-            raise Exception(
+            raise RuntimeError(
                 "Destination database already exists, please select a new destination database name."
             )
-        except Exception as e:
+        except RuntimeError as e:
             if (
                 "Destination database already exists, please select a new destination database name."
                 == str(e)

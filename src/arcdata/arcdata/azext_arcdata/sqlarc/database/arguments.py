@@ -3,14 +3,18 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # ------------------------------------------------------------------------------
-from azext_arcdata.sqlarc.database.argument_dicts import (
+from azext_arcdata.sqlarc.common.argument_loading_defs import (
     arguments,
-    getNameArg,
     load_backups_policy_set_arguments,
     load_confirmation_argument,
+)
+from azext_arcdata.sqlarc.common.argument_dicts import (
+    resource_group,
+)
+from azext_arcdata.sqlarc.database.argument_dicts import (
+    getNameArg,
     dest_name,
     dry_run,
-    resource_group,
     server,
     time
 )
