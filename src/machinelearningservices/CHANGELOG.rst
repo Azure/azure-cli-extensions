@@ -1,3 +1,9 @@
+## 2025-12-19
+
+### Azure Machine Learning CLI (v2) v 2.41.0
+- `az ml model create`
+  - Add support for `default_deployment_template` parameter to associate a deployment template with a model.
+
 ## 2025-11-04
 
 ### Azure Machine Learning CLI (v2) v 2.40.0
