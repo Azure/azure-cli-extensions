@@ -138,7 +138,7 @@ class ElasticScenario(ScenarioTest):
             'rg': resource_group,
             'email': email,
             'integration_name': 'default',
-            'key': '9e1bac69b92242129ad1f2373dd06939',
+            'key': 'mock-api-key-for-testing-purposes-only',
             'openAIResourceId': openai_resource_id,
             'openAIResourceEndpoint': openai_resource_endpoint,
         })
