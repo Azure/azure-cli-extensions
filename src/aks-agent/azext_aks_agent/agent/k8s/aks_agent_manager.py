@@ -7,7 +7,6 @@ import base64
 import json
 import os
 import tempfile
-import time
 from typing import Dict, List, Optional, Tuple, Union
 
 from azext_aks_agent._consts import (
