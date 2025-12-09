@@ -62,6 +62,8 @@ def ml_model_create(
         params_override.append({"stage": stage})
     if datastore:
         params_override.append({"datastore": datastore})
+    if default_deployment_template:
+        params_override.append({"default_deployment_template": default_deployment_template})
 
     model_info = ModelInfo()
     try:

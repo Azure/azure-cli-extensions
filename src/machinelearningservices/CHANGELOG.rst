@@ -1,12 +1,14 @@
 ### Azure Machine Learning CLI (v2) (unreleased)
 - Drop Python 3.7, 3.8 and 3.9 support
+- `az ml model create`
+  - Add support for `default_deployment_template` parameter to associate a deployment template with a model.
+
 ## 2025-11-11
 
 ### Azure Machine Learning CLI (v2) v 2.40.1
 - `az ml deployment-template show` instead of `az ml deployment-template get`
   - Show details of a specific deployment template by name and version.
 - Make deployment templates as preview feature
-
 
 ## 2025-11-04
 
