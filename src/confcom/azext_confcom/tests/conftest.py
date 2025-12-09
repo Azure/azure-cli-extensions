@@ -5,6 +5,7 @@
 
 import fcntl
 import importlib
+import json
 import os
 import subprocess
 import tempfile
@@ -12,9 +13,13 @@ import psutil
 import pytest
 import sys
 import shutil
+import zipfile
 
 from pathlib import Path
-import zipfile
+
+
+CONFCOM_DIR = Path(__file__).parent.parent.parent
+SAMPLES_DIR = CONFCOM_DIR / "samples"
 
 
 # This fixture ensures tests are run against final built wheels of the extension
@@ -89,3 +94,55 @@ def run_on_wheel(request):
             importlib.import_module(module.__name__)
 
     yield
+
+
+@pytest.fixture()
+def docker_image():
+
+    registry_id = subprocess.run(
+        ["docker", "run", "-d", "-p", "0:5000", "registry:2"],
+        stdout=subprocess.PIPE,
+        text=True,
+    ).stdout
+
+    registry_port = subprocess.run(
+        ["docker", "port", registry_id],
+        stdout=subprocess.PIPE,
+        text=True,
+    ).stdout.split(":")[-1].strip()
+
+    test_container_ref = f"localhost:{registry_port}/hello-world:latest"
+    subprocess.run(["docker", "pull", "hello-world"])
+    subprocess.run(["docker", "tag", "hello-world", test_container_ref])
+    subprocess.run(["docker", "push", test_container_ref])
+
+    with tempfile.NamedTemporaryFile(mode="w+", encoding="utf-8", delete=True) as temp_file:
+        json.dump({
+            "version": "1.0.0",
+            "containers": [
+                {
+                    "name": "hello-world",
+                    "properties": {
+                        "image": test_container_ref,
+                    },
+                }
+            ]
+        }, temp_file)
+        temp_file.flush()
+
+        yield test_container_ref, temp_file.name
+
+    subprocess.run(["docker", "stop", registry_id])
+
+
+@pytest.fixture(scope="session")
+def cert_chain():
+    with tempfile.TemporaryDirectory() as temp_dir:
+        subprocess.run(
+            [
+                (SAMPLES_DIR / "certs" / "create_certchain.sh").as_posix(),
+                temp_dir
+            ],
+            check=True,
+        )
+        yield temp_dir
