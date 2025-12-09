@@ -6,6 +6,7 @@
 import base64
 import json
 import os
+import tempfile
 import time
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -428,10 +429,14 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
         # Add custom values if provided
         values = self._create_helm_values()
 
-        values_file = f"/tmp/aks-agent-values-{int(time.time())}.yaml"
+        # Create temporary file in a cross-platform way
+        values_file = None
         try:
             import yaml
-            with open(values_file, 'w') as f:
+
+            # Create a temporary file that works on both Windows and Unix/Linux
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+                values_file = f.name
                 yaml.dump(values, f)
             helm_args.extend(["--values", values_file])
         except Exception as e:  # pylint: disable=broad-exception-caught
@@ -444,12 +449,13 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
         success, output = self._run_helm_command(helm_args)
 
         # Clean up temporary values file
-        try:
-            if os.path.exists(values_file):
-                os.remove(values_file)
-                logger.debug("Removed temporary values file: %s", values_file)
-        except Exception as e:  # pylint: disable=broad-exception-caught
-            logger.debug("Failed to remove temporary values file: %s", e)
+        if values_file:
+            try:
+                if os.path.exists(values_file):
+                    os.remove(values_file)
+                    logger.debug("Removed temporary values file: %s", values_file)
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                logger.debug("Failed to remove temporary values file: %s", e)
 
         if success:
             logger.info("AKS agent deployed/upgraded successfully")
