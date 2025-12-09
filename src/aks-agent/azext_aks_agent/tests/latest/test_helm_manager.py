@@ -10,6 +10,7 @@ Unit tests for HelmManager.
 import os
 import platform
 import subprocess
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, Mock, mock_open, patch
@@ -219,6 +220,70 @@ class TestHelmManager(unittest.TestCase):
         call_args = mock_run.call_args[0][0]
         self.assertIn("repo", call_args)
         self.assertIn("update", call_args)
+
+
+class TestHelmManagerRealDownload(unittest.TestCase):
+    """Integration tests for HelmManager that perform real downloads."""
+
+    def setUp(self):
+        """Set up test fixtures."""
+        self.test_helm_version = "3.14.0"
+        self.temp_dir = None
+
+    def tearDown(self):
+        """Clean up test fixtures."""
+        if self.temp_dir and os.path.exists(self.temp_dir):
+            import shutil
+            shutil.rmtree(self.temp_dir, ignore_errors=True)
+
+    @unittest.skipIf(os.environ.get('SKIP_INTEGRATION_TESTS'), "Skipping integration test")
+    def test_real_download_all_platforms(self):
+        """Test real helm binary download for all supported OS and architecture combinations."""
+        import shutil
+
+        platforms = [
+            ("linux", "amd64"),
+            ("linux", "arm64"),
+            ("linux", "arm"),
+            ("linux", "386"),
+            ("darwin", "amd64"),
+            ("darwin", "arm64"),
+            ("windows", "amd64"),
+            # ("windows", "arm64"), # The blob does not exist for this platform
+        ]
+
+        for os_name, arch in platforms:
+            with self.subTest(os=os_name, arch=arch):
+                # Create fresh temp directory for each platform
+                if self.temp_dir and os.path.exists(self.temp_dir):
+                    shutil.rmtree(self.temp_dir, ignore_errors=True)
+
+                self.temp_dir = tempfile.mkdtemp()
+
+                try:
+                    with patch('azext_aks_agent.agent.k8s.helm_manager.HelmManager._get_platform_info') as mock_platform:
+                        mock_platform.return_value = (os_name, arch)
+
+                        manager = HelmManager.__new__(HelmManager)
+                        manager.local_bin_dir = Path(self.temp_dir)
+                        manager.helm_version = self.test_helm_version
+
+                        # Perform actual download
+                        result = manager._download_helm_binary()
+
+                        # Verify no exception was raised and binary exists
+                        self.assertIsNotNone(result, f"Download failed for {os_name}-{arch}")
+                        self.assertTrue(os.path.exists(result), f"Binary not found for {os_name}-{arch}")
+                        self.assertIn("helm", result)
+
+                        # Verify binary is executable on Unix systems
+                        if os_name != "windows":
+                            self.assertTrue(os.access(result, os.X_OK), f"Binary not executable for {os_name}-{arch}")
+                finally:
+                    # Clean up temp directory after each platform test
+                    if self.temp_dir and os.path.exists(self.temp_dir):
+                        shutil.rmtree(self.temp_dir, ignore_errors=True)
+                    self.temp_dir = None
 
 
 if __name__ == '__main__':

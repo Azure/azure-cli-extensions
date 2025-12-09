@@ -131,7 +131,15 @@ class HelmManager:
                         if member.endswith(binary_name):
                             # Extract to local bin directory
                             zip_file.extract(member, self.local_bin_dir)
-                            extracted_binary_path = self.local_bin_dir / Path(member).name
+                            extracted_path = self.local_bin_dir / member
+                            extracted_binary_path = self.local_bin_dir / binary_name
+                            # Move to final location if needed
+                            if extracted_path != extracted_binary_path:
+                                shutil.move(str(extracted_path), str(extracted_binary_path))
+                                # Clean up extracted directory if it exists
+                                parent_dir = extracted_path.parent
+                                if parent_dir != self.local_bin_dir and parent_dir.exists():
+                                    shutil.rmtree(parent_dir)
                             break
             else:
                 # Handle TAR.GZ file
