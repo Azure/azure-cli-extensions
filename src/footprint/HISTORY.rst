@@ -5,7 +5,7 @@ Release History
 
 1.0.1b1
 ++++++
-* Relaxed the max_length on endpoint from {2,5} to {2,} to allow for longer endpoint names (long TLD).
+* Relaxed the TLD length restriction in endpoint pattern from {2,5} to {2,} to allow for longer TLD names.
 
 1.0.0
 ++++++
