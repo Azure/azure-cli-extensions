@@ -61,6 +61,11 @@ def load_model_params(self):
                  "The default type is custom_model.",
         )
         add_description_param(c, help_message="Description of the model.")
+        c.argument(
+            "default_deployment_template",
+            options_list=["--default-deployment-template"],
+            help="Default deployment template for the model.",
+        )
 
     with self.argument_context("ml model show") as c:
         add_common_params(c)

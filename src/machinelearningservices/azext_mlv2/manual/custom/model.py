@@ -35,6 +35,7 @@ def ml_model_create(
     registry_name=None,
     params_override=None,
     datastore=None,
+    default_deployment_template=None,
     no_wait=None,  # pylint: disable=unused-argument
 ):
     ml_client, debug = get_ml_client(
@@ -81,6 +82,7 @@ def ml_model_create(
                 stage=stage,
                 type=type,
                 datastore=datastore,
+                default_deployment_template=default_deployment_template,
             )
             if model and model.type:
                 model_info.model_type = model.type
