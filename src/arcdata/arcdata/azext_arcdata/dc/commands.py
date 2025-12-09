@@ -5,9 +5,8 @@
 # ------------------------------------------------------------------------------
 
 from azext_arcdata.core.cli_client import beget
+from azext_arcdata.dc import validators
 from azure.cli.core.commands import CliCommandType
-
-import azext_arcdata.dc.validators as validators
 
 
 def load_commands(self, _):

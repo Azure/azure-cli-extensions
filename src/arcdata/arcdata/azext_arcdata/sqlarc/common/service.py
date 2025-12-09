@@ -20,7 +20,7 @@ __all__ = ["AzureArcSqlWebService"]
 logger = get_logger(__name__)
 
 
-class AzureArcSqlWebService(object):
+class AzureArcSqlWebService:
     logger = get_logger(__name__)
 
     # initialize the service for making Http Requests to ARM
@@ -125,8 +125,8 @@ class AzureArcSqlWebService(object):
                     'instance of an extension may be in progress at a time for '
                     'the same resource. Please retry after sometime."}'
                 )
-            else:
-                raise RuntimeError(response.text)
+
+            raise RuntimeError(response.text)
 
     def get_license_type(self, url):
         config = self.get_sqlarc_server_config(url)

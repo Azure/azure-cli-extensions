@@ -10,7 +10,11 @@ from azext_arcdata.vendored_sdks.arm_sdk.azure.export_util import (
     ExportType,
     check_prompt_export_output_file,
 )
-from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.json_serialization import ExtendedJsonEncoder
+from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesClient
+from azext_arcdata.vendored_sdks.kubernetes_sdk.arc_docker_image_service import (
+    ArcDataImageService,
+)
+from azext_arcdata.vendored_sdks.kubernetes_sdk.json_serialization import ExtendedJsonEncoder
 
 from azext_arcdata.core.prompt import (
     prompt_for_input,
@@ -18,12 +22,7 @@ from azext_arcdata.core.prompt import (
     prompt_assert,
     prompt_y_n,
 )
-from azext_arcdata.core.text import Text
 from azext_arcdata.core.util import DeploymentConfigUtil
-from azext_arcdata.vendored_sdks.kubernetes_sdk.arc_docker_image_service import (
-    ArcDataImageService,
-)
-from azext_arcdata.vendored_sdks.kubernetes_sdk.client import KubernetesClient
 from knack.prompting import NoTTYException
 from knack.log import get_logger
 from knack.cli import CLIError
@@ -31,7 +30,6 @@ from colorama import Fore
 
 import json
 import os
-import yaml
 import shutil
 
 logger = get_logger(__name__)
@@ -42,38 +40,15 @@ def dc_create(
     connectivity_mode,
     name,
     resource_group,
-    location=None,
-    infrastructure=None,
-    no_wait=False,
-    path=None,
-    profile_name=None,
-    storage_class=None,
-    image_tag=None,
-    # -- direct --
-    auto_upload_logs=None,
-    auto_upload_metrics=None,
-    custom_location=None,
-    cluster_name=None,
-    least_privilege=None,
-    # -- indirect --
-    annotations=None,
-    namespace=None,
-    labels=None,
-    logs_ui_private_key_file=None,
-    logs_ui_public_key_file=None,
-    metrics_ui_private_key_file=None,
-    metrics_ui_public_key_file=None,
-    service_annotations=None,
-    service_labels=None,
-    storage_annotations=None,
-    storage_labels=None,
-    use_k8s=None,
+    **kwargs
 ):
     try:
         stdout = client.stdout
-        if not path and not profile_name:
-            from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import CONFIG_DIR
+        path = kwargs.get("path", None)
+        profile_name = kwargs.get("profile_name", None)
+        no_wait = kwargs.get("no_wait", None)
 
+        if not path and not profile_name:
             # Prompt the user for a choice between configs
             stdout("Please choose a deployment configuration: ")
             stdout(
@@ -97,29 +72,29 @@ def dc_create(
                 "connectivity_mode": connectivity_mode,
                 "name": name,
                 "resource_group": resource_group,
-                "location": location,
+                "location": kwargs.get("location", None),
                 "profile_name": profile_name,
                 "path": path,
-                "storage_class": storage_class,
-                "infrastructure": infrastructure,
-                "image_tag": image_tag,
-                "labels": labels,
-                "annotations": annotations,
-                "service_annotations": service_annotations,
-                "service_labels": service_labels,
-                "storage_labels": storage_labels,
-                "storage_annotations": storage_annotations,
-                "logs_ui_public_key_file": logs_ui_public_key_file,
-                "logs_ui_private_key_file": logs_ui_private_key_file,
-                "metrics_ui_public_key_file": metrics_ui_public_key_file,
-                "metrics_ui_private_key_file": metrics_ui_private_key_file,
+                "storage_class": kwargs.get("storage_class", None),
+                "infrastructure": kwargs.get("infrastructure", None),
+                "image_tag": kwargs.get("image_tag", None),
+                "labels": kwargs.get("labels", None),
+                "annotations": kwargs.get("annotations", None),
+                "service_annotations": kwargs.get("service_annotations", None),
+                "service_labels": kwargs.get("service_labels", None),
+                "storage_labels": kwargs.get("storage_labels", None),
+                "storage_annotations": kwargs.get("storage_annotations", None),
+                "logs_ui_public_key_file": kwargs.get("logs_ui_public_key_file", None),
+                "logs_ui_private_key_file": kwargs.get("logs_ui_private_key_file", None),
+                "metrics_ui_public_key_file": kwargs.get("metrics_ui_public_key_file", None),
+                "metrics_ui_private_key_file": kwargs.get("metrics_ui_private_key_file", None),
                 "subscription": subscription,
-                "custom_location": custom_location,
-                "auto_upload_metrics": auto_upload_metrics,
-                "auto_upload_logs": auto_upload_logs,
-                "cluster_name": cluster_name,
-                "least_privilege": least_privilege,
-                "namespace": namespace,
+                "custom_location": kwargs.get("custom_location", None),
+                "auto_upload_metrics": kwargs.get("auto_upload_metrics", None),
+                "auto_upload_logs": kwargs.get("auto_upload_logs", None),
+                "cluster_name": kwargs.get("cluster_name", None),
+                "least_privilege": kwargs.get("least_privilege", None),
+                "namespace": kwargs.get("namespace", None),
                 "no_wait": no_wait,
             }
         )
@@ -139,25 +114,14 @@ def dc_create(
 
 def dc_update(
     client,
-    name=None,
-    no_wait=False,
-    desired_version=None,
-    # -- direct --
-    resource_group=None,
-    auto_upload_logs=None,
-    auto_upload_metrics=None,
-    # -- indirect --
-    use_k8s=None,
-    namespace=None,
-    maintenance_start=None,
-    maintenance_duration=None,
-    maintenance_recurrence=None,
-    maintenance_time_zone=None,
-    maintenance_enabled=None,
+    **kwargs
 ):
     """
     Update data controller properties.
     """
+    if kwargs.get("Name") is None:
+        raise CLIError("Data controller name is required for update.")
+
     try:
         cvo = client.args_to_command_value_object()
         return client.services.dc.update(cvo)
@@ -170,7 +134,6 @@ def dc_upgrade(
     namespace=None,
     desired_version=None,
     dry_run=None,
-    use_k8s=None,
     resource_group=None,
     name=None,
     no_wait=False,
@@ -193,17 +156,14 @@ def dc_upgrade(
 
 def mw_update(
     client,
-    namespace=None,
-    desired_version=None,
-    use_k8s=None,
-    maintenance_start=None,
-    maintenance_duration=None,
-    maintenance_recurrence=None,
-    maintenance_time_zone=None,
+    **kwargs
 ):
     """
     Pass-through maintenance window update command
     """
+    if not kwargs:
+        raise CLIError("At least one maintenance window property is required.")
+
     try:
         cvo = client.args_to_command_value_object()
         client.services.dc.update_maintenance_window(cvo)
@@ -245,7 +205,7 @@ def dc_list_upgrade(client, namespace, use_k8s=None):
         raise CLIError(e)
 
 
-def dc_endpoint_list(client, namespace, endpoint_name=None, use_k8s=None):
+def dc_endpoint_list(client, namespace, endpoint_name=None):
     """
     Retrieves the endpoints of the cluster
     """
@@ -282,7 +242,7 @@ def dc_status_show(
         raise CLIError(e)
 
 
-def dc_config_show(client, namespace=None, use_k8s=None):
+def dc_config_show(client, namespace=None):
     """
     Return the config of the data controller custom resource.
     """
@@ -300,7 +260,6 @@ def dc_delete(
     resource_group=None,
     force=None,
     yes=None,
-    use_k8s=None,
     no_wait=False,
 ):
     """
@@ -400,7 +359,7 @@ def dc_config_init(client, path=None, source=None, force=None):
         config_map = DeploymentConfigUtil.get_config_map(config_dir)
 
         if source:
-            if source not in config_map.keys():
+            if not config_map.get(source, None):
                 raise ValueError(
                     "Invalid config source, please consult [dc "
                     "config list] for available sources"
@@ -500,7 +459,6 @@ def dc_debug_copy_logs(
     exclude_system_logs=False,
     exclude_controldb=False,
     exclude_cluster_info=False,
-    use_k8s=None,  # not used
 ):
     """
     Copy Logs commands - requires kube config
@@ -530,7 +488,6 @@ def dc_debug_dump(
     namespace,
     container="controller",
     target_folder="./output/dump",
-    use_k8s=None,  # not used
 ):
     """
     Trigger dump for given container and copy out the dump file to given
@@ -548,7 +505,6 @@ def dc_debug_restore_controldb_snapshot(
     client,
     namespace,
     backup_file,
-    use_k8s=None,  # not used
 ):
     """
     Restores ControlDB from existing backup file under a unique database name - requires kube config
@@ -567,7 +523,6 @@ def dc_debug_controldb_cdc(
     namespace,
     enable=None,
     retention_hours=None,
-    use_k8s=None,  # not used
 ):
     """
     Enables or Disables Change Data Capture for 'controller' Database and supported system tables - requires kube config
@@ -582,7 +537,7 @@ def dc_debug_controldb_cdc(
         raise CLIError(e)
 
 
-def dc_export(client, export_type, path, namespace, force=None, use_k8s=None):
+def dc_export(client, export_type, path, namespace, force=None):
     """
     Export metrics, logs or usage to a file.
     """
@@ -674,7 +629,7 @@ def dc_upload(client, path):
     Upload data file exported from a data controller to Azure (indirect only).
     """
     try:
-        cvo = client.args_to_command_value_object()
+        cvo = client.args_to_command_value_object(path=path)
         return client.services.dc.export_upload_log_and_metrics(cvo)
     except ValueError as e:
         raise CLIError(e)

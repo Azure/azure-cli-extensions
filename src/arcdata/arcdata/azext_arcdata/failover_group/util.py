@@ -6,10 +6,10 @@
 
 
 import time
-from azext_arcdata.core.util import retry
-from src.arcdata.arcdata.azext_arcdata.vendored_sdks.kubernetes_sdk.models.fog_cr import FogCustomResource
-from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
 from azext_arcdata.core.constants import ARC_API_V1BETA2
+from azext_arcdata.core.util import retry
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.fog_cr import FogCustomResource
+from azext_arcdata.vendored_sdks.kubernetes_sdk.models.custom_resource import CustomResource
 from azext_arcdata.vendored_sdks.kubernetes_sdk.client import (
     K8sApiException,
     KubernetesClient,
@@ -36,8 +36,8 @@ def get_valid_dag_roles(for_create):
     """
     if for_create:
         return DAG_ROLES_CREATE
-    else:
-        return DAG_ROLES_UPDATE
+
+    return DAG_ROLES_UPDATE
 
 
 def validate_dag_roles(role_value, for_create):
@@ -88,8 +88,8 @@ def resolve_old_dag_items(namespace) -> list:
     except K8sApiException as e:
         if e.status == http_status_codes.not_found:
             return []
-        else:
-            raise e
+
+        raise e
 
 
 def get_failover_group_custom_resource(

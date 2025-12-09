@@ -57,13 +57,13 @@ def get_resource_uri(resource, data_controller):
             azure_constants.RESOURCE_TYPE_FOR_KIND[resource_kind],
             resource[instance_properties.INSTANCE_NAME],
         )
-    else:
-        display(
-            '"{}" instance type "{}" is not supported.'.format(
-                resource[instance_properties.INSTANCE_NAME], resource_kind
-            )
+
+    display(
+        '"{}" instance type "{}" is not supported.'.format(
+            resource[instance_properties.INSTANCE_NAME], resource_kind
         )
-        return None
+    )
+    return None
 
 
 def get_output_file(file_path, force):
@@ -87,7 +87,7 @@ def get_output_file(file_path, force):
                     "non-interactive environment".format(e)
                 )
 
-            overwritten = True if yes else False
+            overwritten = yes == True
 
             if not overwritten:
                 file_path = prompt(msg)

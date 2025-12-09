@@ -8,19 +8,18 @@ from azext_arcdata.vendored_sdks.arm_sdk.azure.constants import (
     INSTANCE_TYPE_DATA_CONTROLLER,
     RESOURCE_PROVIDER_NAMESPACE,
 )
-from azure.cli.core.commands.parameters import get_resource_name_completion_list
 from azext_arcdata.core.util import DeploymentConfigUtil
 from azext_arcdata.core.constants import (
     USE_K8S_TEXT,
     CLI_ARG_GROUP_DIRECT_TEXT,
     CLI_ARG_GROUP_INDIRECT_TEXT,
     CLI_ARG_RESOURCE_GROUP_TEXT,
-    CLI_ARG_GROUP_USE_K8S,
 )
 from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.constants import CONFIG_DIR
 from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.common_util import (
     get_valid_dc_infrastructures,
 )
+from azure.cli.core.commands.parameters import get_resource_name_completion_list
 
 
 def load_arguments(self, _):
@@ -72,7 +71,7 @@ def load_arguments(self, _):
             "options. One of the following: {0}.".format(
                 _get_release_profiles()
             ),
-        ),
+        )
         arg_context.argument(
             "storage_class",
             options_list=["--storage-class"],
@@ -117,7 +116,7 @@ def load_arguments(self, _):
             help="Path to the file containing a PEM formatted certificate "
             "private key to be used for the Logs UI dashboard endpoint.",
             deprecate_info=arg_context.deprecate(hide=True),
-        ),
+        )
         arg_context.argument(
             "logs_ui_public_key_file",
             options_list=["--logs-ui-public-key-file"],
@@ -125,7 +124,7 @@ def load_arguments(self, _):
             help="Path to the file containing a PEM formatted certificate "
             "to be used for the Logs UI dashboard endpoint.",
             deprecate_info=arg_context.deprecate(hide=True),
-        ),
+        )
         arg_context.argument(
             "metrics_ui_private_key_file",
             options_list=["--metrics-ui-private-key-file"],
@@ -141,7 +140,7 @@ def load_arguments(self, _):
             help="Path to the file containing a PEM formatted certificate "
             "to be used for the Metrics UI dashboard endpoint.",
             deprecate_info=arg_context.deprecate(hide=True),
-        ),
+        )
         arg_context.argument(
             "service_annotations",
             options_list=["--service-annotations"],

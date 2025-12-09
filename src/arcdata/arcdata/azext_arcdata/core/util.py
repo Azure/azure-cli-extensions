@@ -215,7 +215,7 @@ def check_environment_variables():
     Check if all necessary environment variables are set.
     """
     env_list = get_controller_env_list()
-    missing_env = list()
+    missing_env = []
     for env in env_list:
         if not is_set(env):
             missing_env.append(env)
@@ -283,7 +283,8 @@ def check_missing(stdout, force, config_object, help_object, config_filename):
                     if isinstance(value, dict):
                         iterate(value, new_root)
                         continue
-                    elif isinstance(value, list):
+
+                    if isinstance(value, list):
                         for index, item in enumerate(value):
                             arr_root = new_root + "[" + str(index) + "]"
                             if isinstance(item, dict):
@@ -291,6 +292,7 @@ def check_missing(stdout, force, config_object, help_object, config_filename):
                             elif item == "":
                                 missing.append(arr_root)
                         continue
+
                     if value == "":
                         missing.append(new_root)
 
@@ -448,7 +450,7 @@ def parse_labels(label_str):
 
         label_key, label_value = label_kv
 
-        if label_key in labels.keys():
+        if labels.get(label_key, None):
             raise ValueError("Duplicate label key {}".format(label_key))
 
         labels[label_key.strip()] = label_value.strip()
@@ -537,7 +539,7 @@ def load_kube_config(context=None):
 # ---------------------------------------------------------------------------- #
 
 
-class FileUtil(object):
+class FileUtil:
     @staticmethod
     def read_json(file_path):
         """
@@ -559,8 +561,8 @@ class FileUtil(object):
 
         if not content:
             return None
-        else:
-            return json.loads(content)
+
+        return json.loads(content)
 
     @staticmethod
     def read_text_file(file_path):
@@ -789,7 +791,8 @@ def validate_creds_from_env(username_var: str, password_var: str):
                 username_var, password_var
             )
         )
-    elif username and password and not is_valid_password(password, username):
+
+    if username and password and not is_valid_password(password, username):
         raise CLIError(
             "Invalid password from " + password_var + ". Passwords must be at "
             "least 8 characters long, cannot contain the "
@@ -824,7 +827,7 @@ def prune_dict(d):
     if d is None:
         return None
 
-    if type(d) is dict:
+    if isinstance(d, dict):
         keys = list(d.keys())
         empty = True
         for k in keys:
@@ -836,12 +839,13 @@ def prune_dict(d):
             else:
                 empty = False
         return None if empty else d
-    elif type(d) is list:
+
+    if isinstance(d, list):
         if len(d) == 0:
             return None
-        else:
-            for obj in d:
-                prune_dict(obj)
+
+        for obj in d:
+            prune_dict(obj)
 
     return d
 
@@ -852,9 +856,9 @@ def trim_dict_entries(d: dict):
     :param d: The dict whose values to trim
     :returns: d
     """
-    if type(d) is dict:
+    if isinstance(d, dict):
         for k in d.keys():
-            if type(d[k]) is str:
+            if isinstance(d[k], str):
                 d[k] = d[k].strip()
             else:
                 trim_dict_entries(d[k])
@@ -867,7 +871,7 @@ def trim_dict_entries(d: dict):
 # ---------------------------------------------------------------------------- #
 
 
-class DeploymentConfigUtil(object):
+class DeploymentConfigUtil:
     """
     Utility methods for handling deployment configuration files.
     """
@@ -913,7 +917,8 @@ class DeploymentConfigUtil(object):
                     configs
                 )
                 return config_names
-            elif config_profile in configs.keys():
+
+            if config_profile in configs:
                 config_profile = os.path.join(
                     config_dir, configs[config_profile]
                 )
@@ -925,15 +930,15 @@ class DeploymentConfigUtil(object):
                     file = open(config_file, "r")
                     text = file.read()
                     return json.loads(text)
-                else:
-                    raise ValueError(
-                        "Invalid config type: `{0}`".format(config_type)
-                    )
-            else:
+
                 raise ValueError(
-                    "Invalid default config profile, please consult [bdc "
-                    "config list] for available types"
+                    "Invalid config type: `{0}`".format(config_type)
                 )
+
+            raise ValueError(
+                "Invalid default config profile, please consult [bdc "
+                "config list] for available types"
+            )
         except ValueError as e:
             raise CLIError(e)
         except Exception as e:
@@ -1198,7 +1203,8 @@ class DeploymentConfigUtil(object):
             if len(find_result) > 0:
                 expr.update(config_object, value)
                 return
-            elif "$" in json_path:
+
+            if "$" in json_path:
                 raise ValueError(json_path)
 
         # The path did not exist, so now try to patch it

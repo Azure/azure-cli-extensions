@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 
-class Text(object):
+class Text:
     @staticmethod
     def clear():
         import sys

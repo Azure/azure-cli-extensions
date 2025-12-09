@@ -15,23 +15,10 @@ logger = get_logger(__name__)
 
 def arc_sql_mi_fog_create(
     client,
-    name,
-    mi,
-    partner_mi,
-    role=None,
-    primary_mirroring_url=None,
-    partner_mirroring_url=None,
-    partner_mirroring_cert_file=None,
-    partner_sync_mode=None,
-    shared_name=None,
-    namespace=None,
-    use_k8s=None,
-    resource_group=None,
-    partner_resource_group=None,
-    no_wait=False,
+    **kwargs,
 ):
     try:
-        cvo = client.args_to_command_value_object()
+        cvo = client.args_to_command_value_object(kwargs)
         return client.services.failover_group.create(cvo)
     except KubernetesError as e:
         raise FailoverGroupError(e.message)
@@ -41,17 +28,10 @@ def arc_sql_mi_fog_create(
 
 def arc_sql_mi_fog_update(
     client,
-    name,
-    role=None,
-    partner_sync_mode=None,
-    namespace=None,
-    use_k8s=None,
-    mi=None,
-    resource_group=None,
-    no_wait=False,
+    **kwargs,
 ):
     try:
-        cvo = client.args_to_command_value_object()
+        cvo = client.args_to_command_value_object(kwargs)
         return client.services.failover_group.update(cvo)
     except KubernetesError as e:
         raise FailoverGroupError(e.message)
@@ -61,14 +41,10 @@ def arc_sql_mi_fog_update(
 
 def arc_sql_mi_fog_delete(
     client,
-    name,
-    namespace=None,
-    use_k8s=None,
-    mi=None,
-    resource_group=None,
+    **kwargs,
 ):
     try:
-        cvo = client.args_to_command_value_object()
+        cvo = client.args_to_command_value_object(kwargs)
         return client.services.failover_group.delete(cvo)
     except KubernetesError as e:
         raise FailoverGroupError(e.message)
@@ -78,14 +54,10 @@ def arc_sql_mi_fog_delete(
 
 def arc_sql_mi_fog_show(
     client,
-    name,
-    namespace=None,
-    use_k8s=None,
-    mi=None,
-    resource_group=None,
+    **kwargs,
 ):
     try:
-        cvo = client.args_to_command_value_object()
+        cvo = client.args_to_command_value_object(kwargs)
         return client.services.failover_group.show(cvo)
     except KubernetesError as e:
         raise FailoverGroupError(e.message)
@@ -95,13 +67,10 @@ def arc_sql_mi_fog_show(
 
 def arc_sql_mi_fog_list(
     client,
-    namespace=None,
-    use_k8s=None,
-    mi=None,
-    resource_group=None,
+    **kwargs,
 ):
     try:
-        cvo = client.args_to_command_value_object()
+        cvo = client.args_to_command_value_object(kwargs)
         return client.services.failover_group.list(cvo)
     except KubernetesError as e:
         raise FailoverGroupError(e.message)

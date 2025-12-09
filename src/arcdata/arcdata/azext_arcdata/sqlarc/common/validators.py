@@ -111,24 +111,29 @@ def validate_backups_policy_set_arguments(namespace):
         raise CLIError(error_msg.format(error_list[:-1]))
 
 
-def validate_license_type(license, allowed_licenses_list=["paid", "payg"]):
-    if license is None:
+def validate_license_type(sql_license, allowed_licenses_list=None):
+    if allowed_licenses_list is None:
+        allowed_licenses_list = ["paid", "payg"]
+
+    if sql_license is None:
         raise CLIError(
             "LicenseType could not be found at the expected location. "
             "Please visit: https://learn.microsoft.com/en-us/sql/sql-server/"
             "azure-arc/manage-license-type?view=sql-server-ver16&tabs=azure"
             "#modify-license-type to fix this issue!"
         )
-    license = license.lower()
-    if license in allowed_licenses_list:
+
+    sql_license = sql_license.lower()
+    if sql_license in allowed_licenses_list:
         return
     formatted_licenses_list = format_license_list(allowed_licenses_list)
+
     raise CLIError(
         "LicenseType : {0} is not a valid license Type for this command, you must have {1} "
         "license type to use this command. Please visit: "
         "https://learn.microsoft.com/en-us/sql/sql-server/azure-arc/manage-license-type"
         "?view=sql-server-ver16&tabs=azure#modify-license-type to learn more.".format(
-            license, formatted_licenses_list
+            sql_license, formatted_licenses_list
         )
     )
 

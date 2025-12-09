@@ -10,10 +10,6 @@ from requests.exceptions import HTTPError
 class RequestTimeoutError(HTTPError):
     """HTTP 408 Requet Timeout error while calling APIs."""
 
-    pass
-
 
 class ServerError(HTTPError):
     """HTTP 5xx errors while calling APIs."""
-
-    pass

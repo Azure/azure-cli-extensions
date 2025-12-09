@@ -6,7 +6,7 @@
 
 from azure.cli.core.commands import CliCommandType
 from azext_arcdata.core.cli_client import beget
-import azext_arcdata.failover_group.validators as validators
+from azext_arcdata.failover_group import validators
 
 
 def load_commands(self, _):

@@ -423,9 +423,9 @@ class NoOptDataControllerServiceProxy(BaseServiceProxy, ArmMixin):
         from azext_arcdata.vendored_sdks.arm_sdk.client import ArmClient
 
         # TODO: build credentials here rather than deep into this call stack
-        class NoOptCred(object):
+        class NoOptCred:
             def get_token(self):
-                class NoOptAccessToken(object):
+                class NoOptAccessToken:
                     token = "noopt"
 
                 return NoOptAccessToken()
