@@ -38,7 +38,8 @@ def validate_aci_source(namespace):
         namespace.input_path,
         namespace.arm_template,
         namespace.image_name,
-        namespace.virtual_node_yaml_path
+        namespace.virtual_node_yaml_path,
+        namespace.container_definitions is not None,
     ])) != 1:
         raise CLIError("Can only generate CCE policy from one source at a time")
 
@@ -71,7 +72,11 @@ def validate_fragment_key_and_chain(namespace):
 
 
 def validate_fragment_source(namespace):
-    if not namespace.generate_import and sum(map(bool, [namespace.image_name, namespace.input_path])) != 1:
+    if not namespace.generate_import and sum(map(bool, [
+        namespace.image_name,
+        namespace.input_path,
+        namespace.container_definitions is not None,
+    ])) != 1:
         raise CLIError("Must provide either an image name or an input file to generate a fragment")
 
 

@@ -21,7 +21,6 @@ import re
 import sys
 import codecs
 from typing import (
-    Dict,
     Any,
     cast,
     Optional,
@@ -31,7 +30,10 @@ from typing import (
     Mapping,
     Callable,
     MutableMapping,
+<<<<<<<< HEAD:src/aks-preview/azext_aks_preview/vendored_sdks/azure_mgmt_preview_aks/_utils/serialization.py
+========
     List,
+>>>>>>>> upstream/main:src/spring/azext_spring/vendored_sdks/applicationinsights/_utils/serialization.py
 )
 
 try:
@@ -229,12 +231,16 @@ class Model:
     serialization and deserialization.
     """
 
-    _subtype_map: Dict[str, Dict[str, Any]] = {}
-    _attribute_map: Dict[str, Dict[str, Any]] = {}
-    _validation: Dict[str, Dict[str, Any]] = {}
+    _subtype_map: dict[str, dict[str, Any]] = {}
+    _attribute_map: dict[str, dict[str, Any]] = {}
+    _validation: dict[str, dict[str, Any]] = {}
 
     def __init__(self, **kwargs: Any) -> None:
+<<<<<<<< HEAD:src/aks-preview/azext_aks_preview/vendored_sdks/azure_mgmt_preview_aks/_utils/serialization.py
+        self.additional_properties: Optional[dict[str, Any]] = {}
+========
         self.additional_properties: Optional[Dict[str, Any]] = {}
+>>>>>>>> upstream/main:src/spring/azext_spring/vendored_sdks/applicationinsights/_utils/serialization.py
         for k in kwargs:  # pylint: disable=consider-using-dict-items
             if k not in self._attribute_map:
                 _LOGGER.warning("%s is not a known attribute of class %s and will be ignored", k, self.__class__)
@@ -311,7 +317,7 @@ class Model:
     def as_dict(
         self,
         keep_readonly: bool = True,
-        key_transformer: Callable[[str, Dict[str, Any], Any], Any] = attribute_transformer,
+        key_transformer: Callable[[str, dict[str, Any], Any], Any] = attribute_transformer,
         **kwargs: Any
     ) -> JSON:
         """Return a dict that can be serialized using json.dump.
@@ -380,7 +386,7 @@ class Model:
     def from_dict(
         cls,
         data: Any,
-        key_extractors: Optional[Callable[[str, Dict[str, Any], Any], Any]] = None,
+        key_extractors: Optional[Callable[[str, dict[str, Any], Any], Any]] = None,
         content_type: Optional[str] = None,
     ) -> Self:
         """Parse a dict using given key extractor return a model.
@@ -414,7 +420,11 @@ class Model:
             return {}
         result = dict(cls._subtype_map[key])
         for valuetype in cls._subtype_map[key].values():
+<<<<<<<< HEAD:src/aks-preview/azext_aks_preview/vendored_sdks/azure_mgmt_preview_aks/_utils/serialization.py
+            result |= objects[valuetype]._flatten_subtype(key, objects)  # pylint: disable=protected-access
+========
             result.update(objects[valuetype]._flatten_subtype(key, objects))  # pylint: disable=protected-access
+>>>>>>>> upstream/main:src/spring/azext_spring/vendored_sdks/applicationinsights/_utils/serialization.py
         return result
 
     @classmethod
@@ -528,7 +538,11 @@ class Serializer:  # pylint: disable=too-many-public-methods
             "[]": self.serialize_iter,
             "{}": self.serialize_dict,
         }
+<<<<<<<< HEAD:src/aks-preview/azext_aks_preview/vendored_sdks/azure_mgmt_preview_aks/_utils/serialization.py
+        self.dependencies: dict[str, type] = dict(classes) if classes else {}
+========
         self.dependencies: Dict[str, type] = dict(classes) if classes else {}
+>>>>>>>> upstream/main:src/spring/azext_spring/vendored_sdks/applicationinsights/_utils/serialization.py
         self.key_transformer = full_restapi_key_transformer
         self.client_side_validation = True
 
@@ -579,7 +593,7 @@ class Serializer:  # pylint: disable=too-many-public-methods
 
                 if attr_name == "additional_properties" and attr_desc["key"] == "":
                     if target_obj.additional_properties is not None:
-                        serialized.update(target_obj.additional_properties)
+                        serialized |= target_obj.additional_properties
                     continue
                 try:
 
@@ -789,7 +803,7 @@ class Serializer:  # pylint: disable=too-many-public-methods
 
             # If dependencies is empty, try with current data class
             # It has to be a subclass of Enum anyway
-            enum_type = self.dependencies.get(data_type, data.__class__)
+            enum_type = self.dependencies.get(data_type, cast(type, data.__class__))
             if issubclass(enum_type, Enum):
                 return Serializer.serialize_enum(data, enum_obj=enum_type)
 
@@ -1184,7 +1198,7 @@ def rest_key_extractor(attr, attr_desc, data):  # pylint: disable=unused-argumen
 
     while "." in key:
         # Need the cast, as for some reasons "split" is typed as list[str | Any]
-        dict_keys = cast(List[str], _FLATTEN.split(key))
+        dict_keys = cast(list[str], _FLATTEN.split(key))
         if len(dict_keys) == 1:
             key = _decode_attribute_map_key(dict_keys[0])
             break
@@ -1386,7 +1400,11 @@ class Deserializer:
             "duration": (isodate.Duration, datetime.timedelta),
             "iso-8601": (datetime.datetime),
         }
+<<<<<<<< HEAD:src/aks-preview/azext_aks_preview/vendored_sdks/azure_mgmt_preview_aks/_utils/serialization.py
+        self.dependencies: dict[str, type] = dict(classes) if classes else {}
+========
         self.dependencies: Dict[str, type] = dict(classes) if classes else {}
+>>>>>>>> upstream/main:src/spring/azext_spring/vendored_sdks/applicationinsights/_utils/serialization.py
         self.key_extractors = [rest_key_extractor, xml_key_extractor]
         # Additional properties only works if the "rest_key_extractor" is used to
         # extract the keys. Making it to work whatever the key extractor is too much

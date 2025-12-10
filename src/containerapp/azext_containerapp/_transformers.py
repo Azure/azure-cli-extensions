@@ -5,6 +5,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=bare-except, line-too-long
 
+import json
 from knack.log import get_logger
 
 from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
@@ -153,3 +154,149 @@ def transform_telemetry_otlp_values_by_name_wrapper(args):
         raise ResourceNotFoundError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
 
     return transform_telemetry_otlp_values_by_name
+
+
+def transform_function_list(result):
+    from collections import OrderedDict
+
+    if not result:
+        return []
+
+    functions = result.get('value', []) if isinstance(result, dict) else result
+    table = []
+    for func in functions:
+        if isinstance(func, dict):
+            name = func.get('name', '')
+            location = func.get('location', '')
+            properties = func.get('properties', {})
+            trigger_type = properties.get('triggerType', '').replace('Trigger', '')
+            disabled = properties.get('isDisabled', False)
+
+            table.append(OrderedDict([
+                ('Name', name),
+                ('Location', location),
+                ('TriggerType', trigger_type),
+                ('IsDisabled', str(disabled)),
+                ('Language', properties.get('language', ''))
+            ]))
+
+    return table
+
+
+def transform_function_show(result):
+    from collections import OrderedDict
+
+    if not result:
+        return []
+
+    properties = result.get('properties', {})
+    table = []
+    table.append(OrderedDict([('Property', 'Name'), ('Value', result.get('name', ''))]))
+    table.append(OrderedDict([('Property', 'Location'), ('Value', result.get('location', ''))]))
+    table.append(OrderedDict([('Property', 'TriggerType'), ('Value', properties.get('triggerType', ''))]))
+    table.append(OrderedDict([('Property', 'IsDisabled'), ('Value', str(properties.get('isDisabled', False)))]))
+    table.append(OrderedDict([('Property', 'Language'), ('Value', properties.get('language', ''))]))
+    table.append(OrderedDict([('Property', 'InvokeUrl'), ('Value', properties.get('invokeUrlTemplate', ''))]))
+
+    return table
+
+
+def process_app_insights_response(response):
+    if not response or 'tables' not in response:
+        return []
+
+    results = []
+    for table in response['tables']:
+        if 'columns' in table and 'rows' in table:
+            columns = [col['name'] for col in table['columns']]
+            for row in table['rows']:
+                if len(row) == len(columns):
+                    result_obj = {}
+                    for i, value in enumerate(row):
+                        result_obj[columns[i]] = value
+                    results.append(result_obj)
+
+    return results
+
+
+def transform_function_traces(result):
+    from collections import OrderedDict
+    if not result:
+        return []
+
+    traces = result if isinstance(result, list) else []
+
+    table = []
+    for trace in traces:
+        if isinstance(trace, dict):
+            table.append(OrderedDict([
+                ('Timestamp', trace.get('timestamp', '')),
+                ('Success', trace.get('success', '')),
+                ('ResultCode', trace.get('resultCode', '')),
+                ('DurationInMilliSeconds', trace.get('durationInMilliSeconds', '')),
+                ('InvocationId', trace.get('invocationId', '')),
+                ('OperationId', trace.get('operationId', '')),
+                ('OperationName', trace.get('operationName', '')),
+                ('FunctionNameFromCustomDimension', trace.get('functionNameFromCustomDimension', ''))
+            ]))
+
+    return table
+
+
+def transform_debug_command_output(raw_output):
+    try:
+        if "$id" in raw_output:
+            del raw_output["$id"]
+
+        if "output" in raw_output:
+            output_str = raw_output["output"]
+            try:
+                parsed_output = json.loads(output_str)
+                return parsed_output
+            except json.JSONDecodeError:
+                decoded_output = output_str.encode().decode('unicode_escape')
+                return decoded_output
+        else:
+            return raw_output
+
+    except (KeyError, UnicodeDecodeError):
+        if "$id" in raw_output:
+            del raw_output["$id"]
+        return raw_output
+
+
+def transform_function_keys_show_set(result):
+    from collections import OrderedDict
+
+    if not result:
+        return []
+
+    if isinstance(result, dict) and "value" in result:
+        key_data = result["value"]
+        table = []
+        table.append(OrderedDict([('Property', 'Name'), ('Value', key_data.get('name', ''))]))
+        table.append(OrderedDict([('Property', 'Value'), ('Value', key_data.get('value', ''))]))
+        return table
+
+    return []
+
+
+def transform_function_keys_list(result):
+    from collections import OrderedDict
+    if not result:
+        return []
+
+    if isinstance(result, dict) and "value" in result:
+        value_data = result["value"]
+        if isinstance(value_data, dict) and "keys" in value_data:
+            keys = value_data["keys"]
+            table = []
+            for key in keys:
+                if isinstance(key, dict):
+                    table.append(OrderedDict([
+                        ('Name', key.get('name', '')),
+                        ('Value', key.get('value', ''))
+                    ]))
+            return table
+
+    return []
