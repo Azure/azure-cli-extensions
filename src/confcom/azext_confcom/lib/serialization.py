@@ -4,14 +4,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from dataclasses import asdict
 import json
-from pathlib import Path
+import re
+
+from dataclasses import asdict
 from textwrap import dedent
 from typing import Union
 
 from azext_confcom.lib.policy import Container, FragmentReference, Fragment, Policy
-import re
 
 
 # This is a single entrypoint for serializing both Policy and Fragment objects
