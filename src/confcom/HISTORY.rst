@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.4.5
+++++++
+* Drop the dependency on OPA
+
 1.4.4
 ++++++
 * Improve the package building process
