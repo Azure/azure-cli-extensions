@@ -43,7 +43,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.change_state_name = AAZStrArg(
-            options=["-n", "--name", "--change-state-name"],
+            options=["-n", "--name", "--change-record-name"],
             help="The name of the ChangeState resource.",
             required=True,
             fmt=AAZStrArgFormat(

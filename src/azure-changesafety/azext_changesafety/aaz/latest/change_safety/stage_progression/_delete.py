@@ -44,7 +44,7 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.change_state_name = AAZStrArg(
-            options=["--change-state-name"],
+            options=["--change-record-name"],
             help="The name of the ChangeState resource.",
             required=True,
             id_part="name",
