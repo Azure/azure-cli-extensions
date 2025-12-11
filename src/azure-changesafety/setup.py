@@ -34,14 +34,14 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='change-state',
+    name='azure-changesafety',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools ChangeState Extension.',
+    description='Microsoft Azure Command-Line Tools ChangeSafety Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/change-state',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/azure-changesafety',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     package_data={'azext_changesafety': ['azext_metadata.json']},

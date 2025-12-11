@@ -659,20 +659,20 @@ ChangeStateCreate.AZ_HELP = {
         {
             "name": "Create with StageMap reference and status link",
             "text": (
-                "az changesafety changestate create -g MyResourceGroup -n changestate002 "
+                "az changesafety changerecord create -g MyResourceGroup -n changerecord002 "
                 "--change-type ManualTouch --rollout-type Normal "
                 "--stage-map \"{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/"
                 "resourceGroups/MyResourceGroup/providers/Microsoft.ChangeSafety/stageMaps/rolloutStageMap}\" "
                 "--targets \"resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/"
                 "resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH\" "
                 "--links \"[{name:status,uri:'https://contoso.com/change/rollout-002'}]\"\n"
-                "az changesafety changestate delete -g MyResourceGroup -n changestate002 --yes"
+                "az changesafety changerecord delete -g MyResourceGroup -n changerecord002 --yes"
             ),
         },
         {
             "name": "Create a change state for a VM rollout",
             "text": (
-                "az changesafety changestate create -g MyResourceGroup -n changestate001 "
+                "az changesafety changerecord create -g MyResourceGroup -n changerecord001 "
                 "--change-type AppDeployment --rollout-type Normal "
                 "--targets \"resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/"
                 "resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PUT\""
@@ -681,7 +681,7 @@ ChangeStateCreate.AZ_HELP = {
         {
             "name": "Create with staging rollout configuration",
             "text": (
-                "az changesafety changestate create -g MyResourceGroup -n opsChange01 "
+                "az changesafety changerecord create -g MyResourceGroup -n changerecord-ops01 "
                 "--rollout-type Hotfix "
                 "--targets \"resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/"
                 "resourceGroups/MyResourceGroup/providers/Microsoft.Web/sites/myApp,operation=POST\""
@@ -690,7 +690,7 @@ ChangeStateCreate.AZ_HELP = {
         {
             "name": "Create with StageMap name and default schedule",
             "text": (
-                "az changesafety changestate create -g MyResourceGroup -n changestate003 "
+                "az changesafety changerecord create -g MyResourceGroup -n changerecord003 "
                 "--change-type ManualTouch --rollout-type Normal --stagemap-name rolloutStageMap "
                 "--targets \"resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/"
                 "resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=DELETE\""
@@ -705,14 +705,14 @@ ChangeStateUpdate.AZ_HELP = {
         {
             "name": "Adjust rollout type and add a comment",
             "text": (
-                "az changesafety changestate update -g MyResourceGroup -n changestate001 "
+                "az changesafety changerecord update -g MyResourceGroup -n changerecord001 "
                 "--rollout-type Emergency --comments \"Escalated to emergency rollout\""
             ),
         },
         {
             "name": "Update scheduling window",
             "text": (
-                "az changesafety changestate update -g MyResourceGroup -n changestate001 "
+                "az changesafety changerecord update -g MyResourceGroup -n changerecord001 "
                 "--anticipated-start-time \"2024-09-01T08:00:00Z\" "
                 "--anticipated-end-time \"2024-09-01T12:00:00Z\""
             ),
@@ -720,7 +720,7 @@ ChangeStateUpdate.AZ_HELP = {
         {
             "name": "Replace the target definition",
             "text": (
-                "az changesafety changestate update -g MyResourceGroup -n changestate001 "
+                "az changesafety changerecord update -g MyResourceGroup -n changerecord001 "
                 "--targets \"resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/"
                 "resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/myServer,operation=PATCH\""
             ),
@@ -733,7 +733,7 @@ ChangeStateDelete.AZ_HELP = {
     "examples": [
         {
             "name": "Delete a change state without confirmation",
-            "text": "az changesafety changestate delete -g MyResourceGroup -n changestate001 --yes",
+            "text": "az changesafety changerecord delete -g MyResourceGroup -n changerecord001 --yes",
         },
     ],
 }
@@ -743,7 +743,7 @@ ChangeStateShow.AZ_HELP = {
     "examples": [
         {
             "name": "Show a change state",
-            "text": "az changesafety changestate show -g MyResourceGroup -n changestate001",
+            "text": "az changesafety changerecord show -g MyResourceGroup -n changerecord001",
         },
     ],
 }

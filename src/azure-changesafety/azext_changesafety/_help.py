@@ -15,19 +15,19 @@ helps['changesafety'] = """
     short-summary: Manage Change Safety resources.
 """
 
-helps['changesafety changestate'] = """
+helps['changesafety changerecord'] = """
     type: group
     short-summary: Manage ChangeState resources that describe planned changes across targets.
 """
 
-helps['changesafety changestate create'] = """
+helps['changesafety changerecord create'] = """
     type: command
     short-summary: Create a ChangeState resource.
     long-summary: >
         Provide at least one target definition to describe which resources or operations the ChangeState
         will affect. Targets are expressed as comma or semicolon separated key=value pairs such as
         resourceId=RESOURCE_ID,operation=DELETE. The command is also available through the alias
-        `az change-safety change-state`. If you omit scheduling flags, the anticipated start time defaults
+        `az changesafety changerecord`. If you omit scheduling flags, the anticipated start time defaults
         to now and the anticipated end time defaults to eight hours later (UTC).
     parameters:
       - name: --targets
@@ -51,26 +51,26 @@ helps['changesafety changestate create'] = """
     examples:
       - name: Create with StageMap reference and status link
         text: |-
-          az changesafety changestate create -g MyResourceGroup -n changestate002 --change-type ManualTouch --rollout-type Normal --stage-map "{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ChangeSafety/stageMaps/rolloutStageMap}" --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH" --links "[{name:status,uri:'https://contoso.com/change/rollout-002'}]"
-          az changesafety changestate delete -g MyResourceGroup -n changestate002 --yes
+          az changesafety changerecord create -g MyResourceGroup -n changerecord002 --change-type ManualTouch --rollout-type Normal --stage-map "{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ChangeSafety/stageMaps/rolloutStageMap}" --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH" --links "[{name:status,uri:'https://contoso.com/change/rollout-002'}]"
+          az changesafety changerecord delete -g MyResourceGroup -n changerecord002 --yes
       - name: Create a change state for a VM rollout
         text: |-
-          az changesafety changestate create -g MyResourceGroup -n changestate001 --change-type AppDeployment --rollout-type Normal --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PUT"
+          az changesafety changerecord create -g MyResourceGroup -n changerecord001 --change-type AppDeployment --rollout-type Normal --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PUT"
       - name: Create with staging rollout configuration
         text: |-
-          az changesafety changestate create -g MyResourceGroup -n opsChange01 --rollout-type Hotfix --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Web/sites/myApp,operation=POST"
+          az changesafety changerecord create -g MyResourceGroup -n changerecord-ops01 --rollout-type Hotfix --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Web/sites/myApp,operation=POST"
       - name: Reference a StageMap by name
         text: |-
-          az changesafety changestate create -g MyResourceGroup -n changestate003 --change-type ManualTouch --rollout-type Normal --stagemap-name rolloutStageMap --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=DELETE"
+          az changesafety changerecord create -g MyResourceGroup -n changerecord003 --change-type ManualTouch --rollout-type Normal --stagemap-name rolloutStageMap --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=DELETE"
 """
 
-helps['changesafety changestate update'] = """
+helps['changesafety changerecord update'] = """
     type: command
     short-summary: Update an existing ChangeState resource.
     long-summary: >
         Use this command to modify descriptive metadata, rollout settings, or replace targets for an
         existing ChangeState. When you pass --targets, the supplied definitions overwrite the previous set.
-        This command is also available through the alias `az change-safety change-state`.
+        This command is also available through the alias `az change-safety change-record`.
     parameters:
       - name: --targets
         short-summary: >
@@ -89,29 +89,29 @@ helps['changesafety changestate update'] = """
     examples:
       - name: Adjust rollout type and add a comment
         text: |-
-          az changesafety changestate update -g MyResourceGroup -n changestate001 --rollout-type Emergency --comments "Escalated to emergency rollout"
+          az changesafety changerecord update -g MyResourceGroup -n changerecord001 --rollout-type Emergency --comments "Escalated to emergency rollout"
       - name: Update scheduling window
         text: |-
-          az changesafety changestate update -g MyResourceGroup -n changestate001 --anticipated-start-time "2024-09-01T08:00:00Z" --anticipated-end-time "2024-09-01T12:00:00Z"
+          az changesafety changerecord update -g MyResourceGroup -n changerecord001 --anticipated-start-time "2024-09-01T08:00:00Z" --anticipated-end-time "2024-09-01T12:00:00Z"
       - name: Replace the target definition
         text: |-
-          az changesafety changestate update -g MyResourceGroup -n changestate001 --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/myServer,operation=PATCH"
+          az changesafety changerecord update -g MyResourceGroup -n changerecord001 --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/myServer,operation=PATCH"
 """
 
-helps['changesafety changestate delete'] = """
+helps['changesafety changerecord delete'] = """
     type: command
     short-summary: Delete a ChangeState resource.
     examples:
       - name: Delete a change state without confirmation
         text: |-
-          az changesafety changestate delete -g MyResourceGroup -n changestate001 --yes
+          az changesafety changerecord delete -g MyResourceGroup -n changerecord001 --yes
 """
 
-helps['changesafety changestate show'] = """
+helps['changesafety changerecord show'] = """
     type: command
     short-summary: Show details for a ChangeState resource.
     examples:
       - name: Show a change state
         text: |-
-          az changesafety changestate show -g MyResourceGroup -n changestate001
+          az changesafety changerecord show -g MyResourceGroup -n changerecord001
 """
