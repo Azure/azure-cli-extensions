@@ -32,7 +32,6 @@ def ml_deployment_template_list(cmd, registry_name=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-
     try:
         deployment_templates = ml_client.deployment_templates.list()
         # Handle DeploymentTemplate serialization - try as_dict() first, then _to_dict()
@@ -59,7 +58,6 @@ def ml_deployment_template_show(cmd, name, version=None, registry_name=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-
     try:
         deployment_template = ml_client.deployment_templates.get(name=name, version=version)
         # Handle DeploymentTemplate serialization
@@ -96,7 +94,6 @@ def ml_deployment_template_create(
             params_override.append({"name": name})
         if version:
             params_override.append({"version": version})
-
         if load_deployment_template:
             deployment_template = load_deployment_template(source=file, params_override=params_override)
         else:
@@ -199,7 +196,6 @@ def ml_deployment_template_archive(
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-
     try:
         ml_client.deployment_templates.archive(name=name, version=version)
     except Exception as err:  # pylint: disable=broad-except
@@ -218,7 +214,6 @@ def ml_deployment_template_restore(
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-
     try:
         ml_client.deployment_templates.restore(name=name, version=version)
     except Exception as err:  # pylint: disable=broad-except
