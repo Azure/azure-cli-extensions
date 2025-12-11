@@ -12,6 +12,34 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b13
+* fix subscription id not correclty set in helm chart
+
+1.0.0b12
+++++++++
+* [BREAKING CHANGE]:
+  * aks-agent is now containerized and deployed per Kubernetes cluster along with a managed aks-mcp instance
+  * aks-agent is deployed on the AKS cluster as Helm charts during `az aks agent-init`
+  * aks agent commands now require --resource-group and --name parameters to specify the target AKS cluster
+  * Add `az aks agent-cleanup` to cleanup the AKS agent from the cluster
+* [SECURITY]:
+  * Kubernetes RBAC: Uses cluster roles to securely access Kubernetes resources with least-privilege principles
+  * Azure Workload Identity: Supports Azure workload identity for secure, keyless access to Azure resources
+  * LLM credentials are stored securely in Kubernetes secrets with encryption at rest
+
+1.0.0b11
+++++++++
+* Fix(agent-init): replace max_tokens with max_completion_tokens for connection check of Azure OpenAI service.
+
+1.0.0b10
+++++++++
+* Pin supabase==2.8.0 to avoid "ModuleNotFoundError: No module named 'supabase_auth.http_clients'"
+
+1.0.0b9
++++++++
+* agent-init: replace model name with deployment name for Azure OpenAI service.
+* agent-init: remove importing holmesgpt to resolve the latency issue.
+
 1.0.0b8
 +++++++
 * Error handling: dont raise traceback for init prompt and holmesgpt interaction.

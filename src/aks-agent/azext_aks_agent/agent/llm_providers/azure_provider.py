@@ -32,25 +32,26 @@ class AzureProvider(LLMProvider):
     @property
     def parameter_schema(self):
         return {
-            "MODEL_NAME": {
+            "model": {
                 "secret": False,
                 "default": None,
-                "hint": "should be consistent with your deployed name, e.g., gpt-5",
-                "validator": non_empty
+                "hint": "ensure your deployment name is the same as the model name, e.g., gpt-5",
+                "validator": non_empty,
+                "alias": "deployment_name"
             },
-            "AZURE_API_KEY": {
+            "api_key": {
                 "secret": True,
                 "default": None,
                 "hint": None,
                 "validator": non_empty
             },
-            "AZURE_API_BASE": {
+            "api_base": {
                 "secret": False,
                 "default": None,
                 "hint": "https://{azure-openai-service-name}.openai.azure.com/",
                 "validator": is_valid_api_base
             },
-            "AZURE_API_VERSION": {
+            "api_version": {
                 "secret": False,
                 "default": "2025-04-01-preview",
                 "hint": None,
@@ -58,35 +59,35 @@ class AzureProvider(LLMProvider):
             }
         }
 
-    def validate_connection(self, params: dict) -> Tuple[bool, str, str]:
-        api_key = params.get("AZURE_API_KEY")
-        api_base = params.get("AZURE_API_BASE")
-        api_version = params.get("AZURE_API_VERSION")
-        model_name = params.get("MODEL_NAME")
+    def validate_connection(self, params: dict) -> Tuple[str, str]:
+        api_key = params.get("api_key")
+        api_base = params.get("api_base")
+        api_version = params.get("api_version")
+        deployment_name = params.get("model")
 
-        if not all([api_key, api_base, api_version, model_name]):
-            return False, "Missing required Azure parameters.", "retry_input"
+        if not all([api_key, api_base, api_version, deployment_name]):
+            return "Missing required Azure parameters.", "retry_input"
 
         # REST API reference: https://learn.microsoft.com/en-us/azure/ai-foundry/openai/api-version-lifecycle?tabs=rest
-        url = urljoin(api_base, f"openai/deployments/{model_name}/chat/completions")
+        url = urljoin(api_base, f"openai/deployments/{deployment_name}/chat/completions")
 
         query = {"api-version": api_version}
         full_url = f"{url}?{urlencode(query)}"
         headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
         payload = {
-            "model": model_name,
+            "model": deployment_name,
             "messages": [{"role": "user", "content": "ping"}],
-            "max_tokens": 16
+            "max_completion_tokens": 16
         }
 
         try:
             resp = requests.post(full_url, headers=headers,
                                  json=payload, timeout=10)
             resp.raise_for_status()
-            return True, "Connection successful.", "save"
+            return None, "save"  # None error means success
         except requests.exceptions.HTTPError as e:
             if 400 <= resp.status_code < 500:
-                return False, f"Client error: {e} - {resp.text}", "retry_input"
-            return False, f"Server error: {e} - {resp.text}", "connection_error"
+                return f"Client error: {e} - {resp.text}", "retry_input"
+            return f"Server error: {e} - {resp.text}", "connection_error"
         except requests.exceptions.RequestException as e:
-            return False, f"Request error: {e}", "connection_error"
+            return f"Request error: {e}", "connection_error"

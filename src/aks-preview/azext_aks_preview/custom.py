@@ -1578,8 +1578,8 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
             "Please specify nodepool name or use az aks nodepool command to scale node pool"
         )
 
-    for agent_profile in instance.agent_pool_profiles:
-        if agent_profile.name == nodepool_name or (nodepool_name == "" and len(instance.agent_pool_profiles) == 1):
+    for agent_profile in (instance.agent_pool_profiles or []):
+        if agent_profile.name == nodepool_name or (nodepool_name == "" and instance.agent_pool_profiles and len(instance.agent_pool_profiles) == 1):
             if agent_profile.enable_auto_scaling:
                 raise CLIError(
                     "Cannot scale cluster autoscaler enabled node pool.")
@@ -1629,7 +1629,7 @@ def aks_upgrade(cmd,
     _fill_defaults_for_pod_identity_profile(instance.pod_identity_profile)
 
     vmas_cluster = False
-    for agent_profile in instance.agent_pool_profiles:
+    for agent_profile in (instance.agent_pool_profiles or []):
         if agent_profile.type.lower() == "availabilityset":
             vmas_cluster = True
             break
@@ -1646,7 +1646,7 @@ def aks_upgrade(cmd,
 
         # This only provide convenience for customer at client side so they can run az aks upgrade to upgrade all
         # nodepools of a cluster. The SDK only support upgrade single nodepool at a time.
-        for agent_pool_profile in instance.agent_pool_profiles:
+        for agent_pool_profile in (instance.agent_pool_profiles or []):
             if vmas_cluster:
                 raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation '
                                'can only be applied on VirtualMachineScaleSets and VirtualMachines(Preview) cluster.')
@@ -1708,14 +1708,16 @@ def aks_upgrade(cmd,
             upgrade_all = True
         else:
             msg = (
-                "Since control-plane-only argument is specified, this will upgrade only the control plane to "
-                f"{instance.kubernetes_version}. Node pool will not change. Continue?"
+                "Since --control-plane-only parameter is specified, this will upgrade only the kubernetes version of the control plane to  "
+                f"{instance.kubernetes_version}. Kubernetes versions of the node pools will remain unchanged, "
+                "but node image version may be upgraded if there has been cluster config change that requires VM reimage. "
+                "Continue?"
             )
             if not yes and not prompt_y_n(msg, default="n"):
                 return None
 
     if upgrade_all:
-        for agent_profile in instance.agent_pool_profiles:
+        for agent_profile in (instance.agent_pool_profiles or []):
             agent_profile.orchestrator_version = kubernetes_version
             agent_profile.creation_data = None
 
@@ -3044,12 +3046,13 @@ def aks_enable_addons(
         if enable_virtual_node:
             # All agent pool will reside in the same vnet, we will grant vnet level Contributor role
             # in later function, so using a random agent pool here is OK
-            random_agent_pool = result.agent_pool_profiles[0]
-            if random_agent_pool.vnet_subnet_id != "":
-                add_virtual_node_role_assignment(
-                    cmd, result, random_agent_pool.vnet_subnet_id)
-            # Else, the cluster is not using custom VNet, the permission is already granted in AKS RP,
-            # we don't need to handle it in client side in this case.
+            if result.agent_pool_profiles and len(result.agent_pool_profiles) > 0:
+                random_agent_pool = result.agent_pool_profiles[0]
+                if random_agent_pool.vnet_subnet_id != "":
+                    add_virtual_node_role_assignment(
+                        cmd, result, random_agent_pool.vnet_subnet_id)
+                # Else, the cluster is not using custom VNet, the permission is already granted in AKS RP,
+                # we don't need to handle it in client side in this case.
 
     else:
         result = sdk_no_wait(no_wait, client.begin_create_or_update,
@@ -4469,6 +4472,9 @@ def aks_check_network_outbound(
     cluster = aks_show(cmd, client, resource_group_name, cluster_name, None)
     if not cluster:
         raise ValidationError("Can not get cluster information!")
+
+    if not cluster.agent_pool_profiles or len(cluster.agent_pool_profiles) == 0:
+        raise ValidationError("No agent pool profiles found in the cluster!")
 
     vm_set_type = cluster.agent_pool_profiles[0].type
     if not vm_set_type:
