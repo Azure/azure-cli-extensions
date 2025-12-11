@@ -12,6 +12,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b13
+* fix subscription id not correclty set in helm chart
+
 1.0.0b12
 ++++++++
 * [BREAKING CHANGE]:
