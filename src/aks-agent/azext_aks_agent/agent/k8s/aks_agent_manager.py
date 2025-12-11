@@ -812,7 +812,7 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
         if self.cluster_name:
             aks_context["clusterName"] = self.cluster_name
         if self.subscription_id:
-            aks_context["subscriptionId"] = self.subscription_id
+            aks_context["subscriptionID"] = self.subscription_id
         if aks_context:
             helm_values["aksContext"] = aks_context
 
