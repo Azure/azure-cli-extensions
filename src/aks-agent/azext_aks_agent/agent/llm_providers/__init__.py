@@ -5,6 +5,7 @@
 
 from typing import List, Tuple
 
+from azext_aks_agent.agent.console import ERROR_COLOR, HELP_COLOR
 from rich.console import Console
 
 from .anthropic_provider import AnthropicProvider
@@ -47,7 +48,6 @@ def _get_provider_by_index(idx: int) -> LLMProvider:
     Return provider instance by numeric index (1-based).
     Raises ValueError if index is out of range.
     """
-    from holmes.utils.colors import HELP_COLOR
     if 1 <= idx <= len(_PROVIDER_CLASSES):
         console.print("You selected provider:", _PROVIDER_CLASSES[idx - 1]().readable_name, style=f"bold {HELP_COLOR}")
         return _PROVIDER_CLASSES[idx - 1]()
@@ -59,7 +59,6 @@ def prompt_provider_choice() -> LLMProvider:
     Show a numbered menu and return the chosen provider instance.
     Keeps prompting until a valid selection is made.
     """
-    from holmes.utils.colors import ERROR_COLOR, HELP_COLOR
     choices = _provider_choices_numbered()
     if not choices:
         raise ValueError("No providers are registered.")

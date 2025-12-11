@@ -235,13 +235,15 @@ def load_command_table(self, _):
                          command_type=custom_deployment_template)
         g.generic_update_command(
             "update",
-            getter_name="ml_deployment_template_get",
+            getter_name="_ml_deployment_template_show",
             getter_type=custom_deployment_template,
             setter_name="_ml_deployment_template_update",
             setter_type=custom_deployment_template,
         )
-        g.custom_command("archive", "ml_deployment_template_archive", supports_no_wait=True, command_type=custom_deployment_template)
-        g.custom_command("restore", "ml_deployment_template_restore", supports_no_wait=True, command_type=custom_deployment_template)
+        g.custom_command("archive", "ml_deployment_template_archive", supports_no_wait=True,
+                         command_type=custom_deployment_template)
+        g.custom_command("restore", "ml_deployment_template_restore", supports_no_wait=True,
+                         command_type=custom_deployment_template)
 
     with self.command_group("ml compute", client_factory=cf_ml_cl) as g:
         custom_tmpl = "azext_mlv2.manual.custom.compute#{}"
