@@ -8,6 +8,8 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+from azure.ai.ml.constants._common import YAMLRefDocLinks
+
 from ._common_params import (
     add_common_params,
     add_description_param,
@@ -60,7 +62,7 @@ def load_deployment_template_params(self):
         # Optional for create since they can come from file
         add_deployment_template_common_param(c, name_required=False, version_required=False)
         add_lro_param(c)
-        add_file_param(c, "deployment-template", "https://aka.ms/ml-cli-v2-deployment-template-yaml")
+        add_file_param(c, "deployment-template", YAMLRefDocLinks.DEPLOYMENT_TEMPLATE)
         add_override_param(c)
         c.argument(
             "registry_name",

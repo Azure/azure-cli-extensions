@@ -28,7 +28,7 @@ def get_model_help():
         short-summary: Create a model.
         long-summary: >
             Models can be created from a local file, local directory, datastore or job outputs. The created model will be
-            tracked in the workspace/registry under the specified name and version. If you are using a registry, replace `--workspace-name my-workspace` with the `--registry-name <registry-name>` option.
+            tracked in the workspace/registry under the specified name and version. If you are using a registry, replace `--workspace-name my-workspace` with the `--registry-name my-registry` option.
         examples:
         - name: Create a model from a YAML specification file
           text: az ml model create --file model.yml --resource-group my-resource-group --workspace-name my-workspace
@@ -85,7 +85,7 @@ def get_model_help():
         type: command
         short-summary: Update a model in a workspace/registry.
         long-summary: >
-            The 'description', and 'tags' properties can be updated. If you are using a registry, replace `--workspace-name my-workspace` with the `--registry-name <registry-name>` option.
+            The 'description', and 'tags' properties can be updated. If you are using a registry, replace `--workspace-name my-workspace` with the `--registry-name my-registry` option.
         examples:
         - name: Update a model's flavors
           text: az ml model update --name my-model --version 1 --set flavors.python_function.python_version=3.8 --resource-group my-resource-group --workspace-name my-workspace
