@@ -44,7 +44,7 @@ class FootprintMonitoringManagementClientConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2020-02-01-preview"
+        self.api_version = "2024-09-16-preview"
         self.credential_scopes = ['https://management.azure.com/.default']
         self.credential_scopes.extend(kwargs.pop('credential_scopes', []))
         kwargs.setdefault('sdk_moniker', 'footprintmonitoringmanagementclient/{}'.format(VERSION))
