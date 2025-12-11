@@ -11,7 +11,6 @@ from setuptools import setup, find_packages
 from azext_confcom.rootfs_proxy import SecurityPolicyProxy
 from azext_confcom.kata_proxy import KataPolicyGenProxy
 from azext_confcom.cose_proxy import CoseSignToolProxy
-from azext_confcom.lib.opa import opa_get
 
 try:
     from azure_bdist_wheel import cmdclass
@@ -20,7 +19,7 @@ except ImportError:
 
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-VERSION = "1.4.4"
+VERSION = "1.4.5"
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -49,7 +48,6 @@ DEPENDENCIES = [
 SecurityPolicyProxy.download_binaries()
 KataPolicyGenProxy.download_binaries()
 CoseSignToolProxy.download_binaries()
-opa_get()
 
 with open("README.md", "r", encoding="utf-8") as f:
     README = f.read()
