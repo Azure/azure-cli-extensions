@@ -361,6 +361,20 @@ class ArmDataControllerServiceProxy(BaseDataControllerServiceProxy, ArmMixin):
                 polling=polling,
                 least_privilege=command_value_object.least_privilege,
             )
+        return self._arm_client.__create_depreciated_dc__(
+            command_value_object.resource_group,
+            command_value_object.name,
+            command_value_object.location,
+            command_value_object.custom_location,
+            command_value_object.connectivity_mode,
+            path=path,
+            storage_class=command_value_object.storage_class,
+            infrastructure=command_value_object.infrastructure,
+            image_tag=command_value_object.image_tag,
+            auto_upload_metrics=command_value_object.auto_upload_metrics,
+            auto_upload_logs=command_value_object.auto_upload_logs,
+            polling=polling,
+        )
 
     def update(self, command_value_object: tuple):
         polling = not command_value_object.no_wait
@@ -423,9 +437,9 @@ class NoOptDataControllerServiceProxy(BaseServiceProxy, ArmMixin):
         from azext_arcdata.vendored_sdks.arm_sdk.client import ArmClient
 
         # TODO: build credentials here rather than deep into this call stack
-        class NoOptCred:
+        class NoOptCred:  # pylint: disable=too-few-public-methods
             def get_token(self):
-                class NoOptAccessToken:
+                class NoOptAccessToken:  # pylint: disable=too-few-public-methods
                     token = "noopt"
 
                 return NoOptAccessToken()
@@ -450,10 +464,6 @@ class NoOptDataControllerServiceProxy(BaseServiceProxy, ArmMixin):
 class KubernetesManagedInstanceServiceProxy(
     BaseManagedInstanceServiceProxy, KubernetesMixin
 ):
-    def __init__(self):
-        BaseManagedInstanceServiceProxy.__init__(self)
-        KubernetesMixin.__init__(self)
-
     def create(self, command_value_object: tuple):
         pass
 
@@ -474,14 +484,16 @@ class KubernetesManagedInstanceServiceProxy(
 # ============================================================================ #
 # ============================================================================ #
 
+
 class KubernetesDataControllerServiceProxy(
     BaseDataControllerServiceProxy, KubernetesMixin
 ):
     def __init__(self):
         from azext_arcdata.vendored_sdks.kubernetes_sdk.dc.client import DataControllerClient
 
-        super().__init__()
         self._client = DataControllerClient(self.stdout, self.stderr)
+
+        super(KubernetesDataControllerServiceProxy, self).__init__()
 
     def create(self, command_value_object: tuple):
         cvo = command_value_object
@@ -694,8 +706,6 @@ class KubernetesPostgresServiceProxy(BasePostgresServiceProxy, KubernetesMixin):
             PostgreSqlClient,
         )
 
-        BasePostgresServiceProxy.__init__(self)
-        KubernetesMixin.__init__(self)
         self._client = PostgreSqlClient(self.stdout, self.stderr)
         super(KubernetesPostgresServiceProxy, self).__init__()
 
@@ -834,9 +844,6 @@ class KubernetesActiveDirectoryConnectorServiceProxy(
             ActiveDirectoryConnectorClient,
         )
 
-        BaseActiveDirectoryConnectorServiceProxy.__init__(self)
-        KubernetesMixin.__init__(self)
-        self._client = ActiveDirectoryConnectorClient(self.stdout, self.stderr)
         self._client = ActiveDirectoryConnectorClient(self.stdout, self.stderr)
         super(KubernetesActiveDirectoryConnectorServiceProxy, self).__init__()
 
@@ -1188,10 +1195,6 @@ class KubernetesFailoverGroupServiceProxy(
         from azext_arcdata.vendored_sdks.kubernetes_sdk.failover_group.client import (
             FailoverGroupClient,
         )
-
-        BaseFailoverGroupServiceProxy.__init__(self)
-        KubernetesMixin.__init__(self)
-        self._client = FailoverGroupClient(self.stdout, self.stderr)
 
         self._client = FailoverGroupClient(self.stdout, self.stderr)
         super(KubernetesFailoverGroupServiceProxy, self).__init__()
