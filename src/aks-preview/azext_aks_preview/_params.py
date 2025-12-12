@@ -2129,6 +2129,10 @@ def load_arguments(self, _):
             options_list=["--node-vm-size", "-s"],
             completer=get_vm_size_completion_list,
         )
+        c.argument(
+            "gpu_driver",
+            arg_type=get_enum_type(gpu_driver_install_modes)
+        )
 
     with self.argument_context("aks nodepool upgrade") as c:
         # upgrade strategy
