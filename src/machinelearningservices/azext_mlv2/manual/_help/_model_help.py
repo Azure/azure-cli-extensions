@@ -40,8 +40,8 @@ def get_model_help():
           text: az ml model create --name my-model --version 1 --path azureml://jobs/c42d2507-4953-4a7c-a4c1-2b5bfe0ac64e/outputs/artifacts/paths/model/ --resource-group my-resource-group --workspace-name my-workspace
         - name: Create a model from a datastore 'azureml://datastores/<datastore-name>/paths/<path-to-model-relative-to-the-root-of-the-datastore-location>' using command options
           text: az ml model create --name my-model --version 1 --path azureml://datastores/myblobstore/paths/models/cifar10/cifar.pt --resource-group my-resource-group --workspace-name my-workspace
-        - name: Create a model from a YAML file and override the default deployment template
-          text: az ml model create --registry-name my-registry --resource-group my-resource-group --file model.yaml --set default_deployment_template.asset_id="azureml://registries/my-registry/deploymenttemplates/my-template/versions/1" --version 3
+        - name: Create a model from a YAML file and set/override the default deployment template using --set
+          text: az ml model create --registry-name my-registry --resource-group my-resource-group --file model.yaml --set default_deployment_template.asset_id="azureml://registries/my-registry/deploymenttemplates/my-template/versions/1" --version 1
     """
     helps[
         "ml model show"
