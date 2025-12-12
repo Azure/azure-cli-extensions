@@ -18745,7 +18745,7 @@ spec:
         location="eastus",
     )
     def test_aks_applicationloadbalancer_update(self, resource_group, resource_group_location):
-        """This test case exercises updating application load balancer (Application Gateway for Containers) in an AKS cluster with a specific ingress controller."""
+        """This test case exercises enabling and updating the application load balancer (Application Gateway for Containers) in an AKS cluster."""
 
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
