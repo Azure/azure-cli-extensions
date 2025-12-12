@@ -1,9 +1,4 @@
-import json
-
 from azext_arcdata.sqlarc.common.helpers import convert_string_to_bool
-from azext_arcdata.sqlarc.common.validators import (
-    validate_args_required_for_computing_server_name,
-)
 
 
 def update_feature_flag(config, feature_name, feature_flag_value):

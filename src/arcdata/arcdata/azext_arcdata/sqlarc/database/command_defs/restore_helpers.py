@@ -50,8 +50,8 @@ def poll_restore_status(client, resource_group, full_instance_name, dest_name):
 
         if state == "Canceled" or state == "Failed":
             break
-        else:
-            poll_count += 1
+
+        poll_count += 1
 
         if poll_count % 3 == 0:
             client.stdout(
