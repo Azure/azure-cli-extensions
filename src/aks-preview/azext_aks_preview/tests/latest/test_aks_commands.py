@@ -18770,13 +18770,13 @@ spec:
             "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {k8s_version} "
             "--ssh-key-value={ssh_key_value} --enable-gateway-api --enable-application-load-balancer"
         )
-        result = self.cmd(
+        self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.applicationLoadBalancer.enabled", True)
             ],
-        ).get_output_in_json()
+        )
 
         # update (currently makes a PUT no-op)
         update_cmd = (
