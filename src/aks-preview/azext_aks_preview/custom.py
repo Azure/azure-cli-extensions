@@ -4179,7 +4179,7 @@ def aks_applicationloadbalancer_disable(
         client,
         resource_group_name,
         name,
-        enable_application_load_balancer=False)
+        disable_application_load_balancer=True)
 
 
 def aks_applicationloadbalancer_update(
