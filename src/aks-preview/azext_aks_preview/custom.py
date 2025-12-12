@@ -4333,7 +4333,8 @@ def _aks_applicationloadbalancer_update(
         client,
         resource_group_name,
         name,
-        enable_application_load_balancer=None
+        enable_application_load_balancer=None,
+        disable_application_load_balancer=None
 ):
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
