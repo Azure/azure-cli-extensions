@@ -3415,6 +3415,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("enable_application_load_balancer")
 
+    def get_disable_application_load_balancer(self) -> bool:
+        """Obtain the value of disable_application_load_balancer.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_application_load_balancer")
+
     def get_enable_app_routing(self) -> bool:
         """Obtain the value of enable_app_routing.
 
@@ -6645,25 +6652,37 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # get parameters from context
         enable_application_load_balancer = self.context.get_enable_application_load_balancer()
+        disable_application_load_balancer = self.context.get_disable_application_load_balancer()
+
+        # Check for mutually exclusive arguments
+        if enable_application_load_balancer and disable_application_load_balancer:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-application-load-balancer and "
+                "--disable-application-load-balancer at the same time."
+            )
 
         # update ManagedCluster object with application load balancer settings
-        mc.ingress_profile = (
-            mc.ingress_profile or
-            self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
-        )
-        mc.ingress_profile.application_load_balancer = (
-            mc.ingress_profile.application_load_balancer or
-            self.models.ManagedClusterIngressProfileApplicationLoadBalancer()  # pylint: disable=no-member
-        )
-        if enable_application_load_balancer is not None:
-            if mc.ingress_profile.application_load_balancer.enabled == enable_application_load_balancer:
-                error_message = (
-                    "Application Load Balancer (Application Gateway for Containers) is already enabled.\n"
-                    if enable_application_load_balancer
-                    else "Application Load Balancer (Application Gateway for Containers) is already disabled.\n"
-                )
-                raise CLIError(error_message)
-            mc.ingress_profile.application_load_balancer.enabled = enable_application_load_balancer
+        if enable_application_load_balancer or disable_application_load_balancer:
+            mc.ingress_profile = (
+                mc.ingress_profile or
+                self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            )
+            mc.ingress_profile.application_load_balancer = (
+                mc.ingress_profile.application_load_balancer or
+                self.models.ManagedClusterIngressProfileApplicationLoadBalancer()  # pylint: disable=no-member
+            )
+            if enable_application_load_balancer:
+                if mc.ingress_profile.application_load_balancer.enabled:
+                    raise CLIError(
+                        "Application Load Balancer (Application Gateway for Containers) is already enabled.\n"
+                    )
+                mc.ingress_profile.application_load_balancer.enabled = True
+            elif disable_application_load_balancer:
+                if mc.ingress_profile.application_load_balancer.enabled is False:
+                    raise CLIError(
+                        "Application Load Balancer (Application Gateway for Containers) is already disabled.\n"
+                    )
+                mc.ingress_profile.application_load_balancer.enabled = False
 
         return mc
 
@@ -7312,6 +7331,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nat_gateway_profile(mc)
         # update kube proxy config
         mc = self.update_kube_proxy_config(mc)
+        # update application load balancer profile
+        mc = self.update_application_load_balancer_profile(mc)
         # update ingress profile gateway api
         mc = self.update_ingress_profile_gateway_api(mc)
         # update custom ca trust certificates

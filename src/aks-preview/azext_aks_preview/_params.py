@@ -1766,6 +1766,18 @@ def load_arguments(self, _):
             action="store_true",
             help="Disable managed installation of Gateway API CRDs."
         )
+        c.argument(
+            "enable_application_load_balancer",
+            action="store_true",
+            is_preview=True,
+            help="Enable Application Load Balancer (Application Gateway for Containers)."
+        )
+        c.argument(
+            "disable_application_load_balancer",
+            action="store_true",
+            is_preview=True,
+            help="Disable Application Load Balancer (Application Gateway for Containers)."
+        )
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)

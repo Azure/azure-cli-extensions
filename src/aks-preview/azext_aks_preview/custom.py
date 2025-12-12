@@ -1400,6 +1400,9 @@ def aks_update(
     # managed gateway installation
     enable_gateway_api=False,
     disable_gateway_api=False,
+    # application load balancer
+    enable_application_load_balancer=False,
+    disable_application_load_balancer=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

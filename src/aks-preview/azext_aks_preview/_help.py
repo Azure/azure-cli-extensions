@@ -1421,6 +1421,12 @@ helps['aks update'] = """
         - name: --disable-gateway-api
           type: bool
           short-summary: Disable managed installation of Gateway API CRDs.
+        - name: --enable-application-load-balancer
+          type: bool
+          short-summary: Enable Application Load Balancer (Application Gateway for Containers) addon.
+        - name: --disable-application-load-balancer
+          type: bool
+          short-summary: Disable Application Load Balancer (Application Gateway for Containers) addon.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
