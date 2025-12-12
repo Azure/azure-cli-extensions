@@ -297,6 +297,136 @@ class ConfigurationHelper:
         except Exception as e:
             raise CLIInternalError(f"Error validating template version {template_version_id}: {str(e)}")
 
+    @staticmethod
+    def matchCapabilities(hierarchy_id, subscription_id, resource_group, template_name, client):
+        """
+        Validate that solution template capabilities are a subset of target capabilities
+        
+        Args:
+            hierarchy_id (str): The hierarchy ID (ARM ID of target)
+            subscription_id (str): The subscription ID for the solution template
+            resource_group (str): The resource group name for the solution template
+            template_name (str): The solution template name
+            client: HTTP client for making the request
+            
+        Raises:
+            CLIInternalError: If capabilities don't match or request fails
+        """
+        from azure.cli.core.azclierror import CLIInternalError
+        import json
+        
+        hierarchy_id_str = str(hierarchy_id) if hierarchy_id else ""
+        
+        try:
+            # Get target capabilities
+            target_request = client._request("GET", hierarchy_id_str, {
+                "api-version": "2025-08-01"
+            }, {
+                "Accept": "application/json"
+            }, None, {}, None)
+            
+            target_response = client.send_request(request=target_request, stream=False)
+            
+            if target_response.http_response.status_code != 200:
+                raise CLIInternalError(f"Failed to get target: {hierarchy_id_str}. Status code: {target_response.http_response.status_code}")
+            
+            target_data = json.loads(target_response.http_response.text())
+            target_capabilities = target_data.get("properties", {}).get("capabilities", [])
+            
+            # Get solution template capabilities
+            solution_template_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Edge/solutionTemplates/{template_name}"
+            
+            solution_request = client._request("GET", solution_template_id, {
+                "api-version": "2025-08-01"
+            }, {
+                "Accept": "application/json"
+            }, None, {}, None)
+            
+            solution_response = client.send_request(request=solution_request, stream=False)
+            
+            if solution_response.http_response.status_code != 200:
+                raise CLIInternalError(f"Failed to get solution template: {solution_template_id}. Status code: {solution_response.http_response.status_code}")
+            
+            solution_data = json.loads(solution_response.http_response.text())
+            solution_capabilities = solution_data.get("properties", {}).get("capabilities", [])
+            
+            # Check that solution capabilities are a subset of target capabilities (case-insensitive)
+            target_capability_set = set(cap.lower() for cap in target_capabilities)
+            solution_capability_set = set(cap.lower() for cap in solution_capabilities)
+            
+            if not solution_capability_set.issubset(target_capability_set):
+                missing_capabilities = solution_capability_set - target_capability_set
+                raise CLIInternalError(f"Solution template capabilities are not a subset of target capabilities. Missing capabilities: {', '.join(missing_capabilities)}")
+                
+        except CLIInternalError:
+            # Re-raise CLI errors as-is
+            raise
+        except Exception as e:
+            raise CLIInternalError(f"Error validating capabilities match: {str(e)}")
+
+    @staticmethod
+    def checkLinking(hierarchy_id, subscription_id, resource_group, template_name, client):
+        """
+        Check if the config template is linked to the provided hierarchy
+        
+        Args:
+            hierarchy_id (str): The hierarchy ID to check for linking
+            subscription_id (str): The subscription ID for the config template
+            resource_group (str): The resource group name for the config template
+            template_name (str): The config template name
+            client: HTTP client for making the request
+            
+        Raises:
+            CLIInternalError: If template is not linked to the hierarchy or request fails
+        """
+        from azure.cli.core.azclierror import CLIInternalError
+        import json
+        
+        hierarchy_id_str = str(hierarchy_id) if hierarchy_id else ""
+        
+        try:
+            # Build config template ID
+            config_template_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Edge/configTemplates/{template_name}"
+            
+            # Get all configTemplateMetadatas for this config template
+            metadata_url = f"{config_template_id}/configTemplateMetadatas"
+            
+            metadata_request = client._request("GET", metadata_url, {
+                "api-version": "2025-08-01"
+            }, {
+                "Accept": "application/json"
+            }, None, {}, None)
+            
+            metadata_response = client.send_request(request=metadata_request, stream=False)
+            
+            if metadata_response.http_response.status_code != 200:
+                raise CLIInternalError(f"Failed to get config template metadatas: {metadata_url}. Status code: {metadata_response.http_response.status_code}")
+            
+            metadata_data = json.loads(metadata_response.http_response.text())
+            metadatas = metadata_data.get("value", [])
+            
+            # Check if hierarchy_id exists in any linkedHierarchies (case-insensitive)
+            hierarchy_found = False
+            hierarchy_id_lower = hierarchy_id_str.lower()
+            for metadata in metadatas:
+                linked_hierarchies = metadata.get("properties", {}).get("linkedHierarchies", [])
+                for linked_hierarchy in linked_hierarchies:
+                    hierarchy_ids = linked_hierarchy.get("hierarchyIds", [])
+                    if any(hid.lower() == hierarchy_id_lower for hid in hierarchy_ids):
+                        hierarchy_found = True
+                        break
+                if hierarchy_found:
+                    break
+            
+            if not hierarchy_found:
+                raise CLIInternalError(f"Config template '{template_name}' is not linked to hierarchy: {hierarchy_id_str}. Please link the config template to this hierarchy first using the 'az workload-orchestration config-template link' command.")
+                
+        except CLIInternalError:
+            # Re-raise CLI errors as-is
+            raise
+        except Exception as e:
+            raise CLIInternalError(f"Error checking config template linking: {str(e)}")
+
     # Add your helper methods here
 
 

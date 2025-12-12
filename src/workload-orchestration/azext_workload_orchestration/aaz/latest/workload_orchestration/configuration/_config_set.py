@@ -230,6 +230,25 @@ class ShowConfig2(AAZCommand):
                     self.client
                 )
                 
+                # Step 0.5: If solution flag is set, validate capabilities match
+                if solution_flag:
+                    ConfigurationHelper.matchCapabilities(
+                        self.ctx.args.hierarchy_id,
+                        template_subscription,
+                        self.ctx.args.template_resource_group,
+                        self.ctx.args.template_name,
+                        self.client
+                    )
+                else:
+                    # If solution flag is not set, check if config template is linked to hierarchy
+                    ConfigurationHelper.checkLinking(
+                        self.ctx.args.hierarchy_id,
+                        template_subscription,
+                        self.ctx.args.template_resource_group,
+                        self.ctx.args.template_name,
+                        self.client
+                    )
+                
                 # Step 1: Create dynamic configuration (without version)
                 dynamic_config_url = f"{self.configuration_id}/dynamicConfigurations/{self.dynamic_configuration_name}"
                 
