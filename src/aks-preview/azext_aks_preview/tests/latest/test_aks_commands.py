@@ -18696,7 +18696,7 @@ spec:
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
 
-        # create cluster without application load balancer
+        # create cluster with application load balancer
         aks_name = self.create_random_name("cliakstest", 16)
         node_vm_size = "standard_d4_v5"
         self.kwargs.update(
