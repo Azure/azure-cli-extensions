@@ -18698,7 +18698,6 @@ spec:
 
         # create cluster with application load balancer
         aks_name = self.create_random_name("cliakstest", 16)
-        node_vm_size = "standard_d4_v5"
         self.kwargs.update(
             {
                 "resource_group": resource_group,
