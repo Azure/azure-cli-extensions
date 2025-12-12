@@ -20,7 +20,7 @@ __all__ = ["AzureArcSqlWebService"]
 logger = get_logger(__name__)
 
 
-class AzureArcSqlWebService:
+class AzureArcSqlWebService:  # pylint: disable=too-many-instance-attributes
     logger = get_logger(__name__)
 
     # initialize the service for making Http Requests to ARM

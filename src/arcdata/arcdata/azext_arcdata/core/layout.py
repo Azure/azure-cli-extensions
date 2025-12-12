@@ -8,7 +8,7 @@ from six import add_metaclass
 from abc import ABC, abstractmethod
 from tabulate import tabulate
 from collections import OrderedDict
-from prompt_toolkit import print_formatted_text as pft, ANSI  # pyright: ignore[reportMissingImports]
+from prompt_toolkit import print_formatted_text as pft, ANSI  # pylint: disable=import-error
 import string
 import os
 
@@ -16,7 +16,7 @@ __all__ = ["BoxLayout"]
 
 
 @add_metaclass(ABC)
-class BaseLayout:
+class BaseLayout:  # pylint: disable=too-few-public-methods
     def __init__(self):
         pass
 
@@ -162,7 +162,7 @@ class BoxLayout(BaseLayout):
     def _stack_boxes(self):
         def stack(data, boxes, parent="", name="", trail="", identifiers=None):
             empty_slot = "-"
-            for key, value in data.items():
+            for key, value in data.items():  # pylint: disable=too-many-nested-blocks
                 # assume name is first XYXName
                 if isinstance(key, str) and "Name" in key:
                     name = value
@@ -317,7 +317,7 @@ class BoxLayout(BaseLayout):
 # ---------------------------------------------------------------------------- #
 
 
-class Box:
+class Box:  # pylint: disable=too-few-public-methods
     def __init__(self, data):
         self._data = data
         self._identifiers = (

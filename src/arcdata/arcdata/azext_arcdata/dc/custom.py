@@ -396,6 +396,8 @@ def dc_config_add(client, config_file, json_values):
     """
     Add new key and value to the given config file
     """
+    _ = client  # pylint: disable=unused-argument
+
     try:
         config_object = DeploymentConfigUtil.config_add(
             config_file, json_values
@@ -409,6 +411,8 @@ def dc_config_replace(client, config_file, json_values):
     """
     Replace the value of a given key in the given config file
     """
+    _ = client  # pylint: disable=unused-argument
+
     try:
         config_object = DeploymentConfigUtil.config_replace(
             config_file, json_values
@@ -422,6 +426,8 @@ def dc_config_remove(client, config_file, json_path):
     """
     Remove a key from the given config file
     """
+    _ = client  # pylint: disable=unused-argument
+
     try:
         config_object = DeploymentConfigUtil.config_remove(
             config_file, json_path
@@ -435,6 +441,8 @@ def dc_config_patch(client, config_file, patch_file):
     """
     Patch a given file against the given config file
     """
+    _ = client  # pylint: disable=unused-argument
+
     try:
         config_object = DeploymentConfigUtil.config_patch(
             config_file, patch_file

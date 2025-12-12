@@ -97,6 +97,8 @@ from urllib3.exceptions import MaxRetryError, NewConnectionError
 
 logger = get_logger(__name__)
 
+# pylint: disable=too-many-locals, too-many-branches
+
 
 def arc_sql_mi_create(
     client,
