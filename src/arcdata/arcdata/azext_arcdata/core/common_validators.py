@@ -92,19 +92,7 @@ def validate_mutually_exclusive_direct_indirect(
     """
 
     # -- mutually exclusive --
-    if namespace.use_k8s:
-        ignore_direct = ignore_direct or []
-        msg = "Cannot specify '--use-k8s' with the following ARM-targeted arguments: {args}."
-        included = direct_only or []
-
-        if (
-            namespace.resource_group
-            and "--resource-group/-g" not in ignore_direct
-        ):
-            included.append("--resource-group/-g")
-
-        if included:
-            raise ValueError(msg.format(args=", ".join(included)))
+    _validate_indirect_mode_args(namespace, direct_only, ignore_direct)
 
     if not namespace.use_k8s and namespace.namespace:
         raise ValueError(
@@ -113,20 +101,7 @@ def validate_mutually_exclusive_direct_indirect(
         )
 
     # -- direct --
-    if not namespace.use_k8s:
-        msg = "The following ARM-targeted arguments are required: {missing}."
-        missing = required_direct or []
-
-        # if not namespace.name:
-        #    missing.append("--name/-n")
-
-        if not namespace.resource_group:
-            missing.append("--resource-group/-g")
-
-        # [--subscription] is handled differently, so omit check as required
-
-        if missing:
-            raise ValueError(msg.format(missing=", ".join(missing)))
+    _validate_direct_mode_args(namespace, required_direct)
 
     # Check the forbidden flags
     #
@@ -174,3 +149,33 @@ def validate_mutually_exclusive_direct_indirect(
                 direct_mode_forbid_list
             )
         )
+
+
+def _validate_indirect_mode_args(namespace, direct_only, ignore_direct):
+    if namespace.use_k8s:
+        ignore_direct = ignore_direct or []
+        msg = "Cannot specify '--use-k8s' with the following ARM-targeted arguments: {args}."
+        included = direct_only or []
+
+        if (
+            namespace.resource_group
+            and "--resource-group/-g" not in ignore_direct
+        ):
+            included.append("--resource-group/-g")
+
+        if included:
+            raise ValueError(msg.format(args=", ".join(included)))
+
+
+def _validate_direct_mode_args(namespace, required_direct):
+    if not namespace.use_k8s:
+        msg = "The following ARM-targeted arguments are required: {missing}."
+        missing = required_direct or []
+
+        if not namespace.resource_group:
+            missing.append("--resource-group/-g")
+
+        # [--subscription] is handled differently, so omit check as required
+
+        if missing:
+            raise ValueError(msg.format(missing=", ".join(missing)))

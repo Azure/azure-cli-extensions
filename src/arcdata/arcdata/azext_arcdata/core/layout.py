@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 from six import add_metaclass
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from tabulate import tabulate
 from collections import OrderedDict
 from prompt_toolkit import print_formatted_text as pft, ANSI  # pyright: ignore[reportMissingImports]
@@ -15,7 +15,7 @@ import os
 __all__ = ["BoxLayout"]
 
 
-@add_metaclass(ABCMeta)
+@add_metaclass(ABC)
 class BaseLayout:
     def __init__(self):
         pass

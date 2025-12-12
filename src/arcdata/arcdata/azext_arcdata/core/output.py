@@ -96,7 +96,7 @@ class IOBuffer(TextIOWrapper):
         try:
             if isinstance(obj, list):
                 obj = format_table(CommandResultItem(obj, is_query_active=True))
-            elif isinstance(obj, dict) or isinstance(obj, OrderedDict):
+            elif isinstance(obj, (dict, OrderedDict)):
                 obj = format_json(CommandResultItem(obj, is_query_active=True))
             else:  # primitives
                 obj = str(obj).rstrip()
@@ -171,7 +171,7 @@ class StdIO(str):
         try:
             if isinstance(obj, list):
                 obj = format_table(CommandResultItem(obj, is_query_active=True))
-            elif isinstance(obj, dict) or isinstance(obj, OrderedDict):
+            elif isinstance(obj, (dict, OrderedDict)):
                 obj = format_json(CommandResultItem(obj, is_query_active=True))
             else:  # primitives
                 obj = str(obj)
