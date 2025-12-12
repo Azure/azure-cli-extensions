@@ -18686,7 +18686,7 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="westus2",
+        location="eastus2euap",
     )
     def test_aks_applicationloadbalancer_enable_disable(
         self, resource_group, resource_group_location
@@ -18698,39 +18698,35 @@ spec:
 
         # create cluster without application load balancer
         aks_name = self.create_random_name("cliakstest", 16)
+        node_vm_size = "standard_d4_v5"
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "aks_name": aks_name,
+                "node_vm_size": node_vm_size,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
             }
         )
         create_cmd = (
             "aks create --resource-group={resource_group} --name={aks_name} --location={location} "
+            "--node-vm-size={node_vm_size} "
+            "--enable-oidc-issuer "
+            "--enable-workload-identity "
+            "--enable-gateway-api "
+            "--enable-application-load-balancer "
             "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.applicationLoadBalancer.enabled", True)
             ],
         )
 
-        # enable application load balancer
-        enable_applicationloadbalancer_cmd = (
-            "aks applicationloadbalancer enable --resource-group={resource_group} --name={aks_name}"
-        )
-        self.cmd(
-            enable_applicationloadbalancer_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("ingressProfile.applicationLoadBalancer.enabled", True)
-                ],
-        )
-
         # disable application load balancer
-        disable_applicationloadbalancer_cmd = "aks applicationloadbalancer disable --resource-group={resource_group} --name={aks_name} --yes"
+        disable_applicationloadbalancer_cmd = "aks update --resource-group={resource_group} --name={aks_name} --disable-application-load-balancer --disable-gateway-api"
         self.cmd(
             disable_applicationloadbalancer_cmd,
             checks=[
@@ -18775,7 +18771,7 @@ spec:
         # create cluster with application load balancer enabled
         create_cmd = (
             "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {k8s_version} "
-            "--ssh-key-value={ssh_key_value} --enable-application-load-balancer"
+            "--ssh-key-value={ssh_key_value} --enable-gateway-api --enable-application-load-balancer"
         )
         result = self.cmd(
             create_cmd,
