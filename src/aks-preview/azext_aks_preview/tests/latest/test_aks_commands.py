@@ -18750,7 +18750,7 @@ spec:
         self.test_resources_count = 0
 
         aks_name = self.create_random_name("cliakstest", 16)
-        kv_name = self.create_random_name("cliakstestkv", 16)
+
 
         _, k8s_version = self._get_versions(resource_group_location)
 
@@ -18758,7 +18758,6 @@ spec:
             {
                 "resource_group": resource_group,
                 "aks_name": aks_name,
-                "kv_name": kv_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "k8s_version": k8s_version
