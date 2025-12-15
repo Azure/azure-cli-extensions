@@ -17,6 +17,15 @@ Pending
  - `az aks applicationloadbalancer disable`: Disable Application Load Balancer add-on for an existing cluster.
  - `az aks applicationloadbalancer update`: Update Application Load Balancer add-on for an existing cluster.
 
+19.0.0b18
++++++++
+* Vendor new SDK and bump API version to 2025-10-02-preview.
+
+19.0.0b17
++++++++
+* `az aks bastion`: Correctly configure `$KUBECONFIG` values for tunneling traffic into a private AKS cluster.
+* Update user prompt for `az aks upgrade` command to clarify the implication of the `--control-plane-only` options.
+
 19.0.0b16
 +++++++
 * Update --enable-container-network-logs DCR to ContainerNetworkLogs instead of RetinaNetworkFlowLogs
@@ -44,7 +53,7 @@ Pending
 
 19.0.0b10
 +++++++
-* Vendor new SDK and bump API version to 2025-08-02-preview.
+* Vendor new SDK and bump API version to 2025-09-02-preview.
 * `az aks update`: Fix `--azure-keyvault-kms-key-vault-network-access` parameter not being correctly applied during cluster creation and updates.
 
 19.0.0b9
