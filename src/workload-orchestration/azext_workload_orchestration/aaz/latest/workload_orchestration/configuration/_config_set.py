@@ -24,11 +24,11 @@ from ._config_helper import ConfigurationHelper
 class ShowConfig2(AAZCommand):
     """To set the values to configurations available at specified hierarchical entity
     :example: Set a Configuration through editor
-              az workload-orchestration configuration set --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0
+              az workload-orchestration configuration set --hierarchy-id \"/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1\" --template-rg rg1 --template-name template1 --version 1.0.0
     :example: Set a Configuration through file
-              az workload-orchestration configuration set --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0 --file /path/to/config.yaml
+              az workload-orchestration configuration set --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-rg rg1 --template-name template1 --version 1.0.0 --file /path/to/config.yaml
     :example: Set a Solution Template Configuration
-              az workload-orchestration configuration set --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
+              az workload-orchestration configuration set --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-rg rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
     """
 
     _aaz_info = {
@@ -61,7 +61,7 @@ class ShowConfig2(AAZCommand):
         )
 
         _args_schema.template_subscription = AAZStrArg(
-            options=["--template_subscription"],
+            options=["--template-subscription"],
             help="Subscription ID for the template. Only needed if the subscription ID for the template is different than the current subscription ID.",
             required=False,
             fmt=AAZStrArgFormat(
@@ -69,8 +69,8 @@ class ShowConfig2(AAZCommand):
             ),
         )
 
-        _args_schema.template_resource_group = AAZStrArg(
-            options=["--template-resource-group", "-g"],
+        _args_schema.template_rg = AAZStrArg(
+            options=["--template-rg", "-g"],
             help="Resource group name for the template.",
             required=True,
         )
@@ -156,7 +156,7 @@ class ShowConfig2(AAZCommand):
             solution_flag = self.ctx.args.solution if self.ctx.args.solution else False
             self.dynamic_configuration_name = ConfigurationHelper.getTemplateUniqueIdentifier(
                 template_subscription,
-                self.ctx.args.template_resource_group,
+                self.ctx.args.template_rg,
                 self.ctx.args.template_name,
                 solution_flag,
                 self.client
@@ -223,7 +223,7 @@ class ShowConfig2(AAZCommand):
                 # Step 0: Validate that the template version exists
                 ConfigurationHelper.validateTemplateVersion(
                     template_subscription,
-                    self.ctx.args.template_resource_group,
+                    self.ctx.args.template_rg,
                     self.ctx.args.template_name,
                     self.ctx.args.version,
                     solution_flag,
@@ -235,7 +235,7 @@ class ShowConfig2(AAZCommand):
                     ConfigurationHelper.matchCapabilities(
                         self.ctx.args.hierarchy_id,
                         template_subscription,
-                        self.ctx.args.template_resource_group,
+                        self.ctx.args.template_rg,
                         self.ctx.args.template_name,
                         self.client
                     )
@@ -244,7 +244,7 @@ class ShowConfig2(AAZCommand):
                     ConfigurationHelper.checkLinking(
                         self.ctx.args.hierarchy_id,
                         template_subscription,
-                        self.ctx.args.template_resource_group,
+                        self.ctx.args.template_rg,
                         self.ctx.args.template_name,
                         self.client
                     )
@@ -278,7 +278,7 @@ class ShowConfig2(AAZCommand):
                     try:
                         placeholder_content = self.getConfigPlaceholderFromSchema(
                             template_subscription,
-                            self.ctx.args.template_resource_group,
+                            self.ctx.args.template_rg,
                             self.ctx.args.template_name,
                             self.ctx.args.version,
                             solution_flag

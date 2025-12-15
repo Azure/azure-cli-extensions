@@ -20,9 +20,9 @@ from ._config_helper import ConfigurationHelper
 class ShowConfig(AAZCommand):
     """To get a configurations available at specified hierarchical entity
     :example: Show a Configuration
-              az workload-orchestration configuration show --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0
+              az workload-orchestration configuration show --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-rg rg1 --template-name template1 --version 1.0.0
     :example: Show a Solution Template Configuration
-              az workload-orchestration configuration show --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
+              az workload-orchestration configuration show --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-rg rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
     """
 
     _aaz_info = {
@@ -56,7 +56,7 @@ class ShowConfig(AAZCommand):
         )
 
         _args_schema.template_subscription = AAZStrArg(
-            options=["--template_subscription"],
+            options=["--template-subscription"],
             help="Subscription ID for the template. Only needed if the subscription ID for the template is different than the current subscription ID.",
             required=False,
             fmt=AAZStrArgFormat(
@@ -64,8 +64,8 @@ class ShowConfig(AAZCommand):
             ),
         )
 
-        _args_schema.template_resource_group = AAZStrArg(
-            options=["--template-resource-group", "-g"],
+        _args_schema.template_rg = AAZStrArg(
+            options=["--template-rg", "-g"],
             help="Resource group name for the template.",
             required=True,
         )
@@ -132,7 +132,7 @@ class ShowConfig(AAZCommand):
             solution_flag = self.ctx.args.solution if self.ctx.args.solution else False
             self.dynamic_configuration_name = ConfigurationHelper.getTemplateUniqueIdentifier(
                 template_subscription,
-                self.ctx.args.template_resource_group,
+                self.ctx.args.template_rg,
                 self.ctx.args.template_name,
                 solution_flag,
                 self.client

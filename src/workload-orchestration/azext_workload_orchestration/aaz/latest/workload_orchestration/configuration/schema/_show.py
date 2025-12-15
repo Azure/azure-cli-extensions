@@ -19,11 +19,11 @@ from .._config_helper import ConfigurationHelper
 class Show(AAZCommand):
     """Show the schema placeholder for a configuration template or solution template
     :example: Show schema for a Configuration Template
-              az workload-orchestration configuration schema show --template-resource-group rg1 --template-name template1 --version 1.0.0
+              az workload-orchestration configuration schema show --template-rg rg1 --template-name template1 --version 1.0.0
     :example: Show schema for a Solution Template
-              az workload-orchestration configuration schema show --template-resource-group rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
+              az workload-orchestration configuration schema show --template-rg rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
     :example: Show schema for a template in different subscription
-              az workload-orchestration configuration schema show --template-subscription sub1 --template-resource-group rg1 --template-name template1 --version 1.0.0
+              az workload-orchestration configuration schema show --template-subscription sub1 --template-rg rg1 --template-name template1 --version 1.0.0
     """
 
     _aaz_info = {
@@ -60,8 +60,8 @@ class Show(AAZCommand):
             ),
         )
 
-        _args_schema.template_resource_group = AAZStrArg(
-            options=["--template-resource-group", "-g"],
+        _args_schema.template_rg = AAZStrArg(
+            options=["--template-rg", "-g"],
             help="Resource group name for the template.",
             required=True,
         )
@@ -132,7 +132,7 @@ class Show(AAZCommand):
             try:
                 schema_value = ConfigurationHelper.getTemplateSchema(
                     template_subscription,
-                    self.ctx.args.template_resource_group,
+                    self.ctx.args.template_rg,
                     self.ctx.args.template_name,
                     self.ctx.args.version,
                     solution_flag,
