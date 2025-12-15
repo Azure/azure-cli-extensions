@@ -15,6 +15,7 @@ import sys
 import json
 from azure.cli.core.aaz import *
 from azure.cli.core.azclierror import CLIInternalError
+from ._config_helper import ConfigurationHelper
 
 @register_command(
     "workload-orchestration configuration set",
@@ -23,15 +24,17 @@ from azure.cli.core.azclierror import CLIInternalError
 class ShowConfig2(AAZCommand):
     """To set the values to configurations available at specified hierarchical entity
     :example: Set a Configuration through editor
-              az workload-orchestration configuration set -g rg1 --target-name target1 --solution-template-name solutionTemplate1
+              az workload-orchestration configuration set --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0
     :example: Set a Configuration through file
-              az workload-orchestration configuration set -g rg1 --target-name target1 --solution-template-name solutionTemplate1 --file /path/to/config.yaml
+              az workload-orchestration configuration set --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name template1 --version 1.0.0 --file /path/to/config.yaml
+    :example: Set a Solution Template Configuration
+              az workload-orchestration configuration set --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-resource-group rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
     """
 
     _aaz_info = {
         "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutions/{}", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/configurations/{}/dynamicconfigurations/{}/versions/{}", "2025-08-01"],
         ]
     }
 
@@ -51,32 +54,52 @@ class ShowConfig2(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.hierarchy_id = AAZStrArg(
+            options=["--hierarchy-id"],
+            help="The ARM ID for the target or site at which values needs to be set",
+            required=True
+        )
+
+        _args_schema.template_subscription = AAZStrArg(
+            options=["--template_subscription"],
+            help="Subscription ID for the template. Only needed if the subscription ID for the template is different than the current subscription ID.",
+            required=False,
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            ),
+        )
+
+        _args_schema.template_resource_group = AAZStrArg(
+            options=["--template-resource-group", "-g"],
+            help="Resource group name for the template.",
             required=True,
         )
-        _args_schema.solution_name = AAZStrArg(
-            options=["--solution-template-name"],
-            help="The name of the Solution, This is required only to set solution configurations",
-            # required=True,
+
+        _args_schema.template_name = AAZStrArg(
+            options=["--template-name", "-n"],
+            help="The name of the Template (Solution template or Configuration template) to configure.",
+            required=True,
 
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
 
-        _args_schema = cls._args_schema
-        _args_schema.level_name = AAZStrArg(
-            options=["--target-name"],
-            help="The Deployment Target or Site name at which values needs to be set",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
-            ),
+        _args_schema.version = AAZStrArg(
+            options=["--version", "-v"],
+            help="Version of the template.",
+            required=True
         )
 
         _args_schema.file_path = AAZFileArg(
             options=["--file","-f"],
             help="Path to a file containing the configuration values. If provided, the editor will not be opened.",
+            required=False,
+        )
+
+        _args_schema.solution = AAZBoolArg(
+            options=["--solution"],
+            help="Flag to indicate that we are configuring a solution. If not provided, we are configuring a config template.",
             required=False,
         )
 
@@ -101,17 +124,16 @@ class ShowConfig2(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        config_name = str(self.ctx.args.level_name)
-        if len(config_name) > 18:
-            config_name = config_name[:18] + "Config"
-        else:
-            config_name = config_name + "Config"
-        self.ctx.args.level_name = config_name
         self.SolutionsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
     def pre_operations(self):
+        # Validate that --solution flag is only used with target hierarchy IDs
+        if hasattr(self.ctx.args, 'solution') and self.ctx.args.solution:
+            hierarchy_id = str(self.ctx.args.hierarchy_id).lower()
+            if "microsoft.edge/targets" not in hierarchy_id:
+                raise CLIInternalError("The --solution flag can only be used when the hierarchy-id is for a target (Microsoft.Edge/targets). Solutions are only configurable at a target level.")
         pass
 
     @register_callback
@@ -127,19 +149,36 @@ class ShowConfig2(AAZCommand):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
+            self.configuration_id = ConfigurationHelper.getConfigurationId(self.ctx.args.hierarchy_id, self.client)
+            
+            # Get template unique identifier for dynamic configuration name
+            template_subscription = self.ctx.args.template_subscription if self.ctx.args.template_subscription else self.ctx.subscription_id
+            solution_flag = self.ctx.args.solution if self.ctx.args.solution else False
+            self.dynamic_configuration_name = ConfigurationHelper.getTemplateUniqueIdentifier(
+                template_subscription,
+                self.ctx.args.template_resource_group,
+                self.ctx.args.template_name,
+                solution_flag,
+                self.client
+            )
+            
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            
             if session.http_response.status_code in [200]:
+                # Dynamic configuration version exists - update flow
                 response = self.get_config_to_update(session)
                 config_to_set = response["properties"]["values"]
-                # Check if file path is provided
-                if hasattr(self.ctx.args, 'file_path') and self.ctx.args.file_path:
+                
+                # Get new configuration content
+                if hasattr(self.ctx.args, 'file_path') and self.ctx.args.file_path and has_value(self.ctx.args.file_path):
                     try:
                         config_to_set = str(self.ctx.args.file_path)
                     except Exception as e:
-                        raise CLIInternalError(f"Failed to process file content: {str(e)}")
+                        raise CLIInternalError(f"Failed to read file content: {str(e)}")
                 else:
-                    editor= "vi"
+                    # Open editor with current config
+                    editor = "vi"
                     if platform.system() == "Windows":
                         editor = "notepad"
                     temp_file = tempfile.NamedTemporaryFile(delete=False)
@@ -153,40 +192,154 @@ class ShowConfig2(AAZCommand):
                     with open(temp_file.name, "rb") as f:
                         config_to_set = f.read().decode("utf-8")
                     os.unlink(temp_file.name)
-                # print(config_to_set)
+                    
+                    # Validate that the content is valid YAML
+                    try:
+                        import yaml
+                        yaml.safe_load(config_to_set)
+                    except yaml.YAMLError as e:
+                        raise CLIInternalError(f"The configuration content is not valid YAML: {str(e)}")
+                    except Exception as e:
+                        raise CLIInternalError(f"Failed to validate YAML content: {str(e)}")
+                
+                # Update existing configuration
                 new_content = dict()
                 new_content["properties"] = response["properties"]
                 new_content["properties"]["values"] = config_to_set
 
+                serialized_new_content = self.serialize_content(new_content)
                 request = self.client._request(
                     "PUT", self.url, self.query_parameters, self.header_parameters2,
-                    new_content, self.form_content, self.stream_content)
+                    serialized_new_content, self.form_content, self.stream_content)
                 session = self.client.send_request(request=request, stream=False, **kwargs)
                 if session.http_response.status_code in [200]:
                     return self.on_200(session)
-                # return self.on_error(session.http_response)
-            config = dict()
-            config["properties"] = dict()
-            config["properties"]["values"] = "No config found."
-            # # config.config = AAZStrType()
-            # # config.config = "[]"
-            if session.http_response.status_code in [404]:
-                self.ctx.set_var(
-                    "instance",
-                    config,
-                    schema_builder=self._build_schema_on_404
+                else:
+                    return self.on_error(session.http_response)
+                    
+            elif session.http_response.status_code in [404]:
+                # Dynamic configuration version doesn't exist - create flow
+                
+                # Step 0: Validate that the template version exists
+                ConfigurationHelper.validateTemplateVersion(
+                    template_subscription,
+                    self.ctx.args.template_resource_group,
+                    self.ctx.args.template_name,
+                    self.ctx.args.version,
+                    solution_flag,
+                    self.client
                 )
-            #     return
+                
+                # Step 0.5: If solution flag is set, validate capabilities match
+                if solution_flag:
+                    ConfigurationHelper.matchCapabilities(
+                        self.ctx.args.hierarchy_id,
+                        template_subscription,
+                        self.ctx.args.template_resource_group,
+                        self.ctx.args.template_name,
+                        self.client
+                    )
+                else:
+                    # If solution flag is not set, check if config template is linked to hierarchy
+                    ConfigurationHelper.checkLinking(
+                        self.ctx.args.hierarchy_id,
+                        template_subscription,
+                        self.ctx.args.template_resource_group,
+                        self.ctx.args.template_name,
+                        self.client
+                    )
+                
+                # Step 1: Create dynamic configuration (without version)
+                dynamic_config_url = f"{self.configuration_id}/dynamicConfigurations/{self.dynamic_configuration_name}"
+                
+                dynamic_config_content = {
+                    "properties": {
+                        "currentVersion": str(self.ctx.args.version)
+                    }
+                }
+                
+                serialized_content = self.serialize_content(dynamic_config_content)
+                request = self.client._request(
+                    "PUT", dynamic_config_url, self.query_parameters, self.header_parameters2,
+                    serialized_content, self.form_content, self.stream_content)
+                session = self.client.send_request(request=request, stream=False, **kwargs)
+                
+                if session.http_response.status_code not in [200, 201]:
+                    return self.on_error(session.http_response)
+                
+                # Step 2: Get configuration content for version
+                if hasattr(self.ctx.args, 'file_path') and self.ctx.args.file_path and has_value(self.ctx.args.file_path):
+                    try:
+                        config_to_set = str(self.ctx.args.file_path)
+                    except Exception as e:
+                        raise CLIInternalError(f"Failed to read file content: {str(e)}")
+                else:
+                    # Get placeholder content from schema
+                    try:
+                        placeholder_content = self.getConfigPlaceholderFromSchema(
+                            template_subscription,
+                            self.ctx.args.template_resource_group,
+                            self.ctx.args.template_name,
+                            self.ctx.args.version,
+                            solution_flag
+                        )
+                    except CLIInternalError:
+                        # Re-raise CLI errors (like "No editable configs") to show user
+                        raise
+                    except Exception as e:
+                        # For other unexpected errors, use empty content as fallback
+                        placeholder_content = ""
+                    
+                    editor = "vi"
+                    if platform.system() == "Windows":
+                        editor = "notepad"
+                    temp_file = tempfile.NamedTemporaryFile(delete=False)
+                    temp_file.write(bytes(placeholder_content, "utf-8"))  # Use placeholder content
+                    temp_file.close()
+                    editor_output = subprocess.run([editor, temp_file.name], stdout=sys.stdout, stdin=sys.stdin,
+                                                stderr=sys.stdout, check=False)
+                    if editor_output.returncode != 0:
+                        os.unlink(temp_file.name)
+                        raise CLIInternalError("Failed to update instance")
+                    with open(temp_file.name, "rb") as f:
+                        config_to_set = f.read().decode("utf-8")
+                    os.unlink(temp_file.name)
+                    
+                    # Validate that the content is valid YAML
+                    try:
+                        import yaml
+                        yaml.safe_load(config_to_set)
+                    except yaml.YAMLError as e:
+                        raise CLIInternalError(f"The configuration content is not valid YAML: {str(e)}")
+                    except Exception as e:
+                        raise CLIInternalError(f"Failed to validate YAML content: {str(e)}")
+                
+                # Step 3: Create dynamic configuration version
+                version_content = {
+                    "properties": {
+                        "values": config_to_set
+                    }
+                }
+                
+                serialized_version_content = self.serialize_content(version_content)
+                request = self.client._request(
+                    "PUT", self.url, self.query_parameters, self.header_parameters2,
+                    serialized_version_content, self.form_content, self.stream_content)
+                session = self.client.send_request(request=request, stream=False, **kwargs)
+                if session.http_response.status_code in [200, 201]:
+                    return self.on_200(session)
+                else:
+                    return self.on_error(session.http_response)
             else:
                 return self.on_error(session.http_response)
 
 
         @property
         def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configurations/{configName}/DynamicConfigurations/{solutionName}/versions/version1",
-                **self.url_parameters
-            )
+            # Use the configuration ID and append the dynamic configuration path
+            base_url = self.configuration_id
+            dynamic_config_path = f"/dynamicConfigurations/{self.dynamic_configuration_name}/versions/{self.ctx.args.version}"
+            return base_url + dynamic_config_path
 
         @property
         def method(self):
@@ -255,6 +408,81 @@ class ShowConfig2(AAZCommand):
         def get_config_to_update(self,session):
             data = self.deserialize_http_content(session)
             return data
+            
+        def getConfigPlaceholderFromSchema(self, subscription_id, resource_group, template_name, version, solution_flag):
+            """
+            Get configuration placeholder from schema
+            
+            Args:
+                subscription_id (str): The subscription ID for the template
+                resource_group (str): The resource group name for the template  
+                template_name (str): The template name
+                version (str): The template version
+                solution_flag (bool): True for solution template, False for configuration template
+                
+            Returns:
+                str: YAML placeholder with config keys extracted from schema
+                
+            Raises:
+                CLIInternalError: If schema doesn't exist or request fails
+            """
+            try:
+                # Get the raw schema from helper
+                schema_value = ConfigurationHelper.getTemplateSchema(
+                    subscription_id, resource_group, template_name, version, solution_flag, self.client
+                )
+                
+                # Parse the YAML value to extract config keys
+                try:
+                    import yaml
+                    schema_data = yaml.safe_load(schema_value)
+                    configs = schema_data.get("rules", {}).get("configs", {})
+                    
+                    # Check if there are no editable configs
+                    if not configs:
+                        raise CLIInternalError("No editable configs.")
+                    
+                    # Build placeholder YAML structure
+                    placeholder_dict = {}
+                    
+                    for key in configs.keys():
+                        if '.' in key:
+                            # Handle nested keys like "A.B"
+                            parts = key.split('.')
+                            current = placeholder_dict
+                            for i, part in enumerate(parts):
+                                if i == len(parts) - 1:
+                                    # Last part, don't set any value
+                                    if part not in current:
+                                        current[part] = None
+                                else:
+                                    # Intermediate part, create nested dict if doesn't exist
+                                    if part not in current:
+                                        current[part] = {}
+                                    current = current[part]
+                        else:
+                            # Simple key
+                            placeholder_dict[key] = None
+                    
+                    # Convert to YAML string with custom representer to handle None values
+                    if placeholder_dict:
+                        def represent_none(self, data):
+                            return self.represent_scalar('tag:yaml.org,2002:null', '')
+                        
+                        yaml.add_representer(type(None), represent_none)
+                        placeholder_yaml = yaml.dump(placeholder_dict, default_flow_style=False, allow_unicode=True)
+                        return placeholder_yaml
+                    else:
+                        raise CLIInternalError("No editable configs.")
+                        
+                except yaml.YAMLError as e:
+                    raise CLIInternalError(f"Failed to parse schema YAML: {str(e)}")
+                except ImportError:
+                    raise CLIInternalError("PyYAML is required to parse schema. Please install it with: pip install PyYAML")
+                    
+            except Exception as e:
+                raise CLIInternalError(f"Error getting configuration placeholder: {str(e)}")
+            
         def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
@@ -264,14 +492,6 @@ class ShowConfig2(AAZCommand):
             )
 
         _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_404(cls):
-            cls._schema_on_200 = AAZObjectType()
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.properties = AAZFreeFormDictType()
-            return cls._schema_on_200
-
 
         @classmethod
         def _build_schema_on_200(cls):
@@ -290,7 +510,9 @@ class ShowConfig2(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZFreeFormDictType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"required": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -300,8 +522,10 @@ class ShowConfig2(AAZCommand):
                 flags={"read_only": True},
             )
 
-
-
+            properties = cls._schema_on_200.properties
+            properties.values = AAZStrType(
+                flags={"required": True},
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
