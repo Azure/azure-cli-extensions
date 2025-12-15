@@ -18703,11 +18703,13 @@ spec:
                 "resource_group": resource_group,
                 "aks_name": aks_name,
                 "location": resource_group_location,
+                "node_vm_sku": "standard_d4a_v4",
                 "ssh_key_value": self.generate_ssh_keys(),
             }
         )
         create_cmd = (
             "aks create --resource-group={resource_group} --name={aks_name} --location={location} "
+            "--node-vm-size={node_vm_sku} "
             "--enable-oidc-issuer "
             "--enable-workload-identity "
             "--enable-gateway-api "
