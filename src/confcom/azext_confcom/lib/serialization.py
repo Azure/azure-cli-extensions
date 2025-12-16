@@ -76,7 +76,7 @@ containers := {containers_json}
 """)
 
 
-def policy_deserialize(file_path: str):
+def rego_eval(file_path: str):
 
     with open(file_path, 'r') as f:
         content = f.readlines()
@@ -123,6 +123,13 @@ def policy_deserialize(file_path: str):
                 ...
 
         line_idx += 1
+
+    return policy_json
+
+
+def policy_deserialize(file_path: str):
+
+    policy_json = rego_eval(file_path)
 
     PolicyType = Policy if policy_json.get("package") == "policy" else Fragment
 

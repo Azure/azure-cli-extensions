@@ -11,7 +11,7 @@ from typing import Optional
 
 from azext_confcom.lib.cose import cose_get_properties
 from azext_confcom.lib.fragments import get_fragments_from_image
-from azext_confcom.lib.opa import opa_eval
+from azext_confcom.lib.serialization import rego_eval
 
 
 def from_image(image: str, minimum_svn: Optional[str]):
@@ -24,11 +24,7 @@ def from_image(image: str, minimum_svn: Optional[str]):
             payload.write(cose_properties["payload"].encode("utf-8"))
             payload.flush()
 
-            package_name = re.search(r"^package\s*(.*)$", cose_properties["payload"], re.MULTILINE).group(1)
-            fragment_properties = opa_eval(
-                Path(payload.name),
-                f"data.{package_name}",
-            )["result"][0]["expressions"][0]["value"]
+            fragment_properties = rego_eval(payload.name)
 
             yield {
                 "feed": cose_properties["feed"],
