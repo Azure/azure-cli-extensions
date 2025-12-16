@@ -2670,7 +2670,7 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         )
         # fail on passing the wrong agentpool object
         with self.assertRaises(CLIInternalError):
-            dec_1.set_up_gpu_profile(None)
+            dec_1.update_gpu_profile(None)
         agentpool_1 = self.create_initialized_agentpool_instance(
             gpu_profile=self.models.GPUProfile(
                 driver="Install",
