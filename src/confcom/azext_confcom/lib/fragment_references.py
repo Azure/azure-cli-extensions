@@ -3,10 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import re
 import tempfile
 
-from pathlib import Path
 from typing import Optional
 
 from azext_confcom.lib.cose import cose_get_properties
