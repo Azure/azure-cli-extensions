@@ -68,7 +68,7 @@ class ExperimentOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ExperimentList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
 
         def prepare_request(next_link=None):
             # Construct headers
@@ -146,7 +146,7 @@ class ExperimentOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Experiment"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -214,7 +214,7 @@ class ExperimentOperations(object):
         error_map.update(kwargs.pop('error_map', {}))
 
         _parameters = models.Experiment(description=description)
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -287,7 +287,7 @@ class ExperimentOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
