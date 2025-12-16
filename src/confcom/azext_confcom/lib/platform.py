@@ -3,15 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azext_confcom.lib.policy import ContainerMount
+
 ACI_MOUNTS = [
-    {
-        "destination": "/etc/resolv.conf",
-        "options": [
+    ContainerMount(
+        destination="/etc/resolv.conf",
+        options=[
             "rbind",
             "rshared",
             "rw"
         ],
-        "source": "sandbox:///tmp/atlas/resolvconf/.+",
-        "type": "bind"
-    }
+        source="sandbox:///tmp/atlas/resolvconf/.+",
+        type="bind"
+    )
 ]

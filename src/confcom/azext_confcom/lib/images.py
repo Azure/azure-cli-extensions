@@ -4,9 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 import functools
-import os
 import subprocess
 import docker
+
+from pathlib import Path
 
 
 @functools.lru_cache()
@@ -25,11 +26,11 @@ def get_image(image_ref: str) -> docker.models.images.Image:
 
 def get_image_layers(image: str) -> list[str]:
 
-    binary_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "bin", "dmverity-vhd")
+    binary_path = Path(__file__).parent.parent / "bin" / "dmverity-vhd"
 
     get_image(image)
     result = subprocess.run(
-        [binary_path, "-d", "roothash", "-i", image],
+        [binary_path.as_posix(), "-d", "roothash", "-i", image],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         check=True,
