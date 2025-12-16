@@ -25,7 +25,7 @@ CLASSIFIERS = [
 
 DEPENDENCIES = [
     "rich==13.9.4",
-    "kubernetes",
+    "kubernetes==24.2.0",
 ]
 
 with open1("README.rst", "r", encoding="utf-8") as f:
