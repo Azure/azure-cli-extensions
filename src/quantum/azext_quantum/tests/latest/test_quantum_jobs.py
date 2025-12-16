@@ -245,11 +245,11 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertIn("ionq.simulator", str(results))
 
         results = str(self.cmd("az quantum job list --top 1 -o json").get_output_in_json())
-        self.assertIn("rigetti", results)
-        self.assertTrue("ionq" not in results)
+        self.assertIn("ionq", results)
+        self.assertTrue("rigetti" not in results)
 
         results = str(self.cmd("az quantum job list --skip 1 -o json").get_output_in_json())
-        self.assertIn("ionq", results)
+        self.assertIn("rigetti", results)
 
         results = str(self.cmd("az quantum job list --orderby Target --skip 1 -o json").get_output_in_json())
         self.assertIn("rigetti", results)
