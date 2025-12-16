@@ -29,9 +29,12 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
     Note: These tests require a CosmosDB account with soft-delete feature enabled.
     """
 
-    def _update_account_with_soft_delete(self, account_name, resource_group, location):
+    def _create_account_with_soft_delete(self, account_name, resource_group, location):
         """
         Helper function to create a CosmosDB account and enable soft delete.
+        
+        Note: Soft delete configuration (enable-soft-deletion, sd-retention, min-purge-minutes)
+        can only be set via update command, not during create. This is a platform limitation.
         Sets retention period and minimum purge minutes to 0 for testing.
         """
         self.kwargs.update({
@@ -43,14 +46,14 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         logger.info("Creating CosmosDB account")
         self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName={loc}')
         
-        logger.info("Enabling soft delete on account")
+        logger.info("Enabling soft delete on account (must be done via update)")
         self.cmd(
             'az cosmosdb update -n {acc} -g {rg} '
             '--enable-soft-deletion true '
             '--sd-retention 0 '
             '--min-purge-minutes 0'
         )
-        logger.info("Account created with soft delete enabled")
+        logger.info("Account created and soft delete enabled")
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_acc_recover', location='westus')
