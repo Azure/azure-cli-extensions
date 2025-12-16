@@ -258,6 +258,7 @@ def acifragmentgen_confcom(
     upload_fragment: bool = False,
     no_print: bool = False,
     fragments_json: str = "",
+    out_signed_fragment: bool = False,
 ):
     if container_definitions is None:
         container_definitions = []
@@ -364,12 +365,16 @@ def acifragmentgen_confcom(
 
     fragment_text = policy.generate_fragment(namespace, svn, output_type, omit_id=omit_id)
 
-    if output_type != security_policy.OutputType.DEFAULT and not no_print:
+    if output_type != security_policy.OutputType.DEFAULT and not no_print and not out_signed_fragment:
         print(fragment_text)
 
     # take ".rego" off the end of the filename if it's there, it'll get added back later
     output_filename = output_filename.replace(".rego", "")
     filename = f"{output_filename or namespace}.rego"
+
+    if out_signed_fragment:
+        filename = os.path.join("/tmp", filename)
+
     os_util.write_str_to_file(filename, fragment_text)
 
     if key:
@@ -377,11 +382,22 @@ def acifragmentgen_confcom(
         iss = cose_proxy.create_issuer(chain)
         out_path = filename + ".cose"
 
+        if out_signed_fragment:
+            out_path = os.path.join("/tmp", os.path.basename(out_path))
+
         cose_proxy.cose_sign(filename, key, chain, feed, iss, algo, out_path)
-        if upload_fragment and image_target:
-            oras_proxy.attach_fragment_to_image(image_target, out_path)
-        elif upload_fragment:
-            oras_proxy.push_fragment_to_registry(feed, out_path)
+
+        # Preserve default behaviour established since version 1.1.0 of attaching
+        # the fragment to the first image specified in input
+        # (or --image-target if specified)
+        if upload_fragment:
+            oras_proxy.attach_fragment_to_image(
+                image_name=image_target or policy_images[0].containerImage,
+                filename=out_path,
+            )
+
+        if out_signed_fragment:
+            sys.stdout.buffer.write(open(out_path, "rb").read())
 
 
 def katapolicygen_confcom(
