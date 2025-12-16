@@ -5,6 +5,7 @@
 
 import fcntl
 import os
+import tempfile
 import unittest
 import json
 import deepdiff
@@ -27,7 +28,7 @@ from azext_confcom.template_util import (
 )
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
-PRUNE_LOCK_PATH = "/tmp/confcom_docker_prune.lock"
+PRUNE_LOCK_PATH = f"{tempfile.gettempdir()}/confcom_docker_prune.lock"
 
 
 class PolicyGeneratingArm(unittest.TestCase):

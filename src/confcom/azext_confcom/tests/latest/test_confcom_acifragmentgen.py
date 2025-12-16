@@ -153,7 +153,7 @@ def test_acifragmentgen_fragment_upload_fragment(docker_image, cert_chain):
         raise AssertionError(f"{oras_result=}")
 
     fragment_path = json.loads(subprocess.run(
-        ["oras", "pull", fragment_ref, "--format", "json", "-o", "/tmp"],
+        ["oras", "pull", fragment_ref, "--format", "json", "-o", tempfile.gettempdir()],
         check=True,
         stdout=subprocess.PIPE,
     ).stdout)["files"][0]["path"]
@@ -193,7 +193,7 @@ def test_acifragmentgen_fragment_push(docker_image, cert_chain, capsysbinary):
 
     # Confirm the fragment exists in the registry
     fragment_path = json.loads(subprocess.run(
-        ["oras", "pull", fragment_ref, "--format", "json", "-o", "/tmp"],
+        ["oras", "pull", fragment_ref, "--format", "json", "-o", tempfile.gettempdir()],
         check=True,
         stdout=subprocess.PIPE,
     ).stdout)["files"][0]["path"]
@@ -243,7 +243,7 @@ def test_acifragmentgen_fragment_attach(docker_image, cert_chain, capsysbinary):
         raise AssertionError(f"{oras_result=}")
 
     fragment_path = json.loads(subprocess.run(
-        ["oras", "pull", fragment_ref, "--format", "json", "-o", "/tmp"],
+        ["oras", "pull", fragment_ref, "--format", "json", "-o", tempfile.gettempdir()],
         check=True,
         stdout=subprocess.PIPE,
     ).stdout)["files"][0]["path"]

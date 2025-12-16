@@ -5,6 +5,7 @@
 
 import os
 import sys
+import tempfile
 from typing import Optional, BinaryIO
 
 from azext_confcom import oras_proxy, os_util, security_policy
@@ -373,7 +374,7 @@ def acifragmentgen_confcom(
     filename = f"{output_filename or namespace}.rego"
 
     if out_signed_fragment:
-        filename = os.path.join("/tmp", filename)
+        filename = os.path.join(tempfile.gettempdir(), filename)
 
     os_util.write_str_to_file(filename, fragment_text)
 
@@ -383,7 +384,7 @@ def acifragmentgen_confcom(
         out_path = filename + ".cose"
 
         if out_signed_fragment:
-            out_path = os.path.join("/tmp", os.path.basename(out_path))
+            out_path = os.path.join(tempfile.gettempdir(), os.path.basename(out_path))
 
         cose_proxy.cose_sign(filename, key, chain, feed, iss, algo, out_path)
 
@@ -397,7 +398,8 @@ def acifragmentgen_confcom(
             )
 
         if out_signed_fragment:
-            sys.stdout.buffer.write(open(out_path, "rb").read())
+            with open(out_path, "rb") as f:
+                sys.stdout.buffer.write(f.read())
 
 
 def katapolicygen_confcom(
