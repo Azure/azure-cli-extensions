@@ -1644,6 +1644,16 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.network_profile.allowed_host_ports = allowed_host_ports
         return agentpool
 
+    def update_gpu_profile(self, agentpool: AgentPool) -> AgentPool:
+        self._ensure_agentpool(agentpool)
+
+        gpu_driver = self.context.get_gpu_driver()
+        if gpu_driver is not None:
+            if agentpool.gpu_profile is None:
+                agentpool.gpu_profile = self.models.GPUProfile()
+            agentpool.gpu_profile.driver = gpu_driver
+        return agentpool
+
     def update_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
         """Update artifact streaming property for the AgentPool object.
         :return: the AgentPool object
@@ -1806,6 +1816,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update blue-green upgrade settings
         agentpool = self.update_blue_green_upgrade_settings(agentpool)
+
+        # update gpu profile
+        agentpool = self.update_gpu_profile(agentpool)
 
         return agentpool
 
