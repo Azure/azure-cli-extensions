@@ -1,0 +1,37 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+import tempfile
+
+from typing import Optional
+
+from azext_confcom.lib.cose import cose_get_properties
+from azext_confcom.lib.fragments import get_fragments_from_image
+from azext_confcom.lib.serialization import rego_eval
+
+
+def from_image(image: str, minimum_svn: Optional[str]):
+
+    for signed_fragment in get_fragments_from_image(image):
+
+        cose_properties = cose_get_properties(signed_fragment)
+
+        with tempfile.NamedTemporaryFile("w+b") as payload:
+            payload.write(cose_properties["payload"].encode("utf-8"))
+            payload.flush()
+
+            fragment_properties = rego_eval(payload.name)
+
+            yield {
+                "feed": cose_properties["feed"],
+                "includes": sorted(list(set(fragment_properties.keys()).intersection({
+                    "containers",
+                    "fragmnents",
+                    "namespace",
+                    "external_processes",
+                }))),
+                "issuer": cose_properties["iss"],
+                "minimum_svn": minimum_svn or fragment_properties["svn"],
+            }
