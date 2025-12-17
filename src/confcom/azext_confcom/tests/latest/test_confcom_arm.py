@@ -3,14 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import fcntl
 import os
-import tempfile
 import unittest
 import json
 import deepdiff
-import docker
-import requests
 from unittest.mock import patch
 
 from azext_confcom.security_policy import (
@@ -28,7 +24,6 @@ from azext_confcom.template_util import (
 )
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
-PRUNE_LOCK_PATH = f"{tempfile.gettempdir()}/confcom_docker_prune.lock"
 
 
 class PolicyGeneratingArm(unittest.TestCase):
@@ -5012,18 +5007,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        # Coordinate cleanup across xdist workers to avoid prune conflicts.
-        with open(PRUNE_LOCK_PATH, "w") as lock_file:
-            fcntl.flock(lock_file, fcntl.LOCK_EX)
-            try:
-                cls.client.containers.prune()
-            except (docker.errors.APIError, requests.exceptions.ReadTimeout) as exc:
-                # Ignore conflicts (another prune in flight) or slow daemon timeouts.
-                status = getattr(getattr(exc, "response", None), "status_code", None)
-                if status not in (409, None) or not isinstance(exc, requests.exceptions.ReadTimeout):
-                    raise
-            finally:
-                fcntl.flock(lock_file, fcntl.LOCK_UN)
+        cls.client.containers.prune()
         cls.client.close()
 
     def test_arm_template_security_context_no_run_as_group(self):
