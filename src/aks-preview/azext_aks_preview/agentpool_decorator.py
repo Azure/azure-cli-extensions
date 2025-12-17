@@ -1648,9 +1648,10 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         self._ensure_agentpool(agentpool)
 
         gpu_driver = self.context.get_gpu_driver()
+        driver_type = self.context.get_driver_type()
+        if not agentpool.gpu_profile and (gpu_driver or driver_type):
+            agentpool.gpu_profile = self.models.GPUProfile()
         if gpu_driver is not None:
-            if agentpool.gpu_profile is None:
-                agentpool.gpu_profile = self.models.GPUProfile()
             agentpool.gpu_profile.driver = gpu_driver
         return agentpool
 
