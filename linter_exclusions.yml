@@ -3504,15 +3504,3 @@ neon postgres organization:
 neon postgres project:
   rule_exclusions:
   - require_wait_command_if_no_wait
-
-confcom fragment push:
-  parameters:
-    signed_fragment:
-      rule_exclusions:
-        - no_positional_parameters
-
-confcom fragment attach:
-  parameters:
-    signed_fragment:
-      rule_exclusions:
-        - no_positional_parameters

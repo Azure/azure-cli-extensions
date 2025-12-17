@@ -175,7 +175,7 @@ class PolicyGeneratingArmParametersCleanRoomOCITarFile(unittest.TestCase):
         try:
             with tempfile.TemporaryDirectory() as folder:
                 filename = os.path.join(folder, "oci.tar")
-                filename2 = os.path.join(folder, "oci2.tar")
+                filename2 = os.path.join(self.path, "oci2.tar")
 
                 tar_mapping_file = {"mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64": filename2}
                 create_tar_file(filename)
