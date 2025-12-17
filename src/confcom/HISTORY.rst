@@ -3,12 +3,6 @@
 Release History
 ===============
 
-1.5.0
-++++++
-* restored the behaviour of --upload-fragment in acifragmentgen to attach to first image in input
-* added confcom fragment push command to allow explicit uploading of standalone fragments
-* added confcom fragment attach command to allow explicit uploading of image attached fragments
-
 1.4.5
 ++++++
 * Drop the dependency on OPA

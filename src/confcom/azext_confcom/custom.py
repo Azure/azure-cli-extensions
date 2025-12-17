@@ -5,8 +5,7 @@
 
 import os
 import sys
-import tempfile
-from typing import Optional, BinaryIO
+from typing import Optional
 
 from azext_confcom import oras_proxy, os_util, security_policy
 from azext_confcom._validators import resolve_stdio
@@ -23,8 +22,6 @@ from azext_confcom.template_util import (
     get_image_name, inject_policy_into_template, inject_policy_into_yaml,
     pretty_print_func, print_existing_policy_from_arm_template,
     print_existing_policy_from_yaml, print_func, str_to_sha256)
-from azext_confcom.command.fragment_attach import fragment_attach as _fragment_attach
-from azext_confcom.command.fragment_push import fragment_push as _fragment_push
 from knack.log import get_logger
 from pkg_resources import parse_version
 
@@ -258,7 +255,6 @@ def acifragmentgen_confcom(
     upload_fragment: bool = False,
     no_print: bool = False,
     fragments_json: str = "",
-    out_signed_fragment: bool = False,
 ):
     if container_definitions is None:
         container_definitions = []
@@ -365,16 +361,12 @@ def acifragmentgen_confcom(
 
     fragment_text = policy.generate_fragment(namespace, svn, output_type, omit_id=omit_id)
 
-    if output_type != security_policy.OutputType.DEFAULT and not no_print and not out_signed_fragment:
+    if output_type != security_policy.OutputType.DEFAULT and not no_print:
         print(fragment_text)
 
     # take ".rego" off the end of the filename if it's there, it'll get added back later
     output_filename = output_filename.replace(".rego", "")
     filename = f"{output_filename or namespace}.rego"
-
-    if out_signed_fragment:
-        filename = os.path.join(tempfile.gettempdir(), filename)
-
     os_util.write_str_to_file(filename, fragment_text)
 
     if key:
@@ -382,23 +374,11 @@ def acifragmentgen_confcom(
         iss = cose_proxy.create_issuer(chain)
         out_path = filename + ".cose"
 
-        if out_signed_fragment:
-            out_path = os.path.join(tempfile.gettempdir(), os.path.basename(out_path))
-
         cose_proxy.cose_sign(filename, key, chain, feed, iss, algo, out_path)
-
-        # Preserve default behaviour established since version 1.1.0 of attaching
-        # the fragment to the first image specified in input
-        # (or --image-target if specified)
-        if upload_fragment:
-            oras_proxy.attach_fragment_to_image(
-                image_name=image_target or policy_images[0].containerImage,
-                filename=out_path,
-            )
-
-        if out_signed_fragment:
-            with open(out_path, "rb") as f:
-                sys.stdout.buffer.write(f.read())
+        if upload_fragment and image_target:
+            oras_proxy.attach_fragment_to_image(image_target, out_path)
+        elif upload_fragment:
+            oras_proxy.push_fragment_to_registry(feed, out_path)
 
 
 def katapolicygen_confcom(
@@ -532,23 +512,3 @@ def get_fragment_output_type(outraw):
     if outraw:
         output_type = security_policy.OutputType.RAW
     return output_type
-
-
-def fragment_attach(
-    signed_fragment: BinaryIO,
-    manifest_tag: str,
-) -> None:
-    _fragment_attach(
-        signed_fragment=signed_fragment,
-        manifest_tag=manifest_tag
-    )
-
-
-def fragment_push(
-    signed_fragment: BinaryIO,
-    manifest_tag: str,
-) -> None:
-    _fragment_push(
-        signed_fragment=signed_fragment,
-        manifest_tag=manifest_tag
-    )
