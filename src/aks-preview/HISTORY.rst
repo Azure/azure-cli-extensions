@@ -12,10 +12,22 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b18
++++++++
+* Vendor new SDK and bump API version to 2025-10-02-preview.
+
+19.0.0b17
++++++++
+* `az aks bastion`: Correctly configure `$KUBECONFIG` values for tunneling traffic into a private AKS cluster.
+* Update user prompt for `az aks upgrade` command to clarify the implication of the `--control-plane-only` options.
+
+19.0.0b16
++++++++
+* Update --enable-container-network-logs DCR to ContainerNetworkLogs instead of RetinaNetworkFlowLogs
+
 19.0.0b15
 +++++++
 * Fix `NoneType` error when performing operations on automatic clusters that have hosted system components enabled.
-
 
 19.0.0b14
 +++++++
@@ -36,7 +48,7 @@ Pending
 
 19.0.0b10
 +++++++
-* Vendor new SDK and bump API version to 2025-08-02-preview.
+* Vendor new SDK and bump API version to 2025-09-02-preview.
 * `az aks update`: Fix `--azure-keyvault-kms-key-vault-network-access` parameter not being correctly applied during cluster creation and updates.
 
 19.0.0b9
