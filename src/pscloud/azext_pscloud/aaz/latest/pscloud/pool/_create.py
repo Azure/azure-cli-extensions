@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "pscloud pool create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a storage pool
 
     :example: StoragePools_Create
-        az pscloud pool create --resource-group rgpurestorage --storage-pool-name storagePoolname --zone 1 --subnet-id /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName} --vnet-id /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName} --provisioned-bandwidth 100 --reservation-id /subscriptions/{subscriptionId}/providers/PureStorage.Block/reservations/{reservationName} --location eastus
+        az pscloud pool create --resource-group rgpurestorage --storage-pool-name storagePoolname --zone 1 --subnet-name /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName} --vnet-name /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName} --provisioned-bandwidth 100 --reservation-id /subscriptions/{subscriptionId}/providers/PureStorage.Block/reservations/{reservationName} --location eastus
     """
 
     _aaz_info = {
@@ -106,13 +105,13 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.subnet_id = AAZStrArg(
-            options=["--subnet-id"],
+            options=["--subnet-name"],
             arg_group="VnetInjection",
             help="Azure resource ID of the Virtual Network subnet where the storage pool will be connected",
             required=True,
         )
         _args_schema.vnet_id = AAZStrArg(
-            options=["--vnet-id"],
+            options=["--vnet-name"],
             arg_group="VnetInjection",
             help="Azure resource ID of the Virtual Network in which the subnet is located",
             required=True,
