@@ -14,6 +14,7 @@ from knack.help_files import helps
 def get_deployment_template_help():
     """Load deployment template help content."""
 
+
 helps['ml deployment-template'] = """
 type: group
 short-summary: Manage Azure ML deployment templates.
