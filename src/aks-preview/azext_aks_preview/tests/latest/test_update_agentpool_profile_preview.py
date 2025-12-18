@@ -438,7 +438,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             "update_localdns_profile",
             "update_auto_scaler_properties_vms",
             "update_upgrade_strategy",
-            "update_blue_green_upgrade_settings"
+            "update_blue_green_upgrade_settings",
             "update_gpu_profile",
         ]
         self.assertEqual(call_order, expected_order)
