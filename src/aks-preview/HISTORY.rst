@@ -12,13 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-19.0.0b19
-+++++++
-* Add option `--gpu-driver` to `az aks nodepool update` to select skipping GPU driver installation.
-
 19.0.0b18
 +++++++
 * Vendor new SDK and bump API version to 2025-10-02-preview.
+* Add option `--gpu-driver` to `az aks nodepool update` to select skipping GPU driver installation.
 
 19.0.0b17
 +++++++
