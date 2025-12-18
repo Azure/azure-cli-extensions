@@ -2865,6 +2865,9 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
     def test_process_dns_overrides_helper(self):
         self.common_test_process_dns_overrides_helper()
 
+    def test_update_gpu_profile(self):
+        self.common_update_gpu_profile()
+
     def test_update_agentpool_profile_preview(self):
         import inspect
 

@@ -550,7 +550,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
                     'update_network_profile', 'update_artifact_streaming',
                     'update_secure_boot', 'update_vtpm', 'update_os_sku', 'update_fips_image',
                     'update_ssh_access', 'update_localdns_profile', 'update_auto_scaler_properties_vms', 
-                    'update_upgrade_strategy', 'update_blue_green_upgrade_settings'
+                    'update_upgrade_strategy', 'update_blue_green_upgrade_settings', 'update_gpu_profile'
                 ]
 
                 for method_name in update_methods:
@@ -622,6 +622,7 @@ class TestUpdateAgentPoolProfilePreviewManagedClusterMode(TestUpdateAgentPoolPro
         decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
         decorator.update_upgrade_strategy = Mock(return_value=agentpool)
         decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
+        decorator.update_gpu_profile = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview(agentpools)
