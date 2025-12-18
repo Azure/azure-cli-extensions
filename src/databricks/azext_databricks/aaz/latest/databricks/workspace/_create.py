@@ -18,16 +18,21 @@ class Create(AAZCommand):
     """Create a new workspace.
 
     :example: Create a workspace
-        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location westus --sku standard
+        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location westus --sku standard --compute-mode Hybrid
+    
+    :example: Create a Serverless workspace
+        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location westus --sku premium --compute-mode Serverless
 
     :example: Create a workspace with managed identity for storage account
-        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus2euap --sku premium --prepare-encryption
+        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus2euap --sku premium --compute-mode Hybrid --prepare-encryption
 
     :example: Create a workspace with automatic cluster update feature enabled
-        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus2euap --sku premium --enable-automatic-cluster-update
+        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus2euap --sku premium --compute-mode Hybrid --enable-automatic-cluster-update
 
     :example: Create a workspace with all enhanced security & compliance features enabled with specific compliance standards
-        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus2euap --sku premium --enable-compliance-security-profile --compliance-standards='["HIPAA","PCI_DSS"]' --enable-automatic-cluster-update --enable-enhanced-security-monitoring
+        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus2euap --sku premium --compute-mode Hybrid --enable-compliance-security-profile --compliance-standards='["HIPAA","PCI_DSS"]' --enable-automatic-cluster-update --enable-enhanced-security-monitoring
+    
+    Note: Serverless compute mode does not support custom VNet configuration, custom encryption, access connectors, default catalog properties, workspace custom parameters, or managed resource groups. These features are only available with Hybrid compute mode.
     """
 
     _aaz_info = {
@@ -203,14 +208,14 @@ class Create(AAZCommand):
         _args_schema.compliance_standards = AAZListArg(
             options=["--compliance-standards"],
             arg_group="Enhanced Security Compliance",
-            help="Compliance Standards associated with the workspace, allowed values: NONE, HIPAA, PCI_DSS.",
+            help="Compliance Standards associated with the workspace, allowed values: NONE, HIPAA, PCI_DSS, CYBER_ESSENTIAL_PLUS, FEDRAMP_HIGH, CANADA_PROTECTED_B, IRAP_PROTECTED, ISMAP, HITRUST, K_FSI, GERMANY_C5, GERMANY_TISAX.",
             nullable=True,
         )
         _args_schema.compliance_standards.Element = AAZStrArg(
             nullable=True,
             arg_group="Enhanced Security Compliance",
-            help="Compliance standards, allowed values: NONE, HIPAA, PCI_DSS.",
-            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS"},
+            help="Compliance standards, allowed values: NONE, HIPAA, PCI_DSS, CYBER_ESSENTIAL_PLUS, FEDRAMP_HIGH, CANADA_PROTECTED_B, IRAP_PROTECTED, ISMAP, HITRUST, K_FSI, GERMANY_C5, GERMANY_TISAX.",
+            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS", "CYBER_ESSENTIAL_PLUS": "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH": "FEDRAMP_HIGH", "CANADA_PROTECTED_B": "CANADA_PROTECTED_B", "IRAP_PROTECTED": "IRAP_PROTECTED", "ISMAP": "ISMAP", "HITRUST": "HITRUST", "K_FSI": "K_FSI", "GERMANY_C5": "GERMANY_C5", "GERMANY_TISAX": "GERMANY_TISAX"},
         )
         _args_schema.enable_compliance_security_profile = AAZBoolArg(
             options=["--enable-compliance-security-profile", "--enable-csp"],
@@ -323,7 +328,7 @@ class Create(AAZCommand):
 
         compliance_standards = cls._args_schema.enhanced_security_compliance.compliance_security_profile.compliance_standards
         compliance_standards.Element = AAZStrArg(
-            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS"},
+            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS", "CYBER_ESSENTIAL_PLUS": "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH": "FEDRAMP_HIGH", "CANADA_PROTECTED_B": "CANADA_PROTECTED_B", "IRAP_PROTECTED": "IRAP_PROTECTED", "ISMAP": "ISMAP", "HITRUST": "HITRUST", "K_FSI": "K_FSI", "GERMANY_C5": "GERMANY_C5", "GERMANY_TISAX": "GERMANY_TISAX"},
         )
 
         enhanced_security_monitoring = cls._args_schema.enhanced_security_compliance.enhanced_security_monitoring

@@ -220,7 +220,6 @@ class List(AAZCommand):
             _ListHelper._build_schema_managed_identity_configuration_read(properties.managed_disk_identity)
             properties.managed_resource_group_id = AAZStrType(
                 serialized_name="managedResourceGroupId",
-                flags={"required": True},
             )
             properties.parameters = AAZObjectType()
             properties.private_endpoint_connections = AAZListType(
@@ -695,7 +694,6 @@ class List(AAZCommand):
             _ListHelper._build_schema_managed_identity_configuration_read(properties.managed_disk_identity)
             properties.managed_resource_group_id = AAZStrType(
                 serialized_name="managedResourceGroupId",
-                flags={"required": True},
             )
             properties.parameters = AAZObjectType()
             properties.private_endpoint_connections = AAZListType(

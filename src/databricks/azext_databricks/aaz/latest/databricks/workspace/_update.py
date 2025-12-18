@@ -971,6 +971,10 @@ class _UpdateHelper:
         properties.created_by = AAZObjectType(
             serialized_name="createdBy",
         )
+        properties.compute_mode = AAZStrType(
+            serialized_name="computeMode",
+            flags={"read_only": True},
+        )
         cls._build_schema_created_by_read(properties.created_by)
         properties.created_date_time = AAZStrType(
             serialized_name="createdDateTime",
@@ -1000,7 +1004,6 @@ class _UpdateHelper:
         cls._build_schema_managed_identity_configuration_read(properties.managed_disk_identity)
         properties.managed_resource_group_id = AAZStrType(
             serialized_name="managedResourceGroupId",
-            flags={"required": True},
         )
         properties.parameters = AAZObjectType()
         properties.private_endpoint_connections = AAZListType(
