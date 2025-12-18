@@ -213,6 +213,13 @@ class Update(AAZCommand):
             help="Access Connector Resource that is going to be associated with Databricks Workspace",
             nullable=True,
         )
+        _args_schema.compute_mode = AAZStrArg(
+            options=["--compute-mode"],
+            help="The compute mode for the workspace. Allowed values: 'Hybrid', 'Serverless'.",
+            required=False,
+            default="Hybrid",
+            enum={"Hybrid": "Hybrid", "Serverless": "Serverless"},
+        )
         _args_schema.default_catalog = AAZObjectArg(
             options=["--default-catalog"],
             arg_group="Properties",
@@ -973,7 +980,6 @@ class _UpdateHelper:
         )
         properties.compute_mode = AAZStrType(
             serialized_name="computeMode",
-            flags={"read_only": True},
         )
         cls._build_schema_created_by_read(properties.created_by)
         properties.created_date_time = AAZStrType(
