@@ -31,9 +31,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-05-01",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2024-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -73,10 +73,16 @@ class Create(AAZCommand):
                 resource_group_arg="resource_group",
             ),
         )
+        _args_schema.compute_mode = AAZStrArg(
+            options=["--compute-mode"],
+            help="The compute mode for the workspace. Allowed values: 'Hybrid', 'Serverless'.",
+            required=False,
+            default="Hybrid",
+            enum={"Hybrid": "Hybrid", "Serverless": "Serverless"},
+        )
         _args_schema.managed_resource_group = AAZStrArg(
             options=["--managed-resource-group"],
             help="The managed resource group to create. It can be either a name or a resource ID.",
-            required=True,
         )
         _args_schema.enable_no_public_ip = AAZBoolArg(
             options=["--enable-no-public-ip"],
@@ -429,7 +435,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -462,11 +468,15 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("accessConnector", AAZObjectType, ".access_connector")
+                properties.set_prop("computeMode", AAZStrType, ".compute_mode")
                 properties.set_prop("defaultCatalog", AAZObjectType, ".default_catalog")
                 properties.set_prop("defaultStorageFirewall", AAZStrType, ".default_storage_firewall")
                 properties.set_prop("encryption", AAZObjectType)
                 properties.set_prop("enhancedSecurityCompliance", AAZObjectType, ".enhanced_security_compliance")
-                properties.set_prop("managedResourceGroupId", AAZStrType, ".managed_resource_group", typ_kwargs={"flags": {"required": True}})
+                # Only add managedResourceGroupId if compute mode is not Serverless
+                compute_mode = getattr(self.ctx.args, 'compute_mode', None)
+                if compute_mode != "Serverless":
+                    properties.set_prop("managedResourceGroupId", AAZStrType, ".managed_resource_group")
                 properties.set_prop("parameters", AAZObjectType)
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
                 properties.set_prop("requiredNsgRules", AAZStrType, ".required_nsg_rules")
@@ -476,6 +486,10 @@ class Create(AAZCommand):
                 access_connector.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
                 access_connector.set_prop("identityType", AAZStrType, ".identity_type", typ_kwargs={"flags": {"required": True}})
                 access_connector.set_prop("userAssignedIdentityId", AAZStrType, ".user_assigned_identity_id")
+
+            compute_mode = _builder.get(".properties.computeMode")
+            if compute_mode is not None:
+                compute_mode.set_prop("value", AAZStrType, ".value")
 
             default_catalog = _builder.get(".properties.defaultCatalog")
             if default_catalog is not None:
@@ -667,6 +681,9 @@ class Create(AAZCommand):
             properties.access_connector = AAZObjectType(
                 serialized_name="accessConnector",
             )
+            properties.compute_mode = AAZStrType(
+                serialized_name="computeMode",
+            )
             properties.authorizations = AAZListType()
             properties.created_by = AAZObjectType(
                 serialized_name="createdBy",
@@ -700,7 +717,6 @@ class Create(AAZCommand):
             _CreateHelper._build_schema_managed_identity_configuration_read(properties.managed_disk_identity)
             properties.managed_resource_group_id = AAZStrType(
                 serialized_name="managedResourceGroupId",
-                flags={"required": True},
             )
             properties.parameters = AAZObjectType()
             properties.private_endpoint_connections = AAZListType(
