@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "pscloud pool update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a storage pool

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "pscloud pool get-avs-status",
-    is_preview=True,
 )
 class GetAvsStatus(AAZCommand):
     """Returns the status of the storage pool connection to AVS
@@ -48,7 +47,7 @@ class GetAvsStatus(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.name = AAZStrArg(
+        _args_schema.storage_pool_name = AAZStrArg(
             options=["-n", "--name"],
             help="Name of the storage pool",
             required=True,
@@ -112,7 +111,7 @@ class GetAvsStatus(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "storagePoolName", self.ctx.args.name,
+                    "storagePoolName", self.ctx.args.storage_pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
