@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "changesafety changestate update",
 )
 class Update(AAZCommand):
-    """Update a ChangeState
+    """Update a ChangeRecord
     """
 
     _aaz_info = {
@@ -46,7 +46,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.change_state_name = AAZStrArg(
             options=["-n", "--name", "--change-record-name"],
-            help="The name of the ChangeState resource.",
+            help="The name of the ChangeRecord resource.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -92,7 +92,7 @@ class Update(AAZCommand):
         _args_schema.comments = AAZStrArg(
             options=["--comments"],
             arg_group="Properties",
-            help="Comments about the last update to the changeState resource.",
+            help="Comments about the last update to the ChangeRecord resource.",
             nullable=True,
             fmt=AAZStrArgFormat(
                 max_length=2000,
