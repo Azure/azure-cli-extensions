@@ -478,9 +478,11 @@ class Create(AAZCommand):
                 properties.set_prop("defaultStorageFirewall", AAZStrType, ".default_storage_firewall")
                 properties.set_prop("encryption", AAZObjectType)
                 properties.set_prop("enhancedSecurityCompliance", AAZObjectType, ".enhanced_security_compliance")
-                # Only add managedResourceGroupId if compute mode is not Serverless
-                compute_mode = getattr(self.ctx.args, 'compute_mode', None)
-                if compute_mode != "Serverless":
+                # Only add managedResourceGroupId if specified
+                managed_resource_group_id = getattr(self.ctx.args, 'managed_resource_group', None)
+                print("here")
+                if managed_resource_group_id is not None:
+                    print(managed_resource_group_id)
                     properties.set_prop("managedResourceGroupId", AAZStrType, ".managed_resource_group")
                 properties.set_prop("parameters", AAZObjectType)
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
@@ -491,10 +493,6 @@ class Create(AAZCommand):
                 access_connector.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
                 access_connector.set_prop("identityType", AAZStrType, ".identity_type", typ_kwargs={"flags": {"required": True}})
                 access_connector.set_prop("userAssignedIdentityId", AAZStrType, ".user_assigned_identity_id")
-
-            compute_mode = _builder.get(".properties.computeMode")
-            if compute_mode is not None:
-                compute_mode.set_prop("value", AAZStrType, ".value")
 
             default_catalog = _builder.get(".properties.defaultCatalog")
             if default_catalog is not None:
