@@ -36,7 +36,7 @@ class Cosmosdb_previewMaterialiedviewScenarioTest(ScenarioTest):
         })
 
         # create materialized view enabled account
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-materialized-views')
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-materialized-views --backup-policy-type Continuous')
         self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
             self.check('enableMaterializedViews', True),
         ])

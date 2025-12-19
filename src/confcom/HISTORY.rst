@@ -3,6 +3,28 @@
 Release History
 ===============
 
+1.5.0
+++++++
+* restored the behaviour of --upload-fragment in acifragmentgen to attach to first image in input
+* added confcom fragment push command to allow explicit uploading of standalone fragments
+* added confcom fragment attach command to allow explicit uploading of image attached fragments
+
+1.4.5
+++++++
+* Drop the dependency on OPA
+
+1.4.4
+++++++
+* Improve the package building process
+
+1.4.3
+++++++
+* Fix installing OPA on Windows and in strict networking environments
+
+1.4.2
+++++++
+* Update policy model to use pydantic and explicitly declare collections where order doesn't affect function. These fields will serialize in alphabetical order and comparisons will ignore order.
+
 1.4.0
 ++++++
 * Add --with-containers flag to acipolicygen and acifragmentgen to allow passing container policy definitions directly

@@ -31,6 +31,8 @@ helps['dataprotection backup-instance update'] = """
     examples:
       - name: Update backed up containers for a vaulted blob backup instance
         text: az dataprotection backup-instance update --backup-instance-name MyDisk1 --vaulted-blob-container-list {backup_configuration} -g MyResourceGroup --vault-name MyVault
+      - name: Update backed up namespaces for an aks backup instance
+        text: az dataprotection backup-instance update --backup-instance-name MyAKSCluster1 --aks-backup-configuration {aks_backup_configuration} -g MyResourceGroup --vault-name MyVault
 """
 
 helps['dataprotection backup-instance update-policy'] = """

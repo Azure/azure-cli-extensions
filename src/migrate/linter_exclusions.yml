@@ -42,3 +42,15 @@ migrate local replication new:
         resource_group_name:
             rule_exclusions:
                 - parameter_should_not_end_in_resource_group
+
+migrate local replication get-job:
+    rule_exclusions:
+        - missing_command_test_coverage
+        - missing_parameter_test_coverage
+        - missing_command_example
+
+migrate local replication remove:
+    rule_exclusions:
+        - missing_command_test_coverage
+        - missing_parameter_test_coverage
+        - missing_command_example

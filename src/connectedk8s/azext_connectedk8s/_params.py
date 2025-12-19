@@ -441,20 +441,6 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
             help="Space-separated list of features you want to enable.",
         )
         c.argument(
-            "azrbac_client_id",
-            options_list=["--app-id"],
-            arg_group="Azure RBAC",
-            help="Application ID for enabling Azure RBAC.",
-            deprecate_info=c.deprecate(hide=True),
-        )
-        c.argument(
-            "azrbac_client_secret",
-            options_list=["--app-secret"],
-            arg_group="Azure RBAC",
-            help="Application secret for enabling Azure RBAC.",
-            deprecate_info=c.deprecate(hide=True),
-        )
-        c.argument(
             "azrbac_skip_authz_check",
             options_list=["--skip-azure-rbac-list"],
             arg_group="Azure RBAC",

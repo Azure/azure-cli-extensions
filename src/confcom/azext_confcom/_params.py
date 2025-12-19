@@ -5,6 +5,8 @@
 # pylint: disable=line-too-long
 
 import json
+import argparse
+import sys
 from knack.arguments import CLIArgumentType
 from azext_confcom._validators import (
     validate_params_file,
@@ -43,6 +45,32 @@ def load_arguments(self, _):
     with self.argument_context("confcom") as c:
         c.argument("tags", tags_type)
         c.argument("confcom_name", confcom_name_type, options_list=["--name", "-n"])
+
+    with self.argument_context("confcom fragment attach") as c:
+        c.positional(
+            "signed_fragment",
+            nargs='?',
+            type=argparse.FileType('rb'),
+            default=sys.stdin.buffer,
+            help="Signed fragment to attach",
+        )
+        c.argument(
+            "manifest_tag",
+            help="Manifest tag for the fragment",
+        )
+
+    with self.argument_context("confcom fragment push") as c:
+        c.positional(
+            "signed_fragment",
+            nargs='?',
+            type=argparse.FileType('rb'),
+            default=sys.stdin.buffer,
+            help="Signed fragment to push",
+        )
+        c.argument(
+            "manifest_tag",
+            help="Manifest tag for the fragment",
+        )
 
     with self.argument_context("confcom acipolicygen") as c:
         c.argument(
@@ -361,6 +389,13 @@ def load_arguments(self, _):
             required=False,
             type=json.loads,
             help='Container definitions to include in the policy'
+        )
+        c.argument(
+            "out_signed_fragment",
+            action="store_true",
+            default=False,
+            required=False,
+            help="Emit only the signed fragment bytes",
         )
 
     with self.argument_context("confcom katapolicygen") as c:

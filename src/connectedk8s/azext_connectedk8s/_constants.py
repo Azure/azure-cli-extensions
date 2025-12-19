@@ -418,7 +418,7 @@ SigningKey_CR_Snapshot = "signingkey_cr_snapshot.txt"
 
 # Connect Precheck Diagnoser constants
 Cluster_Diagnostic_Checks_Job_Registry_Path = (
-    "azurearck8s/helmchart/stable/clusterdiagnosticchecks:1.29.3"
+    "azurearck8s/helmchart/stable/clusterdiagnosticchecks:1.31.2"
 )
 Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = (
     "Error while installing cluster diagnostic checks helm release"
@@ -476,7 +476,7 @@ Outbound_Connectivity_Check_Failed_For_Cluster_Connect = (
 )
 DNS_Check_Result_String = "DNS Result:"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = "2.30.0"
-CLIENT_PROXY_VERSION = "1.3.029301"
+CLIENT_PROXY_VERSION = "1.3.032281"
 CLIENT_PROXY_FOLDER = ".clientproxy"
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010
