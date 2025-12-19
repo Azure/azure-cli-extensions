@@ -2427,6 +2427,9 @@ helps['aks nodepool update'] = """
         - name: --final-soak-duration
           type: int
           short-summary: Wait time (in minutes) after all old nodes are drained before removing them. Default is 60 minutes. Only for blue-green upgrades.
+        - name: --gpu-driver
+          type: string
+          short-summary: Whether to install driver for GPU node pool. Possible values are "Install" or "None".
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster

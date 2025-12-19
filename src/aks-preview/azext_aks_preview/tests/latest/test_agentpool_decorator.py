@@ -2660,6 +2660,31 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         finally:
             os.unlink(config_file_path)
 
+    def common_update_gpu_profile(self):
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"gpu_driver": "None"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_gpu_profile(None)
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                driver="Install",
+            )
+        )
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_gpu_profile(agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                driver="None",
+            )
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)        
+
     def common_test_process_dns_overrides_helper(self):
         from azext_aks_preview._helpers import process_dns_overrides
         
@@ -2743,6 +2768,9 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
 
     def test_update_localdns_profile(self):
         self.common_update_localdns_profile()
+
+    def test_update_gpu_profile(self):
+        self.common_update_gpu_profile()
 
     def test_process_dns_overrides_helper(self):
         self.common_test_process_dns_overrides_helper()
@@ -2836,6 +2864,9 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
 
     def test_process_dns_overrides_helper(self):
         self.common_test_process_dns_overrides_helper()
+
+    def test_update_gpu_profile(self):
+        self.common_update_gpu_profile()
 
     def test_update_agentpool_profile_preview(self):
         import inspect
