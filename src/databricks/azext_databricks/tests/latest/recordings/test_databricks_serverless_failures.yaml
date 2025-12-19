@@ -1,8 +1,7 @@
 interactions:
 - request:
-    body: '{"location": "eastus", "properties": {"computeMode": "Serverless", "managedResourceGroupId":
-      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-failed-workspace-9nnkxy0niej99",
-      "publicNetworkAccess": "Disabled"}, "sku": {"name": "Pxlekmx"}}'
+    body: '{"location": "eastus", "properties": {"computeMode": "Serverless", "publicNetworkAccess":
+      "Disabled"}, "sku": {"name": "Pxlekmx"}}'
     headers:
       Accept:
       - application/json
@@ -13,7 +12,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '271'
+      - '130'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -35,7 +34,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 18 Dec 2025 17:58:24 GMT
+      - Fri, 19 Dec 2025 00:54:22 GMT
       expires:
       - '-1'
       pragma:
@@ -47,18 +46,17 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/eastus/c81b9ff7-c4ef-472e-a119-13b51263f12f
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/c6566240-b7a0-4f72-abd6-fb12392ebbf2
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 51E6F6100CC941B4AD5F9827EB44951B Ref B: CO6AA3150219033 Ref C: 2025-12-18T17:58:24Z'
+      - 'Ref A: 5279B56F7D58471193FA0B86C906B7E8 Ref B: MWH011020809025 Ref C: 2025-12-19T00:54:21Z'
     status:
       code: 400
       message: Bad Request
 - request:
-    body: '{"location": "eastus", "properties": {"computeMode": "Serverless", "managedResourceGroupId":
-      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-failed-workspace-r5vup04scm962",
-      "parameters": {"enableNoPublicIp": {"value": true}}}, "sku": {"name": "premium"}}'
+    body: '{"location": "eastus", "properties": {"computeMode": "Serverless", "parameters":
+      {"enableNoPublicIp": {"value": true}}}, "sku": {"name": "premium"}}'
     headers:
       Accept:
       - application/json
@@ -69,7 +67,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '289'
+      - '148'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -81,17 +79,17 @@ interactions:
   response:
     body:
       string: "{\r\n  \"error\": {\r\n    \"code\": \"FeatureNotSupportedForServerlessWorkspace\",\r\n
-        \   \"message\": \"The property 'ManagedResourceGroupId' is not supported
-        for Serverless Workspace\"\r\n  }\r\n}"
+        \   \"message\": \"The property 'Parameters' is not supported for Serverless
+        Workspace\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '179'
+      - '167'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 18 Dec 2025 17:58:26 GMT
+      - Fri, 19 Dec 2025 00:54:24 GMT
       expires:
       - '-1'
       pragma:
@@ -103,18 +101,17 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/eb64adfe-9500-48e9-9f58-93e82f6a0294
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/ace52d7d-7a64-46c6-913e-c5f2a83abb68
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: F921396E907949B9A0126B57364E21FD Ref B: CO6AA3150218027 Ref C: 2025-12-18T17:58:25Z'
+      - 'Ref A: 2C0E642DEC8F417598B1D45B34649D93 Ref B: MWH011020808029 Ref C: 2025-12-19T00:54:23Z'
     status:
       code: 400
       message: Bad Request
 - request:
-    body: '{"location": "eastus", "properties": {"computeMode": "Serverless", "managedResourceGroupId":
-      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-failed-workspace-yrwfmio255lzi",
-      "requiredNsgRules": "AllRules"}, "sku": {"name": "premium"}}'
+    body: '{"location": "eastus", "properties": {"computeMode": "Serverless", "requiredNsgRules":
+      "AllRules"}, "sku": {"name": "premium"}}'
     headers:
       Accept:
       - application/json
@@ -125,7 +122,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '268'
+      - '127'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -137,17 +134,17 @@ interactions:
   response:
     body:
       string: "{\r\n  \"error\": {\r\n    \"code\": \"FeatureNotSupportedForServerlessWorkspace\",\r\n
-        \   \"message\": \"The property 'ManagedResourceGroupId' is not supported
-        for Serverless Workspace\"\r\n  }\r\n}"
+        \   \"message\": \"The property 'RequiredNsgRules' is not supported for Serverless
+        Workspace\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '179'
+      - '173'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 18 Dec 2025 17:58:28 GMT
+      - Fri, 19 Dec 2025 00:54:26 GMT
       expires:
       - '-1'
       pragma:
@@ -159,11 +156,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus2/44755890-aea1-4fc7-b390-5725ac4b9354
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/85d79d6b-10dd-469e-a294-0eb96a045141
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 59A9A91F03034EE7B9CC4969882EFED1 Ref B: MWH011020806029 Ref C: 2025-12-18T17:58:27Z'
+      - 'Ref A: D04A73D2D7C4455C8CF295D17A64BFDA Ref B: MWH011020807042 Ref C: 2025-12-19T00:54:25Z'
     status:
       code: 400
       message: Bad Request
