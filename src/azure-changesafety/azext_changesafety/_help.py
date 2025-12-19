@@ -17,14 +17,14 @@ helps['changesafety'] = """
 
 helps['changesafety changerecord'] = """
     type: group
-    short-summary: Manage ChangeState resources that describe planned changes across targets.
+    short-summary: Manage ChangeRecord resources that describe planned changes across targets.
 """
 
 helps['changesafety changerecord create'] = """
     type: command
-    short-summary: Create a ChangeState resource.
+    short-summary: Create a ChangeRecord resource.
     long-summary: >
-        Provide at least one target definition to describe which resources or operations the ChangeState
+        Provide at least one target definition to describe which resources or operations the ChangeRecord
         will affect. Targets are expressed as comma or semicolon separated key=value pairs such as
         resourceId=RESOURCE_ID,operation=DELETE. The command is also available through the alias
         `az changesafety changerecord`. If you omit scheduling flags, the anticipated start time defaults
@@ -66,10 +66,10 @@ helps['changesafety changerecord create'] = """
 
 helps['changesafety changerecord update'] = """
     type: command
-    short-summary: Update an existing ChangeState resource.
+    short-summary: Update an existing ChangeRecord resource.
     long-summary: >
         Use this command to modify descriptive metadata, rollout settings, or replace targets for an
-        existing ChangeState. When you pass --targets, the supplied definitions overwrite the previous set.
+        existing ChangeRecord. When you pass --targets, the supplied definitions overwrite the previous set.
         This command is also available through the alias `az change-safety change-record`.
     parameters:
       - name: --targets
@@ -100,18 +100,18 @@ helps['changesafety changerecord update'] = """
 
 helps['changesafety changerecord delete'] = """
     type: command
-    short-summary: Delete a ChangeState resource.
+    short-summary: Delete a ChangeRecord resource.
     examples:
-      - name: Delete a change state without confirmation
+      - name: Delete a ChangeRecord without confirmation
         text: |-
           az changesafety changerecord delete -g MyResourceGroup -n changerecord001 --yes
 """
 
 helps['changesafety changerecord show'] = """
     type: command
-    short-summary: Show details for a ChangeState resource.
+    short-summary: Show details for a ChangeRecord resource.
     examples:
-      - name: Show a change state
+      - name: Show a ChangeRecord
         text: |-
           az changesafety changerecord show -g MyResourceGroup -n changerecord001
 """

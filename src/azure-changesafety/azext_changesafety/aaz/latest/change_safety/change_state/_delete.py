@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a ChangeState
+    """Delete a ChangeRecord
     """
 
     _aaz_info = {
@@ -44,7 +44,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.change_state_name = AAZStrArg(
             options=["-n", "--name", "--change-record-name"],
-            help="The name of the ChangeState resource.",
+            help="The name of the ChangeRecord resource.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

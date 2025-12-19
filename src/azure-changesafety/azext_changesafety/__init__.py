@@ -9,7 +9,7 @@ from azure.cli.core import AzCommandsLoader
 from azext_changesafety._help import helps  # pylint: disable=unused-import
 
 
-class ChangeStateCommandsLoader(AzCommandsLoader):
+class ChangeRecordCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
@@ -39,4 +39,4 @@ class ChangeStateCommandsLoader(AzCommandsLoader):
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = ChangeStateCommandsLoader
+COMMAND_LOADER_CLS = ChangeRecordCommandsLoader
