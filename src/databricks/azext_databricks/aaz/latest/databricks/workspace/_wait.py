@@ -180,6 +180,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="accessConnector",
             )
             properties.authorizations = AAZListType()
+            properties.compute_mode = AAZStrType(
+                serialized_name="computeMode",
+            )
             properties.created_by = AAZObjectType(
                 serialized_name="createdBy",
             )

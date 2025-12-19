@@ -684,10 +684,10 @@ class Create(AAZCommand):
             properties.access_connector = AAZObjectType(
                 serialized_name="accessConnector",
             )
+            properties.authorizations = AAZListType()
             properties.compute_mode = AAZStrType(
                 serialized_name="computeMode",
             )
-            properties.authorizations = AAZListType()
             properties.created_by = AAZObjectType(
                 serialized_name="createdBy",
             )

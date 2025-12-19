@@ -217,7 +217,6 @@ class Update(AAZCommand):
             options=["--compute-mode"],
             help="The compute mode for the workspace. Allowed values: 'Hybrid', 'Serverless'.",
             required=False,
-            default="Hybrid",
             enum={"Hybrid": "Hybrid", "Serverless": "Serverless"},
         )
         _args_schema.default_catalog = AAZObjectArg(
@@ -975,11 +974,11 @@ class _UpdateHelper:
             serialized_name="accessConnector",
         )
         properties.authorizations = AAZListType()
-        properties.created_by = AAZObjectType(
-            serialized_name="createdBy",
-        )
         properties.compute_mode = AAZStrType(
             serialized_name="computeMode",
+        )
+        properties.created_by = AAZObjectType(
+            serialized_name="createdBy",
         )
         cls._build_schema_created_by_read(properties.created_by)
         properties.created_date_time = AAZStrType(
