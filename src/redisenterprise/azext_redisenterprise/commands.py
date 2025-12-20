@@ -16,6 +16,7 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         g.custom_command('create', 'redisenterprise_create', supports_no_wait=True)
         g.custom_command('list', 'redisenterprise_list')
         g.custom_show_command('show', 'redisenterprise_show')
+        g.custom_command('test-connection', 'redisenterprise_test_connection')
     with self.command_group("redisenterprise database"):
         from .custom import DatabaseFlush, DatabaseCreate, DatabaseDelete, DatabaseExport, DatabaseForceUnlink
         from .custom import DatabaseImport, DatabaseListKey, DatabaseRegenerateKey

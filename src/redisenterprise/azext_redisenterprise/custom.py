@@ -27,8 +27,241 @@ from .aaz.latest.redisenterprise import Wait as _DatabaseWait
 from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
 )
+from azure.cli.core.azclierror import ValidationError
 
 logger = get_logger(__name__)
+
+
+def _get_redis_connection(host_name, port, password, ssl=True, username=None):
+    """
+    Create a Redis connection using the provided credentials.
+
+    :param host_name: The Redis host name.
+    :param port: The Redis port.
+    :param password: The password or token for authentication.
+    :param ssl: Whether to use SSL connection.
+    :param username: The username for authentication (required for Entra ID auth).
+    :return: Redis client instance.
+    """
+    import redis
+    return redis.Redis(
+        host=host_name,
+        port=port,
+        username=username,
+        password=password,
+        ssl=ssl,
+        ssl_cert_reqs=None,
+        decode_responses=True
+    )
+
+
+def _test_redis_connection_with_write(redis_client, test_key_prefix="az_cli_test_connection"):
+    """
+    Test Redis connection by writing and reading a test key.
+
+    :param redis_client: The Redis client instance.
+    :param test_key_prefix: Prefix for the test key.
+    :return: Tuple of (success: bool, message: str, steps: list).
+    """
+    import uuid
+    import time
+
+    test_logger = get_logger(__name__)
+    test_key = f"{test_key_prefix}:{uuid.uuid4()}"
+    test_value = f"test_value_{int(time.time())}"
+    steps = []
+
+    try:
+        # Step 1: Write a test key
+        test_logger.warning("Step 1: Writing test key '%s' with value '%s'...", test_key, test_value)
+        redis_client.set(test_key, test_value, ex=60)  # Expire in 60 seconds
+        steps.append({'step': 1, 'action': 'write', 'status': 'success', 'key': test_key, 'value': test_value,
+                      'message': f"Successfully wrote key '{test_key}'"})
+        test_logger.warning("Step 1: Successfully wrote test key")
+
+        # Step 2: Read the test key back
+        test_logger.warning("Step 2: Reading test key '%s'...", test_key)
+        retrieved_value = redis_client.get(test_key)
+        steps.append({'step': 2, 'action': 'read', 'status': 'success', 'key': test_key, 'value': retrieved_value,
+                      'message': f"Successfully read key '{test_key}', value: '{retrieved_value}'"})
+        test_logger.warning("Step 2: Successfully read test key, value: '%s'", retrieved_value)
+
+        # Step 3: Verify the value
+        test_logger.warning("Step 3: Verifying value matches...")
+        if retrieved_value == test_value:
+            steps.append({'step': 3, 'action': 'verify', 'status': 'success',
+                          'message': 'Value verification passed'})
+            test_logger.warning("Step 3: Value verification passed")
+        else:
+            steps.append({'step': 3, 'action': 'verify', 'status': 'failed',
+                          'message': f"Value mismatch: expected '{test_value}', got '{retrieved_value}'"})
+            test_logger.warning("Step 3: Value verification failed")
+            return False, f"Value mismatch: expected '{test_value}', got '{retrieved_value}'.", steps
+
+        # Step 4: Delete the test key
+        test_logger.warning("Step 4: Deleting test key '%s'...", test_key)
+        redis_client.delete(test_key)
+        steps.append({'step': 4, 'action': 'delete', 'status': 'success', 'key': test_key,
+                      'message': f"Successfully deleted key '{test_key}'"})
+        test_logger.warning("Step 4: Successfully deleted test key")
+
+        return True, "Successfully connected and verified write/read/delete operations.", steps
+
+    except Exception as e:  # pylint: disable=broad-except
+        error_msg = f"Failed during test operation: {str(e)}"
+        test_logger.warning("Error: %s", error_msg)
+        steps.append({'step': len(steps) + 1, 'action': 'error', 'status': 'failed', 'message': error_msg})
+        return False, error_msg, steps
+
+
+def redisenterprise_test_connection(cmd,
+                                    resource_group_name,
+                                    cluster_name,
+                                    auth):
+    """
+    Test connection to a Redis Enterprise cluster using the specified authentication method.
+
+    :param cmd: The command instance.
+    :param resource_group_name: The name of the resource group.
+    :param cluster_name: The name of the Redis Enterprise cluster.
+    :param auth: The authentication method to use ('entra' or 'access-key').
+    :return: Connection test result.
+    """
+    # Get cluster information
+    cluster = _ClusterShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "cluster_name": cluster_name,
+        "resource_group": resource_group_name})
+
+    if not cluster:
+        raise ValidationError(f"Cluster '{cluster_name}' not found in resource group '{resource_group_name}'.")
+
+    # Get the hostname from the cluster
+    host_name = cluster.get('hostName')
+    if not host_name:
+        raise ValidationError(f"Unable to retrieve hostname for cluster '{cluster_name}'.")
+
+    # Get the list of databases in the cluster
+    databases = list(_DatabaseList(cli_ctx=cmd.cli_ctx)(command_args={
+        "cluster_name": cluster_name,
+        "resource_group": resource_group_name}))
+
+    if not databases:
+        raise ValidationError(f"No databases found in cluster '{cluster_name}'. "
+                              "Please create a database before testing the connection.")
+
+    # Use the first database
+    first_database = databases[0]
+    database_name = first_database.get('name', 'default')
+    port = first_database.get('port', 10000)
+
+    logger.warning("Using database: %s", database_name)
+
+    result = {
+        'clusterName': cluster_name,
+        'resourceGroup': resource_group_name,
+        'hostName': host_name,
+        'port': port,
+        'databaseName': database_name,
+        'authMethod': auth,
+        'connectionStatus': 'NotTested',
+        'message': ''
+    }
+
+    if auth == 'entra':
+        # Get token from current Azure CLI credentials for Redis
+        try:
+            from azure.cli.core._profile import Profile
+
+            profile = Profile(cli_ctx=cmd.cli_ctx)
+            # Use get_raw_token with the Redis resource
+            creds, _, _ = profile.get_raw_token(resource="https://redis.azure.com")
+            access_token = creds[1]
+
+            logger.debug("Successfully obtained Entra ID token for Redis.")
+
+            # Create Redis connection with the token
+            # For Entra auth, username is the object ID (oid) from the token
+            # The password is the access token itself
+            import jwt
+            decoded_token = jwt.decode(access_token, options={"verify_signature": False})
+            user_name = decoded_token.get('oid', decoded_token.get('sub', 'default'))
+
+            logger.warning("Connecting with Entra ID user (oid): %s", user_name)
+
+            redis_client = _get_redis_connection(
+                host_name=host_name,
+                port=port,
+                password=access_token,
+                ssl=True,
+                username=user_name
+            )
+
+            logger.warning("Successfully connected to Redis at %s:%s", host_name, port)
+
+            # Test the connection with a write operation
+            success, message, _ = _test_redis_connection_with_write(redis_client)
+
+            if success:
+                result['connectionStatus'] = 'Success'
+                result['message'] = message
+            else:
+                result['connectionStatus'] = 'Failed'
+                result['message'] = message
+
+        except ImportError as ie:
+            result['connectionStatus'] = 'Failed'
+            result['message'] = (f"Required package not installed: {str(ie)}. "
+                                 "Please install 'redis' and 'PyJWT' packages.")
+        except Exception as e:  # pylint: disable=broad-except
+            result['connectionStatus'] = 'Failed'
+            result['message'] = f'Entra authentication failed: {str(e)}'
+
+    elif auth == 'access-key':
+        # Get access keys for the database
+        try:
+            keys = _DatabaseListKey(cli_ctx=cmd.cli_ctx)(command_args={
+                "cluster_name": cluster_name,
+                "resource_group": resource_group_name,
+                "database_name": database_name})
+
+            access_key = None
+            if keys:
+                access_key = keys.get('primaryKey') or keys.get('secondaryKey')
+
+            if not access_key:
+                result['connectionStatus'] = 'Failed'
+                result['message'] = ('Access keys authentication may be disabled. '
+                                     'Enable access keys authentication or use Entra authentication.')
+                return result
+
+            # Create Redis connection with the access key
+            redis_client = _get_redis_connection(
+                host_name=host_name,
+                port=port,
+                password=access_key,
+                ssl=True
+            )
+
+            logger.warning("Successfully connected to Redis at %s:%s", host_name, port)
+
+            # Test the connection with a write operation
+            success, message, _ = _test_redis_connection_with_write(redis_client)
+
+            if success:
+                result['connectionStatus'] = 'Success'
+                result['message'] = message
+            else:
+                result['connectionStatus'] = 'Failed'
+                result['message'] = message
+
+        except ImportError as ie:
+            result['connectionStatus'] = 'Failed'
+            result['message'] = f"Required package not installed: {str(ie)}. Please install 'redis' package."
+        except Exception as e:  # pylint: disable=broad-except
+            result['connectionStatus'] = 'Failed'
+            result['message'] = f'Failed to connect with access key: {str(e)}'
+
+    return result
 
 
 class DatabaseFlush(_DatabaseFlush):
