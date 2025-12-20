@@ -28,6 +28,7 @@ from .aaz.latest.redisenterprise import Update as _Update
 from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
 )
+from azure.cli.core.azclierror import ValidationError
 
 logger = get_logger(__name__)
 
@@ -67,6 +68,241 @@ class RedisEnterpriseUpdate(_Update):
                     instance.zones = None
             except (AttributeError, TypeError):
                 pass
+
+
+def _get_redis_connection(host_name, port, password, ssl=True, username=None):
+    """
+    Create a Redis connection using the provided credentials.
+
+    :param host_name: The Redis host name.
+    :param port: The Redis port.
+    :param password: The password or token for authentication.
+    :param ssl: Whether to use SSL connection.
+    :param username: The username for authentication (required for Entra ID auth).
+    :return: Redis client instance.
+    """
+    import redis
+    return redis.Redis(
+        host=host_name,
+        port=port,
+        username=username,
+        password=password,
+        ssl=ssl,
+        ssl_cert_reqs=None,
+        decode_responses=True
+    )
+
+
+def _test_redis_connection_with_ping(redis_client):
+    """
+    Test Redis connection by sending a PING command.
+
+    :param redis_client: The Redis client instance.
+    :return: Tuple of (success: bool, message: str).
+    """
+    test_logger = get_logger(__name__)
+
+    try:
+        test_logger.warning("Sending PING command to Redis server...")
+        response = redis_client.ping()
+
+        if response:
+            test_logger.warning("PING successful, received PONG response.")
+            return True, "Successfully connected and verified with PING command."
+
+        test_logger.warning("PING command did not receive expected response.")
+        return False, "PING command did not receive expected response."
+
+    except Exception as e:  # pylint: disable=broad-except
+        error_msg = f"Failed during PING operation: {str(e)}"
+        test_logger.warning("Error: %s", error_msg)
+        return False, error_msg
+
+
+def redisenterprise_test_connection(cmd,
+                                    resource_group_name=None,
+                                    cluster_name=None,
+                                    auth=None,
+                                    host_name=None,
+                                    access_key=None):
+    # pylint: disable=too-many-branches, line-too-long
+    """
+    Test connection to a Redis Enterprise cluster using the specified authentication method.
+
+    :param cmd: The command instance.
+    :param resource_group_name: The name of the resource group (optional if host is provided).
+    :param cluster_name: The name of the Redis Enterprise cluster (optional if host is provided).
+    :param auth: The authentication method to use ('entra' or 'access-key').
+    :param host_name: The Redis host name (optional, will be retrieved from cluster if not provided).
+    :param access_key: The access key for authentication (optional, only used with access-key auth).
+    :return: Connection test result.
+    """
+    # Default port for Redis Enterprise
+    port = 10000
+    database_name = 'default'
+
+    # Parse port from hostname if provided (e.g., "myhost.redis.cache.windows.net:10000")
+    if host_name and ':' in host_name:
+        host_parts = host_name.rsplit(':', 1)
+        host_name = host_parts[0]
+        try:
+            port = int(host_parts[1])
+        except ValueError:
+            raise ValidationError(f"Invalid port number in hostname: {host_parts[1]}")
+
+    # Infer auth method from provided parameters
+    if access_key and not auth:
+        auth = 'access-key'
+
+    # Validate parameters - host and cluster-name are mutually exclusive
+    if host_name and cluster_name:
+        raise MutuallyExclusiveArgumentError(
+            "--host and --cluster-name cannot be used together.",
+            "Use either --host (with --access-key or --auth entra) or --resource-group and --cluster-name.")
+
+    # Validate parameters
+    if host_name:
+        # Direct connection mode - host is provided
+        # Default to Entra auth if neither access_key nor auth is provided
+        if not access_key and not auth:
+            auth = 'entra'
+    else:
+        # Azure resource mode - need resource group and cluster name
+        if not resource_group_name or not cluster_name:
+            raise ValidationError("Either --host or both --resource-group and --cluster-name must be provided.")
+
+        # Default to Entra auth if auth is not specified
+        if not auth:
+            auth = 'entra'
+
+        # Get cluster information
+        cluster = _ClusterShow(cli_ctx=cmd.cli_ctx)(command_args={
+            "cluster_name": cluster_name,
+            "resource_group": resource_group_name})
+
+        if not cluster:
+            raise ValidationError(f"Cluster '{cluster_name}' not found in resource group '{resource_group_name}'.")
+
+        # Get the hostname from the cluster
+        host_name = cluster.get('hostName')
+        if not host_name:
+            raise ValidationError(f"Unable to retrieve hostname for cluster '{cluster_name}'.")
+
+    result = {
+        'clusterName': cluster_name,
+        'resourceGroup': resource_group_name,
+        'hostName': host_name,
+        'port': port,
+        'databaseName': database_name,
+        'authMethod': auth,
+        'connectionStatus': 'NotTested',
+        'message': ''
+    }
+
+    if auth == 'entra':
+        # Get token from current Azure CLI credentials for Redis
+        try:
+            from azure.cli.core._profile import Profile
+
+            profile = Profile(cli_ctx=cmd.cli_ctx)
+            # Use get_raw_token with the Redis resource
+            creds, _, _ = profile.get_raw_token(resource="https://redis.azure.com")
+            access_token = creds[1]
+
+            logger.debug("Successfully obtained Entra ID token for Redis.")
+
+            # Create Redis connection with the token
+            # For Entra auth, username is the object ID (oid) from the token
+            # The password is the access token itself
+            import jwt
+            decoded_token = jwt.decode(access_token, options={"verify_signature": False})
+            entra_object_id = decoded_token.get('oid', decoded_token.get('sub', 'default'))
+
+            logger.warning("Connecting with Entra ID user (oid): %s", entra_object_id)
+
+            redis_client = _get_redis_connection(
+                host_name=host_name,
+                port=port,
+                password=access_token,
+                ssl=True,
+                username=entra_object_id
+            )
+
+            logger.warning("Successfully connected to Redis at %s:%s", host_name, port)
+
+            # Test the connection with a PING command
+            success, message = _test_redis_connection_with_ping(redis_client)
+
+            if success:
+                result['connectionStatus'] = 'Success'
+                result['message'] = message
+            else:
+                result['connectionStatus'] = 'Failed'
+                result['message'] = message
+
+        except ImportError as ie:
+            result['connectionStatus'] = 'Failed'
+            result['message'] = (f"Required package not installed: {str(ie)}. "
+                                 "Please install 'redis' and 'PyJWT' packages.")
+        except Exception as e:  # pylint: disable=broad-except
+            result['connectionStatus'] = 'Failed'
+            result['message'] = f'Entra authentication failed: {str(e)}'
+
+    elif auth == 'access-key':
+        # Get access keys for the database
+        try:
+            # Use provided access key or retrieve from Azure
+            if not access_key:
+                if not resource_group_name or not cluster_name:
+                    raise ValidationError("--access-key is required when using --host without --resource-group and --cluster-name.")
+
+                keys = _DatabaseListKey(cli_ctx=cmd.cli_ctx)(command_args={
+                    "cluster_name": cluster_name,
+                    "resource_group": resource_group_name,
+                    "database_name": database_name})
+
+                if keys:
+                    access_key = keys.get('primaryKey') or keys.get('secondaryKey')
+
+            if not access_key:
+                result['connectionStatus'] = 'Failed'
+                result['message'] = ('Access keys authentication may be disabled. '
+                                     'Enable access keys authentication or use Entra authentication.')
+                return result
+
+            # Create Redis connection with the access key
+            redis_client = _get_redis_connection(
+                host_name=host_name,
+                port=port,
+                password=access_key,
+                ssl=True
+            )
+
+            logger.warning("Successfully connected to Redis at %s:%s", host_name, port)
+
+            # Test the connection with a PING command
+            success, message = _test_redis_connection_with_ping(redis_client)
+
+            if success:
+                result['connectionStatus'] = 'Success'
+                result['message'] = message
+            else:
+                result['connectionStatus'] = 'Failed'
+                result['message'] = message
+
+        except ImportError as ie:
+            result['connectionStatus'] = 'Failed'
+            result['message'] = f"Required package not installed: {str(ie)}. Please install 'redis' package."
+        except Exception as e:  # pylint: disable=broad-except
+            result['connectionStatus'] = 'Failed'
+            result['message'] = f'Failed to connect with access key: {str(e)}'
+
+    # Raise error on connection failure to return non-zero exit code
+    if result['connectionStatus'] == 'Failed':
+        from azure.cli.core.azclierror import CLIError
+        raise CLIError(result['message'])
+
+    return result
 
 
 class DatabaseFlush(_DatabaseFlush):
