@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.2.0b1
+1.2.0
 +++++
 * az databricks workspace create: Add --compute-mode to set the compute mode for the workspace. Allowed values: 'Hybrid', 'Serverless'
 * az databricks workspace create/update: Support additional ESC values

@@ -208,7 +208,7 @@ class Create(AAZCommand):
         _args_schema.compliance_standards = AAZListArg(
             options=["--compliance-standards"],
             arg_group="Enhanced Security Compliance",
-            help="Compliance Standards associated with the workspace, allowed values: NONE, HIPAA, PCI_DSS, CYBER_ESSENTIAL_PLUS, FEDRAMP_HIGH, CANADA_PROTECTED_B, IRAP_PROTECTED, ISMAP, HITRUST, K_FSI, GERMANY_C5, GERMANY_TISAX.",
+            help="Compliance Standards associated with the workspace, allowed values referenced here: https://learn.microsoft.com/en-us/azure/databricks/security/privacy/security-profile.",
             nullable=True,
         )
         _args_schema.compliance_standards.Element = AAZStrArg(
@@ -480,9 +480,7 @@ class Create(AAZCommand):
                 properties.set_prop("enhancedSecurityCompliance", AAZObjectType, ".enhanced_security_compliance")
                 # Only add managedResourceGroupId if specified
                 managed_resource_group_id = getattr(self.ctx.args, 'managed_resource_group', None)
-                print("here")
                 if managed_resource_group_id is not None:
-                    print(managed_resource_group_id)
                     properties.set_prop("managedResourceGroupId", AAZStrType, ".managed_resource_group")
                 properties.set_prop("parameters", AAZObjectType)
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")

@@ -547,8 +547,6 @@ class DatabricksClientScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_databricks_update_v2')
     @KeyVaultPreparer(location='eastus', additional_params="--enable-rbac-authorization=false")
     def test_databricks_update_v2(self, resource_group, key_vault):
-        # with open("/tmp/kv", mode="w") as f:
-        #     f.write(key_vault)
         self.kwargs.update({
             'kv': key_vault,
             'workspace_name': self.create_random_name(prefix='workspace', length=16),

@@ -246,7 +246,7 @@ class Update(AAZCommand):
         _args_schema.compliance_standards = AAZListArg(
             options=["--compliance-standards"],
             arg_group="Enhanced Security Compliance",
-            help="Compliance Standards associated with the workspace, allowed values: NONE, HIPAA, PCI_DSS, CYBER_ESSENTIAL_PLUS, FEDRAMP_HIGH, CANADA_PROTECTED_B, IRAP_PROTECTED, ISMAP, HITRUST, K_FSI, GERMANY_C5, GERMANY_TISAX.",
+            help="Compliance Standards associated with the workspace, allowed values listed here: https://learn.microsoft.com/en-us/azure/databricks/security/privacy/security-profile.",
             nullable=True,
         )
         _args_schema.compliance_standards.Element = AAZStrArg(

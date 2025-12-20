@@ -48,7 +48,7 @@ class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
                     subscription=subscription_id,
                     resource_group=managed_resource_group)
 
-        if (not has_value(args.managed_resource_group)) and (not has_value(args.compute_mode) or args.compute_mode != 'Serverless'):
+        if (not has_value(args.managed_resource_group)) and (not has_value(args.compute_mode) or args.compute_mode.to_serialized_data() != 'Serverless'):
             args.managed_resource_group = resource_id(
                 subscription=subscription_id,
                 resource_group='databricks-rg-' + workspace_name + '-' + id_generator())
