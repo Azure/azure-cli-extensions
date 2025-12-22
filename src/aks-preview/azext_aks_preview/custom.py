@@ -1025,6 +1025,7 @@ def aks_create(
     enable_sgxquotehelper=False,
     enable_secret_rotation=False,
     rotation_poll_interval=None,
+    enable_application_load_balancer=False,
     enable_app_routing=False,
     app_routing_default_nginx_controller=None,
     # nodepool paramerters
@@ -1399,6 +1400,9 @@ def aks_update(
     # managed gateway installation
     enable_gateway_api=False,
     disable_gateway_api=False,
+    # application load balancer
+    enable_application_load_balancer=False,
+    disable_application_load_balancer=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1977,6 +1981,7 @@ def aks_agentpool_update(
     # local DNS
     localdns_config=None,
     node_vm_size=None,
+    gpu_driver=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2665,6 +2670,12 @@ def aks_addon_list(cmd, client, resource_group_name, name):
                 mc.ingress_profile.web_app_routing and
                 mc.ingress_profile.web_app_routing.enabled
             )
+        elif addon_name == "application-load-balancer":
+            enabled = bool(
+                mc.ingress_profile and
+                mc.ingress_profile.application_load_balancer and
+                mc.ingress_profile.application_load_balancer.enabled
+            )
         else:
             if addon_name == "virtual-node":
                 addon_key += os_type
@@ -2699,6 +2710,20 @@ def aks_addon_show(cmd, client, resource_group_name, name, addon):
             "name": addon,
             "api_key": addon_key,
             "config": mc.ingress_profile.web_app_routing,
+        }
+
+    # application-load-balancer is a special case, the configuration is stored in a separate profile
+    if addon == "application-load-balancer":
+        if (
+            not mc.ingress_profile and
+            not mc.ingress_profile.application_load_balancer and
+            not mc.ingress_profile.application_load_balancer.enabled
+        ):
+            raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
+        return {
+            "name": addon,
+            "api_key": addon_key,
+            "config": mc.ingress_profile.application_load_balancer,
         }
 
     # normal addons
@@ -3098,6 +3123,11 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="managed_clusters",
     )
+    ManagedClusterIngressProfileApplicationLoadBalancer = cmd.get_models(
+        "ManagedClusterIngressProfileApplicationLoadBalancer",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
     ManagedClusterIngressProfileWebAppRouting = cmd.get_models(
         "ManagedClusterIngressProfileWebAppRouting",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -3113,6 +3143,16 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
     # for each addons argument
     for addon_arg in addon_args:
+        if addon_arg == "applicationloadbalancer":
+            # application load balancer routing settings are in ingress profile, not addon profile
+            if instance.ingress_profile is None:
+                instance.ingress_profile = ManagedClusterIngressProfile()
+            if instance.ingress_profile.application_load_balancer is None:
+                instance.ingress_profile.application_load_balancer = ManagedClusterIngressProfileApplicationLoadBalancer()
+            instance.ingress_profile.application_load_balancer.enabled = enable
+
+            continue
+
         if addon_arg == "web_application_routing":
             # web app routing settings are in ingress profile, not addon profile, so deal
             # with it separately
@@ -4117,6 +4157,47 @@ def _aks_mesh_update(
     return aks_update_decorator.update_mc(mc)
 
 
+def aks_applicationloadbalancer_enable(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_applicationloadbalancer_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_application_load_balancer=True)
+
+
+def aks_applicationloadbalancer_disable(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_applicationloadbalancer_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        disable_application_load_balancer=True)
+
+
+def aks_applicationloadbalancer_update(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_applicationloadbalancer_update(
+        cmd,
+        client,
+        resource_group_name,
+        name)
+
+
 def aks_approuting_enable(
         cmd,
         client,
@@ -4247,6 +4328,36 @@ def aks_approuting_zone_list(
             return dns_zone_list
         raise CLIError('No dns zone attached to the cluster')
     raise CLIError('App routing addon is not enabled')
+
+
+# pylint: disable=unused-argument
+def _aks_applicationloadbalancer_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_application_load_balancer=None,
+        disable_application_load_balancer=None
+):
+    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
+
+    raw_parameters = locals()
+
+    aks_update_decorator = AKSPreviewManagedClusterUpdateDecorator(
+        cmd=cmd,
+        client=client,
+        raw_parameters=raw_parameters,
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+    )
+
+    try:
+        mc = aks_update_decorator.fetch_mc()
+        mc = aks_update_decorator.update_application_load_balancer_profile(mc)
+    except DecoratorEarlyExitException:
+        return None
+
+    return aks_update_decorator.update_mc(mc)
 
 
 # pylint: disable=unused-argument

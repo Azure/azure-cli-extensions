@@ -13,10 +13,16 @@ Pending
 +++++++
 * `az aks safeguards create`: Add pre-existence check to prevent duplicate resource creation and guide users to use update command instead.
 * `az aks safeguards`: Fix verb tense in help text and examples to use first-person imperative verbs per Azure CLI guidelines.
+* Add add-on support for `ApplicationLoadBalancer` (Application Gateway for Containers)
+* AKS Create and Update parameters for `--enable-application-load-balancer` and `--disable-application-load-balancer`
+ * `az aks applicationloadbalancer enable`: Enable Application Load Balancer add-on for an existing cluster.
+ * `az aks applicationloadbalancer disable`: Disable Application Load Balancer add-on for an existing cluster.
+ * `az aks applicationloadbalancer update`: Update Application Load Balancer add-on for an existing cluster.
 
 19.0.0b18
 +++++++
 * Vendor new SDK and bump API version to 2025-10-02-preview.
+* Add option `--gpu-driver` to `az aks nodepool update` to select skipping GPU driver installation.
 
 19.0.0b17
 +++++++

@@ -689,7 +689,7 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
                 error_msg = f"Failed to find AKS agent pods: {result}\n"
                 error_msg += (
                     "The AKS agent may not be deployed. "
-                    "Run 'az aks agent --init' to initialize the deployment."
+                    "Run 'az aks agent-init' to initialize the deployment."
                 )
                 raise AzCLIError(error_msg)
 
@@ -698,7 +698,7 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
                 error_msg = "No running AKS agent pods found.\n"
                 error_msg += (
                     "The AKS agent may not be deployed. "
-                    "Run 'az aks agent --init' to initialize the deployment."
+                    "Run 'az aks agent-init' to initialize the deployment."
                 )
                 raise AzCLIError(error_msg)
 

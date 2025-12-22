@@ -469,13 +469,11 @@ def aks_agent(
             _aks_agent_status(agent_manager)
             return
 
-        subscription_id = get_subscription_id(cmd.cli_ctx)
-
         success, result = agent_manager.get_agent_pods()
         if not success:
             # get_agent_pods already logged the error, provide helpful message
             error_msg = f"Failed to find AKS agent pods: {result}\n"
-            error_msg += "The AKS agent may not be deployed. Run 'az aks agent --init' to initialize the deployment."
+            error_msg += "The AKS agent may not be deployed. Run 'az aks agent-init' to initialize the deployment."
             raise CLIError(error_msg)
 
         # prepare CLI flags
