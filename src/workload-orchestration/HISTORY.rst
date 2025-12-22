@@ -3,7 +3,7 @@
 Release History
 ===============
 
-4.2.0
+5.0.0
 ++++++
 * November 2025 release
 

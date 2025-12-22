@@ -1,39 +1,51 @@
 rules:
   configs:
-    TemperatureThreshold:
-      type: float
-      required: true
-      editableAt:
-        - line
-      editableBy:
-        - OT
-      defaultValue: 80
-    PressureThreshold:
-      type: float
-      required: true
-      editableAt:
-        - line
-      editableBy:
-        - OT
-      defaultValue: 8
-    ViscosityThreshold:
-      type: float
-      required: true
-      editableAt:
-        - line
-      editableBy:
-        - IT
-    ErrorThreshold:
-      type: float
-      required: true
-      editableAt:
-        - line
-      editableBy:
-        - IT
-    EnableDebug:
-      type: boolean
-      required: false
-      editableAt:
-        - factory
-      editableBy:
-        - IT
+      ErrorThreshold:
+        type: float
+        required: true
+        editableAt:
+          - factory
+        editableBy:
+          - OT
+      HealthCheckEndpoint:
+        type: string
+        required: false
+        editableAt:
+          - line
+        editableBy:
+          - OT
+      EnableLocalLog:
+        type: boolean
+        required: true
+        editableAt:
+          - line
+        editableBy:
+          - OT
+      AgentEndpoint:
+        type: string
+        required: true
+        editableAt:
+          - line
+        editableBy:
+          - OT
+      HealthCheckEnabled:
+        type: boolean
+        required: false
+        editableAt:
+          - line
+        editableBy:
+          - OT
+      ApplicationEndpoint:
+        type: string
+        required: true
+        editableAt:
+          - line
+        editableBy:
+          - OT
+      TemperatureRangeMax:
+        type: float
+        required: true
+        editableAt:
+          - line
+        editableBy:
+          - OT
