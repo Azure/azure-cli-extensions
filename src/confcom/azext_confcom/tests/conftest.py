@@ -33,10 +33,12 @@ def run_on_wheel(request):
     # run and using that to determine if wheels have already been built. Search
     # process parentage until we find the first shell process and use it's
     # child's PID as the run ID.
-    parent = psutil.Process(os.getpid())
-    while not any(parent.cmdline()[0].endswith(i) for i in ["bash", "sh"]):
-        parent = parent.parent()
-    RUN_ID = parent.children()[0].pid
+    process = psutil.Process(os.getpid())
+    ancestors = []
+    while process.parent() is not None:
+        ancestors.insert(0, process)
+        process = process.parent()
+    RUN_ID = next(p.pid for p in ancestors if any("py" in c for c in p.cmdline()))
 
     build_dir = Path(tempfile.gettempdir()) / f"wheels_{RUN_ID}"
     build_dir.mkdir(exist_ok=True)
@@ -77,10 +79,16 @@ def run_on_wheel(request):
         with zipfile.ZipFile(wheel_path, "r") as z:
             z.extractall(expanded_dir)
 
-    sys.path.insert(0, expanded_dir.resolve().as_posix())
+    for idx, path in enumerate(sys.path):
+        if "src/confcom" in path:
+            sys.path[idx] = expanded_dir.resolve().as_posix()
     for module in list(sys.modules.values()):
-        if extension in module.__name__ and module not in modules_to_test:
+        if (
+            extension in module.__name__ and
+            not any (m.__name__.startswith(module.__name__) for m in modules_to_test)
+        ):
             del sys.modules[module.__name__]
+            assert importlib.util.find_spec(module.__name__).origin # This catches modules not in the built packages
             importlib.import_module(module.__name__)
 
     yield

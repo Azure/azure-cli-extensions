@@ -4,15 +4,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from dataclasses import asdict
 import json
-from pathlib import Path
+import re
+
+from dataclasses import asdict
 from textwrap import dedent
 from typing import Union
 
-from azext_confcom.lib.opa import opa_eval
 from azext_confcom.lib.policy import Container, FragmentReference, Fragment, Policy
-import re
 
 
 # This is a single entrypoint for serializing both Policy and Fragment objects
@@ -80,21 +79,58 @@ containers := {containers_json}
 def policy_deserialize(file_path: str):
 
     with open(file_path, 'r') as f:
-        content = f.read()
+        content = f.readlines()
 
-    package_match = re.search(r'package\s+(\S+)', content)
-    package_name = package_match.group(1)
+    def _brace_delta(line: str) -> int:
+        delta = 0
+        for char in line:
+            if char in ['{', '[', '(']:
+                delta += 1
+            elif char in ['}', ']', ')']:
+                delta -= 1
+        return delta
 
-    PolicyType = Policy if package_name == "policy" else Fragment
+    policy_json = {}
+    line_idx = 0
 
-    raw_json = opa_eval(Path(file_path), f"data.{package_name}")["result"][0]["expressions"][0]["value"]
+    while line_idx < len(content):
+        line = content[line_idx]
 
-    raw_fragments = raw_json.pop("fragments", [])
-    raw_containers = raw_json.pop("containers", [])
+        packages_search = re.search(r'package\s+(\S+)', line)
+        if packages_search:
+            policy_json["package"] = packages_search.group(1)
+            line_idx += 1
+            continue
+
+        assignment = re.match(r"\s*(?P<name>[A-Za-z0-9_]+)\s*:=\s*(?P<expr>.*)", line)
+        if assignment:
+            name = assignment.group('name')
+            expr = assignment.group('expr').strip()
+            expr_parts = [expr]
+            depth = _brace_delta(expr)
+
+            while depth > 0 and line_idx + 1 < len(content):
+                line_idx += 1
+                continuation = content[line_idx].strip()
+                expr_parts.append(continuation)
+                depth += _brace_delta(continuation)
+
+            full_expr = "\n".join(expr_parts).strip().rstrip(",")
+            try:
+                policy_json[name] = json.loads(full_expr)
+            except json.JSONDecodeError:
+                # Skip non-literal expressions (e.g. data.framework bindings)
+                ...
+
+        line_idx += 1
+
+    PolicyType = Policy if policy_json.get("package") == "policy" else Fragment
+
+    raw_fragments = policy_json.pop("fragments", [])
+    raw_containers = policy_json.pop("containers", [])
 
     return PolicyType(
-        package=package_name,
+        **policy_json,
         fragments=[FragmentReference(**fragment) for fragment in raw_fragments],
         containers=[Container(**container) for container in raw_containers],
-        **raw_json
     )
