@@ -460,6 +460,14 @@ def load_command_table(self, _):
         g.custom_command("complete", "aks_mesh_upgrade_complete", supports_no_wait=True)
         g.custom_command("rollback", "aks_mesh_upgrade_rollback", supports_no_wait=True)
 
+    # AKS applicationloadbalancer (Application Gateway for Containers) commands
+    with self.command_group(
+        "aks applicationloadbalancer", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command("enable", "aks_applicationloadbalancer_enable")
+        g.custom_command("disable", "aks_applicationloadbalancer_disable", confirmation=True)
+        g.custom_command("update", "aks_applicationloadbalancer_update")
+
     # AKS approuting commands
     with self.command_group(
         "aks approuting", managed_clusters_sdk, client_factory=cf_managed_clusters
