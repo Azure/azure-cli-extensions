@@ -3,6 +3,10 @@
 Release History
 ===============
 
+3.0.1b1
++++++++++++++++
+* Create List Replications Command.
+
 3.0.0b1
 +++++++++++++++
 * Refactor codebase for improved readability and maintainability.
