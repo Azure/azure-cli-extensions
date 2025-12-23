@@ -841,6 +841,306 @@ class MigrateReplicationNewTests(ScenarioTest):
             pass
 
 
+class MigrateReplicationGetTests(ScenarioTest):
+    """Unit tests for the 'az migrate local replication get' command"""
+
+    def setUp(self):
+        super(MigrateReplicationGetTests, self).setUp()
+        self.mock_subscription_id = "00000000-0000-0000-0000-000000000000"
+        self.mock_rg_name = "test-rg"
+        self.mock_project_name = "test-project"
+        self.mock_vault_name = "test-vault"
+        self.mock_protected_item_name = "test-protected-item"
+
+    def _create_mock_cmd(self):
+        """Helper to create a properly configured mock cmd object"""
+        mock_cmd = mock.Mock()
+        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = (
+            "https://management.azure.com")
+        return mock_cmd
+
+    def _create_sample_protected_item(self, name="test-item", state="Protected"):
+        """Helper to create sample protected item data"""
+        return {
+            'id': (f'/subscriptions/{self.mock_subscription_id}/'
+                   f'resourceGroups/{self.mock_rg_name}/'
+                   f'providers/Microsoft.DataReplication/replicationVaults/'
+                   f'{self.mock_vault_name}/protectedItems/{name}'),
+            'name': name,
+            'type': 'Microsoft.DataReplication/replicationVaults/protectedItems',
+            'properties': {
+                'protectionState': state,
+                'protectionStateDescription': f'{state} state',
+                'replicationHealth': 'Normal',
+                'healthErrors': [],
+                'allowedJobs': ['TestFailover', 'PlannedFailover'],
+                'correlationId': 'correlation-123',
+                'policyName': 'test-policy',
+                'replicationExtensionName': 'test-extension',
+                'lastSuccessfulTestFailoverTime': '2025-12-20T10:00:00Z',
+                'lastSuccessfulPlannedFailoverTime': None,
+                'lastSuccessfulUnplannedFailoverTime': None,
+                'resynchronizationRequired': False,
+                'lastTestFailoverStatus': 'Succeeded',
+                'customProperties': {
+                    'instanceType': 'HyperVToAzStackHCI',
+                    'sourceMachineName': 'source-vm-01',
+                    'targetVmName': 'target-vm-01',
+                    'targetResourceGroupId': f'/subscriptions/{self.mock_subscription_id}/resourceGroups/target-rg',
+                    'customLocationRegion': 'eastus'
+                }
+            }
+        }
+
+    @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    @mock.patch('builtins.print')
+    def test_get_protected_item_by_id_success(self, mock_print, 
+                                              mock_get_sub_id, 
+                                              mock_get_resource):
+        """Test getting a protected item by full ARM resource ID"""
+        from azext_migrate.custom import get_local_server_replication
+
+        # Setup mocks
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        protected_item_data = self._create_sample_protected_item()
+        mock_get_resource.return_value = protected_item_data
+
+        mock_cmd = self._create_mock_cmd()
+        protected_item_id = protected_item_data['id']
+
+        # Execute the command
+        result = get_local_server_replication(
+            cmd=mock_cmd,
+            protected_item_id=protected_item_id
+        )
+
+        # Verify the result
+        self.assertIsNotNone(result)
+        self.assertEqual(result['name'], 'test-item')
+        self.assertEqual(result['protectionState'], 'Protected')
+        self.assertEqual(result['replicationHealth'], 'Normal')
+        
+        # Verify get_resource_by_id was called correctly
+        mock_get_resource.assert_called_once()
+
+    @mock.patch('azext_migrate.helpers.replication.list._execute_list.get_vault_name_from_project')
+    @mock.patch('azext_migrate.helpers._utils.send_get_request')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    @mock.patch('builtins.print')
+    def test_get_protected_item_by_name_success(self, mock_print,
+                                                mock_get_sub_id,
+                                                mock_send_request,
+                                                mock_get_vault):
+        """Test getting a protected item by name with project context"""
+        from azext_migrate.custom import get_local_server_replication
+
+        # Setup mocks
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_get_vault.return_value = self.mock_vault_name
+        
+        protected_item_data = self._create_sample_protected_item(
+            name=self.mock_protected_item_name)
+        
+        mock_response = mock.Mock()
+        mock_response.json.return_value = protected_item_data
+        mock_send_request.return_value = mock_response
+
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute the command
+        result = get_local_server_replication(
+            cmd=mock_cmd,
+            protected_item_name=self.mock_protected_item_name,
+            resource_group=self.mock_rg_name,
+            project_name=self.mock_project_name
+        )
+
+        # Verify the result
+        self.assertIsNotNone(result)
+        self.assertEqual(result['name'], self.mock_protected_item_name)
+        self.assertEqual(result['protectionState'], 'Protected')
+        
+        # Verify get_vault_name_from_project was called
+        mock_get_vault.assert_called_once_with(
+            mock_cmd, self.mock_rg_name, self.mock_project_name,
+            self.mock_subscription_id)
+
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_get_protected_item_missing_parameters(self, mock_get_sub_id):
+        """Test that error is raised when neither ID nor name is provided"""
+        from azext_migrate.custom import get_local_server_replication
+
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute the command without ID or name - should raise error
+        with self.assertRaises((CLIError, KnackCLIError)) as context:
+            get_local_server_replication(cmd=mock_cmd)
+
+        # Verify error message
+        self.assertIn("Either --protected-item-id or --protected-item-name",
+                     str(context.exception))
+
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_get_protected_item_name_missing_project_info(self, mock_get_sub_id):
+        """Test that error is raised when using name without project context"""
+        from azext_migrate.custom import get_local_server_replication
+
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute with name but missing resource_group
+        with self.assertRaises((CLIError, KnackCLIError)) as context:
+            get_local_server_replication(
+                cmd=mock_cmd,
+                protected_item_name=self.mock_protected_item_name,
+                project_name=self.mock_project_name
+                # Missing resource_group
+            )
+
+        # Verify error message
+        self.assertIn("both --resource-group and --project-name are required",
+                     str(context.exception))
+
+    @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    @mock.patch('builtins.print')
+    def test_get_protected_item_with_health_errors(self, mock_print,
+                                                   mock_get_sub_id,
+                                                   mock_get_resource):
+        """Test getting a protected item that has health errors"""
+        from azext_migrate.custom import get_local_server_replication
+
+        # Setup mocks with health errors
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        protected_item_data = self._create_sample_protected_item(
+            state="ProtectedWithErrors")
+        
+        # Add health errors
+        protected_item_data['properties']['healthErrors'] = [
+            {
+                'errorCode': 'TestError001',
+                'message': 'Test error message',
+                'severity': 'Warning',
+                'possibleCauses': 'Network connectivity issue',
+                'recommendedAction': 'Check network configuration'
+            }
+        ]
+        
+        mock_get_resource.return_value = protected_item_data
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute the command
+        result = get_local_server_replication(
+            cmd=mock_cmd,
+            protected_item_id=protected_item_data['id']
+        )
+
+        # Verify the result includes health errors
+        self.assertIsNotNone(result)
+        self.assertEqual(result['replicationHealth'], 'Normal')
+        self.assertEqual(len(result['healthErrors']), 1)
+        self.assertEqual(result['healthErrors'][0]['errorCode'], 'TestError001')
+
+    @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    @mock.patch('builtins.print')
+    def test_get_protected_item_prefers_id_over_name(self, mock_print,
+                                                     mock_get_sub_id,
+                                                     mock_get_resource):
+        """Test that when both ID and name are provided, ID is preferred"""
+        from azext_migrate.custom import get_local_server_replication
+
+        # Setup mocks
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        protected_item_data = self._create_sample_protected_item()
+        mock_get_resource.return_value = protected_item_data
+
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute with both ID and name
+        result = get_local_server_replication(
+            cmd=mock_cmd,
+            protected_item_id=protected_item_data['id'],
+            protected_item_name="some-other-name",
+            resource_group=self.mock_rg_name,
+            project_name=self.mock_project_name
+        )
+
+        # Verify get_resource_by_id was called (not name-based lookup)
+        mock_get_resource.assert_called_once()
+        self.assertIsNotNone(result)
+
+    @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_get_protected_item_not_found(self, mock_get_sub_id,
+                                         mock_get_resource):
+        """Test error handling when protected item is not found"""
+        from azext_migrate.custom import get_local_server_replication
+
+        # Setup mocks - return None to simulate not found
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_get_resource.return_value = None
+
+        mock_cmd = self._create_mock_cmd()
+        protected_item_id = (f'/subscriptions/{self.mock_subscription_id}/'
+                           f'resourceGroups/{self.mock_rg_name}/'
+                           f'providers/Microsoft.DataReplication/replicationVaults/'
+                           f'{self.mock_vault_name}/protectedItems/nonexistent')
+
+        # Execute the command - should raise error
+        with self.assertRaises((CLIError, KnackCLIError)) as context:
+            get_local_server_replication(
+                cmd=mock_cmd,
+                protected_item_id=protected_item_id
+            )
+
+        # Verify error message
+        self.assertIn("not found", str(context.exception).lower())
+
+    @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    @mock.patch('builtins.print')
+    def test_get_protected_item_formats_custom_properties(self, mock_print,
+                                                         mock_get_sub_id,
+                                                         mock_get_resource):
+        """Test that custom properties are correctly formatted"""
+        from azext_migrate.custom import get_local_server_replication
+
+        # Setup mocks with detailed custom properties
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        protected_item_data = self._create_sample_protected_item()
+        protected_item_data['properties']['customProperties'].update({
+            'fabricSpecificDetails': {
+                'vmCpuCount': 4,
+                'vmMemorySize': 8192,
+                'diskDetails': [
+                    {'diskId': 'disk-0', 'size': 100}
+                ]
+            }
+        })
+        
+        mock_get_resource.return_value = protected_item_data
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute the command
+        result = get_local_server_replication(
+            cmd=mock_cmd,
+            protected_item_id=protected_item_data['id']
+        )
+
+        # Verify custom properties are in result
+        self.assertIsNotNone(result)
+        self.assertIn('customProperties', result)
+        self.assertEqual(
+            result['customProperties']['instanceType'], 
+            'HyperVToAzStackHCI')
+        self.assertEqual(
+            result['customProperties']['sourceMachineName'],
+            'source-vm-01')
+
+
 class MigrateScenarioTests(ScenarioTest):
     @pytest.mark.skip(reason="Requires actual Azure resources and live authentication")
     @record_only()
