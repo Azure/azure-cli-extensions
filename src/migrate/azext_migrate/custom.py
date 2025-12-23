@@ -715,3 +715,71 @@ def remove_local_server_replication(cmd,
         resource_group_name, vault_name,
         protected_item_name, force_remove
     )
+
+def start_local_server_migration(cmd,
+                                 protected_item_id=None,
+                                 turn_off_source_server=False,
+                                 subscription_id=None):
+    """
+    Start migration for a local server.
+
+    This cmdlet is based on a preview API version and may experience
+    breaking changes in future releases.
+
+    Args:
+        cmd: The CLI command context
+        protected_item_name (str, optional): The name of the protected item
+        protected_item_id (str, optional): The full ARM resource ID of the
+            protected item
+        resource_group (str, optional): The name of the resource group where
+            the migrate project is present (required if using protected_item_name)
+        project_name (str, optional): The name of the migrate project
+            (required if using protected_item_name)
+        turn_off_source_server (bool, optional): Specifies whether the source
+            server should be turned off post migration. Default is False
+        subscription_id (str, optional): Azure Subscription ID. Uses
+            current subscription if not provided
+
+    Returns:
+        dict: Job model representing the migration operation
+
+    Raises:
+        CLIError: If required parameters are missing or the protected item
+            is not found or cannot be migrated
+    """
+    from azure.cli.core.commands.client_factory import \
+        get_subscription_id
+    from azext_migrate.helpers.replication.migrate._parse import (
+        parse_protected_item_id
+    )
+    from azext_migrate.helpers.replication.migrate._execute_migrate import (
+        execute_migration
+    )
+
+    # Use current subscription if not provided
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Validate that either ID or name is provided
+    if not protected_item_id:
+        raise CLIError(
+            "The --protected-item-id parameter must be provided."
+        )
+
+    # Determine the operation mode
+    target_object_id = protected_item_id
+
+    # Mode: Use provided ID
+    resource_group_name, vault_name, protected_item_name = \
+        parse_protected_item_id(protected_item_id)
+
+    # Execute the migration workflow
+    return execute_migration(
+        cmd,
+        subscription_id,
+        target_object_id,
+        resource_group_name,
+        vault_name,
+        protected_item_name,
+        turn_off_source_server
+    )

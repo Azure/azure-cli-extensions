@@ -3,9 +3,9 @@
 Release History
 ===============
 
-3.0.1b1
+4.0.0b1
 +++++++++++++++
-* Create List Replications Command.
+* Added replication list, get and start migration commands.
 
 3.0.0b1
 +++++++++++++++

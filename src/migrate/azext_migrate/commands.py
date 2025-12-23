@@ -16,3 +16,6 @@ def load_command_table(self, _):
         g.custom_command('get', 'get_local_server_replication')
         g.custom_command('remove', 'remove_local_server_replication')
         g.custom_command('get-job', 'get_local_replication_job')
+        
+    with self.command_group('migrate local') as g:
+        g.custom_command('start-migration', 'start_local_server_migration')

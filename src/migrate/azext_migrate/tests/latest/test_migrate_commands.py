@@ -4971,5 +4971,747 @@ class MigrateServerHelperTests(unittest.TestCase):
         self.assertEqual(len(result), 0)
 
 
+class MigrateStartLocalServerMigrationTests(unittest.TestCase):
+    """Unit tests for the 'az migrate local start' command"""
+
+    def setUp(self):
+        """Set up test fixtures"""
+        self.mock_subscription_id = "f6f66a94-f184-45da-ac12-ffbfd8a6eb29"
+        self.mock_rg_name = "test-rg"
+        self.mock_vault_name = "test-vault"
+        self.mock_protected_item_name = "test-item"
+        self.mock_project_name = "test-project"
+        self.mock_protected_item_id = (
+            f"/subscriptions/{self.mock_subscription_id}/"
+            f"resourceGroups/{self.mock_rg_name}/"
+            f"providers/Microsoft.DataReplication/"
+            f"replicationVaults/{self.mock_vault_name}/"
+            f"protectedItems/{self.mock_protected_item_name}"
+        )
+
+    def _create_mock_cmd(self):
+        """Helper to create a properly configured mock cmd object"""
+        mock_cmd = mock.Mock()
+        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = (
+            "https://management.azure.com"
+        )
+        mock_cmd.cli_ctx.data = {
+            'subscription_id': self.mock_subscription_id,
+            'command': 'migrate local start'
+        }
+        return mock_cmd
+
+    def _create_protected_item_response(self, 
+                                       allowed_jobs=None,
+                                       instance_type="HyperVToAzStackHCI",
+                                       protection_state="Protected"):
+        """Helper to create a mock protected item response"""
+        if allowed_jobs is None:
+            allowed_jobs = ["PlannedFailover", "DisableProtection"]
+        
+        return {
+            'id': self.mock_protected_item_id,
+            'name': self.mock_protected_item_name,
+            'properties': {
+                'allowedJobs': allowed_jobs,
+                'protectionStateDescription': protection_state,
+                'customProperties': {
+                    'instanceType': instance_type,
+                    'targetHciClusterId': (
+                        '/subscriptions/304d8fdf-1c02-4907-9c3a-ddbd677199cd/'
+                        'resourceGroups/test-hci-rg/'
+                        'providers/Microsoft.AzureStackHCI/clusters/test-cluster'
+                    )
+                }
+            }
+        }
+
+    def _create_job_response(self, job_name="test-job", state="Running"):
+        """Helper to create a mock job response"""
+        return {
+            'id': (
+                f"/subscriptions/{self.mock_subscription_id}/"
+                f"resourceGroups/{self.mock_rg_name}/"
+                f"providers/Microsoft.DataReplication/"
+                f"replicationVaults/{self.mock_vault_name}/"
+                f"jobs/{job_name}"
+            ),
+            'name': job_name,
+            'properties': {
+                'displayName': 'Planned Failover',
+                'state': state,
+                'startTime': '2025-12-23T10:00:00Z'
+            }
+        }
+
+    @mock.patch('azext_migrate.helpers.replication.migrate._execute_migrate.execute_migration')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_start_migration_with_protected_item_id(self, mock_get_sub_id, mock_execute):
+        """Test starting migration using protected item ID"""
+        from azext_migrate.custom import start_local_server_migration
+
+        # Setup mocks
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_execute.return_value = self._create_job_response()
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute command
+        result = start_local_server_migration(
+            cmd=mock_cmd,
+            protected_item_id=self.mock_protected_item_id,
+            turn_off_source_server=True
+        )
+
+        # Verify
+        mock_execute.assert_called_once()
+        call_args = mock_execute.call_args
+        self.assertEqual(call_args[1]['protected_item_id'], self.mock_protected_item_id)
+        self.assertEqual(call_args[1]['resource_group_name'], self.mock_rg_name)
+        self.assertEqual(call_args[1]['vault_name'], self.mock_vault_name)
+        self.assertEqual(call_args[1]['protected_item_name'], self.mock_protected_item_name)
+        self.assertTrue(call_args[1]['turn_off_source_server'])
+        self.assertIsNotNone(result)
+
+    @mock.patch('azext_migrate.helpers.replication.migrate._parse.get_vault_name_from_project')
+    @mock.patch('azext_migrate.helpers.replication.migrate._execute_migrate.execute_migration')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_start_migration_with_protected_item_name(self, mock_get_sub_id, 
+                                                      mock_execute, mock_get_vault):
+        """Test starting migration using protected item name"""
+        from azext_migrate.custom import start_local_server_migration
+
+        # Setup mocks
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_get_vault.return_value = self.mock_vault_name
+        mock_execute.return_value = self._create_job_response()
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute command
+        result = start_local_server_migration(
+            cmd=mock_cmd,
+            protected_item_name=self.mock_protected_item_name,
+            resource_group=self.mock_rg_name,
+            project_name=self.mock_project_name,
+            turn_off_source_server=False
+        )
+
+        # Verify
+        mock_get_vault.assert_called_once_with(
+            mock_cmd, self.mock_rg_name, self.mock_project_name, self.mock_subscription_id
+        )
+        mock_execute.assert_called_once()
+        self.assertIsNotNone(result)
+
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_start_migration_missing_parameters(self, mock_get_sub_id):
+        """Test that command fails when neither ID nor name is provided"""
+        from azext_migrate.custom import start_local_server_migration
+
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute command without required parameters
+        with self.assertRaises(CLIError) as context:
+            start_local_server_migration(cmd=mock_cmd)
+
+        self.assertIn("Either --protected-item-id or --protected-item-name", 
+                     str(context.exception))
+
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_start_migration_name_without_resource_group(self, mock_get_sub_id):
+        """Test that command fails when using name without resource group"""
+        from azext_migrate.custom import start_local_server_migration
+
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute command with name but without resource group
+        with self.assertRaises(CLIError) as context:
+            start_local_server_migration(
+                cmd=mock_cmd,
+                protected_item_name=self.mock_protected_item_name
+            )
+
+        self.assertIn("both --resource-group and --project-name are required", 
+                     str(context.exception))
+
+    @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
+    def test_validate_protected_item_success(self, mock_get_resource):
+        """Test validating a protected item that is ready for migration"""
+        from azext_migrate.helpers.replication.migrate._validate import (
+            validate_protected_item_for_migration
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_get_resource.return_value = self._create_protected_item_response()
+
+        # Execute validation
+        result = validate_protected_item_for_migration(
+            mock_cmd, self.mock_protected_item_id
+        )
+
+        # Verify
+        self.assertIsNotNone(result)
+        self.assertEqual(result['name'], self.mock_protected_item_name)
+        mock_get_resource.assert_called_once()
+
+    @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
+    def test_validate_protected_item_not_found(self, mock_get_resource):
+        """Test validation fails when protected item doesn't exist"""
+        from azext_migrate.helpers.replication.migrate._validate import (
+            validate_protected_item_for_migration
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_get_resource.return_value = None
+
+        # Execute validation
+        with self.assertRaises(CLIError) as context:
+            validate_protected_item_for_migration(
+                mock_cmd, self.mock_protected_item_id
+            )
+
+        self.assertIn("replicating server doesn't exist", str(context.exception))
+
+    @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
+    def test_validate_protected_item_wrong_state(self, mock_get_resource):
+        """Test validation fails when protected item is not in correct state"""
+        from azext_migrate.helpers.replication.migrate._validate import (
+            validate_protected_item_for_migration
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_get_resource.return_value = self._create_protected_item_response(
+            allowed_jobs=["DisableProtection"],  # No PlannedFailover or Restart
+            protection_state="InitialReplication"
+        )
+
+        # Execute validation
+        with self.assertRaises(CLIError) as context:
+            validate_protected_item_for_migration(
+                mock_cmd, self.mock_protected_item_id
+            )
+
+        self.assertIn("cannot be migrated right now", str(context.exception))
+        self.assertIn("InitialReplication", str(context.exception))
+
+    @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
+    def test_validate_protected_item_restart_allowed(self, mock_get_resource):
+        """Test validation succeeds when Restart is in allowed jobs"""
+        from azext_migrate.helpers.replication.migrate._validate import (
+            validate_protected_item_for_migration
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_get_resource.return_value = self._create_protected_item_response(
+            allowed_jobs=["Restart", "DisableProtection"]
+        )
+
+        # Execute validation
+        result = validate_protected_item_for_migration(
+            mock_cmd, self.mock_protected_item_id
+        )
+
+        # Verify
+        self.assertIsNotNone(result)
+
+    def test_parse_protected_item_id_valid(self):
+        """Test parsing a valid protected item ID"""
+        from azext_migrate.helpers.replication.migrate._parse import (
+            parse_protected_item_id
+        )
+
+        rg, vault, item = parse_protected_item_id(self.mock_protected_item_id)
+
+        self.assertEqual(rg, self.mock_rg_name)
+        self.assertEqual(vault, self.mock_vault_name)
+        self.assertEqual(item, self.mock_protected_item_name)
+
+    def test_parse_protected_item_id_invalid(self):
+        """Test parsing an invalid protected item ID"""
+        from azext_migrate.helpers.replication.migrate._parse import (
+            parse_protected_item_id
+        )
+
+        invalid_id = "/subscriptions/sub/resourceGroups/rg"
+
+        with self.assertRaises(CLIError) as context:
+            parse_protected_item_id(invalid_id)
+
+        self.assertIn("Invalid protected item ID format", str(context.exception))
+
+    def test_parse_protected_item_id_empty(self):
+        """Test parsing an empty protected item ID"""
+        from azext_migrate.helpers.replication.migrate._parse import (
+            parse_protected_item_id
+        )
+
+        with self.assertRaises(CLIError) as context:
+            parse_protected_item_id("")
+
+        self.assertIn("cannot be empty", str(context.exception))
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_invoke_planned_failover_hyperv(self, mock_send_request):
+        """Test invoking planned failover for HyperV instance"""
+        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+            invoke_planned_failover
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_response = mock.Mock()
+        mock_response.status_code = 202
+        mock_response.headers = {
+            'Azure-AsyncOperation': (
+                f'https://management.azure.com/subscriptions/{self.mock_subscription_id}/'
+                f'providers/Microsoft.DataReplication/workflows/test-job'
+            )
+        }
+        mock_send_request.return_value = mock_response
+
+        # Execute
+        result = invoke_planned_failover(
+            mock_cmd,
+            self.mock_rg_name,
+            self.mock_vault_name,
+            self.mock_protected_item_name,
+            "HyperVToAzStackHCI",
+            True
+        )
+
+        # Verify
+        self.assertEqual(result.status_code, 202)
+        mock_send_request.assert_called_once()
+        call_args = mock_send_request.call_args
+        self.assertIn("plannedFailover", call_args[1]['url'])
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_invoke_planned_failover_vmware(self, mock_send_request):
+        """Test invoking planned failover for VMware instance"""
+        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+            invoke_planned_failover
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_send_request.return_value = mock_response
+
+        # Execute
+        result = invoke_planned_failover(
+            mock_cmd,
+            self.mock_rg_name,
+            self.mock_vault_name,
+            self.mock_protected_item_name,
+            "VMwareToAzStackHCI",
+            False
+        )
+
+        # Verify
+        self.assertEqual(result.status_code, 200)
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_invoke_planned_failover_invalid_instance_type(self, mock_send_request):
+        """Test that invalid instance type raises error"""
+        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+            invoke_planned_failover
+        )
+
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute with invalid instance type
+        with self.assertRaises(CLIError) as context:
+            invoke_planned_failover(
+                mock_cmd,
+                self.mock_rg_name,
+                self.mock_vault_name,
+                self.mock_protected_item_name,
+                "InvalidInstanceType",
+                False
+            )
+
+        self.assertIn("only HyperV and VMware", str(context.exception))
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_invoke_planned_failover_api_error(self, mock_send_request):
+        """Test handling API errors during planned failover"""
+        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+            invoke_planned_failover
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_response = mock.Mock()
+        mock_response.status_code = 400
+        mock_response.json.return_value = {
+            'error': {
+                'code': 'BadRequest',
+                'message': 'Invalid request parameters'
+            }
+        }
+        mock_send_request.return_value = mock_response
+
+        # Execute
+        with self.assertRaises(CLIError) as context:
+            invoke_planned_failover(
+                mock_cmd,
+                self.mock_rg_name,
+                self.mock_vault_name,
+                self.mock_protected_item_name,
+                "HyperVToAzStackHCI",
+                True
+            )
+
+        self.assertIn("BadRequest", str(context.exception))
+
+    @mock.patch('azext_migrate.helpers._utils.send_get_request')
+    def test_get_job_from_operation_with_async_header(self, mock_send_get):
+        """Test extracting job from operation response with Azure-AsyncOperation header"""
+        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+            get_job_from_operation
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_operation_response = mock.Mock()
+        mock_operation_response.status_code = 202
+        mock_operation_response.headers = {
+            'Azure-AsyncOperation': (
+                f'https://management.azure.com/subscriptions/{self.mock_subscription_id}/'
+                f'resourceGroups/{self.mock_rg_name}/'
+                f'providers/Microsoft.DataReplication/replicationVaults/{self.mock_vault_name}/'
+                f'workflows/test-job-123'
+            )
+        }
+
+        mock_job_response = mock.Mock()
+        mock_job_response.json.return_value = self._create_job_response("test-job-123")
+        mock_send_get.return_value = mock_job_response
+
+        # Execute
+        result = get_job_from_operation(
+            mock_cmd,
+            self.mock_subscription_id,
+            self.mock_rg_name,
+            self.mock_vault_name,
+            mock_operation_response
+        )
+
+        # Verify
+        self.assertIsNotNone(result)
+        self.assertEqual(result['name'], 'test-job-123')
+        mock_send_get.assert_called_once()
+
+    @mock.patch('azext_migrate.helpers._utils.send_get_request')
+    def test_get_job_from_operation_with_location_header(self, mock_send_get):
+        """Test extracting job from operation response with Location header"""
+        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+            get_job_from_operation
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_operation_response = mock.Mock()
+        mock_operation_response.status_code = 202
+        mock_operation_response.headers = {
+            'Location': (
+                f'https://management.azure.com/subscriptions/{self.mock_subscription_id}/'
+                f'providers/Microsoft.DataReplication/operations/op-456'
+            )
+        }
+
+        mock_job_response = mock.Mock()
+        mock_job_response.json.return_value = self._create_job_response("op-456")
+        mock_send_get.return_value = mock_job_response
+
+        # Execute
+        result = get_job_from_operation(
+            mock_cmd,
+            self.mock_subscription_id,
+            self.mock_rg_name,
+            self.mock_vault_name,
+            mock_operation_response
+        )
+
+        # Verify
+        self.assertIsNotNone(result)
+
+    def test_get_job_from_operation_no_headers(self):
+        """Test handling operation response without job headers"""
+        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+            get_job_from_operation
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_operation_response = mock.Mock()
+        mock_operation_response.status_code = 200
+        mock_operation_response.headers = {}
+
+        # Execute
+        result = get_job_from_operation(
+            mock_cmd,
+            self.mock_subscription_id,
+            self.mock_rg_name,
+            self.mock_vault_name,
+            mock_operation_response
+        )
+
+        # Verify - should return None but not raise error
+        self.assertIsNone(result)
+
+    @mock.patch('azext_migrate.helpers.replication.migrate._validate.validate_arc_resource_bridge')
+    @mock.patch('azext_migrate.helpers.replication.migrate._validate.validate_protected_item_for_migration')
+    @mock.patch('azext_migrate.helpers.replication.migrate._execute_migrate.invoke_planned_failover')
+    @mock.patch('azext_migrate.helpers.replication.migrate._execute_migrate.get_job_from_operation')
+    def test_execute_migration_success_with_job(self, mock_get_job, mock_invoke_failover,
+                                                mock_validate_item, mock_validate_arc):
+        """Test successful migration execution with job details returned"""
+        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+            execute_migration
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_validate_item.return_value = self._create_protected_item_response()
+        
+        mock_response = mock.Mock()
+        mock_response.status_code = 202
+        mock_invoke_failover.return_value = mock_response
+        
+        mock_get_job.return_value = self._create_job_response()
+
+        # Execute
+        result = execute_migration(
+            mock_cmd,
+            self.mock_subscription_id,
+            self.mock_protected_item_id,
+            self.mock_rg_name,
+            self.mock_vault_name,
+            self.mock_protected_item_name,
+            True
+        )
+
+        # Verify
+        self.assertIsNotNone(result)
+        mock_validate_item.assert_called_once()
+        mock_invoke_failover.assert_called_once()
+        mock_get_job.assert_called_once()
+
+    @mock.patch('builtins.print')
+    @mock.patch('azext_migrate.helpers.replication.migrate._validate.validate_arc_resource_bridge')
+    @mock.patch('azext_migrate.helpers.replication.migrate._validate.validate_protected_item_for_migration')
+    @mock.patch('azext_migrate.helpers.replication.migrate._execute_migrate.invoke_planned_failover')
+    @mock.patch('azext_migrate.helpers.replication.migrate._execute_migrate.get_job_from_operation')
+    def test_execute_migration_success_without_job(self, mock_get_job, mock_invoke_failover,
+                                                   mock_validate_item, mock_validate_arc,
+                                                   mock_print):
+        """Test successful migration execution without job details"""
+        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+            execute_migration
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_validate_item.return_value = self._create_protected_item_response()
+        
+        mock_response = mock.Mock()
+        mock_response.status_code = 202
+        mock_invoke_failover.return_value = mock_response
+        
+        mock_get_job.return_value = None  # No job details available
+
+        # Execute
+        result = execute_migration(
+            mock_cmd,
+            self.mock_subscription_id,
+            self.mock_protected_item_id,
+            self.mock_rg_name,
+            self.mock_vault_name,
+            self.mock_protected_item_name,
+            False
+        )
+
+        # Verify
+        self.assertIsNone(result)
+        mock_print.assert_called_once()
+        print_call_arg = mock_print.call_args[0][0]
+        self.assertIn("Migration has been initiated successfully", print_call_arg)
+        self.assertIn("az migrate local replication get-job", print_call_arg)
+
+    @mock.patch('azext_migrate.helpers.replication.migrate._validate.validate_protected_item_for_migration')
+    def test_execute_migration_missing_instance_type(self, mock_validate_item):
+        """Test migration fails when instance type cannot be determined"""
+        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+            execute_migration
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        protected_item = self._create_protected_item_response()
+        protected_item['properties']['customProperties']['instanceType'] = None
+        mock_validate_item.return_value = protected_item
+
+        # Execute
+        with self.assertRaises(CLIError) as context:
+            execute_migration(
+                mock_cmd,
+                self.mock_subscription_id,
+                self.mock_protected_item_id,
+                self.mock_rg_name,
+                self.mock_vault_name,
+                self.mock_protected_item_name,
+                True
+            )
+
+        self.assertIn("Unable to determine instance type", str(context.exception))
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_validate_arc_resource_bridge_success(self, mock_send_request):
+        """Test successful Arc Resource Bridge validation"""
+        from azext_migrate.helpers.replication.migrate._validate import (
+            validate_arc_resource_bridge
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            'data': [
+                {
+                    'id': '/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ResourceConnector/appliances/arb',
+                    'statusOfTheBridge': 'Running'
+                }
+            ]
+        }
+        mock_send_request.return_value = mock_response
+
+        target_cluster_id = (
+            '/subscriptions/304d8fdf-1c02-4907-9c3a-ddbd677199cd/'
+            'resourceGroups/test-hci-rg/'
+            'providers/Microsoft.AzureStackHCI/clusters/test-cluster'
+        )
+
+        # Execute - should not raise error
+        validate_arc_resource_bridge(mock_cmd, target_cluster_id, '304d8fdf-1c02-4907-9c3a-ddbd677199cd')
+
+        # Verify request was made
+        mock_send_request.assert_called_once()
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_validate_arc_resource_bridge_not_found_warning(self, mock_send_request):
+        """Test Arc Resource Bridge validation with no results (should warn, not fail)"""
+        from azext_migrate.helpers.replication.migrate._validate import (
+            validate_arc_resource_bridge
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            'data': []  # No Arc Resource Bridge found
+        }
+        mock_send_request.return_value = mock_response
+
+        target_cluster_id = (
+            '/subscriptions/304d8fdf-1c02-4907-9c3a-ddbd677199cd/'
+            'resourceGroups/test-hci-rg/'
+            'providers/Microsoft.AzureStackHCI/clusters/test-cluster'
+        )
+
+        # Execute - should not raise error, only log warning
+        validate_arc_resource_bridge(mock_cmd, target_cluster_id, '304d8fdf-1c02-4907-9c3a-ddbd677199cd')
+
+        # Should complete without exception
+
+    @mock.patch('azext_migrate.helpers._utils.send_get_request')
+    def test_get_vault_name_from_project_success(self, mock_send_get):
+        """Test successfully retrieving vault name from project"""
+        from azext_migrate.helpers.replication.migrate._parse import (
+            get_vault_name_from_project
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        
+        # Mock project response
+        mock_project_response = mock.Mock()
+        mock_project_response.json.return_value = {
+            'id': f'/subscriptions/{self.mock_subscription_id}/resourceGroups/{self.mock_rg_name}/providers/Microsoft.Migrate/migrateProjects/{self.mock_project_name}',
+            'name': self.mock_project_name
+        }
+        
+        # Mock solutions response
+        mock_solutions_response = mock.Mock()
+        mock_solutions_response.json.return_value = {
+            'value': [
+                {
+                    'properties': {
+                        'tool': 'ServerDiscovery',
+                        'details': {}
+                    }
+                },
+                {
+                    'properties': {
+                        'tool': 'ServerMigration_DataReplication',
+                        'details': {
+                            'extendedDetails': {
+                                'vaultName': self.mock_vault_name
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+        
+        mock_send_get.side_effect = [mock_project_response, mock_solutions_response]
+
+        # Execute
+        result = get_vault_name_from_project(
+            mock_cmd,
+            self.mock_rg_name,
+            self.mock_project_name,
+            self.mock_subscription_id
+        )
+
+        # Verify
+        self.assertEqual(result, self.mock_vault_name)
+        self.assertEqual(mock_send_get.call_count, 2)
+
+    @mock.patch('azext_migrate.helpers._utils.send_get_request')
+    def test_get_vault_name_from_project_no_vault(self, mock_send_get):
+        """Test error when no vault found in project"""
+        from azext_migrate.helpers.replication.migrate._parse import (
+            get_vault_name_from_project
+        )
+
+        mock_cmd = self._create_mock_cmd()
+        
+        # Mock project response
+        mock_project_response = mock.Mock()
+        mock_project_response.json.return_value = {
+            'id': f'/subscriptions/{self.mock_subscription_id}/resourceGroups/{self.mock_rg_name}/providers/Microsoft.Migrate/migrateProjects/{self.mock_project_name}',
+            'name': self.mock_project_name
+        }
+        
+        # Mock solutions response without replication solution
+        mock_solutions_response = mock.Mock()
+        mock_solutions_response.json.return_value = {
+            'value': [
+                {
+                    'properties': {
+                        'tool': 'ServerDiscovery',
+                        'details': {}
+                    }
+                }
+            ]
+        }
+        
+        mock_send_get.side_effect = [mock_project_response, mock_solutions_response]
+
+        # Execute
+        with self.assertRaises(CLIError) as context:
+            get_vault_name_from_project(
+                mock_cmd,
+                self.mock_rg_name,
+                self.mock_project_name,
+                self.mock_subscription_id
+            )
+
+        self.assertIn("No replication vault found", str(context.exception))
+
+
 if __name__ == '__main__':
     unittest.main()
