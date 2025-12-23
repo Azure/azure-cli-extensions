@@ -17,17 +17,20 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Enable Deployment Safeguards for a Managed Cluster
 
-    :example: Creates a DeploymentSafeguards resource at Warn level with a managed cluster resource id
-        az aks safeguards create --resource /subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/cluster1 --level Warn
+    :example: Create a DeploymentSafeguards resource at Warn level with a managed cluster resource id
+        az aks safeguards create -c /subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/cluster1 --level Warn
 
-    :example: Creates a DeploymentSafeguards resource at Warn level using subscription, resourcegroup, and name tags
+    :example: Create a DeploymentSafeguards resource at Warn level using subscription, resourcegroup, and name tags
         az aks safeguards create --subscription subid1 -g rg1 -n cluster1 --level Warn
 
     :example: Create a DeploymentSafeguards resource at Warn level with ignored namespaces
         az aks safeguards create -g rg1 -n mc1 --excluded-ns ns1 ns2 --level Warn
 
-    :example: Creates a DeploymentSafeguards resource at Warn level with pod security standards level set to Baseline
-        az aks safeguards create --managed-cluster subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/cluster1 --level Warn --pss-level Baseline
+    :example: Create a DeploymentSafeguards resource at Warn level with Pod Security Standards level set to Baseline
+        az aks safeguards create --managed-cluster /subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/cluster1 --level Warn --pss-level Baseline
+
+    :example: Create a DeploymentSafeguards resource with PSS level set to Restricted using -g/-n pattern
+        az aks safeguards create -g rg1 -n cluster1 --level Enforce --pss-level Restricted
     """
 
     _aaz_info = {
@@ -56,8 +59,9 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.managed_cluster = AAZStrArg(
             options=["-c", "--cluster", "--managed-cluster"],
-            help="The fully qualified Azure Resource manager identifier of the Managed Cluster.",
-            required=False,  # Will be validated in custom class
+            arg_group="",
+            help="The name or ID of the managed cluster.",
+            required=False,  # Either this or -g/-n is required, validated in _execute_operations
         )
 
         # define Arg Group "Properties"
@@ -77,8 +81,8 @@ class Create(AAZCommand):
         _args_schema.pss_level = AAZStrArg(
             options=["--pss-level"],
             arg_group="Properties",
-            help="The pod security standards level",
-            is_preview=True,
+            help="The pod security standards level. Possible values are Baseline, Privileged, and Restricted",
+            nullable=True,
             enum={"Baseline": "Baseline", "Privileged": "Privileged", "Restricted": "Restricted"},
         )
 
@@ -183,9 +187,9 @@ class Create(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                typ_kwargs={"flags": {"required": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -227,9 +231,7 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

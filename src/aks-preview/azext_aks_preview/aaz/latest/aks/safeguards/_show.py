@@ -17,10 +17,10 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Show Deployment Safeguards Configuration for a Managed Cluster
 
-    :example: Gets a DeploymentSafeguard resource by managed cluster id
+    :example: Get a DeploymentSafeguard resource by managed cluster id
         az aks safeguards show --managed-cluster subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/cluster1
 
-    :example: Gets a DeploymentSafeguard resource with resourceGroup and clusterName arguments
+    :example: Get a DeploymentSafeguard resource with resourceGroup and clusterName arguments
         az aks safeguards show -g rg1 -n cluster1
     """
 
@@ -155,9 +155,7 @@ class Show(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
