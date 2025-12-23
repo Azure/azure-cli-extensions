@@ -20,7 +20,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
-def get_ARC_resource_bridge_info(target_fabric, migrate_project):
+def get_ARC_resource_bridge_info(cmd, target_fabric, migrate_project):
     target_fabric_custom_props = (
         target_fabric.get('properties', {}).get('customProperties', {}))
     target_cluster_id = (
@@ -47,23 +47,99 @@ def get_ARC_resource_bridge_info(target_fabric, migrate_project):
         if target_cluster_id:
             cluster_parts = target_cluster_id.split('/')
             if len(cluster_parts) >= 5:
-                custom_location_region = (
-                    migrate_project.get('location', 'eastus'))
                 custom_location_id = (
                     f"/subscriptions/{cluster_parts[2]}/"
                     f"resourceGroups/{cluster_parts[4]}/providers/"
                     f"Microsoft.ExtendedLocation/customLocations/"
                     f"{cluster_parts[-1]}-customLocation"
                 )
-            else:
-                custom_location_region = (
-                    migrate_project.get('location', 'eastus'))
-        else:
-            custom_location_region = (
-                migrate_project.get('location', 'eastus'))
-    else:
+
+    # Get the actual region from the custom location resource
+    custom_location_region = None
+    if custom_location_id:
+        try:
+            custom_location = get_resource_by_id(
+                cmd, custom_location_id, "2021-08-15")
+            custom_location_region = custom_location.get('location')
+            logger.info(f"Retrieved custom location region: {custom_location_region}")
+        except Exception as e:
+            logger.warning(
+                f"Could not retrieve custom location: {str(e)}. "
+                f"Falling back to migrate project location.")
+    
+    # Fall back to migrate project location if we couldn't get custom location region
+    if not custom_location_region:
         custom_location_region = migrate_project.get('location', 'eastus')
+        logger.warning(
+            f"Using migrate project location as fallback: {custom_location_region}")
+    
     return custom_location_id, custom_location_region, target_cluster_id
+
+
+def ensure_target_resource_group_exists(cmd, target_resource_group_id, 
+                                        custom_location_region, 
+                                        project_name):
+    """
+    Ensure the target resource group exists in the target subscription.
+    Creates it if it doesn't exist.
+    
+    Args:
+        cmd: Command context
+        target_resource_group_id: Full ARM ID of target resource group
+        custom_location_region: Region for the resource group
+        project_name: Migrate project name for tagging
+    """
+    # Parse the resource group ID to get subscription and RG name
+    rg_parts = target_resource_group_id.split('/')
+    if len(rg_parts) < 5:
+        raise CLIError(
+            f"Invalid target resource group ID: {target_resource_group_id}")
+    
+    target_subscription_id = rg_parts[2]
+    target_rg_name = rg_parts[4]
+    
+    # Check if resource group exists
+    rg_check_uri = (
+        f"/subscriptions/{target_subscription_id}/"
+        f"resourceGroups/{target_rg_name}"
+    )
+    
+    try:
+        existing_rg = get_resource_by_id(
+            cmd, rg_check_uri, "2021-04-01")
+        if existing_rg:
+            logger.info(
+                f"Target resource group '{target_rg_name}' already exists "
+                f"in subscription '{target_subscription_id}'")
+            return existing_rg
+    except CLIError as e:
+        error_str = str(e)
+        if "ResourceGroupNotFound" in error_str or "404" in error_str:
+            # Resource group doesn't exist, create it
+            logger.info(
+                f"Target resource group '{target_rg_name}' not found. "
+                f"Creating in subscription '{target_subscription_id}'...")
+            
+            rg_body = {
+                "location": custom_location_region,
+                "tags": {
+                    "Migrate Project": project_name
+                }
+            }
+            
+            print(
+                f"Creating target resource group '{target_rg_name}' "
+                f"in region '{custom_location_region}'...")
+            
+            created_rg = create_or_update_resource(
+                cmd, rg_check_uri, "2021-04-01", rg_body)
+            
+            print(
+                f"✓ Target resource group '{target_rg_name}' created successfully")
+            return created_rg
+        else:
+            # Some other error, re-raise
+            raise
 
 
 def construct_disk_and_nic_mapping(is_power_user_mode,

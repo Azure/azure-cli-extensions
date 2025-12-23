@@ -257,7 +257,7 @@ def validate_server_parameters(
             f"/subscriptions/{subscription_id}/"
             f"resourceGroups/{resource_group_name}")
 
-    return rg_uri, machine_id
+    return rg_uri, machine_id, subscription_id
 
 
 def validate_required_parameters(machine_id,
