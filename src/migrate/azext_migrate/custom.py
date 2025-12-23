@@ -599,6 +599,67 @@ def list_local_server_replications(cmd,
         cmd, subscription_id, resource_group, vault_name)
 
 
+def get_local_server_replication(cmd,
+                                 protected_item_name=None,
+                                 protected_item_id=None,
+                                 resource_group=None,
+                                 project_name=None,
+                                 subscription_id=None):
+    """
+    Get details of a specific replicating server.
+
+    This cmdlet is based on a preview API version and may experience
+    breaking changes in future releases.
+
+    Args:
+        cmd: The CLI command context
+        protected_item_name (str, optional): The name of the protected item
+        protected_item_id (str, optional): The full ARM resource ID of the
+            protected item
+        resource_group (str, optional): The name of the resource group where
+            the migrate project is present (required if using protected_item_name)
+        project_name (str, optional): The name of the migrate project
+            (required if using protected_item_name)
+        subscription_id (str, optional): Azure Subscription ID. Uses
+            current subscription if not provided
+
+    Returns:
+        dict: Detailed information about the protected item
+
+    Raises:
+        CLIError: If required parameters are missing or the protected item
+            is not found
+    """
+    from azure.cli.core.commands.client_factory import \
+        get_subscription_id
+    from azext_migrate.helpers.replication.get._execute_get import (
+        get_protected_item_by_id,
+        get_protected_item_by_name
+    )
+
+    # Use current subscription if not provided
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Validate that either ID or name is provided
+    if not protected_item_id and not protected_item_name:
+        raise CLIError(
+            "Either --protected-item-id or --protected-item-name must be provided.")
+
+    # If both are provided, prefer ID
+    if protected_item_id:
+        return get_protected_item_by_id(cmd, protected_item_id)
+    
+    # If using name, require resource_group and project_name
+    if not resource_group or not project_name:
+        raise CLIError(
+            "When using --protected-item-name, both --resource-group and "
+            "--project-name are required.")
+    
+    return get_protected_item_by_name(
+        cmd, subscription_id, resource_group, project_name, protected_item_name)
+
+
 def remove_local_server_replication(cmd,
                                     target_object_id,
                                     force_remove=False,

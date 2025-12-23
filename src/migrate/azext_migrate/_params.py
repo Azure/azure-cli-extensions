@@ -198,6 +198,28 @@ def load_arguments(self, _):
             required=True)
         c.argument('subscription_id', subscription_id_type)
 
+    with self.argument_context('migrate local replication get') as c:
+        c.argument(
+            'protected_item_name',
+            options_list=['--protected-item-name', '--name'],
+            help='The name of the protected item (replicating server).')
+        c.argument(
+            'protected_item_id',
+            options_list=['--protected-item-id', '--id'],
+            help='The full ARM resource ID of the protected item. '
+                 'If provided, --resource-group and --project-name are not required.')
+        c.argument(
+            'resource_group',
+            options_list=['--resource-group', '-g'],
+            help='The name of the resource group where the migrate '
+                 'project is present. Required when using --protected-item-name.')
+        c.argument(
+            'project_name',
+            project_name_type,
+            help='The name of the migrate project. Required when using '
+                 '--protected-item-name.')
+        c.argument('subscription_id', subscription_id_type)
+
     with self.argument_context('migrate local replication remove') as c:
         c.argument(
             'target_object_id',

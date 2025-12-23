@@ -353,6 +353,81 @@ helps['migrate local replication list'] = """
                 --subscription-id 00000000-0000-0000-0000-000000000000
 """
 
+helps['migrate local replication get'] = """
+    type: command
+    short-summary: Get detailed information about a specific replicating server.
+    long-summary: |
+        Retrieves comprehensive details about a specific protected item (replicating server)
+        including its protection state, replication health, configuration settings,
+        and historical information about failover operations.
+
+        You can retrieve the protected item either by:
+        - Full ARM resource ID (--protected-item-id or --id)
+        - Name with project context (--protected-item-name with --resource-group and --project-name)
+
+        The command returns detailed information including:
+        - Basic information (name, resource ID, correlation ID)
+        - Protection status (state, health, resync requirements)
+        - Configuration (policy, replication extension)
+        - Failover history (test, planned, unplanned)
+        - Allowed operations
+        - Machine details (source and target information)
+        - Health errors with recommended actions (if any)
+
+        Note: This command uses a preview API version
+        and may experience breaking changes in future releases.
+    parameters:
+        - name: --protected-item-id --id
+          short-summary: Full ARM resource ID of the protected item.
+          long-summary: >
+            The complete ARM resource ID of the protected item.
+            If provided, --resource-group and --project-name are not required.
+            This ID can be obtained from the 'list' or 'new' commands.
+        - name: --protected-item-name --name
+          short-summary: Name of the protected item (replicating server).
+          long-summary: >
+            The name of the protected item to retrieve.
+            When using this option, both --resource-group and --project-name
+            are required to locate the item.
+        - name: --resource-group -g
+          short-summary: Resource group containing the Azure Migrate project.
+          long-summary: >
+            The name of the resource group where the Azure Migrate project is located.
+            Required when using --protected-item-name.
+        - name: --project-name
+          short-summary: Name of the Azure Migrate project.
+          long-summary: >
+            The Azure Migrate project that contains the replicating server.
+            Required when using --protected-item-name.
+        - name: --subscription-id
+          short-summary: Azure subscription ID.
+          long-summary: >
+            The subscription containing the Azure Migrate project.
+            Uses the default subscription if not specified.
+    examples:
+        - name: Get a protected item by its full ARM resource ID
+          text: |
+            az migrate local replication get \\
+                --protected-item-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem"
+        - name: Get a protected item by name using project context
+          text: |
+            az migrate local replication get \\
+                --protected-item-name myProtectedItem \\
+                --resource-group myRG \\
+                --project-name myMigrateProject
+        - name: Get a protected item with specific subscription
+          text: |
+            az migrate local replication get \\
+                --name myProtectedItem \\
+                --resource-group myRG \\
+                --project-name myMigrateProject \\
+                --subscription-id 00000000-0000-0000-0000-000000000000
+        - name: Get a protected item using short parameter names
+          text: |
+            az migrate local replication get \\
+                --id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem"
+"""
+
 helps['migrate local replication remove'] = """
     type: command
     short-summary: Stop replication for a migrated server.

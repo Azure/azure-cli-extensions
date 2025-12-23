@@ -13,5 +13,6 @@ def load_command_table(self, _):
         g.custom_command('init', 'initialize_replication_infrastructure')
         g.custom_command('new', 'new_local_server_replication')
         g.custom_command('list', 'list_local_server_replications')
+        g.custom_command('get', 'get_local_server_replication')
         g.custom_command('remove', 'remove_local_server_replication')
         g.custom_command('get-job', 'get_local_replication_job')
