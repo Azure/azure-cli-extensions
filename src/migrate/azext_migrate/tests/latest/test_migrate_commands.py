@@ -1141,6 +1141,319 @@ class MigrateReplicationGetTests(ScenarioTest):
             'source-vm-01')
 
 
+class MigrateReplicationListTests(ScenarioTest):
+    """Unit tests for the 'az migrate local replication list' command"""
+
+    def setUp(self):
+        super(MigrateReplicationListTests, self).setUp()
+        self.mock_subscription_id = "00000000-0000-0000-0000-000000000000"
+        self.mock_rg_name = "test-rg"
+        self.mock_project_name = "test-project"
+        self.mock_vault_name = "test-vault"
+
+    def _create_mock_cmd(self):
+        """Helper to create a properly configured mock cmd object"""
+        mock_cmd = mock.Mock()
+        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = (
+            "https://management.azure.com")
+        return mock_cmd
+
+    @mock.patch('azext_migrate.helpers.replication.list._execute_list.list_protected_items')
+    @mock.patch('azext_migrate.helpers.replication.list._execute_list.get_vault_name_from_project')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_list_replications_success(self, mock_get_sub_id, 
+                                       mock_get_vault, mock_list_items):
+        """Test successful listing of replications"""
+        from azext_migrate.custom import list_local_server_replications
+
+        # Setup mocks
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_get_vault.return_value = self.mock_vault_name
+        mock_list_items.return_value = []
+
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute the command
+        list_local_server_replications(
+            cmd=mock_cmd,
+            resource_group=self.mock_rg_name,
+            project_name=self.mock_project_name
+        )
+
+        # Verify calls
+        mock_get_vault.assert_called_once_with(
+            mock_cmd, self.mock_rg_name, self.mock_project_name,
+            self.mock_subscription_id)
+        mock_list_items.assert_called_once()
+
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_list_replications_missing_resource_group(self, mock_get_sub_id):
+        """Test error when resource group is missing"""
+        from azext_migrate.custom import list_local_server_replications
+
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute without resource_group - should raise error
+        with self.assertRaises((CLIError, KnackCLIError)) as context:
+            list_local_server_replications(
+                cmd=mock_cmd,
+                project_name=self.mock_project_name
+            )
+
+        # Verify error message
+        self.assertIn("Both --resource-group and --project-name are required",
+                     str(context.exception))
+
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_list_replications_missing_project_name(self, mock_get_sub_id):
+        """Test error when project name is missing"""
+        from azext_migrate.custom import list_local_server_replications
+
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute without project_name - should raise error
+        with self.assertRaises((CLIError, KnackCLIError)) as context:
+            list_local_server_replications(
+                cmd=mock_cmd,
+                resource_group=self.mock_rg_name
+            )
+
+        # Verify error message
+        self.assertIn("Both --resource-group and --project-name are required",
+                     str(context.exception))
+
+
+class MigrateReplicationRemoveTests(ScenarioTest):
+    """Unit tests for the 'az migrate local replication remove' command"""
+
+    def setUp(self):
+        super(MigrateReplicationRemoveTests, self).setUp()
+        self.mock_subscription_id = "00000000-0000-0000-0000-000000000000"
+        self.mock_rg_name = "test-rg"
+        self.mock_vault_name = "test-vault"
+        self.mock_protected_item_name = "test-item"
+        self.mock_protected_item_id = (
+            f'/subscriptions/{self.mock_subscription_id}/'
+            f'resourceGroups/{self.mock_rg_name}/'
+            f'providers/Microsoft.DataReplication/replicationVaults/'
+            f'{self.mock_vault_name}/protectedItems/{self.mock_protected_item_name}')
+
+    def _create_mock_cmd(self):
+        """Helper to create a properly configured mock cmd object"""
+        mock_cmd = mock.Mock()
+        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = (
+            "https://management.azure.com")
+        return mock_cmd
+
+    @mock.patch('azext_migrate.helpers.replication.remove._execute_delete.execute_removal')
+    @mock.patch('azext_migrate.helpers.replication.remove._validate.validate_protected_item')
+    @mock.patch('azext_migrate.helpers.replication.remove._parse.parse_protected_item_id')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_remove_replication_success(self, mock_get_sub_id, mock_parse,
+                                       mock_validate, mock_execute):
+        """Test successful removal of replication"""
+        from azext_migrate.custom import remove_local_server_replication
+
+        # Setup mocks
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_parse.return_value = (
+            self.mock_rg_name, self.mock_vault_name, self.mock_protected_item_name)
+        mock_validate.return_value = None
+        mock_execute.return_value = {'status': 'success'}
+
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute the command
+        result = remove_local_server_replication(
+            cmd=mock_cmd,
+            target_object_id=self.mock_protected_item_id
+        )
+
+        # Verify calls
+        mock_parse.assert_called_once_with(self.mock_protected_item_id)
+        mock_validate.assert_called_once_with(mock_cmd, self.mock_protected_item_id)
+        mock_execute.assert_called_once()
+        self.assertIsNotNone(result)
+
+    @mock.patch('azext_migrate.helpers.replication.remove._execute_delete.execute_removal')
+    @mock.patch('azext_migrate.helpers.replication.remove._validate.validate_protected_item')
+    @mock.patch('azext_migrate.helpers.replication.remove._parse.parse_protected_item_id')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_remove_replication_with_force(self, mock_get_sub_id, mock_parse,
+                                           mock_validate, mock_execute):
+        """Test removal with force flag"""
+        from azext_migrate.custom import remove_local_server_replication
+
+        # Setup mocks
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_parse.return_value = (
+            self.mock_rg_name, self.mock_vault_name, self.mock_protected_item_name)
+        mock_validate.return_value = None
+        mock_execute.return_value = {'status': 'success'}
+
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute the command with force
+        remove_local_server_replication(
+            cmd=mock_cmd,
+            target_object_id=self.mock_protected_item_id,
+            force_remove=True
+        )
+
+        # Verify execute was called with force_remove=True
+        # Check the last positional argument (force_remove is the last one)
+        call_args = mock_execute.call_args
+        self.assertTrue(call_args[0][-1])  # Last positional arg is force_remove
+
+
+class MigrateReplicationJobTests(ScenarioTest):
+    """Unit tests for the 'az migrate local replication get-job' command"""
+
+    def setUp(self):
+        super(MigrateReplicationJobTests, self).setUp()
+        self.mock_subscription_id = "00000000-0000-0000-0000-000000000000"
+        self.mock_rg_name = "test-rg"
+        self.mock_project_name = "test-project"
+        self.mock_vault_name = "test-vault"
+        self.mock_job_name = "test-job"
+        self.mock_job_id = (
+            f'/subscriptions/{self.mock_subscription_id}/'
+            f'resourceGroups/{self.mock_rg_name}/'
+            f'providers/Microsoft.DataReplication/replicationVaults/'
+            f'{self.mock_vault_name}/jobs/{self.mock_job_name}')
+
+    def _create_mock_cmd(self):
+        """Helper to create a properly configured mock cmd object"""
+        mock_cmd = mock.Mock()
+        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = (
+            "https://management.azure.com")
+        return mock_cmd
+
+    @mock.patch('azext_migrate.helpers.replication.job._retrieve.get_single_job')
+    @mock.patch('azext_migrate.helpers.replication.job._parse.parse_job_id')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_get_job_by_id_success(self, mock_get_sub_id, mock_parse, 
+                                   mock_get_job):
+        """Test getting job by ID"""
+        from azext_migrate.custom import get_local_replication_job
+
+        # Setup mocks
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_parse.return_value = (
+            self.mock_vault_name, self.mock_rg_name, self.mock_job_name)
+        mock_get_job.return_value = {'id': self.mock_job_id, 'status': 'Succeeded'}
+
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute the command
+        result = get_local_replication_job(
+            cmd=mock_cmd,
+            job_id=self.mock_job_id
+        )
+
+        # Verify calls
+        mock_parse.assert_called_once_with(self.mock_job_id)
+        mock_get_job.assert_called_once()
+        self.assertIsNotNone(result)
+        self.assertEqual(result['status'], 'Succeeded')
+
+    @mock.patch('azext_migrate.helpers.replication.job._retrieve.get_single_job')
+    @mock.patch('azext_migrate.helpers.replication.job._parse.get_vault_name_from_project')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_get_job_by_name_success(self, mock_get_sub_id, mock_get_vault,
+                                     mock_get_job):
+        """Test getting job by name with project context"""
+        from azext_migrate.custom import get_local_replication_job
+
+        # Setup mocks
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_get_vault.return_value = self.mock_vault_name
+        mock_get_job.return_value = {'id': self.mock_job_id, 'status': 'InProgress'}
+
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute the command
+        result = get_local_replication_job(
+            cmd=mock_cmd,
+            resource_group=self.mock_rg_name,
+            project_name=self.mock_project_name,
+            job_name=self.mock_job_name
+        )
+
+        # Verify calls
+        mock_get_vault.assert_called_once()
+        mock_get_job.assert_called_once()
+        self.assertIsNotNone(result)
+
+    @mock.patch('azext_migrate.helpers.replication.job._retrieve.list_all_jobs')
+    @mock.patch('azext_migrate.helpers.replication.job._parse.get_vault_name_from_project')
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_list_all_jobs_success(self, mock_get_sub_id, mock_get_vault,
+                                   mock_list_jobs):
+        """Test listing all jobs without specific job name"""
+        from azext_migrate.custom import get_local_replication_job
+
+        # Setup mocks
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_get_vault.return_value = self.mock_vault_name
+        mock_list_jobs.return_value = [
+            {'id': 'job-1', 'status': 'Succeeded'},
+            {'id': 'job-2', 'status': 'InProgress'}
+        ]
+
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute the command without job_name
+        result = get_local_replication_job(
+            cmd=mock_cmd,
+            resource_group=self.mock_rg_name,
+            project_name=self.mock_project_name
+        )
+
+        # Verify calls
+        mock_get_vault.assert_called_once()
+        mock_list_jobs.assert_called_once()
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result), 2)
+
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_get_job_missing_parameters(self, mock_get_sub_id):
+        """Test error when required parameters are missing"""
+        from azext_migrate.custom import get_local_replication_job
+
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute without required parameters - should raise error
+        with self.assertRaises((CLIError, KnackCLIError)) as context:
+            get_local_replication_job(cmd=mock_cmd)
+
+        # Verify error message
+        self.assertIn("Either --job-id or both --resource-group",
+                     str(context.exception))
+
+    @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
+    def test_get_job_missing_project_name(self, mock_get_sub_id):
+        """Test error when resource group provided without project name"""
+        from azext_migrate.custom import get_local_replication_job
+
+        mock_get_sub_id.return_value = self.mock_subscription_id
+        mock_cmd = self._create_mock_cmd()
+
+        # Execute with resource_group but no project_name - should raise error
+        with self.assertRaises((CLIError, KnackCLIError)) as context:
+            get_local_replication_job(
+                cmd=mock_cmd,
+                resource_group=self.mock_rg_name
+            )
+
+        # Verify error message
+        self.assertIn("Either --job-id or both --resource-group",
+                     str(context.exception))
+
+
 class MigrateScenarioTests(ScenarioTest):
     @pytest.mark.skip(reason="Requires actual Azure resources and live authentication")
     @record_only()
