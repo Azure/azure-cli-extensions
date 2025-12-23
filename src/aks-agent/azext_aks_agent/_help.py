@@ -5,18 +5,15 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=too-many-lines
-
 from knack.help_files import helps
-
 
 helps[
     "aks agent"
 ] = """
     type: command
-    short-summary: Run AI assistant to analyze and troubleshoot Kubernetes clusters.
+    short-summary: Run AI assistant to analyze and troubleshoot Azure Kubernetes Service (AKS) clusters.
     long-summary: |-
       This command allows you to ask questions about your Azure Kubernetes cluster and get answers using AI models.
-      No need to manually set environment variables! All model and credential information can be configured interactively using `az aks agent-init` or via a config file.
     parameters:
         - name: --name -n
           type: string
@@ -34,12 +31,6 @@ helps[
             Each provider may require different environment variables and model naming conventions.
             For a full list of supported providers, model patterns, and required environment variables, see https://docs.litellm.ai/docs/providers.
             Note: For Azure OpenAI, it is recommended to set the deployment name as the model name until https://github.com/BerriAI/litellm/issues/13950 is resolved.
-        - name: --api-key
-          type: string
-          short-summary: API key to use for the LLM (if not given, uses environment variables AZURE_API_KEY, OPENAI_API_KEY). (Deprecated)
-        - name: --config-file
-          type: string
-          short-summary: Path to configuration file.
         - name: --max-steps
           type: int
           short-summary: Maximum number of steps the LLM can take to investigate the issue.
@@ -57,81 +48,35 @@ helps[
           short-summary: Refresh the toolsets status.
         - name: --status
           type: bool
-          short-summary: Show AKS agent configuration and status information.
-        - name: --aks-mcp
-          type: bool
-          short-summary: Enable AKS MCP integration for enhanced capabilities. Traditional mode is the default.
-
+          short-summary: Show AKS agent deployment status including helm release, deployments, and pod information.
     examples:
-        - name: Ask about pod issues in the cluster with last configured model
-          text: |-
-            az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup
-        - name: Ask about pod issues in the cluster with Azure OpenAI
-          text: |-
-            az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model azure/gpt-4.1
         - name: Ask about pod issues in the cluster with OpenAI
           text: |-
-            az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model gpt-4o
-        - name: Run agent with config file
-          text: |
-            az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml --name MyManagedCluster --resource-group MyResourceGroup
-            Here is an example of config file:
-            ```json
-            llms:
-              - provider: "azure"
-                MODEL_NAME: "gpt-4.1"
-                AZURE_API_BASE: "https://<your-base-url>"
-                AZURE_API_KEY: "<your-api-key>"
-            # define a list of mcp servers, mcp server can be defined
-            mcp_servers:
-              aks_mcp:
-                description: "The AKS-MCP is a Model Context Protocol (MCP) server that enables AI assistants to interact with Azure Kubernetes Service (AKS) clusters"
-                url: "http://localhost:8003/sse"
-
-            # try adding your own tools or toggle the built-in toolsets here
-            # e.g. query company-specific data, fetch logs from your existing observability tools, etc
-            # To check how to add a customized toolset, please refer to https://docs.robusta.dev/master/configuration/holmesgpt/custom_toolsets.html#custom-toolsets
-            # To find all built-in toolsets, please refer to https://docs.robusta.dev/master/configuration/holmesgpt/builtin_toolsets.html
-            toolsets:
-              # add a new json processor toolset
-              json_processor:
-                description: "A toolset for processing JSON data using jq"
-                prerequisites:
-                  - command: "jq --version"  # Ensure jq is installed
-                tools:
-                  - name: "process_json"
-                    description: "A tool that uses jq to process JSON input"
-                    command: "echo '{{ json_input }}' | jq '.'"  # Example jq command to format JSON
-              # disable a built-in toolsets
-              aks/core:
-                enabled: false
-              ```
+            az aks agent "Why are my pods not starting?" --model gpt-4o --resource-group myResourceGroup --name myAKSCluster
+        - name: Ask about pod issues in the cluster with last configured model
+          text: |-
+            az aks agent "Why are my pods not starting?" --resource-group myResourceGroup --name myAKSCluster
+        - name: Check AKS agent deployment status
+          text: |-
+            az aks agent --status --resource-group myResourceGroup --name myAKSCluster
+        - name: Ask about pod issues in the cluster with Azure OpenAI
+          text: |-
+            az aks agent "Why are my pods not starting?" --model azure/gpt-4.1 --resource-group myResourceGroup --name myAKSCluster
         - name: Run in interactive mode without a question
-          text: az aks agent "Check the pod status in my cluster" --name MyManagedCluster --resource-group MyResourceGroup --model azure/gpt-4.1 --api-key "sk-xxx"
+          text: |-
+            az aks agent "Check the pod status in my cluster" --model azure/gpt-4.1 --resource-group myResourceGroup --name myAKSCluster
         - name: Run in non-interactive batch mode
-          text: az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/gpt-4.1
+          text: |-
+            az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/gpt-4.1 --resource-group myResourceGroup --name myAKSCluster
         - name: Show detailed tool output during analysis
-          text: az aks agent "Why is my service workload unavailable in namespace workload-ns?" --show-tool-output --model azure/gpt-4.1
-        - name: Use custom configuration file
-          text: az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml --model azure/gpt-4.1
+          text: |-
+            az aks agent "Why is my service workload unavailable in namespace workload-ns?" --show-tool-output --model azure/gpt-4.1 --resource-group myResourceGroup --name myAKSCluster
         - name: Run agent with no echo of the original question
-          text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/gpt-4.1
+          text: |-
+            az aks agent "What is the status of my cluster?" --no-echo-request --model azure/gpt-4.1 --resource-group myResourceGroup --name myAKSCluster
         - name: Refresh toolsets to get the latest available tools
-          text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/gpt-4.1
-        - name: Show agent status (MCP readiness)
-          text: az aks agent --status
-        - name: Run in interactive mode without a question
-          text: az aks agent "Check the pod status in my cluster" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment --api-key "sk-xxx"
-        - name: Run in non-interactive batch mode
-          text: az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/my-gpt4.1-deployment
-        - name: Show detailed tool output during analysis
-          text: az aks agent "Why is my service workload unavailable in namespace workload-ns?" --show-tool-output --model azure/my-gpt4.1-deployment
-        - name: Use custom configuration file
-          text: az aks agent "Check kubernetes pod resource usage" --config-file /path/to/custom.yaml --model azure/my-gpt4.1-deployment
-        - name: Run agent with no echo of the original question
-          text: az aks agent "What is the status of my cluster?" --no-echo-request --model azure/my-gpt4.1-deployment
-        - name: Refresh toolsets to get the latest available tools
-          text: az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/my-gpt4.1-deployment
+          text: |-
+            az aks agent "What is the status of my cluster?" --refresh-toolsets --model azure/gpt-4.1 --resource-group myResourceGroup --name myAKSCluster
 """
 
 helps[
@@ -142,7 +87,34 @@ helps[
     long-summary: |-
       This command interactively guides you to select an LLM provider and model, validates the connection, and saves the configuration for later use.
       You can run this command multiple times to add or update different model configurations.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
     examples:
-        - name: Initialize configuration for Azure OpenAI, OpenAI or other llms
-          text: az aks agent-init
+        - name: Initialize and deploy AKS agent to a cluster
+          text: |-
+            az aks agent-init --resource-group myResourceGroup --name myAKSCluster
+"""
+
+helps[
+    "aks agent-cleanup"
+] = """
+    type: command
+    short-summary: Cleanup and uninstall AKS agent from the cluster.
+    long-summary: |-
+      This command removes the AKS agent and deletes all associated resources from the cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
+    examples:
+        - name: Cleanup and uninstall AKS agent from the cluster
+          text: az aks agent-cleanup --resource-group myResourceGroup --name myAKSCluster
 """

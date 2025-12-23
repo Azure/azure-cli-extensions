@@ -19,7 +19,7 @@ except ImportError:
 
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-VERSION = "1.3.0"
+VERSION = "1.5.0"
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -40,8 +40,9 @@ CLASSIFIERS = [
 DEPENDENCIES = [
     "docker>=6.1.0",
     "tqdm==4.65.0",
-    "deepdiff==6.3.0",
-    "PyYAML>=6.0.1"
+    "deepdiff~=8.6.1",
+    "PyYAML>=6.0.1",
+    "pydantic>=2.12.4",
 ]
 
 SecurityPolicyProxy.download_binaries()

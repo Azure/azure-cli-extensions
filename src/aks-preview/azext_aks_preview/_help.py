@@ -175,7 +175,8 @@ helps['aks create'] = f"""
             - monitoring                      :  turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
             - virtual-node                    : enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use. aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
             - azure-policy                    : enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling deployment safeguards. Learn more at aka.ms/aks/policy.
-            - ingress-appgw                   : enable Application Gateway Ingress Controller addon (PREVIEW).
+            - application-load-balancer       : enable the Application Load Balancer (Application Gateway for Containers) addon (PREVIEW).
+            - ingress-appgw                   : enable Application Gateway Ingress Controller addon.
             - confcom                         : enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
             - open-service-mesh               : enable Open Service Mesh addon (PREVIEW).
             - gitops                          : enable GitOps (PREVIEW).
@@ -239,7 +240,10 @@ helps['aks create'] = f"""
           short-summary: Used to set the acceleration mode (None or BpfVeth) on a cluster when enabling advanced networking features with "--enable-acns".
         - name: --enable-retina-flow-logs
           type: bool
-          short-summary: Enable advanced network flow log collection functionalities on a cluster.
+          short-summary: Enable advanced network flow log collection functionalities on a cluster. This flag is deprecated in favor of --enable-container-network-logs.
+        - name: --enable-container-network-logs
+          type: bool
+          short-summary: Enable container network log collection functionalities on a cluster.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -632,6 +636,9 @@ helps['aks create'] = f"""
               Auto: A standard set of Karpenter NodePools are provisioned.
               None: No Karpenter NodePools are provisioned.
               WARNING: Changing this from Auto to None on an existing cluster will cause the default Karpenter NodePools to be deleted, which will in turn drain and delete the nodes associated with those pools. It is strongly recommended to not do this unless there are idle nodes ready to take the pods evicted by that action.
+        - name: --enable-application-load-balancer
+          type: bool
+          short-summary: Enable Application Load Balancer (Application Gateway for Containers) addon.
         - name: --enable-app-routing
           type: bool
           short-summary: Enable Application Routing addon.
@@ -1337,10 +1344,16 @@ helps['aks update'] = """
           short-summary: Used to set the acceleration mode (None or BpfVeth) on a cluster when enabling advanced networking features with "--enable-acns".
         - name: --enable-retina-flow-logs
           type: bool
-          short-summary: Enable advanced network flow log collection functionalities on a cluster.
+          short-summary: Enable advanced network flow log collection functionalities on a cluster. This flag is deprecated in favor of --enable-container-network-logs.
+        - name: --enable-container-network-logs
+          type: bool
+          short-summary: Enable container network log collection functionalities on a cluster.
         - name: --disable-retina-flow-logs
           type: bool
-          short-summary: Disable advanced network flow log collection functionalities on a cluster.
+          short-summary: Disable advanced network flow log collection functionalities on a cluster. This flag is deprecated in favor of --disable-container-network-logs.
+        - name: --disable-container-network-logs
+          type: bool
+          short-summary: Disable container network log collection functionalities on a cluster.
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
@@ -1408,6 +1421,12 @@ helps['aks update'] = """
         - name: --disable-gateway-api
           type: bool
           short-summary: Disable managed installation of Gateway API CRDs.
+        - name: --enable-application-load-balancer
+          type: bool
+          short-summary: Enable Application Load Balancer (Application Gateway for Containers) addon.
+        - name: --disable-application-load-balancer
+          type: bool
+          short-summary: Disable Application Load Balancer (Application Gateway for Containers) addon.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1892,9 +1911,9 @@ helps['aks namespace add'] = """
           short-summary: Do not wait for the long-running operation to finish.
     examples:
         - name: Create a namespace in an existing AKS cluster.
-          text: az aks namespace add -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview
+          text: az aks namespace add -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi
         - name: Create a namespace in an existing AKS cluster with labels, annotations and tags
-          text: az aks namespace add -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --labels a=b p=q --annotations a=b p=q --tags a=b p=q --cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview
+          text: az aks namespace add -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --labels a=b p=q --annotations a=b p=q --tags a=b p=q --cpu-request 500m --cpu-limit 800m --memory-request 1Gi --memory-limit 2Gi
 """
 
 helps['aks namespace update'] = """
@@ -1945,7 +1964,7 @@ helps['aks namespace update'] = """
           short-summary: Do not wait for the long-running operation to finish
     examples:
         - name: update namespace in an existing AKS cluster.
-          text: az aks namespace update -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --labels a=b p=q --annotations a=b p=q --tags a=b p=q --cpu-request 600m --cpu-limit 800m --memory-request 2Gi --memory-limit 3Gi --adoption-policy Always --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedNamespacePreview
+          text: az aks namespace update -g MyResourceGroup --cluster-name MyClusterName --name NamespaceName --labels a=b p=q --annotations a=b p=q --tags a=b p=q --cpu-request 600m --cpu-limit 800m --memory-request 2Gi --memory-limit 3Gi --adoption-policy Always
 """
 
 helps['aks namespace show'] = """
@@ -2418,6 +2437,9 @@ helps['aks nodepool update'] = """
         - name: --final-soak-duration
           type: int
           short-summary: Wait time (in minutes) after all old nodes are drained before removing them. Default is 60 minutes. Only for blue-green upgrades.
+        - name: --gpu-driver
+          type: string
+          short-summary: Whether to install driver for GPU node pool. Possible values are "Install" or "None".
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2611,6 +2633,30 @@ helps['aks machine add'] = """
          short-summary: The ipTags of the machine public IPs.
 """
 
+helps['aks machine update'] = """
+   type: command
+   short-summary: Update the specified machine in an agentpool
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster.
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster.
+       - name: --machine-name
+         type: string
+         short-summary: Host name of the machine.
+       - name: --tags
+         type: string
+         short-summary: The tags of the machine.
+       - name: --labels
+         type: string
+         short-summary: The labels of the machine.
+       - name: --node-taints
+         type: string
+         short-summary: The taints of the machine.
+"""
+
 helps['aks machine list'] = """
    type: command
    short-summary: List the details for all machines in an agentpool
@@ -2746,7 +2792,8 @@ long-summary: |-
         virtual-node                    - enable AKS Virtual Node. Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
         azure-policy                    - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
                                           Learn more at aka.ms/aks/policy.
-        ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
+        application-load-balancer       - enable the Application Load Balancer (Application Gateway for Containers) addon (PREVIEW).
+        ingress-appgw                   - enable Application Gateway Ingress Controller addon.
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
         azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
@@ -2906,7 +2953,8 @@ long-summary: |-
         virtual-node                    - enable AKS Virtual Node. Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
         azure-policy                    - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
                                           Learn more at aka.ms/aks/policy.
-        ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
+        application-load-balancer       - enable the Application Load Balancer (Application Gateway for Containers) addon (PREVIEW).
+        ingress-appgw                   - enable Application Gateway Ingress Controller addon.
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
         azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
@@ -3579,9 +3627,33 @@ helps['aks mesh disable-istio-cni'] = """
         text: az aks mesh disable-istio-cni --resource-group MyResourceGroup --name MyManagedCluster
 """
 
+helps['aks applicationloadbalancer'] = """
+    type: group
+    short-summary: Commands to manage Application Load Balancer (Application Gateway for Containers) addon.
+    long-summary: A group of commands to manage Application Load Balancer (Application Gateway for Containers) in given cluster.
+"""
+
+helps['aks applicationloadbalancer enable'] = """
+    type: command
+    short-summary: Enable Application Load Balancer (Application Gateway for Containers) addon.
+    long-summary: This command enables Application Load Balancer in given cluster.
+"""
+
+helps['aks applicationloadbalancer update'] = """
+    type: command
+    short-summary: Update Application Load Balancer (Application Gateway for Containers) addon.
+    long-summary: This command is used to make a put operation on the Application Load Balancer in a given cluster.
+"""
+
+helps['aks applicationloadbalancer disable'] = """
+    type: command
+    short-summary: Disable Application Load Balancer (Application Gateway for Containers) addon.
+    long-summary: This command disables Application Load Balancer (Application Gateway for Containers) in given cluster.
+"""
+
 helps['aks approuting'] = """
     type: group
-    short-summary: Commands to manage App Routing aadon.
+    short-summary: Commands to manage App Routing addon.
     long-summary: A group of commands to manage App Routing in given cluster.
 """
 

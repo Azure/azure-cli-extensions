@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import hashlib
 import os
 import platform
 import stat
@@ -12,9 +13,38 @@ import sys
 import requests
 from azext_confcom.config import DATA_FOLDER
 from azext_confcom.errors import eprint
+from azext_confcom.lib.paths import get_binaries_dir, get_data_dir
 
 host_os = platform.system()
 machine = platform.machine()
+
+
+_binaries_dir = get_binaries_dir()
+_kata_binaries = {
+    "Linux": {
+        "path": _binaries_dir / "genpolicy-linux",
+        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/genpolicy",
+        "sha256": "4cd497ca5e995ddacb53af4da47449c16291aea62e9f8b8ee0fe36ca8d41fe66",
+    },
+    "Windows": {
+        "path": _binaries_dir / "genpolicy-windows.exe",
+        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl1.genpolicy0/genpolicy.exe",
+        "sha256": "caa9d8ee21b5819cc42b5c0967b14e166c715f6d4c87b574edabeaaeebf3573c",
+    },
+}
+_data_dir = get_data_dir()
+_kata_data = [
+    {
+        "path": _data_dir / "genpolicy-settings.json",
+        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/genpolicy-settings.json",  # pylint: disable=line-too-long
+        "sha256": "c38be1474b133d49800a43bd30c40e7585b5f302179a307f9c6d89f195daee94",
+    },
+    {
+        "path": _data_dir / "rules.rego",
+        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/rules.rego",
+        "sha256": "2ca6c0e9617f97a922724112bd738fd73881d35b9ae5d31d573f0871d1ecf897",
+    },
+]
 
 
 class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
@@ -23,61 +53,15 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def download_binaries():
-        dir_path = os.path.dirname(os.path.realpath(__file__))
 
-        bin_folder = os.path.join(dir_path, "bin")
-        if not os.path.exists(bin_folder):
-            os.makedirs(bin_folder)
+        for binary_info in list(_kata_binaries.values()) + _kata_data:
+            kata_fetch_resp = requests.get(binary_info["url"], verify=True)
+            kata_fetch_resp.raise_for_status()
 
-        data_folder = os.path.join(dir_path, "data")
-        if not os.path.exists(data_folder):
-            os.makedirs(data_folder)
+            assert hashlib.sha256(kata_fetch_resp.content).hexdigest() == binary_info["sha256"]
 
-        # get the most recent release artifacts from github
-        r = requests.get("https://api.github.com/repos/microsoft/kata-containers/releases")
-        r.raise_for_status()
-        bin_flag = False
-        needed_assets = ["genpolicy", "genpolicy.exe"]
-        # search for genpolicy in the assets from kata-container releases
-        for release in r.json():
-            is_target = (
-                "genpolicy" in release.get("tag_name") and
-                not release.get("draft") and
-                not release.get("prerelease")
-            )
-            if is_target:
-                # these should be newest to oldest
-                for asset in release["assets"]:
-                    # download the file if it contains genpolicy
-                    if asset["name"] in needed_assets:
-                        # say which version we're downloading
-                        print(f"Downloading genpolicy version {release['tag_name']}")
-                        save_name = ""
-                        if ".exe" in asset["name"]:
-                            save_name = "genpolicy-windows.exe"
-                        else:
-                            save_name = "genpolicy-linux"
-                        bin_flag = True
-                        # get the download url for the genpolicy file
-                        exe_url = asset["browser_download_url"]
-                        # download the file
-                        r = requests.get(exe_url)
-                        r.raise_for_status()
-                        # save the file to the bin folder
-                        with open(os.path.join(bin_folder, save_name), "wb") as f:
-                            f.write(r.content)
-
-                    # download the rules.rego and genpolicy-settings.json files
-                    if asset["name"] == "rules.rego" or asset["name"] == "genpolicy-settings.json":
-                        # download the rules.rego file
-                        exe_url = asset["browser_download_url"]
-                        # download the file
-                        r = requests.get(exe_url)
-                        # save the file to the data folder
-                        with open(os.path.join(data_folder, asset["name"]), "wb") as f:
-                            f.write(r.content)
-            if bin_flag:
-                break
+            with open(binary_info["path"], "wb") as f:
+                f.write(kata_fetch_resp.content)
 
     def __init__(self):
         script_directory = os.path.dirname(os.path.realpath(__file__))

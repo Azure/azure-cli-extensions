@@ -61,7 +61,8 @@ CONST_DEFAULT_WINDOWS_VMS_VM_SIZE = "Standard_D2s_v3"
 # workload runtime
 CONST_WORKLOAD_RUNTIME_OCI_CONTAINER = "OCIContainer"
 CONST_WORKLOAD_RUNTIME_WASM_WASI = "WasmWasi"
-CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION = "KataMshvVmIsolation"
+CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION = "KataVmIsolation"
+CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION = "KataMshvVmIsolation"
 CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION = "KataCcIsolation"
 
 # gpu instance
@@ -167,6 +168,9 @@ CONST_DISK_DRIVER_V1 = "v1"
 CONST_DISK_DRIVER_V2 = "v2"
 
 # consts for addons
+# application load balancer (Application Gateway for Containers)
+CONST_APPLICATION_LOAD_BALANCER_ADDON_NAME = "applicationLoadBalancer"
+
 # http application routing
 CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME = "httpApplicationRouting"
 
@@ -224,6 +228,7 @@ CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD = "Standard"
 
 # all supported addons
 ADDONS = {
+    "application-load-balancer": CONST_APPLICATION_LOAD_BALANCER_ADDON_NAME,
     "http_application_routing": CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
     "monitoring": CONST_MONITORING_ADDON_NAME,
     "virtual-node": CONST_VIRTUAL_NODE_ADDON_NAME,
@@ -254,7 +259,10 @@ ADDONS_DESCRIPTIONS = {
         "- enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on "
         "your clusters in a centralized, consistent manner.\nLearn more at aka.ms/aks/policy."
     ),
-    CONST_INGRESS_APPGW_ADDON_NAME: "- enable Application Gateway Ingress Controller addon (PREVIEW).",
+    CONST_APPLICATION_LOAD_BALANCER_ADDON_NAME: (
+        "- enable Application Load Balancer (Application Gateway for Containers) addon (PREVIEW)."
+    ),
+    CONST_INGRESS_APPGW_ADDON_NAME: "- enable Application Gateway Ingress Controller addon.",
     CONST_CONFCOM_ADDON_NAME: "- enable confcom addon, this will enable SGX device plugin by default (PREVIEW).",
     CONST_OPEN_SERVICE_MESH_ADDON_NAME: "- enable Open Service Mesh addon (PREVIEW).",
     CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: "- enable Azure Keyvault Secrets Provider addon.",
@@ -354,6 +362,7 @@ CONST_MIN_NODE_IMAGE_VERSION = "202403.13.0"
 # SSH Access Consts
 CONST_SSH_ACCESS_DISABLED = "disabled"
 CONST_SSH_ACCESS_LOCALUSER = "localuser"
+CONST_SSH_ACCESS_ENTRAID = "entraid"
 
 # Dns zone contributor role
 CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE = "Private DNS Zone Contributor"

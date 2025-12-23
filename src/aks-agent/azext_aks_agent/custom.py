@@ -4,421 +4,494 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=too-many-lines, disable=broad-except
-import os
-import sys
-from typing import Dict, Optional
-from azure.cli.core.api import get_config_dir
-from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
-from azext_aks_agent.agent.agent import aks_agent as aks_agent_internal
-from azext_aks_agent.agent.llm_providers import prompt_provider_choice, PROVIDER_REGISTRY
-from azext_aks_agent.agent.llm_config_manager import LLMConfigManager
 
-from azext_aks_agent.agent.agent import init_log
-
+from azext_aks_agent.agent.aks import get_aks_credentials
+from azext_aks_agent.agent.console import (
+    ERROR_COLOR,
+    HELP_COLOR,
+    INFO_COLOR,
+    SUCCESS_COLOR,
+    WARNING_COLOR,
+    get_console,
+)
+from azext_aks_agent.agent.k8s import AKSAgentManager
+from azext_aks_agent.agent.llm_providers import prompt_provider_choice
+from azext_aks_agent.agent.telemetry import CLITelemetryClient
+from azure.cli.core.azclierror import AzCLIError
+from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
-
+from knack.util import CLIError
 
 logger = get_logger(__name__)
 
 
-# pylint: disable=unused-argument
-def aks_agent_init(cmd):
-    """Initialize AKS agent llm configuration."""
+# pylint: disable=too-many-branches
+def aks_agent_init(cmd,
+                   client,
+                   resource_group_name,
+                   cluster_name
+                   ):
+    """Initialize AKS agent helm deployment with LLM configuration and cluster role setup."""
+    subscription_id = get_subscription_id(cmd.cli_ctx)
 
-    init_log()
+    kubeconfig_path = get_aks_credentials(
+        client,
+        resource_group_name,
+        cluster_name
+    )
+    console = get_console()
 
-    from rich.console import Console
-    from holmes.utils.colors import HELP_COLOR, ERROR_COLOR
-    from holmes.interactive import SlashCommands
-
-    console = Console()
     console.print(
-        f"Welcome to AKS Agent LLM configuration setup. Type '{SlashCommands.EXIT.command}' to exit.",
+        "Welcome to AKS Agent initialization. This will set up the agent deployment in your cluster.",
         style=f"bold {HELP_COLOR}")
+
+    try:
+        aks_agent_manager = AKSAgentManager(
+            resource_group_name=resource_group_name,
+            cluster_name=cluster_name,
+            subscription_id=subscription_id,
+            kubeconfig_path=kubeconfig_path
+        )
+
+        # ===== PHASE 1: LLM Configuration Setup =====
+        # Check if LLM configuration exists by checking secret
+        llm_config_exists = aks_agent_manager.check_llm_config_exists()
+
+        if llm_config_exists:
+            console.print(
+                "LLM configuration already exists (secret and llm config found in cluster).",
+                style=f"bold {HELP_COLOR}")
+
+            # Display existing LLM configurations
+            model_list = aks_agent_manager.llm_config_manager.model_list
+            if model_list:
+                console.print("\n📋 Existing LLM Models:", style=f"bold {HELP_COLOR}")
+                for model_name, model_config in model_list.items():
+                    console.print(f"  • {model_name}", style=INFO_COLOR)
+                    if "api_base" in model_config:
+                        console.print(f"    API Base: {model_config['api_base']}", style="cyan")
+                    if "api_version" in model_config:
+                        console.print(f"    API Version: {model_config['api_version']}", style="cyan")
+
+            # TODO: allow the user config multiple llm configs at one time?
+            user_input = console.input(
+                f"\n[{HELP_COLOR}]Do you want to add/update the LLM configuration? (y/N): [/]").strip().lower()
+            if user_input not in ['y', 'yes']:
+                console.print("Skipping LLM configuration update.", style=f"bold {HELP_COLOR}")
+            else:
+                _setup_and_create_llm_config(console, aks_agent_manager)
+        else:
+            console.print("No existing LLM configuration found. Setting up new configuration...",
+                          style=f"bold {HELP_COLOR}")
+            _setup_and_create_llm_config(console, aks_agent_manager)
+
+        # ===== PHASE 2: Helm Deployment =====
+        console.print("\n🚀 Phase 2: Helm Deployment", style=f"bold {HELP_COLOR}")
+        custom_cluster_role = None
+        managed_identity_client_id = None
+
+        # Check current helm deployment status
+        agent_status = aks_agent_manager.get_agent_status()
+        helm_status = agent_status.get("helm_status", "not_found")
+
+        if helm_status == "deployed":
+            console.print(f"✅ AKS agent helm chart is already deployed (status: {helm_status})", style=SUCCESS_COLOR)
+            # Find cluster role from existing ClusterRoleBinding to prompt for update
+            cluster_role_name = _get_existing_cluster_role(aks_agent_manager)
+            if not cluster_role_name:
+                raise AzCLIError("Could not determine existing cluster role from ClusterRoleBinding.")
+
+            cluster_role = aks_agent_manager.rbac_v1.read_cluster_role(name=cluster_role_name)
+            console.print(
+                f"📋 Current cluster role to access kubernetes resources: {cluster_role_name}", style="cyan")
+            _display_cluster_role_rules(console, cluster_role)
+
+            # Prompt for managed identity client ID update
+            existing_client_id = aks_agent_manager.managed_identity_client_id
+            if existing_client_id:
+                console.print(f"\n🔑 Current managed identity client ID: {existing_client_id}", style="cyan")
+                change_client_id = console.input(
+                    f"[{HELP_COLOR}]Do you want to change the managed identity client ID? (y/N): [/]").strip().lower()
+
+                if change_client_id in ['y', 'yes']:
+                    managed_identity_client_id = _prompt_managed_identity_configuration(console)
+                    aks_agent_manager.managed_identity_client_id = managed_identity_client_id
+            else:
+                console.print("\n🔑 No managed identity client ID currently configured.", style="cyan")
+                managed_identity_client_id = _prompt_managed_identity_configuration(console)
+                if managed_identity_client_id:
+                    aks_agent_manager.managed_identity_client_id = managed_identity_client_id
+        elif helm_status == "not_found":
+            console.print(
+                f"Helm chart not deployed (status: {helm_status}). Setting up deployment...",
+                style=f"bold {HELP_COLOR}")
+            # Prompt for cluster role configuration
+            custom_cluster_role = _prompt_cluster_role_configuration(aks_agent_manager, console)
+            aks_agent_manager.customized_cluster_role_name = custom_cluster_role
+
+            # Prompt for managed identity client ID
+            managed_identity_client_id = _prompt_managed_identity_configuration(console)
+            if managed_identity_client_id:
+                aks_agent_manager.managed_identity_client_id = managed_identity_client_id
+        else:
+            # Handle non-standard helm status (failed, pending-install, pending-upgrade, etc.)
+            console.print(
+                f"⚠️  Detected unexpected helm status: {helm_status}\n"
+                f"The AKS agent deployment is in an unexpected state.\n\n"
+                f"To investigate, run: az aks agent --status\n"
+                f"To recover:\n"
+                f"  1. Clean up and reinitialize: az aks agent cleanup && az aks agent init\n"
+                f"  2. Check deployment logs for more details",
+                style=HELP_COLOR)
+            raise AzCLIError(f"Cannot proceed with initialization due to unexpected helm status: {helm_status}")
+
+        # Deploy if configuration changed or helm charts not deployed
+        console.print("\n🚀 Deploying AKS agent (this typically takes less than 2 minutes)...", style=INFO_COLOR)
+        success, error_msg = aks_agent_manager.deploy_agent()
+
+        if success:
+            console.print("✅ AKS agent deployed successfully!", style=SUCCESS_COLOR)
+        else:
+            console.print("❌ Failed to deploy agent", style=ERROR_COLOR)
+            console.print(f"Error: {error_msg}", style=ERROR_COLOR)
+            console.print(
+                "Run 'az aks agent --status' to investigate the deployment issue.",
+                style=INFO_COLOR)
+            raise AzCLIError("Failed to deploy agent")
+
+        # Verify deployment is ready
+        console.print("Verifying deployment status...", style=INFO_COLOR)
+        agent_status = aks_agent_manager.get_agent_status()
+        if agent_status.get("ready", False):
+            console.print("✅ AKS agent is ready and running!", style=SUCCESS_COLOR)
+            console.print("\n🎉 Initialization completed successfully!", style=SUCCESS_COLOR)
+        else:
+            console.print(
+                "⚠️  AKS agent is deployed but not yet ready. It may take a few moments to start.",
+                style=WARNING_COLOR)
+            if helm_status not in ["deployed", "superseded"]:
+                console.print("You can check the status later using 'az aks agent --status'", style="cyan")
+
+    except Exception as e:
+        console.print(f"❌ Error during initialization: {str(e)}", style=ERROR_COLOR)
+        raise AzCLIError(f"Agent initialization failed: {str(e)}")
+
+
+def _get_existing_cluster_role(aks_agent_manager):
+    """Get the cluster role from existing ClusterRoleBinding aks-agent-aks-mcp."""
+    try:
+        cluster_role_binding_name = f"{aks_agent_manager.helm_release_name}-aks-mcp"
+        crb = aks_agent_manager.rbac_v1.read_cluster_role_binding(name=cluster_role_binding_name)
+        if crb and crb.role_ref:
+            return crb.role_ref.name
+        return None
+    except Exception as e:
+        logger.debug("Could not find ClusterRoleBinding %s: %s", cluster_role_binding_name, e)
+        return None
+
+
+def _display_cluster_role_rules(console, cluster_role):
+    """Display cluster role rules in a formatted manner."""
+    if not cluster_role or not cluster_role.rules:
+        console.print("  No rules defined", style="dim")
+        return
+
+    console.print("  Permissions:", style="bold cyan")
+
+    for idx, rule in enumerate(cluster_role.rules, 1):
+        # Format API groups
+        api_groups = rule.api_groups if rule.api_groups else ["core"]
+        api_groups_str = ", ".join(api_groups) if api_groups else "core"
+
+        # Format resources
+        resources = rule.resources if rule.resources else []
+        resources_str = ", ".join(resources) if resources else "N/A"
+
+        # Format verbs
+        verbs = rule.verbs if rule.verbs else []
+        verbs_str = ", ".join(verbs) if verbs else "N/A"
+
+        # Display rule
+        console.print(f"    [{idx}] API Groups: {api_groups_str}", style=INFO_COLOR)
+        console.print(f"        Resources: {resources_str}", style="cyan")
+        console.print(f"        Verbs: {verbs_str}", style="green")
+
+        # Show resource names if specified (less common but useful)
+        if rule.resource_names:
+            resource_names_str = ", ".join(rule.resource_names)
+            console.print(f"        Resource Names: {resource_names_str}", style="magenta")
+
+        # Add spacing between rules
+        if idx < len(cluster_role.rules):
+            console.print()
+
+
+def _prompt_cluster_role_configuration(aks_agent_manager, console):
+    """Prompt user for cluster role configuration and return custom cluster role name if provided."""
+    console.print("\n🔐 Cluster Role Configuration", style=f"bold {HELP_COLOR}")
+
+    console.print(
+        "The AKS agent requires a cluster role to access Kubernetes resources.",
+        style=INFO_COLOR)
+
+    # Show the default cluster role information
+    console.print("\n📋 Default Cluster Role Permissions:",
+                  style=f"bold {HELP_COLOR}")
+    default_cluster_role = aks_agent_manager.get_default_cluster_role()
+    _display_cluster_role_rules(console, default_cluster_role)
+    # Prompt user for cluster role choice
+    user_input = console.input(
+        f"\n[{HELP_COLOR}]Do you want to provide your own custom cluster role name? (y/N): [/]").strip().lower()
+
+    if user_input in ['y', 'yes']:
+        custom_role_name = console.input(f"[{HELP_COLOR}]Please enter your custom cluster role name: [/]").strip()
+
+        if custom_role_name:
+            console.print(f"✅ Using custom cluster role: {custom_role_name}", style=SUCCESS_COLOR)
+            return custom_role_name
+        console.print("⚠️  No cluster role name provided, using default cluster role.", style=WARNING_COLOR)
+        return ""
+
+    console.print("✅ Using default cluster role.", style=SUCCESS_COLOR)
+    return ""
+
+
+def _prompt_managed_identity_configuration(console):
+    """Prompt user for managed identity client ID configuration."""
+    console.print("\n🔑 Managed Identity Configuration", style=f"bold {HELP_COLOR}")
+
+    console.print(
+        "To access Azure resources using workload identity, you need to provide the managed identity client ID.",
+        style=INFO_COLOR)
+
+    configure = console.input(
+        f"[{HELP_COLOR}]Do you want to configure managed identity client ID? (Y/n): [/]").strip().lower()
+
+    if configure in ['n', 'no']:
+        console.print(
+            "⚠️  Skipping managed identity configuration. Workload identity will not be configured.",
+            style=WARNING_COLOR
+        )
+        return ""
+
+    while True:
+        client_id = console.input(
+            f"[{HELP_COLOR}]Please enter your managed identity client ID: [/]").strip()
+
+        if client_id:
+            console.print(f"✅ Using managed identity client ID: {client_id}", style=SUCCESS_COLOR)
+            return client_id
+        console.print(
+            "❌ Client ID cannot be empty. Please provide a valid client ID or answer 'N' to skip.",
+            style=ERROR_COLOR
+        )
+
+
+def _setup_and_create_llm_config(console, aks_agent_manager):
+    """Setup and create LLM configuration with user input."""
+
+    # Prompt for LLM configuration
+    console.print("Please provide your LLM configuration. Type '/exit' to exit.", style=f"bold {HELP_COLOR}")
 
     provider = prompt_provider_choice()
     params = provider.prompt_params()
 
-    llm_config_manager = LLMConfigManager()
-    # If the connection to the model endpoint is valid, save the configuration
-    is_valid, message, action = provider.validate_connection(params)
+    # Validate the connection
+    error, action = provider.validate_connection(params)
 
-    if is_valid and action == "save":
-        logger.info("%s", message)
-        llm_config_manager.save(provider.name, params)
-        console.print("LLM configuration setup successfully.", style=f"bold {HELP_COLOR}")
+    if error is None:
+        console.print("✅ LLM configuration validated successfully!", style=SUCCESS_COLOR)
 
-    elif not is_valid and action == "retry_input":
-        logger.warning("%s", message)
-        console.print(
-            "Please re-run [bold]`az aks agent-init`[/bold] to correct the input parameters.", style=f"{ERROR_COLOR}")
-        sys.exit(1)
+        try:
+            _create_llm_config_and_secret(aks_agent_manager, provider, params)
+            console.print(
+                "✅ LLM configuration secret created/updated successfully in Kubernetes cluster!",
+                style=SUCCESS_COLOR)
+        except Exception as e:
+            console.print(f"❌ Failed to create Kubernetes secret: {str(e)}", style=ERROR_COLOR)
+            raise AzCLIError(f"Failed to create Kubernetes secret for LLM configuration: {str(e)}")
 
+    elif error is not None and action == "retry_input":
+        raise AzCLIError(f"Please re-run `az aks agent-init` to correct the input parameters. {error}")
     else:
-        logger.error("%s", message)
+        raise AzCLIError(f"Please check your deployed model and network connectivity. {error}")
+
+
+def _create_llm_config_and_secret(aks_agent_manager, provider, params):
+    """Cache LLM configuration and create Kubernetes secret."""
+    aks_agent_manager.llm_config_manager.save(provider, params)
+
+    # Create the Kubernetes secret using the cached configuration
+    aks_agent_manager.create_llm_config_secret()
+
+
+def _aks_agent_status(agent_manager):
+    """Display the status of the AKS agent deployment."""
+    console = get_console()
+
+    console.print("\n📊 Checking AKS agent status...", style=INFO_COLOR)
+    agent_status = agent_manager.get_agent_status()
+
+    # Display helm status
+    helm_status = agent_status.get("helm_status", "unknown")
+    if helm_status == "deployed":
+        console.print(f"\n✅ Helm Release: {helm_status}", style=SUCCESS_COLOR)
+    elif helm_status == "not_found":
+        console.print("\n❌ Helm Release: Not found", style=ERROR_COLOR)
+        console.print("The AKS agent is not installed. Run with az aks agent-init to install.", style=INFO_COLOR)
+        return
+    else:
+        console.print(f"\n⚠️  Helm Release: {helm_status}", style=WARNING_COLOR)
+
+    # Display deployment status
+    deployments = agent_status.get("deployments", [])
+    if deployments:
+        console.print("\n📦 Deployments:", style="bold cyan")
+        for dep in deployments:
+            ready_replicas = dep.get("ready_replicas", 0)
+            replicas = dep.get("replicas", 0)
+            status_color = SUCCESS_COLOR if ready_replicas == replicas and replicas > 0 else WARNING_COLOR
+            console.print(f"  • {dep['name']}: {ready_replicas}/{replicas} ready", style=status_color)
+
+    # Display pod status
+    pods = agent_status.get("pods", [])
+    if pods:
+        console.print("\n🐳 Pods:", style="bold cyan")
+        for pod in pods:
+            pod_name = pod.get("name", "unknown")
+            pod_phase = pod.get("phase", "unknown")
+            pod_ready = pod.get("ready", False)
+
+            if pod_ready and pod_phase == "Running":
+                console.print(f"  • {pod_name}: {pod_phase} ✓", style=SUCCESS_COLOR)
+            elif pod_phase == "Running":
+                console.print(f"  • {pod_name}: {pod_phase} (not ready)", style=WARNING_COLOR)
+            else:
+                console.print(f"  • {pod_name}: {pod_phase}", style=WARNING_COLOR)
+
+    # Display LLM configurations
+    llm_configs = agent_status.get("llm_configs", [])
+    if llm_configs:
+        console.print("\n📋 LLM Configurations:", style="bold cyan")
+        for llm_config in llm_configs:
+            model_name = llm_config.get("model", "unknown")
+            console.print(f"  • {model_name}", style=INFO_COLOR)
+            if "api_base" in llm_config:
+                console.print(f"    API Base: {llm_config['api_base']}", style="cyan")
+            if "api_version" in llm_config:
+                console.print(f"    API Version: {llm_config['api_version']}", style="cyan")
+
+    # Display overall status
+    if agent_status.get("ready", False):
+        console.print("\n✅ AKS agent is ready and running!", style=SUCCESS_COLOR)
+    else:
+        console.print("\n⚠️  AKS agent is not fully ready", style=WARNING_COLOR)
+
+
+def aks_agent_cleanup(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name
+):
+    """Cleanup and uninstall the AKS agent."""
+    console = get_console()
+
+    console.print(
+        "\n⚠️  Warning: This will uninstall the AKS agent and delete all associated resources.",
+        style=WARNING_COLOR)
+
+    user_confirmation = console.input(
+        f"\n[{WARNING_COLOR}]Are you sure you want to proceed with cleanup? (y/N): [/]").strip().lower()
+
+    if user_confirmation not in ['y', 'yes']:
+        console.print("❌ Cleanup cancelled.", style=INFO_COLOR)
+        return
+
+    console.print("\n🗑️  Starting cleanup (this typically takes a few seconds)...", style=INFO_COLOR)
+
+    kubeconfig = get_aks_credentials(
+        client,
+        resource_group_name,
+        cluster_name
+    )
+    subscription_id = get_subscription_id(cmd.cli_ctx)
+    agent_manager = AKSAgentManager(
+        resource_group_name=resource_group_name,
+        cluster_name=cluster_name,
+        subscription_id=subscription_id,
+        kubeconfig_path=kubeconfig
+    )
+
+    success = agent_manager.uninstall_agent()
+
+    if success:
+        console.print("✅ Cleanup completed successfully! All resources have been removed.", style=SUCCESS_COLOR)
+    else:
         console.print(
-            "Please check your deployed model and network connectivity.", style=f"bold {ERROR_COLOR}")
-        sys.exit(1)
+            "❌ Cleanup failed. Please run 'az aks agent --status' to verify cleanup completion.", style=ERROR_COLOR)
 
 
 # pylint: disable=unused-argument
 # pylint: disable=too-many-locals
 def aks_agent(
     cmd,
+    client,
     prompt,
     model,
     max_steps,
-    config_file,
-    resource_group_name=None,
-    name=None,
-    api_key=None,
+    resource_group_name,
+    cluster_name,
     no_interactive=False,
     no_echo_request=False,
     show_tool_output=False,
     refresh_toolsets=False,
     status=False,
-    use_aks_mcp=False,
 ):
-    # If only status is requested, display and return early
-    if status:
-        return aks_agent_status(cmd)
+    """Run AI assistant to analyze and troubleshoot Azure Kubernetes Service (AKS) clusters."""
+    with CLITelemetryClient():
 
-    llm_config_manager = LLMConfigManager()
-    llm_config = None
-    default_llm_config_path = os.path.join(
-        get_config_dir(), CONST_AGENT_CONFIG_FILE_NAME)
+        subscription_id = get_subscription_id(cmd.cli_ctx)
 
-    if config_file == default_llm_config_path:
-        if not model:
-            logger.info("Using default configuration file: %s", config_file)
-            llm_config: Optional[Dict] = llm_config_manager.get_latest()
-            if not llm_config:
-                raise ValueError(
-                    "No llm configurations found. "
-                    "Please run `az aks agent init` "
-                    "or provide a config file using --config-file.")
+        kubeconfig = get_aks_credentials(
+            client,
+            resource_group_name,
+            cluster_name
+        )
 
-        else:
-            logger.info("Using specified model: %s", model)
-            # parsing model into provider/model
-            if "/" in model:
-                provider_name, model_name = model.split("/", 1)
-            else:
-                provider_name = "openai"
-                model_name = model
-            llm_config = llm_config_manager.get_specific(
-                provider_name, model_name)
+        agent_manager = AKSAgentManager(
+            resource_group_name=resource_group_name,
+            cluster_name=cluster_name,
+            subscription_id=subscription_id,
+            kubeconfig_path=kubeconfig
+        )
+        if status:
+            _aks_agent_status(agent_manager)
+            return
 
-    else:
-        if config_file:
-            logger.info("Using user configuration file: %s", config_file)
-            import yaml
-            try:
-                with open(config_file, "r") as f:
-                    llm_config = yaml.safe_load(f)["llms"][0]
-                    if not isinstance(llm_config, Dict):
-                        raise ValueError(
-                            "Configuration file format is invalid. It should be a YAML mapping.")
-            except Exception as e:
-                raise ValueError(f"Failed to load configuration file: {e}")
+        success, result = agent_manager.get_agent_pods()
+        if not success:
+            # get_agent_pods already logged the error, provide helpful message
+            error_msg = f"Failed to find AKS agent pods: {result}\n"
+            error_msg += "The AKS agent may not be deployed. Run 'az aks agent-init' to initialize the deployment."
+            raise CLIError(error_msg)
 
-        else:
-            raise ValueError(
-                "No configuration found. "
-                "Please run `az aks agent-init` or provide a config file using --config-file, "
-                "or specify a model using --model.")
+        # prepare CLI flags
 
-    # Check if the configuration is complete
-    provider_name = llm_config.get("provider")
-    provider_instance = PROVIDER_REGISTRY.get(provider_name)()
-    parameter_schema = provider_instance.parameter_schema
-    if _check_provider(
-            provider_name,
-            parameter_schema,
-            llm_config,
-            llm_config_manager):
-        # get model for holmesgpt/litellm: provider_name/model_name
-        model_name = llm_config.get("MODEL_NAME")
-        if provider_name == "openai":
-            model = model or model_name
-        elif provider_name == "openai_compatiable":
-            model = model or f"openai/{model_name}"
-        else:
-            model = model or f"{provider_name}/{model_name}"
-        # Set environment variables for the model provider
-        for k, v in llm_config.items():
-            if k not in ["provider", "MODEL_NAME"]:
-                os.environ[k] = v
-        logger.info(
-            "Using provider: %s, model: %s, Env vars setup successfully.", provider_name, model_name)
+        # user quoted prompt to not break the command line parsing
+        flags = f'"{prompt}"' if prompt else ''
+        if model:
+            flags += f' --model "{model}"'
+        if max_steps:
+            flags += f' --max-steps {max_steps}'
+        if no_interactive:
+            flags += ' --no-interactive'
+        if no_echo_request:
+            flags += ' --no-echo-request'
+        if show_tool_output:
+            flags += ' --show-tool-output'
+        if refresh_toolsets:
+            flags += ' --refresh-toolsets'
 
-    aks_agent_internal(
-        cmd,
-        resource_group_name,
-        name,
-        prompt,
-        model,
-        api_key,
-        max_steps,
-        config_file,
-        no_interactive,
-        no_echo_request,
-        show_tool_output,
-        refresh_toolsets,
-        use_aks_mcp=use_aks_mcp,
-    )
-
-
-def _check_provider(
-    provider_name: str,
-    parameter_schema: Dict,
-    llm_config: Dict,
-    llm_config_manager: LLMConfigManager
-) -> bool:
-    # Check if provider name is not empty
-    if not provider_name:
-        raise ValueError("No provider name.")
-    # Check if provider is supported
-    if provider_name not in PROVIDER_REGISTRY:
-        supported = list(PROVIDER_REGISTRY.keys())
-        raise ValueError(
-            f"Unsupported provider {provider_name} for LLM initialization."
-            f"Supported llm providers are {supported}. Please refer to doc.")
-    # check if provider config is complete
-    if not llm_config_manager.is_config_complete(llm_config, parameter_schema):
-        raise ValueError(
-            "Incomplete configuration in user config, please run `az aks agent-init` to initialize.")
-    return True
-
-
-def aks_agent_status(cmd):
-    """
-    Show AKS agent configuration and status.
-
-    :param cmd: Azure CLI command context
-    :return: None (displays status via console output)
-    """
-    try:
-        from azext_aks_agent.agent.binary_manager import AksMcpBinaryManager
-        from azext_aks_agent.agent.mcp_manager import MCPManager
-        from azext_aks_agent._consts import CONST_MCP_BINARY_DIR
-
-        # Initialize status information
-        status_info = {
-            "mode": "unknown",
-            "mcp_binary": {
-                "available": False,
-                "path": None,
-                "version": None
-            },
-            "server": {
-                "running": False,
-                "healthy": False,
-                "url": None,
-                "port": None
-            }
-        }
-
-        try:
-            # Check MCP binary status
-            config_dir = get_config_dir()
-            binary_manager = AksMcpBinaryManager(
-                os.path.join(config_dir, CONST_MCP_BINARY_DIR)
-            )
-
-            # Binary information
-            binary_available = binary_manager.is_binary_available()
-            binary_version = binary_manager.get_binary_version() if binary_available else None
-            binary_path = binary_manager.get_binary_path()
-
-            status_info["mcp_binary"] = {
-                "available": binary_available,
-                "path": binary_path,
-                "version": binary_version,
-                "version_valid": binary_manager.validate_version() if binary_available else False
-            }
-
-            # Determine mode based on binary availability
-            if binary_available and status_info["mcp_binary"]["version_valid"]:
-                status_info["mode"] = "mcp_ready"
-
-                # Check server status if binary is available
-                try:
-                    mcp_manager = MCPManager(config_dir, verbose=False)
-
-                    status_info["server"] = {
-                        "running": mcp_manager.is_server_running(),
-                        "healthy": mcp_manager.is_server_healthy(),
-                        "url": mcp_manager.get_server_url(),
-                        "port": mcp_manager.get_server_port()
-                    }
-
-                except Exception as e:
-                    logger.debug("Failed to get server status: %s", str(e))
-                    status_info["server"]["error"] = str(e)
-            else:
-                status_info["mode"] = "traditional"
-
-        except Exception as e:
-            logger.debug("Failed to get binary status: %s", str(e))
-            status_info["mcp_binary"]["error"] = str(e)
-            status_info["mode"] = "traditional"
-
-        # Display status with enhanced formatting
-        _display_agent_status(status_info)
-
-        # Return None to avoid CLI framework printing the return value
-        return None
-
-    except Exception as e:
-        from knack.util import CLIError
-        raise CLIError(f"Failed to get agent status: {str(e)}")
-
-
-def _display_agent_status(status_info):
-    """Display formatted status with rich console output."""
-    from rich.console import Console
-    from rich.table import Table
-    from rich.panel import Panel
-
-    console = Console()
-
-    # Title with emoji
-    mode_emoji = _get_mode_emoji(status_info.get("mode", "unknown"))
-    health_emoji = _get_health_emoji(status_info)
-
-    title = f"{health_emoji} AKS Agent Status {mode_emoji}"
-    console.print(Panel.fit(title, style="bold blue"))
-
-    # Create status table
-    table = Table(show_header=True, header_style="bold magenta")
-    table.add_column("Component", style="cyan", width=15)
-    table.add_column("Status", style="green", width=20)
-    table.add_column("Details", style="white", width=40)
-
-    # Mode row
-    mode_text = status_info.get("mode", "unknown").replace("_", " ").title()
-    table.add_row("Mode", f"{mode_emoji} {mode_text}", "")
-
-    # MCP Binary status
-    binary_info = status_info.get("mcp_binary", {})
-    binary_status = "✅ Available" if binary_info.get(
-        "available") else "❌ Not available"
-    binary_details = []
-
-    if binary_info.get("version"):
-        version_valid = binary_info.get("version_valid", True)
-        version_indicator = "✅" if version_valid else "⚠️"
-        binary_details.append(f"{version_indicator} v{binary_info['version']}")
-
-    if binary_info.get("error"):
-        binary_details.append(f"❌ {binary_info['error']}")
-
-    table.add_row("MCP Binary", binary_status, " | ".join(binary_details))
-
-    # Server status (only if binary is available)
-    if binary_info.get("available") and status_info.get(
-            "mode") in ["mcp_ready", "mcp"]:
-        server_info = status_info.get("server", {})
-        server_status = ""
-        server_details = []
-
-        if server_info.get("running"):
-            if server_info.get("healthy"):
-                server_status = "✅ Running & Healthy"
-            else:
-                server_status = "⚠️ Running (Unhealthy)"
-        else:
-            server_status = "❌ Not Running"
-
-        if server_info.get("port"):
-            server_details.append(f"Port: {server_info['port']}")
-
-        if server_info.get("error"):
-            server_details.append(f"❌ {server_info['error']}")
-
-        table.add_row("MCP Server", server_status, " | ".join(server_details))
-
-    console.print(table)
-
-    # Display recommendations
-    _display_recommendations(console, status_info)
-
-
-def _display_recommendations(console, status_info):
-    """Display status-based recommendations using rich console."""
-    recommendations = _get_recommendations(status_info)
-
-    if not recommendations:
-        return
-
-    console.print("\n💡 Recommendations:", style="bold yellow")
-    for rec in recommendations:
-        console.print(f"  • {rec}", style="yellow")
-
-
-def _get_recommendations(status_info):
-    """Get status-based recommendations for the user."""
-    recommendations = []
-    binary_info = status_info.get("mcp_binary", {})
-    server_info = status_info.get("server", {})
-    mode = status_info.get("mode", "unknown")
-
-    if not binary_info.get("available"):
-        recommendations.append(
-            "Run 'az aks agent' to automatically download the MCP binary for enhanced capabilities")
-    elif not binary_info.get("version_valid", True):
-        recommendations.append(
-            "Update the MCP binary by running 'az aks agent --refresh-toolsets'")
-    elif mode == "mcp_ready" and not server_info.get("running"):
-        recommendations.append(
-            "MCP binary is ready - run 'az aks agent' to start using enhanced capabilities")
-    elif mode == "mcp_ready" and server_info.get("running") and not server_info.get("healthy"):
-        recommendations.append(
-            "MCP server is running but unhealthy - it will be automatically restarted on next use")
-    elif mode in ["mcp_ready", "mcp"] and server_info.get("running") and server_info.get("healthy"):
-        recommendations.append(
-            "✅ AKS agent is ready with enhanced MCP capabilities")
-    elif mode == "traditional":
-        if binary_info.get("available"):
-            recommendations.append(
-                "Consider using MCP mode for enhanced capabilities by running 'az aks agent' "
-                "(run again with --aks-mcp to switch modes)")
-        else:
-            recommendations.append("✅ AKS agent is ready in traditional mode")
-    else:
-        recommendations.append("✅ AKS agent is operational")
-
-    return recommendations
-
-
-def _get_mode_emoji(mode):
-    """Get emoji representation of mode."""
-    mode_emojis = {
-        "mcp": "🚀",
-        "mcp_ready": "🚀",
-        "traditional": "🔧",
-        "unknown": "❓"
-    }
-    return mode_emojis.get(mode, "❓")
-
-
-def _get_health_emoji(status_info):
-    """Get emoji representation of overall health status."""
-    binary_info = status_info.get("mcp_binary", {})
-    server_info = status_info.get("server", {})
-    mode = status_info.get("mode", "unknown")
-
-    # Determine health based on mode and component status
-    if mode == "traditional":
-        return "✅"  # Traditional mode is always healthy if working
-    if mode in ["mcp_ready", "mcp"]:
-        if binary_info.get("available") and binary_info.get(
-                "version_valid", True):
-            if server_info.get("running") and server_info.get("healthy"):
-                return "✅"  # Fully healthy
-            if server_info.get("running"):
-                return "⚠️"   # Running but not healthy
-            return "⚠️"   # Binary ready but server not running
-        return "❌"  # Binary issues
-    return "❓"  # Unknown state
+        # Use AKSAgentManager to execute commands on the agent pod
+        agent_manager.exec_aks_agent(flags)

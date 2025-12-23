@@ -3,17 +3,26 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-
-from azure.cli.core import AzCommandsLoader
+from azext_aks_agent._client_factory import CUSTOM_MGMT_AKS
 
 # pylint: disable=unused-import
-import azext_aks_agent._help
+from azure.cli.core import AzCommandsLoader
+from azure.cli.core.profiles import register_resource_type
+
+
+def register_aks_agent_resource_type():
+    register_resource_type(
+        "latest",
+        CUSTOM_MGMT_AKS,
+        None,
+    )
 
 
 class ContainerServiceCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
+        register_aks_agent_resource_type()
 
         aks_agent_custom = CliCommandType(operations_tmpl='azext_aks_agent.custom#{}')
         super().__init__(

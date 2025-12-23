@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
-from typing import Any, Callable, Optional, TypeVar
+from typing import Any, AsyncIterable, Callable, Dict, Optional, TypeVar
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -27,7 +27,7 @@ from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ..._serialization import Deserializer, Serializer
 from ...operations._operation_status_result_operations import (
     build_get_by_agent_pool_request,
     build_get_request,
@@ -36,8 +36,7 @@ from ...operations._operation_status_result_operations import (
 from .._configuration import ContainerServiceClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
 class OperationStatusResultOperations:
@@ -62,7 +61,7 @@ class OperationStatusResultOperations:
     @distributed_trace
     def list(
         self, resource_group_name: str, resource_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.OperationStatusResult"]:
+    ) -> AsyncIterable["_models.OperationStatusResult"]:
         """Gets a list of operations in the specified managedCluster.
 
         Gets a list of operations in the specified managedCluster.

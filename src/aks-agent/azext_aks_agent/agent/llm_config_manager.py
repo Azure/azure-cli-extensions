@@ -4,88 +4,48 @@
 # --------------------------------------------------------------------------------------------
 
 
-import os
-from typing import List, Dict, Optional
-import yaml
+from typing import Dict, List
 
-from azure.cli.core.api import get_config_dir
-from azext_aks_agent._consts import CONST_AGENT_CONFIG_FILE_NAME
+from azext_aks_agent.agent.llm_providers import LLMProvider
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 
 class LLMConfigManager:
     """Manages loading and saving LLM configuration from/to a YAML file."""
 
-    def __init__(self, config_path=None):
-        if config_path is None:
-            config_path = os.path.join(
-                get_config_dir(), CONST_AGENT_CONFIG_FILE_NAME)
-        self.config_path = os.path.expanduser(config_path)
+    def __init__(self, model_list: Dict = None):
+        self.model_list = model_list if model_list is not None else {}
 
-    def save(self, provider_name: str, params: dict):
-        configs = self.load()
-        if not isinstance(configs, Dict):
-            configs = {}
+    def save(self, provider: LLMProvider, params: dict):
+        # save the model config, and translate the model name to the one with llm provider route
+        model_name = provider.model_name(params.get("model"))
+        params["model"] = model_name
+        self.model_list[model_name] = params
 
-        models = configs.get("llms", [])
-        model_name = params.get("MODEL_NAME")
-        if not model_name:
-            raise ValueError("MODEL_NAME is required to save configuration.")
+    def secured_model_list(self) -> Dict[str, dict]:
+        secured_config = {}
+        for model_name, model_config in self.model_list.items():
+            secured_config[model_name] = LLMProvider.to_secured_model_list_config(model_config)
+        return secured_config
 
-        # Check if model already exists, update it and move it to the last;
-        # otherwise, append new
-        models = [
-            cfg for cfg in models if not (
-                cfg.get("provider") == provider_name and cfg.get("MODEL_NAME") == model_name)]
-        models.append({"provider": provider_name, **params})
-
-        configs["llms"] = models
-
-        with open(self.config_path, "w") as f:
-            yaml.safe_dump(configs, f, sort_keys=False)
-
-    def load(self):
-        """Load configurations from the YAML file."""
-        if not os.path.exists(self.config_path):
-            return {}
-        with open(self.config_path, "r") as f:
-            configs = yaml.safe_load(f)
-            return configs if isinstance(configs, Dict) else {}
-
-    def get_list(self) -> List[Dict]:
-        """Get the list of all model configurations"""
-        return self.load()["llms"] if self.load(
-        ) and "llms" in self.load() else []
-
-    def get_latest(self) -> Optional[Dict]:
-        """Get the last model configuration"""
-        model_configs = self.get_list()
-        if model_configs:
-            return model_configs[-1]
-        raise ValueError(
-            "No configurations found. Please run `az aks agent-init`")
-
-    def get_specific(
-            self,
-            provider_name: str,
-            model_name: str) -> Optional[Dict]:
+    def get_llm_model_secret_data(self) -> Dict[str, str]:
         """
-        Get specific model configuration by provider and model name during Q&A with --model provider/model
+        Get Kubernetes secret data for all LLM models in the configuration.
         """
-        model_configs = self.get_list()
-        for cfg in model_configs:
-            if cfg.get("provider") == provider_name and cfg.get(
-                    "MODEL_NAME") == model_name:
-                return cfg
-        raise ValueError(
-            f"No configuration found for provider '{provider_name}' with model '{model_name}'. "
-            f"Please run `az aks agent-init`")
+        secrets_data = {}
+        for _, model_config in self.model_list.items():
+            secret_data = LLMProvider.to_k8s_secret_data(model_config)
+            secrets_data.update(secret_data)
+        return secrets_data
 
-    def is_config_complete(self, config, provider_schema):
+    def get_env_vars(self, secret_name: str) -> List[Dict[str, str]]:
         """
-        Check if the given config has all required keys and valid values as per the provider schema.
+        Get environment variable mappings for all LLM models in the configuration.
         """
-        for key, meta in provider_schema.items():
-            if meta.get("validator") and not meta["validator"](
-                    config.get(key)):
-                return False
-        return True
+        env_vars_list = []
+        for _, model_config in self.model_list.items():
+            env_var = LLMProvider.to_env_vars(secret_name, model_config)
+            env_vars_list.append(env_var)
+        return env_vars_list

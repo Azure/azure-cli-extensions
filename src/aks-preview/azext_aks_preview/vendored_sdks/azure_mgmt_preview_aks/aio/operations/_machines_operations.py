@@ -7,7 +7,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, AsyncIterator, Callable, IO, Optional, TypeVar, Union, cast, overload
+from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -32,13 +32,12 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ..._serialization import Deserializer, Serializer
 from ...operations._machines_operations import build_create_or_update_request, build_get_request, build_list_request
 from .._configuration import ContainerServiceClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
 class MachinesOperations:
@@ -63,7 +62,7 @@ class MachinesOperations:
     @distributed_trace
     def list(
         self, resource_group_name: str, resource_name: str, agent_pool_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.Machine"]:
+    ) -> AsyncIterable["_models.Machine"]:
         """Gets a list of machines in the specified agent pool.
 
         Gets a list of machines in the specified agent pool.

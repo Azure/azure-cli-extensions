@@ -15,12 +15,12 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack certificate wait",
 )
 class Wait(AAZWaitCommand):
-    """Wait until a specified condition is met for the Palo Alto Networks local rulestack certificate operation to complete.
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/certificates/{}", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/certificates/{}", "2025-10-08"],
         ]
     }
 
@@ -126,7 +126,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
@@ -191,6 +191,7 @@ class Wait(AAZWaitCommand):
             properties.etag = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200.system_data

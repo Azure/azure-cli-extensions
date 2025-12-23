@@ -12,6 +12,50 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b14
+* Fix: set stdout to blocking mode to avoid "BlockingIOError: [Errno 35] write could not complete without blocking"
+* Fix: gracefully handle the connection reset error
+* Fix: correct the prompt to user `az aks agent-init` to initialize the aks agent
+* Fix: dont echo the user input for Linux users
+* Close websocket and restore terminal settings after `az aks agent` ends
+
+1.0.0b13
+* Fix subscription id not correctly set in helm chart
+
+1.0.0b12
+++++++++
+* [BREAKING CHANGE]:
+  * aks-agent is now containerized and deployed per Kubernetes cluster along with a managed aks-mcp instance
+  * aks-agent is deployed on the AKS cluster as Helm charts during `az aks agent-init`
+  * aks agent commands now require --resource-group and --name parameters to specify the target AKS cluster
+  * Add `az aks agent-cleanup` to cleanup the AKS agent from the cluster
+* [SECURITY]:
+  * Kubernetes RBAC: Uses cluster roles to securely access Kubernetes resources with least-privilege principles
+  * Azure Workload Identity: Supports Azure workload identity for secure, keyless access to Azure resources
+  * LLM credentials are stored securely in Kubernetes secrets with encryption at rest
+
+1.0.0b11
+++++++++
+* Fix(agent-init): replace max_tokens with max_completion_tokens for connection check of Azure OpenAI service.
+
+1.0.0b10
+++++++++
+* Pin supabase==2.8.0 to avoid "ModuleNotFoundError: No module named 'supabase_auth.http_clients'"
+
+1.0.0b9
++++++++
+* agent-init: replace model name with deployment name for Azure OpenAI service.
+* agent-init: remove importing holmesgpt to resolve the latency issue.
+
+1.0.0b8
++++++++
+* Error handling: dont raise traceback for init prompt and holmesgpt interaction.
+* Improve aks agent-init user experience
+* Improve the user holmesgpt interaction error handling
+* Fix stdin reading hang in CI/CD pipelines by using select with timeout for non-interactive mode.
+* Update pytest marker registration and fix datetime.utcnow() deprecation warning in tests.
+* Improve test framework with real-time stderr output visibility and subprocess timeout.
+
 1.0.0b7
 +++++++
 * Bump aks-mcp to v0.0.10 - here are the notable changes:

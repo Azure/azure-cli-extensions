@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack local-rule refresh-counter",
 )
 class RefreshCounter(AAZCommand):
-    """Refresh counters
+    """Refresh counters for the local rule associated with a Palo Alto Networks local rulestack.
 
     :example: Refresh counters
         az palo-alto cloudngfw local-rulestack local-rule refresh-counter -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --priority "1"
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/localrules/{}/refreshcounters", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/localrules/{}/refreshcounters", "2025-10-08"],
         ]
     }
 
@@ -133,7 +133,7 @@ class RefreshCounter(AAZCommand):
                     "firewallName", self.ctx.args.firewall_name,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
