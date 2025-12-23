@@ -8,7 +8,7 @@ The Azure CLI extension for managing [Azure Migrate](https://aka.ms/azure-migrat
 ## Install ##
 You can install the extension by running:
 ``` sh
-az extension add --name migrate
+az extension add --name migrate --allow-preview True
 ```
 
 ## Usage ##
