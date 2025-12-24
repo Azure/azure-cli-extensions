@@ -79,13 +79,16 @@ def run_on_wheel(request):
         with zipfile.ZipFile(wheel_path, "r") as z:
             z.extractall(expanded_dir)
 
-    sys.path.insert(0, expanded_dir.resolve().as_posix())
+    for idx, path in enumerate(sys.path):
+        if "src/confcom" in path:
+            sys.path[idx] = expanded_dir.resolve().as_posix()
     for module in list(sys.modules.values()):
         if (
             extension in module.__name__ and
             not any (m.__name__.startswith(module.__name__) for m in modules_to_test)
         ):
             del sys.modules[module.__name__]
+            assert importlib.util.find_spec(module.__name__).origin # This catches modules not in the built packages
             importlib.import_module(module.__name__)
 
     yield

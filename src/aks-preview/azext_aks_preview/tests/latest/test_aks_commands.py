@@ -18686,6 +18686,120 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_applicationloadbalancer_enable_disable(
+        self, resource_group, resource_group_location
+    ):
+        """This test case exercises enabling and disabling application load balancer (Application Gateway for Containers) in an AKS cluster."""
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+
+        # create cluster with application load balancer
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "aks_name": aks_name,
+                "location": resource_group_location,
+                "node_vm_sku": "standard_d4a_v4",
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} "
+            "--node-vm-size={node_vm_sku} "
+            "--enable-oidc-issuer "
+            "--enable-workload-identity "
+            "--enable-gateway-api "
+            "--enable-application-load-balancer "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.applicationLoadBalancer.enabled", True)
+            ],
+        )
+
+        # disable application load balancer
+        disable_applicationloadbalancer_cmd = "aks update --resource-group={resource_group} --name={aks_name} --disable-application-load-balancer --disable-gateway-api"
+        self.cmd(
+            disable_applicationloadbalancer_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.applicationLoadBalancer.enabled", False),
+            ],
+        )
+
+        # delete cluster
+        delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
+        self.cmd(delete_cmd, checks=[self.is_empty()])
+
+    @live_only()
+    @AllowLargeResponse(8192)
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus",
+    )
+    def test_aks_applicationloadbalancer_update(self, resource_group, resource_group_location):
+        """This test case exercises enabling and updating the application load balancer (Application Gateway for Containers) in an AKS cluster."""
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+
+        aks_name = self.create_random_name("cliakstest", 16)
+
+
+        _, k8s_version = self._get_versions(resource_group_location)
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "aks_name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "k8s_version": k8s_version
+            }
+        )
+
+        # create cluster with application load balancer enabled
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {k8s_version} "
+            "--ssh-key-value={ssh_key_value} --enable-gateway-api --enable-application-load-balancer"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.applicationLoadBalancer.enabled", True)
+            ],
+        )
+
+        # update (currently makes a PUT no-op)
+        update_cmd = (
+            "aks applicationloadbalancer update --resource-group={resource_group} --name={aks_name} "
+        )
+
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.applicationLoadBalancer.enabled", True)
+            ],
+        )
+
+        # delete cluster
+        delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
+        self.cmd(delete_cmd, checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
         location="uksouth",
     )
     def test_aks_approuting_enable_disable(
