@@ -22,7 +22,7 @@ class PscloudScenario(ScenarioTest):
     def test_pscloud_storagepool_create(self):
         """Test pscloud pool create command"""
         # Create storagepool command with proper JSON quoting for vnet-injection
-        create_storagepool_cmd = """az pscloud pool create --resource-group abc --storage-pool-name dhritijindal123 --location "Central US" -z "1" --subnet-name "/subscriptions/834be33e-67e6-45ed-a454-c25a34cdec1f/resourceGroups/abc/providers/Microsoft.Network/virtualNetworks/cli-pure-vnet/subnets/delgSubnet" --vnet-name "/subscriptions/834be33e-67e6-45ed-a454-c25a34cdec1f/resourceGroups/abc/providers/Microsoft.Network/virtualNetworks/cli-pure-vnet" --provisioned-bandwidth 992 --reservation-id "/subscriptions/834be33e-67e6-45ed-a454-c25a34cdec1f/resourceGroups/abc/providers/PureStorage.Block/reservations/cli-test-reserv" --debug"""
+        create_storagepool_cmd = """az pscloud pool create --resource-group abc --storage-pool-name dhritijindal --location "Central US" -z "1" --subnet-name "/subscriptions/834be33e-67e6-45ed-a454-c25a34cdec1f/resourceGroups/abc/providers/Microsoft.Network/virtualNetworks/cli-pure-vnet/subnets/delgSubnet" --vnet-name "/subscriptions/834be33e-67e6-45ed-a454-c25a34cdec1f/resourceGroups/abc/providers/Microsoft.Network/virtualNetworks/cli-pure-vnet" --provisioned-bandwidth 992 --reservation-id "/subscriptions/834be33e-67e6-45ed-a454-c25a34cdec1f/resourceGroups/abc/providers/PureStorage.Block/reservations/cli-test-reserv" --debug"""
 
         # Execute the create command
         self.cmd(create_storagepool_cmd)
