@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 
+from typing import Tuple
+
 import requests
 
 from .base import LLMProvider, non_empty
@@ -26,13 +28,13 @@ class OpenAIProvider(LLMProvider):
     @property
     def parameter_schema(self):
         return {
-            "MODEL_NAME": {
+            "model": {
                 "secret": False,
                 "default": "gpt-5",
                 "hint": None,
                 "validator": non_empty
             },
-            "OPENAI_API_KEY": {
+            "api_key": {
                 "secret": True,
                 "default": None,
                 "hint": None,
@@ -40,12 +42,11 @@ class OpenAIProvider(LLMProvider):
             },
         }
 
-    def validate_connection(self, params: dict):
-        api_key = params.get("OPENAI_API_KEY")
-        model_name = params.get("MODEL_NAME")
-
+    def validate_connection(self, params: dict) -> Tuple[str, str]:
+        api_key = params.get("api_key")
+        model_name = params.get("model")
         if not all([api_key, model_name]):
-            return False, "Missing required OpenAI parameters.", "retry_input"
+            return "Missing required OpenAI parameters.", "retry_input"
 
         url = "https://api.openai.com/v1/chat/completions"
         headers = {"Authorization": f"Bearer {api_key}",
@@ -60,10 +61,10 @@ class OpenAIProvider(LLMProvider):
             resp = requests.post(url, headers=headers,
                                  json=payload, timeout=10)
             resp.raise_for_status()
-            return True, "Connection successful", "save"
+            return None, "save"  # None error means success
         except requests.exceptions.HTTPError as e:
             if 400 <= resp.status_code < 500:
-                return False, f"Client error: {e} - {resp.text}", "retry_input"
-            return False, f"Server error: {e} - {resp.text}", "connection_error"
+                return f"Client error: {e} - {resp.text}", "retry_input"
+            return f"Server error: {e} - {resp.text}", "connection_error"
         except requests.exceptions.RequestException as e:
-            return False, f"Request error: {e}", "connection_error"
+            return f"Request error: {e}", "connection_error"

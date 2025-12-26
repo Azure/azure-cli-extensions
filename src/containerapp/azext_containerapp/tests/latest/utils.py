@@ -36,6 +36,28 @@ def prepare_containerapp_env_for_app_e2e_tests(test_cls, location=TEST_LOCATION)
                 managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
     return managed_env["id"]
 
+def prepare_containerapp_env_v1_for_app_e2e_tests(test_cls, location=TEST_LOCATION):
+    from azure.cli.core.azclierror import CLIInternalError
+    rg_name = f'client.env_v1_rg_{location}'.lower().replace(" ", "").replace("(", "").replace(")", "")
+    env_name = f'env-v1-{location}'.lower().replace(" ", "").replace("(", "").replace(")", "")
+    managed_env = None
+    try:
+        managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
+    except CLIInternalError as e:
+        if e.error_msg.__contains__('ResourceGroupNotFound') or e.error_msg.__contains__('ResourceNotFound'):
+            # resource group is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+            rg_location = location
+            if format_location(rg_location) == format_location(STAGE_LOCATION):
+                rg_location = "eastus"
+            test_cls.cmd(f'group create -n {rg_name} -l {rg_location}')
+            test_cls.cmd(f'containerapp env create -g {rg_name} -n {env_name} --logs-destination none --enable-workload-profiles false', expect_failure=False)
+            managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
+
+            while managed_env["properties"]["provisioningState"].lower() == "waiting":
+                time.sleep(5)
+                managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
+    return managed_env["id"]
+
 
 def create_vnet_subnet(self, resource_group, vnet, delegations='Microsoft.App/environments', location="centralus"):
     self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet} --location {location}")
