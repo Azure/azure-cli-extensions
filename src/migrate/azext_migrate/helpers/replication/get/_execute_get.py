@@ -226,12 +226,12 @@ def _print_protected_item_details(item):  # pylint: disable=too-many-nested-bloc
 
     # Custom Properties (Machine Details)
     custom_props = item.get('customProperties', {})
-    if custom_props:
+    if custom_props:  # pylint: disable=too-many-nested-blocks,R1702
         print("\n[ MACHINE DETAILS ]")
         instance_type = custom_props.get('instanceType', 'N/A')
         print(f"  Instance Type:         {instance_type}")
 
-        if instance_type != 'N/A':
+        if instance_type != 'N/A':  # pylint: disable=too-many-nested-blocks,R1702
             print(f"  Source Machine Name:   {custom_props.get('sourceMachineName', 'N/A')}")
             print(f"  Target VM Name:        {custom_props.get('targetVmName', 'N/A')}")
             print(f"  Target Resource Group: {custom_props.get('targetResourceGroupId', 'N/A')}")
@@ -239,16 +239,16 @@ def _print_protected_item_details(item):  # pylint: disable=too-many-nested-bloc
 
             # Fabric specific properties
             fabric_specific = custom_props.get('fabricSpecificDetails', {})
-            if fabric_specific:  # pylint: disable=too-many-nested-blocks
+            if fabric_specific:  # pylint: disable=too-many-nested-blocks,R1702
                 print("\n  [ Fabric Specific Details ]")
                 for key, value in fabric_specific.items():
                     # Format key name for display
                     display_key = key.replace('_', ' ').title()
-                    if isinstance(value, dict):
+                    if isinstance(value, dict):  # pylint: disable=too-many-nested-blocks,R1702
                         print(f"    {display_key}:")
                         for sub_key, sub_value in value.items():
                             print(f"      {sub_key}: {sub_value}")
-                    elif isinstance(value, list):
+                    elif isinstance(value, list):  # pylint: disable=too-many-nested-blocks,R1702
                         print(f"    {display_key}: {len(value)} item(s)")
                     else:
                         print(f"    {display_key}: {value}")
