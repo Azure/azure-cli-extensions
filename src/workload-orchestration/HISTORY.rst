@@ -3,6 +3,10 @@
 Release History
 ===============
 
+5.0.0
+++++++
+* November 2025 release
+
 4.1.0
 ++++++
 * Added currentStage and latestActionTriggeredBy fields in response of below commands:
