@@ -260,7 +260,7 @@ def _handle_configuration_validation(cmd,
         if existing_item:
             protection_state = existing_item.get('properties', {}).get('protectionState')
             logger.warning("Found existing protected item: %s, state: %s",
-                          existing_item.get('id', 'unknown'), protection_state)
+                           existing_item.get('id', 'unknown'), protection_state)
 
             # If in failed state, offer helpful guidance
             if protection_state in ['EnablingFailed', 'DisablingFailed', 'Failed']:
