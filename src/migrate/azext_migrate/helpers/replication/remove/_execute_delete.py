@@ -186,8 +186,8 @@ def execute_removal(cmd, subscription_id, target_object_id,
         display_removal_success(
             protected_item_name, job_name, resource_group_name)
         return None
-    else:
-        # No job name available
-        log_removal_success(protected_item_name)
-        display_removal_initiated(protected_item_name)
-        return None
+
+    # No job name available
+    log_removal_success(protected_item_name)
+    display_removal_initiated(protected_item_name)
+    return None

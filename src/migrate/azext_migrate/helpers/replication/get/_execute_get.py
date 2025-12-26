@@ -239,7 +239,7 @@ def _print_protected_item_details(item):  # pylint: disable=too-many-nested-bloc
 
             # Fabric specific properties
             fabric_specific = custom_props.get('fabricSpecificDetails', {})
-            if fabric_specific:
+            if fabric_specific:  # pylint: disable=too-many-nested-blocks
                 print("\n  [ Fabric Specific Details ]")
                 for key, value in fabric_specific.items():
                     # Format key name for display
