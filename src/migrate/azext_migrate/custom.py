@@ -20,31 +20,6 @@ def get_discovered_server(cmd,
                           subscription_id=None,
                           name=None,
                           appliance_name=None):
-    """
-    Retrieve discovered servers from the Azure Migrate project.
-
-    Args:
-        cmd: The CLI command context
-        project_name (str): Specifies the migrate project name (required)
-        resource_group (str): Specifies the resource group name
-            (required)
-        display_name (str, optional): Specifies the source machine
-            display name
-        source_machine_type (str, optional): Specifies the source machine
-            type (VMware, HyperV)
-        subscription_id (str, optional): Specifies the subscription id
-        name (str, optional): Specifies the source machine name
-            (internal name)
-        appliance_name (str, optional): Specifies the appliance name
-            (maps to site)
-
-    Returns:
-        dict: The discovered server data from the API response
-
-    Raises:
-        CLIError: If required parameters are missing or the API request
-            fails
-    """
     from azext_migrate.helpers._utils import APIVersion
     from azext_migrate.helpers._server import (
         validate_get_discovered_server_params,
@@ -112,37 +87,6 @@ def initialize_replication_infrastructure(cmd,
                                           cache_storage_account_id=None,
                                           subscription_id=None,
                                           pass_thru=False):
-    """
-    Initialize Azure Migrate local replication infrastructure.
-
-    This function is based on a preview API version and may experience
-    breaking changes in future releases.
-
-    Args:
-        cmd: The CLI command context
-        resource_group (str): Specifies the Resource Group of the
-            Azure Migrate Project (required)
-        project_name (str): Specifies the name of the Azure Migrate
-            project to be used for server migration (required)
-        source_appliance_name (str): Specifies the source appliance name
-            for the AzLocal scenario (required)
-        target_appliance_name (str): Specifies the target appliance name
-            for the AzLocal scenario (required)
-        cache_storage_account_id (str, optional): Specifies the Storage
-            Account ARM Id to be used for private endpoint scenario
-        subscription_id (str, optional): Azure Subscription ID. Uses
-            current subscription if not provided
-        pass_thru (bool, optional): Returns True when the command
-            succeeds
-
-    Returns:
-        bool: True if the operation succeeds (when pass_thru is True),
-            otherwise None
-
-    Raises:
-        CLIError: If required parameters are missing or the API request
-            fails
-    """
     from azure.cli.core.commands.client_factory import \
         get_subscription_id
     from azext_migrate.helpers.replication.init._execute_init import (
@@ -197,63 +141,6 @@ def new_local_server_replication(cmd,
                                  nic_to_include=None,
                                  os_disk_id=None,
                                  subscription_id=None):
-    """
-    Create a new replication for an Azure Local server.
-
-    This cmdlet is based on a preview API version and may experience
-    breaking changes in future releases.
-
-    Args:
-        cmd: The CLI command context
-        target_storage_path_id (str): Specifies the storage path ARM ID
-            where the VMs will be stored (required)
-        target_resource_group_id (str): Specifies the target resource
-            group ARM ID where the migrated VM resources will reside
-            (required)
-        target_vm_name (str): Specifies the name of the VM to be created
-            (required)
-        source_appliance_name (str): Specifies the source appliance name
-            for the AzLocal scenario (required)
-        target_appliance_name (str): Specifies the target appliance name
-            for the AzLocal scenario (required)
-        machine_id (str, optional): Specifies the machine ARM ID of the
-            discovered server to be migrated (required if machine_index
-            not provided)
-        machine_index (int, optional): Specifies the index of the
-            discovered server from the list (1-based, required if
-            machine_id not provided)
-        project_name (str, optional): Specifies the migrate project name
-            (required when using machine_index)
-        resource_group (str, optional): Specifies the resource group
-            name (required when using machine_index)
-        target_vm_cpu_core (int, optional): Specifies the number of CPU
-            cores
-        target_virtual_switch_id (str, optional): Specifies the logical
-            network ARM ID that the VMs will use (required for default
-            user mode)
-        target_test_virtual_switch_id (str, optional): Specifies the test
-            logical network ARM ID that the VMs will use
-        is_dynamic_memory_enabled (str, optional): Specifies if RAM is
-            dynamic or not. Valid values: 'true', 'false'
-        target_vm_ram (int, optional): Specifies the target RAM size in
-            MB
-        disk_to_include (list, optional): Specifies the disks on the
-            source server to be included for replication (power user
-            mode)
-        nic_to_include (list, optional): Specifies the NICs on the source
-            server to be included for replication (power user mode)
-        os_disk_id (str, optional): Specifies the operating system disk
-            for the source server to be migrated (required for default
-            user mode)
-        subscription_id (str, optional): Azure Subscription ID. Uses
-            current subscription if not provided
-
-    Returns:
-        dict: The job model from the API response
-
-    Raises:
-        CLIError: If required parameters are missing or validation fails
-    """
     from azext_migrate.helpers._utils import SiteTypes
     from azext_migrate.helpers.replication.new._validate import (
         validate_server_parameters,
@@ -274,11 +161,19 @@ def new_local_server_replication(cmd,
     )
     from azext_migrate.helpers.replication.new._execute_new import (
         get_ARC_resource_bridge_info,
+        ensure_target_resource_group_exists,
         construct_disk_and_nic_mapping,
         create_protected_item
     )
 
-    rg_uri, machine_id = validate_server_parameters(
+    # Use current subscription if not provided
+    if not subscription_id:
+        from azure.cli.core.commands.client_factory import \
+            get_subscription_id
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        print(f"Selected Subscription Id: '{subscription_id}'")
+
+    rg_uri, machine_id, subscription_id = validate_server_parameters(
         cmd,
         machine_id,
         machine_index,
@@ -407,14 +302,23 @@ def new_local_server_replication(cmd,
         # 3. Get ARC Resource Bridge info
         custom_location_id, custom_location_region, \
             target_cluster_id = get_ARC_resource_bridge_info(
+                cmd,
                 target_fabric,
                 migrate_project
             )
 
-        # 4. Validate target VM name
+        # 4. Ensure target resource group exists
+        ensure_target_resource_group_exists(
+            cmd,
+            target_resource_group_id,
+            custom_location_region,
+            project_name
+        )
+
+        # 5. Validate target VM name
         validate_target_VM_name(target_vm_name)
 
-        # 5. Construct disk and NIC mappings
+        # 6. Construct disk and NIC mappings
         disks, nics = construct_disk_and_nic_mapping(
             is_power_user_mode,
             disk_to_include,
@@ -425,7 +329,7 @@ def new_local_server_replication(cmd,
             target_virtual_switch_id,
             target_test_virtual_switch_id)
 
-        # 6. Create the protected item
+        # 7. Create the protected item
         create_protected_item(
             cmd,
             subscription_id,
@@ -465,29 +369,6 @@ def get_local_replication_job(cmd,
                               project_name=None,
                               job_name=None,
                               subscription_id=None):
-    """
-    Retrieve the status of an Azure Migrate job.
-
-    This cmdlet is based on a preview API version and may experience
-    breaking changes in future releases.
-
-    Args:
-        cmd: The CLI command context
-        job_id (str, optional): Specifies the job ARM ID for which
-            the details need to be retrieved
-        resource_group (str, optional): The name of the resource
-            group where the recovery services vault is present
-        project_name (str, optional): The name of the migrate project
-        job_name (str, optional): Job identifier/name
-        subscription_id (str, optional): Azure Subscription ID. Uses
-            current subscription if not provided
-
-    Returns:
-        dict or list: Job details (single job or list of jobs)
-
-    Raises:
-        CLIError: If required parameters are missing or the job is not found
-    """
     from azure.cli.core.commands.client_factory import \
         get_subscription_id
     from azext_migrate.helpers.replication.job._parse import (
@@ -533,32 +414,75 @@ def get_local_replication_job(cmd,
         vault_name, format_job_summary)
 
 
+def list_local_server_replications(cmd,
+                                   resource_group=None,
+                                   project_name=None,
+                                   subscription_id=None):
+    from azure.cli.core.commands.client_factory import \
+        get_subscription_id
+    from azext_migrate.helpers.replication.list._execute_list import (
+        get_vault_name_from_project,
+        list_protected_items
+    )
+
+    # Validate required parameters
+    if not resource_group or not project_name:
+        raise CLIError(
+            "Both --resource-group and --project-name are required.")
+
+    # Use current subscription if not provided
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Get the vault name from the project
+    vault_name = get_vault_name_from_project(
+        cmd, resource_group, project_name, subscription_id)
+
+    # List all protected items
+    list_protected_items(
+        cmd, subscription_id, resource_group, vault_name)
+
+
+def get_local_server_replication(cmd,
+                                 protected_item_name=None,
+                                 protected_item_id=None,
+                                 resource_group=None,
+                                 project_name=None,
+                                 subscription_id=None):
+    from azure.cli.core.commands.client_factory import \
+        get_subscription_id
+    from azext_migrate.helpers.replication.get._execute_get import (
+        get_protected_item_by_id,
+        get_protected_item_by_name
+    )
+
+    # Use current subscription if not provided
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Validate that either ID or name is provided
+    if not protected_item_id and not protected_item_name:
+        raise CLIError(
+            "Either --protected-item-id or --protected-item-name must be provided.")
+
+    # If both are provided, prefer ID
+    if protected_item_id:
+        return get_protected_item_by_id(cmd, protected_item_id)
+
+    # If using name, require resource_group and project_name
+    if not resource_group or not project_name:
+        raise CLIError(
+            "When using --protected-item-name, both --resource-group and "
+            "--project-name are required.")
+
+    return get_protected_item_by_name(
+        cmd, subscription_id, resource_group, project_name, protected_item_name)
+
+
 def remove_local_server_replication(cmd,
                                     target_object_id,
                                     force_remove=False,
                                     subscription_id=None):
-    """
-    Stop replication for a migrated server.
-
-    This cmdlet is based on a preview API version and may experience
-    breaking changes in future releases.
-
-    Args:
-        cmd: The CLI command context
-        target_object_id (str): Specifies the replicating server ARM ID
-            for which replication needs to be disabled (required)
-        force_remove (bool, optional): Specifies whether the replication
-            needs to be force removed. Default is False
-        subscription_id (str, optional): Azure Subscription ID. Uses
-            current subscription if not provided
-
-    Returns:
-        dict: The job model from the API response
-
-    Raises:
-        CLIError: If the protected item is not found or cannot be
-            removed in its current state
-    """
     from azure.cli.core.commands.client_factory import \
         get_subscription_id
     from azext_migrate.helpers.replication.remove._parse import (
@@ -587,4 +511,46 @@ def remove_local_server_replication(cmd,
         cmd, subscription_id, target_object_id,
         resource_group_name, vault_name,
         protected_item_name, force_remove
+    )
+
+
+def start_local_server_migration(cmd,
+                                 protected_item_id=None,
+                                 turn_off_source_server=False,
+                                 subscription_id=None):
+    from azure.cli.core.commands.client_factory import \
+        get_subscription_id
+    from azext_migrate.helpers.migration.start._parse import (
+        parse_protected_item_id
+    )
+    from azext_migrate.helpers.migration.start._execute_migrate import (
+        execute_migration
+    )
+
+    # Use current subscription if not provided
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Validate that either ID or name is provided
+    if not protected_item_id:
+        raise CLIError(
+            "The --protected-item-id parameter must be provided."
+        )
+
+    # Determine the operation mode
+    target_object_id = protected_item_id
+
+    # Mode: Use provided ID
+    resource_group_name, vault_name, protected_item_name = \
+        parse_protected_item_id(protected_item_id)
+
+    # Execute the migration workflow
+    return execute_migration(
+        cmd,
+        subscription_id,
+        target_object_id,
+        resource_group_name,
+        vault_name,
+        protected_item_name,
+        turn_off_source_server
     )
