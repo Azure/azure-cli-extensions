@@ -749,10 +749,10 @@ def start_local_server_migration(cmd,
     """
     from azure.cli.core.commands.client_factory import \
         get_subscription_id
-    from azext_migrate.helpers.replication.migrate._parse import (
+    from azext_migrate.helpers.migration.start._parse import (
         parse_protected_item_id
     )
-    from azext_migrate.helpers.replication.migrate._execute_migrate import (
+    from azext_migrate.helpers.migration.start._execute_migrate import (
         execute_migration
     )
 

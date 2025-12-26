@@ -5044,7 +5044,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
             }
         }
 
-    @mock.patch('azext_migrate.helpers.replication.migrate._execute_migrate.execute_migration')
+    @mock.patch('azext_migrate.helpers.migration.start._execute_migrate.execute_migration')
     @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
     def test_start_migration_with_protected_item_id(self, mock_get_sub_id, mock_execute):
         """Test starting migration using protected item ID"""
@@ -5072,8 +5072,8 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
         self.assertTrue(call_args[1]['turn_off_source_server'])
         self.assertIsNotNone(result)
 
-    @mock.patch('azext_migrate.helpers.replication.migrate._parse.get_vault_name_from_project')
-    @mock.patch('azext_migrate.helpers.replication.migrate._execute_migrate.execute_migration')
+    @mock.patch('azext_migrate.helpers.migration.start._parse.get_vault_name_from_project')
+    @mock.patch('azext_migrate.helpers.migration.start._execute_migrate.execute_migration')
     @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
     def test_start_migration_with_protected_item_name(self, mock_get_sub_id, 
                                                       mock_execute, mock_get_vault):
@@ -5138,7 +5138,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
     def test_validate_protected_item_success(self, mock_get_resource):
         """Test validating a protected item that is ready for migration"""
-        from azext_migrate.helpers.replication.migrate._validate import (
+        from azext_migrate.helpers.migration.start._validate import (
             validate_protected_item_for_migration
         )
 
@@ -5158,7 +5158,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
     def test_validate_protected_item_not_found(self, mock_get_resource):
         """Test validation fails when protected item doesn't exist"""
-        from azext_migrate.helpers.replication.migrate._validate import (
+        from azext_migrate.helpers.migration.start._validate import (
             validate_protected_item_for_migration
         )
 
@@ -5176,7 +5176,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
     def test_validate_protected_item_wrong_state(self, mock_get_resource):
         """Test validation fails when protected item is not in correct state"""
-        from azext_migrate.helpers.replication.migrate._validate import (
+        from azext_migrate.helpers.migration.start._validate import (
             validate_protected_item_for_migration
         )
 
@@ -5198,7 +5198,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
     def test_validate_protected_item_restart_allowed(self, mock_get_resource):
         """Test validation succeeds when Restart is in allowed jobs"""
-        from azext_migrate.helpers.replication.migrate._validate import (
+        from azext_migrate.helpers.migration.start._validate import (
             validate_protected_item_for_migration
         )
 
@@ -5217,7 +5217,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
 
     def test_parse_protected_item_id_valid(self):
         """Test parsing a valid protected item ID"""
-        from azext_migrate.helpers.replication.migrate._parse import (
+        from azext_migrate.helpers.migration.start._parse import (
             parse_protected_item_id
         )
 
@@ -5229,7 +5229,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
 
     def test_parse_protected_item_id_invalid(self):
         """Test parsing an invalid protected item ID"""
-        from azext_migrate.helpers.replication.migrate._parse import (
+        from azext_migrate.helpers.migration.start._parse import (
             parse_protected_item_id
         )
 
@@ -5242,7 +5242,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
 
     def test_parse_protected_item_id_empty(self):
         """Test parsing an empty protected item ID"""
-        from azext_migrate.helpers.replication.migrate._parse import (
+        from azext_migrate.helpers.migration.start._parse import (
             parse_protected_item_id
         )
 
@@ -5254,7 +5254,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azure.cli.core.util.send_raw_request')
     def test_invoke_planned_failover_hyperv(self, mock_send_request):
         """Test invoking planned failover for HyperV instance"""
-        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+        from azext_migrate.helpers.migration.start._execute_migrate import (
             invoke_planned_failover
         )
 
@@ -5288,7 +5288,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azure.cli.core.util.send_raw_request')
     def test_invoke_planned_failover_vmware(self, mock_send_request):
         """Test invoking planned failover for VMware instance"""
-        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+        from azext_migrate.helpers.migration.start._execute_migrate import (
             invoke_planned_failover
         )
 
@@ -5313,7 +5313,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azure.cli.core.util.send_raw_request')
     def test_invoke_planned_failover_invalid_instance_type(self, mock_send_request):
         """Test that invalid instance type raises error"""
-        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+        from azext_migrate.helpers.migration.start._execute_migrate import (
             invoke_planned_failover
         )
 
@@ -5335,7 +5335,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azure.cli.core.util.send_raw_request')
     def test_invoke_planned_failover_api_error(self, mock_send_request):
         """Test handling API errors during planned failover"""
-        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+        from azext_migrate.helpers.migration.start._execute_migrate import (
             invoke_planned_failover
         )
 
@@ -5366,7 +5366,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azext_migrate.helpers._utils.send_get_request')
     def test_get_job_from_operation_with_async_header(self, mock_send_get):
         """Test extracting job from operation response with Azure-AsyncOperation header"""
-        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+        from azext_migrate.helpers.migration.start._execute_migrate import (
             get_job_from_operation
         )
 
@@ -5403,7 +5403,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azext_migrate.helpers._utils.send_get_request')
     def test_get_job_from_operation_with_location_header(self, mock_send_get):
         """Test extracting job from operation response with Location header"""
-        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+        from azext_migrate.helpers.migration.start._execute_migrate import (
             get_job_from_operation
         )
 
@@ -5435,7 +5435,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
 
     def test_get_job_from_operation_no_headers(self):
         """Test handling operation response without job headers"""
-        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+        from azext_migrate.helpers.migration.start._execute_migrate import (
             get_job_from_operation
         )
 
@@ -5456,14 +5456,14 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
         # Verify - should return None but not raise error
         self.assertIsNone(result)
 
-    @mock.patch('azext_migrate.helpers.replication.migrate._validate.validate_arc_resource_bridge')
-    @mock.patch('azext_migrate.helpers.replication.migrate._validate.validate_protected_item_for_migration')
-    @mock.patch('azext_migrate.helpers.replication.migrate._execute_migrate.invoke_planned_failover')
-    @mock.patch('azext_migrate.helpers.replication.migrate._execute_migrate.get_job_from_operation')
+    @mock.patch('azext_migrate.helpers.migration.start._validate.validate_arc_resource_bridge')
+    @mock.patch('azext_migrate.helpers.migration.start._validate.validate_protected_item_for_migration')
+    @mock.patch('azext_migrate.helpers.migration.start._execute_migrate.invoke_planned_failover')
+    @mock.patch('azext_migrate.helpers.migration.start._execute_migrate.get_job_from_operation')
     def test_execute_migration_success_with_job(self, mock_get_job, mock_invoke_failover,
                                                 mock_validate_item, mock_validate_arc):
         """Test successful migration execution with job details returned"""
-        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+        from azext_migrate.helpers.migration.start._execute_migrate import (
             execute_migration
         )
 
@@ -5494,15 +5494,15 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
         mock_get_job.assert_called_once()
 
     @mock.patch('builtins.print')
-    @mock.patch('azext_migrate.helpers.replication.migrate._validate.validate_arc_resource_bridge')
-    @mock.patch('azext_migrate.helpers.replication.migrate._validate.validate_protected_item_for_migration')
-    @mock.patch('azext_migrate.helpers.replication.migrate._execute_migrate.invoke_planned_failover')
-    @mock.patch('azext_migrate.helpers.replication.migrate._execute_migrate.get_job_from_operation')
+    @mock.patch('azext_migrate.helpers.migration.start._validate.validate_arc_resource_bridge')
+    @mock.patch('azext_migrate.helpers.migration.start._validate.validate_protected_item_for_migration')
+    @mock.patch('azext_migrate.helpers.migration.start._execute_migrate.invoke_planned_failover')
+    @mock.patch('azext_migrate.helpers.migration.start._execute_migrate.get_job_from_operation')
     def test_execute_migration_success_without_job(self, mock_get_job, mock_invoke_failover,
                                                    mock_validate_item, mock_validate_arc,
                                                    mock_print):
         """Test successful migration execution without job details"""
-        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+        from azext_migrate.helpers.migration.start._execute_migrate import (
             execute_migration
         )
 
@@ -5533,10 +5533,10 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
         self.assertIn("Migration has been initiated successfully", print_call_arg)
         self.assertIn("az migrate local replication get-job", print_call_arg)
 
-    @mock.patch('azext_migrate.helpers.replication.migrate._validate.validate_protected_item_for_migration')
+    @mock.patch('azext_migrate.helpers.migration.start._validate.validate_protected_item_for_migration')
     def test_execute_migration_missing_instance_type(self, mock_validate_item):
         """Test migration fails when instance type cannot be determined"""
-        from azext_migrate.helpers.replication.migrate._execute_migrate import (
+        from azext_migrate.helpers.migration.start._execute_migrate import (
             execute_migration
         )
 
@@ -5562,7 +5562,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azure.cli.core.util.send_raw_request')
     def test_validate_arc_resource_bridge_success(self, mock_send_request):
         """Test successful Arc Resource Bridge validation"""
-        from azext_migrate.helpers.replication.migrate._validate import (
+        from azext_migrate.helpers.migration.start._validate import (
             validate_arc_resource_bridge
         )
 
@@ -5594,7 +5594,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azure.cli.core.util.send_raw_request')
     def test_validate_arc_resource_bridge_not_found_warning(self, mock_send_request):
         """Test Arc Resource Bridge validation with no results (should warn, not fail)"""
-        from azext_migrate.helpers.replication.migrate._validate import (
+        from azext_migrate.helpers.migration.start._validate import (
             validate_arc_resource_bridge
         )
 
@@ -5620,7 +5620,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azext_migrate.helpers._utils.send_get_request')
     def test_get_vault_name_from_project_success(self, mock_send_get):
         """Test successfully retrieving vault name from project"""
-        from azext_migrate.helpers.replication.migrate._parse import (
+        from azext_migrate.helpers.migration.start._parse import (
             get_vault_name_from_project
         )
 
@@ -5673,7 +5673,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
     @mock.patch('azext_migrate.helpers._utils.send_get_request')
     def test_get_vault_name_from_project_no_vault(self, mock_send_get):
         """Test error when no vault found in project"""
-        from azext_migrate.helpers.replication.migrate._parse import (
+        from azext_migrate.helpers.migration.start._parse import (
             get_vault_name_from_project
         )
 

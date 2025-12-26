@@ -255,3 +255,18 @@ def load_arguments(self, _):
             options_list=['--job-name', '--name'],
             help='Job identifier.')
         c.argument('subscription_id', subscription_id_type)
+
+    with self.argument_context('migrate local start-migration') as c:
+        c.argument(
+            'protected_item_id',
+            options_list=['--protected-item-id', '--id'],
+            help='The full ARM resource ID of the protected item to migrate. '
+                 'This can be obtained from the list or get replication commands.',
+            required=True)
+        c.argument(
+            'turn_off_source_server',
+            options_list=['--turn-off-source-server'],
+            arg_type=get_three_state_flag(),
+            help='Specifies whether the source server should be turned off '
+                 'after migration completes. Default is False.')
+        c.argument('subscription_id', subscription_id_type)

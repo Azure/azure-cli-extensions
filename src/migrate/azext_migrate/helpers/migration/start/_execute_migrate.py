@@ -245,7 +245,7 @@ def execute_migration(cmd, subscription_id, protected_item_id,
     Raises:
         CLIError: If the migration workflow fails
     """
-    from azext_migrate.helpers.replication.migrate._validate import (
+    from azext_migrate.helpers.migration.start._validate import (
         validate_protected_item_for_migration,
         validate_arc_resource_bridge
     )

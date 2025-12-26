@@ -540,3 +540,61 @@ helps['migrate local replication get-job'] = """
                 --name myJobName \\
                 --subscription-id "12345678-1234-1234-1234-123456789012"
 """
+
+helps['migrate local start-migration'] = """
+    type: command
+    short-summary: Start migration for a replicating server to Azure Local.
+    long-summary: |
+        Initiates the migration (failover) process for a server that
+        has been configured for replication to Azure Local or Azure Stack HCI.
+        This command triggers the final migration step, which creates
+        the virtual machine on the target Azure Local/Stack HCI environment.
+
+        The protected item must be in a healthy replication state
+        before migration can be initiated.
+        You can optionally specify whether to turn off the source server
+        after migration completes.
+
+        Note: This command uses a preview API version
+        and may experience breaking changes in future releases.
+    parameters:
+        - name: --protected-item-id --id
+          short-summary: Full ARM resource ID of the protected item to migrate.
+          long-summary: >
+            The complete ARM resource ID of the replicating server.
+            This ID can be obtained from the 'az migrate local replication list'
+            or 'az migrate local replication get' commands.
+            Required parameter.
+        - name: --turn-off-source-server
+          short-summary: Turn off the source server after migration.
+          long-summary: >
+            Specifies whether the source server should be powered off
+            after the migration completes successfully.
+            Default is False. Use this option to automatically shut down
+            the source server to prevent conflicts.
+        - name: --subscription-id
+          short-summary: Azure subscription ID.
+          long-summary: >
+            The subscription containing the migration resources.
+            Uses the current subscription if not specified.
+    examples:
+        - name: Start migration for a protected item
+          text: |
+            az migrate local start-migration \\
+                --protected-item-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem"
+        - name: Start migration and turn off source server
+          text: |
+            az migrate local start-migration \\
+                --protected-item-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem" \\
+                --turn-off-source-server
+        - name: Start migration using short parameter names
+          text: |
+            az migrate local start-migration \\
+                --id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem" \\
+                --turn-off-source-server
+        - name: Start migration with specific subscription
+          text: |
+            az migrate local start-migration \\
+                --protected-item-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem" \\
+                --subscription-id "12345678-1234-1234-1234-123456789012"
+"""
