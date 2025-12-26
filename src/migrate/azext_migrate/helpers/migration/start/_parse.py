@@ -12,6 +12,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
+
 def parse_protected_item_id(protected_item_id):
     """
     Parse protected item ID to extract resource group, vault, and item name.

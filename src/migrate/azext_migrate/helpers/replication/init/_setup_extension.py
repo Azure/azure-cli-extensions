@@ -50,11 +50,11 @@ def get_or_check_existing_extension(cmd, extension_uri,
             .get('provisioningState')
         )
         custom_props = (replication_extension
-                       .get('properties', {})
-                       .get('customProperties', {}))
+                        .get('properties', {})
+                        .get('customProperties', {}))
         existing_storage_id = custom_props.get('storageAccountId')
         existing_instance_type = custom_props.get('instanceType')
-        
+
         # Get fabric IDs based on instance type
         if instance_type == AzLocalInstanceTypes.VMwareToAzLocal.value:
             existing_source_fabric = custom_props.get('vmwareFabricArmId')
@@ -88,17 +88,17 @@ def get_or_check_existing_extension(cmd, extension_uri,
         # If configuration doesn't match, we need to update it
         if existing_state == ProvisioningState.Succeeded.value and not config_matches:
             print(
-                f"Extension exists but configuration doesn't match. "
-                f"Will update it."
+                "Extension exists but configuration doesn't match. "
+                "Will update it."
             )
             if existing_storage_id != storage_account_id:
-                print(f"  - Storage account mismatch")
+                print("  - Storage account mismatch")
             if existing_instance_type != instance_type:
-                print(f"  - Instance type mismatch")
+                print("  - Instance type mismatch")
             if existing_source_fabric != source_fabric_id:
-                print(f"  - Source fabric mismatch")
+                print("  - Source fabric mismatch")
             if existing_target_fabric != target_fabric_id:
-                print(f"  - Target fabric mismatch")
+                print("  - Target fabric mismatch")
             return replication_extension, False, True  # Signal to update
 
         # If it's in a bad state, delete it
@@ -341,7 +341,7 @@ def setup_replication_extension(cmd, rg_uri, replication_vault_name,
     )
 
     # Get or check existing extension
-    (replication_extension, is_complete, 
+    (replication_extension, is_complete,
      needs_update) = get_or_check_existing_extension(
         cmd, extension_uri, replication_extension_name,
         storage_account_id, instance_type, source_fabric_id,

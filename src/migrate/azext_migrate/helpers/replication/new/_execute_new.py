@@ -66,23 +66,23 @@ def get_ARC_resource_bridge_info(cmd, target_fabric, migrate_project):
             logger.warning(
                 f"Could not retrieve custom location: {str(e)}. "
                 f"Falling back to migrate project location.")
-    
+
     # Fall back to migrate project location if we couldn't get custom location region
     if not custom_location_region:
         custom_location_region = migrate_project.get('location', 'eastus')
         logger.warning(
             f"Using migrate project location as fallback: {custom_location_region}")
-    
+
     return custom_location_id, custom_location_region, target_cluster_id
 
 
-def ensure_target_resource_group_exists(cmd, target_resource_group_id, 
-                                        custom_location_region, 
+def ensure_target_resource_group_exists(cmd, target_resource_group_id,
+                                        custom_location_region,
                                         project_name):
     """
     Ensure the target resource group exists in the target subscription.
     Creates it if it doesn't exist.
-    
+
     Args:
         cmd: Command context
         target_resource_group_id: Full ARM ID of target resource group
@@ -94,16 +94,16 @@ def ensure_target_resource_group_exists(cmd, target_resource_group_id,
     if len(rg_parts) < 5:
         raise CLIError(
             f"Invalid target resource group ID: {target_resource_group_id}")
-    
+
     target_subscription_id = rg_parts[2]
     target_rg_name = rg_parts[4]
-    
+
     # Check if resource group exists
     rg_check_uri = (
         f"/subscriptions/{target_subscription_id}/"
         f"resourceGroups/{target_rg_name}"
     )
-    
+
     try:
         existing_rg = get_resource_by_id(
             cmd, rg_check_uri, "2021-04-01")
@@ -119,21 +119,21 @@ def ensure_target_resource_group_exists(cmd, target_resource_group_id,
             logger.info(
                 f"Target resource group '{target_rg_name}' not found. "
                 f"Creating in subscription '{target_subscription_id}'...")
-            
+
             rg_body = {
                 "location": custom_location_region,
                 "tags": {
                     "Migrate Project": project_name
                 }
             }
-            
+
             print(
                 f"Creating target resource group '{target_rg_name}' "
                 f"in region '{custom_location_region}'...")
-            
+
             created_rg = create_or_update_resource(
                 cmd, rg_check_uri, "2021-04-01", rg_body)
-            
+
             print(
                 f"✓ Target resource group '{target_rg_name}' created successfully")
             return created_rg

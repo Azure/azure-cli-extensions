@@ -54,7 +54,7 @@ def get_protected_item_by_id(cmd, protected_item_id):
         # Format and display the protected item
         formatted_item = _format_protected_item(protected_item)
         _print_protected_item_details(formatted_item)
-        
+
         return formatted_item
 
     except CLIError:
@@ -128,7 +128,7 @@ def get_protected_item_by_name(cmd, subscription_id, resource_group_name,
         # Format and display the protected item
         formatted_item = _format_protected_item(protected_item)
         _print_protected_item_details(formatted_item)
-        
+
         return formatted_item
 
     except CLIError:
@@ -152,7 +152,7 @@ def _format_protected_item(item):
     """
     properties = item.get('properties', {})
     custom_properties = properties.get('customProperties', {})
-    
+
     # Extract all properties
     formatted_item = {
         'id': item.get('id', 'N/A'),
@@ -189,33 +189,33 @@ def _print_protected_item_details(item):
     print("\n" + "=" * 120)
     print(f"Protected Item: {item.get('name', 'Unknown')}")
     print("=" * 120)
-    
+
     # Basic Information
     print("\n[ BASIC INFORMATION ]")
     print(f"  Name:                  {item.get('name', 'N/A')}")
     print(f"  Resource ID:           {item.get('id', 'N/A')}")
     print(f"  Type:                  {item.get('type', 'N/A')}")
     print(f"  Correlation ID:        {item.get('correlationId', 'N/A')}")
-    
+
     # Protection Status
     print("\n[ PROTECTION STATUS ]")
     print(f"  Protection State:      {item.get('protectionState', 'Unknown')}")
     print(f"  Description:           {item.get('protectionStateDescription', 'N/A')}")
     print(f"  Replication Health:    {item.get('replicationHealth', 'Unknown')}")
     print(f"  Resync Required:       {item.get('resynchronizationRequired', False)}")
-    
+
     # Policy and Extension
     print("\n[ CONFIGURATION ]")
     print(f"  Policy Name:           {item.get('policyName', 'N/A')}")
     print(f"  Replication Extension: {item.get('replicationExtensionName', 'N/A')}")
-    
+
     # Failover Information
     print("\n[ FAILOVER HISTORY ]")
     print(f"  Last Test Failover:        {item.get('lastSuccessfulTestFailoverTime', 'N/A')}")
     print(f"  Last Test Failover Status: {item.get('lastTestFailoverStatus', 'N/A')}")
     print(f"  Last Planned Failover:     {item.get('lastSuccessfulPlannedFailoverTime', 'N/A')}")
     print(f"  Last Unplanned Failover:   {item.get('lastSuccessfulUnplannedFailoverTime', 'N/A')}")
-    
+
     # Allowed Operations
     allowed_jobs = item.get('allowedJobs', [])
     print("\n[ ALLOWED OPERATIONS ]")
@@ -224,24 +224,24 @@ def _print_protected_item_details(item):
             print(f"  - {job}")
     else:
         print("  No operations currently allowed")
-    
+
     # Custom Properties (Machine Details)
     custom_props = item.get('customProperties', {})
     if custom_props:
         print("\n[ MACHINE DETAILS ]")
         instance_type = custom_props.get('instanceType', 'N/A')
         print(f"  Instance Type:         {instance_type}")
-        
+
         if instance_type != 'N/A':
             print(f"  Source Machine Name:   {custom_props.get('sourceMachineName', 'N/A')}")
             print(f"  Target VM Name:        {custom_props.get('targetVmName', 'N/A')}")
             print(f"  Target Resource Group: {custom_props.get('targetResourceGroupId', 'N/A')}")
             print(f"  Custom Location Region: {custom_props.get('customLocationRegion', 'N/A')}")
-            
+
             # Fabric specific properties
             fabric_specific = custom_props.get('fabricSpecificDetails', {})
             if fabric_specific:
-                print(f"\n  [ Fabric Specific Details ]")
+                print("\n  [ Fabric Specific Details ]")
                 for key, value in fabric_specific.items():
                     # Format key name for display
                     display_key = key.replace('_', ' ').title()
@@ -253,7 +253,7 @@ def _print_protected_item_details(item):
                         print(f"    {display_key}: {len(value)} item(s)")
                     else:
                         print(f"    {display_key}: {value}")
-    
+
     # Health Errors
     health_errors = item.get('healthErrors', [])
     if health_errors:
@@ -264,13 +264,13 @@ def _print_protected_item_details(item):
             severity = error.get('severity', 'Unknown')
             print(f"  {idx}. [{severity}] {error_code}")
             print(f"     {error_message}")
-            
+
             possible_causes = error.get('possibleCauses', 'N/A')
             if possible_causes and possible_causes != 'N/A':
                 print(f"     Possible Causes: {possible_causes}")
-            
+
             recommended_action = error.get('recommendedAction', 'N/A')
             if recommended_action and recommended_action != 'N/A':
                 print(f"     Recommended Action: {recommended_action}")
-    
+
     print("\n" + "=" * 120 + "\n")

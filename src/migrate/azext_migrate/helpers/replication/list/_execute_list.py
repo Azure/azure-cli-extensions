@@ -145,7 +145,7 @@ def list_protected_items(cmd, subscription_id, resource_group_name, vault_name):
 
         if not protected_items:
             logger.info("No protected items found in vault '%s'", vault_name)
-            print(f"No replicating servers found in project.")
+            print("No replicating servers found in project.")
             return []
 
         # Handle pagination if nextLink is present
@@ -192,7 +192,7 @@ def _format_protected_item(item):
     """
     properties = item.get('properties', {})
     custom_properties = properties.get('customProperties', {})
-    
+
     # Extract common properties
     formatted_item = {
         'id': item.get('id', 'N/A'),
@@ -215,7 +215,7 @@ def _format_protected_item(item):
         formatted_item['targetVmName'] = custom_properties.get('targetVmName', 'N/A')
         formatted_item['targetResourceGroupId'] = custom_properties.get('targetResourceGroupId', 'N/A')
         formatted_item['customLocationRegion'] = custom_properties.get('customLocationRegion', 'N/A')
-        
+
     return formatted_item
 
 
@@ -231,7 +231,7 @@ def _print_protected_items_summary(items):
 
     print(f"\nFound {len(items)} replicating server(s):\n")
     print("-" * 120)
-    
+
     for idx, item in enumerate(items, 1):
         print(f"\n{idx}. {item.get('name', 'Unknown')}")
         print(f"   Protection State: {item.get('protectionState', 'Unknown')}")
@@ -240,7 +240,7 @@ def _print_protected_items_summary(items):
         print(f"   Target VM Name: {item.get('targetVmName', 'N/A')}")
         print(f"   Policy: {item.get('policyName', 'N/A')}")
         print(f"   Resource ID: {item.get('id', 'N/A')}")
-        
+
         # Show health errors if any
         health_errors = item.get('healthErrors', [])
         if health_errors:
@@ -248,5 +248,5 @@ def _print_protected_items_summary(items):
             for error in health_errors[:3]:  # Show first 3 errors
                 error_message = error.get('message', 'Unknown error')
                 print(f"     - {error_message}")
-    
+
     print("\n" + "-" * 120)
