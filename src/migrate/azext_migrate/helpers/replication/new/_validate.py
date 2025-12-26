@@ -82,7 +82,7 @@ def _process_v3_dict(extended_details, app_map):
     return app_map
 
 
-def validate_server_parameters(
+def validate_server_parameters(  # pylint: disable=too-many-locals,too-many-branches
         cmd,
         machine_id,
         machine_index,

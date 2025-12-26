@@ -183,9 +183,9 @@ def execute_removal(cmd, subscription_id, target_object_id,
             return job_details
 
         # Job details unavailable but we have the job name
-            display_removal_success(
-                protected_item_name, job_name, resource_group_name)
-            return None
+        display_removal_success(
+            protected_item_name, job_name, resource_group_name)
+        return None
     else:
         # No job name available
         log_removal_success(protected_item_name)

@@ -8,7 +8,7 @@ Job formatting utilities for Azure Migrate local replication jobs.
 """
 
 
-def calculate_duration(start_time, end_time):
+def calculate_duration(start_time, end_time):  # pylint: disable=too-many-return-statements
     """
     Calculate duration between two timestamps.
 
