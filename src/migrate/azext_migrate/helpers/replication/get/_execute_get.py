@@ -178,7 +178,7 @@ def _format_protected_item(item):
     return formatted_item
 
 
-def _print_protected_item_details(item):  # pylint: disable=too-many-nested-blocks
+def _print_protected_item_details(item):  # pylint: disable=too-many-nested-blocks,R1702
     """
     Print detailed information about a protected item.
 
