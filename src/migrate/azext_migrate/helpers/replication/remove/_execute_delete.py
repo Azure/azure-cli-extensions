@@ -120,7 +120,7 @@ def get_job_details(cmd, subscription_id, resource_group_name,
 
         return job_details
 
-    except Exception as job_error:
+    except Exception as job_error:  # pylint: disable=broad-exception-caught
         logger.warning(
             "Could not retrieve job details: %s. "
             "Replication removal was initiated.",
@@ -181,8 +181,8 @@ def execute_removal(cmd, subscription_id, target_object_id,
             display_removal_success(
                 protected_item_name, job_name, resource_group_name)
             return job_details
-        else:
-            # Job details unavailable but we have the job name
+
+        # Job details unavailable but we have the job name
             display_removal_success(
                 protected_item_name, job_name, resource_group_name)
             return None

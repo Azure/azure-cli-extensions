@@ -167,7 +167,7 @@ def list_protected_items(cmd, subscription_id, resource_group_name, vault_name):
             try:
                 formatted_item = _format_protected_item(item)
                 formatted_items.append(formatted_item)
-            except Exception as format_error:
+            except Exception as format_error:  # pylint: disable=broad-exception-caught
                 logger.warning("Error formatting protected item: %s", str(format_error))
                 # Skip items that fail to format
                 continue

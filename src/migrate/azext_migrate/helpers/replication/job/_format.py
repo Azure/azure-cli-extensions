@@ -34,25 +34,23 @@ def calculate_duration(start_time, end_time):
 
             if hours > 0:
                 return f"{hours}h {minutes}m {seconds}s"
-            elif minutes > 0:
+            if minutes > 0:
                 return f"{minutes}m {seconds}s"
-            else:
-                return f"{seconds}s"
-        else:
-            # Job still running
-            now = datetime.utcnow()
-            duration = now - start
-            total_seconds = int(duration.total_seconds())
-            minutes, seconds = divmod(total_seconds, 60)
-            hours, minutes = divmod(minutes, 60)
+            return f"{seconds}s"
 
-            if hours > 0:
-                return f"{hours}h {minutes}m (in progress)"
-            elif minutes > 0:
-                return f"{minutes}m {seconds}s (in progress)"
-            else:
-                return f"{seconds}s (in progress)"
-    except Exception:
+        # Job still running
+        now = datetime.utcnow()
+        duration = now - start
+        total_seconds = int(duration.total_seconds())
+        minutes, seconds = divmod(total_seconds, 60)
+        hours, minutes = divmod(minutes, 60)
+
+        if hours > 0:
+            return f"{hours}h {minutes}m (in progress)"
+        if minutes > 0:
+            return f"{minutes}m {seconds}s (in progress)"
+        return f"{seconds}s (in progress)"
+    except Exception:  # pylint: disable=broad-exception-caught
         return None
 
 

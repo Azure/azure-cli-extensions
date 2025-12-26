@@ -172,7 +172,6 @@ def _format_protected_item(item):
         'lastSuccessfulUnplannedFailoverTime': properties.get('lastSuccessfulUnplannedFailoverTime', 'N/A'),
         'resynchronizationRequired': properties.get('resynchronizationRequired', False),
         'lastTestFailoverStatus': properties.get('lastTestFailoverStatus', 'N/A'),
-        'replicationExtensionName': properties.get('replicationExtensionName', 'N/A'),
         'customProperties': custom_properties,
     }
 
