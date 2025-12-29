@@ -468,13 +468,13 @@ def get_local_server_replication(cmd,
     # If both are provided, prefer ID
     if protected_item_id:
         return get_protected_item_by_id(cmd, protected_item_id)
-    
+
     # If using name, require resource_group and project_name
     if not resource_group or not project_name:
         raise CLIError(
             "When using --protected-item-name, both --resource-group and "
             "--project-name are required.")
-    
+
     return get_protected_item_by_name(
         cmd, subscription_id, resource_group, project_name, protected_item_name)
 
@@ -512,6 +512,7 @@ def remove_local_server_replication(cmd,
         resource_group_name, vault_name,
         protected_item_name, force_remove
     )
+
 
 def start_local_server_migration(cmd,
                                  protected_item_id=None,

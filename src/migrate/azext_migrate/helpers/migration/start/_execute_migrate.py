@@ -146,30 +146,30 @@ def get_job_from_operation(cmd, subscription_id, resource_group_name,
         # Try to get the job name from the response headers
         # Azure-AsyncOperation or Location headers typically contain the operation URL
         headers = operation_response.headers
-        
+
         # Check for Azure-AsyncOperation header
         async_op_url = headers.get('Azure-AsyncOperation') or headers.get('azure-asyncoperation')
         location_url = headers.get('Location') or headers.get('location')
-        
+
         operation_url = async_op_url or location_url
-        
+
         if operation_url:
             # Extract job name from the operation URL
             # URL typically ends with: .../workflows/{jobName}
             url_parts = operation_url.split('/')
-            
+
             # Look for the job name in the URL
             for i, part in enumerate(url_parts):
                 if part in ['workflows', 'operations'] and i + 1 < len(url_parts):
                     job_name_with_params = url_parts[i + 1]
                     # Remove query parameters and underscores
                     job_name = job_name_with_params.split('?')[0].split('_')[0]
-                    
+
                     logger.info(
                         "Extracted job name '%s' from operation response",
                         job_name
                     )
-                    
+
                     # Get the job details
                     job_uri = (
                         f"/subscriptions/{subscription_id}/"
@@ -179,20 +179,20 @@ def get_job_from_operation(cmd, subscription_id, resource_group_name,
                         f"jobs/{job_name}?"
                         f"api-version={APIVersion.Microsoft_DataReplication.value}"
                     )
-                    
+
                     full_uri = (
                         cmd.cli_ctx.cloud.endpoints.resource_manager + job_uri
                     )
-                    
+
                     job_response = send_get_request(cmd, full_uri)
                     return job_response.json()
-        
+
         # If we can't extract job name, try to get it from response body
         if operation_response.status_code == 202:
             response_body = operation_response.json()
             if 'name' in response_body:
                 job_name = response_body['name'].split('/')[-1].split('_')[0]
-                
+
                 job_uri = (
                     f"/subscriptions/{subscription_id}/"
                     f"resourceGroups/{resource_group_name}/"
@@ -201,11 +201,11 @@ def get_job_from_operation(cmd, subscription_id, resource_group_name,
                     f"jobs/{job_name}?"
                     f"api-version={APIVersion.Microsoft_DataReplication.value}"
                 )
-                
+
                 full_uri = (
                     cmd.cli_ctx.cloud.endpoints.resource_manager + job_uri
                 )
-                
+
                 job_response = send_get_request(cmd, full_uri)
                 return job_response.json()
 
@@ -215,18 +215,17 @@ def get_job_from_operation(cmd, subscription_id, resource_group_name,
         )
         return None
 
-    except Exception as e:
+    except Exception:  # pylint: disable=broad-exception-caught
         logger.warning(
-            "Failed to retrieve job details: %s. "
-            "The migration may still be in progress.",
-            str(e)
+            "Failed to retrieve job details. "
+            "The migration may still be in progress."
         )
         return None
 
 
 def execute_migration(cmd, subscription_id, protected_item_id,
-                     resource_group_name, vault_name, protected_item_name,
-                     turn_off_source_server):
+                      resource_group_name, vault_name, protected_item_name,
+                      turn_off_source_server):
     """
     Execute the complete migration workflow.
 
@@ -303,7 +302,7 @@ def execute_migration(cmd, subscription_id, protected_item_id,
                 job_details.get('id', 'Unknown')
             )
             return job_details
-        
+
         # Print success message if job details unavailable
         print(
             "Migration has been initiated successfully. "

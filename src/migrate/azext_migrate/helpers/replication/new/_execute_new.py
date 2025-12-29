@@ -5,17 +5,15 @@
 
 # pylint: disable=line-too-long
 # pylint: disable=possibly-used-before-assignment
+from knack.util import CLIError
+from knack.log import get_logger
 from azext_migrate.helpers._utils import (
     get_resource_by_id,
     create_or_update_resource,
     APIVersion,
-    ProvisioningState,
     SiteTypes,
     VMNicSelection
 )
-import re
-from knack.util import CLIError
-from knack.log import get_logger
 
 logger = get_logger(__name__)
 
@@ -61,28 +59,28 @@ def get_ARC_resource_bridge_info(cmd, target_fabric, migrate_project):
             custom_location = get_resource_by_id(
                 cmd, custom_location_id, "2021-08-15")
             custom_location_region = custom_location.get('location')
-            logger.info(f"Retrieved custom location region: {custom_location_region}")
-        except Exception as e:
+            logger.info("Retrieved custom location region: %s", custom_location_region)
+        except Exception:  # pylint: disable=broad-exception-caught
             logger.warning(
-                f"Could not retrieve custom location: {str(e)}. "
-                f"Falling back to migrate project location.")
-    
+                "Could not retrieve custom location. "
+                "Falling back to migrate project location.")
+
     # Fall back to migrate project location if we couldn't get custom location region
     if not custom_location_region:
         custom_location_region = migrate_project.get('location', 'eastus')
         logger.warning(
-            f"Using migrate project location as fallback: {custom_location_region}")
-    
+            "Using migrate project location as fallback: %s", custom_location_region)
+
     return custom_location_id, custom_location_region, target_cluster_id
 
 
-def ensure_target_resource_group_exists(cmd, target_resource_group_id, 
-                                        custom_location_region, 
+def ensure_target_resource_group_exists(cmd, target_resource_group_id,
+                                        custom_location_region,
                                         project_name):
     """
     Ensure the target resource group exists in the target subscription.
     Creates it if it doesn't exist.
-    
+
     Args:
         cmd: Command context
         target_resource_group_id: Full ARM ID of target resource group
@@ -94,52 +92,51 @@ def ensure_target_resource_group_exists(cmd, target_resource_group_id,
     if len(rg_parts) < 5:
         raise CLIError(
             f"Invalid target resource group ID: {target_resource_group_id}")
-    
+
     target_subscription_id = rg_parts[2]
     target_rg_name = rg_parts[4]
-    
+
     # Check if resource group exists
     rg_check_uri = (
         f"/subscriptions/{target_subscription_id}/"
         f"resourceGroups/{target_rg_name}"
     )
-    
+
     try:
         existing_rg = get_resource_by_id(
             cmd, rg_check_uri, "2021-04-01")
         if existing_rg:
             logger.info(
-                f"Target resource group '{target_rg_name}' already exists "
-                f"in subscription '{target_subscription_id}'")
+                "Target resource group '%s' already exists "
+                "in subscription '%s'", target_rg_name, target_subscription_id)
             return existing_rg
     except CLIError as e:
         error_str = str(e)
         if "ResourceGroupNotFound" in error_str or "404" in error_str:
             # Resource group doesn't exist, create it
             logger.info(
-                f"Target resource group '{target_rg_name}' not found. "
-                f"Creating in subscription '{target_subscription_id}'...")
-            
+                "Target resource group '%s' not found. "
+                "Creating in subscription '%s'...", target_rg_name, target_subscription_id)
+
             rg_body = {
                 "location": custom_location_region,
                 "tags": {
                     "Migrate Project": project_name
                 }
             }
-            
+
             print(
-                f"Creating target resource group '{target_rg_name}' "
-                f"in region '{custom_location_region}'...")
-            
+                "Creating target resource group '%s' "
+                "in region '%s'..." % (target_rg_name, custom_location_region))
+
             created_rg = create_or_update_resource(
                 cmd, rg_check_uri, "2021-04-01", rg_body)
-            
-            print(
-                f"✓ Target resource group '{target_rg_name}' created successfully")
+
+            print("Target resource group '%s' created successfully." % target_rg_name)
             return created_rg
-        else:
-            # Some other error, re-raise
-            raise
+
+        # Re-raise if it's a different error
+        raise
 
 
 def construct_disk_and_nic_mapping(is_power_user_mode,
@@ -262,7 +259,8 @@ def _handle_configuration_validation(cmd,
             APIVersion.Microsoft_DataReplication.value)
         if existing_item:
             protection_state = existing_item.get('properties', {}).get('protectionState')
-            logger.warning(f"Found existing protected item: {existing_item.get('id', 'unknown')}, state: {protection_state}")
+            logger.warning("Found existing protected item: %s, state: %s",
+                           existing_item.get('id', 'unknown'), protection_state)
 
             # If in failed state, offer helpful guidance
             if protection_state in ['EnablingFailed', 'DisablingFailed', 'Failed']:
@@ -271,14 +269,13 @@ def _handle_configuration_validation(cmd,
                     f"Please delete it first using Azure Portal or contact Azure Support. "
                     f"Protected item ID: {protected_item_uri}"
                 )
-            else:
-                raise CLIError(
-                    f"A replication already exists for machine '{machine_name}' (state: {protection_state}). "
-                    "Remove it first before creating a new one.")
+            raise CLIError(
+                f"A replication already exists for machine '{machine_name}' (state: {protection_state}). "
+                "Remove it first before creating a new one.")
     except (CLIError, ValueError, KeyError, TypeError) as e:
         # Check if it's a 404 Not Found error - that's expected and fine
         error_str = str(e)
-        logger.info(f"Exception during protected item check: {error_str}")
+        logger.info("Exception during protected item check: %s", error_str)
         if ("ResourceNotFound" in error_str or "404" in error_str or
                 "Not Found" in error_str):
             existing_item = None

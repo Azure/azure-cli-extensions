@@ -5,7 +5,6 @@
 
 # pylint: disable=line-too-long
 # pylint: disable=possibly-used-before-assignment
-from azure.cli.core.commands.client_factory import get_subscription_id
 from azext_migrate.helpers._utils import (
     send_get_request,
     get_resource_by_id,

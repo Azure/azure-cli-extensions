@@ -150,9 +150,11 @@ def validate_arc_resource_bridge(cmd, target_cluster_id, target_subscription):
 
         if not data or len(data) == 0:
             logger.warning(
-                "Could not verify Arc Resource Bridge status via Resource Graph query. "
-                f"Target cluster ID: '{target_cluster_id}'. "
-                "Continuing with migration - the cluster and Arc Resource Bridge will be validated during the migration process."
+                "Could not verify Arc Resource Bridge status via "
+                "Resource Graph query. Target cluster ID: '%s'. "
+                "Continuing with migration - the cluster and Arc Resource "
+                "Bridge will be validated during the migration process.",
+                target_cluster_id
             )
             # Don't fail the operation, just warn
             return
@@ -160,8 +162,10 @@ def validate_arc_resource_bridge(cmd, target_cluster_id, target_subscription):
         bridge_status = data[0].get('statusOfTheBridge', '')
         if bridge_status.lower() not in ['running', 'online']:
             logger.warning(
-                f"Arc Resource Bridge status is '{bridge_status}'. "
-                "Continuing with migration - the status will be validated during the migration process."
+                "Arc Resource Bridge status is '%s'. "
+                "Continuing with migration - the status will be validated "
+                "during the migration process.",
+                bridge_status
             )
             # Don't fail the operation, just warn
             return
@@ -171,9 +175,9 @@ def validate_arc_resource_bridge(cmd, target_cluster_id, target_subscription):
             bridge_status
         )
 
-    except Exception as e:
+    except Exception:  # pylint: disable=broad-exception-caught
         logger.warning(
-            "Failed to validate Arc Resource Bridge: %s. Continuing with migration...",
-            str(e)
+            "Failed to validate Arc Resource Bridge. "
+            "Continuing with migration..."
         )
         # Don't fail the operation if Arc validation fails

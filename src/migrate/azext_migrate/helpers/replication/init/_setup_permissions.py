@@ -209,17 +209,17 @@ def update_amh_solution_storage(cmd,
 
     # Check if we need to update storage account or tool name
     current_storage_id = (amh_solution
-                         .get('properties', {})
-                         .get('details', {})
-                         .get('extendedDetails', {})
-                         .get('replicationStorageAccountId'))
+                          .get('properties', {})
+                          .get('details', {})
+                          .get('extendedDetails', {})
+                          .get('replicationStorageAccountId'))
     current_tool = amh_solution.get('properties', {}).get('tool')
-    
+
     needs_update = False
     if current_storage_id != storage_account_id:
         print(f"Storage account needs update: {current_storage_id} -> {storage_account_id}")
         needs_update = True
-    
+
     if current_tool != "ServerMigration_DataReplication":
         print(f"Tool name needs update: {current_tool} -> ServerMigration_DataReplication")
         needs_update = True
