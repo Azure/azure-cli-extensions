@@ -1562,8 +1562,9 @@ class MigrateCommandsInfrastructureTests(ScenarioTest):
         registered_commands = []
         
         class MockCommandGroup:
-            def __init__(self, name):
+            def __init__(self, name, **kwargs):
                 self.name = name
+                self.kwargs = kwargs
                 
             def __enter__(self):
                 return self
@@ -5065,42 +5066,36 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
         # Verify
         mock_execute.assert_called_once()
         call_args = mock_execute.call_args
-        self.assertEqual(call_args[1]['protected_item_id'], self.mock_protected_item_id)
-        self.assertEqual(call_args[1]['resource_group_name'], self.mock_rg_name)
-        self.assertEqual(call_args[1]['vault_name'], self.mock_vault_name)
-        self.assertEqual(call_args[1]['protected_item_name'], self.mock_protected_item_name)
-        self.assertTrue(call_args[1]['turn_off_source_server'])
+        # Check positional arguments
+        self.assertEqual(call_args[0][2], self.mock_protected_item_id)  # target_object_id
+        self.assertEqual(call_args[0][3], self.mock_rg_name)  # resource_group_name
+        self.assertEqual(call_args[0][4], self.mock_vault_name)  # vault_name
+        self.assertEqual(call_args[0][5], self.mock_protected_item_name)  # protected_item_name
+        self.assertTrue(call_args[0][6])  # turn_off_source_server
         self.assertIsNotNone(result)
 
-    @mock.patch('azext_migrate.helpers.migration.start._parse.get_vault_name_from_project')
     @mock.patch('azext_migrate.helpers.migration.start._execute_migrate.execute_migration')
     @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
     def test_start_migration_with_protected_item_name(self, mock_get_sub_id, 
-                                                      mock_execute, mock_get_vault):
-        """Test starting migration using protected item name"""
+                                                      mock_execute):
+        """Test that function requires protected_item_id (name parameter removed)"""
         from azext_migrate.custom import start_local_server_migration
 
         # Setup mocks
         mock_get_sub_id.return_value = self.mock_subscription_id
-        mock_get_vault.return_value = self.mock_vault_name
         mock_execute.return_value = self._create_job_response()
         mock_cmd = self._create_mock_cmd()
 
-        # Execute command
-        result = start_local_server_migration(
-            cmd=mock_cmd,
-            protected_item_name=self.mock_protected_item_name,
-            resource_group=self.mock_rg_name,
-            project_name=self.mock_project_name,
-            turn_off_source_server=False
-        )
+        # Execute command without protected_item_id should fail
+        with self.assertRaises(CLIError) as context:
+            start_local_server_migration(
+                cmd=mock_cmd,
+                turn_off_source_server=False
+            )
 
-        # Verify
-        mock_get_vault.assert_called_once_with(
-            mock_cmd, self.mock_rg_name, self.mock_project_name, self.mock_subscription_id
-        )
-        mock_execute.assert_called_once()
-        self.assertIsNotNone(result)
+        # Verify error message
+        self.assertIn("--protected-item-id parameter must be provided",
+                     str(context.exception))
 
     @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
     def test_start_migration_missing_parameters(self, mock_get_sub_id):
@@ -5114,25 +5109,24 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
         with self.assertRaises(CLIError) as context:
             start_local_server_migration(cmd=mock_cmd)
 
-        self.assertIn("Either --protected-item-id or --protected-item-name", 
+        self.assertIn("--protected-item-id parameter must be provided", 
                      str(context.exception))
 
     @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
     def test_start_migration_name_without_resource_group(self, mock_get_sub_id):
-        """Test that command fails when using name without resource group"""
+        """Test that command requires protected_item_id"""
         from azext_migrate.custom import start_local_server_migration
 
         mock_get_sub_id.return_value = self.mock_subscription_id
         mock_cmd = self._create_mock_cmd()
 
-        # Execute command with name but without resource group
+        # Execute command without protected_item_id
         with self.assertRaises(CLIError) as context:
             start_local_server_migration(
-                cmd=mock_cmd,
-                protected_item_name=self.mock_protected_item_name
+                cmd=mock_cmd
             )
 
-        self.assertIn("both --resource-group and --project-name are required", 
+        self.assertIn("--protected-item-id parameter must be provided", 
                      str(context.exception))
 
     @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
@@ -5617,46 +5611,27 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
 
         # Should complete without exception
 
-    @mock.patch('azext_migrate.helpers._utils.send_get_request')
-    def test_get_vault_name_from_project_success(self, mock_send_get):
+    @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
+    def test_get_vault_name_from_project_success(self, mock_get_resource):
         """Test successfully retrieving vault name from project"""
-        from azext_migrate.helpers.migration.start._parse import (
+        from azext_migrate.helpers.replication.job._parse import (
             get_vault_name_from_project
         )
 
         mock_cmd = self._create_mock_cmd()
         
-        # Mock project response
-        mock_project_response = mock.Mock()
-        mock_project_response.json.return_value = {
-            'id': f'/subscriptions/{self.mock_subscription_id}/resourceGroups/{self.mock_rg_name}/providers/Microsoft.Migrate/migrateProjects/{self.mock_project_name}',
-            'name': self.mock_project_name
-        }
-        
-        # Mock solutions response
-        mock_solutions_response = mock.Mock()
-        mock_solutions_response.json.return_value = {
-            'value': [
-                {
-                    'properties': {
-                        'tool': 'ServerDiscovery',
-                        'details': {}
-                    }
-                },
-                {
-                    'properties': {
-                        'tool': 'ServerMigration_DataReplication',
-                        'details': {
-                            'extendedDetails': {
-                                'vaultName': self.mock_vault_name
-                            }
-                        }
+        # Mock solution response with vault ID
+        mock_get_resource.return_value = {
+            'id': f'/subscriptions/{self.mock_subscription_id}/resourceGroups/{self.mock_rg_name}/providers/Microsoft.Migrate/migrateProjects/{self.mock_project_name}/solutions/Servers-Migration-ServerMigration_DataReplication',
+            'name': 'Servers-Migration-ServerMigration_DataReplication',
+            'properties': {
+                'details': {
+                    'extendedDetails': {
+                        'vaultId': f'/subscriptions/{self.mock_subscription_id}/resourceGroups/{self.mock_rg_name}/providers/Microsoft.DataReplication/replicationVaults/{self.mock_vault_name}'
                     }
                 }
-            ]
+            }
         }
-        
-        mock_send_get.side_effect = [mock_project_response, mock_solutions_response]
 
         # Execute
         result = get_vault_name_from_project(
@@ -5668,38 +5643,27 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
 
         # Verify
         self.assertEqual(result, self.mock_vault_name)
-        self.assertEqual(mock_send_get.call_count, 2)
+        mock_get_resource.assert_called_once()
 
-    @mock.patch('azext_migrate.helpers._utils.send_get_request')
-    def test_get_vault_name_from_project_no_vault(self, mock_send_get):
+    @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
+    def test_get_vault_name_from_project_no_vault(self, mock_get_resource):
         """Test error when no vault found in project"""
-        from azext_migrate.helpers.migration.start._parse import (
+        from azext_migrate.helpers.replication.job._parse import (
             get_vault_name_from_project
         )
 
         mock_cmd = self._create_mock_cmd()
         
-        # Mock project response
-        mock_project_response = mock.Mock()
-        mock_project_response.json.return_value = {
-            'id': f'/subscriptions/{self.mock_subscription_id}/resourceGroups/{self.mock_rg_name}/providers/Microsoft.Migrate/migrateProjects/{self.mock_project_name}',
-            'name': self.mock_project_name
-        }
-        
-        # Mock solutions response without replication solution
-        mock_solutions_response = mock.Mock()
-        mock_solutions_response.json.return_value = {
-            'value': [
-                {
-                    'properties': {
-                        'tool': 'ServerDiscovery',
-                        'details': {}
-                    }
+        # Mock solution response without vault ID
+        mock_get_resource.return_value = {
+            'id': f'/subscriptions/{self.mock_subscription_id}/resourceGroups/{self.mock_rg_name}/providers/Microsoft.Migrate/migrateProjects/{self.mock_project_name}/solutions/Servers-Migration-ServerMigration_DataReplication',
+            'name': 'Servers-Migration-ServerMigration_DataReplication',
+            'properties': {
+                'details': {
+                    'extendedDetails': {}
                 }
-            ]
+            }
         }
-        
-        mock_send_get.side_effect = [mock_project_response, mock_solutions_response]
 
         # Execute
         with self.assertRaises(CLIError) as context:
@@ -5710,7 +5674,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
                 self.mock_subscription_id
             )
 
-        self.assertIn("No replication vault found", str(context.exception))
+        self.assertIn("Vault ID not found", str(context.exception))
 
 
 if __name__ == '__main__':
