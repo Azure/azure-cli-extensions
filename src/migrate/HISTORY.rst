@@ -3,7 +3,7 @@
 Release History
 ===============
 
-4.0.0b1
+3.0.0b2
 +++++++++++++++
 * Added replication list, get and start migration commands.
 

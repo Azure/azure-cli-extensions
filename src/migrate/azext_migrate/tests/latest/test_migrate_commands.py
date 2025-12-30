@@ -1958,18 +1958,7 @@ class MigrateJobHelperTests(ScenarioTest):
             return job
 
         mock_cmd = mock.Mock()
-        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = "https://management.azure.com"
-
-        # Execute - should raise error
-        with self.assertRaises((CLIError, KnackCLIError)) as context:
-            get_single_job(
-                mock_cmd, "sub-id", "rg-name", "vault-name",
-                "job-name", mock_format)
-
-        # Verify error message
-        self.assertIn("not found", str(context.exception))
-
-    @mock.patch('azext_migrate.helpers._utils.send_get_request')
+        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = "https://***@mock.patch('azext_migrate.helpers._utils.send_get_request')"
     def test_list_all_jobs_success(self, mock_send_request):
         """Test successfully listing all jobs"""
         from azext_migrate.helpers.replication.job._retrieve import (
@@ -1990,19 +1979,7 @@ class MigrateJobHelperTests(ScenarioTest):
             return {'name': job['name']}
 
         mock_cmd = mock.Mock()
-        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = "https://management.azure.com"
-
-        # Execute
-        result = list_all_jobs(
-            mock_cmd, "sub-id", "rg-name", "vault-name", mock_format)
-
-        # Verify
-        self.assertIsNotNone(result)
-        mock_send_request.assert_called_once()
-
-
-class MigrateScenarioTests(ScenarioTest):
-    @pytest.mark.skip(reason="Requires actual Azure resources and live authentication")
+        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = 'https://***@pytest.mark.skip(reason="Requires actual Azure resources and live authentication")'
     @record_only()
     def test_migrate_local_get_discovered_server_all_parameters(self):
         self.kwargs.update({
