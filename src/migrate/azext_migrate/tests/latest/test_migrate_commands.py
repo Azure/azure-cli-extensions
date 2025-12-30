@@ -1958,7 +1958,7 @@ class MigrateJobHelperTests(ScenarioTest):
             return job
 
         mock_cmd = mock.Mock()
-        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = "https://***"
+        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = "mock-endpoint"
 
         # Execute - should raise error
         with self.assertRaises((CLIError, KnackCLIError)) as context:
@@ -1990,7 +1990,7 @@ class MigrateJobHelperTests(ScenarioTest):
             return {'name': job['name']}
 
         mock_cmd = mock.Mock()
-        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = 'https://***'
+        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = 'mock-endpoint'
 
         # Execute
         result = list_all_jobs(
