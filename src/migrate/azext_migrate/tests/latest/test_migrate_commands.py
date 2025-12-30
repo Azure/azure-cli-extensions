@@ -1958,7 +1958,7 @@ class MigrateJobHelperTests(ScenarioTest):
             return job
 
         mock_cmd = mock.Mock()
-        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = "https://management.azure.com"
+        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = "mock-endpoint"
 
         # Execute - should raise error
         with self.assertRaises((CLIError, KnackCLIError)) as context:
@@ -1990,7 +1990,7 @@ class MigrateJobHelperTests(ScenarioTest):
             return {'name': job['name']}
 
         mock_cmd = mock.Mock()
-        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = "https://management.azure.com"
+        mock_cmd.cli_ctx.cloud.endpoints.resource_manager = 'mock-endpoint'
 
         # Execute
         result = list_all_jobs(
@@ -2474,7 +2474,7 @@ class MigrateRemoveHelperTests(unittest.TestCase):
         
         self.assertIn('Invalid target object ID format', str(context.exception))
 
-    def test_parse_protected_item_id_empty(self):
+    def test_parse_protected_item_id_empty_for_remove(self):
         """Test parsing empty protected item ID."""
         from azext_migrate.helpers.replication.remove._parse import parse_protected_item_id
         
@@ -4313,7 +4313,7 @@ class MigrateJobParseTests(unittest.TestCase):
             parse_job_id("")
 
     @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
-    def test_get_vault_name_from_project_success(self, mock_get_resource):
+    def test_get_vault_name_from_project_success_for_job(self, mock_get_resource):
         """Test successfully getting vault name from project."""
         from azext_migrate.helpers.replication.job._parse import get_vault_name_from_project
         
@@ -5234,7 +5234,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
 
         self.assertIn("Invalid protected item ID format", str(context.exception))
 
-    def test_parse_protected_item_id_empty(self):
+    def test_parse_protected_item_id_empty_for_migration(self):
         """Test parsing an empty protected item ID"""
         from azext_migrate.helpers.migration.start._parse import (
             parse_protected_item_id
@@ -5612,7 +5612,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
         # Should complete without exception
 
     @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
-    def test_get_vault_name_from_project_success(self, mock_get_resource):
+    def test_get_vault_name_from_project_success_for_migration(self, mock_get_resource):
         """Test successfully retrieving vault name from project"""
         from azext_migrate.helpers.replication.job._parse import (
             get_vault_name_from_project
