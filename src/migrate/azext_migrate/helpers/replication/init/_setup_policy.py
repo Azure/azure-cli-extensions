@@ -275,13 +275,13 @@ def setup_replication_policy(cmd,
         print(f"Creating Policy '{policy_name}'...")
 
         recoveryPoint = (
-            ReplicationPolicyDetails.RecoveryPointHistoryInMinutes
+            ReplicationPolicyDetails.RecoveryPointHistoryInMinutes.value
         )
         crashConsistentFreq = (
-            ReplicationPolicyDetails.CrashConsistentFrequencyInMinutes
+            ReplicationPolicyDetails.CrashConsistentFrequencyInMinutes.value
         )
         appConsistentFreq = (
-            ReplicationPolicyDetails.AppConsistentFrequencyInMinutes
+            ReplicationPolicyDetails.AppConsistentFrequencyInMinutes.value
         )
 
         policy_body = {

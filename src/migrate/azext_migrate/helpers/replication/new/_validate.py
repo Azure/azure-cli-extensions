@@ -82,7 +82,7 @@ def _process_v3_dict(extended_details, app_map):
     return app_map
 
 
-def validate_server_parameters(
+def validate_server_parameters(  # pylint: disable=too-many-locals,too-many-branches
         cmd,
         machine_id,
         machine_index,
@@ -257,7 +257,7 @@ def validate_server_parameters(
             f"/subscriptions/{subscription_id}/"
             f"resourceGroups/{resource_group_name}")
 
-    return rg_uri, machine_id
+    return rg_uri, machine_id, subscription_id
 
 
 def validate_required_parameters(machine_id,
