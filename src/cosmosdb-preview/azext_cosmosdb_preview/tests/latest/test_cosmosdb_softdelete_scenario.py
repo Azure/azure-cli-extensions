@@ -81,7 +81,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         logger.info("Listing soft-deleted accounts")
         soft_deleted_accounts = self.cmd(
             'az cosmosdb sql softdeleted-account list '
-            '--location {loc} -g {rg}'
+            '--location {loc}'
         ).get_output_in_json()
         
         deleted_account_found = any(acc.get('name') == self.kwargs['acc'] for acc in soft_deleted_accounts)
@@ -110,7 +110,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         logger.info("Verifying account is no longer in soft-deleted list")
         soft_deleted_accounts_after = self.cmd(
             'az cosmosdb sql softdeleted-account list '
-            '--location {loc} -g {rg}'
+            '--location {loc}'
         ).get_output_in_json()
         
         recovered_account_found = any(acc.get('name') == self.kwargs['acc'] for acc in soft_deleted_accounts_after)
@@ -142,7 +142,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         logger.info("Listing soft-deleted accounts")
         soft_deleted_accounts = self.cmd(
             'az cosmosdb sql softdeleted-account list '
-            '--location {loc} -g {rg}'
+            '--location {loc}'
         ).get_output_in_json()
         
         deleted_account_found = any(acc.get('name') == self.kwargs['acc'] for acc in soft_deleted_accounts)
@@ -169,7 +169,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         logger.info("Verifying account is no longer in soft-deleted list")
         soft_deleted_accounts_after = self.cmd(
             'az cosmosdb sql softdeleted-account list '
-            '--location {loc} -g {rg}'
+            '--location {loc}'
         ).get_output_in_json()
         
         purged_account_found = any(acc.get('name') == self.kwargs['acc'] for acc in soft_deleted_accounts_after)
@@ -380,26 +380,22 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         time.sleep(60)
 
         logger.info("Purging the soft-deleted database")
-        try:
-            self.cmd(
-                'az cosmosdb sql softdeleted-database delete '
-                '--location {loc} --account-name {acc} --name {db_name} -g {rg} --yes'
-            )
-            
-            time.sleep(60)
-            
-            logger.info("Database successfully purged")
-            
-            soft_deleted_dbs = self.cmd(
-                'az cosmosdb sql softdeleted-database list '
-                '--location {loc} --account-name {acc} -g {rg}'
-            ).get_output_in_json()
-            
-            purged_db_found = any(db.get('name') == db_name for db in soft_deleted_dbs)
-            assert not purged_db_found, "Database should not appear in soft-deleted list after purge"
-            
-        except Exception as e:
-            logger.warning(f"Database purge test skipped or failed: {e}")
+        self.cmd(
+            'az cosmosdb sql softdeleted-database delete '
+            '--location {loc} --account-name {acc} --name {db_name} -g {rg} --yes'
+        )
+        
+        time.sleep(60)
+        
+        logger.info("Database successfully purged")
+        
+        soft_deleted_dbs = self.cmd(
+            'az cosmosdb sql softdeleted-database list '
+            '--location {loc} --account-name {acc} -g {rg}'
+        ).get_output_in_json()
+        
+        purged_db_found = any(db.get('name') == db_name for db in soft_deleted_dbs)
+        assert not purged_db_found, "Database should not appear in soft-deleted list after purge"
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_coll_purge', location='westus')

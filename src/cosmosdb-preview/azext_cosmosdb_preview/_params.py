@@ -835,12 +835,11 @@ def load_arguments(self, _):
     # Soft-deleted Account
     with self.argument_context('cosmosdb sql softdeleted-account list') as c:
         c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted account.", required=False)
-        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
 
     with self.argument_context('cosmosdb sql softdeleted-account show') as c:
         c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted account.", required=True)
         c.argument('account_name', options_list=['--account-name', '-n'], help="Name of the soft-deleted Cosmos DB account.", required=True)
-        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=False)
 
     with self.argument_context('cosmosdb sql softdeleted-account delete') as c:
         c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted account.", required=True)
