@@ -57,8 +57,6 @@ class Operations:
     def list(self, **kwargs: Any) -> AsyncIterable["_models.OperationValue"]:
         """Gets a list of operations.
 
-        Gets a list of operations.
-
         :return: An iterator like instance of either OperationValue or the result of cls(response)
         :rtype:
          ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.models.OperationValue]
@@ -110,7 +108,7 @@ class Operations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)

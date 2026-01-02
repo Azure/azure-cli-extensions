@@ -229,8 +229,6 @@ class MaintenanceConfigurationsOperations:
     ) -> Iterable["_models.MaintenanceConfiguration"]:
         """Gets a list of maintenance configurations in the specified managed cluster.
 
-        Gets a list of maintenance configurations in the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -317,8 +315,6 @@ class MaintenanceConfigurationsOperations:
     ) -> _models.MaintenanceConfiguration:
         """Gets the specified maintenance configuration of a managed cluster.
 
-        Gets the specified maintenance configuration of a managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -388,8 +384,6 @@ class MaintenanceConfigurationsOperations:
     ) -> _models.MaintenanceConfiguration:
         """Creates or updates a maintenance configuration in the specified managed cluster.
 
-        Creates or updates a maintenance configuration in the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -421,8 +415,6 @@ class MaintenanceConfigurationsOperations:
     ) -> _models.MaintenanceConfiguration:
         """Creates or updates a maintenance configuration in the specified managed cluster.
 
-        Creates or updates a maintenance configuration in the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -451,8 +443,6 @@ class MaintenanceConfigurationsOperations:
         **kwargs: Any
     ) -> _models.MaintenanceConfiguration:
         """Creates or updates a maintenance configuration in the specified managed cluster.
-
-        Creates or updates a maintenance configuration in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -530,8 +520,6 @@ class MaintenanceConfigurationsOperations:
         self, resource_group_name: str, resource_name: str, config_name: str, **kwargs: Any
     ) -> None:
         """Deletes a maintenance configuration.
-
-        Deletes a maintenance configuration.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.

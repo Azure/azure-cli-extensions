@@ -42,49 +42,6 @@ _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 
 
-def build_abort_latest_operation_request(
-    resource_group_name: str, resource_name: str, agent_pool_name: str, subscription_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-10-02-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = kwargs.pop(
-        "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedclusters/{resourceName}/agentPools/{agentPoolName}/abort",
-    )
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url(
-            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
-        ),
-        "resourceName": _SERIALIZER.url(
-            "resource_name",
-            resource_name,
-            "str",
-            max_length=63,
-            min_length=1,
-            pattern=r"^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$",
-        ),
-        "agentPoolName": _SERIALIZER.url(
-            "agent_pool_name", agent_pool_name, "str", max_length=12, min_length=1, pattern=r"^[a-z][a-z0-9]{0,11}$"
-        ),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
-
-
 def build_list_request(
     resource_group_name: str, resource_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
@@ -215,9 +172,9 @@ def build_create_or_update_request(
 
     # Construct headers
     if if_match is not None:
-        _headers["If-Match"] = _SERIALIZER.header("if_match", if_match, "str")
+        _headers["if-match"] = _SERIALIZER.header("if_match", if_match, "str")
     if if_none_match is not None:
-        _headers["If-None-Match"] = _SERIALIZER.header("if_none_match", if_none_match, "str")
+        _headers["if-none-match"] = _SERIALIZER.header("if_none_match", if_none_match, "str")
     if content_type is not None:
         _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
@@ -275,13 +232,13 @@ def build_delete_request(
 
     # Construct headers
     if if_match is not None:
-        _headers["If-Match"] = _SERIALIZER.header("if_match", if_match, "str")
+        _headers["if-match"] = _SERIALIZER.header("if_match", if_match, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
     return HttpRequest(method="DELETE", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_get_upgrade_profile_request(
+def build_abort_latest_operation_request(
     resource_group_name: str, resource_name: str, agent_pool_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -293,7 +250,7 @@ def build_get_upgrade_profile_request(
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/agentPools/{agentPoolName}/upgradeProfiles/default",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/agentPools/{agentPoolName}/abort",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -321,7 +278,7 @@ def build_get_upgrade_profile_request(
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_complete_upgrade_request(
@@ -413,46 +370,6 @@ def build_delete_machines_request(
     return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_get_available_agent_pool_versions_request(  # pylint: disable=name-too-long
-    resource_group_name: str, resource_name: str, subscription_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-10-02-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = kwargs.pop(
-        "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/availableAgentPoolVersions",
-    )
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url(
-            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
-        ),
-        "resourceName": _SERIALIZER.url(
-            "resource_name",
-            resource_name,
-            "str",
-            max_length=63,
-            min_length=1,
-            pattern=r"^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$",
-        ),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
 def build_upgrade_node_image_version_request(
     resource_group_name: str, resource_name: str, agent_pool_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
@@ -496,6 +413,89 @@ def build_upgrade_node_image_version_request(
     return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
+def build_get_upgrade_profile_request(
+    resource_group_name: str, resource_name: str, agent_pool_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-10-02-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/agentPools/{agentPoolName}/upgradeProfiles/default",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "resourceName": _SERIALIZER.url(
+            "resource_name",
+            resource_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$",
+        ),
+        "agentPoolName": _SERIALIZER.url(
+            "agent_pool_name", agent_pool_name, "str", max_length=12, min_length=1, pattern=r"^[a-z][a-z0-9]{0,11}$"
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_get_available_agent_pool_versions_request(  # pylint: disable=name-too-long
+    resource_group_name: str, resource_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-10-02-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/availableAgentPoolVersions",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "resourceName": _SERIALIZER.url(
+            "resource_name",
+            resource_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
 class AgentPoolsOperations:
     """
     .. warning::
@@ -515,134 +515,9 @@ class AgentPoolsOperations:
         self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
-    def _abort_latest_operation_initial(
-        self, resource_group_name: str, resource_name: str, agent_pool_name: str, **kwargs: Any
-    ) -> Iterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[Iterator[bytes]] = kwargs.pop("cls", None)
-
-        _request = build_abort_latest_operation_request(
-            resource_group_name=resource_group_name,
-            resource_name=resource_name,
-            agent_pool_name=agent_pool_name,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _decompress = kwargs.pop("decompress", True)
-        _stream = True
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [202, 204]:
-            try:
-                response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace
-    def begin_abort_latest_operation(
-        self, resource_group_name: str, resource_name: str, agent_pool_name: str, **kwargs: Any
-    ) -> LROPoller[None]:
-        """Aborts last operation running on agent pool.
-
-        Aborts the currently running operation on the agent pool. The Agent Pool will be moved to a
-        Canceling state and eventually to a Canceled state when cancellation finishes. If the operation
-        completes before cancellation can take place, an error is returned.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param resource_name: The name of the managed cluster resource. Required.
-        :type resource_name: str
-        :param agent_pool_name: The name of the agent pool. Required.
-        :type agent_pool_name: str
-        :return: An instance of LROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[None] = kwargs.pop("cls", None)
-        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = self._abort_latest_operation_initial(
-                resource_group_name=resource_group_name,
-                resource_name=resource_name,
-                agent_pool_name=agent_pool_name,
-                api_version=api_version,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
-            if cls:
-                return cls(pipeline_response, None, {})  # type: ignore
-
-        if polling is True:
-            polling_method: PollingMethod = cast(
-                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
-        elif polling is False:
-            polling_method = cast(PollingMethod, NoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return LROPoller[None].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return LROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
     @distributed_trace
     def list(self, resource_group_name: str, resource_name: str, **kwargs: Any) -> Iterable["_models.AgentPool"]:
         """Gets a list of agent pools in the specified managed cluster.
-
-        Gets a list of agent pools in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -727,8 +602,6 @@ class AgentPoolsOperations:
         self, resource_group_name: str, resource_name: str, agent_pool_name: str, **kwargs: Any
     ) -> _models.AgentPool:
         """Gets the specified managed cluster agent pool.
-
-        Gets the specified managed cluster agent pool.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -851,10 +724,15 @@ class AgentPoolsOperations:
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 201:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
 
         return deserialized  # type: ignore
 
@@ -872,8 +750,6 @@ class AgentPoolsOperations:
         **kwargs: Any
     ) -> LROPoller[_models.AgentPool]:
         """Creates or updates an agent pool in the specified managed cluster.
-
-        Creates or updates an agent pool in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -913,8 +789,6 @@ class AgentPoolsOperations:
     ) -> LROPoller[_models.AgentPool]:
         """Creates or updates an agent pool in the specified managed cluster.
 
-        Creates or updates an agent pool in the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -950,8 +824,6 @@ class AgentPoolsOperations:
         **kwargs: Any
     ) -> LROPoller[_models.AgentPool]:
         """Creates or updates an agent pool in the specified managed cluster.
-
-        Creates or updates an agent pool in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -1007,7 +879,9 @@ class AgentPoolsOperations:
             return deserialized
 
         if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -1079,6 +953,7 @@ class AgentPoolsOperations:
         response_headers = {}
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -1098,8 +973,6 @@ class AgentPoolsOperations:
         **kwargs: Any
     ) -> LROPoller[None]:
         """Deletes an agent pool in the specified managed cluster.
-
-        Deletes an agent pool in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -1147,7 +1020,9 @@ class AgentPoolsOperations:
                 return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -1161,25 +1036,9 @@ class AgentPoolsOperations:
             )
         return LROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    @distributed_trace
-    def get_upgrade_profile(
+    def _abort_latest_operation_initial(
         self, resource_group_name: str, resource_name: str, agent_pool_name: str, **kwargs: Any
-    ) -> _models.AgentPoolUpgradeProfile:
-        """Gets the upgrade profile for an agent pool.
-
-        Gets the upgrade profile for an agent pool.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param resource_name: The name of the managed cluster resource. Required.
-        :type resource_name: str
-        :param agent_pool_name: The name of the agent pool. Required.
-        :type agent_pool_name: str
-        :return: AgentPoolUpgradeProfile or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.models.AgentPoolUpgradeProfile
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
+    ) -> Iterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -1192,9 +1051,9 @@ class AgentPoolsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.AgentPoolUpgradeProfile] = kwargs.pop("cls", None)
+        cls: ClsType[Iterator[bytes]] = kwargs.pop("cls", None)
 
-        _request = build_get_upgrade_profile_request(
+        _request = build_abort_latest_operation_request(
             resource_group_name=resource_group_name,
             resource_name=resource_name,
             agent_pool_name=agent_pool_name,
@@ -1205,24 +1064,101 @@ class AgentPoolsOperations:
         )
         _request.url = self._client.format_url(_request.url)
 
-        _stream = False
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202, 204]:
+            try:
+                response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("AgentPoolUpgradeProfile", pipeline_response.http_response)
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
 
         return deserialized  # type: ignore
+
+    @distributed_trace
+    def begin_abort_latest_operation(
+        self, resource_group_name: str, resource_name: str, agent_pool_name: str, **kwargs: Any
+    ) -> LROPoller[None]:
+        """Aborts last operation running on agent pool.
+
+        Aborts the currently running operation on the agent pool. The Agent Pool will be moved to a
+        Canceling state and eventually to a Canceled state when cancellation finishes. If the operation
+        completes before cancellation can take place, a 409 error code is returned.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param resource_name: The name of the managed cluster resource. Required.
+        :type resource_name: str
+        :param agent_pool_name: The name of the agent pool. Required.
+        :type agent_pool_name: str
+        :return: An instance of LROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = self._abort_latest_operation_initial(
+                resource_group_name=resource_group_name,
+                resource_name=resource_name,
+                agent_pool_name=agent_pool_name,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(PollingMethod, NoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return LROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return LROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     def _complete_upgrade_initial(
         self, resource_group_name: str, resource_name: str, agent_pool_name: str, **kwargs: Any
@@ -1270,10 +1206,11 @@ class AgentPoolsOperations:
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
-        response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
         response_headers["Azure-AsyncOperation"] = self._deserialize(
             "str", response.headers.get("Azure-AsyncOperation")
         )
+        response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+        response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -1408,6 +1345,7 @@ class AgentPoolsOperations:
 
         response_headers = {}
         response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+        response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -1428,8 +1366,6 @@ class AgentPoolsOperations:
         **kwargs: Any
     ) -> LROPoller[None]:
         """Deletes specific machines in an agent pool.
-
-        Deletes specific machines in an agent pool.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -1461,8 +1397,6 @@ class AgentPoolsOperations:
     ) -> LROPoller[None]:
         """Deletes specific machines in an agent pool.
 
-        Deletes specific machines in an agent pool.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -1490,8 +1424,6 @@ class AgentPoolsOperations:
         **kwargs: Any
     ) -> LROPoller[None]:
         """Deletes specific machines in an agent pool.
-
-        Deletes specific machines in an agent pool.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -1538,7 +1470,9 @@ class AgentPoolsOperations:
                 return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -1551,6 +1485,201 @@ class AgentPoolsOperations:
                 deserialization_callback=get_long_running_output,
             )
         return LROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    def _upgrade_node_image_version_initial(
+        self, resource_group_name: str, resource_name: str, agent_pool_name: str, **kwargs: Any
+    ) -> Iterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[Iterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_upgrade_node_image_version_request(
+            resource_group_name=resource_group_name,
+            resource_name=resource_name,
+            agent_pool_name=agent_pool_name,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            try:
+                response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace
+    def begin_upgrade_node_image_version(
+        self, resource_group_name: str, resource_name: str, agent_pool_name: str, **kwargs: Any
+    ) -> LROPoller[_models.AgentPool]:
+        """Upgrades the node image version of an agent pool to the latest.
+
+        Upgrading the node image version of an agent pool applies the newest OS and runtime updates to
+        the nodes. AKS provides one new image per week with the latest updates. For more details on
+        node image versions, see: https://docs.microsoft.com/azure/aks/node-image-upgrade.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param resource_name: The name of the managed cluster resource. Required.
+        :type resource_name: str
+        :param agent_pool_name: The name of the agent pool. Required.
+        :type agent_pool_name: str
+        :return: An instance of LROPoller that returns either AgentPool or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.models.AgentPool]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = self._upgrade_node_image_version_initial(
+                resource_group_name=resource_group_name,
+                resource_name=resource_name,
+                agent_pool_name=agent_pool_name,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            response_headers = {}
+            response = pipeline_response.http_response
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+            deserialized = self._deserialize("AgentPool", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(PollingMethod, NoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return LROPoller[_models.AgentPool].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return LROPoller[_models.AgentPool](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
+
+    @distributed_trace
+    def get_upgrade_profile(
+        self, resource_group_name: str, resource_name: str, agent_pool_name: str, **kwargs: Any
+    ) -> _models.AgentPoolUpgradeProfile:
+        """Gets the upgrade profile for an agent pool.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param resource_name: The name of the managed cluster resource. Required.
+        :type resource_name: str
+        :param agent_pool_name: The name of the agent pool. Required.
+        :type agent_pool_name: str
+        :return: AgentPoolUpgradeProfile or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservice.models.AgentPoolUpgradeProfile
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[_models.AgentPoolUpgradeProfile] = kwargs.pop("cls", None)
+
+        _request = build_get_upgrade_profile_request(
+            resource_group_name=resource_group_name,
+            resource_name=resource_name,
+            agent_pool_name=agent_pool_name,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("AgentPoolUpgradeProfile", pipeline_response.http_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace
     def get_available_agent_pool_versions(
@@ -1613,135 +1742,3 @@ class AgentPoolsOperations:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
-
-    def _upgrade_node_image_version_initial(
-        self, resource_group_name: str, resource_name: str, agent_pool_name: str, **kwargs: Any
-    ) -> Iterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[Iterator[bytes]] = kwargs.pop("cls", None)
-
-        _request = build_upgrade_node_image_version_request(
-            resource_group_name=resource_group_name,
-            resource_name=resource_name,
-            agent_pool_name=agent_pool_name,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _decompress = kwargs.pop("decompress", True)
-        _stream = True
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202]:
-            try:
-                response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace
-    def begin_upgrade_node_image_version(
-        self, resource_group_name: str, resource_name: str, agent_pool_name: str, **kwargs: Any
-    ) -> LROPoller[_models.AgentPool]:
-        """Upgrades the node image version of an agent pool to the latest.
-
-        Upgrading the node image version of an agent pool applies the newest OS and runtime updates to
-        the nodes. AKS provides one new image per week with the latest updates. For more details on
-        node image versions, see: https://docs.microsoft.com/azure/aks/node-image-upgrade.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param resource_name: The name of the managed cluster resource. Required.
-        :type resource_name: str
-        :param agent_pool_name: The name of the agent pool. Required.
-        :type agent_pool_name: str
-        :return: An instance of LROPoller that returns either AgentPool or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.models.AgentPool]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[None] = kwargs.pop("cls", None)
-        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = self._upgrade_node_image_version_initial(
-                resource_group_name=resource_group_name,
-                resource_name=resource_name,
-                agent_pool_name=agent_pool_name,
-                api_version=api_version,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):
-            response_headers = {}
-            response = pipeline_response.http_response
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-            deserialized = self._deserialize("AgentPool", pipeline_response.http_response)
-            if cls:
-                return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-            return deserialized
-
-        if polling is True:
-            polling_method: PollingMethod = cast(
-                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
-        elif polling is False:
-            polling_method = cast(PollingMethod, NoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return LROPoller[_models.AgentPool].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return LROPoller[_models.AgentPool](
-            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
-        )

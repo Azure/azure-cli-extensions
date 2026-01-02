@@ -279,8 +279,6 @@ class SnapshotsOperations:
     def list(self, **kwargs: Any) -> Iterable["_models.Snapshot"]:
         """Gets a list of snapshots in the specified subscription.
 
-        Gets a list of snapshots in the specified subscription.
-
         :return: An iterator like instance of either Snapshot or the result of cls(response)
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.models.Snapshot]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -355,8 +353,6 @@ class SnapshotsOperations:
     @distributed_trace
     def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> Iterable["_models.Snapshot"]:
         """Lists snapshots in the specified subscription and resource group.
-
-        Lists snapshots in the specified subscription and resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -437,8 +433,6 @@ class SnapshotsOperations:
     def get(self, resource_group_name: str, resource_name: str, **kwargs: Any) -> _models.Snapshot:
         """Gets a snapshot.
 
-        Gets a snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -503,8 +497,6 @@ class SnapshotsOperations:
     ) -> _models.Snapshot:
         """Creates or updates a snapshot.
 
-        Creates or updates a snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -532,8 +524,6 @@ class SnapshotsOperations:
     ) -> _models.Snapshot:
         """Creates or updates a snapshot.
 
-        Creates or updates a snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -558,8 +548,6 @@ class SnapshotsOperations:
         **kwargs: Any
     ) -> _models.Snapshot:
         """Creates or updates a snapshot.
-
-        Creates or updates a snapshot.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -640,8 +628,6 @@ class SnapshotsOperations:
     ) -> _models.Snapshot:
         """Updates tags on a snapshot.
 
-        Updates tags on a snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -669,8 +655,6 @@ class SnapshotsOperations:
     ) -> _models.Snapshot:
         """Updates tags on a snapshot.
 
-        Updates tags on a snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -695,8 +679,6 @@ class SnapshotsOperations:
         **kwargs: Any
     ) -> _models.Snapshot:
         """Updates tags on a snapshot.
-
-        Updates tags on a snapshot.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -770,8 +752,6 @@ class SnapshotsOperations:
         self, resource_group_name: str, resource_name: str, **kwargs: Any
     ) -> None:
         """Deletes a snapshot.
-
-        Deletes a snapshot.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.

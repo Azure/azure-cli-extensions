@@ -254,8 +254,6 @@ class IdentityBindingsOperations:
     ) -> Iterable["_models.IdentityBinding"]:
         """Gets a list of identity bindings in the specified managed cluster.
 
-        Gets a list of identity bindings in the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -339,8 +337,6 @@ class IdentityBindingsOperations:
         self, resource_group_name: str, resource_name: str, identity_binding_name: str, **kwargs: Any
     ) -> _models.IdentityBinding:
         """Gets the specified Identity Binding.
-
-        Gets the specified Identity Binding.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -460,10 +456,12 @@ class IdentityBindingsOperations:
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
-        response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-        response_headers["Azure-AsyncOperation"] = self._deserialize(
-            "str", response.headers.get("Azure-AsyncOperation")
-        )
+        if response.status_code == 201:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -484,8 +482,6 @@ class IdentityBindingsOperations:
         **kwargs: Any
     ) -> LROPoller[_models.IdentityBinding]:
         """Creates or updates an identity binding in the specified managed cluster.
-
-        Creates or updates an identity binding in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -518,8 +514,6 @@ class IdentityBindingsOperations:
     ) -> LROPoller[_models.IdentityBinding]:
         """Creates or updates an identity binding in the specified managed cluster.
 
-        Creates or updates an identity binding in the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -548,8 +542,6 @@ class IdentityBindingsOperations:
         **kwargs: Any
     ) -> LROPoller[_models.IdentityBinding]:
         """Creates or updates an identity binding in the specified managed cluster.
-
-        Creates or updates an identity binding in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -592,16 +584,9 @@ class IdentityBindingsOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            response_headers = {}
-            response = pipeline_response.http_response
-            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
             deserialized = self._deserialize("IdentityBinding", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -670,15 +655,11 @@ class IdentityBindingsOperations:
 
         response_headers = {}
         if response.status_code == 202:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-        if response.status_code == 204:
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -692,8 +673,6 @@ class IdentityBindingsOperations:
         self, resource_group_name: str, resource_name: str, identity_binding_name: str, **kwargs: Any
     ) -> LROPoller[None]:
         """Deletes an identity binding in the specified managed cluster.
-
-        Deletes an identity binding in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.

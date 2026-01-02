@@ -254,8 +254,6 @@ class LoadBalancersOperations:
     ) -> Iterable["_models.LoadBalancer"]:
         """Gets a list of load balancers in the specified managed cluster.
 
-        Gets a list of load balancers in the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -340,8 +338,6 @@ class LoadBalancersOperations:
     ) -> _models.LoadBalancer:
         """Gets the specified load balancer.
 
-        Gets the specified load balancer.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -410,8 +406,6 @@ class LoadBalancersOperations:
     ) -> _models.LoadBalancer:
         """Creates or updates a load balancer in the specified managed cluster.
 
-        Creates or updates a load balancer in the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -442,8 +436,6 @@ class LoadBalancersOperations:
     ) -> _models.LoadBalancer:
         """Creates or updates a load balancer in the specified managed cluster.
 
-        Creates or updates a load balancer in the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -471,8 +463,6 @@ class LoadBalancersOperations:
         **kwargs: Any
     ) -> _models.LoadBalancer:
         """Creates or updates a load balancer in the specified managed cluster.
-
-        Creates or updates a load balancer in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -591,15 +581,11 @@ class LoadBalancersOperations:
 
         response_headers = {}
         if response.status_code == 202:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-        if response.status_code == 204:
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -613,8 +599,6 @@ class LoadBalancersOperations:
         self, resource_group_name: str, resource_name: str, load_balancer_name: str, **kwargs: Any
     ) -> LROPoller[None]:
         """Deletes a load balancer in the specified managed cluster.
-
-        Deletes a load balancer in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -654,7 +638,9 @@ class LoadBalancersOperations:
                 return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:

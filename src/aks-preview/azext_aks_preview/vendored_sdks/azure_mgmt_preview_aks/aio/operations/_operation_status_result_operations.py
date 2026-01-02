@@ -64,8 +64,6 @@ class OperationStatusResultOperations:
     ) -> AsyncIterable["_models.OperationStatusResult"]:
         """Gets a list of operations in the specified managedCluster.
 
-        Gets a list of operations in the specified managedCluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -147,75 +145,10 @@ class OperationStatusResultOperations:
         return AsyncItemPaged(get_next, extract_data)
 
     @distributed_trace_async
-    async def get(
-        self, resource_group_name: str, resource_name: str, operation_id: str, **kwargs: Any
-    ) -> _models.OperationStatusResult:
-        """Get the status of a specific operation in the specified managed cluster.
-
-        Get the status of a specific operation in the specified managed cluster.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param resource_name: The name of the managed cluster resource. Required.
-        :type resource_name: str
-        :param operation_id: The ID of an ongoing async operation. Required.
-        :type operation_id: str
-        :return: OperationStatusResult or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.models.OperationStatusResult
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.OperationStatusResult] = kwargs.pop("cls", None)
-
-        _request = build_get_request(
-            resource_group_name=resource_group_name,
-            resource_name=resource_name,
-            operation_id=operation_id,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("OperationStatusResult", pipeline_response.http_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
     async def get_by_agent_pool(
         self, resource_group_name: str, resource_name: str, agent_pool_name: str, operation_id: str, **kwargs: Any
     ) -> _models.OperationStatusResult:
         """Get the status of a specific operation in the specified agent pool.
-
-        Get the status of a specific operation in the specified agent pool.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -248,6 +181,67 @@ class OperationStatusResultOperations:
             resource_group_name=resource_group_name,
             resource_name=resource_name,
             agent_pool_name=agent_pool_name,
+            operation_id=operation_id,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("OperationStatusResult", pipeline_response.http_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def get(
+        self, resource_group_name: str, resource_name: str, operation_id: str, **kwargs: Any
+    ) -> _models.OperationStatusResult:
+        """Get the status of a specific operation in the specified managed cluster.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param resource_name: The name of the managed cluster resource. Required.
+        :type resource_name: str
+        :param operation_id: The ID of an ongoing async operation. Required.
+        :type operation_id: str
+        :return: OperationStatusResult or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservice.models.OperationStatusResult
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[_models.OperationStatusResult] = kwargs.pop("cls", None)
+
+        _request = build_get_request(
+            resource_group_name=resource_group_name,
+            resource_name=resource_name,
             operation_id=operation_id,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
