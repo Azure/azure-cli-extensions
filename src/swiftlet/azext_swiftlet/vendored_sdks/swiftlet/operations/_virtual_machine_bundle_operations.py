@@ -23,8 +23,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class OperationOperations(object):
-    """OperationOperations operations.
+class VirtualMachineBundleOperations(object):
+    """VirtualMachineBundleOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -45,19 +45,81 @@ class OperationOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def list(
+    def get(
         self,
+        bundle_name,  # type: str
+        location,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.AvailableOperations"]
-        """Gets a list of Swiftlet operations.
+        # type: (...) -> "models.VirtualMachineBundle"
+        """Gets information about the virtual machine bundle.
 
+        :param bundle_name: The name of the virtual machine bundle.
+        :type bundle_name: str
+        :param location: The name of a supported Azure region.
+        :type location: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either AvailableOperations or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~swiftlet_management_client.models.AvailableOperations]
+        :return: VirtualMachineBundle, or the result of cls(response)
+        :rtype: ~swiftlet_management_client.models.VirtualMachineBundle
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.AvailableOperations"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachineBundle"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-03-01-preview"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'bundleName': self._serialize.url("bundle_name", bundle_name, 'str'),
+            'location': self._serialize.url("location", location, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('VirtualMachineBundle', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Swiftlet/locations/{location}/virtualMachineBundles/{bundleName}'}  # type: ignore
+
+    def list(
+        self,
+        location,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> Iterable["models.VirtualMachineBundleListResult"]
+        """List all Swiftlet VM bundles available for the specified subscription and Azure location.
+
+        :param location: The name of a supported Azure region.
+        :type location: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either VirtualMachineBundleListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~swiftlet_management_client.models.VirtualMachineBundleListResult]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachineBundleListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -73,6 +135,11 @@ class OperationOperations(object):
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'location': self._serialize.url("location", location, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
@@ -85,7 +152,7 @@ class OperationOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('AvailableOperations', pipeline_response)
+            deserialized = self._deserialize('VirtualMachineBundleListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -106,4 +173,4 @@ class OperationOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/providers/Microsoft.Swiftlet/operations'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Swiftlet/locations/{location}/virtualMachineBundles'}  # type: ignore
