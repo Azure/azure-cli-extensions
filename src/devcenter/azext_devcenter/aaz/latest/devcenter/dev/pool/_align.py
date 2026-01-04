@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter dev dev-box approve",
+    "devcenter dev pool align",
 )
-class Approve(AAZCommand):
-    """Approves the creation of a Dev Box.
+class Align(AAZCommand):
+    """Aligns all Dev Boxes in the pool with the current configuration.
 
-    :example: Approve creation
-        az devcenter dev dev-box approve --project-name "myProject" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/"  --user-id "me" --dev-box-name "MyDevBox"
+    :example: Align
+        az devcenter dev pool align  --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "myProject" --pool-name "DevPool" --targets ["NetworkProperties"]
     """
 
     _aaz_info = {
         "version": "2025-08-01-preview",
         "resources": [
-            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes/{}:approve", "2025-08-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/pools/{}:align", "2025-08-01-preview"],
         ]
     }
 
@@ -55,9 +55,9 @@ class Approve(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dev_box_name = AAZStrArg(
-            options=["-n", "--name", "--dev-box", "--dev-box-name"],
-            help="The name of the dev box.",
+        _args_schema.pool_name = AAZStrArg(
+            options=["--pool-name"],
+            help="Pool name.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
@@ -75,22 +75,26 @@ class Approve(AAZCommand):
                 min_length=3,
             ),
         )
-        _args_schema.user_id = AAZStrArg(
-            options=["--user-id"],
-            help="The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.",
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.targets = AAZListArg(
+            options=["--targets"],
+            arg_group="Body",
+            help="The targets to align on. Possible values are \"NetworkProperties\", \"HibernateSupport\", or \"SingleSignOnStatus\".",
             required=True,
-            default="me",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$",
-                max_length=36,
-                min_length=2,
-            ),
+        )
+
+        targets = cls._args_schema.targets
+        targets.Element = AAZStrArg(
+            enum={"HibernateSupport": "HibernateSupport", "NetworkProperties": "NetworkProperties", "SingleSignOnStatus": "SingleSignOnStatus"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.DevBoxesApproveDevBox(ctx=self.ctx)()
+        yield self.DevBoxesAlignPool(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -102,7 +106,7 @@ class Approve(AAZCommand):
         pass
 
 
-    class DevBoxesApproveDevBox(AAZHttpOperation):
+    class DevBoxesAlignPool(AAZHttpOperation):
         CLIENT_TYPE = "AAZMicrosoftDevcenterDataPlaneClient_devcenter"
 
         def __call__(self, *args, **kwargs):
@@ -126,13 +130,12 @@ class Approve(AAZCommand):
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/projects/{projectName}/users/{userId}/devboxes/{devBoxName}:approve",
+                "/projects/{projectName}/pools/{poolName}:align",
                 **self.url_parameters
             )
 
@@ -153,15 +156,11 @@ class Approve(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "devBoxName", self.ctx.args.dev_box_name,
+                    "poolName", self.ctx.args.pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "projectName", self.ctx.args.project_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "userId", self.ctx.args.user_id,
                     required=True,
                 ),
             }
@@ -180,9 +179,33 @@ class Approve(AAZCommand):
         def on_200(self, session):
             pass
 
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+            }
+            return parameters
 
-class _ApproveHelper:
-    """Helper class for Approve"""
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("targets", AAZListType, ".targets", typ_kwargs={"flags": {"required": True}})
+
+            targets = _builder.get(".targets")
+            if targets is not None:
+                targets.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
 
-__all__ = ["Approve"]
+class _AlignHelper:
+    """Helper class for Align"""
+
+
+__all__ = ["Align"]

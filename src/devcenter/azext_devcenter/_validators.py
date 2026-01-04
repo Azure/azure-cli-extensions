@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from datetime import datetime
+from dateutil import parser
 import locale
 import re
 from azure.cli.core.azclierror import (
@@ -123,6 +124,15 @@ def validate_env_name_already_exists(env_iterator, name, user_id, project):
 already exists for the user-id '{user_id}' in this project '{project}'."""
             raise InvalidArgumentValueError(error_message)
 
+
+def is_rfc3339(string):
+    """ Validate RFC3339 datetime format and return datetime object."""
+    try:
+        parser.isoparse(string)
+    except ValueError as exception:
+        error_message = f"""Input '{string}' not valid RFC3339 format. \
+Valid example: 2017-12-31T05:30:00Z"""
+        raise InvalidArgumentValueError(error_message) from exception
 
 def is_iso8601(namespace):
     if namespace.expiration_date is None:

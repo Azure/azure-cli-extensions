@@ -6,6 +6,7 @@
 # pylint: disable=too-many-lines
 
 from datetime import datetime
+from dateutil import parser
 from azure.cli.core.aaz import register_callback, has_value
 from azure.cli.core.azclierror import ResourceNotFoundError
 from .utils import get_project_arg, get_earliest_time, get_delayed_time, get_dataplane_endpoint
@@ -160,6 +161,7 @@ from .aaz.latest.devcenter.dev.project import (
 from .aaz.latest.devcenter.dev.pool import (
     List as PoolListDp,
     Show as PoolShowDp,
+    Align as PoolAlignDp,
 )
 from .aaz.latest.devcenter.dev.schedule import (
     List as ScheduleListDp,
@@ -190,6 +192,7 @@ from .aaz.latest.devcenter.dev.dev_box import (
     Align as DevBoxAlign,
     Approve as DevBoxApprove,
     SetActiveHours as DevBoxSetActiveHours,
+    ScheduleDelete as DevBoxScheduleDelete,
 )
 from .aaz.latest.devcenter.dev.environment import (
     Create as EnvironmentCreate,
@@ -249,6 +252,7 @@ from ._validators import (
     validate_env_name_already_exists,
     validate_repo_git,
     validate_pool_create,
+    is_rfc3339
 )
 
 # Control plane
@@ -1061,6 +1065,17 @@ def devcenter_pool_show(
         "pool_name": pool_name
     })
 
+def devcenter_pool_align(
+    cmd, project_name, pool_name, targets, dev_center=None, endpoint=None
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    return PoolAlignDp(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint,
+        "project_name": project_name,
+        "pool_name": pool_name,
+        "targets": targets
+    })
+
 
 def devcenter_schedule_list(
     cmd, project_name, pool_name=None, dev_center=None, endpoint=None
@@ -1194,6 +1209,7 @@ def devcenter_dev_box_align(
     cmd,
     project_name,
     dev_box_name,
+    targets,
     user_id="me",
     no_wait=False,
     dev_center=None,
@@ -1206,7 +1222,7 @@ def devcenter_dev_box_align(
         "user_id": user_id,
         "dev_box_name": dev_box_name,
         "no_wait": no_wait,
-        "targets": ["NetworkProperties"]
+        "targets": targets
     })
 
 
@@ -1239,6 +1255,7 @@ def devcenter_dev_box_set_active_hours(
     user_id="me",
     dev_center=None,
     endpoint=None,
+    days_of_week=None,
 ):
     updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
     return DevBoxSetActiveHours(cli_ctx=cmd.cli_ctx)(command_args={
@@ -1248,7 +1265,8 @@ def devcenter_dev_box_set_active_hours(
         "dev_box_name": dev_box_name,
         "end_time_hour": end_time_hour,
         "start_time_hour": start_time_hour,
-        "time_zone": time_zone
+        "time_zone": time_zone,
+        "days_of_week": days_of_week
     })
 
 
@@ -1349,6 +1367,26 @@ def devcenter_dev_box_skip_action(
         "user_id": user_id,
         "dev_box_name": dev_box_name,
         "action_name": action_name
+    })
+
+def devcenter_dev_box_schedule_delete(
+    cmd,
+    project_name,
+    dev_box_name,
+    delete_at,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    updated_endpoint = get_dataplane_endpoint(cmd.cli_ctx, endpoint, dev_center)
+    is_rfc3339(delete_at)
+    
+    return DevBoxScheduleDelete(cli_ctx=cmd.cli_ctx)(command_args={
+        "endpoint": updated_endpoint,
+        "project_name": project_name,
+        "user_id": user_id,
+        "dev_box_name": dev_box_name,
+        "delete_at": delete_at
     })
 
 
