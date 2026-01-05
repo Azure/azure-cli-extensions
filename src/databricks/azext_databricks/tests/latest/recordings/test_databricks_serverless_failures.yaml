@@ -1,0 +1,167 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"computeMode": "Serverless", "publicNetworkAccess":
+      "Disabled"}, "sku": {"name": "Pxlekmx"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '130'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --location --compute-mode --sku --public-network-access
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_expected_failures000001/providers/Microsoft.Databricks/workspaces/failed-workspace?api-version=2025-10-01-preview
+  response:
+    body:
+      string: "{\r\n  \"error\": {\r\n    \"code\": \"InvalidDatabricksSku\",\r\n
+        \   \"message\": \"The SKU is invalid. The allowed SKUs are: ''Standard',
+        'Premium', 'Trial''.\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '154'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 20 Dec 2025 00:28:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/073c4a0f-e50b-4bb6-9e0c-242e35ad269e
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-msedge-ref:
+      - 'Ref A: 63895E0CD35E423A8F4DCC541977D915 Ref B: CO6AA3150217019 Ref C: 2025-12-20T00:28:48Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "eastus", "properties": {"computeMode": "Serverless", "parameters":
+      {"enableNoPublicIp": {"value": true}}}, "sku": {"name": "premium"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '148'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --location --compute-mode --sku --enable-no-public-ip
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_expected_failures000001/providers/Microsoft.Databricks/workspaces/failed-workspace?api-version=2025-10-01-preview
+  response:
+    body:
+      string: "{\r\n  \"error\": {\r\n    \"code\": \"FeatureNotSupportedForServerlessWorkspace\",\r\n
+        \   \"message\": \"The property 'Parameters' is not supported for Serverless
+        Workspace\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '167'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 20 Dec 2025 00:28:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/eastus/236aced2-d5cd-4725-bf49-585c86c63d4f
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-msedge-ref:
+      - 'Ref A: CEEA2225880F4E3F94BAF2CF44B8395B Ref B: CO6AA3150219049 Ref C: 2025-12-20T00:28:50Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "eastus", "properties": {"computeMode": "Serverless", "requiredNsgRules":
+      "AllRules"}, "sku": {"name": "premium"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '127'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --location --compute-mode --sku --required-nsg-rules
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_expected_failures000001/providers/Microsoft.Databricks/workspaces/failed-workspace?api-version=2025-10-01-preview
+  response:
+    body:
+      string: "{\r\n  \"error\": {\r\n    \"code\": \"FeatureNotSupportedForServerlessWorkspace\",\r\n
+        \   \"message\": \"The property 'RequiredNsgRules' is not supported for Serverless
+        Workspace\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '173'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 20 Dec 2025 00:28:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/14e83c74-8c11-4e66-b860-a551fefbea14
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-msedge-ref:
+      - 'Ref A: A4CE9BEACDD04AAF89F6409544C358A7 Ref B: CO6AA3150219039 Ref C: 2025-12-20T00:28:51Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
