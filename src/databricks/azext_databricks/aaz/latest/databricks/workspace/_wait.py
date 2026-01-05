@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2024-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -120,7 +120,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -180,6 +180,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="accessConnector",
             )
             properties.authorizations = AAZListType()
+            properties.compute_mode = AAZStrType(
+                serialized_name="computeMode",
+            )
             properties.created_by = AAZObjectType(
                 serialized_name="createdBy",
             )
@@ -212,7 +215,6 @@ class Wait(AAZWaitCommand):
             _WaitHelper._build_schema_managed_identity_configuration_read(properties.managed_disk_identity)
             properties.managed_resource_group_id = AAZStrType(
                 serialized_name="managedResourceGroupId",
-                flags={"required": True},
             )
             properties.parameters = AAZObjectType()
             properties.private_endpoint_connections = AAZListType(
