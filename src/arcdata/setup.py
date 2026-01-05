@@ -31,11 +31,11 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-REQUIREMENTS = os.path.expandvars(read(os.path.join("requirements.txt")))
-README = read("README.rst")
-HISTORY = read("HISTORY.rst")
+REQUIREMENTS = os.path.expandvars(read(os.path.join("arcdata", "requirements.txt")))
+README = read(os.path.join("arcdata", "README.rst"))
+HISTORY = read(os.path.join("arcdata", "HISTORY.rst"))
 ABOUT = {}
-exec(read(os.path.join("azext_arcdata", "__version__.py")), ABOUT)
+exec(read(os.path.join("arcdata", "azext_arcdata", "__version__.py")), ABOUT)
 
 setup(
     name=ABOUT["__title__"],
@@ -47,8 +47,9 @@ setup(
     author_email=ABOUT["__author_email__"],
     url=ABOUT["__url__"],
     classifiers=CLASSIFIERS,
+    package_dir={"": "arcdata"},
     package_data={"azext_arcdata": ["azext_metadata.json"]},
-    packages=find_packages(exclude=["*.test", "*.test.*", "test.*", "test"]),
+    packages=find_packages(where="arcdata", exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     install_requires=REQUIREMENTS,
     include_package_data=True,
 )
