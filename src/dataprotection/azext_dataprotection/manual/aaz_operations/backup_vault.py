@@ -179,3 +179,12 @@ class Create(_Create):
             logger.warning("Warning: The --soft-delete-state parameter is deprecated and will be removed in future "
                            "releases. Soft delete is now set to AlwaysOn by default.")
         self.ctx.args.soft_delete_state = "AlwaysOn"
+
+    class BackupVaultsCreateOrUpdate(_Create.BackupVaultsCreateOrUpdate):
+        @property
+        def content(self):
+            content = super().content
+            if has_value(self.ctx.args.x_ms_deleted_vault_id):
+                if "properties" in content:
+                    del content["properties"]
+            return content

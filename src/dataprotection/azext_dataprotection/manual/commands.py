@@ -25,6 +25,7 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection backup-vault deleted-vault', exception_handler=exception_handler) as g:
         g.custom_command('list-deleted-backup-instances', 'dataprotection_deleted_vault_list_deleted_backup_instances', client_factory=cf_resource_graph_client)
+        g.custom_command('undelete', 'dataprotection_deleted_vault_undelete')
 
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
         g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig", client_factory=cf_blob_container_mgmt)

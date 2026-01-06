@@ -47,10 +47,6 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.x_ms_deleted_vault_id = AAZStrArg(
-            options=["--x-ms-deleted-vault-id"],
-            help="The ID of the deleted backup vault to restore from during undelete flow.",
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -392,9 +388,6 @@ class Update(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
-                **self.serialize_header_param(
-                    "x-ms-deleted-vault-id", self.ctx.args.x_ms_deleted_vault_id,
-                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),

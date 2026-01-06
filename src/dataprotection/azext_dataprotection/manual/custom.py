@@ -49,6 +49,17 @@ def dataprotection_resource_guard_list_protected_operations(cmd, resource_group_
     return resource_type_protected_operation
 
 
+def dataprotection_deleted_vault_undelete(cmd, resource_group_name, vault_name, deleted_vault_name):
+    from azext_dataprotection.manual.aaz_operations.backup_vault import Create as BackupVaultCreate
+
+    return BackupVaultCreate(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+        "storage_setting": [],
+        "x_ms_deleted_vault_id": deleted_vault_name
+    })
+
+
 def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,
                                                        no_wait=False):
 
