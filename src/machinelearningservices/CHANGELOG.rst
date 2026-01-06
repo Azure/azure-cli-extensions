@@ -1,5 +1,7 @@
-### Azure Machine Learning CLI (v2) (unreleased)
+### Azure Machine Learning CLI (v2) v 2.41.0
+
 - Drop Python 3.7, 3.8 and 3.9 support
+
 ## 2025-11-11
 
 ### Azure Machine Learning CLI (v2) v 2.40.1
