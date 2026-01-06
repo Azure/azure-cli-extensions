@@ -1,4 +1,5 @@
 ## 2026-01-06
+
 ### Azure Machine Learning CLI (v2) v 2.41.0
 
 - Drop Python 3.7, 3.8 and 3.9 support
