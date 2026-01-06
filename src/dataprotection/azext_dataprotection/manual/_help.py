@@ -312,4 +312,3 @@ helps['dataprotection backup-vault deleted-vault undelete'] = """
       - name: Undelete a soft-deleted backup vault
         text: az dataprotection backup-vault deleted-vault undelete --deleted-vault-name "<deleted-vault-guid>" --resource-group myResourceGroup --vault-name myVault
 """
-

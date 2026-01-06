@@ -368,4 +368,3 @@ def load_arguments(self, _):
         c.argument('vault_name', vault_name_type)
         c.argument('deleted_vault_name', options_list=['--deleted-vault-name', '--deleted-vault-id'], type=str, help="Deleted Vault Name which is in a GUID format.")
         c.argument('resource_group_name', resource_group_name_type)
-
