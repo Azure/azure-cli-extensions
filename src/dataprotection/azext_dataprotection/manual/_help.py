@@ -291,3 +291,25 @@ helps['dataprotection recovery-point list'] = """
       - name: List of Recovery Points in a Vault
         text: az dataprotection recovery-point list --backup-instance-name "sample_biname-00000000-0000-0000-0000-000000000000" --resource-group "sample_rg" --vault-name "sample_vault"
 """
+
+helps['dataprotection backup-vault deleted-vault'] = """
+    type: group
+    short-summary: Manage deleted backup vaults.
+"""
+
+helps['dataprotection backup-vault deleted-vault list-deleted-backup-instances'] = """
+    type: command
+    short-summary: List deleted backup instances for a soft-deleted backup vault
+    examples:
+      - name: List deleted backup instances for a soft-deleted backup vault
+        text: az dataprotection backup-vault deleted-vault list-deleted-backup-instances --deleted-vault-name "<deleted-vault-guid>"
+"""
+
+helps['dataprotection backup-vault deleted-vault undelete'] = """
+    type: command
+    short-summary: Undelete a soft-deleted backup vault
+    examples:
+      - name: Undelete a soft-deleted backup vault
+        text: az dataprotection backup-vault deleted-vault undelete --deleted-vault-name "<deleted-vault-guid>" --resource-group myResourceGroup --vault-name myVault
+"""
+
