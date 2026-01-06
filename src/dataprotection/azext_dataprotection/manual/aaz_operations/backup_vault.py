@@ -141,6 +141,8 @@ class Create(_Create):
                                                 "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
         )
 
+        _args_schema.storage_setting.required = False
+
         return cls._args_schema
 
     def pre_operations(self):
@@ -172,3 +174,8 @@ class Create(_Create):
                 mi_type = "UserAssigned" if mi_type is None else "SystemAssigned,UserAssigned"
 
             self.ctx.args.type = mi_type
+
+        if has_value(self.ctx.args.soft_delete_state):
+            logger.warning("Warning: The --soft-delete-state parameter is deprecated and will be removed in future "
+                           "releases. Soft delete is now set to AlwaysOn by default.")
+        self.ctx.args.soft_delete_state = "AlwaysOn"

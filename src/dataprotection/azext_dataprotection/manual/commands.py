@@ -23,6 +23,9 @@ def load_command_table(self, _):
     with self.command_group('dataprotection backup-vault', exception_handler=exception_handler) as g:
         g.custom_command('list-from-resourcegraph', 'dataprotection_backup_vault_list_from_resourcegraph', client_factory=cf_resource_graph_client)
 
+    with self.command_group('dataprotection backup-vault deleted-vault', exception_handler=exception_handler) as g:
+        g.custom_command('list-deleted-backup-instances', 'dataprotection_deleted_vault_list_deleted_backup_instances', client_factory=cf_resource_graph_client)
+
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
         g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig", client_factory=cf_blob_container_mgmt)
         g.custom_command('initialize-restoreconfig', "dataprotection_backup_instance_initialize_restoreconfig")

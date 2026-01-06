@@ -340,6 +340,18 @@ def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault
     })
 
 
+def dataprotection_deleted_vault_list_deleted_backup_instances(client, deleted_vault_name):
+    query = backupcenter_helper.get_deleted_backup_instance_query(deleted_vault_name)
+
+    request_options = QueryRequestOptions(
+        top=1000,
+        skip=0
+    )
+    request = QueryRequest(query=query, subscriptions=[backupcenter_helper.get_selected_subscription()], options=request_options)
+    response = client.resources(request)
+    return response.data
+
+
 def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_type=None, resource_groups=None, vaults=None,
                                                            subscriptions=None, protection_status=None, datasource_id=None,
                                                            backup_instance_id=None, backup_instance_name=None):
