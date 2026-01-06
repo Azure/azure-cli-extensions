@@ -92,7 +92,9 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.get(), client_flatten=True)
+        if result is None or result == AAZUndefined:
+            return {}
         return result
 
     class SubresourceSelector(AAZJsonSelector):
