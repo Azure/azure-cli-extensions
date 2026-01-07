@@ -320,7 +320,7 @@ helps[
           text: az confcom fragment attach ./fragment.reg.cose --manifest-tag myregistry.azurecr.io/image:latest
         - name: Attach the output of acifragmentgen to a registry
           text: az confcom acifragmentgen --chain my.cert.pem --key my_key.pem --svn "1" --namespace contoso --feed "test-feed" --input ./fragment_spec.json | az confcom fragment attach --manifest-tag myregistry.azurecr.io/image:latest
-      """
+"""
 
 helps[
     "confcom containers"

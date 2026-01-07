@@ -23,9 +23,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-05-01",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2024-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -155,7 +155,7 @@ class Delete(AAZCommand):
                     "forceDeletion", self.ctx.args.force_deletion,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }

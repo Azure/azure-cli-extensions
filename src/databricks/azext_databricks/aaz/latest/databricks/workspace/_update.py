@@ -40,9 +40,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-05-01",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2024-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -213,6 +213,12 @@ class Update(AAZCommand):
             help="Access Connector Resource that is going to be associated with Databricks Workspace",
             nullable=True,
         )
+        _args_schema.compute_mode = AAZStrArg(
+            options=["--compute-mode"],
+            help="The compute mode for the workspace. Allowed values: 'Hybrid', 'Serverless'.",
+            required=False,
+            enum={"Hybrid": "Hybrid", "Serverless": "Serverless"},
+        )
         _args_schema.default_catalog = AAZObjectArg(
             options=["--default-catalog"],
             arg_group="Properties",
@@ -240,14 +246,14 @@ class Update(AAZCommand):
         _args_schema.compliance_standards = AAZListArg(
             options=["--compliance-standards"],
             arg_group="Enhanced Security Compliance",
-            help="Compliance Standards associated with the workspace, allowed values: NONE, HIPAA, PCI_DSS.",
+            help="Compliance Standards associated with the workspace, allowed values listed here: https://learn.microsoft.com/en-us/azure/databricks/security/privacy/security-profile.",
             nullable=True,
         )
         _args_schema.compliance_standards.Element = AAZStrArg(
             nullable=True,
             arg_group="Enhanced Security Compliance",
-            help="Compliance standards, allowed values: NONE, HIPAA, PCI_DSS.",
-            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS"},
+            help="Compliance standards, allowed values: NONE, HIPAA, PCI_DSS, CYBER_ESSENTIAL_PLUS, FEDRAMP_HIGH, CANADA_PROTECTED_B, IRAP_PROTECTED, ISMAP, HITRUST, K_FSI, GERMANY_C5, GERMANY_TISAX.",
+            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS", "CYBER_ESSENTIAL_PLUS": "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH": "FEDRAMP_HIGH", "CANADA_PROTECTED_B": "CANADA_PROTECTED_B", "IRAP_PROTECTED": "IRAP_PROTECTED", "ISMAP": "ISMAP", "HITRUST": "HITRUST", "K_FSI": "K_FSI", "GERMANY_C5": "GERMANY_C5", "GERMANY_TISAX": "GERMANY_TISAX"},
         )
         _args_schema.enable_compliance_security_profile = AAZBoolArg(
             options=["--enable-compliance-security-profile", "--enable-csp"],
@@ -346,7 +352,7 @@ class Update(AAZCommand):
         compliance_standards = cls._args_schema.enhanced_security_compliance.compliance_security_profile.compliance_standards
         compliance_standards.Element = AAZStrArg(
             nullable=True,
-            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS"},
+            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS", "CYBER_ESSENTIAL_PLUS": "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH": "FEDRAMP_HIGH", "CANADA_PROTECTED_B": "CANADA_PROTECTED_B", "IRAP_PROTECTED": "IRAP_PROTECTED", "ISMAP": "ISMAP", "HITRUST": "HITRUST", "K_FSI": "K_FSI", "GERMANY_C5": "GERMANY_C5", "GERMANY_TISAX": "GERMANY_TISAX"},
         )
 
         enhanced_security_monitoring = cls._args_schema.enhanced_security_compliance.enhanced_security_monitoring
@@ -477,7 +483,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -576,7 +582,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -968,6 +974,9 @@ class _UpdateHelper:
             serialized_name="accessConnector",
         )
         properties.authorizations = AAZListType()
+        properties.compute_mode = AAZStrType(
+            serialized_name="computeMode",
+        )
         properties.created_by = AAZObjectType(
             serialized_name="createdBy",
         )
@@ -1000,7 +1009,6 @@ class _UpdateHelper:
         cls._build_schema_managed_identity_configuration_read(properties.managed_disk_identity)
         properties.managed_resource_group_id = AAZStrType(
             serialized_name="managedResourceGroupId",
-            flags={"required": True},
         )
         properties.parameters = AAZObjectType()
         properties.private_endpoint_connections = AAZListType(

@@ -782,6 +782,7 @@ def load_arguments(self, _):
         c.argument("enable_secret_rotation", action="store_true")
         c.argument("rotation_poll_interval")
         c.argument("enable_sgxquotehelper", action="store_true")
+        c.argument("enable_application_load_balancer", action="store_true", is_preview=True)
         c.argument("enable_app_routing", action="store_true", is_preview=True)
         c.argument(
             "app_routing_default_nginx_controller",
@@ -1765,6 +1766,18 @@ def load_arguments(self, _):
             action="store_true",
             help="Disable managed installation of Gateway API CRDs."
         )
+        c.argument(
+            "enable_application_load_balancer",
+            action="store_true",
+            is_preview=True,
+            help="Enable Application Load Balancer (Application Gateway for Containers)."
+        )
+        c.argument(
+            "disable_application_load_balancer",
+            action="store_true",
+            is_preview=True,
+            help="Disable Application Load Balancer (Application Gateway for Containers)."
+        )
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -2128,6 +2141,10 @@ def load_arguments(self, _):
             "node_vm_size",
             options_list=["--node-vm-size", "-s"],
             completer=get_vm_size_completion_list,
+        )
+        c.argument(
+            "gpu_driver",
+            arg_type=get_enum_type(gpu_driver_install_modes)
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
