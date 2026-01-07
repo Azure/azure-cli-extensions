@@ -23,6 +23,7 @@ def get_discovered_server(cmd,
     from azext_migrate.helpers._utils import APIVersion
     from azext_migrate.helpers._server import (
         validate_get_discovered_server_params,
+        extract_machine_name_from_id,
         build_base_uri,
         fetch_all_servers,
         filter_servers_by_display_name,
@@ -32,6 +33,10 @@ def get_discovered_server(cmd,
     # Validate required parameters
     validate_get_discovered_server_params(
         project_name, resource_group, source_machine_type)
+
+    # Extract machine name if a full resource ID was provided for --name
+    if name:
+        name = extract_machine_name_from_id(name)
 
     # Use current subscription if not provided
     if not subscription_id:
@@ -50,8 +55,8 @@ def get_discovered_server(cmd,
 
     # Prepare query parameters
     query_params = [f"api-version={api_version}"]
-    if not appliance_name and display_name:
-        query_params.append(f"$filter=displayName eq '{display_name}'")
+    # Note: Azure Migrate API does not support OData $filter for machines endpoint
+    # We'll apply client-side filtering after fetching all results
 
     # Construct the full URI
     request_uri = (
@@ -64,8 +69,8 @@ def get_discovered_server(cmd,
         values = fetch_all_servers(cmd, request_uri, send_get_request)
 
         # Apply client-side filtering for display_name when using site
-        # endpoints
-        if appliance_name and display_name:
+        # endpoints or when using the migrateprojects endpoint
+        if display_name:
             values = filter_servers_by_display_name(values, display_name)
 
         # Format and display the discovered servers information
