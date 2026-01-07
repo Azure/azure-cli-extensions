@@ -11,6 +11,7 @@ def load_arguments_preview(self, _):
     with self.argument_context("acr create") as c:
         c.argument(
             "enable_regional_endpoints",
+            options_list=['--enable-regional-endpoints', '--regional'],
             arg_type=get_three_state_flag(),
             is_preview=True,
             help="Enable or disable regional endpoints for the registry.",
@@ -19,6 +20,7 @@ def load_arguments_preview(self, _):
     with self.argument_context("acr update") as c:
         c.argument(
             "enable_regional_endpoints",
+            options_list=['--enable-regional-endpoints', '--regional'],
             arg_type=get_three_state_flag(),
             is_preview=True,
             help="Enable or disable regional endpoints for the registry.",
