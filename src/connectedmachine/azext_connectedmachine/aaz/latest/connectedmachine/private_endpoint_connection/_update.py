@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-02-19-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privateendpointconnections/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privateendpointconnections/{}", "2025-02-19-preview"],
         ]
     }
 
@@ -62,7 +62,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
 
@@ -180,7 +180,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-02-19-preview",
                     required=True,
                 ),
             }
@@ -283,7 +283,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-02-19-preview",
                     required=True,
                 ),
             }

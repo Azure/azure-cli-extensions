@@ -12,17 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine update",
+    "connectedmachine wait",
 )
-class Update(AAZCommand):
-    """Update operation to update a hybrid machine.
-
-    :example: sample command for update
-        az connectedmachine update --name myMachine --resource-group myResourceGroup --location eastus2euap
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2025-02-19-preview",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2025-02-19-preview"],
         ]
@@ -58,171 +54,16 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Parameters",
-            help="Identity for the resource.",
+        _args_schema.expand = AAZStrArg(
+            options=["--expand"],
+            help="The expand expression to apply on the operation.",
+            enum={"instanceView": "instanceView"},
         )
-        _args_schema.kind = AAZStrArg(
-            options=["--kind"],
-            arg_group="Parameters",
-            help="Indicates which kind of Arc machine placement on-premises, such as HCI, SCVMM or VMware etc.",
-            enum={"AVS": "AVS", "AWS": "AWS", "EPS": "EPS", "GCP": "GCP", "HCI": "HCI", "SCVMM": "SCVMM", "VMware": "VMware"},
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Resource tags",
-        )
-
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="The identity type.",
-            enum={"SystemAssigned": "SystemAssigned"},
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.agent_upgrade = AAZObjectArg(
-            options=["--agent-upgrade"],
-            arg_group="Properties",
-            help="The info of the machine w.r.t Agent Upgrade",
-        )
-        _args_schema.identity_key_store = AAZStrArg(
-            options=["--identity-key-store"],
-            arg_group="Properties",
-            help="Identity key store type of the machine",
-        )
-        _args_schema.location_data = AAZObjectArg(
-            options=["--location-data"],
-            arg_group="Properties",
-            help="Metadata pertaining to the geographic location of the resource.",
-        )
-        _args_schema.os_profile = AAZObjectArg(
-            options=["--os-profile"],
-            arg_group="Properties",
-            help="Specifies the operating system settings for the hybrid machine.",
-        )
-        _args_schema.parent_cluster_resource_id = AAZStrArg(
-            options=["--parent-cluster-resource-id"],
-            arg_group="Properties",
-            help="The resource id of the parent cluster (Azure HCI) this machine is assigned to, if any.",
-        )
-        _args_schema.private_link_scope_resource_id = AAZStrArg(
-            options=["--private-link-scope-id", "--private-link-scope-resource-id"],
-            arg_group="Properties",
-            help="The resource id of the private link scope this machine is assigned to, if any.",
-        )
-        _args_schema.tpm_ek_certificate = AAZStrArg(
-            options=["--tpm-ek-certificate"],
-            arg_group="Properties",
-            help="Endorsement Key Certificate of the Trusted Platform Module (TPM) that the client provides to be used during initial resource onboarding.",
-        )
-
-        agent_upgrade = cls._args_schema.agent_upgrade
-        agent_upgrade.correlation_id = AAZStrArg(
-            options=["correlation-id"],
-            help="The correlation ID associated with an agent upgrade operation.",
-        )
-        agent_upgrade.desired_version = AAZStrArg(
-            options=["desired-version"],
-            help="Specifies the version info w.r.t AgentUpgrade for the machine.",
-        )
-        agent_upgrade.enable_automatic_upgrade = AAZBoolArg(
-            options=["enable-automatic-upgrade"],
-            help="Specifies if the machine's agent should be upgraded",
-        )
-
-        location_data = cls._args_schema.location_data
-        location_data.city = AAZStrArg(
-            options=["city"],
-            help="The city or locality where the resource is located.",
-        )
-        location_data.country_or_region = AAZStrArg(
-            options=["country-or-region"],
-            help="The country or region where the resource is located",
-        )
-        location_data.district = AAZStrArg(
-            options=["district"],
-            help="The district, state, or province where the resource is located.",
-        )
-        location_data.name = AAZStrArg(
-            options=["name"],
-            help="A canonical name for the geographic or physical location.",
-            required=True,
-            fmt=AAZStrArgFormat(
-                max_length=256,
-            ),
-        )
-
-        os_profile = cls._args_schema.os_profile
-        os_profile.linux_configuration = AAZObjectArg(
-            options=["linux-configuration"],
-            help="Specifies the linux configuration for update management.",
-        )
-        os_profile.windows_configuration = AAZObjectArg(
-            options=["windows-configuration"],
-            help="Specifies the windows configuration for update management.",
-        )
-
-        linux_configuration = cls._args_schema.os_profile.linux_configuration
-        linux_configuration.patch_settings = AAZObjectArg(
-            options=["patch-settings"],
-        )
-        cls._build_args_patch_settings_update(linux_configuration.patch_settings)
-
-        windows_configuration = cls._args_schema.os_profile.windows_configuration
-        windows_configuration.patch_settings = AAZObjectArg(
-            options=["patch-settings"],
-            help="Specifies the patch settings.",
-        )
-        cls._build_args_patch_settings_update(windows_configuration.patch_settings)
         return cls._args_schema
-
-    _args_patch_settings_update = None
-
-    @classmethod
-    def _build_args_patch_settings_update(cls, _schema):
-        if cls._args_patch_settings_update is not None:
-            _schema.assessment_mode = cls._args_patch_settings_update.assessment_mode
-            _schema.enable_hotpatching = cls._args_patch_settings_update.enable_hotpatching
-            _schema.patch_mode = cls._args_patch_settings_update.patch_mode
-            return
-
-        cls._args_patch_settings_update = AAZObjectArg()
-
-        patch_settings_update = cls._args_patch_settings_update
-        patch_settings_update.assessment_mode = AAZStrArg(
-            options=["assessment-mode"],
-            help="Specifies the assessment mode.",
-            enum={"AutomaticByPlatform": "AutomaticByPlatform", "ImageDefault": "ImageDefault"},
-        )
-        patch_settings_update.enable_hotpatching = AAZBoolArg(
-            options=["enable-hotpatching"],
-            help="Captures the hotpatch capability enrollment intent of the customers, which enables customers to patch their Windows machines without requiring a reboot.",
-        )
-        patch_settings_update.patch_mode = AAZStrArg(
-            options=["patch-mode"],
-            help="Specifies the patch mode.",
-            enum={"AutomaticByOS": "AutomaticByOS", "AutomaticByPlatform": "AutomaticByPlatform", "ImageDefault": "ImageDefault", "Manual": "Manual"},
-        )
-
-        _schema.assessment_mode = cls._args_patch_settings_update.assessment_mode
-        _schema.enable_hotpatching = cls._args_patch_settings_update.enable_hotpatching
-        _schema.patch_mode = cls._args_patch_settings_update.patch_mode
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MachinesUpdate(ctx=self.ctx)()
+        self.MachinesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -234,10 +75,10 @@ class Update(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class MachinesUpdate(AAZHttpOperation):
+    class MachinesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -257,7 +98,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PATCH"
+            return "GET"
 
         @property
         def error_format(self):
@@ -285,6 +126,9 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
+                    "$expand", self.ctx.args.expand,
+                ),
+                **self.serialize_query_param(
                     "api-version", "2025-02-19-preview",
                     required=True,
                 ),
@@ -295,71 +139,10 @@ class Update(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
-            _builder.set_prop("kind", AAZStrType, ".kind")
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("agentUpgrade", AAZObjectType, ".agent_upgrade")
-                properties.set_prop("identityKeyStore", AAZStrType, ".identity_key_store")
-                properties.set_prop("locationData", AAZObjectType, ".location_data")
-                properties.set_prop("osProfile", AAZObjectType, ".os_profile")
-                properties.set_prop("parentClusterResourceId", AAZStrType, ".parent_cluster_resource_id")
-                properties.set_prop("privateLinkScopeResourceId", AAZStrType, ".private_link_scope_resource_id")
-                properties.set_prop("tpmEkCertificate", AAZStrType, ".tpm_ek_certificate")
-
-            agent_upgrade = _builder.get(".properties.agentUpgrade")
-            if agent_upgrade is not None:
-                agent_upgrade.set_prop("correlationId", AAZStrType, ".correlation_id")
-                agent_upgrade.set_prop("desiredVersion", AAZStrType, ".desired_version")
-                agent_upgrade.set_prop("enableAutomaticUpgrade", AAZBoolType, ".enable_automatic_upgrade")
-
-            location_data = _builder.get(".properties.locationData")
-            if location_data is not None:
-                location_data.set_prop("city", AAZStrType, ".city")
-                location_data.set_prop("countryOrRegion", AAZStrType, ".country_or_region")
-                location_data.set_prop("district", AAZStrType, ".district")
-                location_data.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-
-            os_profile = _builder.get(".properties.osProfile")
-            if os_profile is not None:
-                os_profile.set_prop("linuxConfiguration", AAZObjectType, ".linux_configuration")
-                os_profile.set_prop("windowsConfiguration", AAZObjectType, ".windows_configuration")
-
-            linux_configuration = _builder.get(".properties.osProfile.linuxConfiguration")
-            if linux_configuration is not None:
-                _UpdateHelper._build_schema_patch_settings_update(linux_configuration.set_prop("patchSettings", AAZObjectType, ".patch_settings", typ_kwargs={"flags": {"client_flatten": True}}))
-
-            windows_configuration = _builder.get(".properties.osProfile.windowsConfiguration")
-            if windows_configuration is not None:
-                _UpdateHelper._build_schema_patch_settings_update(windows_configuration.set_prop("patchSettings", AAZObjectType, ".patch_settings", typ_kwargs={"flags": {"client_flatten": True}}))
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -400,7 +183,7 @@ class Update(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_system_data_read(_schema_on_200.system_data)
+            _WaitHelper._build_schema_system_data_read(_schema_on_200.system_data)
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
@@ -584,11 +367,11 @@ class Update(AAZCommand):
 
             extensions_allow_list = cls._schema_on_200.properties.agent_configuration.extensions_allow_list
             extensions_allow_list.Element = AAZObjectType()
-            _UpdateHelper._build_schema_configuration_extension_read(extensions_allow_list.Element)
+            _WaitHelper._build_schema_configuration_extension_read(extensions_allow_list.Element)
 
             extensions_block_list = cls._schema_on_200.properties.agent_configuration.extensions_block_list
             extensions_block_list.Element = AAZObjectType()
-            _UpdateHelper._build_schema_configuration_extension_read(extensions_block_list.Element)
+            _WaitHelper._build_schema_configuration_extension_read(extensions_block_list.Element)
 
             incoming_connections_ports = cls._schema_on_200.properties.agent_configuration.incoming_connections_ports
             incoming_connections_ports.Element = AAZStrType()
@@ -633,11 +416,11 @@ class Update(AAZCommand):
 
             error_details = cls._schema_on_200.properties.error_details
             error_details.Element = AAZObjectType()
-            _UpdateHelper._build_schema_error_detail_read(error_details.Element)
+            _WaitHelper._build_schema_error_detail_read(error_details.Element)
 
             extensions = cls._schema_on_200.properties.extensions
             extensions.Element = AAZObjectType()
-            _UpdateHelper._build_schema_machine_extension_instance_view_read(extensions.Element)
+            _WaitHelper._build_schema_machine_extension_instance_view_read(extensions.Element)
 
             firmware_profile = cls._schema_on_200.properties.firmware_profile
             firmware_profile.serial_number = AAZStrType(
@@ -741,7 +524,7 @@ class Update(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_system_data_read(assigned_license.system_data)
+            _WaitHelper._build_schema_system_data_read(assigned_license.system_data)
             assigned_license.tags = AAZDictType()
             assigned_license.type = AAZStrType(
                 flags={"read_only": True},
@@ -823,7 +606,7 @@ class Update(AAZCommand):
             product_profile.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_error_detail_read(product_profile.error)
+            _WaitHelper._build_schema_error_detail_read(product_profile.error)
             product_profile.product_features = AAZListType(
                 serialized_name="productFeatures",
             )
@@ -857,7 +640,7 @@ class Update(AAZCommand):
             _element.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_error_detail_read(_element.error)
+            _WaitHelper._build_schema_error_detail_read(_element.error)
             _element.name = AAZStrType()
             _element.subscription_status = AAZStrType(
                 serialized_name="subscriptionStatus",
@@ -934,24 +717,24 @@ class Update(AAZCommand):
                 serialized_name="patchSettings",
                 flags={"client_flatten": True},
             )
-            _UpdateHelper._build_schema_patch_settings_read(linux_configuration.patch_settings)
+            _WaitHelper._build_schema_patch_settings_read(linux_configuration.patch_settings)
 
             windows_configuration = cls._schema_on_200.properties.os_profile.windows_configuration
             windows_configuration.patch_settings = AAZObjectType(
                 serialized_name="patchSettings",
                 flags={"client_flatten": True},
             )
-            _UpdateHelper._build_schema_patch_settings_read(windows_configuration.patch_settings)
+            _WaitHelper._build_schema_patch_settings_read(windows_configuration.patch_settings)
 
             service_statuses = cls._schema_on_200.properties.service_statuses
             service_statuses.extension_service = AAZObjectType(
                 serialized_name="extensionService",
             )
-            _UpdateHelper._build_schema_service_status_read(service_statuses.extension_service)
+            _WaitHelper._build_schema_service_status_read(service_statuses.extension_service)
             service_statuses.guest_configuration_service = AAZObjectType(
                 serialized_name="guestConfigurationService",
             )
-            _UpdateHelper._build_schema_service_status_read(service_statuses.guest_configuration_service)
+            _WaitHelper._build_schema_service_status_read(service_statuses.guest_configuration_service)
 
             storage_profile = cls._schema_on_200.properties.storage_profile
             storage_profile.disks = AAZListType()
@@ -996,7 +779,7 @@ class Update(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_system_data_read(_element.system_data)
+            _WaitHelper._build_schema_system_data_read(_element.system_data)
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
@@ -1015,7 +798,7 @@ class Update(AAZCommand):
             properties.instance_view = AAZObjectType(
                 serialized_name="instanceView",
             )
-            _UpdateHelper._build_schema_machine_extension_instance_view_read(properties.instance_view)
+            _WaitHelper._build_schema_machine_extension_instance_view_read(properties.instance_view)
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
@@ -1045,16 +828,8 @@ class Update(AAZCommand):
             return cls._schema_on_200
 
 
-class _UpdateHelper:
-    """Helper class for Update"""
-
-    @classmethod
-    def _build_schema_patch_settings_update(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("assessmentMode", AAZStrType, ".assessment_mode")
-        _builder.set_prop("enableHotpatching", AAZBoolType, ".enable_hotpatching")
-        _builder.set_prop("patchMode", AAZStrType, ".patch_mode")
+class _WaitHelper:
+    """Helper class for Wait"""
 
     _schema_configuration_extension_read = None
 
@@ -1277,4 +1052,4 @@ class _UpdateHelper:
         _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
-__all__ = ["Update"]
+__all__ = ["Wait"]

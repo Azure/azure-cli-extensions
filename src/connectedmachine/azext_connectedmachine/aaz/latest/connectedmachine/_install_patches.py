@@ -22,9 +22,9 @@ class InstallPatches(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-31-preview",
+        "version": "2025-02-19-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/installpatches", "2024-07-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/installpatches", "2025-02-19-preview"],
         ]
     }
 
@@ -127,6 +127,17 @@ class InstallPatches(AAZCommand):
         windows_parameters.max_patch_publish_date = AAZDateTimeArg(
             options=["max-patch-publish-date"],
             help="This is used to install patches that were published on or before this given max published date.",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
+        )
+        windows_parameters.patch_name_masks_to_exclude = AAZListArg(
+            options=["patch-name-masks-to-exclude"],
+            help="This is used to exclude patches that match the given patch name masks. Alphanumeric strings and wildcard expressions consisting of * and ? are only supported as input values in the list. Null, empty and only whitespaces strings as inputs values are not supported.",
+        )
+        windows_parameters.patch_name_masks_to_include = AAZListArg(
+            options=["patch-name-masks-to-include"],
+            help="This is used to include patches that match the given patch name masks. Alphanumeric strings and wildcard expressions consisting of * and ? are only supported as input values in the list. Null, empty and only whitespaces strings as inputs values are not supported.",
         )
 
         classifications_to_include = cls._args_schema.windows_parameters.classifications_to_include
@@ -139,6 +150,12 @@ class InstallPatches(AAZCommand):
 
         kb_numbers_to_include = cls._args_schema.windows_parameters.kb_numbers_to_include
         kb_numbers_to_include.Element = AAZStrArg()
+
+        patch_name_masks_to_exclude = cls._args_schema.windows_parameters.patch_name_masks_to_exclude
+        patch_name_masks_to_exclude.Element = AAZStrArg()
+
+        patch_name_masks_to_include = cls._args_schema.windows_parameters.patch_name_masks_to_include
+        patch_name_masks_to_include.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -222,7 +239,7 @@ class InstallPatches(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-31-preview",
+                    "api-version", "2025-02-19-preview",
                     required=True,
                 ),
             }
@@ -277,6 +294,8 @@ class InstallPatches(AAZCommand):
                 windows_parameters.set_prop("kbNumbersToExclude", AAZListType, ".kb_numbers_to_exclude")
                 windows_parameters.set_prop("kbNumbersToInclude", AAZListType, ".kb_numbers_to_include")
                 windows_parameters.set_prop("maxPatchPublishDate", AAZStrType, ".max_patch_publish_date")
+                windows_parameters.set_prop("patchNameMasksToExclude", AAZListType, ".patch_name_masks_to_exclude")
+                windows_parameters.set_prop("patchNameMasksToInclude", AAZListType, ".patch_name_masks_to_include")
 
             classifications_to_include = _builder.get(".windowsParameters.classificationsToInclude")
             if classifications_to_include is not None:
@@ -289,6 +308,14 @@ class InstallPatches(AAZCommand):
             kb_numbers_to_include = _builder.get(".windowsParameters.kbNumbersToInclude")
             if kb_numbers_to_include is not None:
                 kb_numbers_to_include.set_elements(AAZStrType, ".")
+
+            patch_name_masks_to_exclude = _builder.get(".windowsParameters.patchNameMasksToExclude")
+            if patch_name_masks_to_exclude is not None:
+                patch_name_masks_to_exclude.set_elements(AAZStrType, ".")
+
+            patch_name_masks_to_include = _builder.get(".windowsParameters.patchNameMasksToInclude")
+            if patch_name_masks_to_include is not None:
+                patch_name_masks_to_include.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -415,17 +442,18 @@ class _InstallPatchesHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
+
         details = _schema_error_detail_read.details
-        details.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
+        details.Element = AAZObjectType()
         cls._build_schema_error_detail_read(details.Element)
 
         _schema.additional_info = cls._schema_error_detail_read.additional_info
