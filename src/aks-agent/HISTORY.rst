@@ -13,6 +13,7 @@ Pending
 +++++++
 
 1.0.0b14
+++++++++
 * Fix: set stdout to blocking mode to avoid "BlockingIOError: [Errno 35] write could not complete without blocking"
 * Fix: gracefully handle the connection reset error
 * Fix: correct the prompt to user `az aks agent-init` to initialize the aks agent
@@ -20,6 +21,7 @@ Pending
 * Close websocket and restore terminal settings after `az aks agent` ends
 
 1.0.0b13
+++++++++
 * Fix subscription id not correctly set in helm chart
 
 1.0.0b12
