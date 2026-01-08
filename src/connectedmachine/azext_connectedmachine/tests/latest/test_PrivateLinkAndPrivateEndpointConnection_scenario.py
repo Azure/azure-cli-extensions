@@ -47,7 +47,7 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
             'subnet': 'subnet-' + rand_string,
             'private_endpoint': 'pe-' + rand_string,
             'private_endpoint_connection': 'pec-' + rand_string,
-            'location': 'westus2',
+            'location': 'centraluseuap',
             'customScriptName': 'custom-' + rand_string,
         })
 

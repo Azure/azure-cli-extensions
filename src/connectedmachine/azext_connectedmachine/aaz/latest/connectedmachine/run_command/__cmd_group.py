@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "connectedmachine run-command",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage run commands on an Azure Arc-Enabled Server.
