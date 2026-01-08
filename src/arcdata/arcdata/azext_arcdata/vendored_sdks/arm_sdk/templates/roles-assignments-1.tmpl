@@ -1,0 +1,16 @@
+{
+  "type": "Microsoft.Authorization/roleAssignments",
+  "apiVersion": "[parameters('apiVersion_1')]",
+  "name": "[parameters('resourceName_1')]",
+  "properties": {
+    "roleDefinitionId": "[parameters('roleDefinitionId_1')]",
+    "principalId": "[reference(parameters('resourceName'), parameters('apiVersion'), 'Full').identity.principalId]",
+    "principalType": "ServicePrincipal"
+  }
+  {%- if resource.dependsOn %}
+  ,
+  "dependsOn": [
+    "[parameters('{{resource.dependsOn}}')]"
+  ]
+  {% endif %}
+}

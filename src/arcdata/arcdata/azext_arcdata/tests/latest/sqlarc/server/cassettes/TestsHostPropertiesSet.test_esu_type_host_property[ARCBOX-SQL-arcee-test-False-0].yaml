@@ -1,0 +1,343 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/arcee-test/providers/Microsoft.HybridCompute/machines/ARCBOX-SQL/extensions/WindowsAgent.SqlServer?api-version=2023-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/arcee-test/providers/Microsoft.HybridCompute/machines/ARCBOX-SQL/extensions/WindowsAgent.SqlServer","name":"WindowsAgent.SqlServer","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.AzureData","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2526.108","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"ExcludedSqlInstances":["","Testing","Instance1","
+        Instance2"],"SqlManagement":{"IsEnabled":true},"LicenseType":"PAYG","enableExtendedSecurityUpdates":true,"esuLastUpdatedTimestamp":"2024-01-25T09:31:35.543Z","FeatureFlags":[{"Name":"flightfeature","Enable":true},{"Name":"LeastPrivilege","Enable":true}],"cloudprovider":"N/A"},"provisioningState":"Failed","instanceView":{"name":"WindowsAgent.SqlServer","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2526.108","status":{"code":"null","level":"Error","message":"Extension
+        failed during enable. Extension returned non-zero exit code for Enable: 1.  \nExtension
+        Error: [2024-02-15 08:46:52.9748208 UTC] [INFO] SqlServerExtensionDeployer
+        called with arguments : enable\n[2024-02-15 08:46:58.2878284 UTC] [INFO] Otel
+        endpoint: https://telemetry.eastus.arcdataservices.com:443/v1/logs\n[2024-02-15
+        08:46:58.8881549 UTC] [INFO] No valid proxy uri received.\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.CommonServices[0]\n      Fetching
+        raw settings from C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings\\28.settings\ninfo:
+        Microsoft.SqlServer.Management.SqlServerHandler.Setup.LeastPrivilege.ExtensionPermissionManager[0]\n      Processing
+        extension settings: {\n        \"ExcludedSqlInstances\": [\n          \"\",\n          \"Testing\",\n          \"Instance1\",\n          \"
+        Instance2\"\n        ],\n        \"FeatureFlags\": [\n          {\n            \"Enable\":
+        true,\n            \"Name\": \"flightfeature\"\n          },\n          {\n            \"Enable\":
+        true,\n            \"Name\": \"LeastPrivilege\"\n          }\n        ],\n        \"LicenseType\":
+        \"PAYG\",\n        \"SqlManagement\": {\n          \"IsEnabled\": true\n        },\n        \"cloudprovider\":
+        \"N/A\",\n        \"enableExtendedSecurityUpdates\": true,\n        \"esuLastUpdatedTimestamp\":
+        \"2024-01-25T09:31:35.543Z\"\n      }\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.RegistryService[0]\n      Getting
+        value for InstalledInstances from path SOFTWARE\\Microsoft\\Microsoft SQL
+        Server\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.CommonServices[0]\n      Fetching
+        raw settings from C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings\\28.settings\ninfo:
+        Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.RegistryService[0]\n      Getting
+        value for InstalledInstances from path SOFTWARE\\Microsoft\\Microsoft SQL
+        Server\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Version
+        of file at filepath: C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\SqlServerExtensionDeployer.dll
+        is 0.0..0\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      OS
+        Distribution : Windows\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      OS
+        version: 10.0\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Checking
+        if least privilege mode is enabled.\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Searching
+        folder: C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings
+        for *.settings.\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Least
+        privilege mode is enabled.\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Executing
+        deployer action: Enable\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Last
+        installation exit code: 0\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Found
+        new RuntimeConfig setting file\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      RuntimeConfig
+        setting file is at location: C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings\\28.settings\nfail:
+        Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Deployer
+        execution failed with unexpected error.System.IO.FileNotFoundException: Could
+        not load file or assembly ''System.ServiceProcess.ServiceController, Version=8.0.0.0,
+        Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a''. The system cannot find
+        the file specified.\n      File name: ''System.ServiceProcess.ServiceController,
+        Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a''\n         at
+        Microsoft.SqlServer.Management.SqlServerHandler.Setup.ServiceHelper.IsServiceInstalledAndRunning(String
+        serviceName)\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.ServiceHelper.IsSqlServerAgentServicesInstalledAndRunning()
+        in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\ServiceHelper.cs:line 306\n         at
+        Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer.IsServiceInstalledAndRunning()
+        in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlWindowsExtensionDeployer.cs:line
+        204\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlServerExtensionDeployer.CheckingRuntimeSettings(DirectoryMonitor
+        configMonitor, Action processNewSettings) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlServerExtensionDeployer.cs:line
+        501\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlServerExtensionDeployer.ExecuteEnableAction(String
+        ExtensionAppDataPathAsLocalSystem, Stopwatch stopWatch) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlServerExtensionDeployer.cs:line
+        272\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer.ExecuteAction(DeployerAction
+        action) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlWindowsExtensionDeployer.cs:line
+        364\n      System.IO.FileNotFoundException: Could not load file or assembly
+        ''System.ServiceProcess.ServiceController, Version=8.0.0.0, Culture=neutral,
+        PublicKeyToken=b03f5f7f11d50a3a''. The system cannot find the file specified.\n      File
+        name: ''System.ServiceProcess.ServiceController, Version=8.0.0.0, Culture=neutral,
+        PublicKeyToken=b03f5f7f11d50a3a''\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.ServiceHelper.IsServiceInstalledAndRunning(String
+        serviceName)\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.ServiceHelper.IsSqlServerAgentServicesInstalledAndRunning()
+        in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\ServiceHelper.cs:line 306\n         at
+        Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer.IsServiceInstalledAndRunning()
+        in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlWindowsExtensionDeployer.cs:line
+        204\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlServerExtensionDeployer.CheckingRuntimeSettings(DirectoryMonitor
+        configMonitor, Action processNewSettings) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlServerExtensionDeployer.cs:line
+        501\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlServerExtensionDeployer.ExecuteEnableAction(String
+        ExtensionAppDataPathAsLocalSystem, Stopwatch stopWatch) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlServerExtensionDeployer.cs:line
+        272\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer.ExecuteAction(DeployerAction
+        action) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlWindowsExtensionDeployer.cs:line
+        364\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Finished
+        deployer action: Enable. Exit code is UnexpectedError\n2024-02-15 00:46:59.4974|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.CommonServices|Fetching
+        raw settings from C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings\\28.settings\n2024-02-15
+        00:47:00.0852|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.LeastPrivilege.ExtensionPermissionManager|Processing
+        extension settings: {\n  \"ExcludedSqlInstances\": [\n    \"\",\n    \"Testing\",\n    \"Instance1\",\n    \"
+        Instance2\"\n  ],\n  \"FeatureFlags\": [\n    {\n      \"Enable\": true,\n      \"Name\":
+        \"flightfeature\"\n    },\n    {\n      \"Enable\": true,\n      \"Name\":
+        \"LeastPrivilege\"\n    }\n  ],\n  \"LicenseType\": \"PAYG\",\n  \"SqlManagement\":
+        {\n    \"IsEnabled\": true\n  },\n  \"cloudprovider\": \"N/A\",\n  \"enableExtendedSecurityUpdates\":
+        true,\n  \"esuLastUpdatedTimestamp\": \"2024-01-25T09:31:35.543Z\"\n}\n2024-02-15
+        00:47:00.0852|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.RegistryService|Getting
+        value for InstalledInstances from path SOFTWARE\\Microsoft\\Microsoft SQL
+        Server\n2024-02-15 00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.CommonServices|Fetching
+        raw settings from C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings\\28.settings\n2024-02-15
+        00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.RegistryService|Getting
+        value for InstalledInstances from path SOFTWARE\\Microsoft\\Microsoft SQL
+        Server\n2024-02-15 00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Version
+        of file at filepath: C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\SqlServerExtensionDeployer.dll
+        is 0.0..0\n2024-02-15 00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|OS
+        Distribution : Windows\n2024-02-15 00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|OS
+        version: 10.0\n2024-02-15 00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Checking
+        if least privilege mode is enabled.\n2024-02-15 00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Searching
+        folder: C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings
+        for *.settings.\n2024-02-15 00:47:00.6901|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Least
+        privilege mode is enabled.\n2024-02-15 00:47:00.6901|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Executing
+        deployer action: Enable\n2024-02-15 00:47:00.6901|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Last
+        installation exit code: 0\n2024-02-15 00:47:00.6901|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Found
+        new RuntimeConfig setting file\n2024-02-15 00:47:00.6901|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|RuntimeConfig
+        setting file is at location: C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings\\28.settings\n2024-02-15
+        00:47:00.7013|ERROR|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Deployer
+        execution failed with unexpected error.System.IO.FileNotFoundException: Could
+        not load file or assembly ''System.ServiceProcess.ServiceController, Version=8.0.0.0,
+        Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a''. The system cannot find
+        the file specified.\nFile name: ''System.ServiceProcess.ServiceController,
+        Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a''\n   at
+        Microsoft.SqlServer.Management.SqlServerHandler.Setup.ServiceHelper.IsServiceInstalledAndRunning(String
+        serviceName)\n   at Microsoft.SqlServer.Management.SqlServerHandler.Setup.ServiceHelper.IsSqlServerAgentServicesInstalledAndRunning()
+        in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\ServiceHelper.cs:line 306\n   at
+        Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer.IsServiceInstalledAndRunning()
+        in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlWindowsExtensionDeployer.cs:line
+        204\n   at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlServerExtensionDeployer.CheckingRuntimeSettings(DirectoryMonitor
+        configMonitor, Action processNewSettings) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlServerExtensionDeployer.cs:line
+        501\n   at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlServerExtensionDeployer.ExecuteEnableAction(String
+        ExtensionAppDataPathAsLocalSystem, Stopwatch stopWatch) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlServerExtensionDeployer.cs:line
+        272\n   at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer.ExecuteAction(DeployerAction
+        action) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlWindowsExtensionDeployer.cs:line
+        364\n2024-02-15 00:47:00.7013|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Finished
+        deployer action: Enable. Exit code is UnexpectedError\n"}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '13587'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 15 Feb 2024 08:50:42 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 1A704EEE88E5473A86827AAF21149D0C Ref B: MAA201060516051 Ref C: 2024-02-15T08:50:42Z'
+      x-ms-correlation-request-id:
+      - a283700e-fa5f-41ad-8a8c-e50a7ae061d2
+      x-ms-ratelimit-remaining-subscription-reads:
+      - '11999'
+      x-ms-request-id:
+      - 287275e2-f1e7-4b99-9d62-adbfdf436760
+      x-ms-routing-request-id:
+      - JIOINDIACENTRAL:20240215T085043Z:a283700e-fa5f-41ad-8a8c-e50a7ae061d2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/arcee-test/providers/Microsoft.HybridCompute/machines/ARCBOX-SQL/extensions/WindowsAgent.SqlServer",
+      "name": "WindowsAgent.SqlServer", "type": "Microsoft.HybridCompute/machines/extensions",
+      "location": "eastus", "properties": {"publisher": "Microsoft.AzureData", "type":
+      "WindowsAgent.SqlServer", "typeHandlerVersion": "1.1.2526.108", "autoUpgradeMinorVersion":
+      false, "enableAutomaticUpgrade": true, "settings": {"ExcludedSqlInstances":
+      ["", "Testing", "Instance1", " Instance2"], "SqlManagement": {"IsEnabled": true},
+      "LicenseType": "PAYG", "enableExtendedSecurityUpdates": false, "esuLastUpdatedTimestamp":
+      "2024-01-25T09:31:35.543Z", "FeatureFlags": [{"Name": "flightfeature", "Enable":
+      true}, {"Name": "LeastPrivilege", "Enable": true}], "cloudprovider": "N/A"},
+      "provisioningState": "Failed", "instanceView": {"name": "WindowsAgent.SqlServer",
+      "type": "WindowsAgent.SqlServer", "typeHandlerVersion": "1.1.2526.108", "status":
+      {"code": "null", "level": "Error", "message": "Extension failed during enable.
+      Extension returned non-zero exit code for Enable: 1.  \nExtension Error: [2024-02-15
+      08:46:52.9748208 UTC] [INFO] SqlServerExtensionDeployer called with arguments
+      : enable\n[2024-02-15 08:46:58.2878284 UTC] [INFO] Otel endpoint: https://telemetry.eastus.arcdataservices.com:443/v1/logs\n[2024-02-15
+      08:46:58.8881549 UTC] [INFO] No valid proxy uri received.\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.CommonServices[0]\n      Fetching
+      raw settings from C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings\\28.settings\ninfo:
+      Microsoft.SqlServer.Management.SqlServerHandler.Setup.LeastPrivilege.ExtensionPermissionManager[0]\n      Processing
+      extension settings: {\n        \"ExcludedSqlInstances\": [\n          \"\",\n          \"Testing\",\n          \"Instance1\",\n          \"
+      Instance2\"\n        ],\n        \"FeatureFlags\": [\n          {\n            \"Enable\":
+      true,\n            \"Name\": \"flightfeature\"\n          },\n          {\n            \"Enable\":
+      true,\n            \"Name\": \"LeastPrivilege\"\n          }\n        ],\n        \"LicenseType\":
+      \"PAYG\",\n        \"SqlManagement\": {\n          \"IsEnabled\": true\n        },\n        \"cloudprovider\":
+      \"N/A\",\n        \"enableExtendedSecurityUpdates\": true,\n        \"esuLastUpdatedTimestamp\":
+      \"2024-01-25T09:31:35.543Z\"\n      }\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.RegistryService[0]\n      Getting
+      value for InstalledInstances from path SOFTWARE\\Microsoft\\Microsoft SQL Server\ninfo:
+      Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.CommonServices[0]\n      Fetching
+      raw settings from C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings\\28.settings\ninfo:
+      Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.RegistryService[0]\n      Getting
+      value for InstalledInstances from path SOFTWARE\\Microsoft\\Microsoft SQL Server\ninfo:
+      Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Version
+      of file at filepath: C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\SqlServerExtensionDeployer.dll
+      is 0.0..0\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      OS
+      Distribution : Windows\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      OS
+      version: 10.0\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Checking
+      if least privilege mode is enabled.\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Searching
+      folder: C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings
+      for *.settings.\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Least
+      privilege mode is enabled.\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Executing
+      deployer action: Enable\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Last
+      installation exit code: 0\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Found
+      new RuntimeConfig setting file\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      RuntimeConfig
+      setting file is at location: C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings\\28.settings\nfail:
+      Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Deployer
+      execution failed with unexpected error.System.IO.FileNotFoundException: Could
+      not load file or assembly ''System.ServiceProcess.ServiceController, Version=8.0.0.0,
+      Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a''. The system cannot find the
+      file specified.\n      File name: ''System.ServiceProcess.ServiceController,
+      Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a''\n         at
+      Microsoft.SqlServer.Management.SqlServerHandler.Setup.ServiceHelper.IsServiceInstalledAndRunning(String
+      serviceName)\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.ServiceHelper.IsSqlServerAgentServicesInstalledAndRunning()
+      in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\ServiceHelper.cs:line 306\n         at
+      Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer.IsServiceInstalledAndRunning()
+      in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlWindowsExtensionDeployer.cs:line
+      204\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlServerExtensionDeployer.CheckingRuntimeSettings(DirectoryMonitor
+      configMonitor, Action processNewSettings) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlServerExtensionDeployer.cs:line
+      501\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlServerExtensionDeployer.ExecuteEnableAction(String
+      ExtensionAppDataPathAsLocalSystem, Stopwatch stopWatch) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlServerExtensionDeployer.cs:line
+      272\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer.ExecuteAction(DeployerAction
+      action) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlWindowsExtensionDeployer.cs:line
+      364\n      System.IO.FileNotFoundException: Could not load file or assembly
+      ''System.ServiceProcess.ServiceController, Version=8.0.0.0, Culture=neutral,
+      PublicKeyToken=b03f5f7f11d50a3a''. The system cannot find the file specified.\n      File
+      name: ''System.ServiceProcess.ServiceController, Version=8.0.0.0, Culture=neutral,
+      PublicKeyToken=b03f5f7f11d50a3a''\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.ServiceHelper.IsServiceInstalledAndRunning(String
+      serviceName)\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.ServiceHelper.IsSqlServerAgentServicesInstalledAndRunning()
+      in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\ServiceHelper.cs:line 306\n         at
+      Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer.IsServiceInstalledAndRunning()
+      in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlWindowsExtensionDeployer.cs:line
+      204\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlServerExtensionDeployer.CheckingRuntimeSettings(DirectoryMonitor
+      configMonitor, Action processNewSettings) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlServerExtensionDeployer.cs:line
+      501\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlServerExtensionDeployer.ExecuteEnableAction(String
+      ExtensionAppDataPathAsLocalSystem, Stopwatch stopWatch) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlServerExtensionDeployer.cs:line
+      272\n         at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer.ExecuteAction(DeployerAction
+      action) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlWindowsExtensionDeployer.cs:line
+      364\ninfo: Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer[0]\n      Finished
+      deployer action: Enable. Exit code is UnexpectedError\n2024-02-15 00:46:59.4974|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.CommonServices|Fetching
+      raw settings from C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings\\28.settings\n2024-02-15
+      00:47:00.0852|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.LeastPrivilege.ExtensionPermissionManager|Processing
+      extension settings: {\n  \"ExcludedSqlInstances\": [\n    \"\",\n    \"Testing\",\n    \"Instance1\",\n    \"
+      Instance2\"\n  ],\n  \"FeatureFlags\": [\n    {\n      \"Enable\": true,\n      \"Name\":
+      \"flightfeature\"\n    },\n    {\n      \"Enable\": true,\n      \"Name\": \"LeastPrivilege\"\n    }\n  ],\n  \"LicenseType\":
+      \"PAYG\",\n  \"SqlManagement\": {\n    \"IsEnabled\": true\n  },\n  \"cloudprovider\":
+      \"N/A\",\n  \"enableExtendedSecurityUpdates\": true,\n  \"esuLastUpdatedTimestamp\":
+      \"2024-01-25T09:31:35.543Z\"\n}\n2024-02-15 00:47:00.0852|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.RegistryService|Getting
+      value for InstalledInstances from path SOFTWARE\\Microsoft\\Microsoft SQL Server\n2024-02-15
+      00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.CommonServices|Fetching
+      raw settings from C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings\\28.settings\n2024-02-15
+      00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.Services.RegistryService|Getting
+      value for InstalledInstances from path SOFTWARE\\Microsoft\\Microsoft SQL Server\n2024-02-15
+      00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Version
+      of file at filepath: C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\SqlServerExtensionDeployer.dll
+      is 0.0..0\n2024-02-15 00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|OS
+      Distribution : Windows\n2024-02-15 00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|OS
+      version: 10.0\n2024-02-15 00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Checking
+      if least privilege mode is enabled.\n2024-02-15 00:47:00.6651|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Searching
+      folder: C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings
+      for *.settings.\n2024-02-15 00:47:00.6901|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Least
+      privilege mode is enabled.\n2024-02-15 00:47:00.6901|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Executing
+      deployer action: Enable\n2024-02-15 00:47:00.6901|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Last
+      installation exit code: 0\n2024-02-15 00:47:00.6901|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Found
+      new RuntimeConfig setting file\n2024-02-15 00:47:00.6901|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|RuntimeConfig
+      setting file is at location: C:\\Packages\\Plugins\\Microsoft.AzureData.WindowsAgent.SqlServer\\1.1.2526.108\\RuntimeSettings\\28.settings\n2024-02-15
+      00:47:00.7013|ERROR|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Deployer
+      execution failed with unexpected error.System.IO.FileNotFoundException: Could
+      not load file or assembly ''System.ServiceProcess.ServiceController, Version=8.0.0.0,
+      Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a''. The system cannot find the
+      file specified.\nFile name: ''System.ServiceProcess.ServiceController, Version=8.0.0.0,
+      Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a''\n   at Microsoft.SqlServer.Management.SqlServerHandler.Setup.ServiceHelper.IsServiceInstalledAndRunning(String
+      serviceName)\n   at Microsoft.SqlServer.Management.SqlServerHandler.Setup.ServiceHelper.IsSqlServerAgentServicesInstalledAndRunning()
+      in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\ServiceHelper.cs:line 306\n   at
+      Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer.IsServiceInstalledAndRunning()
+      in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlWindowsExtensionDeployer.cs:line
+      204\n   at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlServerExtensionDeployer.CheckingRuntimeSettings(DirectoryMonitor
+      configMonitor, Action processNewSettings) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlServerExtensionDeployer.cs:line
+      501\n   at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlServerExtensionDeployer.ExecuteEnableAction(String
+      ExtensionAppDataPathAsLocalSystem, Stopwatch stopWatch) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlServerExtensionDeployer.cs:line
+      272\n   at Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer.ExecuteAction(DeployerAction
+      action) in C:\\ArceeExtension\\src\\ExtensionAgent\\Setup\\SqlWindowsExtensionDeployer.cs:line
+      364\n2024-02-15 00:47:00.7013|INFO|Microsoft.SqlServer.Management.SqlServerHandler.Setup.SqlWindowsExtensionDeployer|Finished
+      deployer action: Enable. Exit code is UnexpectedError\n"}}}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '13648'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: PUT
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/arcee-test/providers/Microsoft.HybridCompute/machines/ARCBOX-SQL/extensions/WindowsAgent.SqlServer?api-version=2023-03-15-preview
+  response:
+    body:
+      string: ''
+    headers:
+      Azure-AsyncOperation:
+      - https://management.azure.com/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/providers/Microsoft.HybridCompute/locations/eastus/operationstatus/02e23f91-44d1-4b18-bf1c-9c210eb762e9?api-version=2019-08-02-preview&t=638435838451317542&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=MgQm5huqJKSQhXsgY6o03dP2dLPbZ8Cv4hObu0pgOg1_A0g_anKAmPJ7bli6S2MTytzJ7Y-2DhnAFg024nz34QMxBl8uljM65V04JI_1qFWfSfOZv36MXDybKFyUiyKh-tRBinyVsruulCOOCcnU0WFJSfEn34prZ_veT3kS6RTS4qV6bswerik3ds-C6h0xtKB6MDQtxd883R2qDzM_yMi4SU2V_MO5Z1lqjCUvz-SeMGH3hc_9PcLkIa3juBLeFZ4QZSNdjhEuK0QtqgDHcTIanNCBHkwLm1AtfT3zcnLKevmyGLEJpbZ7fShVJk1rB5xgmcXuim_sIe6hVeRRtQ&h=oPU5gF-uwnX7JsK51TlRx2EtPx3GRlV_mGaB-bJSQ9s
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 15 Feb 2024 08:50:44 GMT
+      Expires:
+      - '-1'
+      Location:
+      - https://management.azure.com/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/providers/Microsoft.HybridCompute/locations/eastus/operationresults/02e23f91-44d1-4b18-bf1c-9c210eb762e9?api-version=2019-08-02-preview&t=638435838451473805&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=WVNqI6y0Rm7ZTMCsq6GWSQcfq18lRfx-j9HFkzDHOohfQHsncWLDgD1G2rjcwAvRIfOuHJG-Q7vFAnX6hrCSMTo_6rD82czV6EJQdbpR96mPk2df2t_sBozMU7XE1tL9tFXAU3zjlHbGqsVAA6C0oAFvlbg9kLZttgaFsihjkBZiKVW4AoAHPD4y5KlqQmFJGUBU0jGQNdFEIQancGi81dVk5CoSgE7exCAqSjGJf8rfK7bjnp7rxUfsLeiNc32Id_tJeQwkGBLuyW-gHQlzcctIgW_LrwX9qaLkrbPIhPXJSjQDhFwfwo7HbqNUgdxUtZVlAmJG-b5J-MNG2fnEVQ&h=tQIuLAGTO98i79IO-Q0GnFRO7fbnFsy_4m_ETnASagc
+      Pragma:
+      - no-cache
+      Retry-After:
+      - '120'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 569D735C4DCC4F929DE360CA6176C27F Ref B: MAA201060516037 Ref C: 2024-02-15T08:50:43Z'
+      x-ms-correlation-request-id:
+      - 5e522716-d972-474e-a337-cf77838796cb
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '319'
+      x-ms-request-id:
+      - 02e23f91-44d1-4b18-bf1c-9c210eb762e9
+      x-ms-routing-request-id:
+      - SOUTHINDIA:20240215T085045Z:5e522716-d972-474e-a337-cf77838796cb
+    status:
+      code: 202
+      message: Accepted
+version: 1
