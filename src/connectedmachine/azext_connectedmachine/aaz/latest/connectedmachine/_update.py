@@ -113,7 +113,7 @@ class Update(AAZCommand):
             help="Specifies the operating system settings for the hybrid machine.",
         )
         _args_schema.parent_cluster_resource_id = AAZStrArg(
-            options=["--parent-cluster-resource-id"],
+            options=["--parent-cluster-id", "--parent-cluster-resource-id"],
             arg_group="Properties",
             help="The resource id of the parent cluster (Azure HCI) this machine is assigned to, if any.",
         )
