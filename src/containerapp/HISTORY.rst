@@ -5,7 +5,8 @@ Release History
 upcoming
 ++++++
 * 'az containerapp function invocations': Update application insights query 
-* 'az containerapp function keys': Update minimum replica check 
+* 'az containerapp function keys': Update minimum replica check
+* 'az containerapp compose create': Fix `TypeError` when docker-compose file include `env_file` without `environment`
 
 1.3.0b1
 ++++++
