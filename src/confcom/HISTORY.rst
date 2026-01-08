@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6.0
+++++++
+* Added confcom containers from_image command to generate container definitions from an image reference
+
 1.5.0
 ++++++
 * restored the behaviour of --upload-fragment in acifragmentgen to attach to first image in input

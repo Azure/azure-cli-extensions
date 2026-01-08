@@ -32,7 +32,7 @@ def get_image_layers(image: str) -> list[str]:
     result = subprocess.run(
         [binary_path.as_posix(), "-d", "roothash", "-i", image],
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
         check=True,
         text=True,
     )

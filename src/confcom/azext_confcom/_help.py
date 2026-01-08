@@ -334,7 +334,7 @@ helps[
     "confcom containers from_image"
 ] = """
     type: command
-    short-summary: Create a Security Policy Container Definition based on a Radius app template.
+    short-summary: Create a Security Policy Container Definition based on an image reference.
 
     parameters:
         - name: --platform

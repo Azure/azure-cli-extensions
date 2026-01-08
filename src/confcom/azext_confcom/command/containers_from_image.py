@@ -8,5 +8,5 @@ import json
 from azext_confcom.lib.containers import from_image as lib_containers_from_image
 
 
-def containers_from_image(image: str, platform: str) -> str:
-    return print(json.dumps(lib_containers_from_image(image, platform)))
+def containers_from_image(image: str, platform: str) -> None:
+    print(json.dumps(lib_containers_from_image(image, platform)))

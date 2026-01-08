@@ -8,7 +8,7 @@ from azext_confcom.lib.images import get_image_layers, get_image_config
 from azext_confcom.lib.platform import ACI_MOUNTS
 
 
-def from_image(image: str, platform: str) -> str:
+def from_image(image: str, platform: str) -> dict:
 
     mounts = {
         "aci": [asdict(mount) for mount in ACI_MOUNTS],
