@@ -1,0 +1,15 @@
+name: minimal-deployment-template
+version: "1"
+description: Minimal deployment template for basic testing
+endpoints:
+  - name: simple
+    traffic: 100
+    deployment:
+      model:
+        name: simple-model
+        version: "1"
+      environment:
+        name: simple-env
+        version: "1"
+      instance_count: 1
+      instance_type: Standard_DS1_v2
