@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create operation to create or update the extension.
 
     :example: sample command for extension create
-        az connectedmachine extension create --resource-group myResourceGroup --machine-name myMachine --extension-name CustomScriptExtension --location eastus2euap --publisher Microsoft.Compute --type-handler-version 1.10 --type CustomScriptExtension --settings "{commandToExecute:\\'powershell.exe -c "Get-Process | Where-Object { $_.CPU -gt 10000 }"\\'}"
+        az connectedmachine extension create --resource-group myResourceGroup --machine-name myMachine --extension-name CustomScriptExtension --location eastus2euap --publisher Microsoft.Compute --type-handler-version 1.10 --type CustomScriptExtension --settings "{commandToExecute:'powershell.exe -c \"Get-Process | Where-Object { $_.CPU -gt 10000 }\"'}"
     """
 
     _aaz_info = {
