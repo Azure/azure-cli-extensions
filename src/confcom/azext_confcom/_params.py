@@ -469,3 +469,18 @@ def load_arguments(self, _):
             help="Path to containerd socket if not using the default",
             validator=validate_katapolicygen_input,
         )
+
+    with self.argument_context("confcom containers from_image") as c:
+        c.positional(
+            "image",
+            type=str,
+            help="Image to create container definition from",
+        )
+        c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            default="aci",
+            type=str,
+            help="Platform to create container definition for",
+        )
