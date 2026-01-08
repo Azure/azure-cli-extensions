@@ -110,8 +110,6 @@ class ResolvePrivateLinkServiceIdOperations:
     ) -> _models.PrivateLinkResource:
         """Gets the private link service ID for the specified managed cluster.
 
-        Gets the private link service ID for the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -139,8 +137,6 @@ class ResolvePrivateLinkServiceIdOperations:
     ) -> _models.PrivateLinkResource:
         """Gets the private link service ID for the specified managed cluster.
 
-        Gets the private link service ID for the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -165,8 +161,6 @@ class ResolvePrivateLinkServiceIdOperations:
         **kwargs: Any
     ) -> _models.PrivateLinkResource:
         """Gets the private link service ID for the specified managed cluster.
-
-        Gets the private link service ID for the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
