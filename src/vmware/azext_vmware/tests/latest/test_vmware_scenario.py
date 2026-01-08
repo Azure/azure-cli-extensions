@@ -27,7 +27,11 @@ class VmwareScenarioTest(ScenarioTest):
             'key_vault_key': 'vmwarekey',
             'vault_url': 'https://keyvault1-kmip-kvault.vault.azure.net/',
             'clustername': 'cluster1',
-            'hostname': "name"
+            'hostname': "name",
+            'vcf_cores': '100',
+            'vcf_end_date': '2027-01-01T00:00:00Z',
+            'vcf_broadcom_site_id': 'site123',
+            'vcf_broadcom_contract_number': '12345',
         })
 
         # check quote availability
@@ -41,10 +45,10 @@ class VmwareScenarioTest(ScenarioTest):
 
         # create a private cloud
         self.cmd(
-            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --accept-eula')
+            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --vcf-license vcf5.cores={vcf_cores} vcf5.end-date={vcf_end_date} vcf5.broadcom-site-id={vcf_broadcom_site_id} vcf5.broadcom-contract-number={vcf_broadcom_contract_number} --accept-eula')
         
         self.cmd(
-            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --zones 1 --accept-eula')
+            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --zones 1 --vcf-license vcf5.cores={vcf_cores} vcf5.end-date={vcf_end_date} vcf5.broadcom-site-id={vcf_broadcom_site_id} vcf5.broadcom-contract-number={vcf_broadcom_contract_number} --accept-eula')
 
         count = len(self.cmd('vmware private-cloud list -g {rg}').get_output_in_json())
         self.assertEqual(count, 1, 'private cloud count expected to be 1')
@@ -73,6 +77,12 @@ class VmwareScenarioTest(ScenarioTest):
 
         # update private cloud to set management cluster hosts
         self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --vsan-datastore-name test-name')
+
+        # update private cloud to set vcf5 license
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --vcf-license vcf5.cores={vcf_cores} vcf5.end-date={vcf_end_date} vcf5.broadcom-site-id={vcf_broadcom_site_id} vcf5.broadcom-contract-number={vcf_broadcom_contract_number}')
+
+        # get vcf license
+        self.cmd('vmware private-cloud get-vcf-license -g {rg} -n {privatecloud}')
 
         # list authorization
         self.cmd('vmware authorization list -g {rg} -c {privatecloud}')
