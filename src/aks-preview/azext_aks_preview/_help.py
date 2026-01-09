@@ -4227,7 +4227,7 @@ helps['aks bastion'] = """
         - name: --admin
           type: bool
           short-summary: Use the cluster admin credentials to connect to the bastion.
-        - name: --kubeconfig
+        - name: --kubeconfig-path
           type: string
           short-summary: Path to an existing kubeconfig file to use.
           long-summary: If specified, uses this kubeconfig file at its original location instead of fetching credentials from Azure.
@@ -4235,7 +4235,7 @@ helps['aks bastion'] = """
         - name: Connect to a managed Kubernetes cluster using Azure Bastion with custom port and admin credentials.
           text: az aks bastion -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
         - name: Connect using an existing kubeconfig file.
-          text: az aks bastion -g MyResourceGroup --name MyManagedCluster --kubeconfig ~/.kube/config
+          text: az aks bastion -g MyResourceGroup --name MyManagedCluster --kubeconfig-path ~/.kube/config
 """
 
 helps['aks identity-binding'] = """
