@@ -11,6 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+19.0.0b19
++++++++
+* `az aks bastion`: Add new option `--kubeconfig-path` to allow users to specify an existing kubeconfig file
 * Add add-on support for `ApplicationLoadBalancer` (Application Gateway for Containers)
 - AKS Create and Update parameters for `--enable-application-load-balancer` and `--disable-application-load-balancer`
  - `az aks applicationloadbalancer enable`: Enable Application Load Balancer add-on for an existing cluster.
