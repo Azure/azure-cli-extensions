@@ -4,8 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import yaml
+import shutil
+import subprocess
 import tempfile
+import yaml
 
 from knack.log import get_logger
 from knack.util import CLIError
@@ -20,6 +22,7 @@ from azext_fleet._client_factory import CUSTOM_MGMT_FLEET, cf_fleet_members, cf_
 from azext_fleet._helpers import is_rp_registered, print_or_merge_credentials
 from azext_fleet._helpers import assign_network_contributor_role_to_subnet
 from azext_fleet._helpers import get_msi_object_id
+from azext_fleet._helpers import is_stdout_path
 from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
 from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
@@ -218,6 +221,43 @@ def delete_fleet(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name, polling_interval=5)
 
 
+def _convert_kubeconfig_to_azurecli(path):
+    """
+    Convert kubeconfig to use Azure CLI authentication if it uses devicecode.
+
+    Args:
+        path: Path to the kubeconfig file to convert
+    """
+    # Skip conversion if path is stdout
+    if is_stdout_path(path):
+        return
+
+    if shutil.which("kubelogin"):
+        try:
+            subprocess.run(
+                ["kubelogin", "convert-kubeconfig", "-l", "azurecli", "--kubeconfig", path],
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+            logger.warning("Converted kubeconfig to use Azure CLI authentication.")
+        except subprocess.CalledProcessError as e:
+            logger.warning("Failed to convert kubeconfig with kubelogin: %s", str(e))
+        except subprocess.TimeoutExpired as e:
+            logger.warning("kubelogin command timed out: %s", str(e))
+        except Exception as e:  # pylint: disable=broad-except
+            logger.warning("Error running kubelogin: %s", str(e))
+    else:
+        logger.warning(
+            "The fleet hub cluster kubeconfig requires kubelogin. "
+            "Please install kubelogin from https://github.com/Azure/kubelogin or run "
+            "'az aks install-cli' to install both kubectl and kubelogin. "
+            "After installing kubelogin, rerun 'az fleet get-credentials' and the "
+            "kubeconfig will be converted automatically."
+        )
+
+
 def get_credentials(cmd,
                     client,
                     resource_group_name,
@@ -225,7 +265,8 @@ def get_credentials(cmd,
                     path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                     overwrite_existing=False,
                     context_name=None,
-                    member_name=None):
+                    member_name=None,
+                    skip_kubelogin_conversion=False):
 
     # If a member name is given, we use the cluster resource ID from the fleet member
     # to get that member cluster's credentials
@@ -273,6 +314,11 @@ def get_credentials(cmd,
         try:
             kubeconfig = credential_results.kubeconfigs[0].value.decode(encoding='UTF-8')
             print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
+            # Fleet hub is always RBAC-enabled and should convert it with kubelogin so that
+            # user doesn't have to manually run kubelogin convert-kubeconfig -l azurecli
+            # every time after az fleet get-credentials
+            if not skip_kubelogin_conversion:
+                _convert_kubeconfig_to_azurecli(path)
         except (IndexError, ValueError) as exc:
             raise CLIError("Fail to find kubeconfig file.") from exc
 
@@ -985,7 +1031,8 @@ def get_namespace_credentials(cmd,
             path=temp_file.name,
             overwrite_existing=overwrite_existing,
             context_name=context_name,
-            member_name=member_name
+            member_name=member_name,
+            skip_kubelogin_conversion=True  # Skip here, we'll convert after namespace modification
         )
 
         with open(temp_file.name, 'r', encoding='utf-8') as f:
@@ -998,3 +1045,6 @@ def get_namespace_credentials(cmd,
         modified_kubeconfig = yaml.dump(kubeconfig, default_flow_style=False)
         print_or_merge_credentials(path, modified_kubeconfig, overwrite_existing, context_name)
         print(f"Default namespace set to '{managed_namespace_name}' for context '{kubeconfig.get('current-context')}'")
+
+        # Apply kubelogin conversion to the final file after namespace modification
+        _convert_kubeconfig_to_azurecli(path)
