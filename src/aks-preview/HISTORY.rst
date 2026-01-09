@@ -11,11 +11,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks safeguards create`: Add pre-existence check to prevent duplicate resource creation and guide users to use update command instead.
+* `az aks safeguards`: Fix verb tense in help text and examples to use first-person imperative verbs per Azure CLI guidelines.
 * Add add-on support for `ApplicationLoadBalancer` (Application Gateway for Containers)
-- AKS Create and Update parameters for `--enable-application-load-balancer` and `--disable-application-load-balancer`
- - `az aks applicationloadbalancer enable`: Enable Application Load Balancer add-on for an existing cluster.
- - `az aks applicationloadbalancer disable`: Disable Application Load Balancer add-on for an existing cluster.
- - `az aks applicationloadbalancer update`: Update Application Load Balancer add-on for an existing cluster.
+* AKS Create and Update parameters for `--enable-application-load-balancer` and `--disable-application-load-balancer`
+ * `az aks applicationloadbalancer enable`: Enable Application Load Balancer add-on for an existing cluster.
+ * `az aks applicationloadbalancer disable`: Disable Application Load Balancer add-on for an existing cluster.
+ * `az aks applicationloadbalancer update`: Update Application Load Balancer add-on for an existing cluster.
 
 19.0.0b18
 +++++++
