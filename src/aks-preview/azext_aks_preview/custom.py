@@ -5111,17 +5111,17 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
         nrg = mc.node_resource_group
         bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg])
         port = aks_bastion_get_local_port(port)
-        
+
         # Fetch credentials only if kubeconfig not provided
         is_new_kubeconfig = temp_dir is not None
         if is_new_kubeconfig:
             aks_get_credentials(cmd, client, resource_group_name, name, admin=admin, path=kubeconfig_path)
-        
+
         # Pass cluster_name only for existing kubeconfigs to search for exact match
         # For new kubeconfigs, don't pass cluster_name so it uses current context
         aks_bastion_set_kubeconfig(
-            kubeconfig_path, 
-            port, 
+            kubeconfig_path,
+            port,
             cluster_name=name if not is_new_kubeconfig else None
         )
 
