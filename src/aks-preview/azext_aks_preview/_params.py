@@ -3108,13 +3108,7 @@ def load_arguments(self, _):
         c.argument("bastion")
         c.argument("port", type=int)
         c.argument("admin", action="store_true")
-        c.argument(
-            "kubeconfig_path",
-            options_list=["--kubeconfig"],
-            type=file_type,
-            completer=FilesCompleter(),
-            help="Path to an existing kubeconfig file to use. If not specified, credentials will be fetched from Azure into a temporary location.",
-        )
+        c.argument("kubeconfig_path")
         c.argument(
             "yes",
             options_list=["--yes", "-y"],
