@@ -179,27 +179,64 @@ def aks_bastion_extension(yes):
         raise CLIInternalError(f"Failed to install bastion extension: {result.error}")
 
 
-def aks_bastion_set_kubeconfig(kubeconfig_path, port):
-    """Update the kubeconfig file to point to the local port."""
+def aks_bastion_set_kubeconfig(kubeconfig_path, port, cluster_name=None):
+    """Update the kubeconfig file to point to the local port.
+    
+    Args:
+        kubeconfig_path: Path to the kubeconfig file
+        port: Local port for the bastion tunnel
+        cluster_name: Name of the AKS cluster. If provided, searches for exact match in existing kubeconfig.
+                      If not provided, uses current context (for newly downloaded kubeconfigs).
+    """
 
     logger.debug("Updating kubeconfig file: %s to use port: %s", kubeconfig_path, port)
     with open(kubeconfig_path, "r") as f:
         data = yaml.load(f, Loader=yaml.SafeLoader)
-    current_context = data["current-context"]
-    current_cluster = ""
-    for context in data["contexts"]:
-        if context["name"] == current_context:
-            current_cluster = context["context"]["cluster"]
-
-    for cluster in data["clusters"]:
-        if cluster["name"] == current_cluster:
+    
+    # Find the target cluster
+    target_cluster_name = None
+    
+    if cluster_name:
+        # For existing kubeconfigs, search for exact match in clusters
+        logger.debug("Searching for cluster '%s' in existing kubeconfig", cluster_name)
+        
+        for cluster in data.get("clusters", []):
+            if cluster["name"] == cluster_name:
+                target_cluster_name = cluster_name
+                logger.debug("Found exact match for cluster name: %s", target_cluster_name)
+                break
+        
+        if not target_cluster_name:
+            raise CLIInternalError(
+                f"Could not find cluster '{cluster_name}' in the provided kubeconfig. "
+                "The cluster name from Azure might differ from the name in your kubeconfig file."
+            )
+    else:
+        # If cluster_name not provided, use current context
+        current_context = data.get("current-context")
+        if current_context:
+            for context in data.get("contexts", []):
+                if context["name"] == current_context:
+                    target_cluster_name = context["context"]["cluster"]
+                    logger.debug("Using current context cluster: %s", target_cluster_name)
+                    break
+    
+    if not target_cluster_name:
+        raise CLIInternalError("Could not determine which cluster to update in kubeconfig")
+    
+    # Update the cluster configuration
+    for cluster in data.get("clusters", []):
+        if cluster["name"] == target_cluster_name:
             server = cluster["cluster"]["server"]
             hostname = urlparse(server).hostname
             # update the server URL to point to the local port
             cluster["cluster"]["server"] = f"https://localhost:{port}/"
             # set the tls-server-name to the hostname
             cluster["cluster"]["tls-server-name"] = hostname
+            logger.debug("Updated cluster '%s' to use localhost:%s with tls-server-name=%s", 
+                        target_cluster_name, port, hostname)
             break
+    
     with open(kubeconfig_path, "w") as f:
         yaml.dump(data, f)
 
