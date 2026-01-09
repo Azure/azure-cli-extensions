@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
++++++
+* Version bump for new release.
+
 1.0.0
 +++++
 * Stable release.
