@@ -181,7 +181,7 @@ def aks_bastion_extension(yes):
 
 def aks_bastion_set_kubeconfig(kubeconfig_path, port, cluster_name=None):
     """Update the kubeconfig file to point to the local port.
-    
+
     Args:
         kubeconfig_path: Path to the kubeconfig file
         port: Local port for the bastion tunnel
@@ -192,20 +192,20 @@ def aks_bastion_set_kubeconfig(kubeconfig_path, port, cluster_name=None):
     logger.debug("Updating kubeconfig file: %s to use port: %s", kubeconfig_path, port)
     with open(kubeconfig_path, "r") as f:
         data = yaml.load(f, Loader=yaml.SafeLoader)
-    
+
     # Find the target cluster
     target_cluster_name = None
-    
+
     if cluster_name:
         # For existing kubeconfigs, search for exact match in clusters
         logger.debug("Searching for cluster '%s' in existing kubeconfig", cluster_name)
-        
+
         for cluster in data.get("clusters", []):
             if cluster["name"] == cluster_name:
                 target_cluster_name = cluster_name
                 logger.debug("Found exact match for cluster name: %s", target_cluster_name)
                 break
-        
+
         if not target_cluster_name:
             raise CLIInternalError(
                 f"Could not find cluster '{cluster_name}' in the provided kubeconfig. "
@@ -220,10 +220,10 @@ def aks_bastion_set_kubeconfig(kubeconfig_path, port, cluster_name=None):
                     target_cluster_name = context["context"]["cluster"]
                     logger.debug("Using current context cluster: %s", target_cluster_name)
                     break
-    
+
     if not target_cluster_name:
         raise CLIInternalError("Could not determine which cluster to update in kubeconfig")
-    
+
     # Update the cluster configuration
     for cluster in data.get("clusters", []):
         if cluster["name"] == target_cluster_name:
@@ -233,10 +233,10 @@ def aks_bastion_set_kubeconfig(kubeconfig_path, port, cluster_name=None):
             cluster["cluster"]["server"] = f"https://localhost:{port}/"
             # set the tls-server-name to the hostname
             cluster["cluster"]["tls-server-name"] = hostname
-            logger.debug("Updated cluster '%s' to use localhost:%s with tls-server-name=%s", 
-                        target_cluster_name, port, hostname)
+            logger.debug("Updated cluster '%s' to use localhost:%s with tls-server-name=%s",
+                         target_cluster_name, port, hostname)
             break
-    
+
     with open(kubeconfig_path, "w") as f:
         yaml.dump(data, f)
 
