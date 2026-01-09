@@ -23,7 +23,8 @@ def _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, 
         "storage_blob_container": {
             "blob_container_name": blob_container_name,
             "storage_account_resource_id": storage_account_resource_id,
-        }
+        },
+        "mi_system_assigned": "True"
     }
     return args
 
