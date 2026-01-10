@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/projectpolicies", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/projectpolicies", "2025-10-01-preview"],
         ]
     }
 
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -189,6 +189,9 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.configuration_policies = AAZObjectType(
+                serialized_name="configurationPolicies",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -197,6 +200,44 @@ class List(AAZCommand):
                 serialized_name="resourcePolicies",
             )
             properties.scopes = AAZListType()
+
+            configuration_policies = cls._schema_on_200.value.Element.properties.configuration_policies
+            configuration_policies.azure_ai_services_feature_status = AAZObjectType(
+                serialized_name="azureAiServicesFeatureStatus",
+            )
+            _ListHelper._build_schema_feature_state_read(configuration_policies.azure_ai_services_feature_status)
+            configuration_policies.dev_box_limits_feature_status = AAZObjectType(
+                serialized_name="devBoxLimitsFeatureStatus",
+            )
+            _ListHelper._build_schema_feature_state_read(configuration_policies.dev_box_limits_feature_status)
+            configuration_policies.dev_box_schedule_delete_feature_status = AAZObjectType(
+                serialized_name="devBoxScheduleDeleteFeatureStatus",
+            )
+            _ListHelper._build_schema_feature_state_read(configuration_policies.dev_box_schedule_delete_feature_status)
+            configuration_policies.dev_box_tunnel_feature_status = AAZObjectType(
+                serialized_name="devBoxTunnelFeatureStatus",
+            )
+            _ListHelper._build_schema_feature_state_read(configuration_policies.dev_box_tunnel_feature_status)
+            configuration_policies.display_name_feature_status = AAZObjectType(
+                serialized_name="displayNameFeatureStatus",
+            )
+            _ListHelper._build_schema_feature_state_read(configuration_policies.display_name_feature_status)
+            configuration_policies.project_catalog_feature_status = AAZObjectType(
+                serialized_name="projectCatalogFeatureStatus",
+            )
+            _ListHelper._build_schema_feature_state_read(configuration_policies.project_catalog_feature_status)
+            configuration_policies.serverless_gpu_sessions_feature_status = AAZObjectType(
+                serialized_name="serverlessGpuSessionsFeatureStatus",
+            )
+            _ListHelper._build_schema_feature_state_read(configuration_policies.serverless_gpu_sessions_feature_status)
+            configuration_policies.user_customizations_feature_status = AAZObjectType(
+                serialized_name="userCustomizationsFeatureStatus",
+            )
+            _ListHelper._build_schema_feature_state_read(configuration_policies.user_customizations_feature_status)
+            configuration_policies.workspace_storage_feature_status = AAZObjectType(
+                serialized_name="workspaceStorageFeatureStatus",
+            )
+            _ListHelper._build_schema_feature_state_read(configuration_policies.workspace_storage_feature_status)
 
             resource_policies = cls._schema_on_200.value.Element.properties.resource_policies
             resource_policies.Element = AAZObjectType()
@@ -237,6 +278,41 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_feature_state_read = None
+
+    @classmethod
+    def _build_schema_feature_state_read(cls, _schema):
+        if cls._schema_feature_state_read is not None:
+            _schema.default_status = cls._schema_feature_state_read.default_status
+            _schema.default_values = cls._schema_feature_state_read.default_values
+            _schema.status_modifiable = cls._schema_feature_state_read.status_modifiable
+            _schema.values_modifiable = cls._schema_feature_state_read.values_modifiable
+            return
+
+        cls._schema_feature_state_read = _schema_feature_state_read = AAZObjectType()
+
+        feature_state_read = _schema_feature_state_read
+        feature_state_read.default_status = AAZStrType(
+            serialized_name="defaultStatus",
+        )
+        feature_state_read.default_values = AAZDictType(
+            serialized_name="defaultValues",
+        )
+        feature_state_read.status_modifiable = AAZStrType(
+            serialized_name="statusModifiable",
+        )
+        feature_state_read.values_modifiable = AAZStrType(
+            serialized_name="valuesModifiable",
+        )
+
+        default_values = _schema_feature_state_read.default_values
+        default_values.Element = AAZStrType()
+
+        _schema.default_status = cls._schema_feature_state_read.default_status
+        _schema.default_values = cls._schema_feature_state_read.default_values
+        _schema.status_modifiable = cls._schema_feature_state_read.status_modifiable
+        _schema.values_modifiable = cls._schema_feature_state_read.values_modifiable
 
 
 __all__ = ["List"]
