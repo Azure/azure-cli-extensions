@@ -2,6 +2,13 @@
 Release History
 ===============
 
+2.1.3
+++++++
+Fixing an issue with repair-and-restore related to the change to python3.13
+Fixing an unreported issue with restore only sending the disk name instead of full ID, which works up until az-cli 2.81
+linting/flake8 fixes
+Removing logging of user/pass of repair VM
+
 2.1.2
 ++++++
 Added images available for --distro flag to include current distributions, will remove EoL versions in future releases

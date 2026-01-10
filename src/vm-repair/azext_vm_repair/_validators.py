@@ -235,8 +235,10 @@ def _prompt_public_ip(namespace):
     except NoTTYException:
         raise ValidationError('Please specify the associate-public-ip parameter in non-interactive mode.')
 
+
 def _return_public_ip_name(namespace):
     return namespace.repair_vm_name + "PublicIP"
+
 
 def _classic_vm_exists(cmd, resource_group_name, vm_name):
     classic_vm_provider = 'Microsoft.ClassicCompute'
@@ -430,7 +432,7 @@ def validate_repair_and_restore(cmd, namespace):
 
     validate_vm_username(namespace.repair_username, is_linux)
     validate_vm_password(namespace.repair_password, is_linux)
-    
+
     # Prompt input for public ip usage
     namespace.associate_public_ip = False
     # Validate repair run command
