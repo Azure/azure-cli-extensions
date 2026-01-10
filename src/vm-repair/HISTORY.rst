@@ -17,11 +17,11 @@ Disabled trusted launch for Arm64
 
 2.1.1
 ++++++
-Updated README file for `vm repair` extension. 
+Updated README file for `vm repair` extension.
 
 2.1.0
 ++++++
-Added new parameter `--os-disk-type` to `vm repair create` to let users specify the repair vm's os disk storage account type. 
+Added new parameter `--os-disk-type` to `vm repair create` to let users specify the repair vm's os disk storage account type.
 
 2.0.3
 ++++++
@@ -34,11 +34,11 @@ Updated parameter descriptions and examples for `az vm repair create`.
 
 2.0.1
 ++++++
-Fixed 2 Unbound variable bugs in `vm repair create` and improved the code documentation.  
+Fixed 2 Unbound variable bugs in `vm repair create` and improved the code documentation.
 
 2.0.0
 ++++++
-Changed default VM image to 2022-datacenter-smalldisk for better default security. 
+Changed default VM image to 2022-datacenter-smalldisk for better default security.
 
 1.1.1
 ++++++
@@ -56,9 +56,9 @@ Added breaking change warning for the default image for Windows source VMs if th
 
 1.0.9
 ++++++
-Fixed and updated several vm-repair tests for better coverage. 
-Removed and updated broken image aliases pointing at images that no longer existed. 
-Add `--encrypt-recovery-key` string parameter to `vm repair create` to use recovery key provided by the user to unlock the disk for a confidential VM. 
+Fixed and updated several vm-repair tests for better coverage.
+Removed and updated broken image aliases pointing at images that no longer existed.
+Add `--encrypt-recovery-key` string parameter to `vm repair create` to use recovery key provided by the user to unlock the disk for a confidential VM.
 
 1.0.8
 ++++++
@@ -75,7 +75,7 @@ Add CLI update wait for ASG to wait for the operation done as the async 2rd oper
 1.0.5
 ++++++
 Bug fix ASG is not added properly when reset the nic
-Add ASG if exist when nic is reset 
+Add ASG if exist when nic is reset
 
 1.0.4
 ++++++
@@ -139,19 +139,19 @@ Updated exsiting privateIpAddress field to privateIPAddress and privateIpAllocat
 
 0.5.0
 ++++++
-Support for hosting repair vm in existing resource group and fixing existing resource group logic 
+Support for hosting repair vm in existing resource group and fixing existing resource group logic
 
 0.5.0
 ++++++
-Support for hosting repair vm in existing resource group and fixing existing resource group logic 
+Support for hosting repair vm in existing resource group and fixing existing resource group logic
 
 0.4.10
 ++++++
-Support for hosting repair vm in existing resource group and fixing existing resource group logic 
+Support for hosting repair vm in existing resource group and fixing existing resource group logic
 
 0.4.9
 ++++++
-Fix for encrypted vm's auto unlock feature 
+Fix for encrypted vm's auto unlock feature
 
 0.4.8
 ++++++
@@ -195,7 +195,7 @@ Add support for preview flag and fix Gen2 bug
 
 0.3.8
 ++++++
-Add support for optional public IP 
+Add support for optional public IP
 
 0.3.6
 ++++++
