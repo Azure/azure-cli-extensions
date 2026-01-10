@@ -16,7 +16,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
 from .encryption_types import Encryption
-from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SuseNotAvailableError)
+from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV)
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
@@ -317,11 +317,11 @@ def _fetch_compatible_sku(source_vm, hyperv):
 
 def _fetch_disk_info(resource_group_name, disk_name):
     """ Returns sku, location, os_type, hyperVgeneration as tuples """
-    show_disk_command = 'az disk show -g {g} -n {name} --query [sku.name,location,osType,hyperVGeneration] -o json'.format(g=resource_group_name, name=disk_name)
+    show_disk_command = 'az disk show -g {g} -n {name} --query [sku.name,location,osType,hyperVGeneration,id] -o json'.format(g=resource_group_name, name=disk_name)
     disk_info = loads(_call_az_command(show_disk_command))
-    # Note that disk_info will always have 4 elements if the command succeeded, if it fails it will cause an exception
-    sku, location, os_type, hyper_v_version = disk_info[0], disk_info[1], disk_info[2], disk_info[3]
-    return (sku, location, os_type, hyper_v_version)
+    # Note that disk_info will always have 5 elements if the command succeeded, if it fails it will cause an exception
+    sku, location, os_type, hyper_v_version, disk_id = disk_info[0], disk_info[1], disk_info[2], disk_info[3], disk_info[4]
+    return (sku, location, os_type, hyper_v_version, disk_id)
 
 
 def _get_repair_resource_tag(resource_group_name, source_vm_name):
@@ -416,7 +416,7 @@ def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linu
 
 def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
     """
-    This method is not actually invoked. 
+    This method is not actually invoked.
     Fallback for unlocking disk when script fails. This will install the ADE extension to unlock the Data disk.
     """
 
@@ -731,8 +731,11 @@ def _check_script_succeeded(log_string):
 
 def _get_function_param_dict(frame):
     import inspect
-    # getargvalues inadvertently marked as deprecated in Python 3.5
-    _, _, _, values = inspect.getargvalues(frame)
+    args = inspect.getargvalues(frame)
+    # Explicitly materialize a real dict (works for dict + FrameLocalsProxy)
+    values = dict(args.locals)
+    # old way that doesn't return a valid dict but a FrameLocalsProxy instead (python 3.13+), kept for reference
+    # _, _, _, values = inspect.getargvalues(frame)
     if 'cmd' in values:
         del values['cmd']
     secure_params = ['repair_password', 'repair_username', 'encrypt_recovery_key']
@@ -742,7 +745,7 @@ def _get_function_param_dict(frame):
     return values
 
 
-def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key = ""):
+def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key=""):
     stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key)
     logger.debug('Unlock script STDOUT:\n%s', stdout)
     if stderr:
@@ -759,7 +762,7 @@ def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, r
 
     if not fix_uuid:
         create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
-    
+
     logger.info('Validating VM template before continuing...')
     _call_az_command(create_repair_vm_command + ' --validate', secure_params=[repair_password, repair_username])
     logger.info('Creating repair VM...')
