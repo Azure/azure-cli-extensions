@@ -4589,8 +4589,32 @@ def crd_cleanup_force_delete(
         )
 
     timeout_for_crd_deletion = "20s"
+    deleted_crds = []
     for crds in consts.CRD_FOR_FORCE_DELETE:
         full_crds = f"{crds}.{cloud_based_domain}"
+
+        # Check if CRD has the addonmanager.kubernetes.io/mode: Reconcile label
+        # If present, skip deletion to avoid disrupting AKS managed resources
+        get_crd_cmd = [kubectl_client_location, "get", "crd", full_crds, "-ojson"]
+        if kube_config:
+            get_crd_cmd.extend(["--kubeconfig", kube_config])
+        if kube_context:
+            get_crd_cmd.extend(["--context", kube_context])
+        get_crd_output = Popen(get_crd_cmd, stdout=PIPE, stderr=PIPE)
+        # Note: communicate() can only be called once on a Popen object,
+        # so we must capture stdout here and reuse it below
+        stdout, _ = get_crd_output.communicate()
+
+        if get_crd_output.returncode == 0:
+            try:
+                crd_json = json.loads(stdout.strip())
+                labels = crd_json.get("metadata", {}).get("labels", {})
+                if labels.get("addonmanager.kubernetes.io/mode") == "Reconcile":
+                    # Skip deletion for CRDs managed by AKS addon manager
+                    continue
+            except json.JSONDecodeError:
+                pass
+
         cmd_helm_delete = [
             kubectl_client_location,
             "delete",
@@ -4607,6 +4631,7 @@ def crd_cleanup_force_delete(
             cmd_helm_delete.extend(["--context", kube_context])
         response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
         _, _ = response_helm_delete.communicate()
+        deleted_crds.append(full_crds)
 
     # Timer added to have sufficient time after CRD deletion
     # to check the status of the CRD ( deleted or terminating )
@@ -4616,37 +4641,41 @@ def crd_cleanup_force_delete(
     current_path = os.path.abspath(os.path.dirname(__file__))
     yaml_file_path = os.path.join(current_path, "remove_crd_finalizer.yaml")
 
-    # Patch if CRD is in Terminating state
-    for crds in consts.CRD_FOR_FORCE_DELETE:
-        full_crds = f"{crds}.{cloud_based_domain}"
-        cmd = [kubectl_client_location, "get", "crd", full_crds, "-ojson"]
+    # Patch if CRD is in Terminating state (only for CRDs we attempted to delete)
+    for full_crds in deleted_crds:
+        get_cmd = [kubectl_client_location, "get", "crd", full_crds, "-ojson"]
         if kube_config:
-            cmd.extend(["--kubeconfig", kube_config])
+            get_cmd.extend(["--kubeconfig", kube_config])
         if kube_context:
-            cmd.extend(["--context", kube_context])
-        cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
-        _, _ = cmd_output.communicate()
+            get_cmd.extend(["--context", kube_context])
+        cmd_output = Popen(get_cmd, stdout=PIPE, stderr=PIPE)
+        # Note: communicate() can only be called once on a Popen object,
+        # so we must capture stdout here and reuse it below
+        stdout, _ = cmd_output.communicate()
 
         if cmd_output.returncode == 0:
-            changed_cmd = json.loads(cmd_output.communicate()[0].strip())
-            status = changed_cmd["status"]["conditions"][-1]["type"]
+            try:
+                changed_cmd = json.loads(stdout.strip())
+                status = changed_cmd["status"]["conditions"][-1]["type"]
 
-            if status == "Terminating":
-                patch_cmd = [
-                    kubectl_client_location,
-                    "patch",
-                    "crd",
-                    full_crds,
-                    "--type=merge",
-                    "--patch-file",
-                    yaml_file_path,
-                ]
-                if kube_config:
-                    patch_cmd.extend(["--kubeconfig", kube_config])
-                if kube_context:
-                    patch_cmd.extend(["--context", kube_context])
-                output_patch_cmd = Popen(patch_cmd, stdout=PIPE, stderr=PIPE)
-                _, _ = output_patch_cmd.communicate()
+                if status == "Terminating":
+                    patch_cmd = [
+                        kubectl_client_location,
+                        "patch",
+                        "crd",
+                        full_crds,
+                        "--type=merge",
+                        "--patch-file",
+                        yaml_file_path,
+                    ]
+                    if kube_config:
+                        patch_cmd.extend(["--kubeconfig", kube_config])
+                    if kube_context:
+                        patch_cmd.extend(["--context", kube_context])
+                    output_patch_cmd = Popen(patch_cmd, stdout=PIPE, stderr=PIPE)
+                    _, _ = output_patch_cmd.communicate()
+            except (json.JSONDecodeError, KeyError, IndexError):
+                pass
 
 
 def check_operation_support(operation_name: str, agent_version: str) -> None:
