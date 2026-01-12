@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.10.13
++++++
+* Skip CRD deletion during Arc onboarding for CRDs managed by AKS addon manager (with label `addonmanager.kubernetes.io/mode: Reconcile`) to prevent extensionconfig from going into terminating state.
+
 1.10.12
 +++++
 * Removed deprecated '--app-id' and '--app-secret' RBAC parameters from the extension.
