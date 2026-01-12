@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.2.1
++++++
+* Added system assigned MI creation as part of az storage-mover create-for-storage-container command.
+
 1.2.0
 +++++
 * Updated to the 2025-07-01 GA API version. 

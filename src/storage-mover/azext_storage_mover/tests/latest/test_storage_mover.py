@@ -124,6 +124,8 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheck('properties.endpointType', "AzureStorageBlobContainer"),
                          JMESPathCheck('properties.storageAccountResourceId', self.kwargs.get('account_id', '')),
                          JMESPathCheck('properties.description', "endpointDesc"),
+                         JMESPathCheck('identity.type', "SystemAssigned"),
+                         JMESPathCheckExists('identity.principalId'),
                          ])
 
         # update for storage container
