@@ -437,11 +437,11 @@ helps[
       - name: Align using dev center
         text: |-
                az devcenter dev dev-box align --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
---project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" -targets NetworkProperties HibernateSupport
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --targets NetworkProperties HibernateSupport
       - name: Align using endpoint
         text: |-
                az devcenter dev dev-box align --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
---project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" -targets NetworkProperties HibernateSupport
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --targets NetworkProperties HibernateSupport
 """
 
 helps[
