@@ -51,8 +51,8 @@ class Show(AAZCommand):
         _args_schema.devbox_definition_name = AAZStrArg(
             options=["-n", "--name", "--devbox-definition-name"],
             help="The name of the dev box definition.",
-            required=True,
             id_part="child_name_1",
+            required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
@@ -62,7 +62,6 @@ class Show(AAZCommand):
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
             help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
-            required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
