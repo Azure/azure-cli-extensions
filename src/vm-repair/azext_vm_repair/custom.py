@@ -642,7 +642,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         # If the script execution was unsuccessful, set the status to error and log the error
         if run_script_succeeded:
             command.script.set_status_success()
-            command.message = 'Script completed succesfully.'
+            command.message = 'Script completed successfully.'
             command.script.output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'output'])
             logger.info('\nScript returned with output:\n%s\n', command.script.output)
         else:
@@ -734,7 +734,7 @@ def list_scripts(cmd, preview=None):
         return_dict = command.init_return_dict()
     else:
         # Construct return dict
-        command.message = 'Available script list succesfully fetched from https://github.com/Azure/repair-script-library'
+        command.message = 'Available script list successfully fetched from https://github.com/Azure/repair-script-library'
         return_dict = command.init_return_dict()
         return_dict['map'] = run_map
 
