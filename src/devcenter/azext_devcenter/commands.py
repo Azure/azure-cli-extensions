@@ -408,7 +408,6 @@ def load_command_table(self, _):
         g.custom_command("set-active-hours", "devcenter_dev_box_set_active_hours")
         g.custom_command("schedule-delete", "devcenter_dev_box_schedule_delete")
 
-
     with self.command_group("devcenter dev environment") as g:
         g.custom_command("list", "devcenter_environment_list")
         g.custom_show_command("show", "devcenter_environment_show")

@@ -141,7 +141,7 @@ def load_arguments(self, _):
             type=str,
             help="The name of a pool of " "dev boxes.",
         )
-    
+
     with self.argument_context("devcenter dev pool align") as c:
         c.argument(
             "dev_center",
@@ -162,7 +162,7 @@ def load_arguments(self, _):
             help="The name of a pool of " "dev boxes.",
         )
         c.argument('targets', nargs='+',
-                       help='Space separated configurations to align on. Possible values are "NetworkProperties", "HibernateSupport", or "SingleSignOnStatus".',)
+                   help='Space separated configurations to align on. Possible values are "NetworkProperties", "HibernateSupport", or "SingleSignOnStatus".',)
 
     with self.argument_context("devcenter dev schedule list") as c:
         c.argument(
@@ -350,7 +350,7 @@ def load_arguments(self, _):
             arg_type=endpoint,
         )
         c.argument('targets', nargs='+',
-                       help='Space separated configurations to align on. Possible values are "NetworkProperties", "HibernateSupport", or "SingleSignOnStatus".',)
+                   help='Space separated configurations to align on. Possible values are "NetworkProperties", "HibernateSupport", or "SingleSignOnStatus".',)
         c.argument(
             "user_id",
             type=str,
@@ -434,8 +434,8 @@ def load_arguments(self, _):
             help="The timezone of the active hours.",
         )
         c.argument('days_of_week', nargs='+',
-                       help='Space separated days of the week for active hours. Possible values are "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday".',)
-    
+                   help='Space separated days of the week for active hours. Possible values are "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday".',)
+
     with self.argument_context("devcenter dev dev-box schedule-delete") as c:
         c.argument(
             "dev_center",

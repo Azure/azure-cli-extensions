@@ -48,19 +48,22 @@ def validate_pool_create(
 managed virtual network regions (--managed-virtual-network-regions) should be set."""
         raise RequiredArgumentMissingError(error_message)
     if not has_value(network_connection_name) and (
-        virtual_network_type == "Unmanaged" or not has_value(virtual_network_type)
+        virtual_network_type == "Unmanaged" or not has_value(
+            virtual_network_type)
     ):
         error_message = """When virtual-network-type is not used or set to "Unmanaged", \
 a network connection name (--network-connection) should be set."""
         raise RequiredArgumentMissingError(error_message)
     if has_value(managed_virtual_network_regions) and (
-        virtual_network_type == "Unmanaged" or not has_value(virtual_network_type)
+        virtual_network_type == "Unmanaged" or not has_value(
+            virtual_network_type)
     ):
         error_message = """When virtual-network-type is not used or set to "Unmanaged", \
 managed virtual network regions (--managed-virtual-network-regions) should not be set."""
         raise RequiredArgumentMissingError(error_message)
     if has_value(devbox_definition_type) and devbox_definition_type == "Value" and (
-        not has_value(devbox_definition_image_reference) or not has_value(devbox_definition_sku)
+        not has_value(devbox_definition_image_reference) or not has_value(
+            devbox_definition_sku)
     ):
         error_message = """When devbox-definition-type is set to "Value", \
 dev box definition sku (--devbox-definition-sku) and image reference \
@@ -88,7 +91,8 @@ def validate_time(namespace):
     pattern = re.compile(regex)
     validation = pattern.match(namespace.delay_time)
     if validation is None:
-        raise InvalidArgumentValueError("--delay-time should be in the format HH:MM")
+        raise InvalidArgumentValueError(
+            "--delay-time should be in the format HH:MM")
 
 
 def validate_endpoint(endpoint, dev_center):
@@ -133,6 +137,7 @@ def is_rfc3339(string):
         error_message = f"""Input '{string}' not valid RFC3339 format. \
 Valid example: 2017-12-31T05:30:00Z"""
         raise InvalidArgumentValueError(error_message) from exception
+
 
 def is_iso8601(namespace):
     if namespace.expiration_date is None:
