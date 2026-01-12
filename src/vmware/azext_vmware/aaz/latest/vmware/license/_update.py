@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a License
+
+    :example: Licenses_CreateOrUpdate
+        az vmware license update --resource-group group1 --private-cloud-name cloud1 --license-name VmwareFirewall
     """
 
     _aaz_info = {

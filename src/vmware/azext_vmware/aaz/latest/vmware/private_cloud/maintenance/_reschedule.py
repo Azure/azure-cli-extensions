@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Reschedule(AAZCommand):
     """Reschedule a maintenance
+
+    :example: Maintenances_Reschedule
+        az vmware private-cloud maintenance reschedule --resource-group group1 --private-cloud-name cloud1 --maintenance-name maintenance1 --reschedule-time 2023-01-12T16:17:55.237Z --message Rescheduled due to xyz
     """
 
     _aaz_info = {

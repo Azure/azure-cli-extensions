@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetVcfLicense(AAZCommand):
     """Get the license for the private cloud
+
+    :example: PrivateClouds_GetVcfLicense
+        az vmware private-cloud get-vcf-license --resource-group group1 --private-cloud-name cloud1
     """
 
     _aaz_info = {

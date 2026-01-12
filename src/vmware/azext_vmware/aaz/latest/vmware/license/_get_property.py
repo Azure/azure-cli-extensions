@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetProperty(AAZCommand):
     """Just like ArmResourceActionSync, but with no request body.
+
+    :example: Licenses_GetProperties
+        az vmware license get-property --resource-group group1 --private-cloud-name cloud1 --license-name VmwareFirewall
     """
 
     _aaz_info = {

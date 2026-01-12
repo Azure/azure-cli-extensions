@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class InitiateCheck(AAZCommand):
     """Initiate maintenance readiness checks
+
+    :example: Maintenances_InitiateChecks
+        az vmware private-cloud maintenance initiate-check --resource-group group1 --private-cloud-name cloud1 --maintenance-name maintenance1
     """
 
     _aaz_info = {
