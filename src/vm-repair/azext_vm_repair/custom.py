@@ -437,6 +437,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
     # Create an instance of the command helper object to facilitate logging and status tracking.
     command = command_helper(logger, cmd, 'vm repair restore')
+    source_disk = None
 
     try:
         # Fetch source and repair VM data
@@ -447,50 +448,49 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
             repair_vm_id = parse_resource_id(repair_vm_id)  # Parse the repair VM ID
             repair_vm_name = repair_vm_id['name']
             repair_resource_group = repair_vm_id['resource_group']
-        source_disk = None
 
-        # For MANAGED DISK
-        if is_managed:
-            source_disk = source_vm.storage_profile.os_disk.name
-            # Retrieve required data from the repair disk before doing the disk swap, we need the full disk URI (id), not just the name
-            _, _, _, _, disk_id = _fetch_disk_info(resource_group_name, disk_name)
-            # Commands to detach the repaired data disk from the repair VM and os-disk-swap it onto the source VM
-            detach_disk_command = 'az vm disk detach -g {g} --vm-name {repair} --name {disk}' \
-                .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
-            attach_fixed_command = 'az vm update -g {g} -n {n} --os-disk {disk}' \
-                .format(g=resource_group_name, n=vm_name, disk=disk_id)
+            # For MANAGED DISK
+            if is_managed:
+                source_disk = source_vm.storage_profile.os_disk.name
+                # Retrieve required data from the repair disk before doing the disk swap, we need the full disk URI (id), not just the name
+                _, _, _, _, disk_id = _fetch_disk_info(resource_group_name, disk_name)
+                # Commands to detach the repaired data disk from the repair VM and os-disk-swap it onto the source VM
+                detach_disk_command = 'az vm disk detach -g {g} --vm-name {repair} --name {disk}' \
+                    .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
+                attach_fixed_command = 'az vm update -g {g} -n {n} --os-disk {disk}' \
+                    .format(g=resource_group_name, n=vm_name, disk=disk_id)
 
-            # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
-            logger.info('Detaching repaired data disk from repair VM...')
-            _call_az_command(detach_disk_command)
-            logger.info('Attaching repaired data disk to source VM as an OS disk...')
-            _call_az_command(attach_fixed_command)
+                # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
+                logger.info('Detaching repaired data disk from repair VM...')
+                _call_az_command(detach_disk_command)
+                logger.info('Attaching repaired data disk to source VM as an OS disk...')
+                _call_az_command(attach_fixed_command)
 
-        # For UNMANAGED DISK
-        else:
-            source_disk = source_vm.storage_profile.os_disk.vhd.uri
-            # Fetch disk uri from disk name
-            repair_vm = get_vm(cmd, repair_vm_id['resource_group'], repair_vm_id['name'])
-            data_disks = repair_vm.storage_profile.data_disks
+            # For UNMANAGED DISK
+            else:
+                source_disk = source_vm.storage_profile.os_disk.vhd.uri
+                # Fetch disk uri from disk name
+                repair_vm = get_vm(cmd, repair_vm_id['resource_group'], repair_vm_id['name'])
+                data_disks = repair_vm.storage_profile.data_disks
 
-            # The params went through validator so no need for existence checks
-            disk_uri = [disk.vhd.uri for disk in data_disks if disk.name == disk_name][0]
+                # The params went through validator so no need for existence checks
+                disk_uri = [disk.vhd.uri for disk in data_disks if disk.name == disk_name][0]
 
-            # Commands to detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
-            detach_unamanged_command = 'az vm unmanaged-disk detach -g {g} --vm-name {repair} --name {disk}' \
-                .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
-            attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
-                .format(g=resource_group_name, n=vm_name, uri=disk_uri)
+                # Commands to detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
+                detach_unamanged_command = 'az vm unmanaged-disk detach -g {g} --vm-name {repair} --name {disk}' \
+                    .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
+                attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
+                    .format(g=resource_group_name, n=vm_name, uri=disk_uri)
 
-            # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
-            logger.info('Detaching repaired data disk from repair VM...')
-            _call_az_command(detach_unamanged_command)
-            logger.info('Attaching repaired data disk to source VM as an OS disk...')
-            _call_az_command(attach_unmanaged_command)
+                # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
+                logger.info('Detaching repaired data disk from repair VM...')
+                _call_az_command(detach_unamanged_command)
+                logger.info('Attaching repaired data disk to source VM as an OS disk...')
+                _call_az_command(attach_unmanaged_command)
 
-        # Clean up the resources in the repair resource group
-        _clean_up_resources(repair_resource_group, confirm=not yes)
-        command.set_status_success()  # Set the command status to success
+            # Clean up the resources in the repair resource group
+            _clean_up_resources(repair_resource_group, confirm=not yes)
+            command.set_status_success()  # Set the command status to success
     # Handle possible exceptions
     except KeyboardInterrupt:
         # Capture the stack trace and set the error message if the command is interrupted by the user

@@ -434,6 +434,11 @@ def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, r
         elif encryption_type is Encryption.SINGLE_WITHOUT_KEK:
             install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
                                             .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
+        else:
+            # catch-all for unexpected encryption type, mainly a linter issue but bad logic by original author
+            install_ade_extension_command = None
+            raise Exception('Unexpected encryption type for single pass encrypted disk.')
+
         # Add format-all flag for linux vms
         if is_linux:
             install_ade_extension_command += " --encrypt-format-all"
