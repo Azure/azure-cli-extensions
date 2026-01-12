@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-STABLE_VERSION = '1.0.0'
+STABLE_VERSION = '1.0.1'
 PREVIEW_VERSION = '1.0.0b1'
 
 # Currently using stable version
