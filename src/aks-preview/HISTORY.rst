@@ -16,6 +16,9 @@ Pending
   * `az aks applicationloadbalancer enable`: Enable Application Load Balancer add-on for an existing cluster.
   * `az aks applicationloadbalancer disable`: Disable Application Load Balancer add-on for an existing cluster.
   * `az aks applicationloadbalancer update`: Update Application Load Balancer add-on for an existing cluster.
+
+19.0.0b19
++++++++
 * Remove prerequisite for `--enable-gateway-api` option in `az aks create` and `az aks update` commands - managed Gateway API ingress provider enablement no longer required
 
 19.0.0b18
