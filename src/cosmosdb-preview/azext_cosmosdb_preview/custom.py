@@ -956,7 +956,7 @@ def cli_cosmosdb_update(client,
                         enable_prpp_autoscale=None,
                         enable_partition_merge=None,
                         capacity_mode=None,
-                        enable_soft_deletion=None,
+                        soft_deletion_enabled=None,
                         soft_deletion_retention_period_in_minutes=None,
                         min_minutes_before_permanent_deletion_allowed=None):
     """Update an existing Azure Cosmos DB database account. """
@@ -1026,13 +1026,13 @@ def cli_cosmosdb_update(client,
         analytical_storage_configuration.schema_type = analytical_storage_schema_type
 
     soft_delete_configuration = None
-    if enable_soft_deletion is not None or \
+    if soft_deletion_enabled is not None or \
             soft_deletion_retention_period_in_minutes is not None or \
             min_minutes_before_permanent_deletion_allowed is not None:
         from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteConfiguration  # pylint: disable=no-name-in-module
         soft_delete_configuration = SoftDeleteConfiguration(
-            enable_soft_deletion=enable_soft_deletion,
-            soft_deletion_retention_period_in_minutes=soft_deletion_retention_period_in_minutes,
+            soft_deletion_enabled=soft_deletion_enabled,
+            soft_delete_retention_period_in_minutes=soft_deletion_retention_period_in_minutes,
             min_minutes_before_permanent_deletion_allowed=min_minutes_before_permanent_deletion_allowed
         )
 
@@ -1216,7 +1216,7 @@ def _create_database_account(client,
                              disable_ttl=None,
                              enable_partition_merge=None,
                              capacity_mode=None,
-                             enable_soft_deletion=None,
+                             soft_deletion_enabled=None,
                              soft_deletion_retention_period_in_minutes=None,
                              min_minutes_before_permanent_deletion_allowed=None):
     consistency_policy = None
@@ -1299,13 +1299,13 @@ def _create_database_account(client,
         analytical_storage_configuration.schema_type = analytical_storage_schema_type
 
     soft_delete_configuration = None
-    if enable_soft_deletion is not None or \
+    if soft_deletion_enabled is not None or \
             soft_deletion_retention_period_in_minutes is not None or \
             min_minutes_before_permanent_deletion_allowed is not None:
         from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteConfiguration  # pylint: disable=no-name-in-module
         soft_delete_configuration = SoftDeleteConfiguration(
-            enabled_soft_deletion=enable_soft_deletion,
-            soft_deletion_retention_period_in_minutes=soft_deletion_retention_period_in_minutes,
+            soft_deletion_enabled=soft_deletion_enabled,
+            soft_delete_retention_period_in_minutes=soft_deletion_retention_period_in_minutes,
             min_minutes_before_permanent_deletion_allowed=min_minutes_before_permanent_deletion_allowed
         )
 
@@ -3410,19 +3410,17 @@ def cli_cosmosdb_fleetspace_account_create(client,
 
 
 # Soft-deleted Account operations
-def cli_cosmosdb_sql_softdeleted_account_list(client,
-                                              location=None):
-    """List soft-deleted Cosmos DB accounts."""
-    if location is not None:
-        return client.list_by_location(location)
-    return client.list()
+def cli_cosmosdb_sql_softdeleted_account_list(client, location):
+    """List soft-deleted Cosmos DB accounts by location."""
+    return client.list_by_location(location)
 
 
 def cli_cosmosdb_sql_softdeleted_account_show(client,
+                                              resource_group,
                                               location,
                                               account_name):
     """Get a soft-deleted Cosmos DB account."""
-    return client.get_by_location(location, account_name)
+    return client.get(resource_group, location, account_name)
 
 
 def cli_cosmosdb_sql_softdeleted_account_delete(client,
