@@ -93,16 +93,15 @@ def aks_agent_init(cmd,
                     style=f"bold {HELP_COLOR}")
 
                 # Prompt user for namespace if not provided
-                if not namespace:
-                    console.print(
-                        "\nPlease specify the namespace where the agent will be deployed.",
-                        style=f"bold {HELP_COLOR}")
-                    while True:
-                        namespace = console.input(
-                            f"\n[{HELP_COLOR}]Enter namespace (e.g., 'kube-system'): [/]").strip()
-                        if namespace:
-                            break
-                        console.print("Namespace cannot be empty. Please enter a valid namespace.", style=WARNING_COLOR)
+                console.print(
+                    "\nPlease specify the namespace where the agent will be deployed.",
+                    style=f"bold {HELP_COLOR}")
+                while True:
+                    namespace = console.input(
+                        f"\n[{HELP_COLOR}]Enter namespace (e.g., 'kube-system'): [/]").strip()
+                    if namespace:
+                        break
+                    console.print("Namespace cannot be empty. Please enter a valid namespace.", style=WARNING_COLOR)
 
                 console.print(f"\n📦 Using namespace: {namespace}", style=INFO_COLOR)
                 aks_agent_manager = AKSAgentManager(
