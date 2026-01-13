@@ -26,7 +26,7 @@ helps['migrate local'] = """
         environments.
 """
 
-helps['migrate local get-discovered-server'] = """
+helps['migrate get-discovered-server'] = """
     type: command
     short-summary: Retrieve discovered servers from an Azure Migrate project.
     long-summary: |

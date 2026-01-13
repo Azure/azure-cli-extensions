@@ -13,7 +13,7 @@ migrate local replication:
     rule_exclusions:
         - missing_group_help
 
-migrate local get-discovered-server:
+migrate get-discovered-server:
     rule_exclusions:
         - missing_command_test_coverage
         - missing_parameter_test_coverage
@@ -43,6 +43,18 @@ migrate local replication new:
             rule_exclusions:
                 - parameter_should_not_end_in_resource_group
 
+migrate local replication list:
+    rule_exclusions:
+        - missing_command_test_coverage
+        - missing_parameter_test_coverage
+        - missing_command_example
+
+migrate local replication get:
+    rule_exclusions:
+        - missing_command_test_coverage
+        - missing_parameter_test_coverage
+        - missing_command_example
+
 migrate local replication get-job:
     rule_exclusions:
         - missing_command_test_coverage
@@ -50,6 +62,12 @@ migrate local replication get-job:
         - missing_command_example
 
 migrate local replication remove:
+    rule_exclusions:
+        - missing_command_test_coverage
+        - missing_parameter_test_coverage
+        - missing_command_example
+
+migrate local start-migration:
     rule_exclusions:
         - missing_command_test_coverage
         - missing_parameter_test_coverage
