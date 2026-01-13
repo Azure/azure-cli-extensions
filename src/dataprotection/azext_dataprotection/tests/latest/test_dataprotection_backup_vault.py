@@ -33,7 +33,7 @@ class BackupVaultScenarioTest(ScenarioTest):
                  checks=[
                      test.check('name', "{vaultName}"),
                      test.check('identity.type', "SystemAssigned"),
-                     test.check('properties.securitySettings.softDeleteSettings.state', "On"),
+                     test.check('properties.securitySettings.softDeleteSettings.state', "AlwaysOn"),
                      test.check('properties.securitySettings.softDeleteSettings.retentionDurationInDays', 14.0),
                      test.check('properties.securitySettings.immutabilitySettings.state', "Locked"),
                      test.check('properties.storageSettings[0].datastoreType', "VaultStore"),
@@ -125,24 +125,13 @@ class BackupVaultScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-vault create '
                  '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
                  '--storage-settings datastore-type="VaultStore" type="GeoRedundant" --type "SystemAssigned" '
-                 '--soft-delete-state "Off" --immutability-state "Unlocked"',
+                 '--immutability-state "Unlocked"',
                  checks=[
                      test.check('properties.featureSettings.crossRegionRestoreSettings.state', "None")
                  ])
 
-        # soft-delete updates
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --soft-delete-state "On" --retention-duration-in-days "14"', checks=[
-            test.check('properties.securitySettings.softDeleteSettings.state', "On"),
-            test.check('properties.securitySettings.softDeleteSettings.retentionDurationInDays', 14.0)
-        ])
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --soft-delete-state "Off"', checks=[
-            test.check('properties.securitySettings.softDeleteSettings.state', "Off")
-        ])
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --soft-delete-state "AlwaysOn"', checks=[
-            test.check('properties.securitySettings.softDeleteSettings.state', "AlwaysOn"),
-        ])
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --soft-delete-state "On"', expect_failure=True)
-
+        # soft-delete updates - no longer tested, AlwaysOn is the only allowed state
+        
         # azure-monitor-alerts-for-job-failures updates
         test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --azure-monitor-alerts-for-job-failures enabled', checks=[
             test.check('properties.monitoringSettings.azureMonitorAlertSettings.alertsForAllJobFailures', 'Enabled')
