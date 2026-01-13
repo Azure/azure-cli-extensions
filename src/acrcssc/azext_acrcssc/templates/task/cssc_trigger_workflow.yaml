@@ -2,7 +2,7 @@ version: v1.1.0
 alias:
   values:
     ScanImageAndSchedulePatchTask: cssc-scan-image
-    cssc : mcr.microsoft.com/acr/cssc:cbcf692
+    cssc : mcr.microsoft.com/acr/cssc:7260211
     maxLimit: 100
 steps:
   - cmd: bash -c 'echo "Inside cssc-trigger-workflow task, getting list of images to be patched based on --filter-policy for Registry {{.Run.Registry}}."'
@@ -31,7 +31,6 @@ steps:
         counter=0; \
         batchSize=10; \
         sleepDuration=30; \
-        RegistryName={{.Run.Registry}}; \
         while read line;do \
         IFS=',' read -r -a array <<< "${line}"
         RepoName=${array[0]}
@@ -45,6 +44,12 @@ steps:
           IncrementedTagNumber="1"
         fi
 
+        RegistryBaseName=$RegistryName
+        if [[ $RegistryName == *-* ]]; then
+          RegistryBaseName="${RegistryName%%-*}"
+        else 
+          RegistryBaseName=$RegistryName
+        fi
         if [ $TagName == "N/A" ]; then
           TagName=$OriginalTag
         elif [[ $TagName =~ -([0-9]{1,3})$ ]]; then
@@ -52,7 +57,7 @@ steps:
           IncrementedTagNumber=$((TagNumber+1))
         fi
         echo "Scheduling $ScanImageAndSchedulePatchTask for $RegistryName/$RepoName, Tag:$TagName, OriginalTag:$OriginalTag, PatchTag:$OriginalTag-$IncrementedTagNumber"; \
-        az acr task run --name $ScanImageAndSchedulePatchTask --registry $RegistryName --set SOURCE_REPOSITORY=$RepoName --set SOURCE_IMAGE_TAG=$TagName --set SOURCE_IMAGE_ORIGINAL_TAG=$OriginalTag --set SOURCE_IMAGE_NEWPATCH_TAG=$IncrementedTagNumber --no-wait; \
+        az acr task run --name $ScanImageAndSchedulePatchTask --registry $RegistryBaseName --set SOURCE_REPOSITORY=$RepoName --set SOURCE_IMAGE_TAG=$TagName --set SOURCE_IMAGE_ORIGINAL_TAG=$OriginalTag --set SOURCE_IMAGE_NEWPATCH_TAG=$IncrementedTagNumber --no-wait; \
         counter=$((counter+1)); \
         if [ $((counter%batchSize)) -eq 0 ]; then \
           echo "Waiting for $sleepDuration seconds before scheduling scans for next batch of images"; \
