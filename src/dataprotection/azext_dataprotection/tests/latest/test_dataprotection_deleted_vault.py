@@ -27,9 +27,10 @@ class DeletedVaultScenarioTest(ScenarioTest):
             'policyName': 'cli-test-disk-policy'
         })
 
-    @AllowLargeResponse()
+    @AllowLargeResponse(size_kb=4096)
     def test_dataprotection_deleted_vault_operations(test):
         # 1. Create a Backup Vault
+        test.addCleanup(test.cmd, 'az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
         test.cmd('az dataprotection backup-vault create '
                  '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
                  '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned"',
@@ -59,39 +60,44 @@ class DeletedVaultScenarioTest(ScenarioTest):
         })
 
         # Configure the required permissions for the Backup Instance
+        import time
+        time.sleep(60) # Wait for MSI to propagate
         test.cmd('az dataprotection backup-instance update-msi-permissions '
                  '-g "{rg}" --vault-name "{vaultName}" '
                  '--datasource-type "{dataSourceType}" '
                  '--operation "{operation}" '
                  '--permissions-scope "{permissionsScope}" '
                  '--backup-instance "{backupInstanceJson}" --yes')
-        import time
         time.sleep(30)  # Wait for a while to allow permissions to propagate
 
-        # Adding backup-instance delete as the cleanup command, will always run even if test fails.
-        test.addCleanup(test.cmd, 'az dataprotection backup-instance delete -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --yes --no-wait')
         test.cmd('az dataprotection backup-instance create -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backupInstanceJson}"',
                  checks=[
                      test.exists('id')
                  ])
+
+        # Sleep to ensure backup instance is fully created before proceeding
+        time.sleep(90)
 
         # 3. Delete Backup Instance
         test.cmd('az dataprotection backup-instance delete -g "{rg}" --vault-name "{vaultName}" --name "{backupInstanceName}" -y')
 
         # 4. Delete Backup Vault
         test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
+        
+        # Wait for vault to appear in deleted vaults list
+        time.sleep(30)
 
         # 5. List deleted Backup Vaults
         # Verify our vault is in the list. The list returns DeletedBackupVaultResource where name is a GUID, so check originalBackupVaultName.
         test.cmd('az dataprotection backup-vault deleted-vault list -l "{location}"', checks=[
-            test.check("length([?properties.originalBackupVaultName == '{vaultName}'])", 1)
+            test.exists("[?properties.originalBackupVaultName == '{vaultName}'] | [0]")
         ])
 
-        # Get the deleted vault info
+        # Get the deleted vault info - select the most recently deleted one
         deleted_vaults = test.cmd('az dataprotection backup-vault deleted-vault list -l "{location}"').get_output_in_json()
-        target_vault = next(v for v in deleted_vaults if v['properties']['originalBackupVaultName'] == test.kwargs['vaultName'])
+        matching_vaults = [v for v in deleted_vaults if v['properties']['originalBackupVaultName'] == test.kwargs['vaultName']]
+        target_vault = max(matching_vaults, key=lambda v: v['properties']['resourceDeletionInfo']['deletionTime'])
         test.kwargs.update({
-            'deletedVaultId': target_vault['id'],
             'deletedVaultName': target_vault['name']
         })
 
@@ -102,15 +108,14 @@ class DeletedVaultScenarioTest(ScenarioTest):
         ])
         
         # 7. List Backup Instances in Deleted Vault
-        # This command expects the full ID as per the alias --deleted-vault-id
-        test.cmd('az dataprotection backup-vault deleted-vault list-deleted-backup-instances --deleted-vault-id "{deletedVaultId}"', checks=[
+        time.sleep(60)  # Wait for deleted backup instances to be indexed
+        test.cmd('az dataprotection backup-vault deleted-vault list-deleted-backup-instances --deleted-vault-name "{deletedVaultName}"', checks=[
             test.greater_than("length([])", 0),
-            test.check("[0].properties.dataSourceInfo.dataSourceId", "{dataSourceId}")
+            test.check("[0].properties.dataSourceInfo.resourceID", "{dataSourceId}")
         ])
 
         # 8. Undelete Backup Vault
-        # Undelete expects the full ID
-        test.cmd('az dataprotection backup-vault deleted-vault undelete -g "{rg}" --vault-name "{vaultName}" --deleted-vault-id "{deletedVaultId}"', checks=[
+        test.cmd('az dataprotection backup-vault deleted-vault undelete -g "{rg}" --vault-name "{vaultName}" --deleted-vault-name "{deletedVaultName}"', checks=[
             test.check('name', "{vaultName}"),
             test.check('properties.provisioningState', "Succeeded")
         ])
@@ -119,6 +124,7 @@ class DeletedVaultScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-vault update -g "{rg}" -v "{vaultName}" --type SystemAssigned', checks=[
             test.check('identity.type', "SystemAssigned")
         ])
+        time.sleep(30)  # Wait for new MSI to propagate to AAD after re-assigning identity
 
         # 9.5 Configure the required permissions for the Backup Instance
         test.cmd('az dataprotection backup-instance update-msi-permissions '
@@ -131,10 +137,13 @@ class DeletedVaultScenarioTest(ScenarioTest):
         time.sleep(30)  # Wait for a while to allow permissions to propagate
 
         # 10. Undelete (Reprotect) Backup Instance
+        test.cmd('az dataprotection backup-instance deleted-backup-instance undelete -g "{rg}" -v "{vaultName}" -n "{backupInstanceName}"')
         test.cmd('az dataprotection backup-instance resume-protection -g "{rg}" -v "{vaultName}" -n "{backupInstanceName}"')
+        time.sleep(120)  # Wait longer for backup instance to fully stabilize after resuming protection
 
         # Cleanup: Delete Backup Instance again
-        test.cmd('az dataprotection backup-instance delete -g "{rg}" --vault-name "{vaultName}" --name "{createdBackupInstanceName}" -y')
+        test.cmd('az dataprotection backup-instance delete -g "{rg}" --vault-name "{vaultName}" --name "{backupInstanceName}" -y')
 
         # Cleanup: Delete vault again (this time for real, eventually)
+        # Note: The vault deletion will also clean up the associated backup policy
         test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
