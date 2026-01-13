@@ -90,7 +90,7 @@ def fetch_all_servers(cmd, request_uri, send_get_request):
     """Fetch all servers including paginated results."""
     response = send_get_request(cmd, request_uri)
     data = response.json()
-    
+
     # Handle single item response (when fetching by name/ID)
     # Single items have 'id' and 'properties' at root level, not 'value'
     if 'value' in data:
@@ -100,11 +100,10 @@ def fetch_all_servers(cmd, request_uri, send_get_request):
             data = response.json()
             values += data.get('value', [])
         return values
-    elif 'id' in data and 'properties' in data:
+    if 'id' in data and 'properties' in data:
         # Single machine response - wrap in list
         return [data]
-    else:
-        return []
+    return []
 
 
 def filter_servers_by_display_name(servers, display_name):
@@ -112,12 +111,12 @@ def filter_servers_by_display_name(servers, display_name):
     filtered = []
     for server in servers:
         properties = server.get('properties', {})
-        
+
         # Check properties.displayName first
         if properties.get('displayName', '') == display_name:
             filtered.append(server)
             continue
-            
+
         # Also check discoveryData[0].machineName
         discovery_data = properties.get('discoveryData', [])
         if discovery_data:
@@ -127,6 +126,7 @@ def filter_servers_by_display_name(servers, display_name):
     return filtered
 
 
+# pylint: disable=too-many-locals
 def extract_server_info(server, index):
     """Extract server information from discovery data."""
     properties = server.get('properties', {})
@@ -158,7 +158,7 @@ def extract_server_info(server, index):
     else:
         # Format from Microsoft.OffAzure/VMwareSites/machines or HyperVSites/machines
         machine_name = properties.get('displayName', 'N/A')
-        
+
         # Try to get IP addresses from different locations
         network_adapters = properties.get('networkAdapters', [])
         if network_adapters:
@@ -167,7 +167,7 @@ def extract_server_info(server, index):
                 ips = adapter.get('ipAddressList', [])
                 all_ips.extend(ips)
             ip_addresses_str = ', '.join(all_ips) if all_ips else 'N/A'
-        
+
         # Get OS info from guestOSDetails or operatingSystemDetails
         guest_os = properties.get('guestOSDetails', {})
         if guest_os:
@@ -175,11 +175,11 @@ def extract_server_info(server, index):
         else:
             os_details = properties.get('operatingSystemDetails', {})
             os_name = os_details.get('osName', os_details.get('osType', 'N/A'))
-        
+
         # Get firmware/boot type
         firmware = properties.get('firmware', 'N/A')
         boot_type = firmware.lower() if firmware and firmware != 'N/A' else 'N/A'
-        
+
         # Get disk info
         disks = properties.get('disks', [])
         if disks:

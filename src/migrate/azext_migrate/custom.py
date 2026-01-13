@@ -12,6 +12,7 @@ from azext_migrate.helpers._utils import (
 logger = get_logger(__name__)
 
 
+# pylint: disable=too-many-locals
 def get_discovered_server(cmd,
                           project_name,
                           resource_group,
@@ -49,34 +50,27 @@ def get_discovered_server(cmd,
         subscription_id, resource_group, project_name,
         appliance_name, name, source_machine_type)
 
-    # Use the correct API version
-    api_version = (APIVersion.Microsoft_OffAzure.value if appliance_name
-                   else APIVersion.Microsoft_Migrate.value)
-
-    # Prepare query parameters
-    query_params = [f"api-version={api_version}"]
+    # Construct the full URI with appropriate API version
     # Note: Azure Migrate API does not support OData $filter for machines endpoint
     # We'll apply client-side filtering after fetching all results
-
-    # Construct the full URI
+    api_version = (APIVersion.Microsoft_OffAzure.value if appliance_name
+                   else APIVersion.Microsoft_Migrate.value)
     request_uri = (
         f"{cmd.cli_ctx.cloud.endpoints.resource_manager}{base_uri}?"
-        f"{'&'.join(query_params)}"
+        f"api-version={api_version}"
     )
 
     try:
         # Fetch all servers
         values = fetch_all_servers(cmd, request_uri, send_get_request)
 
-        # Apply client-side filtering for display_name when using site
-        # endpoints or when using the migrateprojects endpoint
+        # Apply client-side filtering for display_name
         if display_name:
             values = filter_servers_by_display_name(values, display_name)
 
         # Format and display the discovered servers information
         for index, server in enumerate(values, 1):
-            server_info = extract_server_info(server, index)
-            print_server_info(server_info)
+            print_server_info(extract_server_info(server, index))
 
     except Exception as e:
         logger.error("Error retrieving discovered servers: %s", str(e))
