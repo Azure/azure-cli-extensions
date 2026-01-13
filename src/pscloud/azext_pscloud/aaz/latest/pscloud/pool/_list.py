@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "pscloud pool list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List storage pools by Azure subscription ID
