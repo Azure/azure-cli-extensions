@@ -45,15 +45,14 @@ steps:
       if [ "$eoslValue" = "true" ]; then \
         echo "PATCHING will be skipped as EOSL is $eoslValue for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"; \
       elif [ $vulCount -gt 0 ]; then \
-          RegistryBaseName=$RegistryName
-          if [[ $RegistryName == *-* ]]; then
-            RegistryBaseName="${RegistryName%%-*}"
-          else 
-            RegistryBaseName=$RegistryName
+          RegistryBaseName={{.Run.Registry}}
+          if [[ $RegistryBaseName == *-* ]]; then
+            RegistryBaseName="${RegistryBaseName%%-*}"
+            echo "DNL registry name detected, readjusting RegistryBaseName to $RegistryBaseName for task scheduling"
           fi
           az login --identity --allow-no-subscriptions; \
           echo "Total OS vulnerabilities found -> $vulCount"; \
-          echo "PATCHING task scheduled for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}, new patch tag will be {{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"; \
+          echo "PATCHING task scheduled for image ${RegistryBaseName}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}, new patch tag will be {{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"; \
           az acr task run --name $patchimagetask --registry $RegistryBaseName --set SOURCE_REPOSITORY={{.Values.SOURCE_REPOSITORY}} --set SOURCE_IMAGE_TAG={{.Values.SOURCE_IMAGE_ORIGINAL_TAG}} --set SOURCE_IMAGE_NEWPATCH_TAG={{.Values.SOURCE_IMAGE_NEWPATCH_TAG}} --no-wait; \
         else \
           echo "PATCHING will be skipped as no vulnerability found in the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"; \
