@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: read-only-mounts
+spec:
+  containers:
+    - name: app
+      image: mcr.microsoft.com/azurelinux/distroless/base@sha256:1e77d97e1e39f22ed9c52f49b3508b4c1044cec23743df9098ac44e025f654f2
+      volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+          readOnly: false
+        - name: secret-volume
+          mountPath: /etc/secret
+          readOnly: false
+  volumes:
+    - name: config-volume
+      configMap:
+        name: app-config
+    - name: secret-volume
+      secret:
+        secretName: app-secret
