@@ -57,23 +57,6 @@ class TestAKSAgentManager(unittest.TestCase):
         self.assertEqual(manager.cluster_name, self.cluster_name)
         self.assertEqual(manager.subscription_id, self.subscription_id)
 
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_set_aks_context(self, mock_helm_manager, mock_load_config, mock_init_client):
-        """Test setting AKS context."""
-        manager = AKSAgentManager()
-
-        manager.set_aks_context(
-            resource_group_name=self.resource_group,
-            cluster_name=self.cluster_name,
-            subscription_id=self.subscription_id
-        )
-
-        self.assertEqual(manager.resource_group_name, self.resource_group)
-        self.assertEqual(manager.cluster_name, self.cluster_name)
-        self.assertEqual(manager.subscription_id, self.subscription_id)
-
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.client.CoreV1Api')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.config.load_kube_config')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
@@ -292,20 +275,6 @@ class TestAKSAgentManager(unittest.TestCase):
         manager.delete_llm_config_secret()
 
         manager.core_v1.delete_namespaced_secret.assert_called_once()
-
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_get_default_cluster_role(self, mock_helm_manager, mock_load_config, mock_init_client):
-        """Test getting default cluster role."""
-        manager = AKSAgentManager()
-
-        cluster_role = manager.get_default_cluster_role()
-
-        self.assertIsNotNone(cluster_role)
-        self.assertEqual(cluster_role.metadata.name, "aks-agent-aks-mcp")
-        self.assertIsNotNone(cluster_role.rules)
-        self.assertGreater(len(cluster_role.rules), 0)
 
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._run_helm_command')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')

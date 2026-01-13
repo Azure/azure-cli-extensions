@@ -3,6 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import os
+
+# Configuration paths
+home_dir = os.path.expanduser("~")
+CONFIG_DIR = os.path.join(home_dir, ".aks-agent")
+
 # Constants to customized holmesgpt
 CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY = "HOLMES_CONFIGPATH_DIR"
 CONST_AGENT_NAME = "AKS AGENT"
