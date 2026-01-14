@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
-import http
 import json
 import os
 import tempfile

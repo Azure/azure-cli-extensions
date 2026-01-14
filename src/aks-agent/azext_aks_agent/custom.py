@@ -48,7 +48,7 @@ def aks_agent_init(cmd,
 
     with CLITelemetryClient(event_type="init") as telemetry_client:
         try:
-            # Prompt user to choose between cluster mode and local mode
+            # Prompt user to choose between cluster mode and client mode
             console.print(
                 "\n🚀 Welcome to AKS Agent initialization!",
                 style=f"bold {HELP_COLOR}")
@@ -59,8 +59,14 @@ def aks_agent_init(cmd,
                 "  1. Cluster mode - Deploys agent as a pod in your AKS cluster",
                 style=INFO_COLOR)
             console.print(
-                "  2. Local mode - Runs agent locally using Docker (client mode)",
+                "     Uses service account and workload identity for secure access to cluster and Azure resources",
+                style="dim cyan")
+            console.print(
+                "  2. Client mode - Runs agent locally using Docker",
                 style=INFO_COLOR)
+            console.print(
+                "     Uses your local Azure credentials and cluster user credentials for access",
+                style="dim cyan")
 
             while True:
                 mode_choice = console.input(
@@ -69,17 +75,17 @@ def aks_agent_init(cmd,
                     break
                 console.print("Invalid choice. Please enter 1 or 2.", style=WARNING_COLOR)
 
-            use_local_mode = (mode_choice == '2')
+            use_client_mode = (mode_choice == '2')
 
             # Record the mode being used in telemetry
-            telemetry_client.mode = "local" if use_local_mode else "cluster"
+            telemetry_client.mode = "client" if use_client_mode else "cluster"
 
             # Record the mode being used in telemetry
-            telemetry_client.mode = "local" if use_local_mode else "cluster"
+            telemetry_client.mode = "client" if use_client_mode else "cluster"
 
-            if use_local_mode:
+            if use_client_mode:
                 console.print(
-                    "\n✅ Local client mode selected. This will set up LLM configurations on your local environment.",
+                    "\n✅ Client mode selected. This will set up LLM configurations on your local environment.",
                     style=f"bold {HELP_COLOR}")
                 aks_agent_manager = AKSAgentManagerLocal(
                     resource_group_name=resource_group_name,
@@ -115,7 +121,7 @@ def aks_agent_init(cmd,
             # ===== PHASE 1: LLM Configuration Setup =====
             _setup_llm_configuration(console, aks_agent_manager)
 
-            if not use_local_mode:
+            if not use_client_mode:
                 # ===== PHASE 2: Helm Deployment =====
                 _setup_helm_deployment(console, aks_agent_manager)
 
@@ -461,17 +467,22 @@ def aks_agent_cleanup(
 ):
     """Cleanup and uninstall the AKS agent."""
     with CLITelemetryClient(event_type="cleanup") as telemetry_client:
-        use_local_mode = (mode == "local")
+        use_client_mode = (mode == "client")
 
         # Record the mode being used in telemetry
-        telemetry_client.mode = "local" if use_local_mode else "cluster"
+        telemetry_client.mode = "client" if use_client_mode else "cluster"
+
+        console = get_console()
 
         # Validate namespace requirement based on mode
-        if not use_local_mode and not namespace:
+        if not use_client_mode and not namespace:
             raise AzCLIError(
                 "--namespace is required for cluster mode.")
 
-        console = get_console()
+        if use_client_mode and namespace:
+            console.print(
+                f"⚠️  Warning: --namespace '{namespace}' is specified but will be ignored in client mode.",
+                style=WARNING_COLOR)
 
         console.print(
             "\n⚠️  Warning: This will uninstall the AKS agent and delete all associated resources.",
@@ -493,7 +504,7 @@ def aks_agent_cleanup(
         )
         subscription_id = get_subscription_id(cmd.cli_ctx)
 
-        if use_local_mode:
+        if use_client_mode:
             agent_manager = AKSAgentManagerLocal(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
@@ -548,17 +559,23 @@ def aks_agent(
         )
 
         # Determine which mode to use based on local config files
-        use_local_mode = (mode == "local")
+        use_client_mode = (mode == "client")
 
         # Record the mode being used in telemetry
-        telemetry_client.mode = "local" if use_local_mode else "cluster"
+        telemetry_client.mode = "client" if use_client_mode else "cluster"
 
         # Validate namespace requirement based on mode
-        if not use_local_mode and not namespace:
+        if not use_client_mode and not namespace:
             raise AzCLIError(
                 "--namespace is required for cluster mode.")
 
-        if use_local_mode:
+        if use_client_mode and namespace:
+            console = get_console()
+            console.print(
+                f"⚠️  Warning: --namespace '{namespace}' is specified but will be ignored in client mode.",
+                style=WARNING_COLOR)
+
+        if use_client_mode:
             agent_manager = AKSAgentManagerLocal(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
@@ -581,7 +598,7 @@ def aks_agent(
             return
 
         # Only check for pods if using container mode
-        if not use_local_mode:
+        if not use_client_mode:
             success, result = agent_manager.get_agent_pods()
             if not success:
                 # get_agent_pods already logged the error, provide helpful message

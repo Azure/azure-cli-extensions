@@ -50,7 +50,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "mode",
-            arg_type=get_enum_type(["cluster", "local"]),
+            arg_type=get_enum_type(["cluster", "client"]),
             help="The mode decides how the agent is deployed.",
             default="cluster",
         )
@@ -107,7 +107,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "mode",
-            arg_type=get_enum_type(["cluster", "local"]),
+            arg_type=get_enum_type(["cluster", "client"]),
             help="The mode decides how the agent is deployed.",
             default="cluster",
         )

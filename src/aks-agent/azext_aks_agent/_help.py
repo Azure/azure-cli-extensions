@@ -17,7 +17,7 @@ helps[
       
       Prerequisites:
       - Run 'az aks agent-init' first to configure the LLM provider and deployment mode
-      - For local mode: Docker must be installed and running
+      - For client mode: Docker must be installed and running
     parameters:
         - name: --name -n
           type: string
@@ -61,8 +61,8 @@ helps[
           short-summary: The mode decides how the agent is deployed.
           long-summary: |-
             The agent can be deployed in two modes:
-            - Cluster mode: Deploys AKS agent as a Helm release on the cluster with managed aks-mcp instance
-            - Local mode: Configures agent to run locally in a Docker container
+            - cluster mode: Deploys AKS agent as a Helm release on the cluster with managed aks-mcp instance
+            - client mode: Configures agent to run locally in a Docker container
             Default is 'cluster' mode.
     examples:
         - name: Ask about pod issues in the cluster with OpenAI
@@ -104,8 +104,8 @@ helps[
       You can run this command multiple times to add or update different model configurations.
 
       The command supports two deployment modes:
-      - Cluster mode: Deploys AKS agent as a Helm release on the cluster with managed aks-mcp instance
-      - Local mode: Configures agent to run locally in a Docker container
+      - cluster mode: Deploys AKS agent as a Helm release on the cluster with managed aks-mcp instance
+      - client mode: Configures agent to run locally in a Docker container
 
       Note: Configuration is required before running 'az aks agent'. The agent will validate that all necessary
       configuration files (model_list.yaml, custom_toolset.yaml) exist before execution.
@@ -144,8 +144,8 @@ helps[
           short-summary: The mode decides how the agent is deployed.
           long-summary: |-
             The agent can be deployed in two modes:
-            - Cluster mode: Deploys AKS agent as a Helm release on the cluster with managed aks-mcp instance
-            - Local mode: Configures agent to run locally in a Docker container
+            - cluster mode: Deploys AKS agent as a Helm release on the cluster with managed aks-mcp instance
+            - client mode: Configures agent to run locally in a Docker container
             Default is 'cluster' mode.
     examples:
         - name: Cleanup and uninstall AKS agent from the cluster
