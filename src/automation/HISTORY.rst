@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.0.1
+1.0.0b2
 ++++++
 * `az automation runtime-environment`: Updated the API version to the latest stable version.
 * `az automation runtime-environment package`: Updated the API version to the latest stable version.
