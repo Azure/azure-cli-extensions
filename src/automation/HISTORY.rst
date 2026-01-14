@@ -2,11 +2,6 @@
 
 Release History
 ===============
-1.0.1
-++++++
-* `az automation runtime-environment`: Updated the API version to the latest stable version.
-* `az automation runtime-environment package`: Updated the API version to the latest stable version.
-
 1.0.0b1
 ++++++
 * `az automation account list-keys`: Add new command to retrieve the automation keys for an account.
