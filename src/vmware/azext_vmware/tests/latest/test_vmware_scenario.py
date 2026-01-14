@@ -45,10 +45,14 @@ class VmwareScenarioTest(ScenarioTest):
 
         # create a private cloud
         self.cmd(
-            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --vcf-license vcf5.cores={vcf_cores} vcf5.end-date={vcf_end_date} vcf5.broadcom-site-id={vcf_broadcom_site_id} vcf5.broadcom-contract-number={vcf_broadcom_contract_number} --accept-eula')
+            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --accept-eula')
         
         self.cmd(
-            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --zones 1 --vcf-license vcf5.cores={vcf_cores} vcf5.end-date={vcf_end_date} vcf5.broadcom-site-id={vcf_broadcom_site_id} vcf5.broadcom-contract-number={vcf_broadcom_contract_number} --accept-eula')
+            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --zones 1 --accept-eula')
+
+        # create a private cloud with a vcf5 license
+        self.cmd(
+            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av36 --cluster-size 3 --network-block 192.168.48.0/22 --vcf-license vcf5.cores={vcf_cores} vcf5.end-date={vcf_end_date} vcf5.site-id={vcf_broadcom_site_id} vcf5.contract-number={vcf_broadcom_contract_number} --accept-eula')
 
         count = len(self.cmd('vmware private-cloud list -g {rg}').get_output_in_json())
         self.assertEqual(count, 1, 'private cloud count expected to be 1')
@@ -79,7 +83,7 @@ class VmwareScenarioTest(ScenarioTest):
         self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --vsan-datastore-name test-name')
 
         # update private cloud to set vcf5 license
-        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --vcf-license vcf5.cores={vcf_cores} vcf5.end-date={vcf_end_date} vcf5.broadcom-site-id={vcf_broadcom_site_id} vcf5.broadcom-contract-number={vcf_broadcom_contract_number}')
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --vcf-license vcf5.cores={vcf_cores} vcf5.end-date={vcf_end_date} vcf5.site-id={vcf_broadcom_site_id} vcf5.contract-number={vcf_broadcom_contract_number}')
 
         # get vcf license
         self.cmd('vmware private-cloud get-vcf-license -g {rg} -n {privatecloud}')
@@ -160,3 +164,13 @@ class VmwareScenarioTest(ScenarioTest):
         
         # get sku list
         self.cmd('vmware skus list')
+
+        # Force save the cassette and rename temp file to final file
+        self.cassette._save(force=True)
+        import shutil
+        # The cassette saves to recording_file + '.temp.yaml', we need to rename it
+        temp_file = self.recording_file.replace('.yaml', '.temp.yaml')
+        final_file = self.recording_file
+        if os.path.exists(temp_file):
+            shutil.move(temp_file, final_file)
+            

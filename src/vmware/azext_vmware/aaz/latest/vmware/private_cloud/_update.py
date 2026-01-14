@@ -261,13 +261,13 @@ class Update(AAZCommand):
         )
 
         vcf5 = cls._args_schema.vcf_license.vcf5
-        vcf5.broadcom_contract_number = AAZStrArg(
-            options=["broadcom-contract-number"],
+        vcf5.contract_number = AAZStrArg(
+            options=["contract-number"],
             help="The Broadcom contract number associated with the license.",
             nullable=True,
         )
-        vcf5.broadcom_site_id = AAZStrArg(
-            options=["broadcom-site-id"],
+        vcf5.site_id = AAZStrArg(
+            options=["site-id"],
             help="The Broadcom site ID associated with the license.",
             nullable=True,
         )
@@ -624,8 +624,8 @@ class Update(AAZCommand):
 
             disc_vcf5 = _builder.get(".properties.vcfLicense{kind:vcf5}")
             if disc_vcf5 is not None:
-                disc_vcf5.set_prop("broadcomContractNumber", AAZStrType, ".vcf5.broadcom_contract_number")
-                disc_vcf5.set_prop("broadcomSiteId", AAZStrType, ".vcf5.broadcom_site_id")
+                disc_vcf5.set_prop("broadcomContractNumber", AAZStrType, ".vcf5.contract_number")
+                disc_vcf5.set_prop("broadcomSiteId", AAZStrType, ".vcf5.site_id")
                 disc_vcf5.set_prop("cores", AAZIntType, ".vcf5.cores", typ_kwargs={"flags": {"required": True}})
                 disc_vcf5.set_prop("endDate", AAZStrType, ".vcf5.end_date", typ_kwargs={"flags": {"required": True}})
                 disc_vcf5.set_prop("labels", AAZListType, ".vcf5.labels")

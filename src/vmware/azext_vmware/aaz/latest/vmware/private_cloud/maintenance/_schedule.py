@@ -18,7 +18,7 @@ class Schedule(AAZCommand):
     """Schedule a maintenance
 
     :example: Maintenances_Schedule
-        az vmware private-cloud maintenance schedule --resource-group group1 --private-cloud-name cloud1 --maintenance-name maintenance1 --schedule-time 2025-09-12T16:17:55.237Z --message scheduled due to xyz
+        az vmware private-cloud maintenance schedule --resource-group group1 --private-cloud-name cloud1 --maintenance-name maintenance1 --schedule-time 2025-09-12T16:17:55.237Z --message "scheduled due to xyz"
     """
 
     _aaz_info = {

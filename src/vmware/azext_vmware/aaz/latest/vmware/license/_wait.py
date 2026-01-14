@@ -207,7 +207,6 @@ class Wait(AAZWaitCommand):
             disc_vmware_firewall.labels = AAZListType()
             disc_vmware_firewall.license_key = AAZStrType(
                 serialized_name="licenseKey",
-                flags={"secret": True},
             )
 
             labels = cls._schema_on_200.properties.discriminate_by("kind", "VmwareFirewall").labels

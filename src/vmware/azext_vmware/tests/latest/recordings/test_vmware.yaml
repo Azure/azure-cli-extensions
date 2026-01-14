@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:23 GMT
+      - Thu, 15 Jan 2026 14:03:14 GMT
       server:
       - Rocket
     status:
@@ -63,7 +63,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:25 GMT
+      - Thu, 15 Jan 2026 14:03:17 GMT
       server:
       - Rocket
     status:
@@ -95,7 +95,83 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:27 GMT
+      - Thu, 15 Jan 2026 14:03:19 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "None"}, "location": "centralus", "properties": {"internet":
+      "Disabled", "managementCluster": {"clusterSize": 3}, "networkBlock": "192.168.48.0/22"},
+      "sku": {"name": "av20"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '196'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --accept-eula
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware000001/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","tags":{},"location":"eastus2","properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"],"vsanDatastoreName":"vsanDatastore1"},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"],"vcfLicense":{"kind":"vcf5","provisioningState":"Succeeded","cores":16,"endDate":"2025-12-31T23:59:59Z","broadcomSiteId":"123456","broadcomContractNumber":"123456"}},"sku":{"name":"AV36"}}'
+    headers:
+      content-length:
+      - '1579'
+      content-type:
+      - application/json
+      date:
+      - Thu, 15 Jan 2026 14:03:21 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "None"}, "location": "centralus", "properties": {"internet":
+      "Disabled", "managementCluster": {"clusterSize": 3}, "networkBlock": "192.168.48.0/22"},
+      "sku": {"name": "av20"}, "zones": ["1"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '212'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --zones --accept-eula
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware000001/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","tags":{},"location":"eastus2","properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"],"vsanDatastoreName":"vsanDatastore1"},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"],"vcfLicense":{"kind":"vcf5","provisioningState":"Succeeded","cores":16,"endDate":"2025-12-31T23:59:59Z","broadcomSiteId":"123456","broadcomContractNumber":"123456"}},"sku":{"name":"AV36"}}'
+    headers:
+      content-length:
+      - '1579'
+      content-type:
+      - application/json
+      date:
+      - Thu, 15 Jan 2026 14:03:23 GMT
       server:
       - Rocket
     status:
@@ -106,7 +182,7 @@ interactions:
       "Disabled", "managementCluster": {"clusterSize": 3}, "networkBlock": "192.168.48.0/22",
       "vcfLicense": {"kind": "vcf5", "broadcomContractNumber": "12345", "broadcomSiteId":
       "site123", "cores": 100, "endDate": "2027-01-01T00:00:00.000Z"}}, "sku": {"name":
-      "av20"}}'
+      "av36"}}'
     headers:
       Accept:
       - application/json
@@ -135,48 +211,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:30 GMT
-      server:
-      - Rocket
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"identity": {"type": "None"}, "location": "centralus", "properties": {"internet":
-      "Disabled", "managementCluster": {"clusterSize": 3}, "networkBlock": "192.168.48.0/22",
-      "vcfLicense": {"kind": "vcf5", "broadcomContractNumber": "12345", "broadcomSiteId":
-      "site123", "cores": 100, "endDate": "2027-01-01T00:00:00.000Z"}}, "sku": {"name":
-      "av20"}, "zones": ["1"]}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware private-cloud create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '361'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -g -n --location --sku --cluster-size --network-block --zones --vcf-license
-        --accept-eula
-      User-Agent:
-      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
-    method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware000001/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2025-09-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","tags":{},"location":"eastus2","properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"],"vsanDatastoreName":"vsanDatastore1"},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"],"vcfLicense":{"kind":"vcf5","provisioningState":"Succeeded","cores":16,"endDate":"2025-12-31T23:59:59Z","broadcomSiteId":"123456","broadcomContractNumber":"123456"}},"sku":{"name":"AV36"}}'
-    headers:
-      content-length:
-      - '1579'
-      content-type:
-      - application/json
-      date:
-      - Thu, 08 Jan 2026 21:58:33 GMT
+      - Thu, 15 Jan 2026 14:03:27 GMT
       server:
       - Rocket
     status:
@@ -208,7 +243,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:35 GMT
+      - Thu, 15 Jan 2026 14:03:30 GMT
       server:
       - Rocket
     status:
@@ -238,7 +273,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:38 GMT
+      - Thu, 15 Jan 2026 14:03:32 GMT
       server:
       - Rocket
     status:
@@ -272,7 +307,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:40 GMT
+      - Thu, 15 Jan 2026 14:03:34 GMT
       server:
       - Rocket
     status:
@@ -306,7 +341,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:42 GMT
+      - Thu, 15 Jan 2026 14:03:36 GMT
       server:
       - Rocket
     status:
@@ -340,7 +375,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:45 GMT
+      - Thu, 15 Jan 2026 14:03:39 GMT
       server:
       - Rocket
     status:
@@ -372,7 +407,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:48 GMT
+      - Thu, 15 Jan 2026 14:03:42 GMT
       server:
       - Rocket
     status:
@@ -419,7 +454,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:50 GMT
+      - Thu, 15 Jan 2026 14:03:44 GMT
       server:
       - Rocket
     status:
@@ -451,7 +486,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:52 GMT
+      - Thu, 15 Jan 2026 14:03:47 GMT
       server:
       - Rocket
     status:
@@ -498,7 +533,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:54 GMT
+      - Thu, 15 Jan 2026 14:03:48 GMT
       server:
       - Rocket
     status:
@@ -530,7 +565,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:56 GMT
+      - Thu, 15 Jan 2026 14:03:51 GMT
       server:
       - Rocket
     status:
@@ -576,7 +611,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:59 GMT
+      - Thu, 15 Jan 2026 14:03:53 GMT
       server:
       - Rocket
     status:
@@ -608,7 +643,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:01 GMT
+      - Thu, 15 Jan 2026 14:03:55 GMT
       server:
       - Rocket
     status:
@@ -655,7 +690,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:03 GMT
+      - Thu, 15 Jan 2026 14:03:58 GMT
       server:
       - Rocket
     status:
@@ -687,7 +722,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:07 GMT
+      - Thu, 15 Jan 2026 14:04:00 GMT
       server:
       - Rocket
     status:
@@ -735,7 +770,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:08 GMT
+      - Thu, 15 Jan 2026 14:04:02 GMT
       server:
       - Rocket
     status:
@@ -769,7 +804,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:11 GMT
+      - Thu, 15 Jan 2026 14:04:05 GMT
       server:
       - Rocket
     status:
@@ -801,7 +836,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:13 GMT
+      - Thu, 15 Jan 2026 14:04:07 GMT
       server:
       - Rocket
     status:
@@ -833,7 +868,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:15 GMT
+      - Thu, 15 Jan 2026 14:04:10 GMT
       server:
       - Rocket
     status:
@@ -869,7 +904,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:18 GMT
+      - Thu, 15 Jan 2026 14:04:12 GMT
       server:
       - Rocket
     status:
@@ -901,7 +936,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 08 Jan 2026 21:59:20 GMT
+      - Thu, 15 Jan 2026 14:04:15 GMT
       server:
       - Rocket
     status:
@@ -934,7 +969,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:23 GMT
+      - Thu, 15 Jan 2026 14:04:18 GMT
       server:
       - Rocket
     status:
@@ -980,7 +1015,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:25 GMT
+      - Thu, 15 Jan 2026 14:04:20 GMT
       server:
       - Rocket
     status:
@@ -1012,7 +1047,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:27 GMT
+      - Thu, 15 Jan 2026 14:04:22 GMT
       server:
       - Rocket
     status:
@@ -1055,7 +1090,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:30 GMT
+      - Thu, 15 Jan 2026 14:04:24 GMT
       server:
       - Rocket
     status:
@@ -1087,7 +1122,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:32 GMT
+      - Thu, 15 Jan 2026 14:04:27 GMT
       server:
       - Rocket
     status:
@@ -1125,7 +1160,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:35 GMT
+      - Thu, 15 Jan 2026 14:04:30 GMT
       server:
       - Rocket
     status:
@@ -1161,7 +1196,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:38 GMT
+      - Thu, 15 Jan 2026 14:04:32 GMT
       server:
       - Rocket
     status:
@@ -1193,7 +1228,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:40 GMT
+      - Thu, 15 Jan 2026 14:04:34 GMT
       server:
       - Rocket
     status:
@@ -1225,7 +1260,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:42 GMT
+      - Thu, 15 Jan 2026 14:04:37 GMT
       server:
       - Rocket
     status:
@@ -1263,7 +1298,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:45 GMT
+      - Thu, 15 Jan 2026 14:04:39 GMT
       server:
       - Rocket
     status:
@@ -1295,7 +1330,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:47 GMT
+      - Thu, 15 Jan 2026 14:04:42 GMT
       server:
       - Rocket
     status:
@@ -1343,7 +1378,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:50 GMT
+      - Thu, 15 Jan 2026 14:04:44 GMT
       server:
       - Rocket
     status:
@@ -1375,7 +1410,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:52 GMT
+      - Thu, 15 Jan 2026 14:04:47 GMT
       server:
       - Rocket
     status:
@@ -1422,7 +1457,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:54 GMT
+      - Thu, 15 Jan 2026 14:04:49 GMT
       server:
       - Rocket
     status:
@@ -1454,7 +1489,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:56 GMT
+      - Thu, 15 Jan 2026 14:04:52 GMT
       server:
       - Rocket
     status:
@@ -1501,7 +1536,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:59:59 GMT
+      - Thu, 15 Jan 2026 14:04:54 GMT
       server:
       - Rocket
     status:
@@ -1533,7 +1568,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 22:00:02 GMT
+      - Thu, 15 Jan 2026 14:04:56 GMT
       server:
       - Rocket
     status:
@@ -1580,7 +1615,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 22:00:03 GMT
+      - Thu, 15 Jan 2026 14:04:58 GMT
       server:
       - Rocket
     status:
@@ -1612,7 +1647,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 22:00:06 GMT
+      - Thu, 15 Jan 2026 14:05:00 GMT
       server:
       - Rocket
     status:
@@ -1658,7 +1693,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 22:00:08 GMT
+      - Thu, 15 Jan 2026 14:05:03 GMT
       server:
       - Rocket
     status:
@@ -1690,7 +1725,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 08 Jan 2026 22:00:11 GMT
+      - Thu, 15 Jan 2026 14:05:05 GMT
       server:
       - Rocket
     status:
@@ -1722,7 +1757,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 08 Jan 2026 22:00:14 GMT
+      - Thu, 15 Jan 2026 14:05:09 GMT
       server:
       - Rocket
     status:
@@ -1756,7 +1791,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 22:00:17 GMT
+      - Thu, 15 Jan 2026 14:05:11 GMT
       server:
       - Rocket
     status:
@@ -1788,7 +1823,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 22:00:19 GMT
+      - Thu, 15 Jan 2026 14:05:14 GMT
       server:
       - Rocket
     status:
@@ -1820,7 +1855,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 22:00:21 GMT
+      - Thu, 15 Jan 2026 14:05:16 GMT
       server:
       - Rocket
     status:
@@ -1852,7 +1887,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 08 Jan 2026 22:00:23 GMT
+      - Thu, 15 Jan 2026 14:05:18 GMT
       server:
       - Rocket
     status:
@@ -1882,7 +1917,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 22:00:26 GMT
+      - Thu, 15 Jan 2026 14:05:21 GMT
       server:
       - Rocket
     status:

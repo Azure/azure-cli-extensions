@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a License
 
     :example: Licenses_CreateOrUpdate
-        az vmware license create --resource-group group1 --private-cloud-name cloud1 --license-name VmwareFirewall
+        az vmware license create --resource-group group1 --private-cloud-name cloud1 --license-name VmwareFirewall --vmware-firewall contract-number=12345 site-id=site123 cores=100 end-date=2027-01-01T00:00:00Z license-key=12345-12345-12345-12345-12345
     """
 
     _aaz_info = {
@@ -75,12 +75,12 @@ class Create(AAZCommand):
         )
 
         vmware_firewall = cls._args_schema.vmware_firewall
-        vmware_firewall.broadcom_contract_number = AAZStrArg(
-            options=["broadcom-contract-number"],
+        vmware_firewall.contract_number = AAZStrArg(
+            options=["contract-number"],
             help="The Broadcom contract number associated with the license.",
         )
-        vmware_firewall.broadcom_site_id = AAZStrArg(
-            options=["broadcom-site-id"],
+        vmware_firewall.site_id = AAZStrArg(
+            options=["site-id"],
             help="The Broadcom site ID associated with the license.",
         )
         vmware_firewall.cores = AAZIntArg(
@@ -249,12 +249,12 @@ class Create(AAZCommand):
 
             disc_vmware_firewall = _builder.get(".properties{kind:VmwareFirewall}")
             if disc_vmware_firewall is not None:
-                disc_vmware_firewall.set_prop("broadcomContractNumber", AAZStrType, ".vmware_firewall.broadcom_contract_number")
-                disc_vmware_firewall.set_prop("broadcomSiteId", AAZStrType, ".vmware_firewall.broadcom_site_id")
+                disc_vmware_firewall.set_prop("broadcomContractNumber", AAZStrType, ".vmware_firewall.contract_number")
+                disc_vmware_firewall.set_prop("broadcomSiteId", AAZStrType, ".vmware_firewall.site_id")
                 disc_vmware_firewall.set_prop("cores", AAZIntType, ".vmware_firewall.cores", typ_kwargs={"flags": {"required": True}})
                 disc_vmware_firewall.set_prop("endDate", AAZStrType, ".vmware_firewall.end_date", typ_kwargs={"flags": {"required": True}})
                 disc_vmware_firewall.set_prop("labels", AAZListType, ".vmware_firewall.labels")
-                disc_vmware_firewall.set_prop("licenseKey", AAZStrType, ".vmware_firewall.license_key", typ_kwargs={"flags": {"secret": True}})
+                disc_vmware_firewall.set_prop("licenseKey", AAZStrType, ".vmware_firewall.license_key")
 
             labels = _builder.get(".properties{kind:VmwareFirewall}.labels")
             if labels is not None:
@@ -326,7 +326,6 @@ class Create(AAZCommand):
             disc_vmware_firewall.labels = AAZListType()
             disc_vmware_firewall.license_key = AAZStrType(
                 serialized_name="licenseKey",
-                flags={"secret": True},
             )
 
             labels = cls._schema_on_200_201.properties.discriminate_by("kind", "VmwareFirewall").labels

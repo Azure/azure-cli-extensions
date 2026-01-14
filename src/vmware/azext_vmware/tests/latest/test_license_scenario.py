@@ -32,13 +32,14 @@ class VmwareLicenseScenarioTest(ScenarioTest):
         self.cmd('az vmware license list --resource-group {rg} --private-cloud-name {privatecloud}')
 
         # Create a new license
-        self.cmd('az vmware license create --resource-group {rg} --private-cloud-name {privatecloud} --license-name {license_name} --vmware-firewall broadcom-contract-number={broadcom_contract_number} broadcom-site-id={broadcom_site_id} cores={cores} end-date={end_date} license-key={license_key}')
+        self.cmd('az vmware license create --resource-group {rg} --private-cloud-name {privatecloud} --license-name {license_name} --vmware-firewall contract-number={broadcom_contract_number} site-id={broadcom_site_id} cores={cores} end-date={end_date} license-key={license_key}')
 
         # Show the license
         self.cmd('az vmware license show --resource-group {rg} --private-cloud-name {privatecloud} --license-name {license_name}')
 
-        # Get license properties
-        self.cmd('az vmware license get-property --resource-group {rg} --private-cloud-name {privatecloud} --license-name {license_name}')
+        # Get license properties and check if license_key is returned
+        license_properties = self.cmd('az vmware license get-property --resource-group {rg} --private-cloud-name {privatecloud} --license-name {license_name}')
+        self.assertIn('licenseKey', license_properties.get_output_in_json())
 
         # Update the license
-        self.cmd('az vmware license update --resource-group {rg} --private-cloud-name {privatecloud} --license-name {license_name} --vmware-firewall broadcom-contract-number={broadcom_contract_number} broadcom-site-id={broadcom_site_id} cores=150 end-date={end_date}')
+        self.cmd('az vmware license update --resource-group {rg} --private-cloud-name {privatecloud} --license-name {license_name} --vmware-firewall contract-number={broadcom_contract_number} site-id={broadcom_site_id} cores=150 end-date={end_date}')
