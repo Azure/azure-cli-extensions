@@ -102,9 +102,11 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
     @mock.patch(
         'azext_migrate.helpers._server.fetch_all_servers')
     @mock.patch(
+        'azext_migrate.helpers._server.filter_servers_by_display_name')
+    @mock.patch(
         'azure.cli.core.commands.client_factory.get_subscription_id')
     def test_get_discovered_server_with_display_name_filter(
-            self, mock_get_sub_id, mock_fetch_servers):
+            self, mock_get_sub_id, mock_filter_servers, mock_fetch_servers):
         """Test filtering discovered servers by display name"""
         from azext_migrate.custom import (
             get_discovered_server)
@@ -112,8 +114,10 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
         mock_get_sub_id.return_value = self.mock_subscription_id
         target_display_name = "WebServer"
         # Mock fetch_all_servers to return server data directly
-        mock_fetch_servers.return_value = [self._create_sample_server_data(
-            1, "machine-1", target_display_name)]
+        sample_server = self._create_sample_server_data(
+            1, "machine-1", target_display_name)
+        mock_fetch_servers.return_value = [sample_server]
+        mock_filter_servers.return_value = [sample_server]
 
         mock_cmd = self._create_mock_cmd()
 
@@ -124,10 +128,10 @@ class MigrateGetDiscoveredServerTests(ScenarioTest):
             display_name=target_display_name
         )
 
-        # Verify the filter was applied in the URL
-        call_args = mock_fetch_servers.call_args
-        self.assertIn("$filter", call_args[0][1])
-        self.assertIn(target_display_name, call_args[0][1])
+        # Verify client-side filtering was applied (API doesn't support $filter)
+        mock_filter_servers.assert_called_once()
+        filter_call_args = mock_filter_servers.call_args
+        self.assertEqual(filter_call_args[0][1], target_display_name)
 
     @mock.patch(
         'azext_migrate.helpers._server.fetch_all_servers')
