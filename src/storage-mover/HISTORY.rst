@@ -5,7 +5,7 @@ Release History
 
 1.2.1
 +++++
-* Added system assigned MI creation as part of az storage-mover create-for-storage-container command.
+* Added system assigned MI creation as part of az storage-mover endpoint create-for-storage-container command.
 
 1.2.0
 +++++
