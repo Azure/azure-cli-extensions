@@ -110,9 +110,8 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
         self.cluster_name: str = cluster_name
         self.subscription_id: str = subscription_id
 
-        # TODO: replace with actual chart repo and version
-        self.chart_repo = "oci://registry-1.docker.io/mainred/aks-agent"
-        self.chart_version = "0.1.0"
+        self.chart_repo = "oci://mcr.microsoft.com/aks/aks-agent-chart/aks-agent"
+        self.chart_version = "0.2.0"
 
         # credentials for aks-mcp
         # Managed identity client ID for accessing Azure resources
@@ -898,9 +897,7 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
         self.config_dir = self.base_config_dir / subscription_id / resource_group_name / cluster_name
 
         # Docker image for client mode execution
-        # TODO(mainred): update the docker image to the official one when available
-        # self.docker_image = "mcr.microsoft.com/aks/aks-agent:89bde40-client"
-        self.docker_image = "mainred/aks-agent:89bde40-client"
+        self.docker_image = "mcr.microsoft.com/aks/aks-agent:v0.2.0-client"
 
         self.llm_config_manager = LLMConfigManagerLocal(
             subscription_id=subscription_id,
