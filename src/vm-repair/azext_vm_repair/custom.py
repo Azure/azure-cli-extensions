@@ -54,7 +54,7 @@ from .repair_utils import (
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False):
     """
     This function creates a repair VM.
 
@@ -76,6 +76,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     - disable_trusted_launch: A flag parameter that, when used, sets the security type of the repair VM to Standard.
     - os_disk_type: Set the OS disk storage account type of the repair VM to the specified type. The default is PremiumSSD_LRS.
     - tags: Tags to apply to the repair VM. Should be a dictionary or a string in key[=value] format.
+    - copy_tags: If True, tags will be copied from the source VM to the repair VM. Default is False.
     """
 
     # Logging all the command parameters, except the sensitive data.
@@ -83,8 +84,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     masked_repair_password = '****' if repair_password else None
     masked_repair_username = '****' if repair_username else None
     masked_repair_encrypt_recovery_key = '****' if encrypt_recovery_key else None
-    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, encrypt_recovery_key: %s, disable_trusted_launch: %s, os_disk_type: %s',
-                 vm_name, resource_group_name, masked_repair_password, masked_repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, masked_repair_encrypt_recovery_key, disable_trusted_launch, os_disk_type)
+    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, encrypt_recovery_key: %s, disable_trusted_launch: %s, os_disk_type: %s, tags: %s',
+                 vm_name, resource_group_name, masked_repair_password, masked_repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, masked_repair_encrypt_recovery_key, disable_trusted_launch, os_disk_type, tags)
 
     # Initializing a command helper object.
     command = command_helper(logger, cmd, 'vm repair create')
@@ -106,8 +107,34 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Fetching the name of the OS disk and checking if it's managed.
         target_disk_name = source_vm.storage_profile.os_disk.name
         is_managed = _uses_managed_disk(source_vm)
-        # Fetching the tag for the repair resource and initializing the list of created resources.
-        resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
+
+        # Set up tags variable with passed data and resource.  Passed variable 'merged_tags' will be the holding location for the data throughout.
+        merged_tags = {}
+        # Optionally copy existing VM tags from the source VM.
+        if copy_tags and source_vm.tags:
+            merged_tags.update(source_vm.tags)
+        # Merge user-provided tags
+        if isinstance(tags, dict):
+            merged_tags.update(tags)
+        elif tags:
+            # Azure CLI supports space-separated key=value strings
+            for item in str(tags).split():
+                # split the item into key and value at the first '=', we'll ignore items that don't have both key and value as invalid
+                key, sep, value = item.partition('=')
+                if sep:
+                    merged_tags[key] = value
+
+        # Add the generated repair resource tag
+        repair_key, sep, repair_value = _get_repair_resource_tag(
+            resource_group_name, vm_name
+        ).partition('=')
+        if sep:
+            merged_tags[repair_key] = repair_value
+
+        # Convert to CLI string for passing to az cli later.
+        tag_string = ' '.join(f'{k}={v}' for k, v in merged_tags.items())
+
+        # initializing the list of created resources.
         created_resources = []
         # Fetching the architecture of the source VM.
         architecture_type = _fetch_architecture(source_vm)
@@ -135,6 +162,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 # If the architecture type is not 'V2', select a Gen1 VM
                 os_image_urn = _select_distro_linux(distro)
         else:
+            # TODO: fix this logic, it is possible to error out here if you have a windows VM in a 'Gen2 only' sku
             # If the source VM's OS is not Linux, check if a recovery key is provided.
             if encrypt_recovery_key:
                 # If a recovery key is provided, fetch the compatible Windows OS URN for a VM with Bitlocker encryption.
@@ -149,27 +177,21 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         public_ip_name = _make_public_ip_name(repair_vm_name, associate_public_ip)
 
         # Set up base create vm command
-        # Azure CLI accepts tags as either a space-separated list of key=value pairs or a single string. Support both dict and string for flexibility.
-        tag_arg = ''
-        if tags:
-            if isinstance(tags, dict):
-                tag_items = [f"{k}={v}" for k, v in tags.items()]
-                tag_arg = ' --tags ' + ' '.join(tag_items)
-            else:
-                tag_arg = f' --tags {tags}'
         # Only include the --public-ip-address argument if associate_public_ip is True. Omitting this argument prevents creation of an unwanted public IP.
         public_ip_arg = f' --public-ip-address {public_ip_name}' if associate_public_ip else ''
+
+        # Assemble the create VM command for passing to azure cli call
+        create_repair_vm_command = (
+            f'az vm create -g {repair_group_name} -n {repair_vm_name} '
+            f'--image {os_image_urn} '
+            f'--admin-username {repair_username} '
+            f'--admin-password {repair_password}'
+            f'{public_ip_arg} '
+            f'--tags {tag_string}'
+        )
+        # Linux-specific consideration(s)
         if is_linux:
-            create_repair_vm_command = (
-                f'az vm create -g {repair_group_name} -n {repair_vm_name} --tag {resource_tag} --image {os_image_urn} '
-                f'--admin-username {repair_username} --admin-password {repair_password}{public_ip_arg} '
-                f'--custom-data {_get_cloud_init_script()}{tag_arg}'
-            )
-        else:
-            create_repair_vm_command = (
-                f'az vm create -g {repair_group_name} -n {repair_vm_name} --tag {resource_tag} --image {os_image_urn} '
-                f'--admin-username {repair_username} --admin-password {repair_password}{public_ip_arg}{tag_arg}'
-            )
+            create_repair_vm_command += f' --custom-data {_get_cloud_init_script()}'
 
         # Fetching the size of the repair VM.
         sku = _fetch_compatible_sku(source_vm, enable_nested)
@@ -210,6 +232,15 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             osdisk_security_params = _fetch_osdisk_security_profile_parameters(source_vm)
             if osdisk_security_params:
                 create_repair_vm_command += osdisk_security_params
+
+        # #### DEBUG EXIT BEFORE ANYTHING IS CREATED #####
+        from pprint import pprint
+        print("TAGS:")
+        pprint(tags)
+        print("CREATE REPAIR VM COMMAND:")
+        pprint(create_repair_vm_command)
+        # raise RuntimeError("EXITING BEFORE CREATING ANYTHING FOR DEBUGGING PURPOSES")
+        # #### END DEBUG EXIT #####
 
         # Creating a new resource group for the repair VM and its resources.
         # First, check if the repair group already exists.
@@ -441,7 +472,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         return_dict['copied_disk_name'] = copy_disk_name
         return_dict['copied_disk_uri'] = copy_disk_id if copy_disk_id is not None else ""
         return_dict['repair_resource_group'] = repair_group_name
-        return_dict['resource_tag'] = resource_tag
         return_dict['created_resources'] = created_resources
 
         logger.info('\n%s\n', command.message)
@@ -917,94 +947,94 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
     return return_dict
 
 
-def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None):    
-    """    
-    This function manages the process of repairing and restoring a specified virtual machine (VM). The process involves  
-    the creation of a repair VM, the generation of a copy of the problem VM's disk, and the formation of a new resource   
-    group specifically for the repair operation.   
-  
-    :param cmd: Command object that is used to execute Azure CLI commands.  
-    :param vm_name: The name of the VM that is targeted for repair.  
-    :param resource_group_name: The name of the resource group in which the targeted VM is located.  
-    :param repair_password: (Optional) Password to be used for the repair operation. If not provided, a random password is generated.  
-    :param repair_username: (Optional) Username to be used for the repair operation. If not provided, a random username is generated.  
-    :param repair_vm_name: (Optional) The name to assign to the repair VM. If not provided, a unique name is generated.  
-    :param copy_disk_name: (Optional) The name to assign to the copy of the disk. If not provided, a unique name is generated.  
-    :param repair_group_name: (Optional) The name of the repair resource group. If not provided, a unique name is generated.  
-    :param tags: (Optional) Tags to apply to the repair VM.  
-    """  
-    from datetime import datetime  
-    import secrets  
-    import string  
-  
-    # Initialize command helper object  
-    command = command_helper(logger, cmd, 'vm repair repair-and-restore')  
-  
-    # Generate a random password for the repair operation  
-    password_length = 30  
-    password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase  
-    repair_password = ''.join(secrets.choice(password_characters) for i in range(password_length))  
-  
-    # Generate a random username for the repair operation  
-    username_length = 20  
-    username_characters = string.ascii_lowercase + string.digits  
-    repair_username = ''.join(secrets.choice(username_characters) for i in range(username_length))  
-  
-    # Generate unique names for the repair VM, copied disk, and repair resource group  
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')  
-    repair_vm_name = ('repair-' + vm_name)[:14] + '_'  
-    copy_disk_name = vm_name + '-DiskCopy-' + timestamp  
-    repair_group_name = 'repair-' + vm_name + '-' + timestamp  
-  
-    # Check if a resource group with the same name already exists  
-    existing_rg = _check_existing_rg(repair_group_name)  
-  
-    # Create a repair VM, copy of the disk, and a new resource group  
-    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True, tags=tags)  
-  
-    # Log the output of the create operation  
-    logger.info('create_out: %s', create_out)  
-  
-    # Extract the repair VM name, copied disk name, and repair resource group from the output  
-    repair_vm_name = create_out['repair_vm_name']  
-    copy_disk_name = create_out['copied_disk_name']  
-    repair_group_name = create_out['repair_resource_group']  
-  
-    # Log that the fstab run command is about to be executed  
-    logger.info('Running fstab run command')  
+def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None):
+    """
+    This function manages the process of repairing and restoring a specified virtual machine (VM). The process involves
+    the creation of a repair VM, the generation of a copy of the problem VM's disk, and the formation of a new resource
+    group specifically for the repair operation.
 
-    try:  
-        # Run the fstab script on the repair VM  
-        run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=["fstab", "initiator=SELFHELP"])  
-  
+    :param cmd: Command object that is used to execute Azure CLI commands.
+    :param vm_name: The name of the VM that is targeted for repair.
+    :param resource_group_name: The name of the resource group in which the targeted VM is located.
+    :param repair_password: (Optional) Password to be used for the repair operation. If not provided, a random password is generated.
+    :param repair_username: (Optional) Username to be used for the repair operation. If not provided, a random username is generated.
+    :param repair_vm_name: (Optional) The name to assign to the repair VM. If not provided, a unique name is generated.
+    :param copy_disk_name: (Optional) The name to assign to the copy of the disk. If not provided, a unique name is generated.
+    :param repair_group_name: (Optional) The name of the repair resource group. If not provided, a unique name is generated.
+    :param tags: (Optional) Tags to apply to the repair VM.
+    """
+    from datetime import datetime
+    import secrets
+    import string
+
+    # Initialize command helper object
+    command = command_helper(logger, cmd, 'vm repair repair-and-restore')
+
+    # Generate a random password for the repair operation
+    password_length = 30
+    password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
+    repair_password = ''.join(secrets.choice(password_characters) for _ in range(password_length))
+
+    # Generate a random username for the repair operation
+    username_length = 20
+    username_characters = string.ascii_lowercase + string.digits
+    repair_username = ''.join(secrets.choice(username_characters) for _ in range(username_length))
+
+    # Generate unique names for the repair VM, copied disk, and repair resource group
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    repair_vm_name = ('repair-' + vm_name)[:14] + '_'
+    copy_disk_name = vm_name + '-DiskCopy-' + timestamp
+    repair_group_name = 'repair-' + vm_name + '-' + timestamp
+
+    # Check if a resource group with the same name already exists
+    existing_rg = _check_existing_rg(repair_group_name)
+
+    # Create a repair VM, copy of the disk, and a new resource group
+    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True, tags=tags)
+
+    # Log the output of the create operation
+    logger.info('create_out: %s', create_out)
+
+    # Extract the repair VM name, copied disk name, and repair resource group from the output
+    repair_vm_name = create_out['repair_vm_name']
+    copy_disk_name = create_out['copied_disk_name']
+    repair_group_name = create_out['repair_resource_group']
+
+    # Log that the fstab run command is about to be executed
+    logger.info('Running fstab run command')
+
+    try:
+        # Run the fstab script on the repair VM
+        run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=["fstab", "initiator=SELFHELP"])
+
     except Exception:
         command.set_status_error()
         command.error_stack_trace = traceback.format_exc()
         command.error_message = "Command failed when running fstab script."
         command.message = "Command failed when running fstab script."
-    
-        # If the resource group existed before, confirm before cleaning up resources  
-        # Otherwise, clean up resources without confirmation  
-        if existing_rg:  
-            _clean_up_resources(repair_group_name, confirm=True)  
-        else:  
-            _clean_up_resources(repair_group_name, confirm=False)  
-        return  
-    
-    # Log the output of the run command  
-    logger.info('run_out: %s', run_out)  
-    
-    # If the fstab script returned an error, log the error and clean up resources  
-    if run_out['script_status'] == 'ERROR':  
-        logger.error('fstab script returned an error.')  
-        if existing_rg:  
-            _clean_up_resources(repair_group_name, confirm=True)  
-        else:  
-            _clean_up_resources(repair_group_name, confirm=False)  
-        return  
-    
-    # Run the restore command  
-    logger.info('Running restore command')  
+
+        # If the resource group existed before, confirm before cleaning up resources
+        # Otherwise, clean up resources without confirmation
+        if existing_rg:
+            _clean_up_resources(repair_group_name, confirm=True)
+        else:
+            _clean_up_resources(repair_group_name, confirm=False)
+        return
+
+    # Log the output of the run command
+    logger.info('run_out: %s', run_out)
+
+    # If the fstab script returned an error, log the error and clean up resources
+    if run_out['script_status'] == 'ERROR':
+        logger.error('fstab script returned an error.')
+        if existing_rg:
+            _clean_up_resources(repair_group_name, confirm=True)
+        else:
+            _clean_up_resources(repair_group_name, confirm=False)
+        return
+
+    # Run the restore command
+    logger.info('Running restore command')
     show_vm_id = 'az vm show -g {g} -n {n} --query id -o tsv' \
         .format(g=repair_group_name, n=repair_vm_name)
 
@@ -1033,6 +1063,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     # Return the result of the operation
     return return_dict
 
+
 def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None):
     """
     Button-triggered repair operation. Supports tags for the repair VM.
@@ -1058,7 +1089,7 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     repair_group_name = 'repair-' + vm_name + '-' + timestamp
     existing_rg = _check_existing_rg(repair_group_name)
 
-    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True)
+    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True, tags=tags)
 
     # log create_out
     logger.info('create_out: %s', create_out)

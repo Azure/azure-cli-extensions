@@ -4,6 +4,10 @@ Release History
 
 2.1.3
 ++++++
+Adding --tags parameter to vm repair create and vm repair repair-and-restore commands to allow users to tag the repair VM for organizational requirements
+
+2.1.3
+++++++
 Fixing an issue with repair-and-restore related to the change to python3.13
 Fixing an unreported issue with restore only sending the disk name instead of full ID, which works up until az-cli 2.81
 linting/flake8 fixes
