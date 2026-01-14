@@ -55,7 +55,7 @@ class LLMConfigManager:
         return env_vars_list
 
 
-class LLMConfigManagerLocal:
+class LLMConfigManagerLocal:  # pylint: disable=too-few-public-methods
     """Manages loading and saving LLM configuration from/to a local YAML file."""
 
     def __init__(self, subscription_id: str, resource_group_name: str, cluster_name: str,
@@ -101,7 +101,7 @@ class LLMConfigManagerLocal:
             else:
                 logger.debug("Config file not found: %s", self.config_file)
                 self.model_list = {}
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             logger.warning("Failed to load config from %s: %s", self.config_file, e)
             self.model_list = {}
 

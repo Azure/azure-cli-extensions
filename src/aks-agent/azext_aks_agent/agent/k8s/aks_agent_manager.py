@@ -26,8 +26,6 @@ from azext_aks_agent.agent.llm_providers import LLMProvider
 from azure.cli.core.azclierror import AzCLIError
 from knack.log import get_logger
 from kubernetes import client, config
-from kubernetes.client.models.v1_cluster_role import V1ClusterRole
-from kubernetes.client.models.v1_policy_rule import V1PolicyRule
 from kubernetes.client.rest import ApiException
 
 from .pod_exec import exec_command_in_pod
@@ -46,7 +44,6 @@ class AKSAgentManagerLLMConfigBase(ABC):
         Returns:
             Dictionary of model configurations if exists, empty dict otherwise
         """
-        pass
 
     @abstractmethod
     def save_llm_config(self, provider: LLMProvider, params: dict) -> None:
@@ -57,7 +54,6 @@ class AKSAgentManagerLLMConfigBase(ABC):
             provider: LLM provider instance
             params: Dictionary of model parameters
         """
-        pass
 
     @abstractmethod
     def exec_aks_agent(self, command_flags: str = "") -> bool:
@@ -73,7 +69,6 @@ class AKSAgentManagerLLMConfigBase(ABC):
         Raises:
             AzCLIError: If execution fails
         """
-        pass
 
 
 class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many-instance-attributes
@@ -240,8 +235,6 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
                 secret_data[key] = decoded_value
 
             logger.debug("Read %d API keys from secret '%s'", len(secret_data), self.llm_secret_name)
-
-            from azext_aks_agent.agent.llm_providers.base import LLMProvider
 
             # Populate API keys into model_list
 
@@ -873,7 +866,7 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
         self.create_llm_config_secret()
 
 
-class AKSAgentManagerLocal(AKSAgentManagerLLMConfigBase):
+class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many-instance-attributes
 
     def __init__(self, resource_group_name: str, cluster_name: str,
                  subscription_id: str,
@@ -906,8 +899,8 @@ class AKSAgentManagerLocal(AKSAgentManagerLLMConfigBase):
 
         # Docker image for client mode execution
         # TODO(mainred): update the docker image to the official one when available
-        # self.docker_image = "mcr.microsoft.com/aks/aks-agent:89bde40-local"
-        self.docker_image = "mainred/aks-agent:89bde40-local"
+        # self.docker_image = "mcr.microsoft.com/aks/aks-agent:89bde40-client"
+        self.docker_image = "mainred/aks-agent:89bde40-client"
 
         self.llm_config_manager = LLMConfigManagerLocal(
             subscription_id=subscription_id,
@@ -935,7 +928,10 @@ class AKSAgentManagerLocal(AKSAgentManagerLLMConfigBase):
             default_config = {
                 "mcp_servers": {
                     "aks-mcp": {
-                        "description": "Azure MCP server exposes the Azure and Kubernetes capabilities for Azure Kubernetes Service clusters",
+                        "description": (
+                            "Azure MCP server exposes the Azure and Kubernetes capabilities "
+                            "for Azure Kubernetes Service clusters"
+                        ),
                         "config": {
                             "url": "http://localhost:8000/sse",
                         }
@@ -947,7 +943,7 @@ class AKSAgentManagerLocal(AKSAgentManagerLLMConfigBase):
                 with open(custom_toolset_file, 'w', encoding='utf-8') as f:
                     yaml.dump(default_config, f, default_flow_style=False, sort_keys=False)
                 logger.debug("Created custom_toolset.yaml at: %s", custom_toolset_file)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught
                 logger.warning("Failed to create custom_toolset.yaml: %s", e)
         else:
             logger.debug("custom_toolset.yaml already exists at: %s", custom_toolset_file)

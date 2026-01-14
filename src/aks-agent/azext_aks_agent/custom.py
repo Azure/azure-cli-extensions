@@ -3,12 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=too-many-lines, disable=broad-except
+# pylint: disable=too-many-lines, disable=broad-except, disable=line-too-long
 
-import os
 import subprocess
 
-from azext_aks_agent._consts import CONFIG_DIR
 from azext_aks_agent.agent.aks import get_aks_credentials
 from azext_aks_agent.agent.console import (
     ERROR_COLOR,
@@ -18,7 +16,7 @@ from azext_aks_agent.agent.console import (
     WARNING_COLOR,
     get_console,
 )
-from azext_aks_agent.agent.k8s import AKSAgentManager, AKSAgentManagerLocal
+from azext_aks_agent.agent.k8s import AKSAgentManager, AKSAgentManagerClient
 from azext_aks_agent.agent.k8s.aks_agent_manager import AKSAgentManagerLLMConfigBase
 from azext_aks_agent.agent.llm_providers import prompt_provider_choice
 from azext_aks_agent.agent.telemetry import CLITelemetryClient
@@ -87,7 +85,7 @@ def aks_agent_init(cmd,
                 console.print(
                     "\n✅ Client mode selected. This will set up LLM configurations on your local environment.",
                     style=f"bold {HELP_COLOR}")
-                aks_agent_manager = AKSAgentManagerLocal(
+                aks_agent_manager = AKSAgentManagerClient(
                     resource_group_name=resource_group_name,
                     cluster_name=cluster_name,
                     subscription_id=subscription_id,
@@ -135,7 +133,7 @@ def _setup_llm_configuration(console, aks_agent_manager: AKSAgentManagerLLMConfi
 
     Args:
         console: Console instance for output
-        aks_agent_manager: AKS agent manager instance (AKSAgentManager or AKSAgentManagerLocal)
+        aks_agent_manager: AKS agent manager instance (AKSAgentManager or AKSAgentManagerClient)
     """
     # Check if LLM configuration exists by getting the model list
     model_list = aks_agent_manager.get_llm_config()
@@ -305,7 +303,7 @@ def _setup_and_create_llm_config(console, aks_agent_manager: AKSAgentManagerLLMC
 
     Args:
         console: Console instance for output
-        aks_agent_manager: AKS agent manager instance (AKSAgentManager or AKSAgentManagerLocal)
+        aks_agent_manager: AKS agent manager instance (AKSAgentManager or AKSAgentManagerClient)
     """
 
     # Prompt for LLM configuration
@@ -335,7 +333,7 @@ def _setup_and_create_llm_config(console, aks_agent_manager: AKSAgentManagerLLMC
         raise AzCLIError(f"Please check your deployed model and network connectivity. {error}")
 
 
-def _aks_agent_local_status(agent_manager: AKSAgentManagerLocal):
+def _aks_agent_local_status(agent_manager: AKSAgentManagerClient):
     """Display the status of LLM configuration in client mode."""
     console = get_console()
 
@@ -505,7 +503,7 @@ def aks_agent_cleanup(
         subscription_id = get_subscription_id(cmd.cli_ctx)
 
         if use_client_mode:
-            agent_manager = AKSAgentManagerLocal(
+            agent_manager = AKSAgentManagerClient(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
                 subscription_id=subscription_id,
@@ -576,7 +574,7 @@ def aks_agent(
                 style=WARNING_COLOR)
 
         if use_client_mode:
-            agent_manager = AKSAgentManagerLocal(
+            agent_manager = AKSAgentManagerClient(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
                 subscription_id=subscription_id,
