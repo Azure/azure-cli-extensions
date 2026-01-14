@@ -2,6 +2,16 @@
 
 Release History
 ===============
+
+1.9.0
++++++
+* Added support for Soft-Deleted Backup Vaults and associated operations.
+* Secure-by-default: New Backup Vaults will have Soft Delete set to AlwaysOn by default.
+* `az dataprotection backup-vault deleted-vault show`: New command to show details of a soft-deleted backup vault.
+* `az dataprotection backup-vault deleted-vault list`: New command to list all soft-deleted backup vaults.
+* `az dataprotection backup-vault deleted-vault undelete`: New command to undelete (recover) a soft-deleted backup vault.
+* `az dataprotection backup-vault deleted-vault list-deleted-backup-instances`: New command to list soft-deleted backup instances inside a soft-deleted backup vault.
+
 1.8.0
 +++++
 * `az dataprotection backup-instance update`: New parameter: `--backup-configuration` to update AKS datasource parameters.

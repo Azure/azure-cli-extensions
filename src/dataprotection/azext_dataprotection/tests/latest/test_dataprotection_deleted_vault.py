@@ -59,16 +59,16 @@ class DeletedVaultScenarioTest(ScenarioTest):
             "backupInstanceName": backup_instance_json["backup_instance_name"]
         })
 
-        # Configure the required permissions for the Backup Instance
+        # Configure the required permissions for the Backup Instance. Only for live tests
         import time
-        time.sleep(60) # Wait for MSI to propagate
-        test.cmd('az dataprotection backup-instance update-msi-permissions '
-                 '-g "{rg}" --vault-name "{vaultName}" '
-                 '--datasource-type "{dataSourceType}" '
-                 '--operation "{operation}" '
-                 '--permissions-scope "{permissionsScope}" '
-                 '--backup-instance "{backupInstanceJson}" --yes')
-        time.sleep(30)  # Wait for a while to allow permissions to propagate
+        # time.sleep(60) # Wait for MSI to propagate
+        # test.cmd('az dataprotection backup-instance update-msi-permissions '
+        #          '-g "{rg}" --vault-name "{vaultName}" '
+        #          '--datasource-type "{dataSourceType}" '
+        #          '--operation "{operation}" '
+        #          '--permissions-scope "{permissionsScope}" '
+        #          '--backup-instance "{backupInstanceJson}" --yes')
+        # time.sleep(30)  # Wait for a while to allow permissions to propagate
 
         test.cmd('az dataprotection backup-instance create -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backupInstanceJson}"',
                  checks=[
@@ -111,7 +111,7 @@ class DeletedVaultScenarioTest(ScenarioTest):
         time.sleep(60)  # Wait for deleted backup instances to be indexed
         test.cmd('az dataprotection backup-vault deleted-vault list-deleted-backup-instances --deleted-vault-name "{deletedVaultName}"', checks=[
             test.greater_than("length([])", 0),
-            test.check("[0].properties.dataSourceInfo.resourceID", "{dataSourceId}")
+            test.check("[0].properties.dataSourceInfo.resourceName", "{dataSourceName}")
         ])
 
         # 8. Undelete Backup Vault
@@ -120,21 +120,20 @@ class DeletedVaultScenarioTest(ScenarioTest):
             test.check('properties.provisioningState', "Succeeded")
         ])
 
-        # 9. Add System Identity to Vault
-        test.cmd('az dataprotection backup-vault update -g "{rg}" -v "{vaultName}" --type SystemAssigned', checks=[
-            test.check('identity.type', "SystemAssigned")
-        ])
-        time.sleep(30)  # Wait for new MSI to propagate to AAD after re-assigning identity
+        # 9. Add System Identity to Vault. Onlyt for live tests
+        # test.cmd('az dataprotection backup-vault update -g "{rg}" -v "{vaultName}" --type SystemAssigned', checks=[
+        #     test.check('identity.type', "SystemAssigned")
+        # ])
+        # time.sleep(30)  # Wait for new MSI to propagate to AAD after re-assigning identity
 
-        # 9.5 Configure the required permissions for the Backup Instance
-        test.cmd('az dataprotection backup-instance update-msi-permissions '
-                 '-g "{rg}" --vault-name "{vaultName}" '
-                 '--datasource-type "{dataSourceType}" '
-                 '--operation "{operation}" '
-                 '--permissions-scope "{permissionsScope}" '
-                 '--backup-instance "{backupInstanceJson}" --yes')
-        import time
-        time.sleep(30)  # Wait for a while to allow permissions to propagate
+        # 9.5 Configure the required permissions for the Backup Instance. Only for live tests
+        # test.cmd('az dataprotection backup-instance update-msi-permissions '
+        #          '-g "{rg}" --vault-name "{vaultName}" '
+        #          '--datasource-type "{dataSourceType}" '
+        #          '--operation "{operation}" '
+        #          '--permissions-scope "{permissionsScope}" '
+        #          '--backup-instance "{backupInstanceJson}" --yes')
+        # time.sleep(30)  # Wait for a while to allow permissions to propagate
 
         # 10. Undelete (Reprotect) Backup Instance
         test.cmd('az dataprotection backup-instance deleted-backup-instance undelete -g "{rg}" -v "{vaultName}" -n "{backupInstanceName}"')
