@@ -18,13 +18,13 @@ class SetActiveHours(AAZCommand):
     """Lets a user set their own active hours for their Dev Box, overriding the defaults set at the pool level.
 
     :example: Set active hours
-        az devcenter dev dev-box set-active-hours --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "myProject" --user-id "00000000-0000-0000-0000-000000000000 --dev-box-name "myDevBox" --time-zone "America/Los_Angeles" --start-time-hour "9" --end-time-hour "17"
+        az devcenter dev dev-box set-active-hours --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "myProject" --user-id "me" --dev-box-name "myDevBox" --time-zone "America/Los_Angeles" --start-time-hour "9" --end-time-hour "17"
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-08-01-preview",
         "resources": [
-            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes/{}:setactivehours", "2025-04-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes/{}:setactivehours", "2025-08-01-preview"],
         ]
     }
 
@@ -78,6 +78,7 @@ class SetActiveHours(AAZCommand):
             options=["--user-id"],
             help="The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.",
             required=True,
+            default="me",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$",
                 max_length=36,
@@ -88,6 +89,11 @@ class SetActiveHours(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
+        _args_schema.days_of_week = AAZListArg(
+            options=["--days-of-week"],
+            arg_group="Body",
+            help="The days of the week. Values can be \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\", or \"Sunday\".",
+        )
         _args_schema.end_time_hour = AAZIntArg(
             options=["--end-time-hour"],
             arg_group="Body",
@@ -102,6 +108,11 @@ class SetActiveHours(AAZCommand):
             options=["--time-zone"],
             arg_group="Body",
             help="The timezone of the active hours.",
+        )
+
+        days_of_week = cls._args_schema.days_of_week
+        days_of_week.Element = AAZStrArg(
+            enum={"Friday": "Friday", "Monday": "Monday", "Saturday": "Saturday", "Sunday": "Sunday", "Thursday": "Thursday", "Tuesday": "Tuesday", "Wednesday": "Wednesday"},
         )
         return cls._args_schema
 
@@ -175,7 +186,7 @@ class SetActiveHours(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-08-01-preview",
                     required=True,
                 ),
             }
@@ -200,9 +211,14 @@ class SetActiveHours(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("daysOfWeek", AAZListType, ".days_of_week")
             _builder.set_prop("endTimeHour", AAZIntType, ".end_time_hour")
             _builder.set_prop("startTimeHour", AAZIntType, ".start_time_hour")
             _builder.set_prop("timeZone", AAZStrType, ".time_zone")
+
+            days_of_week = _builder.get(".daysOfWeek")
+            if days_of_week is not None:
+                days_of_week.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -286,6 +302,10 @@ class SetActiveHours(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            _schema_on_200.single_sign_on_status = AAZStrType(
+                serialized_name="singleSignOnStatus",
+                flags={"read_only": True},
+            )
             _schema_on_200.storage_profile = AAZObjectType(
                 serialized_name="storageProfile",
                 flags={"read_only": True},
@@ -306,6 +326,9 @@ class SetActiveHours(AAZCommand):
                 serialized_name="autoStartEnableStatus",
                 flags={"required": True},
             )
+            active_hours_configuration.days_of_week = AAZListType(
+                serialized_name="daysOfWeek",
+            )
             active_hours_configuration.end_time_hour = AAZIntType(
                 serialized_name="endTimeHour",
             )
@@ -319,6 +342,9 @@ class SetActiveHours(AAZCommand):
             active_hours_configuration.time_zone = AAZStrType(
                 serialized_name="timeZone",
             )
+
+            days_of_week = cls._schema_on_200.active_hours_configuration.days_of_week
+            days_of_week.Element = AAZStrType()
 
             hardware_profile = cls._schema_on_200.hardware_profile
             hardware_profile.memory_gb = AAZIntType(

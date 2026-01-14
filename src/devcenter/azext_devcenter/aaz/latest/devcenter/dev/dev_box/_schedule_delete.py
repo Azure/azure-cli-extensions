@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter dev dev-box approve",
+    "devcenter dev dev-box schedule-delete",
 )
-class Approve(AAZCommand):
-    """Approves the creation of a Dev Box.
+class ScheduleDelete(AAZCommand):
+    """Creates an action to schedule the deletion of a Dev Box
 
-    :example: Approve creation
-        az devcenter dev dev-box approve --project-name "myProject" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/"  --user-id "me" --dev-box-name "MyDevBox"
+    :example: Creates an occurrence of Dev Box delete action.
+        az devcenter dev dev-box schedule-delete --project-name "myProject" --user-id "me" --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --delete-at 2022-09-30T17:00:00Z
     """
 
     _aaz_info = {
         "version": "2025-08-01-preview",
         "resources": [
-            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes/{}:approve", "2025-08-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes/{}:scheduledelete", "2025-08-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -57,7 +56,7 @@ class Approve(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.dev_box_name = AAZStrArg(
             options=["-n", "--name", "--dev-box", "--dev-box-name"],
-            help="The name of the dev box.",
+            help="Display name for the Dev Box.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
@@ -79,18 +78,22 @@ class Approve(AAZCommand):
             options=["--user-id"],
             help="The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.",
             required=True,
-            default="me",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$",
                 max_length=36,
                 min_length=2,
             ),
         )
+        _args_schema.delete_at = AAZDateTimeArg(
+            options=["--delete-at"],
+            help="The scheduled deletion time of the Dev Box, in RFC3339 format.",
+            required=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.DevBoxesApproveDevBox(ctx=self.ctx)()
+        self.DevBoxesScheduleDeleteAction(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -101,38 +104,21 @@ class Approve(AAZCommand):
     def post_operations(self):
         pass
 
-
-    class DevBoxesApproveDevBox(AAZHttpOperation):
+    class DevBoxesScheduleDeleteAction(AAZHttpOperation):
         CLIENT_TYPE = "AAZMicrosoftDevcenterDataPlaneClient_devcenter"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [204]:
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/projects/{projectName}/users/{userId}/devboxes/{devBoxName}:approve",
+                "/projects/{projectName}/users/{userId}/devboxes/{devBoxName}:scheduleDelete",
                 **self.url_parameters
             )
 
@@ -171,18 +157,22 @@ class Approve(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
+                    "deleteAt", self.ctx.args.delete_at,
+                    required=True,
+                ),
+                **self.serialize_query_param(
                     "api-version", "2025-08-01-preview",
                     required=True,
                 ),
             }
             return parameters
-        
-        def on_200(self, session):
+
+        def on_204(self, session):
             pass
 
 
-class _ApproveHelper:
-    """Helper class for Approve"""
+class _ScheduleDeleteHelper:
+    """Helper class for ScheduleDelete"""
 
 
-__all__ = ["Approve"]
+__all__ = ["ScheduleDelete"]
