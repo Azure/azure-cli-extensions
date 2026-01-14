@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -136,7 +136,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -191,6 +191,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="adoGit",
             )
             _WaitHelper._build_schema_git_catalog_read(properties.ado_git)
+            properties.auto_image_build_enable_status = AAZStrType(
+                serialized_name="autoImageBuildEnableStatus",
+            )
             properties.connection_state = AAZStrType(
                 serialized_name="connectionState",
                 flags={"read_only": True},
