@@ -33,7 +33,7 @@ def endpoint_create_for_storage_container(cmd, endpoint_name, resource_group, st
     Create_Endpoint = Create(cmd.loader)
     args = _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, storage_mover_name,
                                                         blob_container_name, storage_account_resource_id, description)
-    args["mi_system_assigned"] = True
+    args["mi_system_assigned"] = "True"
     return Create_Endpoint(args)
 
 
