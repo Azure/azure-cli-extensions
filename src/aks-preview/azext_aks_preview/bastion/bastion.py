@@ -6,6 +6,7 @@
 import asyncio
 import os
 import shutil
+import signal
 import socket
 import subprocess
 import sys
@@ -478,12 +479,17 @@ async def _aks_bastion_launch_tunnel(bastion_resource, port, mc_id):
             f"--name {bastion_resource.name} --port {port} --target-resource-id {mc_id} --resource-port 443"
         )
         logger.warning("Creating bastion tunnel with command: '%s'", cmd)
+
+        # Use start_new_session on Unix to create a new process group
+        # This allows us to kill the entire process tree when cleaning up
+        start_new_session = not sys.platform.startswith("win")
         tunnel_proces = await asyncio.create_subprocess_exec(
             *(cmd.split()),
             stdin=asyncio.subprocess.DEVNULL,
             stdout=asyncio.subprocess.DEVNULL,
             stderr=asyncio.subprocess.DEVNULL,
             shell=False,
+            start_new_session=start_new_session,
         )
         logger.info("Tunnel launched with PID: %s", tunnel_proces.pid)
 
@@ -491,18 +497,27 @@ async def _aks_bastion_launch_tunnel(bastion_resource, port, mc_id):
         await tunnel_proces.wait()
         logger.error("Bastion tunnel exited with code %s", tunnel_proces.returncode)
     except asyncio.CancelledError:
-        # attempt to terminate the tunnel process gracefully
+        # attempt to terminate the tunnel process and all its children
         if tunnel_proces is not None:
-            logger.info("Tunnel process was cancelled. Terminating...")
-            tunnel_proces.terminate()
+            logger.info("Tunnel process was cancelled. Terminating process tree...")
+            _aks_bastion_kill_process_tree(tunnel_proces)
             try:
                 await asyncio.wait_for(tunnel_proces.wait(), timeout=5)
                 logger.info("Tunnel process exited cleanly after termination.")
             except asyncio.TimeoutError:
                 logger.warning(
-                    "Tunnel process did not exit after SIGTERM. Sending SIGKILL..."
+                    "Tunnel process did not exit after SIGTERM. Force killing..."
                 )
-                tunnel_proces.kill()
+                if sys.platform.startswith("win"):
+                    # On Windows, taskkill /F should have already force-killed
+                    # but try again with kill() as fallback
+                    tunnel_proces.kill()
+                else:
+                    # On Unix, send SIGKILL to the process group
+                    try:
+                        os.killpg(os.getpgid(tunnel_proces.pid), signal.SIGKILL)
+                    except (ProcessLookupError, PermissionError):
+                        tunnel_proces.kill()
                 await asyncio.wait_for(tunnel_proces.wait(), timeout=5)
                 logger.warning(
                     "Tunnel process forcefully killed with code %s",
@@ -510,6 +525,39 @@ async def _aks_bastion_launch_tunnel(bastion_resource, port, mc_id):
                 )
         else:
             logger.warning("Tunnel process was cancelled before it could be launched.")
+
+
+def _aks_bastion_kill_process_tree(process):
+    """Kill a process and all its children.
+
+    On Windows, az.cmd spawns a child Python process, so we need to kill the entire
+    process tree to avoid orphaned processes.
+    """
+    if process is None:
+        return
+
+    pid = process.pid
+    if sys.platform.startswith("win"):
+        # On Windows, use taskkill with /T flag to kill the process tree
+        try:
+            subprocess.run(
+                ["taskkill", "/T", "/F", "/PID", str(pid)],
+                capture_output=True,
+                check=False,
+            )
+            logger.debug("Killed process tree for PID %s using taskkill", pid)
+        except Exception as e:
+            logger.warning("Failed to kill process tree with taskkill: %s", e)
+            # Fallback to terminate/kill
+            process.terminate()
+    else:
+        # On Unix, kill the process group
+        try:
+            os.killpg(os.getpgid(pid), signal.SIGTERM)
+            logger.debug("Sent SIGTERM to process group for PID %s", pid)
+        except (ProcessLookupError, PermissionError) as e:
+            logger.debug("Failed to kill process group: %s", e)
+            process.terminate()
 
 
 async def _aks_bastion_validate_tunnel(port):
