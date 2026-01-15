@@ -26,7 +26,7 @@ helps['migrate local'] = """
         environments.
 """
 
-helps['migrate local get-discovered-server'] = """
+helps['migrate get-discovered-server'] = """
     type: command
     short-summary: Retrieve discovered servers from an Azure Migrate project.
     long-summary: |
@@ -69,31 +69,31 @@ helps['migrate local get-discovered-server'] = """
     examples:
         - name: List all discovered servers in a project
           text: |
-            az migrate local get-discovered-server \\
+            az migrate get-discovered-server \\
                 --project-name myMigrateProject \\
                 --resource-group myRG
         - name: Get a specific discovered server by name
           text: |
-            az migrate local get-discovered-server \\
+            az migrate get-discovered-server \\
                 --project-name myMigrateProject \\
                 --resource-group myRG \\
                 --name machine-12345
         - name: Filter discovered servers by display name
           text: |
-            az migrate local get-discovered-server \\
+            az migrate get-discovered-server \\
                 --project-name myMigrateProject \\
                 --resource-group myRG \\
                 --display-name "web-server"
         - name: List VMware servers discovered by a specific appliance
           text: |
-            az migrate local get-discovered-server \\
+            az migrate get-discovered-server \\
                 --project-name myMigrateProject \\
                 --resource-group myRG \\
                 --appliance-name myVMwareAppliance \\
                 --source-machine-type VMware
         - name: Get a specific server from a specific appliance
           text: |
-            az migrate local get-discovered-server \\
+            az migrate get-discovered-server \\
                 --project-name myMigrateProject \\
                 --resource-group myRG \\
                 --appliance-name myAppliance \\
@@ -226,7 +226,7 @@ helps['migrate local replication new'] = """
             Space-separated list of NIC IDs
             to replicate from the source server.
             Use this for power user mode.
-        - name: --vm-name
+        - name: --target-vm-name
           short-summary: Name of the VM to be created.
           long-summary: >
             The name for the virtual machine
@@ -377,13 +377,13 @@ helps['migrate local replication get'] = """
         Note: This command uses a preview API version
         and may experience breaking changes in future releases.
     parameters:
-        - name: --protected-item-id --id
+        - name: --protected-item-id
           short-summary: Full ARM resource ID of the protected item.
           long-summary: >
             The complete ARM resource ID of the protected item.
             If provided, --resource-group and --project-name are not required.
             This ID can be obtained from the 'list' or 'new' commands.
-        - name: --protected-item-name --name
+        - name: --protected-item-name
           short-summary: Name of the protected item (replicating server).
           long-summary: >
             The name of the protected item to retrieve.
@@ -439,14 +439,14 @@ helps['migrate local replication remove'] = """
         Note: This command uses a preview API version
         and may experience breaking changes in future releases.
     parameters:
-        - name: --target-object-id --id
+        - name: --target-object-id
           short-summary: Replicating server ARM ID to disable replication.
           long-summary: >
             Specifies the ARM resource ID of the replicating server
             for which replication needs to be disabled.
             The ID should be retrieved using a get or list command
             for replication items.
-        - name: --force-remove --force
+        - name: --force-remove
           short-summary: Force remove the replication.
           long-summary: >
             Specifies whether the replication needs to be
@@ -486,7 +486,7 @@ helps['migrate local replication get-job'] = """
         Note: This command uses a preview API version
         and may experience breaking changes in future releases.
     parameters:
-        - name: --job-id --id
+        - name: --job-id
           short-summary: Job ARM ID for which details need to be retrieved.
           long-summary: >
             Specifies the full ARM resource ID of the job.
@@ -502,7 +502,7 @@ helps['migrate local replication get-job'] = """
           long-summary: >
             The name of the Azure Migrate project.
             Required when using --resource-group.
-        - name: --job-name --name
+        - name: --job-name
           short-summary: Job identifier/name.
           long-summary: >
             The name of the specific job to retrieve.
@@ -558,7 +558,7 @@ helps['migrate local start-migration'] = """
         Note: This command uses a preview API version
         and may experience breaking changes in future releases.
     parameters:
-        - name: --protected-item-id --id
+        - name: --protected-item-id
           short-summary: Full ARM resource ID of the protected item to migrate.
           long-summary: >
             The complete ARM resource ID of the replicating server.

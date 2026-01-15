@@ -3,6 +3,10 @@
 Release History
 ===============
 
+3.0.0b3
++++++++++++++++
+* Fix edge case bugs with az migrate get-discovered-server.
+
 3.0.0b2
 +++++++++++++++
 * Added replication list, get and start migration commands.

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/projectpolicies/{}", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/projectpolicies/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -136,7 +136,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -187,6 +187,9 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.configuration_policies = AAZObjectType(
+                serialized_name="configurationPolicies",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -195,6 +198,44 @@ class Wait(AAZWaitCommand):
                 serialized_name="resourcePolicies",
             )
             properties.scopes = AAZListType()
+
+            configuration_policies = cls._schema_on_200.properties.configuration_policies
+            configuration_policies.azure_ai_services_feature_status = AAZObjectType(
+                serialized_name="azureAiServicesFeatureStatus",
+            )
+            _WaitHelper._build_schema_feature_state_read(configuration_policies.azure_ai_services_feature_status)
+            configuration_policies.dev_box_limits_feature_status = AAZObjectType(
+                serialized_name="devBoxLimitsFeatureStatus",
+            )
+            _WaitHelper._build_schema_feature_state_read(configuration_policies.dev_box_limits_feature_status)
+            configuration_policies.dev_box_schedule_delete_feature_status = AAZObjectType(
+                serialized_name="devBoxScheduleDeleteFeatureStatus",
+            )
+            _WaitHelper._build_schema_feature_state_read(configuration_policies.dev_box_schedule_delete_feature_status)
+            configuration_policies.dev_box_tunnel_feature_status = AAZObjectType(
+                serialized_name="devBoxTunnelFeatureStatus",
+            )
+            _WaitHelper._build_schema_feature_state_read(configuration_policies.dev_box_tunnel_feature_status)
+            configuration_policies.display_name_feature_status = AAZObjectType(
+                serialized_name="displayNameFeatureStatus",
+            )
+            _WaitHelper._build_schema_feature_state_read(configuration_policies.display_name_feature_status)
+            configuration_policies.project_catalog_feature_status = AAZObjectType(
+                serialized_name="projectCatalogFeatureStatus",
+            )
+            _WaitHelper._build_schema_feature_state_read(configuration_policies.project_catalog_feature_status)
+            configuration_policies.serverless_gpu_sessions_feature_status = AAZObjectType(
+                serialized_name="serverlessGpuSessionsFeatureStatus",
+            )
+            _WaitHelper._build_schema_feature_state_read(configuration_policies.serverless_gpu_sessions_feature_status)
+            configuration_policies.user_customizations_feature_status = AAZObjectType(
+                serialized_name="userCustomizationsFeatureStatus",
+            )
+            _WaitHelper._build_schema_feature_state_read(configuration_policies.user_customizations_feature_status)
+            configuration_policies.workspace_storage_feature_status = AAZObjectType(
+                serialized_name="workspaceStorageFeatureStatus",
+            )
+            _WaitHelper._build_schema_feature_state_read(configuration_policies.workspace_storage_feature_status)
 
             resource_policies = cls._schema_on_200.properties.resource_policies
             resource_policies.Element = AAZObjectType()
@@ -235,6 +276,41 @@ class Wait(AAZWaitCommand):
 
 class _WaitHelper:
     """Helper class for Wait"""
+
+    _schema_feature_state_read = None
+
+    @classmethod
+    def _build_schema_feature_state_read(cls, _schema):
+        if cls._schema_feature_state_read is not None:
+            _schema.default_status = cls._schema_feature_state_read.default_status
+            _schema.default_values = cls._schema_feature_state_read.default_values
+            _schema.status_modifiable = cls._schema_feature_state_read.status_modifiable
+            _schema.values_modifiable = cls._schema_feature_state_read.values_modifiable
+            return
+
+        cls._schema_feature_state_read = _schema_feature_state_read = AAZObjectType()
+
+        feature_state_read = _schema_feature_state_read
+        feature_state_read.default_status = AAZStrType(
+            serialized_name="defaultStatus",
+        )
+        feature_state_read.default_values = AAZDictType(
+            serialized_name="defaultValues",
+        )
+        feature_state_read.status_modifiable = AAZStrType(
+            serialized_name="statusModifiable",
+        )
+        feature_state_read.values_modifiable = AAZStrType(
+            serialized_name="valuesModifiable",
+        )
+
+        default_values = _schema_feature_state_read.default_values
+        default_values.Element = AAZStrType()
+
+        _schema.default_status = cls._schema_feature_state_read.default_status
+        _schema.default_values = cls._schema_feature_state_read.default_values
+        _schema.status_modifiable = cls._schema_feature_state_read.status_modifiable
+        _schema.values_modifiable = cls._schema_feature_state_read.values_modifiable
 
 
 __all__ = ["Wait"]
