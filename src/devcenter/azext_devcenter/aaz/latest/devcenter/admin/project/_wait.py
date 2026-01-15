@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -121,7 +121,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -206,6 +206,9 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.assigned_groups = AAZListType(
+                serialized_name="assignedGroups",
+            )
             properties.azure_ai_services_settings = AAZObjectType(
                 serialized_name="azureAiServicesSettings",
             )
@@ -216,8 +219,8 @@ class Wait(AAZWaitCommand):
                 serialized_name="customizationSettings",
             )
             properties.description = AAZStrType()
-            properties.dev_box_auto_delete_settings = AAZObjectType(
-                serialized_name="devBoxAutoDeleteSettings",
+            properties.dev_box_schedule_delete_settings = AAZObjectType(
+                serialized_name="devBoxScheduleDeleteSettings",
             )
             properties.dev_center_id = AAZStrType(
                 serialized_name="devCenterId",
@@ -242,6 +245,15 @@ class Wait(AAZWaitCommand):
             properties.workspace_storage_settings = AAZObjectType(
                 serialized_name="workspaceStorageSettings",
             )
+
+            assigned_groups = cls._schema_on_200.properties.assigned_groups
+            assigned_groups.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.assigned_groups.Element
+            _element.object_id = AAZStrType(
+                serialized_name="objectId",
+            )
+            _element.scope = AAZStrType()
 
             azure_ai_services_settings = cls._schema_on_200.properties.azure_ai_services_settings
             azure_ai_services_settings.azure_ai_services_mode = AAZStrType(
@@ -273,14 +285,17 @@ class Wait(AAZWaitCommand):
                 serialized_name="identityType",
             )
 
-            dev_box_auto_delete_settings = cls._schema_on_200.properties.dev_box_auto_delete_settings
-            dev_box_auto_delete_settings.delete_mode = AAZStrType(
+            dev_box_schedule_delete_settings = cls._schema_on_200.properties.dev_box_schedule_delete_settings
+            dev_box_schedule_delete_settings.cancel_on_connect = AAZStrType(
+                serialized_name="cancelOnConnect",
+            )
+            dev_box_schedule_delete_settings.delete_mode = AAZStrType(
                 serialized_name="deleteMode",
             )
-            dev_box_auto_delete_settings.grace_period = AAZStrType(
+            dev_box_schedule_delete_settings.grace_period = AAZStrType(
                 serialized_name="gracePeriod",
             )
-            dev_box_auto_delete_settings.inactive_threshold = AAZStrType(
+            dev_box_schedule_delete_settings.inactive_threshold = AAZStrType(
                 serialized_name="inactiveThreshold",
             )
 

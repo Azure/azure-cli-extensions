@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin attached-network delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "devcenter dev pool align",
 )
-class Delete(AAZCommand):
-    """Delete an attached network connection.
+class Align(AAZCommand):
+    """Aligns all Dev Boxes in the pool with the current configuration.
 
-    :example: Delete
-        az devcenter admin attached-network delete --attached-network-connection-name "network-uswest3" --dev-center-name "Contoso" --resource-group "rg1"
+    :example: Align
+        az devcenter dev pool align  --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "myProject" --pool-name "DevPool" --targets ["NetworkProperties"]
     """
 
     _aaz_info = {
-        "version": "2025-10-01-preview",
+        "version": "2025-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/attachednetworks/{}", "2025-10-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/pools/{}:align", "2025-08-01-preview"],
         ]
     }
 
@@ -43,39 +42,59 @@ class Delete(AAZCommand):
             return cls._args_schema
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
+        # define Arg Group "Client"
+
+        _args_schema = cls._args_schema
+        _args_schema.endpoint = AAZStrArg(
+            options=["--endpoint"],
+            arg_group="Client",
+            help="The API endpoint for the developer resources. Use az configure -d endpoint=<endpoint_uri> to configure a default.",
+            required=True,
+        )
+
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.attached_network_connection_name = AAZStrArg(
-            options=["-n", "--name", "--attached-network-connection-name"],
-            help="The name of the attached network connection.",
+        _args_schema.pool_name = AAZStrArg(
+            options=["--pool-name"],
+            help="Pool name.",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
                 max_length=63,
                 min_length=3,
             ),
         )
-        _args_schema.dev_center_name = AAZStrArg(
-            options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
+        _args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
-                max_length=26,
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
                 min_length=3,
             ),
         )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.targets = AAZListArg(
+            options=["--targets"],
+            arg_group="Body",
+            help="The targets to align on. Possible values are \"NetworkProperties\", \"HibernateSupport\", or \"SingleSignOnStatus\".",
             required=True,
+        )
+
+        targets = cls._args_schema.targets
+        targets.Element = AAZStrArg(
+            enum={"HibernateSupport": "HibernateSupport", "NetworkProperties": "NetworkProperties", "SingleSignOnStatus": "SingleSignOnStatus"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.AttachedNetworksDelete(ctx=self.ctx)()
+        yield self.DevBoxesAlignPool(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -86,8 +105,9 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class AttachedNetworksDelete(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
+
+    class DevBoxesAlignPool(AAZHttpOperation):
+        CLIENT_TYPE = "AAZMicrosoftDevcenterDataPlaneClient_devcenter"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
@@ -96,64 +116,51 @@ class Delete(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [204]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_204,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/attachednetworks/{attachedNetworkConnectionName}",
+                "/projects/{projectName}/pools/{poolName}:align",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
-            return "MgmtErrorFormat"
+            return "ODataV4Format"
 
         @property
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "attachedNetworkConnectionName", self.ctx.args.attached_network_connection_name,
+                    "endpoint", self.ctx.args.endpoint,
+                    skip_quote=True,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
+                    "poolName", self.ctx.args.pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
             }
@@ -163,21 +170,42 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-01-preview",
+                    "api-version", "2025-08-01-preview",
                     required=True,
                 ),
             }
             return parameters
-
-        def on_204(self, session):
+        
+        def on_200(self, session):
             pass
 
-        def on_200_201(self, session):
-            pass
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+            }
+            return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("targets", AAZListType, ".targets", typ_kwargs={"flags": {"required": True}})
+
+            targets = _builder.get(".targets")
+            if targets is not None:
+                targets.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _AlignHelper:
+    """Helper class for Align"""
 
 
-__all__ = ["Delete"]
+__all__ = ["Align"]

@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-08-01-preview",
         "resources": [
-            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes", "2025-04-01-preview"],
-            ["data-plane:microsoft.devcenter", "/users/{}/devboxes", "2025-04-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/users/{}/devboxes", "2025-08-01-preview"],
+            ["data-plane:microsoft.devcenter", "/users/{}/devboxes", "2025-08-01-preview"],
         ]
     }
 
@@ -157,7 +157,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-08-01-preview",
                     required=True,
                 ),
             }
@@ -263,6 +263,10 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            _element.single_sign_on_status = AAZStrType(
+                serialized_name="singleSignOnStatus",
+                flags={"read_only": True},
+            )
             _element.storage_profile = AAZObjectType(
                 serialized_name="storageProfile",
                 flags={"read_only": True},
@@ -283,6 +287,9 @@ class List(AAZCommand):
                 serialized_name="autoStartEnableStatus",
                 flags={"required": True},
             )
+            active_hours_configuration.days_of_week = AAZListType(
+                serialized_name="daysOfWeek",
+            )
             active_hours_configuration.end_time_hour = AAZIntType(
                 serialized_name="endTimeHour",
             )
@@ -296,6 +303,9 @@ class List(AAZCommand):
             active_hours_configuration.time_zone = AAZStrType(
                 serialized_name="timeZone",
             )
+
+            days_of_week = cls._schema_on_200.value.Element.active_hours_configuration.days_of_week
+            days_of_week.Element = AAZStrType()
 
             hardware_profile = cls._schema_on_200.value.Element.hardware_profile
             hardware_profile.memory_gb = AAZIntType(
@@ -389,7 +399,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-08-01-preview",
                     required=True,
                 ),
             }
@@ -495,6 +505,10 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            _element.single_sign_on_status = AAZStrType(
+                serialized_name="singleSignOnStatus",
+                flags={"read_only": True},
+            )
             _element.storage_profile = AAZObjectType(
                 serialized_name="storageProfile",
                 flags={"read_only": True},
@@ -515,6 +529,9 @@ class List(AAZCommand):
                 serialized_name="autoStartEnableStatus",
                 flags={"required": True},
             )
+            active_hours_configuration.days_of_week = AAZListType(
+                serialized_name="daysOfWeek",
+            )
             active_hours_configuration.end_time_hour = AAZIntType(
                 serialized_name="endTimeHour",
             )
@@ -528,6 +545,9 @@ class List(AAZCommand):
             active_hours_configuration.time_zone = AAZStrType(
                 serialized_name="timeZone",
             )
+
+            days_of_week = cls._schema_on_200.value.Element.active_hours_configuration.days_of_week
+            days_of_week.Element = AAZStrType()
 
             hardware_profile = cls._schema_on_200.value.Element.hardware_profile
             hardware_profile.memory_gb = AAZIntType(

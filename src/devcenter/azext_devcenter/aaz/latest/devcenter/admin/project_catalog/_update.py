@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -80,6 +80,13 @@ class Update(AAZCommand):
             nullable=True,
         )
         cls._build_args_git_catalog_update(_args_schema.ado_git)
+        _args_schema.auto_image_build_enable_status = AAZStrArg(
+            options=["-a", "--auto-image-build-enable-status"],
+            arg_group="Properties",
+            help="Indicates whether the catalog is configured to automatically build image definitions. Defaults to enabled.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
         _args_schema.git_hub = AAZObjectArg(
             options=["--git-hub"],
             arg_group="Properties",
@@ -231,7 +238,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -334,7 +341,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -397,6 +404,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 _UpdateHelper._build_schema_git_catalog_update(properties.set_prop("adoGit", AAZObjectType, ".ado_git"))
+                properties.set_prop("autoImageBuildEnableStatus", AAZStrType, ".auto_image_build_enable_status")
                 _UpdateHelper._build_schema_git_catalog_update(properties.set_prop("gitHub", AAZObjectType, ".git_hub"))
                 properties.set_prop("syncType", AAZStrType, ".sync_type")
                 properties.set_prop("tags", AAZDictType, ".tags")
@@ -465,6 +473,9 @@ class _UpdateHelper:
             serialized_name="adoGit",
         )
         cls._build_schema_git_catalog_read(properties.ado_git)
+        properties.auto_image_build_enable_status = AAZStrType(
+            serialized_name="autoImageBuildEnableStatus",
+        )
         properties.connection_state = AAZStrType(
             serialized_name="connectionState",
             flags={"read_only": True},

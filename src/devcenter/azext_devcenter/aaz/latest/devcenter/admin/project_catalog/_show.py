@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -137,7 +137,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -192,6 +192,9 @@ class Show(AAZCommand):
                 serialized_name="adoGit",
             )
             _ShowHelper._build_schema_git_catalog_read(properties.ado_git)
+            properties.auto_image_build_enable_status = AAZStrType(
+                serialized_name="autoImageBuildEnableStatus",
+            )
             properties.connection_state = AAZStrType(
                 serialized_name="connectionState",
                 flags={"read_only": True},

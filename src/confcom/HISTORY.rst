@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.5.1
+++++++
+* Bumped the Kata genpolicy version to gen4
+
 1.5.0
 ++++++
 * restored the behaviour of --upload-fragment in acifragmentgen to attach to first image in input

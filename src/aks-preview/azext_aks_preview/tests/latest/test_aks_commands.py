@@ -21528,7 +21528,7 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="centraluseuap"
     )
-    def test_aks_create_with_gateway_api_and_azureservicemesh(
+    def test_aks_create_and_update_with_gateway_api_and_azureservicemesh(
         self, resource_group, resource_group_location
     ):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -21589,65 +21589,5 @@ spec:
             ],
         )
 
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="centraluseuap"
-    )
-    def test_aks_managed_gateway_requires_service_mesh(
-        self, resource_group, resource_group_location
-    ):
-        """
-        Verify that enabling managed Gateway API requires a Gateway API implementation (e.g., Azure Service Mesh).
-
-        This test:
-        - Attempts and fails to create a cluster with --enable-gateway-api without ASM enabled.
-        - Creates a minimal cluster.
-        - Attempts and fails to update it with --enable-gateway-api (still without ASM).
-        """
-
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-                "location": resource_group_location,
-            }
-        )
-
-        # Attempt and expect failure to create a cluster with Gateway API but without ASM
-        create_with_gateway_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--enable-gateway-api "
-            "--ssh-key-value={ssh_key_value} -o json "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
-        )
-        self.cmd(create_with_gateway_cmd, expect_failure=True)
-
-        # Create a minimal cluster without Gateway API or ASM
-        create_minimal_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--ssh-key-value={ssh_key_value} -o json"
-        )
-        self.cmd(
-            create_minimal_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-            ],
-        )
-
-        # Attempt and expect failure to enable Gateway API on an existing cluster without ASM
-        update_enable_gateway_cmd = (
-            "aks update --resource-group={resource_group} --name={name} "
-            "--enable-gateway-api "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
-        )
-        self.cmd(update_enable_gateway_cmd, expect_failure=True)
-
-        # Cleanup
-        delete_cmd = "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
-        self.cmd(delete_cmd, checks=[self.is_empty()])
+    # TODO (zheweihu): add test `test_aks_create_and_update_with_gateway_api_without_azureservicemesh`
+    # once https://msazure.visualstudio.com/CloudNativeCompute/_git/aks-rp/pullrequest/14404771 is rolled out
