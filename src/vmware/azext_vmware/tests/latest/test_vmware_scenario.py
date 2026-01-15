@@ -164,13 +164,3 @@ class VmwareScenarioTest(ScenarioTest):
         
         # get sku list
         self.cmd('vmware skus list')
-
-        # Force save the cassette and rename temp file to final file
-        self.cassette._save(force=True)
-        import shutil
-        # The cassette saves to recording_file + '.temp.yaml', we need to rename it
-        temp_file = self.recording_file.replace('.yaml', '.temp.yaml')
-        final_file = self.recording_file
-        if os.path.exists(temp_file):
-            shutil.move(temp_file, final_file)
-            
