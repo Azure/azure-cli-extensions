@@ -1021,7 +1021,7 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
             # Mount Azure config directory
             azure_config_dir = os.path.expanduser("~/.azure")
             if os.path.exists(azure_config_dir):
-                volumes.extend(["-v", f"{azure_config_dir}:/root/.azure:ro"])
+                volumes.extend(["-v", f"{azure_config_dir}:/root/.azure"])
                 logger.debug("Mounting Azure config directory: %s", azure_config_dir)
             else:
                 logger.debug("Azure config directory not found, skipping mount: %s", azure_config_dir)

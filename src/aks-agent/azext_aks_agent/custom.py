@@ -78,9 +78,6 @@ def aks_agent_init(cmd,
             # Record the mode being used in telemetry
             telemetry_client.mode = "client" if use_client_mode else "cluster"
 
-            # Record the mode being used in telemetry
-            telemetry_client.mode = "client" if use_client_mode else "cluster"
-
             if use_client_mode:
                 console.print(
                     "\n✅ Client mode selected. This will set up LLM configurations on your local environment.",

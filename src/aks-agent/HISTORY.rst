@@ -17,7 +17,7 @@ Pending
 * Feature: Add local mode support - run AKS agent in Docker container on local machine as an alternative to cluster deployment
 * Feature: Mode selection during `az aks agent-init` - choose between cluster mode (Helm deployment) or local mode (Docker container)
 * Feature: Cluster Mode requires the user to specify the namespace and service account name during `az aks agent-init`
-* Feature: Cluster Mode requires namespace for `az aks agent-cleanup`and `az aks agent`
+* Feature: Cluster Mode requires namespace for `az aks agent-cleanup` and `az aks agent`
 * Enhancement: Comprehensive telemetry tracking - track init, cleanup, and startup events with mode information (cluster/local)
 
 1.0.0b14

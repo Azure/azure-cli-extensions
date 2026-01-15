@@ -56,7 +56,7 @@ helps[
         - name: --namespace
           type: string
           short-summary: The Kubernetes namespace where the AKS Agent is deployed. Required for cluster mode.
-        --name: --mode
+        - name: --mode
           type: string
           short-summary: The mode decides how the agent is deployed.
           long-summary: |-
@@ -139,7 +139,7 @@ helps[
         - name: --namespace
           type: string
           short-summary: The Kubernetes namespace where the AKS Agent is deployed. Required for cluster mode.
-        --name: --mode
+        - name: --mode
           type: string
           short-summary: The mode decides how the agent is deployed.
           long-summary: |-
