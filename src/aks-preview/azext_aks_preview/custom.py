@@ -5130,7 +5130,8 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
             logger.warning(
                 "The server URL for cluster '%s' in your kubeconfig has been modified to point to the bastion tunnel. "
                 "Once the bastion tunnel is closed, this cluster configuration will no longer work. "
-                "To re-establish connectivity, rerun this command which will automatically correct the server URL and create a new tunnel.",
+                "To re-establish connectivity via bastion, rerun this command; this will update the server URL in your kubeconfig to point to a new bastion tunnel. "
+                "If you no longer want to use the bastion tunnel, restore your original kubeconfig from backup instead.",
                 name
             )
 
