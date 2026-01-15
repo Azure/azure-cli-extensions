@@ -181,6 +181,7 @@ def validate_run(cmd, namespace):
 
 def validate_reset_nic(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
+    # pylint: disable=protected-access
     if namespace._subscription:
         # setting subscription Id
         try:

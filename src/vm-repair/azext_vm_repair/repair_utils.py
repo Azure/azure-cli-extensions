@@ -18,6 +18,8 @@ from knack.prompting import prompt_y_n, NoTTYException
 from .encryption_types import Encryption
 from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV)
 
+from azure.cli.core.azclierror import CLIError
+
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
 logger = get_logger(__name__)
@@ -208,7 +210,7 @@ def _check_existing_rg(rg_name):
         group_exists = loads(_call_az_command(exists_rg_command))
     except AzCommandError as azCommandError:
         logger.error(azCommandError)
-        raise Exception('Unexpected error occured while fetching existing resource groups.')
+        raise CLIError('Unexpected error occured while fetching existing resource groups.')
 
     logger.info('Pre-existing repair resource group with the same name is \'%s\'', group_exists)
     return group_exists
@@ -437,7 +439,7 @@ def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, r
         else:
             # catch-all for unexpected encryption type, mainly a linter issue but bad logic by original author
             install_ade_extension_command = None
-            raise Exception('Unexpected encryption type for single pass encrypted disk.')
+            raise CLIError('Unexpected encryption type for single pass encrypted disk.')
 
         # Add format-all flag for linux vms
         if is_linux:
@@ -627,11 +629,11 @@ def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path,
     resource_type_str = (parent_resource_path.split('/')[0] if parent_resource_path else resource_type)
     rt = [t for t in provider.resource_types if t.resource_type.lower() == resource_type_str.lower()]
     if not rt:
-        raise Exception('Resource type {} not found.'.format(resource_type_str))
+        raise CLIError('Resource type {} not found.'.format(resource_type_str))
     if len(rt) == 1 and rt[0].api_versions:
         npv = [v for v in rt[0].api_versions if 'preview' not in v.lower()]
         return npv[0] if npv else rt[0].api_versions[0]
-    raise Exception(
+    raise CLIError(
         'API version is required and could not be resolved for resource {}'
         .format(resource_type))
 
@@ -755,7 +757,7 @@ def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encryp
     logger.debug('Unlock script STDOUT:\n%s', stdout)
     if stderr:
         logger.warning('Encryption unlock script error was generated:\n%s', stderr)
-        raise Exception('Unexpected error occured while unlocking encrypted disk.')
+        raise CLIError('Unexpected error occured while unlocking encrypted disk.')
 
 
 def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
@@ -765,8 +767,8 @@ def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, r
         'Creating repair VM with command: %s',
         create_repair_vm_command.replace(repair_password, '********').replace(repair_username, '********')
     )
-    logger.info('copy_disk_id: {}'.format(copy_disk_id))
-    logger.info('fix_uuid: {}'.format(fix_uuid))
+    logger.info('copy_disk_id: %s', copy_disk_id)
+    logger.info('fix_uuid: %s', fix_uuid)
 
     if not fix_uuid:
         create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
