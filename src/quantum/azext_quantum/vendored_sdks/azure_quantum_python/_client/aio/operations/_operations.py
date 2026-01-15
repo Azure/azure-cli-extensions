@@ -1,4 +1,4 @@
-# pylint: disable=line-too-long,useless-suppression,too-many-lines
+# pylint: disable=too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -12,7 +12,8 @@ import json
 from typing import Any, Callable, IO, Optional, TypeVar, Union, overload
 import urllib.parse
 
-from azure.core import PipelineClient
+from azure.core import AsyncPipelineClient
+from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import (
     ClientAuthenticationError,
     HttpResponseError,
@@ -23,524 +24,38 @@ from azure.core.exceptions import (
     StreamConsumedError,
     map_error,
 )
-from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
-from azure.core.rest import HttpRequest, HttpResponse
+from azure.core.rest import AsyncHttpResponse, HttpRequest
 from azure.core.tracing.decorator import distributed_trace
+from azure.core.tracing.decorator_async import distributed_trace_async
 from azure.core.utils import case_insensitive_dict
 
-from .. import models as _models
+from ... import models as _models
+from ..._utils.model_base import SdkJSONEncoder, _deserialize
+from ..._utils.serialization import Deserializer, Serializer
+from ..._validation import api_version_validation
+from ...operations._operations import (
+    build_services_jobs_cancel_request,
+    build_services_jobs_create_request,
+    build_services_jobs_delete_request,
+    build_services_jobs_get_request,
+    build_services_jobs_list_request,
+    build_services_jobs_update_request,
+    build_services_providers_list_request,
+    build_services_quotas_list_request,
+    build_services_sessions_close_request,
+    build_services_sessions_get_request,
+    build_services_sessions_jobs_list_request,
+    build_services_sessions_listv2_request,
+    build_services_sessions_open_request,
+    build_services_storage_get_sas_uri_request,
+    build_services_top_level_items_listv2_request,
+)
 from .._configuration import WorkspaceClientConfiguration
-from .._utils.model_base import SdkJSONEncoder, _deserialize
-from .._utils.serialization import Deserializer, Serializer
-from .._validation import api_version_validation
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
 JSON = MutableMapping[str, Any]
-
-_SERIALIZER = Serializer()
-_SERIALIZER.client_side_validation = False
-
-
-def build_services_top_level_items_listv2_request(  # pylint: disable=name-too-long
-    subscription_id: str,
-    resource_group_name: str,
-    workspace_name: str,
-    *,
-    filter: Optional[str] = None,
-    skip: Optional[int] = None,
-    top: Optional[int] = None,
-    orderby: Optional[str] = None,
-    **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/topLevelItems"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-    if filter is not None:
-        _params["filter"] = _SERIALIZER.query("filter", filter, "str")
-    if skip is not None:
-        _params["skip"] = _SERIALIZER.query("skip", skip, "int")
-    if top is not None:
-        _params["top"] = _SERIALIZER.query("top", top, "int")
-    if orderby is not None:
-        _params["orderby"] = _SERIALIZER.query("orderby", orderby, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_jobs_create_request(
-    subscription_id: str, resource_group_name: str, workspace_name: str, job_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-        "jobId": _SERIALIZER.url("job_id", job_id, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    if content_type is not None:
-        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="PUT", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_jobs_update_request(
-    subscription_id: str, resource_group_name: str, workspace_name: str, job_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobUpdateOptions/{jobId}"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-        "jobId": _SERIALIZER.url("job_id", job_id, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    if content_type is not None:
-        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="PATCH", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_jobs_delete_request(
-    subscription_id: str, resource_group_name: str, workspace_name: str, job_id: str, **kwargs: Any
-) -> HttpRequest:
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-        "jobId": _SERIALIZER.url("job_id", job_id, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    return HttpRequest(method="DELETE", url=_url, params=_params, **kwargs)
-
-
-def build_services_jobs_cancel_request(
-    subscription_id: str, resource_group_name: str, workspace_name: str, job_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}:cancel"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-        "jobId": _SERIALIZER.url("job_id", job_id, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_jobs_get_request(
-    subscription_id: str, resource_group_name: str, workspace_name: str, job_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-        "jobId": _SERIALIZER.url("job_id", job_id, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_jobs_list_request(
-    subscription_id: str,
-    resource_group_name: str,
-    workspace_name: str,
-    *,
-    filter: Optional[str] = None,
-    skip: Optional[int] = None,
-    top: Optional[int] = None,
-    orderby: Optional[str] = None,
-    **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-    if filter is not None:
-        _params["filter"] = _SERIALIZER.query("filter", filter, "str")
-    if skip is not None:
-        _params["skip"] = _SERIALIZER.query("skip", skip, "int")
-    if top is not None:
-        _params["top"] = _SERIALIZER.query("top", top, "int")
-    if orderby is not None:
-        _params["orderby"] = _SERIALIZER.query("orderby", orderby, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_providers_list_request(
-    subscription_id: str, resource_group_name: str, workspace_name: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/providerStatus"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_quotas_list_request(
-    subscription_id: str, resource_group_name: str, workspace_name: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/quotas"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_sessions_open_request(
-    subscription_id: str, resource_group_name: str, workspace_name: str, session_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/sessions/{sessionId}"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-        "sessionId": _SERIALIZER.url("session_id", session_id, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    if content_type is not None:
-        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="PUT", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_sessions_close_request(
-    subscription_id: str, resource_group_name: str, workspace_name: str, session_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/sessions/{sessionId}:close"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-        "sessionId": _SERIALIZER.url("session_id", session_id, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_sessions_get_request(
-    subscription_id: str, resource_group_name: str, workspace_name: str, session_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/sessions/{sessionId}"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-        "sessionId": _SERIALIZER.url("session_id", session_id, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_sessions_listv2_request(
-    subscription_id: str,
-    resource_group_name: str,
-    workspace_name: str,
-    *,
-    filter: Optional[str] = None,
-    skip: Optional[int] = None,
-    top: Optional[int] = None,
-    orderby: Optional[str] = None,
-    **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/sessions"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-    if filter is not None:
-        _params["filter"] = _SERIALIZER.query("filter", filter, "str")
-    if skip is not None:
-        _params["skip"] = _SERIALIZER.query("skip", skip, "int")
-    if top is not None:
-        _params["top"] = _SERIALIZER.query("top", top, "int")
-    if orderby is not None:
-        _params["orderby"] = _SERIALIZER.query("orderby", orderby, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_sessions_jobs_list_request(  # pylint: disable=name-too-long
-    subscription_id: str,
-    resource_group_name: str,
-    workspace_name: str,
-    session_id: str,
-    *,
-    filter: Optional[str] = None,
-    skip: Optional[int] = None,
-    top: Optional[int] = None,
-    orderby: Optional[str] = None,
-    **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/sessions/{sessionId}/jobs"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-        "sessionId": _SERIALIZER.url("session_id", session_id, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-    if filter is not None:
-        _params["filter"] = _SERIALIZER.query("filter", filter, "str")
-    if skip is not None:
-        _params["skip"] = _SERIALIZER.query("skip", skip, "int")
-    if top is not None:
-        _params["top"] = _SERIALIZER.query("top", top, "int")
-    if orderby is not None:
-        _params["orderby"] = _SERIALIZER.query("orderby", orderby, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_services_storage_get_sas_uri_request(  # pylint: disable=name-too-long
-    subscription_id: str, resource_group_name: str, workspace_name: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/storage/sasUri"
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, "str"),
-        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    if content_type is not None:
-        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 class ServicesOperations:
@@ -549,13 +64,13 @@ class ServicesOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.quantum.WorkspaceClient`'s
+        :class:`~azure.quantum.aio.WorkspaceClient`'s
         :attr:`services` attribute.
     """
 
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
-        self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: WorkspaceClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
         self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
@@ -576,13 +91,13 @@ class ServicesTopLevelItemsOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.quantum.WorkspaceClient`'s
+        :class:`~azure.quantum.aio.WorkspaceClient`'s
         :attr:`top_level_items` attribute.
     """
 
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
-        self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: WorkspaceClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
         self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
@@ -616,7 +131,7 @@ class ServicesTopLevelItemsOperations:
         top: Optional[int] = None,
         orderby: Optional[str] = None,
         **kwargs: Any
-    ) -> ItemPaged["_models.ItemDetails"]:
+    ) -> AsyncItemPaged["_models.ItemDetails"]:
         """List top-level items.
 
         :param subscription_id: The Azure subscription ID. Required.
@@ -634,7 +149,7 @@ class ServicesTopLevelItemsOperations:
         :keyword orderby: The order of returned items. Default value is None.
         :paramtype orderby: str
         :return: An iterator like instance of ItemDetails
-        :rtype: ~azure.core.paging.ItemPaged[~azure.quantum.models.ItemDetails]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.quantum.models.ItemDetails]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
@@ -694,18 +209,18 @@ class ServicesTopLevelItemsOperations:
 
             return _request
 
-        def extract_data(pipeline_response):
+        async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
             list_of_elem = _deserialize(list[_models.ItemDetails], deserialized.get("value", []))
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.get("nextLink") or None, iter(list_of_elem)
+            return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
-        def get_next(next_link=None):
+        async def get_next(next_link=None):
             _request = prepare_request(next_link)
 
             _stream = False
-            pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
                 _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
@@ -716,7 +231,7 @@ class ServicesTopLevelItemsOperations:
 
             return pipeline_response
 
-        return ItemPaged(get_next, extract_data)
+        return AsyncItemPaged(get_next, extract_data)
 
 
 class ServicesJobsOperations:
@@ -725,19 +240,19 @@ class ServicesJobsOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.quantum.WorkspaceClient`'s
+        :class:`~azure.quantum.aio.WorkspaceClient`'s
         :attr:`jobs` attribute.
     """
 
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
-        self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: WorkspaceClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
         self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @overload
-    def create(
+    async def create(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -769,7 +284,7 @@ class ServicesJobsOperations:
         """
 
     @overload
-    def create(
+    async def create(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -801,7 +316,7 @@ class ServicesJobsOperations:
         """
 
     @overload
-    def create(
+    async def create(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -832,8 +347,8 @@ class ServicesJobsOperations:
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
-    @distributed_trace
-    def create(
+    @distributed_trace_async
+    async def create(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -897,7 +412,7 @@ class ServicesJobsOperations:
         _request.url = self._client.format_url(_request.url, **path_format_arguments)
 
         _stream = kwargs.pop("stream", False)
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -906,7 +421,7 @@ class ServicesJobsOperations:
         if response.status_code not in [200, 201]:
             if _stream:
                 try:
-                    response.read()  # Load the body in memory and close the socket
+                    await response.read()  # Load the body in memory and close the socket
                 except (StreamConsumedError, StreamClosedError):
                     pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
@@ -923,7 +438,7 @@ class ServicesJobsOperations:
         return deserialized  # type: ignore
 
     @overload
-    def update(
+    async def update(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -955,7 +470,7 @@ class ServicesJobsOperations:
         """
 
     @overload
-    def update(
+    async def update(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -987,7 +502,7 @@ class ServicesJobsOperations:
         """
 
     @overload
-    def update(
+    async def update(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -1018,7 +533,7 @@ class ServicesJobsOperations:
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
-    @distributed_trace
+    @distributed_trace_async
     @api_version_validation(
         method_added_on="2025-09-01-preview",
         params_added_on={
@@ -1034,7 +549,7 @@ class ServicesJobsOperations:
         },
         api_versions_list=["2025-09-01-preview", "2025-12-01-preview"],
     )
-    def update(
+    async def update(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -1098,7 +613,7 @@ class ServicesJobsOperations:
         _request.url = self._client.format_url(_request.url, **path_format_arguments)
 
         _stream = kwargs.pop("stream", False)
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -1107,7 +622,7 @@ class ServicesJobsOperations:
         if response.status_code not in [200]:
             if _stream:
                 try:
-                    response.read()  # Load the body in memory and close the socket
+                    await response.read()  # Load the body in memory and close the socket
                 except (StreamConsumedError, StreamClosedError):
                     pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
@@ -1123,8 +638,8 @@ class ServicesJobsOperations:
 
         return deserialized  # type: ignore
 
-    @distributed_trace
-    def delete(  # pylint: disable=inconsistent-return-statements
+    @distributed_trace_async
+    async def delete(
         self, subscription_id: str, resource_group_name: str, workspace_name: str, job_id: str, **kwargs: Any
     ) -> None:
         """Delete a job by its id. Use for cancellation in versions before 2025-12-01-preview.
@@ -1169,7 +684,7 @@ class ServicesJobsOperations:
         _request.url = self._client.format_url(_request.url, **path_format_arguments)
 
         _stream = False
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -1182,7 +697,7 @@ class ServicesJobsOperations:
         if cls:
             return cls(pipeline_response, None, {})  # type: ignore
 
-    @distributed_trace
+    @distributed_trace_async
     @api_version_validation(
         method_added_on="2025-12-01-preview",
         params_added_on={
@@ -1197,7 +712,7 @@ class ServicesJobsOperations:
         },
         api_versions_list=["2025-12-01-preview"],
     )
-    def cancel(
+    async def cancel(
         self, subscription_id: str, resource_group_name: str, workspace_name: str, job_id: str, **kwargs: Any
     ) -> _models.JobDetails:
         """Request the cancellation of an existing job.
@@ -1242,7 +757,7 @@ class ServicesJobsOperations:
         _request.url = self._client.format_url(_request.url, **path_format_arguments)
 
         _stream = kwargs.pop("stream", False)
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -1251,7 +766,7 @@ class ServicesJobsOperations:
         if response.status_code not in [200]:
             if _stream:
                 try:
-                    response.read()  # Load the body in memory and close the socket
+                    await response.read()  # Load the body in memory and close the socket
                 except (StreamConsumedError, StreamClosedError):
                     pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
@@ -1267,8 +782,8 @@ class ServicesJobsOperations:
 
         return deserialized  # type: ignore
 
-    @distributed_trace
-    def get(
+    @distributed_trace_async
+    async def get(
         self, subscription_id: str, resource_group_name: str, workspace_name: str, job_id: str, **kwargs: Any
     ) -> _models.JobDetails:
         """Get job by its id.
@@ -1313,7 +828,7 @@ class ServicesJobsOperations:
         _request.url = self._client.format_url(_request.url, **path_format_arguments)
 
         _stream = kwargs.pop("stream", False)
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -1322,7 +837,7 @@ class ServicesJobsOperations:
         if response.status_code not in [200]:
             if _stream:
                 try:
-                    response.read()  # Load the body in memory and close the socket
+                    await response.read()  # Load the body in memory and close the socket
                 except (StreamConsumedError, StreamClosedError):
                     pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
@@ -1354,7 +869,7 @@ class ServicesJobsOperations:
         top: Optional[int] = None,
         orderby: Optional[str] = None,
         **kwargs: Any
-    ) -> ItemPaged["_models.JobDetails"]:
+    ) -> AsyncItemPaged["_models.JobDetails"]:
         """List all jobs.
 
         :param subscription_id: The Azure subscription ID. Required.
@@ -1372,7 +887,7 @@ class ServicesJobsOperations:
         :keyword orderby: The order of returned items. Default value is None.
         :paramtype orderby: str
         :return: An iterator like instance of JobDetails
-        :rtype: ~azure.core.paging.ItemPaged[~azure.quantum.models.JobDetails]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.quantum.models.JobDetails]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
@@ -1432,18 +947,18 @@ class ServicesJobsOperations:
 
             return _request
 
-        def extract_data(pipeline_response):
+        async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
             list_of_elem = _deserialize(list[_models.JobDetails], deserialized.get("value", []))
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.get("nextLink") or None, iter(list_of_elem)
+            return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
-        def get_next(next_link=None):
+        async def get_next(next_link=None):
             _request = prepare_request(next_link)
 
             _stream = False
-            pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
                 _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
@@ -1454,7 +969,7 @@ class ServicesJobsOperations:
 
             return pipeline_response
 
-        return ItemPaged(get_next, extract_data)
+        return AsyncItemPaged(get_next, extract_data)
 
 
 class ServicesProvidersOperations:
@@ -1463,13 +978,13 @@ class ServicesProvidersOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.quantum.WorkspaceClient`'s
+        :class:`~azure.quantum.aio.WorkspaceClient`'s
         :attr:`providers` attribute.
     """
 
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
-        self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: WorkspaceClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
         self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
@@ -1477,7 +992,7 @@ class ServicesProvidersOperations:
     @distributed_trace
     def list(
         self, subscription_id: str, resource_group_name: str, workspace_name: str, **kwargs: Any
-    ) -> ItemPaged["_models.ProviderStatus"]:
+    ) -> AsyncItemPaged["_models.ProviderStatus"]:
         """List all providers in the workspace with their respective status.
 
         :param subscription_id: The Azure subscription ID. Required.
@@ -1487,7 +1002,7 @@ class ServicesProvidersOperations:
         :param workspace_name: Name of the Azure Quantum workspace. Required.
         :type workspace_name: str
         :return: An iterator like instance of ProviderStatus
-        :rtype: ~azure.core.paging.ItemPaged[~azure.quantum.models.ProviderStatus]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.quantum.models.ProviderStatus]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
@@ -1543,18 +1058,18 @@ class ServicesProvidersOperations:
 
             return _request
 
-        def extract_data(pipeline_response):
+        async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
             list_of_elem = _deserialize(list[_models.ProviderStatus], deserialized.get("value", []))
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.get("nextLink") or None, iter(list_of_elem)
+            return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
-        def get_next(next_link=None):
+        async def get_next(next_link=None):
             _request = prepare_request(next_link)
 
             _stream = False
-            pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
                 _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
@@ -1565,7 +1080,7 @@ class ServicesProvidersOperations:
 
             return pipeline_response
 
-        return ItemPaged(get_next, extract_data)
+        return AsyncItemPaged(get_next, extract_data)
 
 
 class ServicesQuotasOperations:
@@ -1574,13 +1089,13 @@ class ServicesQuotasOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.quantum.WorkspaceClient`'s
+        :class:`~azure.quantum.aio.WorkspaceClient`'s
         :attr:`quotas` attribute.
     """
 
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
-        self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: WorkspaceClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
         self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
@@ -1588,7 +1103,7 @@ class ServicesQuotasOperations:
     @distributed_trace
     def list(
         self, subscription_id: str, resource_group_name: str, workspace_name: str, **kwargs: Any
-    ) -> ItemPaged["_models.Quota"]:
+    ) -> AsyncItemPaged["_models.Quota"]:
         """List quotas for the given workspace.
 
         :param subscription_id: The Azure subscription ID. Required.
@@ -1598,7 +1113,7 @@ class ServicesQuotasOperations:
         :param workspace_name: Name of the Azure Quantum workspace. Required.
         :type workspace_name: str
         :return: An iterator like instance of Quota
-        :rtype: ~azure.core.paging.ItemPaged[~azure.quantum.models.Quota]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.quantum.models.Quota]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
@@ -1654,18 +1169,18 @@ class ServicesQuotasOperations:
 
             return _request
 
-        def extract_data(pipeline_response):
+        async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
             list_of_elem = _deserialize(list[_models.Quota], deserialized.get("value", []))
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.get("nextLink") or None, iter(list_of_elem)
+            return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
-        def get_next(next_link=None):
+        async def get_next(next_link=None):
             _request = prepare_request(next_link)
 
             _stream = False
-            pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
                 _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
@@ -1676,7 +1191,7 @@ class ServicesQuotasOperations:
 
             return pipeline_response
 
-        return ItemPaged(get_next, extract_data)
+        return AsyncItemPaged(get_next, extract_data)
 
 
 class ServicesSessionsOperations:
@@ -1685,19 +1200,19 @@ class ServicesSessionsOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.quantum.WorkspaceClient`'s
+        :class:`~azure.quantum.aio.WorkspaceClient`'s
         :attr:`sessions` attribute.
     """
 
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
-        self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: WorkspaceClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
         self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @overload
-    def open(
+    async def open(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -1729,7 +1244,7 @@ class ServicesSessionsOperations:
         """
 
     @overload
-    def open(
+    async def open(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -1761,7 +1276,7 @@ class ServicesSessionsOperations:
         """
 
     @overload
-    def open(
+    async def open(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -1792,8 +1307,8 @@ class ServicesSessionsOperations:
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
-    @distributed_trace
-    def open(
+    @distributed_trace_async
+    async def open(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -1857,7 +1372,7 @@ class ServicesSessionsOperations:
         _request.url = self._client.format_url(_request.url, **path_format_arguments)
 
         _stream = kwargs.pop("stream", False)
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -1866,7 +1381,7 @@ class ServicesSessionsOperations:
         if response.status_code not in [200, 201]:
             if _stream:
                 try:
-                    response.read()  # Load the body in memory and close the socket
+                    await response.read()  # Load the body in memory and close the socket
                 except (StreamConsumedError, StreamClosedError):
                     pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
@@ -1882,8 +1397,8 @@ class ServicesSessionsOperations:
 
         return deserialized  # type: ignore
 
-    @distributed_trace
-    def close(
+    @distributed_trace_async
+    async def close(
         self, subscription_id: str, resource_group_name: str, workspace_name: str, session_id: str, **kwargs: Any
     ) -> _models.SessionDetails:
         """Close an existing session.
@@ -1928,7 +1443,7 @@ class ServicesSessionsOperations:
         _request.url = self._client.format_url(_request.url, **path_format_arguments)
 
         _stream = kwargs.pop("stream", False)
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -1937,7 +1452,7 @@ class ServicesSessionsOperations:
         if response.status_code not in [200]:
             if _stream:
                 try:
-                    response.read()  # Load the body in memory and close the socket
+                    await response.read()  # Load the body in memory and close the socket
                 except (StreamConsumedError, StreamClosedError):
                     pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
@@ -1953,8 +1468,8 @@ class ServicesSessionsOperations:
 
         return deserialized  # type: ignore
 
-    @distributed_trace
-    def get(
+    @distributed_trace_async
+    async def get(
         self, subscription_id: str, resource_group_name: str, workspace_name: str, session_id: str, **kwargs: Any
     ) -> _models.SessionDetails:
         """Get Session by its id.
@@ -1999,7 +1514,7 @@ class ServicesSessionsOperations:
         _request.url = self._client.format_url(_request.url, **path_format_arguments)
 
         _stream = kwargs.pop("stream", False)
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -2008,7 +1523,7 @@ class ServicesSessionsOperations:
         if response.status_code not in [200]:
             if _stream:
                 try:
-                    response.read()  # Load the body in memory and close the socket
+                    await response.read()  # Load the body in memory and close the socket
                 except (StreamConsumedError, StreamClosedError):
                     pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
@@ -2053,7 +1568,7 @@ class ServicesSessionsOperations:
         top: Optional[int] = None,
         orderby: Optional[str] = None,
         **kwargs: Any
-    ) -> ItemPaged["_models.SessionDetails"]:
+    ) -> AsyncItemPaged["_models.SessionDetails"]:
         """List all Sessions.
 
         :param subscription_id: The Azure subscription ID. Required.
@@ -2071,7 +1586,7 @@ class ServicesSessionsOperations:
         :keyword orderby: The order of returned items. Default value is None.
         :paramtype orderby: str
         :return: An iterator like instance of SessionDetails
-        :rtype: ~azure.core.paging.ItemPaged[~azure.quantum.models.SessionDetails]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.quantum.models.SessionDetails]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
@@ -2131,18 +1646,18 @@ class ServicesSessionsOperations:
 
             return _request
 
-        def extract_data(pipeline_response):
+        async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
             list_of_elem = _deserialize(list[_models.SessionDetails], deserialized.get("value", []))
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.get("nextLink") or None, iter(list_of_elem)
+            return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
-        def get_next(next_link=None):
+        async def get_next(next_link=None):
             _request = prepare_request(next_link)
 
             _stream = False
-            pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
                 _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
@@ -2153,7 +1668,7 @@ class ServicesSessionsOperations:
 
             return pipeline_response
 
-        return ItemPaged(get_next, extract_data)
+        return AsyncItemPaged(get_next, extract_data)
 
     @distributed_trace
     @api_version_validation(
@@ -2172,7 +1687,7 @@ class ServicesSessionsOperations:
         top: Optional[int] = None,
         orderby: Optional[str] = None,
         **kwargs: Any
-    ) -> ItemPaged["_models.JobDetails"]:
+    ) -> AsyncItemPaged["_models.JobDetails"]:
         """List jobs in a session.
 
         :param subscription_id: The Azure subscription ID. Required.
@@ -2192,7 +1707,7 @@ class ServicesSessionsOperations:
         :keyword orderby: The order of returned items. Default value is None.
         :paramtype orderby: str
         :return: An iterator like instance of JobDetails
-        :rtype: ~azure.core.paging.ItemPaged[~azure.quantum.models.JobDetails]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.quantum.models.JobDetails]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
@@ -2253,18 +1768,18 @@ class ServicesSessionsOperations:
 
             return _request
 
-        def extract_data(pipeline_response):
+        async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
             list_of_elem = _deserialize(list[_models.JobDetails], deserialized.get("value", []))
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.get("nextLink") or None, iter(list_of_elem)
+            return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
 
-        def get_next(next_link=None):
+        async def get_next(next_link=None):
             _request = prepare_request(next_link)
 
             _stream = False
-            pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
                 _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
@@ -2275,7 +1790,7 @@ class ServicesSessionsOperations:
 
             return pipeline_response
 
-        return ItemPaged(get_next, extract_data)
+        return AsyncItemPaged(get_next, extract_data)
 
 
 class ServicesStorageOperations:
@@ -2284,19 +1799,19 @@ class ServicesStorageOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.quantum.WorkspaceClient`'s
+        :class:`~azure.quantum.aio.WorkspaceClient`'s
         :attr:`storage` attribute.
     """
 
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
-        self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: WorkspaceClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
         self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @overload
-    def get_sas_uri(
+    async def get_sas_uri(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -2326,7 +1841,7 @@ class ServicesStorageOperations:
         """
 
     @overload
-    def get_sas_uri(
+    async def get_sas_uri(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -2356,7 +1871,7 @@ class ServicesStorageOperations:
         """
 
     @overload
-    def get_sas_uri(
+    async def get_sas_uri(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -2385,8 +1900,8 @@ class ServicesStorageOperations:
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
-    @distributed_trace
-    def get_sas_uri(
+    @distributed_trace_async
+    async def get_sas_uri(
         self,
         subscription_id: str,
         resource_group_name: str,
@@ -2447,7 +1962,7 @@ class ServicesStorageOperations:
         _request.url = self._client.format_url(_request.url, **path_format_arguments)
 
         _stream = kwargs.pop("stream", False)
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -2456,7 +1971,7 @@ class ServicesStorageOperations:
         if response.status_code not in [200]:
             if _stream:
                 try:
-                    response.read()  # Load the body in memory and close the socket
+                    await response.read()  # Load the body in memory and close the socket
                 except (StreamConsumedError, StreamClosedError):
                     pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
