@@ -7,28 +7,34 @@ Introduction
 
 The AKS Agent extension provides the "az aks agent" command, an AI-powered assistant that helps analyze and troubleshoot Azure Kubernetes Service (AKS) clusters using Large Language Models (LLMs). The agent combines cluster context, configurable toolsets, and LLMs to answer natural-language questions about your cluster (for example, "Why are my pods not starting?") and can investigate issues in both interactive and non-interactive (batch) modes.
 
-New in this version: **az aks agent-init** command for easy LLM model configuration!
+New in this version: **az aks agent-init** command for containerized agent deployment!
 
-You can now use `az aks agent-init` to interactively add and configure LLM models before asking questions. This command guides you through the setup process, allowing you to add multiple models as needed. When asking questions with `az aks agent`, you can:
+The `az aks agent-init` command deploys the AKS agent as a Helm chart directly in your AKS cluster with enterprise-grade security:
 
-- Use `--config-file` to specify your own model configuration file
-- Use `--model` to select a previously configured model
-- If neither is provided, the last configured LLM will be used by default
+- **Kubernetes RBAC**: Uses cluster roles to securely access Kubernetes resources with least-privilege principles
+- **Workload Identity**: Leverages Azure workload identity for secure, keyless access to Azure resources
+- **Interactive LLM Configuration**: Guides you through setting up LLM models with encrypted storage in Kubernetes secrets
 
-This makes it much easier to manage and switch between multiple models for your AKS troubleshooting workflows.
+When asking questions with `az aks agent`:
+
+- The agent automatically uses the last configured model
+- Use `--model` to select a specific model when you have multiple models configured
+
+This architecture provides better security, scalability, and manageability for production AKS troubleshooting workflows.
 
 Key capabilities
 ----------------
 
 
+- **Containerized Deployment**: Agent runs as a Helm chart in your AKS cluster with `az aks agent-init`.
+- **Secure Access**: Uses Kubernetes RBAC for cluster resources and Azure workload identity for Azure resources.
+- **LLM Configuration**: Interactively configure LLM models with credentials stored securely in Kubernetes secrets.
+- Support for multiple LLM providers (Azure OpenAI, OpenAI, Anthropic, Gemini, etc.).
+- Automatically uses the last configured model by default.
+- Optionally use --model to select a specific model when you have multiple models configured.
 - Interactive and non-interactive modes (use --no-interactive for batch runs).
-- Support for multiple LLM providers (Azure OpenAI, OpenAI, etc.) via interactive configuration.
-- **Easy model setup with `az aks agent-init`**: interactively add and configure LLM models, run multiple times to add more models.
-- Configurable via a JSON/YAML config file provided with --config-file, or select a model with --model.
-- If no config or model is specified, the last configured LLM is used automatically.
 - Control echo and tool output visibility with --no-echo-request and --show-tool-output.
 - Refresh the available toolsets with --refresh-toolsets.
-- Stay in traditional toolset mode by default, or opt in to aks-mcp integration with ``--aks-mcp`` when you need the enhanced capabilities.
 
 Prerequisites
 -------------
@@ -47,14 +53,21 @@ Install the extension
 
     az extension add --name aks-agent
 
-Configure LLM models interactively
-----------------------------------
+Initialize and configure the AKS agent
+---------------------------------------
 
 .. code-block:: bash
 
-    az aks agent-init
+    az aks agent-init --resource-group MyResourceGroup --name MyManagedCluster
 
-This command will guide you through adding a new LLM model. You can run it multiple times to add more models or update existing models. All configured models are saved locally and can be selected when asking questions.
+This command will configure the LLM configuration and:
+
+1. Guide you through LLM model configuration with credentials stored securely in Kubernetes secrets
+2. Deploy the AKS agent Helm chart in your cluster
+3. Configure Kubernetes RBAC for secure cluster resource access
+4. Optionally configure Azure workload identity for Azure resource access
+
+You can run it multiple times to update configurations or add more models.
 
 Run the agent (Azure OpenAI example) :
 -----------------------------------
@@ -70,12 +83,6 @@ Run the agent (Azure OpenAI example) :
 .. code-block:: bash
 
     az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
-
-**3. Use a custom config file:**
-
-.. code-block:: bash
-
-    az aks agent "Why are my pods not starting?" --config-file /path/to/your/model_config.yaml
 
 
 Run the agent (OpenAI example)
@@ -93,34 +100,27 @@ Run the agent (OpenAI example)
     
     az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model gpt-4o
 
-**3. Use a custom config file:**
-
-.. code-block:: bash
-
-    az aks agent "Why are my pods not starting?" --config-file /path/to/your/model_config.yaml
-
 Run in non-interactive batch mode
 ---------------------------------
 
 .. code-block:: bash
 
-    az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/my-gpt4.1-deployment
+    az aks agent "Diagnose networking issues" --no-interactive --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
 
-Opt in to MCP mode
-------------------
+Clean up the AKS agent
+-----------------------
 
-Traditional toolsets remain the default. Enable the aks-mcp integration when you want the enhanced toolsets by passing ``--aks-mcp``. You can return to traditional mode on a subsequent run with ``--no-aks-mcp``.
+To uninstall the AKS agent and clean up all Kubernetes resources:
 
 .. code-block:: bash
 
-    az aks agent --aks-mcp "Check node health with MCP" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
+    az aks agent-cleanup --resource-group MyResourceGroup --name MyManagedCluster
 
-Using a configuration file
---------------------------
+This command will:
 
-Pass a config file with --config-file to predefine model, credentials, and toolsets. See
-the example config and more detailed examples in the help definition at
-`src/aks-agent/azext_aks_agent/_help.py`.
+1. Uninstall the AKS agent Helm chart from your cluster
+2. Remove all associated Kubernetes resources (deployments, pods, secrets, RBAC configurations)
+3. Clean up the LLM configuration secrets
 
 More help
 ---------

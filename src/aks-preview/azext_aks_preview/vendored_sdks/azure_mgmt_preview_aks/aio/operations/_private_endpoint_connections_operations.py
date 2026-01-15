@@ -7,7 +7,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, AsyncIterator, Callable, IO, Optional, TypeVar, Union, cast, overload
+from typing import Any, AsyncIterator, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
 
 from azure.core import AsyncPipelineClient
 from azure.core.exceptions import (
@@ -29,7 +29,7 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ..._serialization import Deserializer, Serializer
 from ...operations._private_endpoint_connections_operations import (
     build_delete_request,
     build_get_request,
@@ -39,8 +39,7 @@ from ...operations._private_endpoint_connections_operations import (
 from .._configuration import ContainerServiceClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
 class PrivateEndpointConnectionsOperations:

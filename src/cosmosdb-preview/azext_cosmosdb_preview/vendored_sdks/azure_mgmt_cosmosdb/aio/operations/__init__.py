@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ._patch import *  # pylint: disable=unused-wildcard-import
 
+from ._cassandra_resources_operations import CassandraResourcesOperations  # type: ignore
 from ._chaos_fault_operations import ChaosFaultOperations  # type: ignore
 from ._copy_jobs_operations import CopyJobsOperations  # type: ignore
 from ._database_accounts_operations import DatabaseAccountsOperations  # type: ignore
@@ -32,12 +33,17 @@ from ._graph_resources_operations import GraphResourcesOperations  # type: ignor
 from ._sql_resources_operations import SqlResourcesOperations  # type: ignore
 from ._mongo_db_resources_operations import MongoDBResourcesOperations  # type: ignore
 from ._table_resources_operations import TableResourcesOperations  # type: ignore
-from ._cassandra_resources_operations import CassandraResourcesOperations  # type: ignore
 from ._gremlin_resources_operations import GremlinResourcesOperations  # type: ignore
 from ._locations_operations import LocationsOperations  # type: ignore
 from ._data_transfer_jobs_operations import DataTransferJobsOperations  # type: ignore
+from ._fleet_operations import FleetOperations  # type: ignore
+from ._fleet_analytics_operations import FleetAnalyticsOperations  # type: ignore
+from ._fleetspace_operations import FleetspaceOperations  # type: ignore
+from ._fleetspace_account_operations import FleetspaceAccountOperations  # type: ignore
+from ._garnet_clusters_operations import GarnetClustersOperations  # type: ignore
 from ._cassandra_clusters_operations import CassandraClustersOperations  # type: ignore
 from ._cassandra_data_centers_operations import CassandraDataCentersOperations  # type: ignore
+from ._mongo_mi_resources_operations import MongoMIResourcesOperations  # type: ignore
 from ._network_security_perimeter_configurations_operations import NetworkSecurityPerimeterConfigurationsOperations  # type: ignore
 from ._notebook_workspaces_operations import NotebookWorkspacesOperations  # type: ignore
 from ._private_endpoint_connections_operations import PrivateEndpointConnectionsOperations  # type: ignore
@@ -59,17 +65,13 @@ from ._throughput_pools_operations import ThroughputPoolsOperations  # type: ign
 from ._throughput_pool_operations import ThroughputPoolOperations  # type: ignore
 from ._throughput_pool_accounts_operations import ThroughputPoolAccountsOperations  # type: ignore
 from ._throughput_pool_account_operations import ThroughputPoolAccountOperations  # type: ignore
-from ._mongo_mi_resources_operations import MongoMIResourcesOperations  # type: ignore
-from ._fleet_operations import FleetOperations  # type: ignore
-from ._fleet_analytics_operations import FleetAnalyticsOperations  # type: ignore
-from ._fleetspace_operations import FleetspaceOperations  # type: ignore
-from ._fleetspace_account_operations import FleetspaceAccountOperations  # type: ignore
 
 from ._patch import __all__ as _patch_all
 from ._patch import *
 from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
+    "CassandraResourcesOperations",
     "ChaosFaultOperations",
     "CopyJobsOperations",
     "DatabaseAccountsOperations",
@@ -89,12 +91,17 @@ __all__ = [
     "SqlResourcesOperations",
     "MongoDBResourcesOperations",
     "TableResourcesOperations",
-    "CassandraResourcesOperations",
     "GremlinResourcesOperations",
     "LocationsOperations",
     "DataTransferJobsOperations",
+    "FleetOperations",
+    "FleetAnalyticsOperations",
+    "FleetspaceOperations",
+    "FleetspaceAccountOperations",
+    "GarnetClustersOperations",
     "CassandraClustersOperations",
     "CassandraDataCentersOperations",
+    "MongoMIResourcesOperations",
     "NetworkSecurityPerimeterConfigurationsOperations",
     "NotebookWorkspacesOperations",
     "PrivateEndpointConnectionsOperations",
@@ -116,11 +123,6 @@ __all__ = [
     "ThroughputPoolOperations",
     "ThroughputPoolAccountsOperations",
     "ThroughputPoolAccountOperations",
-    "MongoMIResourcesOperations",
-    "FleetOperations",
-    "FleetAnalyticsOperations",
-    "FleetspaceOperations",
-    "FleetspaceAccountOperations",
 ]
 __all__.extend([p for p in _patch_all if p not in __all__])  # pyright: ignore
 _patch_sdk()

@@ -27,7 +27,7 @@ from . import models
 
 
 class FootprintMonitoringManagementClient(object):
-    """Microsoft Footprint active monitoring system REST API version 2020-02-01-preview.
+    """Microsoft Footprint active monitoring system REST API version 2024-09-16-preview.
 
     :ivar operation: OperationOperations operations
     :vartype operation: footprint_monitoring_management_client.operations.OperationOperations

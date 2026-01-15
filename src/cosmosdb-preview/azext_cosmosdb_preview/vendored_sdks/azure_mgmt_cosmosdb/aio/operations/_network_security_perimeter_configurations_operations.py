@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
-from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, Optional, TypeVar, Union, cast
+from typing import Any, AsyncIterator, Callable, Optional, TypeVar, Union, cast
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -40,7 +40,8 @@ from ...operations._network_security_perimeter_configurations_operations import 
 from .._configuration import CosmosDBManagementClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 
 class NetworkSecurityPerimeterConfigurationsOperations:  # pylint: disable=name-too-long
@@ -65,7 +66,7 @@ class NetworkSecurityPerimeterConfigurationsOperations:  # pylint: disable=name-
     @distributed_trace
     def list(
         self, resource_group_name: str, account_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.NetworkSecurityPerimeterConfiguration"]:
+    ) -> AsyncItemPaged["_models.NetworkSecurityPerimeterConfiguration"]:
         """Gets list of effective Network Security Perimeter Configuration for cosmos db account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -141,7 +142,10 @@ class NetworkSecurityPerimeterConfigurationsOperations:  # pylint: disable=name-
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
@@ -204,7 +208,10 @@ class NetworkSecurityPerimeterConfigurationsOperations:  # pylint: disable=name-
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("NetworkSecurityPerimeterConfiguration", pipeline_response.http_response)
@@ -260,7 +267,10 @@ class NetworkSecurityPerimeterConfigurationsOperations:  # pylint: disable=name-
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}

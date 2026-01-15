@@ -28,14 +28,11 @@ class Action(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 class ActiveRevisionsMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """ActiveRevisionsMode controls how active revisions are handled for the Container app:
-
-
     .. raw:: html
-
        <list><item>Single: Only one revision can be active at a time. Traffic weights cannot be
-    used. This is the default.</item><item>Multiple: Multiple revisions can be active, including
-    optional traffic weights and labels.</item><item>Labels: Only revisions with labels are active.
-    Traffic weights can be applied to labels.</item></list>.
+        used. This is the default.</item><item>Multiple: Multiple revisions can be active, including
+        optional traffic weights and labels.</item><item>Labels: Only revisions with labels are active.
+        Traffic weights can be applied to labels.</item></list>.
     """
 
     MULTIPLE = "Multiple"
@@ -133,16 +130,6 @@ class CheckNameAvailabilityReason(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     ALREADY_EXISTS = "AlreadyExists"
 
 
-class ConnectedEnvironmentDaprComponentProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Provisioning state of the Connected Environment Dapr Component."""
-
-    SUCCEEDED = "Succeeded"
-    FAILED = "Failed"
-    CANCELED = "Canceled"
-    IN_PROGRESS = "InProgress"
-    DELETING = "Deleting"
-
-
 class ConnectedEnvironmentProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Provisioning state of the Kubernetes Environment."""
 
@@ -228,6 +215,16 @@ class CreatedByType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     APPLICATION = "Application"
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
+
+
+class DaprComponentProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Provisioning state of the Connected Environment Dapr Component."""
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    IN_PROGRESS = "InProgress"
+    DELETING = "Deleting"
 
 
 class DetectionStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -401,12 +398,12 @@ class JobRunningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class Kind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Metadata used to render different experiences for resources of the same type; e.g. WorkflowApp
-    is a kind of Microsoft.App/ContainerApps type. If supported, the resource provider must
-    validate and persist this value.
+    """Metadata to represent the container app kind, representing if a container app is workflowapp or
+    functionapp.
     """
 
     WORKFLOWAPP = "workflowapp"
+    FUNCTIONAPP = "functionapp"
 
 
 class Level(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -668,6 +665,14 @@ class WorkflowHealthState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     HEALTHY = "Healthy"
     UNHEALTHY = "Unhealthy"
     UNKNOWN = "Unknown"
+
+
+class WorkflowKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Gets the logic app hybrid workflow kind."""
+
+    STATEFUL = "Stateful"
+    STATELESS = "Stateless"
+    AGENTIC = "Agentic"
 
 
 class WorkflowState(str, Enum, metaclass=CaseInsensitiveEnumMeta):

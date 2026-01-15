@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get protection policy with specified name within a resource group.
+
+    :example: Get Policy
+        az network front-door waf-policy show --resource-group rg1 --policy-name Policy1
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
+        "version": "2025-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2025-10-01"],
         ]
     }
 
@@ -120,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }
@@ -337,6 +340,7 @@ class Show(AAZCommand):
                 serialized_name="ruleId",
                 flags={"required": True},
             )
+            _element.sensitivity = AAZStrType()
 
             exclusions = cls._schema_on_200.properties.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules.Element.exclusions
             exclusions.Element = AAZObjectType()

@@ -14,6 +14,8 @@ import pytest
 from itertools import product
 
 from azext_confcom.custom import acipolicygen_confcom
+from azext_confcom.lib.serialization import policy_deserialize
+
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
@@ -54,7 +56,6 @@ def test_acipolicygen(sample_directory, generated_policy_path):
 
     for failing_sample_directory, failing_generated_policy_paths in [
         ("multi_container_groups", ("policy_fragment.rego", "policy_fragment_plus_infrastructure_svn.rego")), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9229
-        (None, ("policy_exclude_default_fragment.rego",)), # TODO: https://github.com/Azure/azure-cli-extensions/issues/9198
     ]:
         if (
             (sample_directory == failing_sample_directory or failing_sample_directory is None)
@@ -253,4 +254,96 @@ def test_acipolicygen_arm_diff_with_allow_all():
         }
 
 
+@pytest.mark.parametrize(
+    "container_definitions",
+    [
+        ["{}"], # Single empty container definition (use all default values)
+        ["{}", "{}"], # Two empty container definitions
+        ["[{}]", "{}"], # Two empty container definitions, one in subarray
+        ["[{}, {}]", "{}"], # Three empty container definitions, two in subarray
+        ['{"id": "test"}'], # Single container definition a field changed
+    ]
+)
+def test_acipolicygen_with_containers_input_forms(container_definitions):
 
+    acipolicygen_confcom(
+        input_path=None,
+        arm_template=None,
+        arm_template_parameters=None,
+        image_name=None,
+        virtual_node_yaml_path=None,
+        infrastructure_svn=None,
+        tar_mapping_location=None,
+        outraw=True,
+        container_definitions=[json.loads(c) for c in container_definitions]
+    )
+
+
+def test_acipolicygen_with_containers_field_changed():
+
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        acipolicygen_confcom(
+            input_path=None,
+            arm_template=None,
+            arm_template_parameters=None,
+            image_name=None,
+            virtual_node_yaml_path=None,
+            infrastructure_svn=None,
+            tar_mapping_location=None,
+            outraw=True,
+            container_definitions=[json.loads('{"id": "test"}')]
+        )
+    actual_policy = buffer.getvalue()
+    assert '"id":"test"' in actual_policy
+
+
+@pytest.mark.parametrize(
+    "sample_directory",
+    os.listdir(SAMPLES_ROOT),
+)
+def test_acipolicygen_with_containers(sample_directory):
+
+    # Load expected policy
+    with open(os.path.join(SAMPLES_ROOT, sample_directory, "policy.rego")) as expected_policy_file:
+        expected_policy_str = expected_policy_file.read()
+
+    # Load input container definition
+    input_containers = []
+    for file_path in os.listdir(os.path.join(SAMPLES_ROOT, sample_directory)):
+        if file_path.startswith("container"):
+            with open(os.path.join(SAMPLES_ROOT, sample_directory, file_path)) as input_containers_file:
+                input_containers.append(json.loads(input_containers_file.read()))
+
+    # Generate a policy
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        acipolicygen_confcom(
+            input_path=None,
+            arm_template=None,
+            arm_template_parameters=None,
+            image_name=None,
+            virtual_node_yaml_path=None,
+            infrastructure_svn=None,
+            tar_mapping_location=None,
+            outraw=True,
+            container_definitions=input_containers,
+        )
+    actual_policy_str = buffer.getvalue()
+
+    # Deserialize both policies for comparison (serialised policies might differ in formatting)
+    with tempfile.NamedTemporaryFile(mode="w+", delete=True) as actual_policy_file, \
+         tempfile.NamedTemporaryFile(mode="w+", delete=True) as expected_policy_file:
+
+        actual_policy_file.write(actual_policy_str)
+        actual_policy_file.flush()
+        actual_policy = policy_deserialize(actual_policy_file.name)
+
+        for expected in [e for e in expected_policy_str.split("package policy") if e.strip()]:
+            expected_policy_file.seek(0)
+            expected_policy_file.truncate()
+            expected_policy_file.write(f"package policy{expected}")
+            expected_policy_file.flush()
+            expected_policy = policy_deserialize(expected_policy_file.name)
+
+            assert actual_policy == expected_policy

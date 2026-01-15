@@ -1,0 +1,176 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"description": "Test Description",
+      "displayName": "test-vault", "highCapacityDatabaseStorageInput": {"totalSizeInGbs":
+      300}}, "zones": ["2"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database exascale-db-storage-vault create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '179'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --location --zone --description --display-name --high-capacity-database-storage-input
+        --no-wait
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/testAzureCLi/providers/Oracle.Database/exascaleDbStorageVaults/AzCli_vaultTest?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/testAzureCLi/providers/Oracle.Database/exascaleDbStorageVaults/AzCli_vaultTest","name":"AzCli_vaultTest","type":"oracle.database/exascaledbstoragevaults","location":"eastus","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-20T15:41:43.4414484Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-11-20T15:41:43.4414484Z"},"properties":{"additionalFlashCacheInPercent":null,"description":"Test
+        Description","displayName":"test-vault","highCapacityDatabaseStorage":{"availableSizeInGbs":null,"totalSizeInGbs":300},"highCapacityDatabaseStorageInput":{"totalSizeInGbs":300},"timeZone":null,"provisioningState":"Accepted","lifecycleState":"Provisioning","lifecycleDetails":null,"vmClusterCount":null,"ocid":null,"ociUrl":null,"exadataInfrastructureId":null,"attachedShapeAttributes":null}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/providers/Oracle.Database/locations/EASTUS/operationStatuses/a1e0d629-57b6-4824-8aba-c60c6e7977a0*2DFC747B58D2E988655114D3F17EA8112F2A76995099F46C3A0564E33733DC81?api-version=2025-09-01&t=638992501175979570&c=MIIHhzCCBm-gAwIBAgITfAla5jyv8QRP_5ow7AAACVrmPDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDIwMDQzNjIzWhcNMjYwNDE4MDQzNjIzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMddVfpiBdDmUhIBJwKZ3KQON7oBNDWmOOmY4g1ElyXgEkjon3Gv6o2iUWBTlxPP_EZQJhupEuO2DlNcI72qn4SyWwWct2tCEYRZJerV4rv1id9sCDj3fEamCo4QEH3xMKcGXqtPe3f3eb4VUSK8a2gJFqPiH-B-2oetOTm_-t1_J9TkLUFEUdYIHsylTl0OH2FEQVYAAgRXhe4lJ-WGzZ1ffooW6zFScKcbHC-ij1AA2xiuPbLogZIDjkgpOYoQbn9dJCcXDjro2GtBWEIEIaRIheA5TONmvBvNjwgvM95OihgVouEt3T1X5Jz2jgZVe8XVf5WuHz-a-o1TsKrZzcECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSklsMGrs_eAsv_RTi_q4qgDc9qNDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJ51PdAaul136rrBMSwKBqaPsalRACK88HnU3-MuFwPY3EKcBNfr_DcyIemG6qcdAt6oBTDGXSVm8qGYJ2eHSVBH91yTQvJd5-a7_b9xta0wy4EJYoK-Olj6bE5ygF6klhRzpEyjfq2vFjpc2SF6xPxtXMaj4I7ACMq2QHy3CO_thX0U9_MhBYBb-v3ICmOFIZIBb4wOpeX0BsfrYbqwos0TpMW5k0T0RtCs4mpGUt-7YgEXCPIwlt7JN4fLqGTiEElAPaYcSl4-0aYA_RVN98y83vlGlM0kIjglh8_t1QOAUw0jy8LA4CNtMdgL_ncOt66gFr9ocwuFusQMx11WpTM&s=KiSQ-Uy4n0WtG6jfkDu899I3h_o3ksBCphmYNlRBw9mP7vydT9KqwKPbwvLnmgc8GNMe1L8VL86wyR8tEZ75FG74dhWIMH99ZmmhL6rz6mpr8gpbkPyNYCr54bJDU79hR82qLDBXpkznI-RiOEk3tI1LrMmgCmlHFhr3N-uUyzEOpustRyQDjYa2EQo4kU-_Np46o2nEuJt0pixyNW6Ib3XhUoz21hwdO7zxzBwomEp6JEQKsLCHKOTg549lZAniRFUpZEjouhCLT7HxNuqiwefJXa-VdYpB0cbk0vxdr6LfPArIFwnr8CBqhTHxoySpea1ycrmFcFOCARMxfBwMHA&h=MklFLGUHfhyXQKiGpaBLFAoNaJQs6rdfhHu3atGf9MM
+      cache-control:
+      - no-cache
+      content-length:
+      - '964'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Nov 2025 15:41:57 GMT
+      etag:
+      - '"0d00da4a-0000-0100-0000-691f36c50000"'
+      expires:
+      - '-1'
+      opc-request-id:
+      - oci-BFF3FA530EF50A3-202511201541/3AB9CD646C16EFDBB7361F69494144F7/777AA87B2E6E2768E6A78572EE62960A
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Origin,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT4H
+      x-ms-operation-identifier:
+      - tenantId=9ef05df2-ad7c-4737-aba9-a5e1b3fa5ae1,objectId=ed0404db-6d52-44c6-a09d-182ac122b912/westus/184ec37e-3e89-4bb7-b1b6-178639941eef
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 5BEF9A23FA564040A85B4E91D35A406F Ref B: BY1AA1072315062 Ref C: 2025-11-20T15:41:41Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database exascale-db-storage-vault show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/testAzureCLi/providers/Oracle.Database/exascaleDbStorageVaults/AzCli_vaultTest?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/testAzureCLi/providers/Oracle.Database/exascaleDbStorageVaults/AzCli_vaultTest","name":"AzCli_vaultTest","type":"oracle.database/exascaledbstoragevaults","location":"eastus","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-20T15:41:43.4414484Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-11-20T15:41:43.4414484Z"},"properties":{"additionalFlashCacheInPercent":null,"description":"Test
+        Description","displayName":"test-vault","highCapacityDatabaseStorage":{"availableSizeInGbs":null,"totalSizeInGbs":300},"highCapacityDatabaseStorageInput":{"totalSizeInGbs":300},"timeZone":null,"provisioningState":"Accepted","lifecycleState":"Provisioning","lifecycleDetails":null,"vmClusterCount":null,"ocid":null,"ociUrl":null,"exadataInfrastructureId":null,"attachedShapeAttributes":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '964'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Nov 2025 15:41:58 GMT
+      etag:
+      - '"0d00da4a-0000-0100-0000-691f36c50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: B4CD2180AE1C4FD9800A0AE2849824B5 Ref B: BY1AA1072315025 Ref C: 2025-11-20T15:41:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database exascale-db-storage-vault list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/testAzureCLi/providers/Oracle.Database/exascaleDbStorageVaults?api-version=2025-09-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/testAzureCLi/providers/Oracle.Database/exascaleDbStorageVaults/Ofake_AzCli_vault","name":"Ofake_AzCli_vault","type":"oracle.database/exascaledbstoragevaults","location":"canadacentral","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-19T17:16:33.4929601Z","lastModifiedBy":"a50e6610-5416-4c2a-88b6-172c7f376f7d","lastModifiedByType":"Application","lastModifiedAt":"2025-11-19T17:17:57.217389Z"},"properties":{"additionalFlashCacheInPercent":0,"description":"Test
+        Description","displayName":"test-vault","highCapacityDatabaseStorage":{"totalSizeInGbs":300},"highCapacityDatabaseStorageInput":{"totalSizeInGbs":300},"timeZone":"UTC","provisioningState":"Succeeded","lifecycleState":"Available","vmClusterCount":0,"ocid":"ocid1.exascaledbstoragevault.oc1.ca-toronto-1.an2g6ljr2edokzyajmy6lijumyain747hx6t33trs4n3ycmxjo3vfme2tyhq","ociUrl":"https://cloud.oracle.com/dbaas/exadb-xs/exascaleStorageVaults/ocid1.exascaledbstoragevault.oc1.ca-toronto-1.an2g6ljr2edokzyajmy6lijumyain747hx6t33trs4n3ycmxjo3vfme2tyhq?region=ca-toronto-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","attachedShapeAttributes":[]}},{"id":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/testAzureCLi/providers/Oracle.Database/exascaleDbStorageVaults/Ofake_AzCli_vaultTe","name":"Ofake_AzCli_vaultTe","type":"oracle.database/exascaledbstoragevaults","location":"eastus","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-19T17:42:52.1416114Z","lastModifiedBy":"a50e6610-5416-4c2a-88b6-172c7f376f7d","lastModifiedByType":"Application","lastModifiedAt":"2025-11-19T17:44:31.5921851Z"},"properties":{"additionalFlashCacheInPercent":0,"description":"Test
+        Description","displayName":"test-vault","highCapacityDatabaseStorage":{"totalSizeInGbs":300},"highCapacityDatabaseStorageInput":{"totalSizeInGbs":300},"timeZone":"UTC","provisioningState":"Succeeded","lifecycleState":"Available","vmClusterCount":0,"ocid":"ocid1.exascaledbstoragevault.oc1.iad.anuwcljt2edokzya6neglqifamkxessbq7laxly5nviudmwptut4b4m6sw3a","attachedShapeAttributes":[],"ociUrl":"https://cloud.oracle.com/dbaas/exadb-xs/exascaleStorageVaults/ocid1.exascaledbstoragevault.oc1.iad.anuwcljt2edokzya6neglqifamkxessbq7laxly5nviudmwptut4b4m6sw3a?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea"}},{"id":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/testAzureCLi/providers/Oracle.Database/exascaleDbStorageVaults/Ofake_AzCli_vaultTest","name":"Ofake_AzCli_vaultTest","type":"oracle.database/exascaledbstoragevaults","location":"eastus","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-19T21:52:16.4441894Z","lastModifiedBy":"a50e6610-5416-4c2a-88b6-172c7f376f7d","lastModifiedByType":"Application","lastModifiedAt":"2025-11-19T21:54:19.5850215Z"},"properties":{"additionalFlashCacheInPercent":0,"description":"Test
+        Description","displayName":"test-vault","highCapacityDatabaseStorage":{"totalSizeInGbs":300},"highCapacityDatabaseStorageInput":{"totalSizeInGbs":300},"timeZone":"UTC","provisioningState":"Succeeded","lifecycleState":"Available","vmClusterCount":0,"ocid":"ocid1.exascaledbstoragevault.oc1.iad.anuwcljt2edokzyafh2bwziybgawfnul5ikjt27ntap5nkvhcgzcix4umnfa","ociUrl":"https://cloud.oracle.com/dbaas/exadb-xs/exascaleStorageVaults/ocid1.exascaledbstoragevault.oc1.iad.anuwcljt2edokzyafh2bwziybgawfnul5ikjt27ntap5nkvhcgzcix4umnfa?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","attachedShapeAttributes":[]}},{"id":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/testAzureCLi/providers/Oracle.Database/exascaleDbStorageVaults/AzCli_vaultTest","name":"AzCli_vaultTest","type":"oracle.database/exascaledbstoragevaults","location":"eastus","zones":["2"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-20T15:41:43.4414484Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-11-20T15:41:43.4414484Z"},"properties":{"description":"Test
+        Description","displayName":"test-vault","highCapacityDatabaseStorage":{"totalSizeInGbs":300},"highCapacityDatabaseStorageInput":{"totalSizeInGbs":300},"provisioningState":"Accepted","lifecycleState":"Provisioning"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4660'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 20 Nov 2025 15:42:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 3aa50904-23a1-48ad-957d-8ee22aa7f7e8
+      - dc738275-8f41-467a-baf5-52d0da5712df
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 11C0E7007F164D3791F7BEE5DD6FF000 Ref B: BY1AA1072320052 Ref C: 2025-11-20T15:41:59Z'
+    status:
+      code: 200
+      message: OK
+version: 1

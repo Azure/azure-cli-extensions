@@ -11,17 +11,14 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "durabletask taskhub update",
-)
 class Update(AAZCommand):
     """Update a Task Hub
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2025-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/taskhubs/{}", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/taskhubs/{}", "2025-11-01"],
         ]
     }
 
@@ -48,7 +45,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.scheduler_name = AAZStrArg(
-            options=["-s", "--scheduler-name"],
+            options=["--scheduler-name"],
             help="The name of the Scheduler",
             required=True,
             id_part="name",
@@ -56,8 +53,8 @@ class Update(AAZCommand):
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
+        _args_schema.task_hub_name = AAZStrArg(
+            options=["-n", "--name", "--task-hub-name"],
             help="The name of the TaskHub",
             required=True,
             id_part="child_name_1",
@@ -139,7 +136,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "taskHubName", self.ctx.args.name,
+                    "taskHubName", self.ctx.args.task_hub_name,
                     required=True,
                 ),
             }
@@ -149,7 +146,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-11-01",
                     required=True,
                 ),
             }
@@ -242,7 +239,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "taskHubName", self.ctx.args.name,
+                    "taskHubName", self.ctx.args.task_hub_name,
                     required=True,
                 ),
             }
@@ -252,7 +249,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2025-11-01",
                     required=True,
                 ),
             }

@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Retention Policy
-
-        :example: Show details of a specific retention policy on a Scheduler.
-        az durabletask retention-policy show -g "example-rg" --scheduler-name "example-scheduler"
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/retentionpolicies/default", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/retentionpolicies/default", "2025-11-01"],
         ]
     }
 
@@ -123,7 +120,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-11-01",
                     required=True,
                 ),
             }

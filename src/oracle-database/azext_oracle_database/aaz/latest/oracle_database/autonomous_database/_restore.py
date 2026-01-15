@@ -22,9 +22,9 @@ class Restore(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/restore", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/restore", "2025-09-01"],
         ]
     }
 
@@ -152,7 +152,7 @@ class Restore(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -208,9 +208,7 @@ class Restore(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -231,6 +229,7 @@ class Restore(AAZCommand):
             )
             properties.apex_details = AAZObjectType(
                 serialized_name="apexDetails",
+                flags={"read_only": True},
             )
             properties.autonomous_database_id = AAZStrType(
                 serialized_name="autonomousDatabaseId",
@@ -256,9 +255,11 @@ class Restore(AAZCommand):
             )
             properties.connection_strings = AAZObjectType(
                 serialized_name="connectionStrings",
+                flags={"read_only": True},
             )
             properties.connection_urls = AAZObjectType(
                 serialized_name="connectionUrls",
+                flags={"read_only": True},
             )
             properties.cpu_core_count = AAZIntType(
                 serialized_name="cpuCoreCount",
@@ -268,6 +269,7 @@ class Restore(AAZCommand):
             )
             properties.data_safe_status = AAZStrType(
                 serialized_name="dataSafeStatus",
+                flags={"read_only": True},
             )
             properties.data_storage_size_in_gbs = AAZIntType(
                 serialized_name="dataStorageSizeInGbs",
@@ -324,15 +326,18 @@ class Restore(AAZCommand):
             )
             properties.lifecycle_state = AAZStrType(
                 serialized_name="lifecycleState",
+                flags={"read_only": True},
             )
             properties.local_adg_auto_failover_max_data_loss_limit = AAZIntType(
                 serialized_name="localAdgAutoFailoverMaxDataLossLimit",
             )
             properties.local_disaster_recovery_type = AAZStrType(
                 serialized_name="localDisasterRecoveryType",
+                flags={"read_only": True},
             )
             properties.local_standby_db = AAZObjectType(
                 serialized_name="localStandbyDb",
+                flags={"read_only": True},
             )
             properties.long_term_backup_schedule = AAZObjectType(
                 serialized_name="longTermBackupSchedule",
@@ -352,12 +357,15 @@ class Restore(AAZCommand):
                 serialized_name="ociUrl",
                 flags={"read_only": True},
             )
-            properties.ocid = AAZStrType()
+            properties.ocid = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.open_mode = AAZStrType(
                 serialized_name="openMode",
             )
             properties.operations_insights_status = AAZStrType(
                 serialized_name="operationsInsightsStatus",
+                flags={"read_only": True},
             )
             properties.peer_db_ids = AAZListType(
                 serialized_name="peerDbIds",
@@ -384,9 +392,13 @@ class Restore(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.remote_disaster_recovery_configuration = AAZObjectType(
+                serialized_name="remoteDisasterRecoveryConfiguration",
+                flags={"read_only": True},
+            )
             properties.role = AAZStrType()
-            properties.scheduled_operations = AAZObjectType(
-                serialized_name="scheduledOperations",
+            properties.scheduled_operations_list = AAZListType(
+                serialized_name="scheduledOperationsList",
             )
             properties.service_console_url = AAZStrType(
                 serialized_name="serviceConsoleUrl",
@@ -413,6 +425,10 @@ class Restore(AAZCommand):
             )
             properties.time_deletion_of_free_autonomous_database = AAZStrType(
                 serialized_name="timeDeletionOfFreeAutonomousDatabase",
+                flags={"read_only": True},
+            )
+            properties.time_disaster_recovery_role_changed = AAZStrType(
+                serialized_name="timeDisasterRecoveryRoleChanged",
                 flags={"read_only": True},
             )
             properties.time_local_data_guard_enabled = AAZStrType(
@@ -592,19 +608,36 @@ class Restore(AAZCommand):
             provisionable_cpus = cls._schema_on_200.properties.provisionable_cpus
             provisionable_cpus.Element = AAZIntType()
 
-            scheduled_operations = cls._schema_on_200.properties.scheduled_operations
-            scheduled_operations.day_of_week = AAZObjectType(
+            remote_disaster_recovery_configuration = cls._schema_on_200.properties.remote_disaster_recovery_configuration
+            remote_disaster_recovery_configuration.disaster_recovery_type = AAZStrType(
+                serialized_name="disasterRecoveryType",
+            )
+            remote_disaster_recovery_configuration.is_replicate_automatic_backups = AAZBoolType(
+                serialized_name="isReplicateAutomaticBackups",
+            )
+            remote_disaster_recovery_configuration.is_snapshot_standby = AAZBoolType(
+                serialized_name="isSnapshotStandby",
+            )
+            remote_disaster_recovery_configuration.time_snapshot_standby_enabled_till = AAZStrType(
+                serialized_name="timeSnapshotStandbyEnabledTill",
+            )
+
+            scheduled_operations_list = cls._schema_on_200.properties.scheduled_operations_list
+            scheduled_operations_list.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.scheduled_operations_list.Element
+            _element.day_of_week = AAZObjectType(
                 serialized_name="dayOfWeek",
                 flags={"required": True},
             )
-            scheduled_operations.scheduled_start_time = AAZStrType(
+            _element.scheduled_start_time = AAZStrType(
                 serialized_name="scheduledStartTime",
             )
-            scheduled_operations.scheduled_stop_time = AAZStrType(
+            _element.scheduled_stop_time = AAZStrType(
                 serialized_name="scheduledStopTime",
             )
 
-            day_of_week = cls._schema_on_200.properties.scheduled_operations.day_of_week
+            day_of_week = cls._schema_on_200.properties.scheduled_operations_list.Element.day_of_week
             day_of_week.name = AAZStrType(
                 flags={"required": True},
             )
@@ -626,6 +659,7 @@ class Restore(AAZCommand):
             )
             disc_clone.refreshable_status = AAZStrType(
                 serialized_name="refreshableStatus",
+                flags={"read_only": True},
             )
             disc_clone.source_id = AAZStrType(
                 serialized_name="sourceId",
@@ -633,6 +667,25 @@ class Restore(AAZCommand):
             )
             disc_clone.time_until_reconnect_clone_enabled = AAZStrType(
                 serialized_name="timeUntilReconnectCloneEnabled",
+            )
+
+            disc_clone_from_backup_timestamp = cls._schema_on_200.properties.discriminate_by("data_base_type", "CloneFromBackupTimestamp")
+            disc_clone_from_backup_timestamp.source_id = AAZStrType(
+                serialized_name="sourceId",
+                flags={"required": True},
+            )
+
+            disc_cross_region_disaster_recovery = cls._schema_on_200.properties.discriminate_by("data_base_type", "CrossRegionDisasterRecovery")
+            disc_cross_region_disaster_recovery.is_replicate_automatic_backups = AAZBoolType(
+                serialized_name="isReplicateAutomaticBackups",
+            )
+            disc_cross_region_disaster_recovery.remote_disaster_recovery_type = AAZStrType(
+                serialized_name="remoteDisasterRecoveryType",
+                flags={"required": True},
+            )
+            disc_cross_region_disaster_recovery.source_id = AAZStrType(
+                serialized_name="sourceId",
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.system_data

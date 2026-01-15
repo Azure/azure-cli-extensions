@@ -13,9 +13,9 @@ interactions:
       ParameterSetName:
       - -g -n --mode
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"owner":"jingnanxu"},"properties":{"provisioningState":"Succeeded"}}'
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:12:43 GMT
+      - Tue, 04 Nov 2025 08:40:07 GMT
       expires:
       - '-1'
       pragma:
@@ -41,7 +41,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 108633CF27DA4E198A65C4E13C23EF28 Ref B: SYD03EDGE2121 Ref C: 2025-05-01T07:12:43Z'
+      - 'Ref A: 7360E84B82684967ABA5B6AF97EFA074 Ref B: SYD03EDGE1116 Ref C: 2025-11-04T08:40:07Z'
     status:
       code: 200
       message: OK
@@ -64,9 +64,9 @@ interactions:
       ParameterSetName:
       - -g -n --mode
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
@@ -78,7 +78,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:12:47 GMT
+      - Tue, 04 Nov 2025 08:40:08 GMT
       expires:
       - '-1'
       pragma:
@@ -90,13 +90,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/australiasoutheast/f00c763d-8d78-43b7-931a-d7e7b1df0c34
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/133a57c0-8553-4900-aac4-9260592c6423
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 31A274F7FC484D8F92DD00D25D11A799 Ref B: SYD03EDGE1913 Ref C: 2025-05-01T07:12:43Z'
+      - 'Ref A: 39484A6900F0413485C178C9162CE7B4 Ref B: SYD03EDGE1918 Ref C: 2025-11-04T08:40:07Z'
     status:
       code: 201
       message: Created
@@ -114,7 +114,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --version
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -128,7 +128,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:12:49 GMT
+      - Tue, 04 Nov 2025 08:40:11 GMT
       expires:
       - '-1'
       pragma:
@@ -142,7 +142,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: E96E6C79F40944ADAEE963DC627E7854 Ref B: SYD03EDGE1315 Ref C: 2025-05-01T07:12:48Z'
+      - 'Ref A: 1D40637AFE9843909ACBE299657F8B87 Ref B: SYD03EDGE1315 Ref C: 2025-11-04T08:40:09Z'
     status:
       code: 200
       message: OK
@@ -168,7 +168,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --version
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -182,7 +182,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:12:50 GMT
+      - Tue, 04 Nov 2025 08:40:12 GMT
       expires:
       - '-1'
       pragma:
@@ -194,13 +194,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/australiaeast/4218c141-c524-429b-8274-4ba29bed8883
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/7886b4cc-96e0-4fe1-8c4b-5b72054abaad
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 42F10EFFDF2D4D138F9F025B0BE656DF Ref B: SYD03EDGE1315 Ref C: 2025-05-01T07:12:49Z'
+      - 'Ref A: 62258B8056674B39B8936BA932981B32 Ref B: SYD03EDGE2110 Ref C: 2025-11-04T08:40:11Z'
     status:
       code: 200
       message: OK
@@ -218,7 +218,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -232,7 +232,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:12:51 GMT
+      - Tue, 04 Nov 2025 08:40:13 GMT
       expires:
       - '-1'
       pragma:
@@ -246,7 +246,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: DBBEBF97594B4074891E765CF1400063 Ref B: SYD03EDGE2116 Ref C: 2025-05-01T07:12:51Z'
+      - 'Ref A: CBA380F5F6D54B9AA0734C70E1454919 Ref B: SYD03EDGE1721 Ref C: 2025-11-04T08:40:13Z'
     status:
       code: 200
       message: OK
@@ -264,7 +264,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -278,7 +278,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:12:54 GMT
+      - Tue, 04 Nov 2025 08:40:15 GMT
       expires:
       - '-1'
       pragma:
@@ -290,9 +290,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
+      - '16498'
       x-msedge-ref:
-      - 'Ref A: 8B136DE085B14A5CAA495366188AE3A7 Ref B: SYD03EDGE1121 Ref C: 2025-05-01T07:12:52Z'
+      - 'Ref A: F4BA901D4D014DE8861A888F70165B9C Ref B: SYD03EDGE0805 Ref C: 2025-11-04T08:40:14Z'
     status:
       code: 200
       message: OK
@@ -310,7 +310,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --match-variable --operator --value
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -324,7 +324,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:12:55 GMT
+      - Tue, 04 Nov 2025 08:40:16 GMT
       expires:
       - '-1'
       pragma:
@@ -338,7 +338,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 0EB6DC962C5E4591A926EEB94E32D4C3 Ref B: SYD03EDGE0906 Ref C: 2025-05-01T07:12:54Z'
+      - 'Ref A: CEAAC39BC2C14851BC8FD2505AA9D5B4 Ref B: SYD03EDGE0919 Ref C: 2025-11-04T08:40:16Z'
     status:
       code: 200
       message: OK
@@ -366,7 +366,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --match-variable --operator --value
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -380,7 +380,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:12:57 GMT
+      - Tue, 04 Nov 2025 08:40:17 GMT
       expires:
       - '-1'
       pragma:
@@ -392,13 +392,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/australiaeast/05bacafd-5055-4265-88de-fef66c2e8ffb
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/4adfb119-159b-49e7-977b-b9b9a26ab782
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 279712340EA84CB095154E717543572A Ref B: SYD03EDGE0906 Ref C: 2025-05-01T07:12:56Z'
+      - 'Ref A: BB95254D02FF40FF871FE78286191704 Ref B: SYD03EDGE1021 Ref C: 2025-11-04T08:40:17Z'
     status:
       code: 200
       message: OK
@@ -416,7 +416,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -430,7 +430,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:12:59 GMT
+      - Tue, 04 Nov 2025 08:40:19 GMT
       expires:
       - '-1'
       pragma:
@@ -444,7 +444,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: E0FFFBBE52AA43DF867B77D522955E49 Ref B: SYD03EDGE1410 Ref C: 2025-05-01T07:12:58Z'
+      - 'Ref A: D4C233DEE135448894DCA1DD4299B5D0 Ref B: SYD03EDGE1314 Ref C: 2025-11-04T08:40:18Z'
     status:
       code: 200
       message: OK
@@ -462,7 +462,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -476,7 +476,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:12:59 GMT
+      - Tue, 04 Nov 2025 08:40:19 GMT
       expires:
       - '-1'
       pragma:
@@ -490,7 +490,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 630AA2DA0D2A4AB7832D2C42D42F2252 Ref B: SYD03EDGE1116 Ref C: 2025-05-01T07:12:59Z'
+      - 'Ref A: 90ADEE616A7943ED8C8E6E282EEE4C0D Ref B: SYD03EDGE1906 Ref C: 2025-11-04T08:40:19Z'
     status:
       code: 200
       message: OK
@@ -508,7 +508,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --match-variable --operator --value
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -522,7 +522,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:02 GMT
+      - Tue, 04 Nov 2025 08:40:21 GMT
       expires:
       - '-1'
       pragma:
@@ -536,7 +536,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: E6DC360023FA4732BB9E6DD778B8D52B Ref B: SYD03EDGE2110 Ref C: 2025-05-01T07:13:01Z'
+      - 'Ref A: 7FA68249F4494DED86F12F58F66DDC74 Ref B: SYD03EDGE0715 Ref C: 2025-11-04T08:40:20Z'
     status:
       code: 200
       message: OK
@@ -563,7 +563,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --match-variable --operator --value
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -577,7 +577,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:04 GMT
+      - Tue, 04 Nov 2025 08:40:22 GMT
       expires:
       - '-1'
       pragma:
@@ -589,13 +589,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/australiasoutheast/811795bf-c6ee-41b6-afe6-fb9e0e18d791
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/5300cc96-144a-4f80-9012-0bb09236a068
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 3A823C0322AE4396BA1F7C8F82191483 Ref B: SYD03EDGE2110 Ref C: 2025-05-01T07:13:02Z'
+      - 'Ref A: 5C2A37C407EF41119AF78EA66CB3F25B Ref B: SYD03EDGE1310 Ref C: 2025-11-04T08:40:22Z'
     status:
       code: 200
       message: OK
@@ -613,7 +613,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -627,7 +627,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:05 GMT
+      - Tue, 04 Nov 2025 08:40:23 GMT
       expires:
       - '-1'
       pragma:
@@ -641,7 +641,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: F40CDB7206D3481CAF63B4F7BCB8F6F0 Ref B: SYD03EDGE0919 Ref C: 2025-05-01T07:13:04Z'
+      - 'Ref A: 7BA58F4CE49E43E1AD743496FE5299FF Ref B: SYD03EDGE2113 Ref C: 2025-11-04T08:40:23Z'
     status:
       code: 200
       message: OK
@@ -659,7 +659,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -673,7 +673,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:06 GMT
+      - Tue, 04 Nov 2025 08:40:23 GMT
       expires:
       - '-1'
       pragma:
@@ -687,7 +687,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 9B0DFE8A0DED488C9C0FA6DA79911A3C Ref B: SYD03EDGE1710 Ref C: 2025-05-01T07:13:06Z'
+      - 'Ref A: 5CB3021FA16245D3A7CAA939CBDF88F3 Ref B: SYD03EDGE1712 Ref C: 2025-11-04T08:40:23Z'
     status:
       code: 200
       message: OK
@@ -705,7 +705,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -719,7 +719,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:07 GMT
+      - Tue, 04 Nov 2025 08:40:24 GMT
       expires:
       - '-1'
       pragma:
@@ -733,7 +733,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: DD42B9D0856441F08FF729688A384B65 Ref B: SYD03EDGE2122 Ref C: 2025-05-01T07:13:06Z'
+      - 'Ref A: 7B520FE351994002BA7F31444AAF6A5C Ref B: SYD03EDGE0811 Ref C: 2025-11-04T08:40:25Z'
     status:
       code: 200
       message: OK
@@ -751,7 +751,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -765,7 +765,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:08 GMT
+      - Tue, 04 Nov 2025 08:40:26 GMT
       expires:
       - '-1'
       pragma:
@@ -779,7 +779,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 6D37C43E54874578ACE8A45E49A988AA Ref B: SYD03EDGE1305 Ref C: 2025-05-01T07:13:08Z'
+      - 'Ref A: BE0F76E49FF64D4882CBB4E1960A205F Ref B: SYD03EDGE0707 Ref C: 2025-11-04T08:40:25Z'
     status:
       code: 200
       message: OK
@@ -797,7 +797,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id --match-variable --operator --value
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -811,7 +811,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:09 GMT
+      - Tue, 04 Nov 2025 08:40:27 GMT
       expires:
       - '-1'
       pragma:
@@ -825,7 +825,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 915F0B7ED166460092DDDFA952A8223E Ref B: SYD03EDGE1721 Ref C: 2025-05-01T07:13:09Z'
+      - 'Ref A: DFB532D4781B4A6799856FD62E3BB072 Ref B: SYD03EDGE1408 Ref C: 2025-11-04T08:40:27Z'
     status:
       code: 200
       message: OK
@@ -853,7 +853,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id --match-variable --operator --value
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -867,7 +867,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:10 GMT
+      - Tue, 04 Nov 2025 08:40:28 GMT
       expires:
       - '-1'
       pragma:
@@ -879,13 +879,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/australiasoutheast/ada74c19-2765-408a-bef2-33702a690664
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/739a4450-2e4b-4404-ae9d-840a5564e257
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 2FC9BBE363644255BF88CDC12EFCFFB3 Ref B: SYD03EDGE1721 Ref C: 2025-05-01T07:13:10Z'
+      - 'Ref A: 80E59E9FE46F4056A7F1F7AA773D17D9 Ref B: SYD03EDGE2112 Ref C: 2025-11-04T08:40:28Z'
     status:
       code: 200
       message: OK
@@ -903,7 +903,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -917,7 +917,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:12 GMT
+      - Tue, 04 Nov 2025 08:40:29 GMT
       expires:
       - '-1'
       pragma:
@@ -931,7 +931,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: EE8B2CD85716413386AF03E20CBFFA27 Ref B: SYD03EDGE2118 Ref C: 2025-05-01T07:13:11Z'
+      - 'Ref A: D25B6828CB144F6AAA10D801FEED2A0F Ref B: SYD03EDGE2122 Ref C: 2025-11-04T08:40:29Z'
     status:
       code: 200
       message: OK
@@ -949,7 +949,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -963,7 +963,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:13 GMT
+      - Tue, 04 Nov 2025 08:40:31 GMT
       expires:
       - '-1'
       pragma:
@@ -977,7 +977,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: BAA13EA46EA74467B2CCF9A50A753926 Ref B: SYD03EDGE2017 Ref C: 2025-05-01T07:13:13Z'
+      - 'Ref A: 92A16A13996A48D887E56CD51F3497E2 Ref B: SYD03EDGE2108 Ref C: 2025-11-04T08:40:30Z'
     status:
       code: 200
       message: OK
@@ -995,7 +995,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id --match-variable --operator --value
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -1009,7 +1009,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:15 GMT
+      - Tue, 04 Nov 2025 08:40:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1023,7 +1023,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: B6FCD2D1F911498E8976C33AD05DB0EC Ref B: SYD03EDGE1320 Ref C: 2025-05-01T07:13:14Z'
+      - 'Ref A: 44ECEBFB5E0C4CE58D619BF017603F53 Ref B: SYD03EDGE0920 Ref C: 2025-11-04T08:40:31Z'
     status:
       code: 200
       message: OK
@@ -1050,7 +1050,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id --match-variable --operator --value
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -1064,7 +1064,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:17 GMT
+      - Tue, 04 Nov 2025 08:40:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1076,13 +1076,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/australiasoutheast/797bf096-1e97-479e-899d-46bcce2a2542
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/c70a42fc-34ee-474f-b7ba-e160272e3ae6
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: B209C42076B343CD9D465BC574662CEA Ref B: SYD03EDGE1320 Ref C: 2025-05-01T07:13:15Z'
+      - 'Ref A: DBFD5A27C5434F1B98F9492CB43DD0D5 Ref B: SYD03EDGE1120 Ref C: 2025-11-04T08:40:32Z'
     status:
       code: 200
       message: OK
@@ -1100,7 +1100,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id --rule-id
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -1114,7 +1114,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:18 GMT
+      - Tue, 04 Nov 2025 08:40:34 GMT
       expires:
       - '-1'
       pragma:
@@ -1128,7 +1128,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 34DFF3F33369475D9D8B37823283A936 Ref B: SYD03EDGE0813 Ref C: 2025-05-01T07:13:17Z'
+      - 'Ref A: 5FA3654BB2E146BF8442D5286FE1D2F6 Ref B: SYD03EDGE1420 Ref C: 2025-11-04T08:40:33Z'
     status:
       code: 200
       message: OK
@@ -1146,7 +1146,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id --rule-id
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -1160,7 +1160,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:19 GMT
+      - Tue, 04 Nov 2025 08:40:35 GMT
       expires:
       - '-1'
       pragma:
@@ -1174,7 +1174,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: AEBE2A3B289B4C6EB3C6F03972F476EE Ref B: SYD03EDGE1421 Ref C: 2025-05-01T07:13:18Z'
+      - 'Ref A: 3F97866870C848859C17F605E0EEEF21 Ref B: SYD03EDGE1015 Ref C: 2025-11-04T08:40:34Z'
     status:
       code: 200
       message: OK
@@ -1193,7 +1193,7 @@ interactions:
       - -g --policy-name --type --rule-group-id --rule-id --match-variable --operator
         --value
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -1207,7 +1207,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:21 GMT
+      - Tue, 04 Nov 2025 08:40:35 GMT
       expires:
       - '-1'
       pragma:
@@ -1221,7 +1221,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: E95EF7E721494D6C8996117B44AADB57 Ref B: SYD03EDGE1520 Ref C: 2025-05-01T07:13:20Z'
+      - 'Ref A: 82053F22FF2C40B4BEB35FADE07DB0C4 Ref B: SYD03EDGE0708 Ref C: 2025-11-04T08:40:35Z'
     status:
       code: 200
       message: OK
@@ -1251,7 +1251,7 @@ interactions:
       - -g --policy-name --type --rule-group-id --rule-id --match-variable --operator
         --value
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -1265,7 +1265,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:23 GMT
+      - Tue, 04 Nov 2025 08:40:37 GMT
       expires:
       - '-1'
       pragma:
@@ -1277,13 +1277,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/australiasoutheast/f23448c9-cb06-4b0c-9176-73b49a18c785
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/09921a04-f03e-4f75-a7cb-6eb2819fcdf1
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 335997FA79424AB1816A59B81C5BC24E Ref B: SYD03EDGE1520 Ref C: 2025-05-01T07:13:21Z'
+      - 'Ref A: 10402BD540D34EECB41FEE4A2185CEB3 Ref B: SYD03EDGE1713 Ref C: 2025-11-04T08:40:36Z'
     status:
       code: 200
       message: OK
@@ -1301,7 +1301,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id --rule-id
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -1315,7 +1315,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:23 GMT
+      - Tue, 04 Nov 2025 08:40:38 GMT
       expires:
       - '-1'
       pragma:
@@ -1329,7 +1329,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 9779F52AD05E424D8A5109056BA92708 Ref B: SYD03EDGE1007 Ref C: 2025-05-01T07:13:24Z'
+      - 'Ref A: 8E3031FBF1304DA2A95B39BE86C7E29D Ref B: SYD03EDGE1320 Ref C: 2025-11-04T08:40:38Z'
     status:
       code: 200
       message: OK
@@ -1347,7 +1347,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id --rule-id
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -1361,7 +1361,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:25 GMT
+      - Tue, 04 Nov 2025 08:40:39 GMT
       expires:
       - '-1'
       pragma:
@@ -1375,7 +1375,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 87C9446626164A3C85D1F0980A8BEC95 Ref B: SYD03EDGE1919 Ref C: 2025-05-01T07:13:24Z'
+      - 'Ref A: CCE20ACC831B4F4F966AFA2F892A5706 Ref B: SYD03EDGE1713 Ref C: 2025-11-04T08:40:39Z'
     status:
       code: 200
       message: OK
@@ -1394,7 +1394,7 @@ interactions:
       - -g --policy-name --type --rule-group-id --rule-id --match-variable --operator
         --value
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -1408,7 +1408,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:25 GMT
+      - Tue, 04 Nov 2025 08:40:40 GMT
       expires:
       - '-1'
       pragma:
@@ -1422,7 +1422,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: C2D5B734C623458BBD2B3DCFC2EB8596 Ref B: SYD03EDGE2122 Ref C: 2025-05-01T07:13:26Z'
+      - 'Ref A: F818E1BFB93F4E78A6B60C3ECD1EE625 Ref B: SYD03EDGE1312 Ref C: 2025-11-04T08:40:40Z'
     status:
       code: 200
       message: OK
@@ -1451,7 +1451,7 @@ interactions:
       - -g --policy-name --type --rule-group-id --rule-id --match-variable --operator
         --value
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -1465,7 +1465,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:27 GMT
+      - Tue, 04 Nov 2025 08:40:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1477,13 +1477,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/australiasoutheast/1bf770e7-cafb-4c4c-95df-892d512ef18d
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/dd654571-7400-450a-bf91-b1ea02f3c936
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: B8833440F3A345D39DEC3F895020CDFB Ref B: SYD03EDGE2122 Ref C: 2025-05-01T07:13:26Z'
+      - 'Ref A: F6EF3A51E61D4EA8B81A9D12A54B5C99 Ref B: SYD03EDGE0919 Ref C: 2025-11-04T08:40:41Z'
     status:
       code: 200
       message: OK
@@ -1501,7 +1501,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id --rule-id
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -1515,7 +1515,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:28 GMT
+      - Tue, 04 Nov 2025 08:40:43 GMT
       expires:
       - '-1'
       pragma:
@@ -1529,7 +1529,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: AB57A45E28E345DC8E1BC076D85CF03D Ref B: SYD03EDGE0713 Ref C: 2025-05-01T07:13:28Z'
+      - 'Ref A: 2907ACAEFF4A4E94A42275AA48E7273F Ref B: SYD03EDGE1009 Ref C: 2025-11-04T08:40:43Z'
     status:
       code: 200
       message: OK
@@ -1547,7 +1547,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --rule-group-id --rule-id
       User-Agent:
-      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
@@ -1561,7 +1561,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 May 2025 07:13:30 GMT
+      - Tue, 04 Nov 2025 08:40:45 GMT
       expires:
       - '-1'
       pragma:
@@ -1575,7 +1575,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 71CFAAC0E19744EC9F69F7D9A654B238 Ref B: SYD03EDGE1006 Ref C: 2025-05-01T07:13:29Z'
+      - 'Ref A: A6EECA7691EC43AC87590C2E530839D6 Ref B: SYD03EDGE1418 Ref C: 2025-11-04T08:40:44Z'
     status:
       code: 200
       message: OK

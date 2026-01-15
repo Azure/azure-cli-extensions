@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
-from typing import Any, AsyncIterable, Callable, Dict, Optional, TypeVar
+from typing import Any, Callable, Optional, TypeVar
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -31,7 +31,8 @@ from ...operations._throughput_pools_operations import build_list_by_resource_gr
 from .._configuration import CosmosDBManagementClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 
 class ThroughputPoolsOperations:
@@ -54,7 +55,7 @@ class ThroughputPoolsOperations:
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list(self, **kwargs: Any) -> AsyncIterable["_models.ThroughputPoolResource"]:
+    def list(self, **kwargs: Any) -> AsyncItemPaged["_models.ThroughputPoolResource"]:
         """Lists all the Azure Cosmos DB Throughput Pools available under the subscription.
 
         :return: An iterator like instance of either ThroughputPoolResource or the result of
@@ -123,7 +124,10 @@ class ThroughputPoolsOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
@@ -133,7 +137,7 @@ class ThroughputPoolsOperations:
     @distributed_trace
     def list_by_resource_group(
         self, resource_group_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.ThroughputPoolResource"]:
+    ) -> AsyncItemPaged["_models.ThroughputPoolResource"]:
         """List all the ThroughputPools in a given resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -206,7 +210,10 @@ class ThroughputPoolsOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response

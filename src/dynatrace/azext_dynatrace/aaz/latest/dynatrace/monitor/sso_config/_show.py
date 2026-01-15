@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/singlesignonconfigurations/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/singlesignonconfigurations/{}", "2024-04-24"],
         ]
     }
 
@@ -49,12 +49,18 @@ class Show(AAZCommand):
             help="Single Sign On Configuration Name",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]*$",
+            ),
         )
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -130,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -189,6 +195,7 @@ class Show(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.single_sign_on_state = AAZStrType(
                 serialized_name="singleSignOnState",

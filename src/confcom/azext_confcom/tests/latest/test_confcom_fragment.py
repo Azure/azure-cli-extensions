@@ -5,6 +5,7 @@
 
 import json
 import os
+from pathlib import Path
 import subprocess
 import tempfile
 import time
@@ -493,7 +494,7 @@ class FragmentPolicyGeneratingTarfile(unittest.TestCase):
         try:
             with tempfile.TemporaryDirectory() as folder:
                 filename = os.path.join(folder, "oci.tar")
-                filename2 = os.path.join(self.path, "oci2.tar")
+                filename2 = os.path.join(folder, "oci2.tar")
 
                 tar_mapping_file = {"mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64": filename2}
                 create_tar_file(filename)
@@ -762,14 +763,16 @@ class FragmentPolicySigning(unittest.TestCase):
     """
     @classmethod
     def setUpClass(cls):
-        cls.key_dir_parent = os.path.join(SAMPLES_DIR, 'certs')
+        cls.key_dir_parent = Path(tempfile.gettempdir(), "certchain")
+        cls.key_dir_parent.mkdir(parents=True, exist_ok=True)
         cls.key = os.path.join(cls.key_dir_parent, 'intermediateCA', 'private', 'ec_p384_private.pem')
         cls.chain = os.path.join(cls.key_dir_parent, 'intermediateCA', 'certs', 'www.contoso.com.chain.cert.pem')
         if not os.path.exists(cls.key) or not os.path.exists(cls.chain):
-            script_path = os.path.join(cls.key_dir_parent, 'create_certchain.sh')
+            script_path = os.path.join(SAMPLES_DIR, "certs", 'create_certchain.sh')
 
             arg_list = [
                 script_path,
+                cls.key_dir_parent.as_posix(),
             ]
             os.chmod(script_path, 0o755)
 
@@ -777,8 +780,7 @@ class FragmentPolicySigning(unittest.TestCase):
             item = subprocess.run(
                 arg_list,
                 check=False,
-                shell=True,
-                cwd=cls.key_dir_parent,
+                shell=False,
                 env=os.environ.copy(),
             )
 

@@ -2,6 +2,23 @@
 
 This is an extension to Azure CLI to manage Pure Storage Cloud Azure Native resources.
 
+## Recent Improvements ##
+
+The pscloud CLI has been recently improved for better usability and consistency:
+
+### Enhanced Parameter Usability ###
+- **Simplified zone specification**: Use `--zone` or `-z` instead of `--availability-zone`
+- **Flattened network parameters**: Use `--subnet-name` and `--vnet-name` directly instead of complex `--vnet-injection` JSON objects
+- **Improved parameter names**: Consistent use of `--name` or `-n` across all commands
+
+### Removed Unsupported Features ###
+- **Identity parameters removed**: `--system-assigned`, `--user-assigned`, and related identity options have been removed as they are not supported by the Pure Storage Cloud service
+- **Wait command removed**: `az pscloud pool wait` has been removed for consistency with other Azure CLI extensions
+
+### Enhanced Validation ###
+- **Required parameters**: Key parameters like `--zone`, `--provisioned-bandwidth`, `--reservation-id`, `--subnet-name`, and `--vnet-name` are now properly validated as required
+- **Better examples**: All command examples now show realistic Azure resource IDs and cleaner syntax
+
 ## How to use ##
 
 For more details about the Pure Storage Cloud resources please visit [documentation on Pure Support](https://support.purestorage.com/bundle/m_azure_native_pure_storage_cloud/page/Pure_Cloud_Block_Store/Azure_Native_Pure_Storage_Cloud/design/c_resources_in_psc.html).
@@ -10,7 +27,7 @@ For more details about the Pure Storage Cloud resources please visit [documentat
 
 Install this extension using the below CLI command:
 ```
-az extension add --name pscloud --allow-preview
+az extension add --name pscloud
 ```
 
 ### Check the version ###
@@ -65,13 +82,33 @@ This resource represents a block storage array instance, delivered as a service,
 To create a Storage Pool, you need to have a virtual network with a delegated subnet to `PureStorage.Block` service.
 
 ```bash
-az pscloud pool create --resource-group {resource_group} --storage-pool-name {storage_pool_name} --location {location} --availability-zone {availability_zone} --vnet-injection '{{"subnet-id": "{subnet_id}", "vnet-id": "{vnet_id}"}}' --provisioned-bandwidth {bandwidth_mb_per_sec} --reservation-id {reservation_resource_id} --system-assigned --user-assigned {user_assigned_identity_ids} --tags "{key:value}"
+az pscloud pool create --resource-group {resource_group} --storage-pool-name {storage_pool_name} --location {location} --zone {availability_zone} --subnet-name {subnet_resource_id} --vnet-name {vnet_resource_id} --provisioned-bandwidth {bandwidth_mb_per_sec} --reservation-id {reservation_resource_id} --tags "{key:value}"
+```
+
+**Required Parameters:**
+- `--zone` or `-z`: Azure Availability Zone (1, 2, or 3)
+- `--subnet-name`: Full Azure resource ID of the delegated subnet
+- `--vnet-name`: Full Azure resource ID of the virtual network
+- `--provisioned-bandwidth`: Bandwidth in MB/s
+- `--reservation-id`: Azure resource ID of the Pure Storage Cloud reservation
+
+**Example with realistic values:**
+```bash
+az pscloud pool create \
+  --resource-group myResourceGroup \
+  --storage-pool-name myStoragePool \
+  --location eastus \
+  --zone 1 \
+  --subnet-name /subscriptions/12345678-1234-1234-1234-123456789abc/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/mySubnet \
+  --vnet-name /subscriptions/12345678-1234-1234-1234-123456789abc/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVnet \
+  --provisioned-bandwidth 100 \
+  --reservation-id /subscriptions/12345678-1234-1234-1234-123456789abc/providers/PureStorage.Block/reservations/myReservation
 ```
 
 #### Show a Storage Pool ####
 
 ```bash
-az pscloud pool show --resource-group {resource_group} --storage-pool-name {storage_pool_name}
+az pscloud pool show --resource-group {resource_group} --name {storage_pool_name}
 ```
 
 #### List Storage Pools ####
@@ -86,10 +123,12 @@ az pscloud pool list --resource-group {resource_group}
 az pscloud pool update --resource-group {resource_group} --name {storage_pool_name} --provisioned-bandwidth {bandwidth_mb_per_sec}
 ```
 
+**Note:** Identity-related parameters (`--system-assigned`, `--user-assigned`) have been removed as they are not supported by the Pure Storage Cloud service.
+
 #### Delete a Storage Pool ####
 
 ```bash
-az pscloud pool delete --resource-group {resource_group} --storage-pool-name {storage_pool_name}
+az pscloud pool delete --resource-group {resource_group} --name {storage_pool_name}
 ```
 
 #### Connect a Storage Pool to AVS ####
@@ -101,7 +140,7 @@ Currently, establishing a connection between a Storage Pool and an Azure VMware 
 This command provides the health status about the Storage Pool.
 
 ```bash
-az pscloud pool get-health-status --resource-group {resource_group} --storage-pool-name {storage_pool_name}
+az pscloud pool get-health-status --resource-group {resource_group} --name {storage_pool_name}
 ```
 
 #### Get Storage Pool AVS Status ####
@@ -109,7 +148,9 @@ az pscloud pool get-health-status --resource-group {resource_group} --storage-po
 This command provides the current connection status between the Storage Pool and Azure VMware Solution (AVS) resource.
 
 ```bash
-az pscloud pool get-avs-status --resource-group {resource_group} --storage-pool-name {storage_pool_name}
+az pscloud pool get-avs-status --resource-group {resource_group} --name {storage_pool_name}
 ```
+
+**Note:** You can use either `--name` or `-n` for the storage pool name parameter.
 
 If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack prefixlist show",
 )
 class Show(AAZCommand):
-    """Get a PrefixListResource
+    """Retrieve details for a PrefixListResource for a specific Palo Alto Networks local rulestack.
 
     :example: Get a PrefixListResource
         az palo-alto cloudngfw local-rulestack prefixlist show -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyPrefixlist
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/prefixlists/{}", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/prefixlists/{}", "2025-10-08"],
         ]
     }
 
@@ -130,7 +130,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
@@ -192,6 +192,7 @@ class Show(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             prefix_list = cls._schema_on_200.properties.prefix_list

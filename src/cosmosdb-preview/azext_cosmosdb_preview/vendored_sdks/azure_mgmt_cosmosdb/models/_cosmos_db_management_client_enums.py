@@ -19,6 +19,16 @@ class AccessRuleDirection(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Applies to outbound network traffic from the secured resources"""
 
 
+class AllocationState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Allocation state of the cluster and data center resources. Active implies the virtual machines
+    of the cluster are allocated, deallocated implies virtual machines and resources are
+    deallocated.
+    """
+
+    ACTIVE = "Active"
+    DEALLOCATED = "Deallocated"
+
+
 class AnalyticalStorageSchemaType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Describes the types of schema for analytical storage."""
 
@@ -305,13 +315,24 @@ class FleetspacePropertiesFleetspaceApiKind(str, Enum, metaclass=CaseInsensitive
     NO_SQL = "NoSQL"
 
 
-class FleetspacePropertiesThroughputPoolConfigurationServiceTier(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+class FleetspacePropertiesServiceTier(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Service Tier for the fleetspace. GeneralPurpose types refers to single write region accounts
     that can be added to this fleetspace, whereas BusinessCritical refers to multi write region.
     """
 
     GENERAL_PURPOSE = "GeneralPurpose"
     BUSINESS_CRITICAL = "BusinessCritical"
+
+
+class GarnetCacheProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The status of the resource at the time the operation was called."""
+
+    CREATING = "Creating"
+    UPDATING = "Updating"
+    DELETING = "Deleting"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
 
 
 class IndexingMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -590,11 +611,11 @@ class Status(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     INTERNALLY_READY = "InternallyReady"
     ONLINE = "Online"
     DELETING = "Deleting"
+    CREATING = "Creating"
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
     CANCELED = "Canceled"
     UPDATING = "Updating"
-    CREATING = "Creating"
 
 
 class SupportedActions(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -661,6 +682,7 @@ class VectorDataType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     FLOAT32 = "float32"
     UINT8 = "uint8"
     INT8 = "int8"
+    FLOAT16 = "float16"
 
 
 class VectorIndexType(str, Enum, metaclass=CaseInsensitiveEnumMeta):

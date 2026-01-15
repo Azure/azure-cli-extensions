@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
 
+import json
 import unittest
 from knack.log import get_logger
 from azure.cli.testsdk import ScenarioTest
@@ -126,7 +127,7 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
             'dataSourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Storage/storageAccounts/clitestsavltdonotdelete',
             'restoreLocation': 'centraluseuap',
             'containerName': 'container1',
-            'restoreContainerName': 'clitestvsdonotdelete',
+            'targetStorageAccount': 'clitestvsdonotdelete',
             'targetResourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Storage/storageAccounts/clitestvsdonotdelete',
         })
 
@@ -147,10 +148,10 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
                                       '--container-list "{containerName}"').get_output_in_json()
         test.kwargs.update({"restoreRequest": restore_request_vs})
 
-        test.addCleanup(test.cmd, 'az storage container delete --name "{containerName}" --account-name "{restoreContainerName}" --auth-mode "login"')
+        test.addCleanup(test.cmd, 'az storage container delete --name "{containerName}" --account-name "{targetStorageAccount}" --auth-mode "login"')
 
         # Cleanup failsafe, delete existing container at restore location
-        test.cmd('az storage container delete --name "{containerName}" --account-name "{restoreContainerName}" --auth-mode "login"')
+        test.cmd('az storage container delete --name "{containerName}" --account-name "{targetStorageAccount}" --auth-mode "login"')
 
         # Ensure no other restore jobs running on datasource. Required to avoid operation clashes.
         wait_for_job_exclusivity_on_datasource(test)
@@ -163,6 +164,153 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
             test.check('properties.dataSourceName', "{dataSourceName}"),
             test.exists('properties.extendedInfo.recoveryDestination')
         ])
+
+    @AllowLargeResponse()
+    def test_dataprotection_backup_instance_restore_adls_recovery_point(test):
+        test.kwargs.update({
+            'dataSourceType': 'AzureDataLakeStorage',
+            'sourceDataStore': 'VaultStore',
+            'backupInstanceName': 'sourceadlsclisa2-sourceadlsclisa2-d5a197d4-35ac-4f4f-8d2b-0a9c0e61b195',
+            'dataSourceName': 'sourceadlsclisa2',
+            'dataSourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/dataprotectionclitest-rg/providers/Microsoft.Storage/storageAccounts/sourceadlsclisa2',
+            'restoreLocation': 'eastus',
+            'containerName': 'con1',
+            'targetStorageAccount': 'targetadlsclitestsa3',
+            'targetResourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/dataprotectionclitest-rg/providers/Microsoft.Storage/storageAccounts/targetadlsclitestsa3',
+            'vaultName': 'clitest-bkp-vault',
+            'rg': 'dataprotectionclitest-rg',
+        })
+
+        # Recovery Point Restore - Vaulted Blobs
+        recovery_point = test.cmd('az dataprotection recovery-point list --backup-instance-name "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+            test.greater_than('length([])', 0)
+        ]).get_output_in_json()
+        test.kwargs.update({
+            'recoveryPointId': recovery_point[0]['name']
+        })
+
+        restore_request_vs = test.cmd('az dataprotection backup-instance restore initialize-for-item-recovery '
+                                      '--datasource-type "{dataSourceType}" '
+                                      '--restore-location "{restoreLocation}" '
+                                      '--source-datastore "{sourceDataStore}" '
+                                      '--recovery-point-id "{recoveryPointId}" '
+                                      '--target-resource-id "{targetResourceId}" '
+                                      '--container-list "{containerName}"').get_output_in_json()
+        test.kwargs.update({"restoreRequest": restore_request_vs})
+
+        test.addCleanup(test.cmd, 'az storage container delete --name "{containerName}" --account-name "{targetStorageAccount}" --auth-mode "login"')
+
+        # Cleanup failsafe, delete existing container at restore location
+        test.cmd('az storage container delete --name "{containerName}" --account-name "{targetStorageAccount}" --auth-mode "login"')
+
+        # Ensure no other restore jobs running on datasource. Required to avoid operation clashes.
+        # wait_for_job_exclusivity_on_datasource(test)
+
+        test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" '
+             '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
+
+        restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
+                                        '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"').get_output_in_json()
+        test.kwargs.update({"jobId": restore_trigger_json["jobId"]})
+
+        test.cmd('az dataprotection job show --ids "{jobId}"', checks=[
+            test.check('properties.dataSourceName', "{dataSourceName}"),
+            test.exists('properties.extendedInfo.recoveryDestination')
+        ])
+
+    @AllowLargeResponse()
+    def test_dataprotection_backup_instance_ilr_restore_adls_recovery_point(test):
+        test.kwargs.update({
+            'dataSourceType': 'AzureDataLakeStorage',
+            'sourceDataStore': 'VaultStore',
+            'backupInstanceName': 'adlsblobsourcesa-adlsblobsourcesa-14964441-c754-42b8-81f7-f4c552d836d6',
+            'dataSourceName': 'adlsblobsourcesa',
+            'dataSourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/dataprotectionpstest-rg/providers/Microsoft.Storage/storageAccounts/adlsblobsourcesa',
+            'restoreLocation': 'eastus',
+            'containerName': 'con6',
+            'targetStorageAccount': 'adlsblobtargetsa',
+            'targetResourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/dataprotectionpstest-rg/providers/Microsoft.Storage/storageAccounts/adlsblobtargetsa',
+            'vaultName': 'dataprotectionpstest-bv',
+            'rg': 'dataprotectionpstest-rg',
+            'vaultedBlobPrefix': json.dumps({
+                "containers": [
+                    {
+                        "name": "con4",
+                        "renameto": "renamedcon1"
+                    },
+                    {
+                        "name": "con5",
+                        "prefixmatch": ["b"],
+                        "renameto": "renamedcon2"
+                    }
+                ]
+            }),
+            'expectedContainers': ['renamedcon1', 'renamedcon2']
+        })
+
+        # Recovery Point Restore - Vaulted Blobs
+        recovery_point = test.cmd('az dataprotection recovery-point list --backup-instance-name "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+            test.greater_than('length([])', 0)
+        ]).get_output_in_json()
+        test.kwargs.update({
+            'recoveryPointId': recovery_point[0]['name']
+        })
+
+        restore_request_vs = test.cmd('az dataprotection backup-instance restore initialize-for-item-recovery '
+                                      '--datasource-type "{dataSourceType}" '
+                                      '--restore-location "{restoreLocation}" '
+                                      '--source-datastore "{sourceDataStore}" '
+                                      '--recovery-point-id "{recoveryPointId}" '
+                                      '--target-resource-id "{targetResourceId}" '
+                                      '--vaulted-blob-prefix-pattern \'{vaultedBlobPrefix}\'').get_output_in_json()
+        test.kwargs.update({"restoreRequest": restore_request_vs})
+
+        # Cleanup failsafe, delete existing container at restore location
+        test.addCleanup(test.cmd, 'az storage container delete --name "renamedcon1" --account-name "{targetStorageAccount}" --auth-mode "login"')
+        test.addCleanup(test.cmd, 'az storage container delete --name "renamedcon2" --account-name "{targetStorageAccount}" --auth-mode "login"')
+        test.addCleanup(test.cmd, 'az storage container delete --name "{containerName}" --account-name "{targetStorageAccount}" --auth-mode "login"')
+
+        test.cmd('az storage container delete --name "renamedcon1" --account-name "{targetStorageAccount}" --auth-mode "login"')
+        test.cmd('az storage container delete --name "renamedcon2" --account-name "{targetStorageAccount}" --auth-mode "login"')
+        test.cmd('az storage container delete --name "{containerName}" --account-name "{targetStorageAccount}" --auth-mode "login"')
+
+        # Ensure no other restore jobs running on datasource. Required to avoid operation clashes.
+        # wait_for_job_exclusivity_on_datasource(test)
+
+        test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" '
+             '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
+
+        restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
+                                        '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"').get_output_in_json()
+        test.kwargs.update({"jobId": restore_trigger_json["jobId"]})
+
+        test.cmd('az dataprotection job show --ids "{jobId}"', checks=[
+            test.check('properties.dataSourceName', "{dataSourceName}"),
+            test.exists('properties.extendedInfo.recoveryDestination')
+        ])
+
+        # Track restore job to completion
+        logger.info("Waiting for restore job to complete...")
+        track_job_to_completion(test)
+        
+        logger.info("Verifying restored containers with renamed names...")
+        
+        containers_json = test.cmd('az storage container list --account-name "{targetStorageAccount}" --auth-mode "login"').get_output_in_json()
+        container_names = [container['name'] for container in containers_json]
+        
+        # Verify renamed containers exist
+        for expected_container in test.kwargs['expectedContainers']:
+            if expected_container not in container_names:
+                raise AssertionError(f"Expected renamed container '{expected_container}' not found in target storage account. Found containers: {container_names}")
+            else:
+                logger.info(f"✓ Renamed container '{expected_container}' successfully restored")
+        
+        # Check that the original container names (con4, con5) do NOT exist
+        original_containers = ['con4', 'con5']
+        for original_container in original_containers:
+            if original_container in container_names:
+                logger.warning(f"Original container '{original_container}' exists when it should have been renamed")
+
 
     @unittest.skip("Temporary skip to allow AKS hotfix through")
     @AllowLargeResponse()

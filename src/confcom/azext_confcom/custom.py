@@ -5,23 +5,26 @@
 
 import os
 import sys
-from typing import Optional
+import tempfile
+from typing import Optional, BinaryIO
 
 from azext_confcom import oras_proxy, os_util, security_policy
 from azext_confcom._validators import resolve_stdio
 from azext_confcom.config import (
     DEFAULT_REGO_FRAGMENTS, POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS,
-    REGO_IMPORT_FILE_STRUCTURE)
+    REGO_IMPORT_FILE_STRUCTURE, ACI_FIELD_VERSION, ACI_FIELD_CONTAINERS)
 from azext_confcom.cose_proxy import CoseSignToolProxy
 from azext_confcom.errors import eprint
 from azext_confcom.fragment_util import get_all_fragment_contents
 from azext_confcom.init_checks import run_initial_docker_checks
 from azext_confcom.kata_proxy import KataPolicyGenProxy
-from azext_confcom.security_policy import OutputType
+from azext_confcom.security_policy import AciPolicy, OutputType
 from azext_confcom.template_util import (
     get_image_name, inject_policy_into_template, inject_policy_into_yaml,
     pretty_print_func, print_existing_policy_from_arm_template,
     print_existing_policy_from_yaml, print_func, str_to_sha256)
+from azext_confcom.command.fragment_attach import fragment_attach as _fragment_attach
+from azext_confcom.command.fragment_push import fragment_push as _fragment_push
 from knack.log import get_logger
 from pkg_resources import parse_version
 
@@ -37,6 +40,7 @@ def acipolicygen_confcom(
     virtual_node_yaml_path: str,
     infrastructure_svn: str,
     tar_mapping_location: str,
+    container_definitions: Optional[list] = None,
     approve_wildcards: str = False,
     outraw: bool = False,
     outraw_pretty_print: bool = False,
@@ -63,6 +67,9 @@ def acipolicygen_confcom(
             "source control. Also verify that no secrets are present in the logs of your command or script.",
             "For additional information, see http://aka.ms/clisecrets. \n",
         )
+
+    if container_definitions is None:
+        container_definitions = []
 
     stdio_enabled = resolve_stdio(enable_stdio, disable_stdio)
 
@@ -147,6 +154,16 @@ def acipolicygen_confcom(
             exclude_default_fragments=exclude_default_fragments,
             infrastructure_svn=infrastructure_svn,
         )
+    elif container_definitions:
+        container_group_policies = AciPolicy(
+            {
+                ACI_FIELD_VERSION: "1.0",
+                ACI_FIELD_CONTAINERS: [],
+            },
+            debug_mode=debug_mode,
+            disable_stdio=disable_stdio,
+            container_definitions=container_definitions,
+        )
 
     exit_code = 0
 
@@ -227,6 +244,7 @@ def acifragmentgen_confcom(
     key: str,
     chain: str,
     minimum_svn: str,
+    container_definitions: Optional[list] = None,
     image_target: str = "",
     algo: str = "ES384",
     fragment_path: str = None,
@@ -240,7 +258,10 @@ def acifragmentgen_confcom(
     upload_fragment: bool = False,
     no_print: bool = False,
     fragments_json: str = "",
+    out_signed_fragment: bool = False,
 ):
+    if container_definitions is None:
+        container_definitions = []
 
     stdio_enabled = resolve_stdio(enable_stdio, disable_stdio)
 
@@ -299,13 +320,27 @@ def acifragmentgen_confcom(
         policy = security_policy.load_policy_from_image_name(
             image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled)
         )
-    else:
+    elif input_path:
         # this is using --input
         if not tar_mapping:
             tar_mapping = os_util.load_tar_mapping_from_config_file(input_path)
         policy = security_policy.load_policy_from_json_file(
             input_path, debug_mode=debug_mode, disable_stdio=(not stdio_enabled)
         )
+    elif container_definitions:
+        policy = AciPolicy(
+            {
+                ACI_FIELD_VERSION: "1.0",
+                ACI_FIELD_CONTAINERS: [],
+            },
+            debug_mode=debug_mode,
+            disable_stdio=disable_stdio,
+            container_definitions=container_definitions,
+        )
+    else:
+        eprint("Either --image-name, --input, or --container-definitions must be provided", exit_code=2)
+        return
+
     # get all of the fragments that are being used in the policy
     # and associate them with each container group
     fragment_policy_list = []
@@ -321,7 +356,7 @@ def acifragmentgen_confcom(
 
     # make sure we have images to generate a fragment
     policy_images = policy.get_images()
-    if not policy_images:
+    if not policy_images and not container_definitions:
         eprint("No images found in the policy or all images are covered by fragments")
 
     if not feed:
@@ -330,12 +365,16 @@ def acifragmentgen_confcom(
 
     fragment_text = policy.generate_fragment(namespace, svn, output_type, omit_id=omit_id)
 
-    if output_type != security_policy.OutputType.DEFAULT and not no_print:
+    if output_type != security_policy.OutputType.DEFAULT and not no_print and not out_signed_fragment:
         print(fragment_text)
 
     # take ".rego" off the end of the filename if it's there, it'll get added back later
     output_filename = output_filename.replace(".rego", "")
     filename = f"{output_filename or namespace}.rego"
+
+    if out_signed_fragment:
+        filename = os.path.join(tempfile.gettempdir(), filename)
+
     os_util.write_str_to_file(filename, fragment_text)
 
     if key:
@@ -343,11 +382,23 @@ def acifragmentgen_confcom(
         iss = cose_proxy.create_issuer(chain)
         out_path = filename + ".cose"
 
+        if out_signed_fragment:
+            out_path = os.path.join(tempfile.gettempdir(), os.path.basename(out_path))
+
         cose_proxy.cose_sign(filename, key, chain, feed, iss, algo, out_path)
-        if upload_fragment and image_target:
-            oras_proxy.attach_fragment_to_image(image_target, out_path)
-        elif upload_fragment:
-            oras_proxy.push_fragment_to_registry(feed, out_path)
+
+        # Preserve default behaviour established since version 1.1.0 of attaching
+        # the fragment to the first image specified in input
+        # (or --image-target if specified)
+        if upload_fragment:
+            oras_proxy.attach_fragment_to_image(
+                image_name=image_target or policy_images[0].containerImage,
+                filename=out_path,
+            )
+
+        if out_signed_fragment:
+            with open(out_path, "rb") as f:
+                sys.stdout.buffer.write(f.read())
 
 
 def katapolicygen_confcom(
@@ -481,3 +532,23 @@ def get_fragment_output_type(outraw):
     if outraw:
         output_type = security_policy.OutputType.RAW
     return output_type
+
+
+def fragment_attach(
+    signed_fragment: BinaryIO,
+    manifest_tag: str,
+) -> None:
+    _fragment_attach(
+        signed_fragment=signed_fragment,
+        manifest_tag=manifest_tag
+    )
+
+
+def fragment_push(
+    signed_fragment: BinaryIO,
+    manifest_tag: str,
+) -> None:
+    _fragment_push(
+        signed_fragment=signed_fragment,
+        manifest_tag=manifest_tag
+    )

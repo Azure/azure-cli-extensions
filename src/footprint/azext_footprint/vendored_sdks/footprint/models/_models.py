@@ -213,7 +213,7 @@ class MeasurementEndpoint(SubResource):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'endpoint_id': {'readonly': True, 'max_length': 32, 'min_length': 32, 'pattern': r'[a-f0-9]{32}'},
-        'endpoint': {'required': True, 'max_length': 1024, 'min_length': 0, 'pattern': r'^[a-z0-9\*]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?$'},
+        'endpoint': {'required': True, 'max_length': 1024, 'min_length': 0, 'pattern': r'^[a-z0-9\*]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,}(:[0-9]{1,5})?$'},
         'measurement_type': {'required': True},
         'weight': {'required': True, 'maximum': 2147483647, 'minimum': 0},
         'experiment_id': {'max_length': 32, 'min_length': 32, 'pattern': r'[a-f0-9]{32}'},

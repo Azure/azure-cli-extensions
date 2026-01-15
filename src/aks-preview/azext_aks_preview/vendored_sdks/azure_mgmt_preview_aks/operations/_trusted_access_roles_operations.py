@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
-from typing import Any, Callable, Optional, TypeVar
+from typing import Any, Callable, Dict, Iterable, Optional, TypeVar
 import urllib.parse
 
 from azure.core import PipelineClient
@@ -27,11 +27,10 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from .. import models as _models
 from .._configuration import ContainerServiceClientConfiguration
-from .._utils.serialization import Deserializer, Serializer
+from .._serialization import Deserializer, Serializer
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
 _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
@@ -41,7 +40,7 @@ def build_list_request(location: str, subscription_id: str, **kwargs: Any) -> Ht
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-08-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-10-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -77,7 +76,7 @@ class TrustedAccessRolesOperations:
 
     models = _models
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs):
         input_args = list(args)
         self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: ContainerServiceClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
@@ -85,7 +84,7 @@ class TrustedAccessRolesOperations:
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list(self, location: str, **kwargs: Any) -> ItemPaged["_models.TrustedAccessRole"]:
+    def list(self, location: str, **kwargs: Any) -> Iterable["_models.TrustedAccessRole"]:
         """List supported trusted access roles.
 
         List supported trusted access roles.

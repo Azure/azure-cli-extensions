@@ -7,7 +7,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, Callable, IO, Optional, TypeVar, Union, overload
+from typing import Any, Callable, Dict, IO, Optional, TypeVar, Union, overload
 
 from azure.core import AsyncPipelineClient
 from azure.core.exceptions import (
@@ -25,13 +25,12 @@ from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ..._serialization import Deserializer, Serializer
 from ...operations._resolve_private_link_service_id_operations import build_post_request
 from .._configuration import ContainerServiceClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
 class ResolvePrivateLinkServiceIdOperations:

@@ -161,11 +161,10 @@ helps['containerapp up'] = """
     - name: Create a container app and deploy a model from Azure AI Foundry
       text: |
             az containerapp up -n my-containerapp -l westus3 --model-registry azureml --model-name Phi-4 --model-version 7
-    - name: Create an Azure Functions on Azure Container Apps (kind=functionapp)
+    - name: Create an Azure Functions on Container Apps (kind=functionapp)
       text: |
             az containerapp up -n my-containerapp --image my-app:v1.0 --kind functionapp
 """
-
 
 helps['containerapp replica count'] = """
     type: command
@@ -177,6 +176,135 @@ helps['containerapp replica count'] = """
     - name: Count replicas of the latest revision
       text: |
           az containerapp replica count -n my-containerapp -g MyResourceGroup
+"""
+
+helps['containerapp function'] = """
+    type: group
+    short-summary: Commands related to Azure Functions on Container Apps.
+"""
+
+helps['containerapp function list'] = """
+    type: command
+    short-summary: List all functions in an Azure Functions on Container Apps.
+    long-summary: |
+        --revision is required only if the app is not in single revision mode.
+        Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
+    examples:
+    - name: List all functions in an Azure Functions on Container Apps. (single active revision mode)
+      text: |
+          az containerapp function list -n my-containerapp -g MyResourceGroup
+    - name: List all functions in an Azure Functions on Container Apps for a specific revision.
+      text: |
+          az containerapp function list -n my-containerapp -g MyResourceGroup --revision MyRevision
+"""
+
+helps['containerapp function show'] = """
+    type: command
+    short-summary: Get details of a function in an Azure Functions on Container Apps.
+    long-summary: |
+        --revision is required only if the app is not in single revision mode.
+        Run to check activerevisionmode: az containerapp show -n my-containerapp -g MyResourceGroup --query properties.configuration.activeRevisionsMode
+    examples:
+    - name: Show details of a function in an Azure Functions on Container Apps. (single active revision mode)
+      text: |
+          az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction
+    - name: Show details of a function in an Azure Functions on Container Apps for a specific revision.
+      text: |
+          az containerapp function show -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision MyRevision
+"""
+
+helps['containerapp function keys'] = """
+    type: group
+    short-summary: Commands for keys management in an Azure Functions on Container Apps.
+"""
+
+helps['containerapp function keys show'] = """
+    type: command
+    short-summary: Show specific function key in an Azure Functions on Container Apps.
+    examples:
+    - name: Show a function key for a specific function in an Azure Functions on Container Apps.
+      text: |
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name default --function-name MyFunctionName
+    - name: Show a host key for an Azure Functions on Container Apps.
+      text: |
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name default
+    - name: Show a master key for an Azure Functions on Container Apps.
+      text: |
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name _master
+    - name: Show a system key for an Azure Functions on Container Apps.
+      text: |
+          az containerapp function keys show -n my-containerapp -g MyResourceGroup --key-type systemKey --key-name MyKeyName
+"""
+
+helps['containerapp function keys list'] = """
+    type: command
+    short-summary: List function keys in an Azure Functions on Container Apps.
+    examples:
+    - name: List function keys for a specific function in an Azure Functions on Container Apps.
+      text: |
+          az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type functionKey --function-name MyFunctionName
+    - name: List host keys for an Azure Functions on Container Apps.
+      text: |
+          az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type hostKey
+    - name: List master keys for an Azure Functions on Container Apps.
+      text: |
+          az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type masterKey
+    - name: List system keys for an Azure Functions on Container Apps.
+      text: |
+          az containerapp function keys list -n my-containerapp -g MyResourceGroup --key-type systemKey
+"""
+
+helps['containerapp function keys set'] = """
+    type: command
+    short-summary: Create or update specific function key in an Azure Functions on Container Apps.
+    examples:
+    - name: Create or update a function key for a specific function in an Azure Functions on Container Apps.
+      text: |
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type functionKey --key-name default --key-value MyKeyValue --function-name MyFunctionName
+    - name: Create or update a host key for an Azure Functions on Container Apps.
+      text: |
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type hostKey --key-name default --key-value MyKeyValue
+    - name: Create or update the master key for an Azure Functions on Container Apps.
+      text: |
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type masterKey --key-name _master --key-value MyKeyValue
+    - name: Create or update a system key for an Azure Functions on Container Apps.
+      text: |
+          az containerapp function keys set -n my-containerapp -g MyResourceGroup --key-type systemKey --key-name MyKeyName --key-value MyKeyValue
+"""
+
+helps['containerapp function invocations'] = """
+    type: group
+    short-summary: Commands to get function invocation data and traces from Application Insights.
+"""
+
+helps['containerapp function invocations summary'] = """
+    type: command
+    short-summary: Get function invocation summary from Application Insights.
+    examples:
+    - name: Get invocation summary for a function with default timespan (30 days)
+      text: |
+          az containerapp function invocations summary -n my-containerapp -g MyResourceGroup --function-name MyFunction
+    - name: Get invocation summary for a function with specific timespan
+      text: |
+          az containerapp function invocations summary -n my-containerapp -g MyResourceGroup --function-name MyFunction --timespan 7d
+    - name: Get invocation summary for a function in a specific revision
+      text: |
+          az containerapp function invocations summary -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision MyRevision
+"""
+
+helps['containerapp function invocations traces'] = """
+    type: command
+    short-summary: Get function invocation traces from Application Insights.
+    examples:
+    - name: Get invocation traces for a function with default timespan (30 days)
+      text: |
+          az containerapp function invocations traces -n my-containerapp -g MyResourceGroup --function-name MyFunction
+    - name: Get invocation traces for a function with specific timespan
+      text: |
+          az containerapp function invocations traces -n my-containerapp -g MyResourceGroup --function-name MyFunction --timespan 24h
+    - name: Get invocation traces for a function in a specific revision
+      text: |
+          az containerapp function invocations traces -n my-containerapp -g MyResourceGroup --function-name MyFunction --revision MyRevision
 """
 
 # Environment Commands
@@ -920,7 +1048,7 @@ helps['containerapp create'] = """
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --enable-java-agent
-    - name: Create an Azure Functions on Azure Container Apps (kind=functionapp)
+    - name: Create an Azure Functions on Container Apps (kind=functionapp)
       text: |
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
@@ -1967,6 +2095,10 @@ helps['containerapp sessionpool create'] = """
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --location eastasia
+    - name: Create or update a Session Pool with container type Shell default settings.
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --container-type Shell --location westus3
     - name: Create or update a Session Pool with container type PythonLTS, with max concurrent sessions is 30, ready session instances 20.
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
@@ -2304,11 +2436,14 @@ helps['containerapp env maintenance-config remove'] = """
 
 helps['containerapp debug'] = """
     type: command
-    short-summary: Open an SSH-like interactive shell within a container app debug console.
+    short-summary: Open an SSH-like interactive shell within a container app debug console or execute a command inside the container and exit.
     examples:
     - name: Debug by connecting to a container app's debug console by replica, revision and container
       text: |
           az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --container MyContainer
+    - name: Debug by executing a command inside a container app and exit
+      text: |
+          az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --container MyContainer --command "echo Hello World"
 """
 
 helps['containerapp label-history'] = """
@@ -2336,103 +2471,4 @@ helps['containerapp label-history show'] = """
     - name: Show Label History
       text: |
           az containerapp label-history show -n my-containerapp -g MyResourceGroup --label LabelName
-"""
-
-helps['containerapp env http-route-config'] = """
-    type: group
-    short-summary: Commands to manage environment level http routing.
-"""
-
-helps['containerapp env http-route-config list'] = """
-    type: command
-    short-summary: List the http route configs in the environment.
-    examples:
-    - name: List the http route configs in the environment.
-      text: |
-          az containerapp env http-route-config list -g MyResourceGroup -n MyEnvironment
-"""
-
-helps['containerapp env http-route-config create'] = """
-    type: command
-    short-summary: Create a new http route config.
-    examples:
-    - name: Create a new route from a yaml file.
-      text: |
-          az containerapp env http-route-config create -g MyResourceGroup -n MyEnvironment -r configname --yaml config.yaml
-"""
-
-helps['containerapp env http-route-config update'] = """
-    type: command
-    short-summary: Update a http route config.
-    examples:
-    - name: Update a route in the environment from a yaml file.
-      text: |
-          az containerapp env http-route-config update -g MyResourceGroup -n MyEnvironment -r configname --yaml config.yaml
-"""
-
-helps['containerapp env http-route-config show'] = """
-    type: command
-    short-summary: Show a http route config.
-    examples:
-    - name: Show a route in the environment.
-      text: |
-          az containerapp env http-route-config show -g MyResourceGroup -n MyEnvironment -r configname
-"""
-
-helps['containerapp env http-route-config delete'] = """
-    type: command
-    short-summary: Delete a http route config.
-    examples:
-    - name: Delete a route from the environment.
-      text: |
-          az containerapp env http-route-config delete -g MyResourceGroup -n MyEnvironment -r configname
-"""
-
-helps['containerapp env premium-ingress show'] = """
-    type: command
-    short-summary: Show the premium ingress settings for the environment.
-    examples:
-    - name: Show the premium ingress settings for the environment.
-      text: |
-          az containerapp env premium-ingress show -g MyResourceGroup -n MyEnvironment
-"""
-
-helps['containerapp env premium-ingress'] = """
-    type: group
-    short-summary: Configure premium ingress settings for the environment.
-    long-summary: |
-        Premium ingress settings apply to all applications in the environment. They allow moving the ingress instances to a workload profile and scaling them beyond the system defaults to enable high traffic workloads. Other settings include request idle timeouts, header count limits, and the termination grace period.
-    examples:
-    - name: Enable premium ingress for the environment.
-      text: |
-          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
-"""
-
-helps['containerapp env premium-ingress add'] = """
-    type: command
-    short-summary: Enable the premium ingress settings for the environment.
-    long-summary: |
-        Unspecified optional parameters will be cleared from any existing configuration.
-    examples:
-    - name: Add the premium ingress settings for the environment.
-      text: |
-          az containerapp env premium-ingress add -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
-"""
-
-helps['containerapp env premium-ingress update'] = """
-    type: command
-    short-summary: Update the premium ingress settings for the environment.
-    examples:
-    - name: Update the workload profile used for premium ingress.
-      text: |
-          az containerapp env premium-ingress update -g MyResourceGroup -n MyEnvironment -w WorkloadProfileName
-"""
-
-helps['containerapp env premium-ingress remove'] = """
-    type: command
-    short-summary: Remove the ingress settings and restores the system to default values.
-    examples:
-    - name: Reset the ingress settings for the environment to its default values
-      text: |
-          az containerapp env premium-ingress remove -g MyResourceGroup -n MyEnvironment
 """

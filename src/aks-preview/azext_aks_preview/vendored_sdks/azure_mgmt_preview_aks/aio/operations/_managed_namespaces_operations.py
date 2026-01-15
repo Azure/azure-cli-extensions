@@ -7,7 +7,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, AsyncIterator, Callable, IO, Optional, TypeVar, Union, cast, overload
+from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -32,7 +32,7 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ..._serialization import Deserializer, Serializer
 from ...operations._managed_namespaces_operations import (
     build_create_or_update_request,
     build_delete_request,
@@ -44,8 +44,7 @@ from ...operations._managed_namespaces_operations import (
 from .._configuration import ContainerServiceClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
 class ManagedNamespacesOperations:
@@ -70,7 +69,7 @@ class ManagedNamespacesOperations:
     @distributed_trace
     def list_by_managed_cluster(
         self, resource_group_name: str, resource_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.ManagedNamespace"]:
+    ) -> AsyncIterable["_models.ManagedNamespace"]:
         """Gets a list of managed namespaces in the specified managed cluster.
 
         Gets a list of managed namespaces in the specified managed cluster.
@@ -302,9 +301,13 @@ class ManagedNamespacesOperations:
         content_type: str = "application/json",
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ManagedNamespace]:
-        """Creates or updates a managed namespace in the specified managed cluster.
+        """Creates or updates a namespace managed by ARM for the specified managed cluster. Users can
+        configure aspects like resource quotas, network ingress/egress policies, and more. See
+        aka.ms/aks/managed-namespaces for more details.
 
-        Creates or updates a managed namespace in the specified managed cluster.
+        Creates or updates a namespace managed by ARM for the specified managed cluster. Users can
+        configure aspects like resource quotas, network ingress/egress policies, and more. See
+        aka.ms/aks/managed-namespaces for more details.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -336,9 +339,13 @@ class ManagedNamespacesOperations:
         content_type: str = "application/json",
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ManagedNamespace]:
-        """Creates or updates a managed namespace in the specified managed cluster.
+        """Creates or updates a namespace managed by ARM for the specified managed cluster. Users can
+        configure aspects like resource quotas, network ingress/egress policies, and more. See
+        aka.ms/aks/managed-namespaces for more details.
 
-        Creates or updates a managed namespace in the specified managed cluster.
+        Creates or updates a namespace managed by ARM for the specified managed cluster. Users can
+        configure aspects like resource quotas, network ingress/egress policies, and more. See
+        aka.ms/aks/managed-namespaces for more details.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -368,9 +375,13 @@ class ManagedNamespacesOperations:
         parameters: Union[_models.ManagedNamespace, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ManagedNamespace]:
-        """Creates or updates a managed namespace in the specified managed cluster.
+        """Creates or updates a namespace managed by ARM for the specified managed cluster. Users can
+        configure aspects like resource quotas, network ingress/egress policies, and more. See
+        aka.ms/aks/managed-namespaces for more details.
 
-        Creates or updates a managed namespace in the specified managed cluster.
+        Creates or updates a namespace managed by ARM for the specified managed cluster. Users can
+        configure aspects like resource quotas, network ingress/egress policies, and more. See
+        aka.ms/aks/managed-namespaces for more details.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.

@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2024-04-24"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Show(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -58,6 +61,9 @@ class Show(AAZCommand):
             help="Monitor rule set name",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]*$",
+            ),
         )
         return cls._args_schema
 
@@ -130,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -189,6 +195,7 @@ class Show(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             log_rules = cls._schema_on_200.properties.log_rules
@@ -212,6 +219,9 @@ class Show(AAZCommand):
             metric_rules = cls._schema_on_200.properties.metric_rules
             metric_rules.filtering_tags = AAZListType(
                 serialized_name="filteringTags",
+            )
+            metric_rules.sending_metrics = AAZStrType(
+                serialized_name="sendingMetrics",
             )
 
             filtering_tags = cls._schema_on_200.properties.metric_rules.filtering_tags

@@ -22,9 +22,9 @@ class ListLinkableEnvironment(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/listlinkableenvironments", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/listlinkableenvironments", "2024-04-24"],
         ]
     }
 
@@ -49,6 +49,9 @@ class ListLinkableEnvironment(AAZCommand):
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -61,16 +64,19 @@ class ListLinkableEnvironment(AAZCommand):
             options=["--region"],
             arg_group="Request",
             help="Azure region in which we want to link the environment",
+            required=True,
         )
         _args_schema.tenant_id = AAZStrArg(
             options=["--tenant-id"],
             arg_group="Request",
             help="Tenant Id of the user in which they want to link the environment",
+            required=True,
         )
         _args_schema.user_principal = AAZStrArg(
             options=["--user-principal"],
             arg_group="Request",
             help="user principal id of the user",
+            required=True,
         )
         return cls._args_schema
 
@@ -140,7 +146,7 @@ class ListLinkableEnvironment(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -165,9 +171,9 @@ class ListLinkableEnvironment(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("region", AAZStrType, ".region")
-            _builder.set_prop("tenantId", AAZStrType, ".tenant_id")
-            _builder.set_prop("userPrincipal", AAZStrType, ".user_principal")
+            _builder.set_prop("region", AAZStrType, ".region", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("userPrincipal", AAZStrType, ".user_principal", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 

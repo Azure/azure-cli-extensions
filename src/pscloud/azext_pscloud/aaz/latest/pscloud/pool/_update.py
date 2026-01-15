@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "pscloud pool update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a storage pool
@@ -60,25 +59,6 @@ class Update(AAZCommand):
                 min_length=1,
             ),
         )
-
-        # define Arg Group "Identity"
-
-        _args_schema = cls._args_schema
-        _args_schema.mi_system_assigned = AAZStrArg(
-            options=["--system-assigned", "--mi-system-assigned"],
-            arg_group="Identity",
-            help="Set the system managed identity.",
-            blank="True",
-        )
-        _args_schema.mi_user_assigned = AAZListArg(
-            options=["--user-assigned", "--mi-user-assigned"],
-            arg_group="Identity",
-            help="Set the user managed identities.",
-            blank=[],
-        )
-
-        mi_user_assigned = cls._args_schema.mi_user_assigned
-        mi_user_assigned.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -204,18 +184,8 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
-
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
-                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
-
-            user_assigned = _builder.get(".identity.userAssigned")
-            if user_assigned is not None:
-                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:

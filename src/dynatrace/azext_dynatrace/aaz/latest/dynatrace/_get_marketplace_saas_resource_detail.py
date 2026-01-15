@@ -22,9 +22,9 @@ class GetMarketplaceSaasResourceDetail(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-27",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/dynatrace.observability/getmarketplacesaasresourcedetails", "2023-04-27"],
+            ["mgmt-plane", "/subscriptions/{}/providers/dynatrace.observability/getmarketplacesaasresourcedetails", "2024-04-24"],
         ]
     }
 
@@ -111,7 +111,7 @@ class GetMarketplaceSaasResourceDetail(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-27",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -160,6 +160,9 @@ class GetMarketplaceSaasResourceDetail(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.marketplace_saa_s_resource_id = AAZStrType(
                 serialized_name="marketplaceSaaSResourceId",
+            )
+            _schema_on_200.marketplace_saa_s_resource_name = AAZStrType(
+                serialized_name="marketplaceSaaSResourceName",
             )
             _schema_on_200.marketplace_subscription_status = AAZStrType(
                 serialized_name="marketplaceSubscriptionStatus",

@@ -26,7 +26,7 @@ helps['migrate local'] = """
         environments.
 """
 
-helps['migrate local get-discovered-server'] = """
+helps['migrate get-discovered-server'] = """
     type: command
     short-summary: Retrieve discovered servers from an Azure Migrate project.
     long-summary: |
@@ -69,33 +69,33 @@ helps['migrate local get-discovered-server'] = """
     examples:
         - name: List all discovered servers in a project
           text: |
-            az migrate local get-discovered-server \\
+            az migrate get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG
+                --resource-group myRG
         - name: Get a specific discovered server by name
           text: |
-            az migrate local get-discovered-server \\
+            az migrate get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --name machine-12345
         - name: Filter discovered servers by display name
           text: |
-            az migrate local get-discovered-server \\
+            az migrate get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --display-name "web-server"
         - name: List VMware servers discovered by a specific appliance
           text: |
-            az migrate local get-discovered-server \\
+            az migrate get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --appliance-name myVMwareAppliance \\
                 --source-machine-type VMware
         - name: Get a specific server from a specific appliance
           text: |
-            az migrate local get-discovered-server \\
+            az migrate get-discovered-server \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --appliance-name myAppliance \\
                 --name machine-12345 \\
                 --source-machine-type HyperV
@@ -152,14 +152,14 @@ helps['migrate local replication init'] = """
         - name: Initialize replication infrastructure
           text: |
             az migrate local replication init \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --project-name myMigrateProject \\
                 --source-appliance-name myVMwareAppliance \\
                 --target-appliance-name myAzStackHCIAppliance
         - name: Initialize and return success status
           text: |
             az migrate local replication init \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --project-name myMigrateProject \\
                 --source-appliance-name mySourceAppliance \\
                 --target-appliance-name myTargetAppliance \\
@@ -226,7 +226,7 @@ helps['migrate local replication new'] = """
             Space-separated list of NIC IDs
             to replicate from the source server.
             Use this for power user mode.
-        - name: --vm-name
+        - name: --target-vm-name
           short-summary: Name of the VM to be created.
           long-summary: >
             The name for the virtual machine
@@ -268,7 +268,7 @@ helps['migrate local replication new'] = """
             az migrate local replication new \\
                 --machine-index 1 \\
                 --project-name myMigrateProject \\
-                --resource-group-name myRG \\
+                --resource-group myRG \\
                 --target-storage-path-id "XZXZ" \\
                 --target-resource-group-id "YZYZ" \\
                 --target-vm-name migratedVM01 \\
@@ -302,4 +302,299 @@ helps['migrate local replication new'] = """
                 --target-virtual-switch-id "XYXY" \\
                 --target-test-virtual-switch-id "XYXY" \\
                 --os-disk-id "disk-0"
+"""
+
+helps['migrate local replication list'] = """
+    type: command
+    short-summary: List all protected items (replicating servers) in a project.
+    long-summary: |
+        Lists all servers that have replication enabled
+        in an Azure Migrate project.
+        This command shows the replication status, health,
+        and configuration details for each protected server.
+
+        The command returns information including:
+        - Protection state (e.g., Protected, ProtectedReplicating, EnablingFailed)
+        - Replication health (Normal, Warning, Critical)
+        - Source machine name and target VM name
+        - Replication policy name
+        - Resource IDs (used for remove command)
+        - Health errors if any
+
+        Note: This command uses a preview API version
+        and may experience breaking changes in future releases.
+    parameters:
+        - name: --resource-group -g
+          short-summary: Resource group containing the Azure Migrate project.
+          long-summary: >
+            The name of the resource group where
+            the Azure Migrate project is located.
+        - name: --project-name
+          short-summary: Name of the Azure Migrate project.
+          long-summary: >
+            The Azure Migrate project that contains
+            the replicating servers.
+        - name: --subscription-id
+          short-summary: Azure subscription ID.
+          long-summary: >
+            The subscription containing the Azure Migrate project.
+            Uses the default subscription if not specified.
+    examples:
+        - name: List all replicating servers in a project
+          text: |
+            az migrate local replication list \\
+                --resource-group myRG \\
+                --project-name myMigrateProject
+        - name: List replicating servers with a specific subscription
+          text: |
+            az migrate local replication list \\
+                --resource-group myRG \\
+                --project-name myMigrateProject \\
+                --subscription-id 00000000-0000-0000-0000-000000000000
+"""
+
+helps['migrate local replication get'] = """
+    type: command
+    short-summary: Get detailed information about a specific replicating server.
+    long-summary: |
+        Retrieves comprehensive details about a specific protected item (replicating server)
+        including its protection state, replication health, configuration settings,
+        and historical information about failover operations.
+
+        You can retrieve the protected item either by:
+        - Full ARM resource ID (--protected-item-id or --id)
+        - Name with project context (--protected-item-name with --resource-group and --project-name)
+
+        The command returns detailed information including:
+        - Basic information (name, resource ID, correlation ID)
+        - Protection status (state, health, resync requirements)
+        - Configuration (policy, replication extension)
+        - Failover history (test, planned, unplanned)
+        - Allowed operations
+        - Machine details (source and target information)
+        - Health errors with recommended actions (if any)
+
+        Note: This command uses a preview API version
+        and may experience breaking changes in future releases.
+    parameters:
+        - name: --protected-item-id
+          short-summary: Full ARM resource ID of the protected item.
+          long-summary: >
+            The complete ARM resource ID of the protected item.
+            If provided, --resource-group and --project-name are not required.
+            This ID can be obtained from the 'list' or 'new' commands.
+        - name: --protected-item-name
+          short-summary: Name of the protected item (replicating server).
+          long-summary: >
+            The name of the protected item to retrieve.
+            When using this option, both --resource-group and --project-name
+            are required to locate the item.
+        - name: --resource-group -g
+          short-summary: Resource group containing the Azure Migrate project.
+          long-summary: >
+            The name of the resource group where the Azure Migrate project is located.
+            Required when using --protected-item-name.
+        - name: --project-name
+          short-summary: Name of the Azure Migrate project.
+          long-summary: >
+            The Azure Migrate project that contains the replicating server.
+            Required when using --protected-item-name.
+        - name: --subscription-id
+          short-summary: Azure subscription ID.
+          long-summary: >
+            The subscription containing the Azure Migrate project.
+            Uses the default subscription if not specified.
+    examples:
+        - name: Get a protected item by its full ARM resource ID
+          text: |
+            az migrate local replication get \\
+                --protected-item-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem"
+        - name: Get a protected item by name using project context
+          text: |
+            az migrate local replication get \\
+                --protected-item-name myProtectedItem \\
+                --resource-group myRG \\
+                --project-name myMigrateProject
+        - name: Get a protected item with specific subscription
+          text: |
+            az migrate local replication get \\
+                --name myProtectedItem \\
+                --resource-group myRG \\
+                --project-name myMigrateProject \\
+                --subscription-id 00000000-0000-0000-0000-000000000000
+        - name: Get a protected item using short parameter names
+          text: |
+            az migrate local replication get \\
+                --id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem"
+"""
+
+helps['migrate local replication remove'] = """
+    type: command
+    short-summary: Stop replication for a migrated server.
+    long-summary: |
+        Stops the replication for a migrated server and removes
+        the replication configuration.
+        This command disables protection for the specified server.
+
+        Note: This command uses a preview API version
+        and may experience breaking changes in future releases.
+    parameters:
+        - name: --target-object-id
+          short-summary: Replicating server ARM ID to disable replication.
+          long-summary: >
+            Specifies the ARM resource ID of the replicating server
+            for which replication needs to be disabled.
+            The ID should be retrieved using a get or list command
+            for replication items.
+        - name: --force-remove
+          short-summary: Force remove the replication.
+          long-summary: >
+            Specifies whether the replication needs to be
+            force removed. Default is false.
+            Use this option to remove replication even if
+            the cleanup process encounters errors.
+        - name: --subscription-id
+          short-summary: Azure subscription ID.
+          long-summary: >
+            The subscription containing the replication resources.
+            Uses the current subscription if not specified.
+    examples:
+        - name: Stop replication for a migrated server
+          text: |
+            az migrate local replication remove \\
+                --target-object-id "XXXX"
+        - name: Force remove replication for a server
+          text: |
+            az migrate local replication remove \\
+                --target-object-id "XXXX" \\
+                --force-remove true
+        - name: Stop replication using short parameter names
+          text: |
+            az migrate local replication remove \\
+                --id "XXXX" \\
+                --force
+"""
+
+helps['migrate local replication get-job'] = """
+    type: command
+    short-summary: Retrieve the status of an Azure Migrate job.
+    long-summary: |
+        Get the status and details of an Azure Migrate replication job.
+        You can retrieve a specific job by its ARM ID or name,
+        or list all jobs in a migrate project.
+
+        Note: This command uses a preview API version
+        and may experience breaking changes in future releases.
+    parameters:
+        - name: --job-id
+          short-summary: Job ARM ID for which details need to be retrieved.
+          long-summary: >
+            Specifies the full ARM resource ID of the job.
+            When provided, retrieves the specific job details.
+        - name: --resource-group -g
+          short-summary: Resource group name where the vault is present.
+          long-summary: >
+            The name of the resource group containing
+            the recovery services vault.
+            Required when using --project-name.
+        - name: --project-name
+          short-summary: Name of the migrate project.
+          long-summary: >
+            The name of the Azure Migrate project.
+            Required when using --resource-group.
+        - name: --job-name
+          short-summary: Job identifier/name.
+          long-summary: >
+            The name of the specific job to retrieve.
+            If not provided, lists all jobs in the project.
+        - name: --subscription-id
+          short-summary: Azure subscription ID.
+          long-summary: >
+            The subscription containing the migrate project.
+            Uses the current subscription if not specified.
+    examples:
+        - name: Get a specific job by ARM ID
+          text: |
+            az migrate local replication get-job \\
+                --job-id "/subscriptions/{sub-id}/resourceGroups/{rg}/providers/Microsoft.DataReplication/replicationVaults/{vault}/jobs/{job-name}"
+        - name: Get a specific job by name
+          text: |
+            az migrate local replication get-job \\
+                --resource-group myRG \\
+                --project-name myMigrateProject \\
+                --job-name myJobName
+        - name: List all jobs in a project
+          text: |
+            az migrate local replication get-job \\
+                --resource-group myRG \\
+                --project-name myMigrateProject
+        - name: Get job using short parameter names
+          text: |
+            az migrate local replication get-job \\
+                --id "/subscriptions/{sub-id}/resourceGroups/{rg}/providers/Microsoft.DataReplication/replicationVaults/{vault}/jobs/{job-name}"
+        - name: Get job with specific subscription
+          text: |
+            az migrate local replication get-job \\
+                -g myRG \\
+                --project-name myMigrateProject \\
+                --name myJobName \\
+                --subscription-id "12345678-1234-1234-1234-123456789012"
+"""
+
+helps['migrate local start-migration'] = """
+    type: command
+    short-summary: Start migration for a replicating server to Azure Local.
+    long-summary: |
+        Initiates the migration (failover) process for a server that
+        has been configured for replication to Azure Local or Azure Stack HCI.
+        This command triggers the final migration step, which creates
+        the virtual machine on the target Azure Local/Stack HCI environment.
+
+        The protected item must be in a healthy replication state
+        before migration can be initiated.
+        You can optionally specify whether to turn off the source server
+        after migration completes.
+
+        Note: This command uses a preview API version
+        and may experience breaking changes in future releases.
+    parameters:
+        - name: --protected-item-id
+          short-summary: Full ARM resource ID of the protected item to migrate.
+          long-summary: >
+            The complete ARM resource ID of the replicating server.
+            This ID can be obtained from the 'az migrate local replication list'
+            or 'az migrate local replication get' commands.
+            Required parameter.
+        - name: --turn-off-source-server
+          short-summary: Turn off the source server after migration.
+          long-summary: >
+            Specifies whether the source server should be powered off
+            after the migration completes successfully.
+            Default is False. Use this option to automatically shut down
+            the source server to prevent conflicts.
+        - name: --subscription-id
+          short-summary: Azure subscription ID.
+          long-summary: >
+            The subscription containing the migration resources.
+            Uses the current subscription if not specified.
+    examples:
+        - name: Start migration for a protected item
+          text: |
+            az migrate local start-migration \\
+                --protected-item-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem"
+        - name: Start migration and turn off source server
+          text: |
+            az migrate local start-migration \\
+                --protected-item-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem" \\
+                --turn-off-source-server
+        - name: Start migration using short parameter names
+          text: |
+            az migrate local start-migration \\
+                --id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem" \\
+                --turn-off-source-server
+        - name: Start migration with specific subscription
+          text: |
+            az migrate local start-migration \\
+                --protected-item-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem" \\
+                --subscription-id "12345678-1234-1234-1234-123456789012"
 """

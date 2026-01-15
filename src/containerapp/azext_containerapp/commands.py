@@ -12,7 +12,12 @@ from ._transformers import (transform_sensitive_values,
                             transform_telemetry_data_dog_values,
                             transform_telemetry_app_insights_values,
                             transform_telemetry_otlp_values,
-                            transform_telemetry_otlp_values_by_name_wrapper)
+                            transform_telemetry_otlp_values_by_name_wrapper,
+                            transform_function_list,
+                            transform_function_show,
+                            transform_function_traces,
+                            transform_function_keys_show_set,
+                            transform_function_keys_list)
 from ._utils import is_cloud_supported_by_connected_env
 from ._validators import validate_debug
 
@@ -38,13 +43,6 @@ def load_command_table(self, args):
         g.custom_command('create', 'create_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
-
-    with self.command_group('containerapp env http-route-config', is_preview=True) as g:
-        g.custom_show_command('show', 'show_http_route_config')
-        g.custom_command('list', 'list_http_route_configs')
-        g.custom_command('create', 'create_http_route_config', exception_handler=ex_handler_factory())
-        g.custom_command('update', 'update_http_route_config', exception_handler=ex_handler_factory())
-        g.custom_command('delete', 'delete_http_route_config', confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp job') as g:
         g.custom_show_command('show', 'show_containerappsjob')
@@ -295,8 +293,15 @@ def load_command_table(self, args):
         g.custom_command('add', 'add_revision_label')
         g.custom_command('remove', 'remove_revision_label')
 
-    with self.command_group('containerapp env premium-ingress', is_preview=True) as g:
-        g.custom_show_command('show', 'show_environment_premium_ingress')
-        g.custom_command('add', 'add_environment_premium_ingress')
-        g.custom_command('update', 'update_environment_premium_ingress')
-        g.custom_command('remove', 'remove_environment_premium_ingress', confirmation=True)
+    with self.command_group('containerapp function', is_preview=True) as g:
+        g.custom_command('list', 'list_containerapp_functions', table_transformer=transform_function_list)
+        g.custom_show_command('show', 'show_containerapp_function', table_transformer=transform_function_show)
+
+    with self.command_group('containerapp function keys', is_preview=True) as g:
+        g.custom_show_command('show', 'show_containerapp_function_keys', table_transformer=transform_function_keys_show_set)
+        g.custom_command('list', 'list_containerapp_function_keys', table_transformer=transform_function_keys_list)
+        g.custom_command('set', 'set_containerapp_function_keys', table_transformer=transform_function_keys_show_set)
+
+    with self.command_group('containerapp function invocations', is_preview=True) as g:
+        g.custom_command('summary', 'get_function_invocations_summary')
+        g.custom_command('traces', 'get_function_invocations_traces', table_transformer=transform_function_traces)

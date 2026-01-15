@@ -23,9 +23,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-20",
+        "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2023-10-20"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-06-11"],
         ]
     }
 
@@ -51,6 +51,11 @@ class Delete(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
+                max_length=32,
+                min_length=2,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -82,7 +87,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -91,7 +96,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [204]:
@@ -100,7 +105,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_204,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -143,7 +148,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-20",
+                    "api-version", "2025-06-11",
                     required=True,
                 ),
             }

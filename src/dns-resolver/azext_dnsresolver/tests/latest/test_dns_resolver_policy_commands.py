@@ -155,6 +155,42 @@ class DnsResolverPolicyClientTest(ScenarioTest):
         )
         self.cmd('dns-resolver policy dns-security-rule delete -n {dns_security_rule_name} -g {rg} --policy-name {dns_resolver_policy_name} --no-wait --yes')
 
+    @ResourceGroupPreparer(name_prefix='cli_test_managed_domain_list_dns_security_rule_', location='westus2')
+    def test_managed_domain_list_dns_security_rule_crud(self):
+        self.kwargs.update({
+            'dns_security_rule_name': self.create_random_name('dnssr-', 16),
+            'dns_resolver_policy_name': self.create_random_name('dnsrp-', 20),
+            'dns_resolver_domain_list_name': self.create_random_name('dnsdl-', 20)
+        })
+
+        self.cmd('dns-resolver policy create -n {dns_resolver_policy_name} -g {rg}')
+
+        self.kwargs['action_arg'] = f'{{action-type:Block}}'
+        self.cmd(
+            'dns-resolver policy dns-security-rule create -n {dns_security_rule_name} -g {rg} --policy-name {dns_resolver_policy_name} --priority 100 --action "{action_arg}" --managed-domain-lists "[AzureDnsThreatIntel]" --rule-state Enabled '
+            '--tags key=value1',
+            checks=[
+                self.check('name', '{dns_security_rule_name}'),
+                self.check('type', 'Microsoft.Network/dnsResolverPolicies/dnsSecurityRules')
+            ]
+        )
+        self.cmd(
+            'dns-resolver policy dns-security-rule list -g {rg} --policy-name {dns_resolver_policy_name}',
+            checks=[
+                self.check('length(@)', 1),
+                self.check('[0].name', '{dns_security_rule_name}')
+            ]
+        )
+        self.cmd('dns-resolver policy dns-security-rule update -n {dns_security_rule_name} -g {rg} --policy-name {dns_resolver_policy_name} --tags key=value2')
+        self.cmd(
+            'dns-resolver policy dns-security-rule show -n {dns_security_rule_name} -g {rg} --policy-name {dns_resolver_policy_name}',
+            checks=[
+                self.check('name', '{dns_security_rule_name}'),
+                self.check('tags.key', 'value2')
+            ]
+        )
+        self.cmd('dns-resolver policy dns-security-rule delete -n {dns_security_rule_name} -g {rg} --policy-name {dns_resolver_policy_name} --no-wait --yes')
+
     @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_policy_link_', location='westus2')
     def test_dns_resolver_policy_link_crud(self):
         self.kwargs.update({

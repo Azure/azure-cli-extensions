@@ -22,9 +22,9 @@ class GetSsoDetail(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/getssodetails", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/getssodetails", "2024-04-24"],
         ]
     }
 
@@ -48,6 +48,10 @@ class GetSsoDetail(AAZCommand):
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
+            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -128,7 +132,7 @@ class GetSsoDetail(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -153,7 +157,7 @@ class GetSsoDetail(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("userPrincipal", AAZStrType, ".user_principal")
+            _builder.set_prop("userPrincipal", AAZStrType, ".user_principal", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 

@@ -1,0 +1,402 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor monitored-subscription delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --monitor-name --configuration-name -y
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/monitoredSubscriptions/default?api-version=2025-06-11
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 07:59:50 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ee1c7017-68ea-4f66-9fa8-2d23429e00cc
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0b211baa-00db-496b-b625-0e3961b2c5bd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/centraluseuap/1da075bf-af44-4388-bcf7-7990c8a208c1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 96AFC559400945D1A7DB335F2AE24CB1 Ref B: MAA201060515045 Ref C: 2025-10-31T07:59:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"monitoredSubscriptionList": [{"status": "Active", "subscriptionId":
+      "/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000"}], "operation": "AddBegin"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor monitored-subscription create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '167'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --monitor-name --operation --configuration-name --mon-sub-list
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/monitoredSubscriptions/default?api-version=2025-06-11
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/monitoredSubscriptions/default","name":"default","type":"microsoft.datadog/monitors/monitoredsubscriptions","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-31T07:59:53.047273Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-31T07:59:53.047273Z"},"properties":{"operation":"AddBegin","monitoredSubscriptionList":[{"subscriptionId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000","status":"Active","error":null,"tagRules":null}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '658'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 07:59:53 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 76e08376-2b29-4da3-b8bd-67e1414dd7d4
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0b211baa-00db-496b-b625-0e3961b2c5bd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/eastus2euap/28f2d9b4-dc2d-467c-8f8c-69c1718647e8
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 080B16FD035B450EA1C62E0D06A1502B Ref B: MAA201060516011 Ref C: 2025-10-31T07:59:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor monitored-subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --monitor-name
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/monitoredSubscriptions/default?api-version=2025-06-11
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/monitoredSubscriptions/default","name":"default","type":"Microsoft.Datadog/monitors/monitoredSubscriptions","properties":{"operation":"AddBegin","monitoredSubscriptionList":[{"subscriptionId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000","status":"Active","error":null,"tagRules":{"provisioningState":"Accepted","logRules":null,"metricRules":null,"agentRules":null,"automuting":null,"customMetrics":null}}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '556'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 07:59:55 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 7b571a31-5b4d-4938-b7d3-508677e0bbea
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0b211baa-00db-496b-b625-0e3961b2c5bd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/centralindia/fbc7b2e0-c646-4652-a6a6-153585b8b22b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6CD6083D1E0243AA83A187FAFBA90C9A Ref B: MAA201060516051 Ref C: 2025-10-31T07:59:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor monitored-subscription update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --resource-group --monitor-name --mon-sub-list
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/monitoredSubscriptions/default?api-version=2025-06-11
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/monitoredSubscriptions/default","name":"default","type":"Microsoft.Datadog/monitors/monitoredSubscriptions","properties":{"operation":"AddBegin","monitoredSubscriptionList":[{"subscriptionId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000","status":"Active","error":null,"tagRules":{"provisioningState":"Accepted","logRules":null,"metricRules":null,"agentRules":null,"automuting":null,"customMetrics":null}}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '556'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 07:59:56 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 7e115c97-75b3-4a72-a164-99d35c503e12
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0b211baa-00db-496b-b625-0e3961b2c5bd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/eastus2euap/a930e326-4541-4f61-a80c-c67bda17b2f3
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: ECFBE7362B43427AAE36BE76E60CF2D9 Ref B: MAA201060514023 Ref C: 2025-10-31T07:59:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"monitoredSubscriptionList": [{"status": "InProgress",
+      "subscriptionId": "/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor monitored-subscription update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '146'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n --resource-group --monitor-name --mon-sub-list
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/monitoredSubscriptions/default?api-version=2025-06-11
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/monitoredSubscriptions/default","name":"default","type":"microsoft.datadog/monitors/monitoredsubscriptions","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-31T07:59:58.4709187Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-31T07:59:58.4709187Z"},"properties":{"operation":"AddBegin","monitoredSubscriptionList":[{"subscriptionId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000","status":"InProgress","error":null,"tagRules":null}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '664'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 07:59:58 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c5ab1b92-ceee-495a-a732-0f0d725f21a3
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0b211baa-00db-496b-b625-0e3961b2c5bd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/eastus2euap/53e0f578-39dc-4ac0-b007-cf9e466a661c
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: BBFFB2288A39490D87D758B613A89BF0 Ref B: MAA201060516035 Ref C: 2025-10-31T07:59:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor monitored-subscription list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --monitor-name
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/monitoredSubscriptions?api-version=2025-06-11
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/monitoredSubscriptions/default","name":"default","type":"Microsoft.Datadog/monitors/monitoredSubscriptions","properties":{"operation":"AddBegin","monitoredSubscriptionList":[{"subscriptionId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000","status":"Active","tagRules":{"provisioningState":"Accepted"}}]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '463'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 08:00:01 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - a55c2cfc-3c1a-4cba-8c97-cd76e9788215
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0b211baa-00db-496b-b625-0e3961b2c5bd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/eastus2euap/0f0ef58d-dff7-4a5e-bb03-3e396777d9c2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 2985C1471A6B4FFE92387B4864265914 Ref B: MAA201060515051 Ref C: 2025-10-31T08:00:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor monitored-subscription delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --monitor-name --configuration-name -y
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bhanu-rg/providers/Microsoft.Datadog/monitors/datadogtestresource/monitoredSubscriptions/default?api-version=2025-06-11
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 08:00:02 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d36aea8c-5ad3-49b4-bf2d-45335ce5c61a
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0b211baa-00db-496b-b625-0e3961b2c5bd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/southindia/777def19-c2a8-4fd8-9997-e14277812f85
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 59C2E6783A1E4FD58A34582ADA8DE90B Ref B: MAA201060514047 Ref C: 2025-10-31T08:00:01Z'
+    status:
+      code: 200
+      message: OK
+version: 1

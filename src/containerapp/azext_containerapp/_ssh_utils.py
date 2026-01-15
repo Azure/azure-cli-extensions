@@ -22,10 +22,10 @@ class DebugWebSocketConnection(WebSocketConnection):
         sub = get_subscription_id(cmd.cli_ctx)
         base_url = self._logstream_endpoint
         proxy_api_url = base_url[:base_url.index("/subscriptions/")].replace("https://", "")
-
-        return (f"wss://{proxy_api_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
-                f"/revisions/{revision}/replicas/{replica}/debug"
-                f"?targetContainer={container}")
+        debug_url = (f"wss://{proxy_api_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/"
+                     f"containerApps/{name}/revisions/{revision}/replicas/{replica}/debug"
+                     f"?targetContainer={container}")
+        return debug_url
 
 
 def read_debug_ssh(connection: WebSocketConnection, response_encodings):
