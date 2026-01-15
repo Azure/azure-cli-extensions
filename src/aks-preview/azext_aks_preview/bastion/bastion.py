@@ -546,7 +546,7 @@ def _aks_bastion_kill_process_tree(process):
                 check=False,
             )
             logger.debug("Killed process tree for PID %s using taskkill", pid)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
             logger.warning("Failed to kill process tree with taskkill: %s", e)
             # Fallback to terminate/kill
             process.terminate()
