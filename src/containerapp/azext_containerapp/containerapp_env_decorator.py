@@ -110,14 +110,14 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             self.managed_env_def["identity"] = identity_def
 
     def set_up_workload_profiles(self):
-        if self.get_argument_enable_workload_profiles():
-            # If the environment exists, infer the environment type
-            existing_environment = None
-            try:
-                existing_environment = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
-            except Exception as e:
-                handle_non_404_status_code_exception(e)
+        # If the environment exists, infer the environment type
+        existing_environment = None
+        try:
+            existing_environment = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+        except Exception as e:
+            handle_non_404_status_code_exception(e)
 
+        if self.get_argument_enable_workload_profiles():
             if existing_environment and safe_get(existing_environment, "properties", "workloadProfiles") is None:
                 # check if input params include -w/--enable-workload-profiles
                 if self.cmd.cli_ctx.data.get('safe_params') and ('-w' in self.cmd.cli_ctx.data.get('safe_params') or '--enable-workload-profiles' in self.cmd.cli_ctx.data.get('safe_params')):
@@ -148,6 +148,10 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                     }
                     workload_profiles.append(serverless_gpu_profile)
             self.managed_env_def["properties"]["workloadProfiles"] = workload_profiles
+        else:
+            if existing_environment and safe_get(existing_environment, "properties", "workloadProfiles") is not None:
+                raise ValidationError(
+                    f"Existing environment {self.get_argument_name()} uses workload profiles. If you want to use Consumption-Only environment, please create a new one.")
 
     def set_up_custom_domain_configuration(self):
         if self.get_argument_hostname():
