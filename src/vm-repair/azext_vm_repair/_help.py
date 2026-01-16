@@ -67,7 +67,7 @@ helps['vm repair run'] = """
         - name: Run a script with parameters on the VM.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --parameters hello=hi world=earth --verbose
-        - name: Run a verified script with some parameters. In the first parameter named 'key', only the value 'test' is sent to the script. The second parameter named \'initiator\', uses the prefix '++' to send the entire following string 'initiator=selfhelp' to the script. 
+        - name: Run a verified script with some parameters. In the first parameter named 'key', only the value 'test' is sent to the script. The second parameter named \'initiator\', uses the prefix '++' to send the entire following string 'initiator=selfhelp' to the script.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id linux-alar2 --parameters key=test ++initiator=selfhelp --verbose --debug
         - name: Run a local custom script on the VM.
@@ -105,7 +105,7 @@ helps['vm repair reset-nic'] = """
             az vm repair reset-nic -g MyResourceGroup -n MyVM --verbose
         - name: Reset the VM guest NIC. Specify subscription id, VM resource group and name.
           text: >
-            az vm repair reset-nic -g MyResourceGroup -n MyVM --subscription mySub --verbose
+            az vm repair reset-nic -g MyResourceGroup -n MyVM --subscription 00000000-0000-0000-0000-000000000000 --verbose
         - name: Reset the VM guest NIC and auto-start the VM if it is not in running state.
           text: >
             az vm repair reset-nic -g MyResourceGroup -n MyVM --yes --verbose
