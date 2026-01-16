@@ -20659,7 +20659,7 @@ spec:
 
         create_subnet_cmd = f"network vnet subnet create --resource-group {nrg} " \
                             f"--vnet-name {vnet_name} --name AzureBastionSubnet " \
-                            f"--address-prefixes 10.238.0.0/16"
+                            f"--address-prefixes 10.225.0.0/26"
         self.cmd(create_subnet_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         create_pip_cmd = f"network public-ip create -g {nrg} -n aks-bastion-pip --sku Standard"

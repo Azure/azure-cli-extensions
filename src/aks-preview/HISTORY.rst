@@ -12,6 +12,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b20
++++++++
+* `az aks bastion`: Add new option `--kubeconfig-path` to allow users to specify an existing kubeconfig file
 
 19.0.0b19
 +++++++

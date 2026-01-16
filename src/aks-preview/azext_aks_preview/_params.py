@@ -3108,6 +3108,7 @@ def load_arguments(self, _):
         c.argument("bastion")
         c.argument("port", type=int)
         c.argument("admin", action="store_true")
+        c.argument("kubeconfig_path")
         c.argument(
             "yes",
             options_list=["--yes", "-y"],
