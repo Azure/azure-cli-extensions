@@ -24,11 +24,48 @@ from .aaz.latest.redisenterprise.database import Wait as _DatabaseWait
 from .aaz.latest.redisenterprise import List as _ClusterList
 from .aaz.latest.redisenterprise import Show as _ClusterShow
 from .aaz.latest.redisenterprise import Wait as _DatabaseWait
+from .aaz.latest.redisenterprise import Update as _Update
 from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
 )
 
 logger = get_logger(__name__)
+
+
+class RedisEnterpriseUpdate(_Update):
+
+    def pre_instance_update(self, instance):
+        """Called before the instance is updated"""
+        try:
+            current_sku = str(instance.sku.name) if hasattr(instance, 'sku') and instance.sku else None
+        except (AttributeError, TypeError):
+            current_sku = None
+            
+        new_sku = str(self.ctx.args.sku) if self.ctx.args.sku is not None else None
+        
+        if new_sku and current_sku and new_sku != current_sku:
+            self._handle_sku_change(current_sku, new_sku, instance)
+    
+    def _handle_sku_change(self, current_sku, new_sku, instance):
+        """Handle SKU change logic for capacity and zones"""
+        # Check if changing from Enterprise* to Azure Managed Redis SKU types that don't support capacity/zones
+        if (current_sku.startswith('Enterprise_') and 
+            (new_sku.startswith('Balanced_') or 
+             new_sku.startswith('ComputeOptimized_') or 
+             new_sku.startswith('MemoryOptimized_'))):
+            
+            # Unset capacity and zones in the instance
+            try:
+                if hasattr(instance, 'sku') and instance.sku and hasattr(instance.sku, 'capacity'):
+                    instance.sku.capacity = None
+            except (AttributeError, TypeError):
+                pass
+            
+            try:
+                if hasattr(instance, 'zones'):
+                    instance.zones = None
+            except (AttributeError, TypeError):
+                pass
 
 
 class DatabaseFlush(_DatabaseFlush):
