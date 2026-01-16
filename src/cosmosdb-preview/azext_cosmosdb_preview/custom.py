@@ -1914,6 +1914,61 @@ def process_restorable_collections(restorable_collections, collection_name, data
     return latest_collection_delete_time, latest_collection_create_or_recreate_time
 
 
+def cli_cosmosdb_sql_container_delete(client,
+                                      resource_group_name,
+                                      account_name,
+                                      database_name,
+                                      container_name):
+    """Deletes an Azure Cosmos DB SQL container"""
+    # Build the URL manually to debug
+    url_template = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/sqlDatabases/{databaseName}/containers/{containerName}"
+    url = url_template.format(
+        subscriptionId=client._config.subscription_id,
+        resourceGroupName=resource_group_name,
+        accountName=account_name,
+        databaseName=database_name,
+        containerName=container_name
+    )
+    print(f"DEBUG: Expected URL path: {url}")
+    print(f"DEBUG: API version: {client._config.api_version}")
+    return client.begin_delete_sql_container(
+        resource_group_name=resource_group_name,
+        account_name=account_name,
+        database_name=database_name,
+        container_name=container_name)
+
+
+def cli_cosmosdb_sql_database_create(client,
+                                     resource_group_name,
+                                     account_name,
+                                     database_name,
+                                     throughput=None,
+                                     max_throughput=None):
+    """Creates an Azure Cosmos DB SQL database"""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
+        SqlDatabaseCreateUpdateParameters,
+        SqlDatabaseResource,
+        AutoscaleSettings
+    )
+
+    options = {}
+    if throughput and max_throughput:
+        raise CLIError("Please provide max-throughput if your resource is autoscale enabled otherwise provide throughput.")
+    if throughput:
+        options['throughput'] = throughput
+    if max_throughput:
+        options['autoscaleSettings'] = AutoscaleSettings(max_throughput=max_throughput)
+
+    sql_database_resource = SqlDatabaseCreateUpdateParameters(
+        resource=SqlDatabaseResource(id=database_name),
+        options=options)
+
+    return client.begin_create_update_sql_database(resource_group_name,
+                                                   account_name,
+                                                   database_name,
+                                                   sql_database_resource)
+
+
 def cli_cosmosdb_sql_database_restore(cmd,
                                       client,
                                       resource_group_name,

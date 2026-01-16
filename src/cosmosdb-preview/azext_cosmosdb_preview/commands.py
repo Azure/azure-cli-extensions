@@ -118,6 +118,9 @@ def load_command_table(self, _):
     with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
         g.custom_command('create', 'cli_cosmosdb_sql_container_create')
         g.custom_command('update', 'cli_cosmosdb_sql_container_update')
+        g.show_command('show', 'get_sql_container')
+        g.command('list', 'list_sql_containers')
+        g.custom_command('delete', 'cli_cosmosdb_sql_container_delete', confirmation=True, is_preview=True)
 
     with self.command_group('cosmosdb table role definition', cosmosdb_rbac_table_sdk, client_factory=cf_table_resources) as g:
         g.custom_command('create', 'cli_cosmosdb_table_role_definition_create')
@@ -244,7 +247,8 @@ def load_command_table(self, _):
         g.custom_command('create', 'cli_cosmosdb_create', is_preview=True)
         g.custom_command('update', 'cli_cosmosdb_update')
         g.custom_command('list', 'cli_cosmosdb_list')
-        g.show_command('show', 'get')
+        g.show_command('show', 'get', is_preview=True)
+        g.command('delete', 'begin_delete', confirmation=True, supports_no_wait=True)
 
     with self.command_group('cosmosdb sql restorable-container', cosmosdb_restorable_sql_containers_sdk, client_factory=cf_restorable_sql_containers, is_preview=True) as g:
         g.command('list', 'list')
@@ -345,6 +349,10 @@ def load_command_table(self, _):
     # Merge partitions for Sql databases
     with self.command_group('cosmosdb sql database', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
         g.custom_command('merge', 'cli_begin_sql_database_partition_merge', is_preview=True)
+        g.show_command('show', 'get_sql_database')
+        g.custom_command('create', 'cli_cosmosdb_sql_database_create', is_preview=True)
+        g.command('list', 'list_sql_databases')
+        g.command('delete', 'begin_delete_sql_database', confirmation=True, is_preview=True)
 
     # Merge partitions for mongodb databases
     with self.command_group('cosmosdb mongodb database', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
