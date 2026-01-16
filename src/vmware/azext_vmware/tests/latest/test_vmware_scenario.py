@@ -88,6 +88,9 @@ class VmwareScenarioTest(ScenarioTest):
         # get vcf license
         self.cmd('vmware private-cloud get-vcf-license -g {rg} -n {privatecloud}')
 
+        # delete vcf license
+        self.cmd('vmware private-cloud delete-vcf-license -g {rg} -c {privatecloud} --yes')
+
         # list authorization
         self.cmd('vmware authorization list -g {rg} -c {privatecloud}')
 

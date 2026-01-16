@@ -25,7 +25,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:09 GMT
+      - Fri, 16 Jan 2026 17:40:53 GMT
       server:
       - Rocket
     status:
@@ -63,7 +63,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:12 GMT
+      - Fri, 16 Jan 2026 17:40:55 GMT
       server:
       - Rocket
     status:
@@ -95,7 +95,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:14 GMT
+      - Fri, 16 Jan 2026 17:40:58 GMT
       server:
       - Rocket
     status:
@@ -129,7 +129,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:16 GMT
+      - Fri, 16 Jan 2026 17:41:00 GMT
       server:
       - Rocket
     status:
@@ -161,7 +161,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:19 GMT
+      - Fri, 16 Jan 2026 17:41:02 GMT
       server:
       - Rocket
     status:
@@ -198,10 +198,42 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 08 Jan 2026 21:58:21 GMT
+      - Fri, 16 Jan 2026 17:41:04 GMT
       server:
       - Rocket
     status:
       code: 200
       message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware license delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --private-cloud-name --license-name --yes
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: DELETE
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_license/providers/Microsoft.AVS/privateClouds/cloud1/licenses/VmwareFirewall?api-version=2025-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 16 Jan 2026 17:41:07 GMT
+      server:
+      - Rocket
+    status:
+      code: 204
+      message: No Content
 version: 1

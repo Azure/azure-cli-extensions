@@ -1,11 +1,12 @@
 # Release History
 
-## 9.0.0 (2026-01)
+## 8.1.0 (2026-01)
 
 - Bump minimum required Az CLI version to `2.75.0`
 - Upgrade default API version from `2024-09-01` to `2025-09-01`
 - Add `--vcf-license` to `az vmware private-cloud create` and `az vmware private-cloud update`
 - Add `az vmware private-cloud get-vcf-license` command
+- Add `az vmware private-cloud delete-vcf-license` command
 - Add `az vmware private-cloud maintenance` command group
 - Add `az vmware license` command group
 
