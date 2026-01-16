@@ -4577,6 +4577,192 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         disable_gateway_api_3 = ctx_3.get_disable_gateway_api()
         self.assertEqual(disable_gateway_api_3, False)
 
+    def test_get_enable_high_log_scale_mode_default(self):
+        """Test default behavior when no container network logs or high log scale mode is specified."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertIsNone(result)
+
+    def test_get_enable_high_log_scale_mode_explicit_true(self):
+        """Test when user explicitly enables high log scale mode."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_high_log_scale_mode": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
+
+    def test_get_enable_high_log_scale_mode_auto_enable_with_container_network_logs(self):
+        """Test auto-enable when container network logs are enabled with proper prerequisites."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "enable_acns": True,
+                "enable_addons": "monitoring",
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
+
+    def test_get_enable_high_log_scale_mode_auto_enable_with_retina_flow_logs(self):
+        """Test auto-enable when retina flow logs (legacy name) are enabled with proper prerequisites."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_retina_flow_logs": True,
+                "enable_acns": True,
+                "enable_addons": "monitoring",
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
+
+    def test_get_enable_high_log_scale_mode_auto_enable_with_azure_monitor_logs(self):
+        """Test auto-enable when container network logs are enabled with Azure Monitor logs."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "enable_acns": True,
+                "enable_azure_monitor_logs": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
+
+    def test_get_enable_high_log_scale_mode_error_explicit_false_with_cnl(self):
+        """Test error when user explicitly disables high log scale mode with container network logs enabled."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "enable_high_log_scale_mode": False,
+                "enable_acns": True,
+                "enable_addons": "monitoring",
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_enable_high_log_scale_mode()
+
+    def test_get_enable_high_log_scale_mode_error_without_acns(self):
+        """Test error when container network logs enabled but ACNS is not enabled."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "enable_addons": "monitoring",
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx.get_enable_high_log_scale_mode()
+
+    def test_get_enable_high_log_scale_mode_error_without_monitoring(self):
+        """Test error when container network logs enabled but monitoring is not enabled."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "enable_acns": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx.get_enable_high_log_scale_mode()
+
+    def test_get_enable_high_log_scale_mode_update_with_existing_acns_and_monitoring(self):
+        """Test auto-enable in update mode with existing ACNS and monitoring addon."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # Create MC with ACNS and monitoring already enabled
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
+
+    def test_get_enable_high_log_scale_mode_update_error_without_existing_acns(self):
+        """Test error in update mode when ACNS is not enabled on existing cluster."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # Create MC without ACNS
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx.get_enable_high_log_scale_mode()
+
+    def test_get_enable_high_log_scale_mode_update_error_without_existing_monitoring(self):
+        """Test error in update mode when monitoring is not enabled on existing cluster."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # Create MC with ACNS but without monitoring
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+        )
+        ctx.attach_mc(mc)
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx.get_enable_high_log_scale_mode()
+
+
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW
@@ -5026,6 +5212,117 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(
             dec_3.context.get_intermediate("monitoring_addon_enabled"), True
         )
+
+    def test_set_up_addon_profiles_validates_high_log_scale_mode_error_explicit_false_with_cnl(self):
+        """Test that set_up_addon_profiles raises error when container network logs are enabled
+        but high log scale mode is explicitly disabled."""
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_addons": "monitoring",
+                "enable_container_network_logs": True,
+                "enable_high_log_scale_mode": False,  # Explicitly disabled
+                "enable_acns": True,
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_syslog": False,
+                "data_collection_settings": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        network_profile = self.models.ContainerServiceNetworkProfile(
+            advanced_networking=self.models.AdvancedNetworking(enabled=True),
+        )
+        mc = self.models.ManagedCluster(location="test_location", network_profile=network_profile)
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        external_functions = dec.context.external_functions
+        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+            with self.assertRaises(MutuallyExclusiveArgumentError):
+                dec.set_up_addon_profiles(mc)
+
+    def test_set_up_addon_profiles_validates_high_log_scale_mode_error_without_acns(self):
+        """Test that set_up_addon_profiles raises error when container network logs are enabled
+        without ACNS being enabled."""
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_addons": "monitoring",
+                "enable_container_network_logs": True,
+                "enable_acns": False,  # ACNS not enabled
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_syslog": False,
+                "data_collection_settings": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        external_functions = dec.context.external_functions
+        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+            with self.assertRaises(RequiredArgumentMissingError):
+                dec.set_up_addon_profiles(mc)
+
+    def test_set_up_addon_profiles_validates_high_log_scale_mode_error_without_monitoring(self):
+        """Test that set_up_addon_profiles raises error when container network logs are enabled
+        without monitoring addon being enabled. Note: get_container_network_logs validates this
+        and raises InvalidArgumentValueError before get_enable_high_log_scale_mode is called."""
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_addons": None,  # Monitoring not enabled
+                "enable_container_network_logs": True,
+                "enable_acns": True,
+                "workspace_resource_id": None,
+                "enable_msi_auth_for_monitoring": False,
+                "enable_syslog": False,
+                "data_collection_settings": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        network_profile = self.models.ContainerServiceNetworkProfile(
+            advanced_networking=self.models.AdvancedNetworking(enabled=True),
+        )
+        mc = self.models.ManagedCluster(location="test_location", network_profile=network_profile)
+        dec.context.attach_mc(mc)
+        # get_container_network_logs validates monitoring is enabled and raises InvalidArgumentValueError
+        with self.assertRaises(InvalidArgumentValueError):
+            dec.set_up_addon_profiles(mc)
+
+    def test_set_up_addon_profiles_auto_enables_high_log_scale_mode_with_cnl(self):
+        """Test that set_up_addon_profiles succeeds and auto-enables high log scale mode
+        when container network logs are enabled with proper prerequisites."""
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_addons": "monitoring",
+                "enable_container_network_logs": True,
+                "enable_acns": True,
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_syslog": False,
+                "data_collection_settings": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        network_profile = self.models.ContainerServiceNetworkProfile(
+            advanced_networking=self.models.AdvancedNetworking(enabled=True),
+        )
+        mc = self.models.ManagedCluster(location="test_location", network_profile=network_profile)
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        external_functions = dec.context.external_functions
+        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+            # Should not raise any exception
+            dec_mc = dec.set_up_addon_profiles(mc)
+            # Verify high log scale mode is auto-enabled
+            self.assertTrue(dec.context.get_enable_high_log_scale_mode())
 
 
     def test_set_up_http_proxy_config(self):
@@ -11640,6 +11937,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
         # Case 3: enable_acns, enable_retina_network_flow_logs, but monitoring does not exist
+        # Note: Now raises RequiredArgumentMissingError from get_enable_high_log_scale_mode
+        # because the high log scale mode validation runs before get_container_network_logs
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -11663,7 +11962,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         dec_3.context.attach_mc(mc_3)
-        with self.assertRaises(InvalidArgumentValueError):
+        with self.assertRaises(RequiredArgumentMissingError):
             dec_3.update_monitoring_profile_flow_logs(mc_3)
 
         # Case 4: enable_acns, enable monitoring addons_profile, enable retina_network_flow_logs for ClusterCreate context
@@ -11744,6 +12043,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 dec_5.set_up_addon_profiles(mc_5)
 
         # Case 6: enable_monitoring addon with retina_network_flow_logs, but acns is not enabled
+        # Note: Now raises RequiredArgumentMissingError from get_enable_high_log_scale_mode
+        # because the validation runs during build_monitoring_addon_profile
         dec_6 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
@@ -11771,7 +12072,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_6.context.set_intermediate("subscription_id", "test_subscription_id")
         dec_6.context.attach_mc(mc_6)
-        with self.assertRaises(InvalidArgumentValueError):
+        with self.assertRaises(RequiredArgumentMissingError):
             external_functions = dec_6.context.external_functions
             with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
                 dec_6.set_up_addon_profiles(mc_6)
@@ -11827,6 +12128,89 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
         )
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
+
+        # Case 8: Error when explicitly disabling high log scale mode with container network logs enabled
+        dec_8 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_container_network_logs": True,
+                "enable_high_log_scale_mode": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        dec_8.context.attach_mc(mc_8)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_8.update_monitoring_profile_flow_logs(mc_8)
+
+        # Case 9: Error when container network logs enabled but ACNS is not enabled
+        dec_9 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_container_network_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        dec_9.context.attach_mc(mc_9)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_9.update_monitoring_profile_flow_logs(mc_9)
+
+        # Case 10: Error when container network logs enabled but monitoring is not enabled
+        dec_10 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_container_network_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+        )
+        dec_10.context.attach_mc(mc_10)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_10.update_monitoring_profile_flow_logs(mc_10)
 
     def test_update_node_provisioning_profile(self):
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
