@@ -5082,7 +5082,7 @@ def aks_loadbalancer_rebalance_nodes(
     return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
 
 
-def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, yes=False):
+def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, kubeconfig_path=None, yes=False):
     import asyncio
     import tempfile
 
@@ -5094,28 +5094,61 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
         logger.error(ex)
         return
 
-    with tempfile.TemporaryDirectory() as temp_dir:
+    temp_dir = None
+    # Validate kubeconfig if provided, otherwise create temp
+    if kubeconfig_path:
+        if not os.path.exists(kubeconfig_path):
+            raise CLIError(f"Kubeconfig file '{kubeconfig_path}' does not exist.")
+        logger.info("Using kubeconfig from: %s", kubeconfig_path)
+    else:
+        temp_dir = tempfile.mkdtemp()
         logger.info("creating temporary directory: %s", temp_dir)
-        try:
-            kubeconfig_path = os.path.join(temp_dir, ".kube", "config")
-            mc = client.get(resource_group_name, name)
-            mc_id = mc.id
-            nrg = mc.node_resource_group
-            bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg])
-            port = aks_bastion_get_local_port(port)
+        kubeconfig_path = os.path.join(temp_dir, ".kube", "config")
+
+    try:
+        mc = client.get(resource_group_name, name)
+        mc_id = mc.id
+        nrg = mc.node_resource_group
+        bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg])
+        port = aks_bastion_get_local_port(port)
+
+        # Fetch credentials only if kubeconfig not provided
+        is_new_kubeconfig = temp_dir is not None
+        if is_new_kubeconfig:
             aks_get_credentials(cmd, client, resource_group_name, name, admin=admin, path=kubeconfig_path)
-            aks_bastion_set_kubeconfig(kubeconfig_path, port)
-            asyncio.run(
-                aks_bastion_runner(
-                    bastion_resource,
-                    port,
-                    mc_id,
-                    kubeconfig_path,
-                    test_hook=os.getenv("AKS_BASTION_TEST_HOOK"),
-                )
+
+        # Pass cluster_name only for existing kubeconfigs to search for exact match
+        # For new kubeconfigs, don't pass cluster_name so it uses current context
+        aks_bastion_set_kubeconfig(
+            kubeconfig_path,
+            port,
+            cluster_name=name if not is_new_kubeconfig else None
+        )
+
+        # Warn user about kubeconfig modifications after successful modification
+        if not is_new_kubeconfig:
+            logger.warning(
+                "The server URL for cluster '%s' in your kubeconfig has been modified to point to the bastion tunnel. "
+                "Once the bastion tunnel is closed, this cluster configuration will no longer work. "
+                "To re-establish connectivity via bastion, rerun this command; this will update the server URL in your kubeconfig to point to a new bastion tunnel. "
+                "If you no longer want to use the bastion tunnel, restore your original kubeconfig from backup instead.",
+                name
             )
-        finally:
-            aks_batsion_clean_up()
+
+        asyncio.run(
+            aks_bastion_runner(
+                bastion_resource,
+                port,
+                mc_id,
+                kubeconfig_path,
+                test_hook=os.getenv("AKS_BASTION_TEST_HOOK"),
+            )
+        )
+    finally:
+        aks_batsion_clean_up()
+        if temp_dir:
+            import shutil
+            shutil.rmtree(temp_dir, ignore_errors=True)
 
 
 aks_identity_binding_create = aks_ib_cmd_create
