@@ -11,7 +11,7 @@ from knack import CLI
 
 from azure.cli.core._config import GLOBAL_CONFIG_DIR, ENV_VAR_PREFIX
 from azure.cli.core.cloud import get_active_cloud
-from azure.cli.core.profiles import get_sdk, supported_api_version, register_resource_type
+from azure.cli.core.profiles import get_sdk, register_resource_type
 from azure.cli.testsdk import api_version_constraint
 from ..._validators import (get_datetime_type, ipv4_range_type, validate_encryption_source,
                             validate_encryption_services)

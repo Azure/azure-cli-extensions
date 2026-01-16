@@ -4,7 +4,8 @@
 # --------------------------------------------------------------------------------------------
 import json
 import unittest
-from azure.cli.testsdk import (ScenarioTest)
+import time
+from azure.cli.testsdk import (ScenarioTest, live_only)
 from .common.test_utils import get_test_cmd
 from .custom_preparers import SpringPreparer, SpringResourceGroupPreparer
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
@@ -128,7 +129,7 @@ class ApplicationLiveView(unittest.TestCase):
 
 
 class LiveViewTest(ScenarioTest):
-
+    @live_only()
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE['spring'])
     def test_live_view(self, resource_group, spring):
@@ -152,6 +153,7 @@ class LiveViewTest(ScenarioTest):
 
         self.cmd('spring application-live-view delete -g {rg} -s {serviceName} -y')
 
+        time.sleep(10)
         self.cmd('spring dev-tool show -g {rg} -s {serviceName}', checks=[
             self.check('properties.features.applicationLiveView.state', 'Disabled')
         ])

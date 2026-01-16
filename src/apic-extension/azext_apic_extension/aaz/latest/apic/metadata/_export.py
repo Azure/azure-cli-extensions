@@ -25,6 +25,9 @@ class Export(AAZCommand):
 
     :example: Export Metadata Schema assigned to environment
         az apic metadata export -g api-center-test -n contosoeuap --assignments environment --file-name filename.json
+
+    :example: Export Custom Metadata Schema Only
+        az apic metadata export -g api-center-test -n contosoeuap --assignments api --file-name filename.json --custom-metadata-only
     """
 
     _aaz_info = {

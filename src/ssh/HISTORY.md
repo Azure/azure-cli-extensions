@@ -1,5 +1,9 @@
 Release History
 ===============
+2.0.6
+-----
+* Remove msrestazure dependency
+
 2.0.5
 -----
 * Remove ctypes dependency from RDP feature

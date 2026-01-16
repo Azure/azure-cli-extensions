@@ -14,6 +14,7 @@ logger = log.get_logger(__name__)
 
 
 # Send target OS type telemetry and check if authentication options are valid for that OS.
+# pylint: disable=useless-return
 def handle_target_os_type(cmd, op_info):
     os_type = None
     agent_version = None

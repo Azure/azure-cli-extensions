@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "network manager connect-config",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage connectivity configuration with network.
+    """Manage Connectivity Configuration
     """
     pass
 

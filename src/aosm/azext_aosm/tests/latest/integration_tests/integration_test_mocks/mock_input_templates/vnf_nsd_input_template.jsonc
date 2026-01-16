@@ -3,6 +3,15 @@
   "publisher_name": "automated-cli-test-ubuntu-publisher",
   "publisher_resource_group_name": "{{publisher_resource_group_name}}",
   "acr_artifact_store_name": "ubuntu-acr",
+  // Disable public network access on the ACR.
+  // Default is false. Set to true to disable.
+  "disable_public_network_access": false,
+  // List of Resource id of Private End Points to access ACR that needs to be approved.
+  "vnet_private_end_points": [
+  ],
+  // List of Resource id of NNF to access ACR that needs to be approved.
+  "network_fabric_controller_ids": [
+  ],  
   "resource_element_templates": [
     {
       "resource_element_type": "NF",

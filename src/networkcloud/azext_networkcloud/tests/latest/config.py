@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods
 
-""" Network cloud resource specific configuration"""
+"""Network cloud resource specific configuration"""
 
 import configparser
 from os import path

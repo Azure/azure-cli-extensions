@@ -14,6 +14,7 @@ from ._create_role_binding import *
 from ._create_user import *
 from ._delete import *
 from ._list import *
+from ._list_region import *
 from ._list_role_binding import *
 from ._list_service_accounts import *
 from ._list_users import *

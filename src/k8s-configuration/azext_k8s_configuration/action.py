@@ -5,8 +5,9 @@
 # pylint: disable=protected-access
 
 import argparse
+import json
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from .vendored_sdks.v2022_03_01.models import (
+from .vendored_sdks.v2024_04_01_preview.models import (
     KustomizationDefinition,
     KustomizationPatchDefinition,
 )
@@ -41,6 +42,7 @@ class KustomizationAddAction(argparse._AppendAction):
         sync_interval = None
         retry_interval = None
         timeout = None
+        wait = None
         kwargs = {}
         for item in values:
             try:
@@ -53,6 +55,8 @@ class KustomizationAddAction(argparse._AppendAction):
                     retry_interval = value
                 elif key in consts.TIMEOUT_KEYS:
                     timeout = value
+                elif key in consts.WAIT_KUSTOMIZATION_KEYS:
+                    wait = value != "true"
                 else:
                     kwargs[key] = value
             except ValueError as ex:
@@ -67,7 +71,46 @@ class KustomizationAddAction(argparse._AppendAction):
                 sync_interval_in_seconds=parse_duration(sync_interval),
                 retry_interval_in_seconds=parse_duration(retry_interval),
                 timeout_in_seconds=parse_duration(timeout),
+                wait=wait,
                 **kwargs
             ),
             option_string,
         )
+
+
+class VerifyConfigAction(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        # Handle verification_provider (simple string)
+        if self.dest == "verification_provider":
+            setattr(namespace, self.dest, values)
+            return
+
+        # Handle match_oidc_identity (list of JSON strings)
+        if self.dest == "match_oidc_identity":
+            identities = []
+            for entry in values:
+                try:
+                    obj = json.loads(entry)
+                    if not isinstance(obj, dict) or "issuer" not in obj or "subject" not in obj:
+                        raise ValueError()
+                    identities.append({"issuer": obj["issuer"], "subject": obj["subject"]})
+                except Exception:
+                    raise InvalidArgumentValueError(
+                        "Each entry for --match-oidc-identity must be a JSON string with 'issuer' and 'subject' fields."
+                    )
+            setattr(namespace, self.dest, identities)
+            return
+
+        # Handle verification_config (list of key=value)
+        if self.dest == "verification_config":
+            config = {}
+            for item in values:
+                try:
+                    key, value = item.split("=", 1)
+                    config[key] = value
+                except Exception:
+                    raise InvalidArgumentValueError(
+                        "Each entry for --verification-config must be in key=value format."
+                    )
+            setattr(namespace, self.dest, config)
+            return

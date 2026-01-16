@@ -181,7 +181,9 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.status = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.status_details = AAZStrType(
                 serialized_name="statusDetails",
                 flags={"read_only": True},

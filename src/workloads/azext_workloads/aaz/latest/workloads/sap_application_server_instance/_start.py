@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-application-server-instance start",
-    is_preview=True,
 )
 class Start(AAZCommand):
     """Starts the SAP Application Server Instance.
@@ -29,9 +28,9 @@ class Start(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances/{}/start", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances/{}/start", "2024-09-01"],
         ]
     }
 
@@ -87,7 +86,7 @@ class Start(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SAPApplicationServerInstancesStartInstance(ctx=self.ctx)()
+        yield self.SapApplicationServerInstancesStart(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -102,7 +101,7 @@ class Start(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SAPApplicationServerInstancesStartInstance(AAZHttpOperation):
+    class SapApplicationServerInstancesStart(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -170,7 +169,7 @@ class Start(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -259,7 +258,7 @@ class _StartHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZFreeFormDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
@@ -287,6 +286,7 @@ class _StartHelper:
             _schema.name = cls._schema_operation_status_result_read.name
             _schema.operations = cls._schema_operation_status_result_read.operations
             _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+            _schema.resource_id = cls._schema_operation_status_result_read.resource_id
             _schema.start_time = cls._schema_operation_status_result_read.start_time
             _schema.status = cls._schema_operation_status_result_read.status
             return
@@ -305,6 +305,10 @@ class _StartHelper:
         operation_status_result_read.percent_complete = AAZFloatType(
             serialized_name="percentComplete",
         )
+        operation_status_result_read.resource_id = AAZStrType(
+            serialized_name="resourceId",
+            flags={"read_only": True},
+        )
         operation_status_result_read.start_time = AAZStrType(
             serialized_name="startTime",
         )
@@ -322,6 +326,7 @@ class _StartHelper:
         _schema.name = cls._schema_operation_status_result_read.name
         _schema.operations = cls._schema_operation_status_result_read.operations
         _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+        _schema.resource_id = cls._schema_operation_status_result_read.resource_id
         _schema.start_time = cls._schema_operation_status_result_read.start_time
         _schema.status = cls._schema_operation_status_result_read.status
 

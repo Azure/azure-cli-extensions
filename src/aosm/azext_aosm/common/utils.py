@@ -13,7 +13,6 @@ from typing import Tuple
 from time import sleep
 from pathlib import Path
 from jinja2 import StrictUndefined, Template
-
 from knack.log import get_logger
 from knack.util import CLIError
 from azure.cli.core.azclierror import BadRequestError, ClientRequestError
@@ -101,10 +100,10 @@ def extract_tarfile(file_path: Path, target_dir: Path) -> Path:
 
     if file_extension in (".gz", ".tgz"):
         with tarfile.open(file_path, "r:gz") as tar:
-            tar.extractall(path=target_dir)
+            safe_extract(tar, path=target_dir)
     elif file_extension == ".tar":
         with tarfile.open(file_path, "r:") as tar:
-            tar.extractall(path=target_dir)
+            safe_extract(tar, path=target_dir)
     else:
         raise InvalidFileTypeError(
             f"ERROR: The helm package, '{file_path}', is not"
@@ -112,6 +111,26 @@ def extract_tarfile(file_path: Path, target_dir: Path) -> Path:
         )
 
     return Path(target_dir, os.listdir(target_dir)[0])
+
+
+def is_within_directory(directory, target):
+    """
+    Ensure the target path is within the intended directory
+    """
+    abs_directory = os.path.abspath(directory)
+    abs_target = os.path.abspath(target)
+    return os.path.commonpath([abs_directory]) == os.path.commonpath([abs_directory, abs_target])
+
+
+def safe_extract(tar, path="."):
+    """
+    Validates each file's path before extraction to prevent malicious files from escaping the target directory
+    """
+    for member in tar.getmembers():
+        member_path = os.path.join(path, member.name)
+        if not is_within_directory(path, member_path):
+            raise Exception("Attempted Path Traversal in Tar File")  # pylint: disable=broad-exception-raised
+    tar.extractall(path)
 
 
 def snake_case_to_camel_case(text):
@@ -289,4 +308,35 @@ def is_valid_nexus_image_version(string):
     It requires the image version to be major.minor.patch,
     but does not enforce full semver validation.
     """
+
     return re.match(NEXUS_IMAGE_REGEX, string) is not None
+
+
+def append_text(path, text, encoding=None, errors=None):
+    with path.open("a+", encoding=encoding, errors=errors) as f:
+        f.write(text)
+
+
+def generate_data_for_given_schema(schema_definition):
+    generated_data = generate_data(schema_definition)
+    return generated_data
+
+
+def generate_data(schema_definition):
+    schema = json.loads(schema_definition)
+    if 'default' in schema:
+        return schema['default']
+    result = ''  # Initialize a variable to hold the return value
+    if schema['type'] == 'object':
+        obj = {}
+        properties = schema.get('properties', {})
+        for key, subschema in properties.items():
+            obj[key] = generate_data(json.dumps(subschema))
+        result = obj
+    if schema['type'] == 'array':
+        items_schema = schema.get('items')
+        if items_schema:
+            result = [generate_data(json.dumps(items_schema)) for _ in range(schema.get('minItems', 1))]
+        else:
+            result = []
+    return result

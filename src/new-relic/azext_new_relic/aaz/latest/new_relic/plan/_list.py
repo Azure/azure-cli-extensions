@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic plan list",
 )
 class List(AAZCommand):
-    """List plans data
+    """Lists all the plans data in your Azure subscription, providing an overview of the available plans.
 
     :example: List plans data.
         az new-relic plan list --account-id MyAccountId --organization-id MyOrganizationId

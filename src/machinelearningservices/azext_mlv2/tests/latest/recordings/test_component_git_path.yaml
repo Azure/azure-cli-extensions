@@ -1,0 +1,186 @@
+interactions:
+- request:
+    body: '{"properties": {"isAnonymous": true, "isArchived": false, "codeUri": "git+https://github.com/varndorfer/test-git-snapshot-public.git@testBranch&subdirectory=subdirectory"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '172'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/codes/000000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/namejia-ws/codes/2d9366c8-0759-4949-80b6-7a115c571f08/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/codes/versions",
+        "properties": {"description": null, "tags": {}, "properties": {}, "isArchived":
+        false, "isAnonymous": false, "codeUri": "git+https://github.com/varndorfer/test-git-snapshot-public.git@testBranch&subdirectory=subdirectory"},
+        "systemData": {"createdAt": "2022-06-14T19:14:55.1386151Z", "createdBy": "Nancy
+        Mejia Juarez", "createdByType": "User", "lastModifiedAt": "2022-06-14T19:14:55.1386172Z",
+        "lastModifiedBy": "Nancy Mejia Juarez", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '761'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 Jun 2022 19:14:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/namejia-dev-rg/providers/Microsoft.MachineLearningServices/workspaces/namejia-ws/codes/2d9366c8-0759-4949-80b6-7a115c571f08/versions/1?api-version=2022-05-01
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '6.211'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/components/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/namejia-ws/components/test_component_000012",
+        "name": "test_component_000012", "type": "Microsoft.MachineLearningServices/workspaces/components",
+        "properties": {"description": "", "tags": {}, "properties": {}, "isArchived":
+        false, "latestVersion": null, "nextVersion": "2022-06-14-19-14-55-5410386"},
+        "systemData": {"createdAt": "2022-06-14T19:08:43.2928277Z", "lastModifiedAt":
+        "2022-06-14T19:08:43.4824445Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '557'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 Jun 2022 19:14:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.152'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"properties": {}, "tags": {}, "isAnonymous": false, "isArchived":
+      false, "componentSpec": {"$schema": "https://azuremlschemas.azureedge.net/development/commandComponent.schema.json",
+      "name": "test_component_000012", "display_name": "test_component_000012", "tags":
+      {}, "is_deterministic": true, "inputs": {}, "outputs": {"output_path": {"type":
+      "uri_folder"}}, "type": "command", "command": "echo ${{outputs.output_path}}",
+      "code": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/namejia-dev-rg/providers/Microsoft.MachineLearningServices/workspaces/namejia-ws/codes/2d9366c8-0759-4949-80b6-7a115c571f08/versions/1",
+      "environment": "azureml:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/namejia-dev-rg/providers/Microsoft.MachineLearningServices/workspaces/namejia-ws/environments/AzureML-Minimal/versions/2"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '868'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.13 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/components/000000000000000/versions/2022-06-14-19-14-55-5410386?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/namejia-ws/components/test_component_000012/versions/2022-06-14-19-14-55-5410386",
+        "name": "2022-06-14-19-14-55-5410386", "type": "Microsoft.MachineLearningServices/workspaces/components/versions",
+        "properties": {"description": null, "tags": {}, "properties": {}, "isArchived":
+        false, "isAnonymous": false, "componentSpec": {"name": "test_component_000012",
+        "version": "2022-06-14-19-14-55-5410386", "display_name": "test_component_000012",
+        "is_deterministic": "True", "type": "command", "outputs": {"output_path":
+        {"type": "uri_folder"}}, "code": "azureml:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/namejia-ws/codes/2d9366c8-0759-4949-80b6-7a115c571f08/versions/1",
+        "environment": "azureml:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/namejia-ws/environments/AzureML-Minimal/versions/2",
+        "resources": {"instance_count": "1"}, "command": "echo ${{outputs.output_path}}",
+        "$schema": "https://azuremlschemas.azureedge.net/development/commandComponent.schema.json"}},
+        "systemData": {"createdAt": "2022-06-14T19:14:56.8039847Z", "createdBy": "Nancy
+        Mejia Juarez", "createdByType": "User", "lastModifiedAt": "2022-06-14T19:14:56.9697119Z",
+        "lastModifiedBy": "Nancy Mejia Juarez", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1539'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 Jun 2022 19:14:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/namejia-dev-rg/providers/Microsoft.MachineLearningServices/workspaces/namejia-ws/components/test_component_000012/versions/2022-06-14-19-14-55-5410386?api-version=2022-05-01
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.406'
+    status:
+      code: 201
+      message: Created
+version: 1

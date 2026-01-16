@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization create-role-binding",
 )
 class CreateRoleBinding(AAZCommand):
-    """Organization role bindings
+    """Assign roles to users or groups within a Confluent organization.
     """
 
     _aaz_info = {
@@ -48,8 +48,6 @@ class CreateRoleBinding(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource group name",
             required=True,
         )
 

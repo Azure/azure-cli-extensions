@@ -20,9 +20,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-01-preview",
+        "version": "2024-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups/{}", "2022-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups/{}", "2024-03-01-preview"],
         ]
     }
 
@@ -48,23 +48,23 @@ class Create(AAZCommand):
             help="The name of the NetApp account",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,127}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$",
             ),
         )
         _args_schema.backup_name = AAZStrArg(
-            options=["-n", "--name", "--backup-name"],
+            options=["-b", "-n", "--name", "--backup-name"],
             help="The name of the backup",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,255}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$",
             ),
         )
         _args_schema.backup_vault_name = AAZStrArg(
-            options=["--backup-vault-name"],
+            options=["-v", "--backup-vault-name"],
             help="The name of the Backup Vault",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,63}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -90,7 +90,7 @@ class Create(AAZCommand):
             help="Manual backup an already existing snapshot. This will always be false for scheduled backups and true/false for manual backups",
             default=False,
         )
-        _args_schema.volume_resource_id = AAZStrArg(
+        _args_schema.volume_resource_id = AAZResourceIdArg(
             options=["--volume-resource-id"],
             arg_group="Properties",
             help="ResourceId used to identify the Volume",
@@ -187,7 +187,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01-preview",
+                    "api-version", "2024-03-01-preview",
                     required=True,
                 ),
             }
@@ -261,6 +261,10 @@ class Create(AAZCommand):
             properties = cls._schema_on_200_201.properties
             properties.backup_id = AAZStrType(
                 serialized_name="backupId",
+                flags={"read_only": True},
+            )
+            properties.backup_policy_resource_id = AAZStrType(
+                serialized_name="backupPolicyResourceId",
                 flags={"read_only": True},
             )
             properties.backup_type = AAZStrType(

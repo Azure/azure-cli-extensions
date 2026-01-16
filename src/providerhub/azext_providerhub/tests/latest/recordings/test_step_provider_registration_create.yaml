@@ -6,8 +6,9 @@ interactions:
       "Resource Provider Service as a Service", "incidentRoutingTeam": "RPaaS", "manifestOwners":
       ["SPARTA-PlatformServiceAdministrator"], "serviceTreeInfos": [{"componentId":
       "d1b7d8ba-05e2-48e6-90d6-d781b99c6e69", "serviceId": "d1b7d8ba-05e2-48e6-90d6-d781b99c6e69"}]},
-      "metadata": {"BypassManifestValidation": true}, "providerVersion": "2.0", "tokenAuthConfiguration":
-      {"authenticationScheme": "PoP", "signedRequestScope": "ResourceUri"}}}'
+      "metadata": {"BypassManifestValidation": true}, "providerType": "Hidden, Internal",
+      "providerVersion": "2.0", "tokenAuthConfiguration": {"authenticationScheme":
+      "PoP", "signedRequestScope": "ResourceUri"}}}'
     headers:
       Accept:
       - application/json
@@ -18,31 +19,31 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '684'
+      - '720'
       Content-Type:
       - application/json
       ParameterSetName:
       - --token-auth-configuration --service-tree-infos --capabilities --capabilities
         --manifest-owners --incident-contact-email --incident-routing-service --incident-routing-team
-        --provider-version --provider-namespace --metadata
+        --provider-version --provider-type --provider-namespace --metadata
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.0 (Windows-11-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest?api-version=2024-04-01-preview
   response:
     body:
       string: '{"properties":{"privateResourceProviderConfiguration":{"allowedSubscriptions":["81ddc363-4b54-4223-833d-16b2a424d8a0"]},"provisioningState":"Succeeded","namespace":"Private.VPTest","providerVersion":"2.0","providerType":"Internal,
         Hidden","management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator"],"incidentRoutingService":"Resource
-        Provider Service as a Service","incidentRoutingTeam":"RPaaS","incidentContactEmail":"rpaascore@microsoft.com","serviceTreeInfos":[{"serviceId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69","componentId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69"}]},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"metadata":{"BypassManifestValidation":true},"tokenAuthConfiguration":{"authenticationScheme":"PoP","signedRequestScope":"ResourceUri","disableCertificateAuthenticationFallback":false}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest","type":"Microsoft.ProviderHub/providerRegistrations","name":"Private.VPTest","kind":"Managed","systemData":{"createdBy":"vpourhashem@microsoft.com","createdByType":"User","createdAt":"2022-11-16T00:05:06.5154703Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-17T03:49:36.6182293Z"}}'
+        Provider Service as a Service","incidentRoutingTeam":"RPaaS","incidentContactEmail":"rpaascore@microsoft.com","serviceTreeInfos":[{"serviceId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69","componentId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69"}]},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"metadata":{"BypassManifestValidation":true},"tokenAuthConfiguration":{"authenticationScheme":"PoP","signedRequestScope":"ResourceUri","disableCertificateAuthenticationFallback":false}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest","type":"Microsoft.ProviderHub/providerRegistrations","name":"Private.VPTest","kind":"Managed","systemData":{"createdBy":"vpourhashem@microsoft.com","createdByType":"User","createdAt":"2022-11-16T00:05:06.5154703Z","lastModifiedBy":"nataliezoz@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-02-25T00:16:37.5659306Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1345'
+      - '1344'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 03:49:46 GMT
+      - Tue, 25 Feb 2025 00:16:38 GMT
       expires:
       - '-1'
       pragma:
@@ -53,12 +54,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/295f3079-311a-4576-9769-bd2118a4720c
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 6F6726D26FE84B3AB8B77DA8FE0CBD56 Ref B: CO6AA3150218035 Ref C: 2024-06-17T03:49:36Z'
+      - 'Ref A: 3103F7BCF7A34BF3AC8D8FFF9F1BEC66 Ref B: CO6AA3150217035 Ref C: 2025-02-25T00:16:37Z'
     status:
       code: 200
       message: OK

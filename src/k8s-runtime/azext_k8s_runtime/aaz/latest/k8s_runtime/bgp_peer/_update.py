@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a BgpPeer
+
+    :example: Update a BGP peer
+        az k8s-runtime bgp-peer update --bgp-peer-name bgpPeer1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --my-asn 10000 --peer-asn 20000 --peer-address 192.168.50.1
     """
 
     _aaz_info = {
-        "version": "2024-03-01",
+        "version": "2024-08-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/bgppeers/{}", "2024-03-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/bgppeers/{}", "2024-08-01"],
         ]
     }
 
@@ -56,6 +59,77 @@ class Update(AAZCommand):
             options=["--resource-uri"],
             help="The fully qualified Azure Resource manager identifier of the resource.",
             required=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.bfd_profile = AAZStrArg(
+            options=["--bfd-profile"],
+            arg_group="Properties",
+            help="BFD Profile",
+            nullable=True,
+        )
+        _args_schema.bgp_multi_hop = AAZStrArg(
+            options=["--bgp-multi-hop"],
+            arg_group="Properties",
+            help="eBGP multiple hop",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.hold_time = AAZStrArg(
+            options=["--hold-time"],
+            arg_group="Properties",
+            help="Hold time, per RFC4271",
+            nullable=True,
+        )
+        _args_schema.keep_alive_time = AAZStrArg(
+            options=["--keep-alive-time"],
+            arg_group="Properties",
+            help="Keepalive time, per RFC4271",
+            nullable=True,
+        )
+        _args_schema.my_asn = AAZIntArg(
+            options=["--my-asn"],
+            arg_group="Properties",
+            help="My ASN",
+        )
+        _args_schema.node_selector = AAZListArg(
+            options=["--node-selector"],
+            arg_group="Properties",
+            help="A dynamic label mapping to select related nodes to peer with. For instance, if you want to create a BGP peer only for nodes with label \"a=b\", then please specify {\"a\": \"b\"} in the field.",
+            nullable=True,
+        )
+        _args_schema.peer_address = AAZStrArg(
+            options=["--peer-address"],
+            arg_group="Properties",
+            help="Peer Address",
+        )
+        _args_schema.peer_asn = AAZIntArg(
+            options=["--peer-asn"],
+            arg_group="Properties",
+            help="Peer ASN",
+        )
+        _args_schema.peer_port = AAZIntArg(
+            options=["--peer-port"],
+            arg_group="Properties",
+            help="Peer BGP port",
+            nullable=True,
+        )
+
+        node_selector = cls._args_schema.node_selector
+        node_selector.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.node_selector.Element
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="Label name",
+        )
+        _element.value = AAZStrArg(
+            options=["value"],
+            help="Label value",
         )
         return cls._args_schema
 
@@ -134,7 +208,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2024-08-01",
                     required=True,
                 ),
             }
@@ -230,7 +304,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2024-08-01",
                     required=True,
                 ),
             }
@@ -288,6 +362,28 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("bfdProfile", AAZStrType, ".bfd_profile")
+                properties.set_prop("bgpMultiHop", AAZStrType, ".bgp_multi_hop")
+                properties.set_prop("holdTime", AAZStrType, ".hold_time")
+                properties.set_prop("keepAliveTime", AAZStrType, ".keep_alive_time")
+                properties.set_prop("myAsn", AAZIntType, ".my_asn", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("nodeSelector", AAZListType, ".node_selector")
+                properties.set_prop("peerAddress", AAZStrType, ".peer_address", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("peerAsn", AAZIntType, ".peer_asn", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("peerPort", AAZIntType, ".peer_port")
+
+            node_selector = _builder.get(".properties.nodeSelector")
+            if node_selector is not None:
+                node_selector.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.nodeSelector[]")
+            if _elements is not None:
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 
@@ -324,9 +420,7 @@ class _UpdateHelper:
         bgp_peer_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        bgp_peer_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
+        bgp_peer_read.properties = AAZObjectType()
         bgp_peer_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
@@ -336,9 +430,24 @@ class _UpdateHelper:
         )
 
         properties = _schema_bgp_peer_read.properties
+        properties.bfd_profile = AAZStrType(
+            serialized_name="bfdProfile",
+        )
+        properties.bgp_multi_hop = AAZStrType(
+            serialized_name="bgpMultiHop",
+        )
+        properties.hold_time = AAZStrType(
+            serialized_name="holdTime",
+        )
+        properties.keep_alive_time = AAZStrType(
+            serialized_name="keepAliveTime",
+        )
         properties.my_asn = AAZIntType(
             serialized_name="myAsn",
             flags={"required": True},
+        )
+        properties.node_selector = AAZListType(
+            serialized_name="nodeSelector",
         )
         properties.peer_address = AAZStrType(
             serialized_name="peerAddress",
@@ -348,9 +457,23 @@ class _UpdateHelper:
             serialized_name="peerAsn",
             flags={"required": True},
         )
+        properties.peer_port = AAZIntType(
+            serialized_name="peerPort",
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
+        )
+
+        node_selector = _schema_bgp_peer_read.properties.node_selector
+        node_selector.Element = AAZObjectType()
+
+        _element = _schema_bgp_peer_read.properties.node_selector.Element
+        _element.name = AAZStrType(
+            flags={"required": True},
+        )
+        _element.value = AAZStrType(
+            flags={"required": True},
         )
 
         system_data = _schema_bgp_peer_read.system_data

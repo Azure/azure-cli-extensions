@@ -5,11 +5,12 @@
 
 import json
 import re
-from typing import Any, Dict, List, Set, Tuple
+from typing import Any, Dict, List, Set, Tuple, Union
 
 from knack.log import get_logger
-
+from ruamel.yaml import CommentedMap, CommentedSeq
 from azext_aosm.build_processors.base_processor import BaseInputProcessor
+from azext_aosm.common.constants import EXPOSE, HARDCODE, COMMENT_POSITION
 from azext_aosm.common.artifact import (
     BaseArtifact,
     LocalFileACRArtifact,
@@ -357,7 +358,7 @@ class HelmChartProcessor(BaseInputProcessor):
         # Generate the values mappings for the Helm chart.
         values_mappings = self.generate_values_mappings(
             self.input_artifact.get_schema(),
-            self.input_artifact.get_defaults(),
+            self.input_artifact.get_defaults()
         )
 
         # Remove the values from the values mappings.
@@ -400,3 +401,103 @@ class HelmChartProcessor(BaseInputProcessor):
             return None  # Key removed
         # Otherwise, recursively call the function on the sub-dictionary
         return self._remove_key_from_dict(dictionary[keys[0]], ".".join(keys[1:]))
+
+    def _set_expose_boolean(self, **kwargs) -> bool:
+        """
+        Determine whether a property should be exposed based on its comment and the expose_all_params flag.
+
+        Args:
+            **kwargs: Arbitrary keyword arguments. Expected keys are:
+                - prop (str): The name of the property.
+                - defaults (Dict[str, Any]): The default values for the properties.
+
+        Returns:
+            bool: True if the property should be exposed, False otherwise.
+        """
+        # Get arguments
+        prop_name = kwargs.get('prop')
+        default_dict = kwargs.get('defaults')
+        value_comment_dict = self._get_yaml_values_and_comments(default_dict)
+        comment = value_comment_dict[prop_name]["comment"]
+        if self.expose_all_params:
+            # Set to false if comment is 'hardcode'
+            return comment != HARDCODE
+        return comment == EXPOSE
+
+    # pylint: disable=no-else-return
+    def _get_yaml_values_and_comments(self, data) -> Union[Dict, List]:
+        """
+        Recursively processes YAML file and creates a new data structure
+        that mirrors the original one, but each value is replaced with a dictionary containing the value
+        and its associated comment (if it exists and is one of our keywords).
+
+        For example, in the values.yaml:
+
+        image:
+            repository: overwriteme # expose-cgs
+            tag: stable
+
+        the object created looks like:
+
+        "image": {
+            "value": {
+                "repository": {
+                    "value": "overwriteme",
+                    "comment": "expose-cgs"
+                },
+                "tag": {
+                    "value": "stable",
+                    "comment": null
+                },
+        The function handles CommentedMap (similar to a dictionary) and CommentedSeq (similar to a list)
+        data types from the ruamel.yaml library, which preserve comments in the YAML file.
+        Args:
+            data (CommentedMap or CommentedSeq): The data structure loaded from the YAML file.
+        Returns:
+            dict or list: A new data structure that mirrors the values.yaml, but each value is replaced
+            with a dictionary containing the value and its associated comment (if it exists). The type of
+            the returned data structure matches the type of the input data (i.e., a dictionary for
+            CommentedMap and a list for CommentedSeq).
+        """
+
+        if isinstance(data, (CommentedMap, CommentedSeq)):
+
+            processed_yaml_data = {} if isinstance(data, CommentedMap) else []
+            items = data.items() if isinstance(data, CommentedMap) else enumerate(data)
+
+            for key, value in items:
+                comment = None
+                # Check if the key has an associated comment
+                if key in data.ca.items:
+                    comment_value = data.ca.items[key]
+                    # Comments are stored as
+                    # [None, None, CommentToken('Test\n', line: 4, col: 14), None] so we look at the 3rd element
+                    if comment_value and comment_value[COMMENT_POSITION]:
+                        if (
+                            (EXPOSE in comment_value[COMMENT_POSITION].value)
+                            and (HARDCODE in comment_value[COMMENT_POSITION].value)
+                        ):
+                            logger.warning("Comment ignored for %s, as both %s and %s were provided",
+                                           value, HARDCODE, EXPOSE)
+                            comment = None
+                        elif EXPOSE in comment_value[COMMENT_POSITION].value:
+                            comment = EXPOSE
+                        elif HARDCODE in comment_value[COMMENT_POSITION].value:
+                            comment = HARDCODE
+                        else:
+                            comment = None
+
+                if (isinstance(value, (CommentedMap, CommentedSeq))):
+                    processed_element = self._get_yaml_values_and_comments(value)
+                else:
+                    processed_element = value
+
+                # Add the value and its comment to the new dictionary/list
+                if isinstance(processed_yaml_data, dict):
+                    processed_yaml_data[key] = {'value': processed_element, 'comment': comment}
+                else:
+                    processed_yaml_data.append({'value': processed_element, 'comment': comment})
+
+            return processed_yaml_data
+        else:
+            return data

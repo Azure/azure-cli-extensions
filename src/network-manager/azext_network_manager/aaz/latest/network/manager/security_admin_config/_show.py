@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-05-01",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}", "2024-05-01"],
         ]
     }
 
@@ -45,16 +45,19 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
+            options=["--config", "--config-name", "--configuration-name"],
             help="Name of the network manager security configuration.",
             required=True,
             id_part="child_name_1",
         )
         _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
+            options=["-n", "--name", "--manager-name", "--network-manager-name"],
             help="Name of the network manager.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9a-zA-Z]([0-9a-zA-Z_.-]{0,62}[0-9a-zA-Z_])?$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -102,7 +105,7 @@ class Show(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -130,7 +133,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -163,9 +166,6 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.etag = AAZStrType(
-                flags={"read_only": True},
-            )
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -188,8 +188,15 @@ class Show(AAZCommand):
                 serialized_name="applyOnNetworkIntentPolicyBasedServices",
             )
             properties.description = AAZStrType()
+            properties.network_group_address_space_aggregation_option = AAZStrType(
+                serialized_name="networkGroupAddressSpaceAggregationOption",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
                 flags={"read_only": True},
             )
 

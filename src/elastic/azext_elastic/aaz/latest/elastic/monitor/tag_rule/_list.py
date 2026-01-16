@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor tag-rule list",
 )
 class List(AAZCommand):
-    """List the tag rules for a given monitor resource.
+    """List all tag rules for a given Elastic monitor resource, helping you manage fine-grained control over observability based on resource tags.
 
-    :example: List monitor tag rule
-        az elastic monitor tag-rule list -g rg --monitor-name name
+    :example: TagRules_List
+        az elastic monitor tag-rule list --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/tagrules", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/tagrules", "2025-06-01"],
         ]
     }
 
@@ -49,6 +49,9 @@ class List(AAZCommand):
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -121,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -184,6 +187,7 @@ class List(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             log_rules = cls._schema_on_200.value.Element.properties.log_rules

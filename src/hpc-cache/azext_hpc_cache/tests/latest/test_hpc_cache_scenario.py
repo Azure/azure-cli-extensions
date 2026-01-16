@@ -58,7 +58,7 @@ class StorageCacheScenarioTest(ScenarioTest):
         self.cmd('az hpc-cache upgrade-firmware --resource-group {rg} --name {cache_name}', checks=[])
 
         from azure.core.exceptions import ResourceNotFoundError
-        with self.assertRaisesRegexp(ResourceNotFoundError, 'ResourceNotFound'):
+        with self.assertRaisesRegex(ResourceNotFoundError, 'ResourceNotFound'):
             self.cmd('az hpc-cache update '
                      '--resource-group {rg} '
                      '--name "{cache_name}123" '

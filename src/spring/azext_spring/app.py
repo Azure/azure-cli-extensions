@@ -309,6 +309,11 @@ def app_update(cmd, client, resource_group, service, name,
     if no_wait:
         return
     wait_till_end(cmd, *pollers)
+
+    for p in pollers:
+        if p.status() == 'Failed' and isinstance(p.result(), Exception):
+            raise p.result()
+
     return app_get(cmd, client, resource_group, service, name)
 
 

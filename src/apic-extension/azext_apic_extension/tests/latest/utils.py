@@ -4,16 +4,18 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer, SingleValueReplacer, get_dummy_cli, CliTestError, ResourceGroupPreparer
+from azure.core.exceptions import HttpResponseError
+from .constants import USERASSIGNED_IDENTITY
 
 class ApicServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
     def __init__(self, name_prefix='clitest', length=24,
-                 parameter_name='service_name', resource_group_parameter_name='resource_group', key='s',
-                 enable_system_assigned_identity=False):
+                 parameter_name='service_name', resource_group_parameter_name='resource_group', key='s', 
+                 user_assigned_identity = None):
         super(ApicServicePreparer, self).__init__(name_prefix, length)
         self.cli_ctx = get_dummy_cli()
         self.resource_group_parameter_name = resource_group_parameter_name
         self.parameter_name = parameter_name
-        self.enable_system_assigned_identity = enable_system_assigned_identity
+        self.user_assigned_identity = user_assigned_identity
         self.key = key
 
     def create_resource(self, name, **kwargs):
@@ -21,10 +23,13 @@ class ApicServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
         template = 'az apic create --name {} -g {}'
 
-        if self.enable_system_assigned_identity:
+        if self.user_assigned_identity is None:
             template += ' --identity \'{{type:SystemAssigned}}\''
+            cmd = template.format(name, group)
+        else:
+            template += ' --identity \'{{type:UserAssigned,user-assigned-identities:\'{{{}}}\'}}\''
+            cmd = template.format(name, group, self.user_assigned_identity)
 
-        cmd=template.format(name, group)
         print(cmd)
         self.live_only_execute(self.cli_ctx, cmd)
 
@@ -49,7 +54,7 @@ class ApicMetadataPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
                  parameter_name='metadata_name', resource_group_parameter_name='resource_group',
                  apic_service_parameter_name='service_name',
                  schema='{"type":"boolean", "title":"Public Facing"}',
-                 assignments='[{entity:api,required:true,deprecated:false},{entity:environment,required:true,deprecated:false},{entity:deployment,required:true,deprecated:false}]',
+                 assignments='[{entity:api,required:true,deprecated:false},{entity:environment,required:false,deprecated:false},{entity:deployment,required:true,deprecated:false}]',
                  key='m'):
         super(ApicMetadataPreparer, self).__init__(name_prefix, length)
         self.cli_ctx = get_dummy_cli()
@@ -380,3 +385,183 @@ class ApicDeploymentPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             template = 'To create an API Center Deployment an API Center Environment is required. Please add ' \
                        'decorator @{} in front of this preparer.'
             raise CliTestError(template.format(ApicEnvironmentPreparer.__name__))
+        
+class ApimServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
+    def __init__(self, name_prefix='clitest', length=24,
+                 parameter_name='apim_name', resource_group_parameter_name='resource_group',
+                 apic_service_name = 'service_name',
+                 key='apim'):
+        super(ApimServicePreparer, self).__init__(name_prefix, length)
+        self.cli_ctx = get_dummy_cli()
+        self.resource_group_parameter_name = resource_group_parameter_name
+        self.apic_service_name = apic_service_name
+        self.parameter_name = parameter_name
+        self.use_system_assigned_identity = False if USERASSIGNED_IDENTITY else True
+        self.key = key
+
+    def create_resource(self, name, **kwargs):
+        self.test_class_instance.kwargs['use_system_assigned_identity'] = self.use_system_assigned_identity
+        group = self._get_resource_group(**kwargs)
+        service_name = self._get_apic_service(**kwargs)
+
+        # Only setup APIM in live mode
+        if self.test_class_instance.is_live:
+            # Get system assigned identity id for API Center
+            apic_service = self.test_class_instance.cmd('az apic show -g {} -n {}'.format(group, service_name)).get_output_in_json()
+            if self.use_system_assigned_identity:
+                self.test_class_instance.kwargs.update({
+                    'identity_id': apic_service['identity']['principalId']
+                })
+
+            # Create APIM service
+            apim_service = self.test_class_instance.cmd('az apim create -g {} --name {} --publisher-name test --publisher-email test@example.com --sku-name Consumption'.format(group, name)).get_output_in_json()
+            apim_id = apim_service['id']
+            self.test_class_instance.kwargs[self.parameter_name] = name
+            self.test_class_instance.kwargs.update({
+                'apim_id': apim_id,
+                'usi_id': USERASSIGNED_IDENTITY,
+                'apic_service_name': service_name,
+                'group': group
+            })
+
+            # Add echo api
+            self.test_class_instance.cmd('az apim api create -g {} --service-name {} --api-id echotest --display-name "Echo API Test" --path "/echotest"'.format(group, name))
+            self.test_class_instance.cmd('az apim api operation create -g {} --service-name {} --api-id echotest --url-template "/echotest" --method "GET" --display-name "GetOperation"'.format(group, name))
+            # Add foo api
+            self.test_class_instance.cmd('az apim api create -g {} --service-name {} --api-id footest --display-name "Foo API Test" --path "/footest"'.format(group, name))
+            self.test_class_instance.cmd('az apim api operation create -g {} --service-name {} --api-id footest --url-template "/footest" --method "GET" --display-name "GetOperation"'.format(group, name))
+
+            if self.use_system_assigned_identity:
+                # Grant system assigned identity of API Center access to APIM
+                self.test_class_instance.cmd('az role assignment create --role "API Management Service Reader Role" --assignee-object-id {} --assignee-principal-type ServicePrincipal --scope {}'.format(self.test_class_instance.kwargs['identity_id'], apim_id))
+            else:
+                # Attach user assigned identity with access to APIM to API Center
+                # In APICServicePreparer, we already attached the user assigned identity provided by user to API Center. Please check it.
+                self.test_class_instance.cmd('az apic update --name {apic_service_name} -g {group} --identity {{type:UserAssigned,user-assigned-identities:{{{usi_id}}}}}')
+
+        self.test_class_instance.kwargs[self.parameter_name] = name
+        return {self.parameter_name: name}
+
+    def remove_resource(self, name, **kwargs):
+        # ResourceGroupPreparer will delete everything
+        pass
+
+    def _get_resource_group(self, **kwargs):
+        try:
+            return kwargs.get(self.resource_group_parameter_name)
+        except KeyError:
+            template = 'To create an API Management service a resource group is required. Please add ' \
+                       'decorator @{} in front of this preparer.'
+            raise CliTestError(template.format(ResourceGroupPreparer.__name__))    
+
+    def _get_apic_service(self, **kwargs):
+        try:
+            return kwargs.get(self.apic_service_name)
+        except KeyError:
+            template = 'To create an API Center service is required. Please add ' \
+                       'decorator @{} in front of this preparer.'
+            raise CliTestError(template.format(ApicServicePreparer.__name__))    
+
+
+class ApiAnalysisPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
+    def __init__(self, config_name='spectral-config', parameter_name='config_name', resource_group_parameter_name='resource_group', api_service_parameter_name='service_name', ensure_clean=False):
+        # Use a shorter prefix and set appropriate length to avoid validation errors
+        super(ApiAnalysisPreparer, self).__init__('spec', 24)  # Short prefix with standard length
+        self.cli_ctx = get_dummy_cli()
+        self.parameter_name = parameter_name
+        self.resource_group_parameter_name = resource_group_parameter_name
+        self.api_service_parameter_name = api_service_parameter_name
+        self.key = parameter_name
+        self.fixed_name = config_name
+        self.ensure_clean = ensure_clean  # Flag to determine if we should delete existing configs
+
+    def create_resource(self, name, **kwargs):
+        group = self._get_resource_group(**kwargs)
+        service = self._get_apic_service(**kwargs)
+        
+        # Always use the fixed name for consistency
+        name = self.fixed_name
+
+        # Check if we need to ensure a clean state (for create tests)
+        if self.ensure_clean:
+            # Delete all existing analyzer configs first
+            try:
+                configs = self.live_only_execute(self.cli_ctx, 'az apic api-analysis list -g {} -n {}'.format(group, service)).get_output_in_json()
+                for config in configs:
+                    config_name = config.get('name')
+                    if config_name:
+                        try:
+                            self.live_only_execute(self.cli_ctx, 'az apic api-analysis delete -g {} -n {} -c {} --yes'.format(group, service, config_name))
+                        except Exception:
+                            # Ignore errors if deletion fails
+                            pass
+            except Exception:
+                # If listing fails, continue anyway
+                pass
+
+            # Now create the new analyzer config
+            template = 'az apic api-analysis create -g {} -n {} -c {}'
+            cmd = template.format(group, service, name)
+            print(cmd)
+            self.live_only_execute(self.cli_ctx, cmd)
+        else:
+            # For other tests, use any existing config or create our default one
+            try:
+                configs = self.live_only_execute(self.cli_ctx, 'az apic api-analysis list -g {} -n {}'.format(group, service)).get_output_in_json()
+                if configs:
+                    # Use the first existing config (could be service default or our default)
+                    name = configs[0].get('name')
+                    print(f"Using existing analyzer config: {name}")
+                else:
+                    # No configs exist, create our default one
+                    template = 'az apic api-analysis create -g {} -n {} -c {}'
+                    cmd = template.format(group, service, name)
+                    print(cmd)
+                    self.live_only_execute(self.cli_ctx, cmd)
+            except Exception:
+                # If listing fails, try to create our default config
+                template = 'az apic api-analysis create -g {} -n {} -c {}'
+                cmd = template.format(group, service, name)
+                print(cmd)
+                try:
+                    self.live_only_execute(self.cli_ctx, cmd)
+                except HttpResponseError as e:
+                    if "Number of analyzer configs for this service" in str(e):
+                        # If creation fails due to limit, list and use existing
+                        configs = self.live_only_execute(self.cli_ctx, 'az apic api-analysis list -g {} -n {}'.format(group, service)).get_output_in_json()
+                        if configs:
+                            name = configs[0].get('name')
+                            print(f"Using existing analyzer config due to limit: {name}")
+                        else:
+                            raise
+                    else:
+                        raise
+
+        self.test_class_instance.kwargs[self.key] = name
+        return {self.parameter_name: name}
+
+    def remove_resource(self, name, **kwargs):
+        # ResourceGroupPreparer will delete everything
+        pass
+
+    def _get_resource_group(self, **kwargs):
+        try:
+            return kwargs.get(self.resource_group_parameter_name)
+        except KeyError:
+            template = 'To create an API Analysis configuration, a resource group is required. Please add ' \
+                       'decorator @{} in front of this preparer.'
+            raise CliTestError(template.format(ResourceGroupPreparer.__name__))
+
+    def _get_apic_service(self, **kwargs):
+        try:
+            return kwargs.get(self.api_service_parameter_name)
+        except KeyError:
+            template = 'To create an API Analysis configuration, an API Center service is required. Please add ' \
+                       'decorator @{} in front of this preparer.'
+            raise CliTestError(template.format(ApicServicePreparer.__name__))
+
+
+class ApiAnalysisCreatePreparer(ApiAnalysisPreparer):
+    """Special preparer for create tests that ensures clean state"""
+    def __init__(self, config_name='spectral-config', parameter_name='config_name', resource_group_parameter_name='resource_group', api_service_parameter_name='service_name'):
+        super().__init__(config_name, parameter_name, resource_group_parameter_name, api_service_parameter_name, ensure_clean=True)

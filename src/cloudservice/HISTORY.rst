@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
+* Remove direct call to `msrestazure`
+
 1.0.0
 ++++++
 * `az cloud-service`: Add new command group `os-family` to support managing os family.

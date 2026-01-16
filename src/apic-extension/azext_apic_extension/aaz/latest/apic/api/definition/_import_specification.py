@@ -21,7 +21,10 @@ class ImportSpecification(AAZCommand):
         az apic api definition import-specification -g api-center-test -n contosoeuap --api-id echo-api-2 --version-id 2023-08-01 --definition-id openapi3 --format "inline" --value '{"openapi":"3.0.1","info":{"title":"httpbin.org","description":"API Management facade for a very handy and free online HTTP tool.","version":"1.0"}}' --specification '{"name":"openapi","version":"3.0.0"}'
 
     :example: Import specification example 2
-        az apic api definition import-specification -g api-center-test -n contoso --api-id echo-api --version-id 2023-11-01 --definition-id openapi --format "link" --value 'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json' --specification '{"name":"openapi","version":"3.0.0"}'
+        az apic api definition import-specification -g api-center-test -n contoso --api-id echo-api --version-id 2023-11-01 --definition-id openapi --format "link" --value 'https://petstore3.swagger.io/api/v3/openapi.json' --specification '{"name":"openapi","version":"3.0.0"}'
+
+    :example: Import specification from file example
+        az apic api definition import-specification -g api-center-test -n contosoeuap --api-id echo-api --version-id 2023-08-01 --definition-id openapi --format "inline" --value '@petstore.json'
     """
 
     _aaz_info = {

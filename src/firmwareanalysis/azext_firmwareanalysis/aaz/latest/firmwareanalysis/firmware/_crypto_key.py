@@ -22,9 +22,9 @@ class CryptoKey(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-10",
+        "version": "2025-08-02",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}/cryptokeys", "2024-01-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}/cryptokeys", "2025-08-02"],
         ]
     }
 
@@ -49,6 +49,9 @@ class CryptoKey(AAZCommand):
             options=["--firmware-id"],
             help="The id of the firmware.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -133,7 +136,7 @@ class CryptoKey(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-10",
+                    "api-version", "2025-08-02",
                     required=True,
                 ),
             }
@@ -170,7 +173,7 @@ class CryptoKey(AAZCommand):
                 serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             value = cls._schema_on_200.value
@@ -183,9 +186,7 @@ class CryptoKey(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -197,42 +198,39 @@ class CryptoKey(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.crypto_key_id = AAZStrType(
                 serialized_name="cryptoKeyId",
-                nullable=True,
+            )
+            properties.crypto_key_size = AAZIntType(
+                serialized_name="cryptoKeySize",
             )
             properties.file_paths = AAZListType(
                 serialized_name="filePaths",
-                nullable=True,
                 flags={"read_only": True},
             )
             properties.is_short_key_size = AAZBoolType(
                 serialized_name="isShortKeySize",
-                nullable=True,
             )
             properties.key_algorithm = AAZStrType(
                 serialized_name="keyAlgorithm",
-                nullable=True,
-            )
-            properties.key_size = AAZIntType(
-                serialized_name="keySize",
-                nullable=True,
             )
             properties.key_type = AAZStrType(
                 serialized_name="keyType",
-                nullable=True,
             )
             properties.paired_key = AAZObjectType(
                 serialized_name="pairedKey",
-                nullable=True,
             )
-            properties.usage = AAZListType(
-                nullable=True,
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
             )
+            properties.usage = AAZListType()
 
             file_paths = cls._schema_on_200.value.Element.properties.file_paths
             file_paths.Element = AAZStrType()
 
             paired_key = cls._schema_on_200.value.Element.properties.paired_key
-            paired_key.id = AAZStrType()
+            paired_key.paired_key_id = AAZStrType(
+                serialized_name="pairedKeyId",
+            )
             paired_key.type = AAZStrType()
 
             usage = cls._schema_on_200.value.Element.properties.usage

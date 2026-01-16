@@ -25,7 +25,9 @@ class VmwareScenarioTest(ScenarioTest):
             'cluster': 'pycluster1',
             'hosts': 'fakehost22.nyc1.kubernetes.center fakehost23.nyc1.kubernetes.center fakehost24.nyc1.kubernetes.center',
             'key_vault_key': 'vmwarekey',
-            'vault_url': 'https://keyvault1-kmip-kvault.vault.azure.net/'
+            'vault_url': 'https://keyvault1-kmip-kvault.vault.azure.net/',
+            'clustername': 'cluster1',
+            'hostname': "name"
         })
 
         # check quote availability
@@ -39,7 +41,10 @@ class VmwareScenarioTest(ScenarioTest):
 
         # create a private cloud
         self.cmd(
-            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --nsxt-password 5rqdLj4GF3cePUe6( --vcenter-password UpfBXae9ZquZSDXk( --accept-eula')
+            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --accept-eula')
+        
+        self.cmd(
+            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --zones 1 --accept-eula')
 
         count = len(self.cmd('vmware private-cloud list -g {rg}').get_output_in_json())
         self.assertEqual(count, 1, 'private cloud count expected to be 1')
@@ -87,7 +92,7 @@ class VmwareScenarioTest(ScenarioTest):
 
         # delete identity source
         self.cmd(
-            'vmware private-cloud delete-identity-source -g {rg} -c {privatecloud} -n group1 --alias groupAlias --domain domain1 --yes')
+            'vmware private-cloud delete-identity-source -g {rg} -c {privatecloud} -n group1 --yes')
 
         # cluster list should report 0
         count = len(self.cmd('vmware cluster list -g {rg} -c {privatecloud}').get_output_in_json())
@@ -132,6 +137,16 @@ class VmwareScenarioTest(ScenarioTest):
 
         # cluster list zone
         self.cmd('vmware cluster list-zones -g {rg} -c {privatecloud} -n {cluster}')
+        
+        # list hosts
+        count = len(self.cmd('az vmware cluster host list -g rg --cluster-name {clustername} --private-cloud-name {privatecloud}').get_output_in_json())
+        self.assertEqual(count, 3, 'count expected to be 3')
+
+        # get a host
+        self.cmd('az vmware cluster host show -g rg --cluster-name {clustername} --private-cloud-name {privatecloud} --host-id {hostname}')
 
         # delete the private cloud
         self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud} --yes')
+        
+        # get sku list
+        self.cmd('vmware skus list')

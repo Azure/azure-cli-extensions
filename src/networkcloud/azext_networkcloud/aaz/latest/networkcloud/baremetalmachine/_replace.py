@@ -19,13 +19,13 @@ class Replace(AAZCommand):
     """Replace the provided bare metal machine.
 
     :example: Replace bare metal machine
-        az networkcloud baremetalmachine replace --bare-metal-machine-name "bareMetalMachineName" --bmc-credentials password="{password}" username="bmcuser" --bmc-mac-address "00:00:4f:00:57:ad" --boot-mac-address "00:00:4e:00:58:af" --machine-name "name" --serial-number "BM1219XXX" --resource-group "resourceGroupName"
+        az networkcloud baremetalmachine replace --bare-metal-machine-name "bareMetalMachineName" --bmc-credentials password="{password}" username="bmcuser" --bmc-mac-address "00:00:4f:00:57:ad" --boot-mac-address "00:00:4e:00:58:af" --machine-name "name" --serial-number "BM1219XXX" --safeguard-mode "All" --storage-policy "DiscardAll" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/replace", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/replace", "2025-09-01"],
         ]
     }
 
@@ -65,7 +65,7 @@ class Replace(AAZCommand):
         _args_schema.bmc_credentials = AAZObjectArg(
             options=["--bmc-credentials"],
             arg_group="BareMetalMachineReplaceParameters",
-            help="The credentials of the baseboard management controller on this bare metal machine.",
+            help="The credentials of the baseboard management controller on this bare metal machine. The password field is expected to be an Azure Key Vault key URL. Until the cluster is converted to utilize managed identity by setting the secret archive settings, the actual password value should be provided instead.",
         )
         _args_schema.bmc_mac_address = AAZStrArg(
             options=["--bmc-mac-address"],
@@ -91,6 +91,13 @@ class Replace(AAZCommand):
                 pattern="^([a-zA-Z0-9][a-zA-Z0-9]{0,62}[a-zA-Z0-9])$",
             ),
         )
+        _args_schema.safeguard_mode = AAZStrArg(
+            options=["--safeguard-mode"],
+            arg_group="BareMetalMachineReplaceParameters",
+            help="The safeguard mode to use for the replace action, where None indicates to bypass safeguards and All indicates to utilize all safeguards.",
+            default="All",
+            enum={"All": "All", "None": "None"},
+        )
         _args_schema.serial_number = AAZStrArg(
             options=["--serial-number"],
             arg_group="BareMetalMachineReplaceParameters",
@@ -99,6 +106,13 @@ class Replace(AAZCommand):
                 max_length=64,
                 min_length=1,
             ),
+        )
+        _args_schema.storage_policy = AAZStrArg(
+            options=["--storage-policy"],
+            arg_group="BareMetalMachineReplaceParameters",
+            help="The indicator of whether to bypass clearing storage while replacing a bare metal machine.",
+            default="DiscardAll",
+            enum={"DiscardAll": "DiscardAll", "Preserve": "Preserve"},
         )
 
         bmc_credentials = cls._args_schema.bmc_credentials
@@ -204,7 +218,7 @@ class Replace(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -233,7 +247,9 @@ class Replace(AAZCommand):
             _builder.set_prop("bmcMacAddress", AAZStrType, ".bmc_mac_address")
             _builder.set_prop("bootMacAddress", AAZStrType, ".boot_mac_address")
             _builder.set_prop("machineName", AAZStrType, ".machine_name")
+            _builder.set_prop("safeguardMode", AAZStrType, ".safeguard_mode")
             _builder.set_prop("serialNumber", AAZStrType, ".serial_number")
+            _builder.set_prop("storagePolicy", AAZStrType, ".storage_policy")
 
             bmc_credentials = _builder.get(".bmcCredentials")
             if bmc_credentials is not None:
@@ -278,7 +294,9 @@ class _ReplaceHelper:
             _schema.target = cls._schema_error_detail_read.target
             return
 
-        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         error_detail_read = _schema_error_detail_read
         error_detail_read.additional_info = AAZListType(
@@ -302,9 +320,15 @@ class _ReplaceHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZDictType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_error_detail_read.details
         details.Element = AAZObjectType()
@@ -327,6 +351,7 @@ class _ReplaceHelper:
             _schema.name = cls._schema_operation_status_result_read.name
             _schema.operations = cls._schema_operation_status_result_read.operations
             _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+            _schema.properties = cls._schema_operation_status_result_read.properties
             _schema.resource_id = cls._schema_operation_status_result_read.resource_id
             _schema.start_time = cls._schema_operation_status_result_read.start_time
             _schema.status = cls._schema_operation_status_result_read.status
@@ -337,14 +362,27 @@ class _ReplaceHelper:
         operation_status_result_read = _schema_operation_status_result_read
         operation_status_result_read.end_time = AAZStrType(
             serialized_name="endTime",
+            flags={"read_only": True},
         )
-        operation_status_result_read.error = AAZObjectType()
+        operation_status_result_read.error = AAZObjectType(
+            flags={"read_only": True},
+        )
         cls._build_schema_error_detail_read(operation_status_result_read.error)
-        operation_status_result_read.id = AAZStrType()
-        operation_status_result_read.name = AAZStrType()
-        operation_status_result_read.operations = AAZListType()
+        operation_status_result_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        operation_status_result_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        operation_status_result_read.operations = AAZListType(
+            flags={"read_only": True},
+        )
         operation_status_result_read.percent_complete = AAZFloatType(
             serialized_name="percentComplete",
+            flags={"read_only": True},
+        )
+        operation_status_result_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
         )
         operation_status_result_read.resource_id = AAZStrType(
             serialized_name="resourceId",
@@ -352,6 +390,7 @@ class _ReplaceHelper:
         )
         operation_status_result_read.start_time = AAZStrType(
             serialized_name="startTime",
+            flags={"read_only": True},
         )
         operation_status_result_read.status = AAZStrType(
             flags={"required": True},
@@ -361,12 +400,31 @@ class _ReplaceHelper:
         operations.Element = AAZObjectType()
         cls._build_schema_operation_status_result_read(operations.Element)
 
+        properties = _schema_operation_status_result_read.properties
+        properties.exit_code = AAZStrType(
+            serialized_name="exitCode",
+            flags={"read_only": True},
+        )
+        properties.output_head = AAZStrType(
+            serialized_name="outputHead",
+            flags={"read_only": True},
+        )
+        properties.result_ref = AAZStrType(
+            serialized_name="resultRef",
+            flags={"read_only": True},
+        )
+        properties.result_url = AAZStrType(
+            serialized_name="resultUrl",
+            flags={"read_only": True},
+        )
+
         _schema.end_time = cls._schema_operation_status_result_read.end_time
         _schema.error = cls._schema_operation_status_result_read.error
         _schema.id = cls._schema_operation_status_result_read.id
         _schema.name = cls._schema_operation_status_result_read.name
         _schema.operations = cls._schema_operation_status_result_read.operations
         _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+        _schema.properties = cls._schema_operation_status_result_read.properties
         _schema.resource_id = cls._schema_operation_status_result_read.resource_id
         _schema.start_time = cls._schema_operation_status_result_read.start_time
         _schema.status = cls._schema_operation_status_result_read.status

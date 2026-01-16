@@ -1,0 +1,74 @@
+{
+    "appLocation": "northeurope",
+    "configurationType": "DeploymentWithOSConfig",
+    "infrastructureConfiguration": {
+      "appResourceGroup": "PS_CLI_TF_RG",
+      "customResourceNames": {
+        "namingPatternType": "FullResourceName",
+        "virtualMachine": {
+          "dataDiskNames": {
+            "hanaData": [
+              "cl1hanadata0",
+              "cl1hanadata1"
+            ],
+            "hanaLog": [
+              "cl1hanalog0",
+              "cl1hanalog1",
+              "cl1hanalog2"
+            ],
+            "hanaShared": [
+              "cl1hanashared0",
+              "cl1hanashared1"
+            ],
+            "usrSap": [
+              "cl1usrsap0"
+            ]
+          },
+          "hostName": "acsscl1vm",
+          "networkInterfaces": [
+            {
+              "networkInterfaceName": "acsscl1vmnic"
+            }
+          ],
+          "osDiskName": "acsscl1vmosdisk",
+          "vmName": "acsscl1vm"
+        }
+      },
+      "databaseType": "HANA",
+      "deploymentType": "SingleServer",
+      "networkConfiguration": {
+        "isSecondaryIpEnabled": true
+      },
+      "subnetId": "/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourceGroups/JASKIRAT-RG-NE/providers/Microsoft.Network/virtualNetworks/JAS-VNET-NE/subnets/appsubnet",
+      "virtualMachineConfiguration": {
+        "imageReference": {
+          "offer": "RHEL-SAP-HA",
+          "publisher": "RedHat",
+          "sku": "84sapha-gen2",
+          "version": "latest"
+        },
+        "osProfile": {
+          "adminUsername": "azureuser",
+          "osConfiguration": {
+            "disablePasswordAuthentication": true,
+            "osType": "Linux",
+            "sshKeyPair": {
+                "publicKey": "publicKey",
+                "privateKey": "privateKey"
+              }
+          }
+        },
+        "vmSize": "Standard_E32ds_v4"
+      }
+    },
+    "osSapConfiguration": {
+      "sapFqdn": "sap.bpaas.com"
+    },
+    "softwareConfiguration": {
+      "softwareInstallationType": "SAPInstallWithoutOSConfig",
+      "bomUrl": "https://acsssapbitsne.blob.core.windows.net/sapbitss4hana2022/sapfiles/boms/S42022SPS00_v0006ms/S42022SPS00_v0006ms.yaml",
+      "sapBitsStorageAccountId": "/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourceGroups/sapbits-ne/providers/Microsoft.Storage/storageAccounts/acsssapbitsne",
+      "softwareVersion": "SAP S/4HANA 2022 ISS 00"
+    }
+  }
+  

@@ -21,6 +21,9 @@ examples:
     - name: Rerun an existing test run.
       text: |
         az load test-run create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --test-run-id sample-test-run-id --description "Test run description" --existing-test-run-id existing_test_run_id
+    - name: Create a test run with debug level logging enabled.
+      text: |
+        az load test-run create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --test-run-id sample-test-run-id --debug-mode
 """
 
 helps[
@@ -80,14 +83,25 @@ examples:
 """
 
 helps[
+    "load test-run get-artifacts-url"
+] = """
+type: command
+short-summary: Return the SAS URL to get artifacts from storage accounts.
+examples:
+    - name: Fetch SAS URL.
+      text: |
+        az load test-run get-artifacts-url --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id
+"""
+
+helps[
     "load test-run download-files"
 ] = """
 type: command
 short-summary: Download files for an existing load test run.
 examples:
-    - name: Download input, log and result files for a test run. The directory should already exist.
+    - name: Download input, log, result and dashboard report files for a test run. The directory should already exist.
       text: |
-        az load test-run download-files --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id --path ~/Downloads/OutputArtifacts --input --log --result
+        az load test-run download-files --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id --path ~/Downloads/OutputArtifacts --input --log --result --report
     - name: Download input and log files for a test run by creating the directory if it does not exist.
       text: |
         az load test-run download-files --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id --path ~/Downloads/OutputArtifacts --input --log --force

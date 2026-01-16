@@ -115,9 +115,9 @@ class SshConnectivityUtilsCommandTest(unittest.TestCase):
 
         mock_tar.extractall.assert_called_once_with(members=[mock_file1, mock_file2, mock_file3], path="/tmp/install")
 
-        self.assertEquals(mock_file1.name, "my_proxy")
-        self.assertEquals(mock_file2.name, "license.txt")
-        self.assertEquals(mock_file3.name, "thirdpartynotice.txt")
+        self.assertEqual(mock_file1.name, "my_proxy")
+        self.assertEqual(mock_file2.name, "license.txt")
+        self.assertEqual(mock_file3.name, "thirdpartynotice.txt")
 
     @mock.patch('os.path.isfile')
     @mock.patch('platform.machine')

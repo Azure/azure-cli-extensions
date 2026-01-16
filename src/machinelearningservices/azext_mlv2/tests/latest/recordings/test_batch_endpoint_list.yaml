@@ -1,0 +1,75 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, br
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.7 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/batchEndpoints?api-version=0000-00-00
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/batchEndpoints/test-batch-endpoint2",
+        "name": "test-batch-endpoint2", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": null, "properties": {"AzureAsyncOperationUri":
+        "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2euap/mfeOperationsStatus/be:1566a5e8-e37d-4bfe-9fd5-a00fe0106555:205c384c-20d6-4ec9-90db-d9b88837ef4c?api-version=2022-02-01-preview"},
+        "scoringUri": "https://test-batch-endpoint2.eastus2euap.inference.ml.azure.com/jobs",
+        "swaggerUri": null, "authMode": "AADToken", "defaults": {"deploymentName":
+        null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2022-04-04T20:11:28.4463873Z",
+        "createdBy": "Nancy Mejia Juarez", "lastModifiedAt": "2022-04-04T20:11:39.0771892Z"},
+        "tags": {}, "location": "eastus2euap"}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/batchEndpoints/test-batch-ept-1223423-52",
+        "name": "test-batch-ept-1223423-52", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": "my sample batch endpoint", "properties": {"p1":
+        "v1", "p2": "v2", "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2euap/mfeOperationsStatus/be:1566a5e8-e37d-4bfe-9fd5-a00fe0106555:d0b410c3-7ddf-42c5-b3cc-20bb19dd3536?api-version=2022-02-01-preview"},
+        "scoringUri": "https://test-batch-ept-1223423-52.eastus2euap.inference.ml.azure.com/jobs",
+        "swaggerUri": null, "authMode": "AADToken", "defaults": {"deploymentName":
+        null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2022-04-04T19:21:48.2459531Z",
+        "createdBy": "Nancy Mejia Juarez", "lastModifiedAt": "2022-04-04T19:21:58.9142315Z"},
+        "tags": {}, "location": "eastus2euap"}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/batchEndpoints/test-batch-endpoint",
+        "name": "test-batch-endpoint", "type": "Microsoft.MachineLearningServices/workspaces/batchEndpoints",
+        "properties": {"description": null, "properties": {"AzureAsyncOperationUri":
+        "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2euap/mfeOperationsStatus/be:1566a5e8-e37d-4bfe-9fd5-a00fe0106555:6fda8486-b10b-468a-9e97-80e43faddf67?api-version=2022-02-01-preview"},
+        "scoringUri": "https://test-batch-endpoint.eastus2euap.inference.ml.azure.com/jobs",
+        "swaggerUri": null, "authMode": "AADToken", "defaults": {"deploymentName":
+        null}, "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2022-04-04T19:04:32.1603226Z",
+        "createdBy": "Nancy Mejia Juarez", "lastModifiedAt": "2022-04-04T19:04:42.9500263Z"},
+        "tags": {}, "location": "eastus2euap"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3204'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Apr 2022 22:49:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2euap-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.502'
+    status:
+      code: 200
+      message: OK
+version: 1

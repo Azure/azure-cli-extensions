@@ -22,6 +22,9 @@ class Create(AAZCommand):
 
     :example: Create metadata example 2
         az apic metadata create --resource-group api-center-test --service-name contoso  --metadata-name testregion --schema '{\"type\":\"string\",\"title\":\"testregion\",\"oneOf\":[{\"const\":\"Region1\",\"description\":\"\"},{\"const\":\"Region2\",\"description\":\"\"},{\"const\":\"Region3\",\"description\":\"\"}]}' --assignments '[{entity:api,required:true,deprecated:false},{entity:environment,required:true,deprecated:false}]'
+
+    :example: Create metadata using json file schema and assignments example
+        az apic metadata create --resource-group api-center-test --service-name contoso --metadata-name "test" --schema '@schema.json' --assignments '@assignments.json'
     """
 
     _aaz_info = {

@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints", "2025-07-01"],
         ]
     }
 
@@ -121,7 +121,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -156,7 +156,6 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
-                flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
@@ -169,6 +168,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZIdentityObjectType()
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -183,6 +183,35 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.value.Element.properties
             properties.description = AAZStrType()
             properties.endpoint_type = AAZStrType(
@@ -194,12 +223,32 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            disc_azure_multi_cloud_connector = cls._schema_on_200.value.Element.properties.discriminate_by("endpoint_type", "AzureMultiCloudConnector")
+            disc_azure_multi_cloud_connector.aws_s3_bucket_id = AAZStrType(
+                serialized_name="awsS3BucketId",
+                flags={"required": True},
+            )
+            disc_azure_multi_cloud_connector.multi_cloud_connector_id = AAZStrType(
+                serialized_name="multiCloudConnectorId",
+                flags={"required": True},
+            )
+
             disc_azure_storage_blob_container = cls._schema_on_200.value.Element.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer")
             disc_azure_storage_blob_container.blob_container_name = AAZStrType(
                 serialized_name="blobContainerName",
                 flags={"required": True},
             )
             disc_azure_storage_blob_container.storage_account_resource_id = AAZStrType(
+                serialized_name="storageAccountResourceId",
+                flags={"required": True},
+            )
+
+            disc_azure_storage_nfs_file_share = cls._schema_on_200.value.Element.properties.discriminate_by("endpoint_type", "AzureStorageNfsFileShare")
+            disc_azure_storage_nfs_file_share.file_share_name = AAZStrType(
+                serialized_name="fileShareName",
+                flags={"required": True},
+            )
+            disc_azure_storage_nfs_file_share.storage_account_resource_id = AAZStrType(
                 serialized_name="storageAccountResourceId",
                 flags={"required": True},
             )

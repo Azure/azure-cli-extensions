@@ -13,12 +13,15 @@ from azure.cli.core.aaz import *
 
 class Create(AAZCommand):
     """Create dhcp by id in a private cloud workload network.
+
+    :example: Create a DHCP by ID in a workload network.
+        az vmware workload-network dhcp create --resource-group group1 --private-cloud cloud1 --dhcp dhcp1 --display-name dhcpConfigurations1 --revision 1
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/dhcpconfigurations/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/dhcpconfigurations/{}", "2024-09-01"],
         ]
     }
 
@@ -44,7 +47,7 @@ class Create(AAZCommand):
             help="NSX DHCP identifier. Generally the same as the DHCP display name",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.private_cloud = AAZStrArg(
@@ -52,7 +55,7 @@ class Create(AAZCommand):
             help="Name of the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -85,6 +88,10 @@ class Create(AAZCommand):
         relay.server_addresses = AAZListArg(
             options=["server-addresses"],
             help="DHCP Relay Addresses. Max 3.",
+            fmt=AAZListArgFormat(
+                max_length=3,
+                min_length=1,
+            ),
         )
 
         server_addresses = cls._args_schema.relay.server_addresses
@@ -186,7 +193,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -211,7 +218,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -261,7 +268,9 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

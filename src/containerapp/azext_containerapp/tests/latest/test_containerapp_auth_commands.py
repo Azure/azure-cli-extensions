@@ -3,13 +3,62 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-
+from azure.cli.command_modules.containerapp._utils import format_location
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckNotExists)
 
-from .common import TEST_LOCATION
+from .common import TEST_LOCATION, STAGE_LOCATION
 from .utils import prepare_containerapp_env_for_app_e2e_tests
 
+class ContainerappAuthIdentityTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_blob_storage_token_store_msi(self, resource_group):
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        app = self.create_random_name(prefix='containerapp-auth', length=24)
+        user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
+        user_identity_id = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()["id"]
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location)
+        self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80 --system-assigned --user-assigned {}'.format(resource_group, app, env, user_identity_name))
+        
+        client_id = 'c0d23eb5-ea9f-4a4d-9519-bfa0a422c491'
+        client_secret = 'c0d23eb5-ea9f-4a4d-9519-bfa0a422c491'
+        issuer = 'https://sts.windows.net/54826b22-38d6-4fb2-bad9-b7983a3e9c5a/'
+        blobContainerUri = 'https://teststorage.blob.core.windows.net/testcontainer'
+
+        self.cmd(
+            'containerapp auth microsoft update  -g {} --name {} --client-id {} --client-secret {} --issuer {} --yes'
+            .format(resource_group, app, client_id, client_secret, issuer), checks=[
+                JMESPathCheck('registration.clientId', client_id),
+                JMESPathCheck('registration.clientSecretSettingName',
+                              "microsoft-provider-authentication-secret"),
+                JMESPathCheck('registration.openIdIssuer', issuer),
+            ])
+        
+        self.cmd(
+            'containerapp auth update  -g {} -n {} --token-store true --blob-container-uri {} --yes'
+            .format(resource_group, app, blobContainerUri), checks=[
+                JMESPathCheck('properties.login.tokenStore.enabled', True),
+                JMESPathCheck('properties.login.tokenStore.azureBlobStorage.blobContainerUri', blobContainerUri),
+                JMESPathCheckNotExists('properties.login.tokenStore.azureBlobStorage.managedIdentityResourceId'),
+            ])
+        
+        self.cmd(
+            'containerapp auth update -g {} -n {} --token-store true --blob-container-uri {} --blob-container-identity {}'
+            .format(resource_group, app, blobContainerUri, user_identity_id), checks=[
+                JMESPathCheck('properties.login.tokenStore.enabled', True),
+                JMESPathCheck('properties.login.tokenStore.azureBlobStorage.blobContainerUri', blobContainerUri),
+                JMESPathCheck('properties.login.tokenStore.azureBlobStorage.managedIdentityResourceId', user_identity_id, case_sensitive=False),
+            ])
 
 class ContainerAppAuthTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):

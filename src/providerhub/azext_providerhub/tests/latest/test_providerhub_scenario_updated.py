@@ -171,9 +171,28 @@ class ProviderHubScenario(ScenarioTest):
                 '--incident-routing-service "Resource Provider Service as a Service" '
                 '--incident-routing-team "RPaaS" '
                 '--provider-version "2.0" '
+                '--provider-type "Hidden, Internal" '
                 '--provider-namespace "{providerNamespace}" '
                 '--metadata {{\\"BypassManifestValidation\\":true}}')
 
+    # EXAMPLE: /ProviderRegistrations/put/ProviderRegistrations_CreateOrUpdate
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_providerhub_provider_registration')
+    def test_step_provider_registration_update(self, resource_group):
+        self.cmd('az providerhub provider-registration update '
+                '--token-auth-configuration authentication-scheme="PoP" signed-request-scope="ResourceUri" '
+                '--service-tree-infos service-id="d1b7d8ba-05e2-48e6-90d6-d781b99c6e69" '
+                'component-id="d1b7d8ba-05e2-48e6-90d6-d781b99c6e69" '
+                '--capabilities effect="Allow" quota-id="CSP_2015-05-01" '
+                '--capabilities effect="Allow" quota-id="CSP_MG_2017-12-01" '
+                '--manifest-owners "SPARTA-PlatformServiceAdministrator" '
+                '--incident-contact-email "rpaascore@microsoft.com" '
+                '--incident-routing-service "Resource Provider Service as a Service" '
+                '--incident-routing-team "RPaaS" '
+                '--provider-version "2.0" '
+                '--provider-type "Hidden, Internal" '
+                '--provider-namespace "{providerNamespace}" '
+                '--metadata {{\\"BypassManifestValidation\\":true}}')
 
     # EXAMPLE: /ProviderRegistrations/get/ProviderRegistrations_Get
     @AllowLargeResponse()
@@ -213,8 +232,20 @@ class ProviderHubScenario(ScenarioTest):
                 '--endpoints "[{{api-versions:[2019-01-01],locations:[WestUS]}}]" '
                 '--regionality "Regional" '
                 '--provider-namespace "{providerNamespace}" '
-                '--resource-type "extensionresourcetype"')
-        
+                '--resource-type "extensionresourcetype" '
+                '--routing-type "ProxyOnly, Extension" ')
+
+    # EXAMPLE: /ResourceTypeRegistration/put/ResourceTypeRegistration_CreateOrUpdate
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_providerhub_resource_type_registration')
+    def test_step_resource_type_registration_update(self, resource_group):
+        self.cmd('az providerhub resource-type-registration update '
+                '--endpoints "[{{api-versions:[2019-01-01],locations:[WestUS]}}]" '
+                '--regionality "Regional" '
+                '--provider-namespace "{providerNamespace}" '
+                '--resource-type "extensionresourcetype" '
+                '--routing-type "ProxyOnly, Extension" ')
+
     # EXAMPLE: /ResourceTypeRegistrations/get/ResourceTypeRegistrations_ListByProviderRegistration
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_azure_providerhub_resource_type_registration')

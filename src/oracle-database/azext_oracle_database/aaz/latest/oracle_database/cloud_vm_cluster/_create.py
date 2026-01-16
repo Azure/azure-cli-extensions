@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}", "2025-09-01"],
         ]
     }
 
@@ -69,7 +69,7 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.cloud_exadata_infrastructure_id = AAZResourceIdArg(
+        _args_schema.cloud_exadata_infrastructure_id = AAZStrArg(
             options=["--exa-infra-id", "--cloud-exadata-infrastructure-id"],
             arg_group="Properties",
             help="Cloud Exadata Infrastructure ID",
@@ -126,6 +126,11 @@ class Create(AAZCommand):
             options=["--domain"],
             arg_group="Properties",
             help="The domain name for the cloud VM cluster.",
+        )
+        _args_schema.exascale_db_storage_vault_id = AAZStrArg(
+            options=["--exascale-db-storage-vault-id"],
+            arg_group="Properties",
+            help="Exadata Database Storage Vault ID",
         )
         _args_schema.gi_version = AAZStrArg(
             options=["--gi-version"],
@@ -189,7 +194,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The public key portion of one or more key pairs used for SSH access to the cloud VM cluster.",
         )
-        _args_schema.subnet_id = AAZResourceIdArg(
+        _args_schema.subnet_id = AAZStrArg(
             options=["--subnet-id"],
             arg_group="Properties",
             help="Client subnet",
@@ -212,7 +217,7 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.vnet_id = AAZResourceIdArg(
+        _args_schema.vnet_id = AAZStrArg(
             options=["--vnet-id"],
             arg_group="Properties",
             help="VNET for network connectivity",
@@ -395,7 +400,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -421,7 +426,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -437,6 +442,7 @@ class Create(AAZCommand):
                 properties.set_prop("dbServers", AAZListType, ".db_servers")
                 properties.set_prop("displayName", AAZStrType, ".display_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("domain", AAZStrType, ".domain")
+                properties.set_prop("exascaleDbStorageVaultId", AAZStrType, ".exascale_db_storage_vault_id")
                 properties.set_prop("giVersion", AAZStrType, ".gi_version", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("hostname", AAZStrType, ".hostname", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("isLocalBackupEnabled", AAZBoolType, ".is_local_backup_enabled")
@@ -515,9 +521,7 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -540,6 +544,11 @@ class Create(AAZCommand):
             )
             properties.compartment_id = AAZStrType(
                 serialized_name="compartmentId",
+                flags={"read_only": True},
+            )
+            properties.compute_model = AAZStrType(
+                serialized_name="computeModel",
+                flags={"read_only": True},
             )
             properties.cpu_core_count = AAZIntType(
                 serialized_name="cpuCoreCount",
@@ -562,12 +571,19 @@ class Create(AAZCommand):
             )
             properties.disk_redundancy = AAZStrType(
                 serialized_name="diskRedundancy",
+                flags={"read_only": True},
             )
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
                 flags={"required": True},
             )
             properties.domain = AAZStrType()
+            properties.exascale_db_storage_vault_id = AAZStrType(
+                serialized_name="exascaleDbStorageVaultId",
+            )
+            properties.file_system_configuration_details = AAZListType(
+                serialized_name="fileSystemConfigurationDetails",
+            )
             properties.gi_version = AAZStrType(
                 serialized_name="giVersion",
                 flags={"required": True},
@@ -577,6 +593,7 @@ class Create(AAZCommand):
             )
             properties.iorm_config_cache = AAZObjectType(
                 serialized_name="iormConfigCache",
+                flags={"read_only": True},
             )
             properties.is_local_backup_enabled = AAZBoolType(
                 serialized_name="isLocalBackupEnabled",
@@ -586,6 +603,7 @@ class Create(AAZCommand):
             )
             properties.last_update_history_entry_id = AAZStrType(
                 serialized_name="lastUpdateHistoryEntryId",
+                flags={"read_only": True},
             )
             properties.license_model = AAZStrType(
                 serialized_name="licenseModel",
@@ -596,6 +614,7 @@ class Create(AAZCommand):
             )
             properties.lifecycle_state = AAZStrType(
                 serialized_name="lifecycleState",
+                flags={"read_only": True},
             )
             properties.listener_port = AAZIntType(
                 serialized_name="listenerPort",
@@ -619,7 +638,9 @@ class Create(AAZCommand):
                 serialized_name="ociUrl",
                 flags={"read_only": True},
             )
-            properties.ocid = AAZStrType()
+            properties.ocid = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.ocpu_count = AAZFloatType(
                 serialized_name="ocpuCount",
             )
@@ -633,6 +654,7 @@ class Create(AAZCommand):
             )
             properties.scan_dns_record_id = AAZStrType(
                 serialized_name="scanDnsRecordId",
+                flags={"read_only": True},
             )
             properties.scan_ip_ids = AAZListType(
                 serialized_name="scanIpIds",
@@ -651,6 +673,10 @@ class Create(AAZCommand):
                 serialized_name="sshPublicKeys",
                 flags={"required": True},
             )
+            properties.storage_management_type = AAZStrType(
+                serialized_name="storageManagementType",
+                flags={"read_only": True},
+            )
             properties.storage_size_in_gbs = AAZIntType(
                 serialized_name="storageSizeInGbs",
             )
@@ -660,6 +686,7 @@ class Create(AAZCommand):
             )
             properties.subnet_ocid = AAZStrType(
                 serialized_name="subnetOcid",
+                flags={"read_only": True},
             )
             properties.system_version = AAZStrType(
                 serialized_name="systemVersion",
@@ -696,6 +723,17 @@ class Create(AAZCommand):
 
             db_servers = cls._schema_on_200_201.properties.db_servers
             db_servers.Element = AAZStrType()
+
+            file_system_configuration_details = cls._schema_on_200_201.properties.file_system_configuration_details
+            file_system_configuration_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.file_system_configuration_details.Element
+            _element.file_system_size_gb = AAZIntType(
+                serialized_name="fileSystemSizeGb",
+            )
+            _element.mount_point = AAZStrType(
+                serialized_name="mountPoint",
+            )
 
             iorm_config_cache = cls._schema_on_200_201.properties.iorm_config_cache
             iorm_config_cache.db_plans = AAZListType(

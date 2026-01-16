@@ -9,19 +9,28 @@ import re
 import stat
 import sys
 import tempfile
-from typing import TypeVar
+from typing import List, TypeVar
 
 import yaml
 from azext_aks_preview._client_factory import (
     get_mc_snapshots_client,
     get_nodepool_snapshots_client,
 )
+
+from azext_aks_preview._consts import (
+    ADDONS,
+    CONST_MONITORING_ADDON_NAME,
+    CONST_K8S_EXTENSION_NAME,
+)
+
 from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
 from azure.cli.command_modules.acs._validators import extract_comma_separated_string
 from azure.cli.core.azclierror import (
     FileOperationError,
     InvalidArgumentValueError,
     ResourceNotFoundError,
+    UnknownError,
+    ValidationError,
 )
 from azure.core.exceptions import AzureError
 from knack.log import get_logger
@@ -32,6 +41,7 @@ logger = get_logger(__name__)
 
 # type variables
 ManagedCluster = TypeVar("ManagedCluster")
+allowed_extensions = ["microsoft.dataprotection.kubernetes"]
 
 
 def which(binary):
@@ -85,6 +95,37 @@ def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_nam
     finally:
         additional_file.close()
         os.remove(temp_path)
+
+
+def uses_kubelogin_devicecode(kubeconfig: str) -> bool:
+    try:
+        config = yaml.safe_load(kubeconfig)
+
+        # Check if users section exists and has at least one user
+        if not config or not config.get('users') or len(config['users']) == 0:
+            return False
+
+        first_user = config['users'][0]
+        user_info = first_user.get('user', {})
+        exec_info = user_info.get('exec', {})
+
+        # Check if command is kubelogin
+        command = exec_info.get('command', '')
+        if 'kubelogin' not in command:
+            return False
+
+        # Check if args contains --login and devicecode
+        args = exec_info.get('args', [])
+        # Join args into a string for easier pattern matching
+        args_str = ' '.join(args)
+        # Check for '--login devicecode' or '-l devicecode'
+        if '--login devicecode' in args_str or '-l devicecode' in args_str:
+            return True
+        return False
+    except (yaml.YAMLError, KeyError, TypeError, AttributeError) as e:
+        # If there's any error parsing the kubeconfig, assume it doesn't require kubelogin
+        logger.debug("Error parsing kubeconfig: %s", str(e))
+        return False
 
 
 def _merge_kubernetes_configurations(existing_file, addition_file, replace, context_name=None):
@@ -346,3 +387,115 @@ def check_is_azure_cli_core_editable_installed():
     except Exception as ex:  # pylint: disable=broad-except
         logger.debug("failed to check if azure-cli-core is installed as editable: %s", ex)
     return False
+
+
+def check_is_monitoring_addon_enabled(addons, instance):
+    is_monitoring_addon_enabled = False
+    is_monitoring_addon = False
+    try:
+        addon_args = addons.split(',')
+        for addon_arg in addon_args:
+            if addon_arg in ADDONS:
+                addon = ADDONS[addon_arg]
+                if addon == CONST_MONITORING_ADDON_NAME:
+                    is_monitoring_addon = True
+                    break
+        addon_profiles = instance.addon_profiles or {}
+        is_monitoring_addon_enabled = (
+            is_monitoring_addon
+            and CONST_MONITORING_ADDON_NAME in addon_profiles
+            and addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+        )
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.debug("failed to check monitoring addon enabled: %s", ex)
+    return is_monitoring_addon_enabled
+
+
+def get_k8s_extension_module(module_name):
+    try:
+        # adding the installed extension in the path
+        from azure.cli.core.extension.operations import add_extension_to_path
+        add_extension_to_path(CONST_K8S_EXTENSION_NAME)
+        # import the extension module
+        from importlib import import_module
+        azext_custom = import_module(module_name)
+        return azext_custom
+    except ImportError:
+        raise UnknownError(  # pylint: disable=raise-missing-from
+            "Please add CLI extension `k8s-extension` for performing Azure Extension operations.\n"
+            "Run command `az extension add --name k8s-extension`"
+        )
+
+
+# TODO: Need to should source the set of allowed extensions from the extensions API at some point
+def _check_if_extension_type_is_in_allow_list(extension_type_name):
+    return extension_type_name.lower() in allowed_extensions
+
+
+def raise_validation_error_if_extension_type_not_in_allow_list(extension_type_name):
+    if not _check_if_extension_type_is_in_allow_list(extension_type_name):
+        raise ValidationError(f"Operation failed as extension type {extension_type_name.lower()} " +
+                              f"is not in allowed list of extension types {allowed_extensions}")
+
+
+def filter_hard_taints(node_initialization_taints: List[str]) -> List[str]:
+    filtered_taints = []
+    for taint in node_initialization_taints:
+        if not taint:
+            continue
+        # Parse the taint to get the effect
+        taint_parts = taint.split(":")
+        if len(taint_parts) == 2:
+            effect = taint_parts[-1].strip()
+            # Keep the taint if it has a soft effect (PreferNoSchedule)
+            # or if it's a CriticalAddonsOnly taint - AKS allows those on system pools
+            if effect.lower() == "prefernoschedule" or taint.lower().startswith("criticaladdonsonly"):
+                filtered_taints.append(taint)
+            else:
+                logger.warning('Taint %s with hard effect will be skipped from system pool', taint)
+        else:
+            # If the taint doesn't have a recognizable format, keep it, if it's incorrect - AKS-RP will return an error
+            filtered_taints.append(taint)
+    return filtered_taints
+
+
+def get_all_extension_types_in_allow_list(result):
+    output = []
+    for obj in result:
+        if _check_if_extension_type_is_in_allow_list(obj.name.lower()):
+            output.append(obj)
+    return output
+
+
+def get_all_extensions_in_allow_list(result):
+    output = []
+    for obj in result:
+        if _check_if_extension_type_is_in_allow_list(obj.extension_type.lower()):
+            output.append(obj)
+    return output
+
+
+def get_extension_in_allow_list(result):
+    if _check_if_extension_type_is_in_allow_list(result.extension_type.lower()):
+        return result
+    return None
+
+
+def process_dns_overrides(overrides_dict, target_dict, build_override_func):
+    """Helper function to safely process DNS overrides with null checks.
+
+    Processes DNS override dictionaries from LocalDNS configuration,
+    filtering out null values and applying the build function to valid entries.
+
+    :param overrides_dict: Dictionary containing DNS overrides (can be None)
+    :param target_dict: Target dictionary to populate with processed overrides
+    :param build_override_func: Function to build override objects from dict values
+    """
+    if not isinstance(overrides_dict, dict):
+        raise InvalidArgumentValueError(
+            f"Expected a dictionary for DNS overrides, but got {type(overrides_dict).__name__}: {overrides_dict}"
+        )
+    if overrides_dict is not None:
+        for key, value in overrides_dict.items():
+            if value is not None:
+                target_dict[key] = build_override_func(value)

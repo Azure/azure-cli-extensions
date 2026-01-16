@@ -4,21 +4,38 @@
 # --------------------------------------------------------------------------------------------
 
 
-import subprocess
-from typing import List
+import hashlib
 import os
-import sys
-import stat
-from pathlib import Path
 import platform
+import stat
+import subprocess
+import sys
+from typing import List
+
 import requests
-from knack.log import get_logger
 from azext_confcom.errors import eprint
+from azext_confcom.lib.paths import get_binaries_dir
+from knack.log import get_logger
 
 
 host_os = platform.system()
 machine = platform.machine()
 logger = get_logger(__name__)
+
+
+_binaries_dir = get_binaries_dir()
+_dmverity_vhd_binaries = {
+    "Linux": {
+        "path": _binaries_dir / "dmverity-vhd",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v1.6/dmverity-vhd",
+        "sha256": "b8cf3fa3594e48070a31aa538d5b4b40d5b33b8ac18bc25a1816245159648fb0",
+    },
+    "Windows": {
+        "path": _binaries_dir / "dmverity-vhd.exe",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v1.6/dmverity-vhd.exe",
+        "sha256": "ca0f95d798323f3ef26feb036112be9019f5ceaa6233ee2a65218d5a143ae474",
+    },
+}
 
 
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
@@ -27,35 +44,15 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def download_binaries():
-        dir_path = os.path.dirname(os.path.realpath(__file__))
 
-        bin_folder = os.path.join(dir_path, "bin")
-        if not os.path.exists(bin_folder):
-            os.makedirs(bin_folder)
+        for binary_info in _dmverity_vhd_binaries.values():
+            dmverity_vhd_fetch_resp = requests.get(binary_info["url"], verify=True)
+            dmverity_vhd_fetch_resp.raise_for_status()
 
-        # get the most recent release artifacts from github
-        r = requests.get("https://api.github.com/repos/microsoft/hcsshim/releases")
-        bin_flag = False
-        exe_flag = False
-        # search for dmverity-vhd in the assets from hcsshim releases
-        for release in r.json():
-            # these should be newest to oldest
-            for asset in release["assets"]:
-                # download the file if it contains dmverity-vhd
-                if "dmverity-vhd" in asset["name"]:
-                    if "exe" in asset["name"]:
-                        exe_flag = True
-                    else:
-                        bin_flag = True
-                    # get the download url for the dmverity-vhd file
-                    exe_url = asset["browser_download_url"]
-                    # download the file
-                    r = requests.get(exe_url)
-                    # save the file to the bin folder
-                    with open(os.path.join(bin_folder, asset["name"]), "wb") as f:
-                        f.write(r.content)
-            if bin_flag and exe_flag:
-                break
+            assert hashlib.sha256(dmverity_vhd_fetch_resp.content).hexdigest() == binary_info["sha256"]
+
+            with open(binary_info["path"], "wb") as f:
+                f.write(dmverity_vhd_fetch_resp.content)
 
     def __init__(self):
         script_directory = os.path.dirname(os.path.realpath(__file__))
@@ -74,10 +71,10 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             eprint("The extension for MacOS has not been implemented.")
         else:
             eprint(
-                "Unknown target platform. The extension only works with Windows, Linux and MacOS"
+                "Unknown target platform. The extension only works with Windows and Linux"
             )
 
-        self.policy_bin = Path(os.path.join(f"{script_directory}", f"{DEFAULT_LIB}"))
+        self.policy_bin = os.path.join(f"{script_directory}", f"{DEFAULT_LIB}")
 
         # check if the extension binary exists
         if not os.path.exists(self.policy_bin):
@@ -107,6 +104,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
 
         # decide if we're reading from a tarball or not
         if tar_location:
+            logger.info("Calculating layer hashes from tarball")
             arg_list += ["--tarball", tar_location]
         else:
             arg_list += ["-d"]

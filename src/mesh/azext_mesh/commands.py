@@ -13,8 +13,7 @@ from azure.cli.core.commands import CliCommandType
 
 from azure.cli.command_modules.resource._validators import _validate_deployment_name
 from knack.util import CLIError
-from ._client_factory import (cf_mesh_deployments,
-                              cf_mesh_volume, cf_mesh_secret_value)
+from ._client_factory import cf_mesh_deployments
 from ._exception_handler import resource_exception_handler
 
 #
@@ -169,15 +168,6 @@ def process_deployment_create_namespace(namespace):
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-statements
-    cmd_util = CliCommandType(
-        operations_tmpl='azext_mesh.custom#{}',
-        exception_handler=resource_exception_handler
-    )
-
-    mesh_secret_value_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.secret_value_operations#SecretValueOperations.{}',
-        exception_handler=resource_exception_handler
-    )
 
     resource_deployment_sdk = CliCommandType(
         operations_tmpl='azure.mgmt.resource.resources.operations.deployments_operations#DeploymentsOperations.{}',
@@ -216,11 +206,9 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
         self.command_table['mesh network show'] = Show(loader=self, table_transformer=transform_network)
         self.command_table['mesh network list'] = List(loader=self, table_transformer=transform_network_list)
 
-    with self.command_group('mesh volume', cmd_util) as g:
-        g.custom_command('create', 'create_volume', client_factory=cf_mesh_volume, table_transformer=transform_volume_list)
-
-    with self.command_group('mesh volume'):
+    with self.command_group('mesh volume') as g:
         from .aaz.latest.mesh.volume import Show, List
+        g.custom_command('create', 'create_volume', table_transformer=transform_volume_list)
         self.command_table['mesh volume show'] = Show(loader=self, table_transformer=transform_volume)
         self.command_table['mesh volume list'] = List(loader=self, table_transformer=transform_volume_list)
 
@@ -228,14 +216,9 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
         from .aaz.latest.mesh.secret import List
         self.command_table['mesh secret list'] = List(loader=self, table_transformer=transform_secret_list)
 
-    with self.command_group('mesh secretvalue', mesh_secret_value_util, client_factory=cf_mesh_secret_value) as g:
-        g.show_command('show', 'get')
-
-    with self.command_group('mesh secretvalue', cmd_util, client_factory=cf_mesh_secret_value) as g:
-        g.custom_show_command('show', 'secret_show')
-
-    with self.command_group('mesh secretvalue'):
+    with self.command_group('mesh secretvalue') as g:
         from .aaz.latest.mesh.secretvalue import List
+        g.custom_show_command('show', 'secret_show')
         self.command_table['mesh secretvalue list'] = List(loader=self, table_transformer=transform_secretvalue_list)
 
     with self.command_group('mesh gateway'):

@@ -45,9 +45,10 @@ from ..validators import (
     validate_duration,
     validate_private_key,
     validate_url_with_params,
+    validate_oci_url,
 )
 from .. import consts
-from ..vendored_sdks.v2022_07_01.models import (
+from ..vendored_sdks.v2024_11_01.models import (
     FluxConfiguration,
     FluxConfigurationPatch,
     GitRepositoryDefinition,
@@ -62,6 +63,13 @@ from ..vendored_sdks.v2022_07_01.models import (
     KustomizationDefinition,
     KustomizationPatchDefinition,
     SourceKindType,
+    OCIRepositoryDefinition,
+    OCIRepositoryPatchDefinition,
+    OCIRepositoryRefDefinition,
+    MatchOidcIdentityDefinition,
+    LayerSelectorDefinition,
+    VerifyDefinition,
+    TlsConfigDefinition
 )
 from ..vendored_sdks.v2022_07_01.models import Extension, Identity
 
@@ -149,6 +157,7 @@ def create_config(
     https_ca_cert_file=None,
     known_hosts=None,
     known_hosts_file=None,
+    provider=None,
     bucket_access_key=None,
     bucket_secret_key=None,
     bucket_insecure=False,
@@ -166,6 +175,18 @@ def create_config(
     sas_token=None,
     mi_client_id=None,
     cluster_resource_provider=None,
+    digest=None,
+    oci_media_type=None,
+    oci_operation=None,
+    tls_ca_certificate=None,
+    tls_client_certificate=None,
+    tls_private_key=None,
+    service_account_name=None,
+    use_workload_identity=None,
+    oci_insecure=None,
+    verification_provider=None,
+    match_oidc_identity=None,
+    verification_config=None,
 ):
 
     # Get Resource Provider to call
@@ -191,6 +212,7 @@ def create_config(
         https_ca_cert_file=https_ca_cert_file,
         known_hosts=known_hosts,
         known_hosts_file=known_hosts_file,
+        provider=provider,
         bucket_access_key=bucket_access_key,
         bucket_secret_key=bucket_secret_key,
         bucket_insecure=bucket_insecure,
@@ -204,6 +226,18 @@ def create_config(
         sp_client_secret=sp_client_secret,
         sp_client_cert_send_chain=sp_client_cert_send_chain,
         mi_client_id=mi_client_id,
+        digest=digest,
+        oci_media_type=oci_media_type,
+        oci_operation=oci_operation,
+        tls_ca_certificate=tls_ca_certificate,
+        tls_client_certificate=tls_client_certificate,
+        tls_private_key=tls_private_key,
+        service_account_name=service_account_name,
+        use_workload_identity=use_workload_identity,
+        oci_insecure=oci_insecure,
+        verification_provider=verification_provider,
+        match_oidc_identity=match_oidc_identity,
+        verification_config=verification_config,
     )
 
     # This update func is a generated update function that modifies
@@ -282,6 +316,7 @@ def update_config(
     https_ca_cert_file=None,
     known_hosts=None,
     known_hosts_file=None,
+    provider=None,
     bucket_access_key=None,
     bucket_secret_key=None,
     bucket_insecure=None,
@@ -300,6 +335,18 @@ def update_config(
     sas_token=None,
     mi_client_id=None,
     cluster_resource_provider=None,
+    digest=None,
+    oci_media_type=None,
+    oci_operation=None,
+    tls_ca_certificate=None,
+    tls_client_certificate=None,
+    tls_private_key=None,
+    service_account_name=None,
+    use_workload_identity=None,
+    oci_insecure=None,
+    verification_provider=None,
+    match_oidc_identity=None,
+    verification_config=None,
 ):
 
     # Get Resource Provider to call
@@ -330,6 +377,7 @@ def update_config(
         https_ca_cert_file=https_ca_cert_file,
         known_hosts=known_hosts,
         known_hosts_file=known_hosts_file,
+        provider=provider,
         bucket_access_key=bucket_access_key,
         bucket_secret_key=bucket_secret_key,
         bucket_insecure=bucket_insecure,
@@ -343,6 +391,18 @@ def update_config(
         sp_client_secret=sp_client_secret,
         sp_client_cert_send_chain=sp_client_cert_send_chain,
         mi_client_id=mi_client_id,
+        digest=digest,
+        oci_media_type=oci_media_type,
+        oci_operation=oci_operation,
+        tls_ca_certificate=tls_ca_certificate,
+        tls_client_certificate=tls_client_certificate,
+        tls_private_key=tls_private_key,
+        service_account_name=service_account_name,
+        use_workload_identity=use_workload_identity,
+        oci_insecure=oci_insecure,
+        verification_provider=verification_provider,
+        match_oidc_identity=match_oidc_identity,
+        verification_config=verification_config,
     )
 
     # This update func is a generated update function that modifies
@@ -410,6 +470,7 @@ def create_kustomization(
     path="",
     prune=None,
     force=None,
+    disable_health_check=None,
     no_wait=False,
     cluster_resource_provider=None,
 ):
@@ -441,6 +502,7 @@ def create_kustomization(
             retry_interval_in_seconds=parse_duration(retry_interval),
             prune=prune,
             force=force,
+            wait=disable_health_check!=True,
         )
     }
     flux_configuration_patch = FluxConfigurationPatch(kustomizations=kustomization)
@@ -471,6 +533,7 @@ def update_kustomization(
     path=None,
     prune=None,
     force=None,
+    disable_health_check=None,
     no_wait=False,
     cluster_resource_provider=None,
 ):
@@ -502,6 +565,7 @@ def update_kustomization(
             retry_interval_in_seconds=parse_duration(retry_interval),
             prune=prune,
             force=force,
+            wait=disable_health_check!=True,
         )
     }
     flux_configuration_patch = FluxConfigurationPatch(kustomizations=kustomization)
@@ -819,6 +883,8 @@ def source_kind_generator_factory(kind=consts.GIT, **kwargs):
         return GitRepositoryGenerator(**kwargs)
     if kind == consts.BUCKET:
         return BucketGenerator(**kwargs)
+    if kind == consts.OCI:
+        return OCIRepositoryGenerator(**kwargs)
     return AzureBlobGenerator(**kwargs)
 
 
@@ -827,6 +893,8 @@ def convert_to_cli_source_kind(rp_source_kind):
         return consts.GIT
     elif rp_source_kind == consts.BUCKET_CAPS:
         return consts.BUCKET
+    elif rp_source_kind == consts.OCI_REPOSITORY:
+        return consts.OCI
     return consts.AZBLOB
 
 
@@ -894,6 +962,7 @@ class GitRepositoryGenerator(SourceKindGenerator):
         self.ssh_private_key_file = kwargs.get("ssh_private_key_file")
         self.https_user = kwargs.get("https_user")
         self.https_key = kwargs.get("https_key")
+        self.provider = kwargs.get("provider")
 
         # Get the known hosts data and validate it
         self.knownhost_data = get_data_from_key_or_file(
@@ -956,6 +1025,7 @@ class GitRepositoryGenerator(SourceKindGenerator):
                 https_user=self.https_user,
                 local_auth_ref=self.local_auth_ref,
                 https_ca_cert=self.https_ca_data,
+                provider=self.provider,
             )
             config.source_kind = SourceKindType.GIT_REPOSITORY
             return config
@@ -980,6 +1050,7 @@ class GitRepositoryGenerator(SourceKindGenerator):
                     https_user=self.https_user,
                     local_auth_ref=self.local_auth_ref,
                     https_ca_cert=self.https_ca_data,
+                    provider=self.provider,
                 )
             if swapped_kind:
                 self.validate()
@@ -1183,6 +1254,160 @@ class AzureBlobGenerator(SourceKindGenerator):
             return config
 
         return azure_blob_patch_updater
+
+
+class OCIRepositoryGenerator(SourceKindGenerator):
+    def __init__(self, **kwargs):
+        # Common Pre-Validation
+        super().__init__(
+            consts.OCI, consts.OCI_REPO_REQUIRED_PARAMS, consts.OCI_REPO_VALID_PARAMS
+        )
+        super().validate_params(**kwargs)
+
+        # Pre-Validations
+        validate_duration("--timeout", kwargs.get("timeout"))
+        validate_duration("--sync-interval", kwargs.get("sync_interval"))
+
+        self.kwargs = kwargs
+        self.url = kwargs.get("url")
+        self.timeout = kwargs.get("timeout")
+        self.sync_interval = kwargs.get("sync_interval")
+        self.local_auth_ref = kwargs.get("local_auth_ref")
+        self.service_account_name = kwargs.get("service_account_name")
+        self.use_workload_identity = kwargs.get("use_workload_identity")
+        self.oci_insecure = kwargs.get("oci_insecure")
+
+        self.layer_selector = None
+        if any(
+            [
+                kwargs.get("oci_media_type"),
+                kwargs.get("oci_operation")
+            ]
+        ):
+            self.layer_selector = LayerSelectorDefinition(
+                media_type=kwargs.get("oci_media_type"),
+                operation=kwargs.get("oci_operation"),
+            )
+        
+        self.repository_ref = None
+        if any(
+            [
+                kwargs.get("tag"),
+                kwargs.get("semver"),
+                kwargs.get("digest"),
+            ]
+        ):
+            self.repository_ref = OCIRepositoryRefDefinition(
+                tag=kwargs.get("tag"),
+                semver=kwargs.get("semver"),
+                digest=kwargs.get("digest"),
+            )
+
+        self.tls_config = None
+        if any(
+            [
+                kwargs.get("tls_ca_certificate"),
+                kwargs.get("tls_client_certificate"),
+                kwargs.get("tls_private_key"),
+            ]
+        ):
+            self.tls_config = TlsConfigDefinition(
+                ca_certificate=kwargs.get("tls_ca_certificate"),
+                client_certificate=kwargs.get("tls_client_certificate"),
+                private_key=kwargs.get("tls_private_key"),
+            )
+        
+        self.match_oidc_identities = None
+        if kwargs.get("match_oidc_identity"):
+            self.match_oidc_identities = [
+                MatchOidcIdentityDefinition(
+                    issuer=identity["issuer"],
+                    subject=identity["subject"]
+                )
+                for identity in kwargs.get("match_oidc_identity", [])
+            ]
+
+        self.verification_config = None
+        if kwargs.get("verification_config"):
+            self.verification_config = {
+                key: value for key, value in kwargs.get("verification_config", {}).items()
+            }
+        
+        self.verify = None
+        if any(
+            [
+                kwargs.get("verification_provider"),
+                self.match_oidc_identities,
+                self.verification_config,
+            ]
+        ):
+            self.verify = VerifyDefinition(
+                provider=kwargs.get("verification_provider"),
+                match_oidc_identity=self.match_oidc_identities,
+                verification_config=self.verification_config,
+            )
+    
+    def validate(self):
+        super().validate_required_params(**self.kwargs)
+        validate_oci_url(self.url)
+
+    def generate_update_func(self):
+        """
+        generate_update_func(self) generates a function to add a OCIRepository
+        object to the flux configuration for the PUT case
+        """
+        self.validate()
+
+        def oci_repo_updater(config):
+            config.oci_repository = OCIRepositoryDefinition(
+                url=self.url,
+                timeout_in_seconds=parse_duration(self.timeout),
+                sync_interval_in_seconds=parse_duration(self.sync_interval),
+                local_auth_ref=self.local_auth_ref,
+                service_account_name=self.service_account_name,
+                use_workload_identity=self.use_workload_identity,
+                layer_selector=self.layer_selector,
+                repository_ref=self.repository_ref,
+                tls_config=self.tls_config,
+                verify=self.verify,
+                insecure=self.oci_insecure,
+            )
+            config.source_kind = SourceKindType.OCI_REPOSITORY
+            return config
+
+        return oci_repo_updater
+
+    def generate_patch_update_func(self, swapped_kind):
+        """
+        generate_patch_update_func(self) generates a function update the OCIRepository
+        object to the flux configuration for the PATCH case.
+        If the source kind has been changed, we also set the GitRepository, Bucket And AzureBlob to null
+        """
+
+        def oci_repo_patch_updater(config):
+            if any(kwarg is not None for kwarg in self.kwargs.values()):
+                config.oci_repository = OCIRepositoryPatchDefinition(
+                    url=self.url,
+                    timeout_in_seconds=parse_duration(self.timeout),
+                    sync_interval_in_seconds=parse_duration(self.sync_interval),
+                    local_auth_ref=self.local_auth_ref,
+                    service_account_name=self.service_account_name,
+                    use_workload_identity=self.use_workload_identity,
+                    layer_selector=self.layer_selector,
+                    repository_ref=self.repository_ref,
+                    tls_config=self.tls_config,
+                    verify=self.verify,
+                    insecure=self.oci_insecure,
+                )
+                if swapped_kind:
+                    self.validate()
+                    config.source_kind = SourceKindType.OCI_REPOSITORY
+                    config.azure_blob = AzureBlobPatchDefinition()
+                    config.bucket = BucketPatchDefinition()
+                    config.git_repository = GitRepositoryPatchDefinition()
+            return config
+
+        return oci_repo_patch_updater
 
 
 def get_protected_settings(

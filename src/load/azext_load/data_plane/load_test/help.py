@@ -19,7 +19,7 @@ examples:
         az load test create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --load-test-config-file ~/resources/sample-config.yaml
     - name: Create a test with arguments.
       text: |
-        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --description "Test description" --test-plan sample-jmx.jmx --engine-instances 1 --env rps=2 count=1
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --description "Test description" --test-plan sample-jmx.jmx --engine-instances 1 --env rps=2 count=1 --engine-ref-id-type SystemAssigned
     - name: Create a test with load test config file and override engine-instance and env using arguments and don't wait for file upload.
       text: |
         az load test create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --load-test-config-file ~/resources/sample-config.yaml --engine-instances 1 --env rps=2 count=1 --no-wait
@@ -32,6 +32,26 @@ examples:
     - name: Create a test for a private endpoint in a Virtual Network with split CSV option enabled.
       text: |
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/Microsoft.Network/virtualNetworks/SampleVMVNET/subnets/SampleVMSubnet" --split-csv true
+    - name: Create a test with custom defined autostop criteria or enable / disable autostop for a test.
+      text: |
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --autostop-error-rate 80.5 --autostop-time-window 120 --autostop-engine-users 1000
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --autostop disable
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --autostop enable
+    - name: Create a test with a multi-region load configuration using region names in the format accepted by Azure Resource Manager (ARM). Ensure the specified regions are supported by Azure Load Testing. Multi-region load tests are restricted to public endpoints only.
+      text: |
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --engine-instances 3 --regionwise-engines eastus=1 westus2=1 germanywestcentral=1 --test-plan sample-jmx.jmx
+    - name: Create an advanced URL test with multiple HTTP requests using a JSON file.
+      text: |
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --test-plan ~/resources/sample-url-requests.json --test-type URL
+    - name: Create a Locust based load test
+      text: |
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --test-plan ~/resources/sample-locust-file.py --test-type Locust --env LOCUST_HOST="https://azure.microsoft.com" LOCUST_SPAWN_RATE=0.3 LOCUST_RUN_TIME=120 LOCUST_USERS=4
+    - name: Create a test with user assigned Managed Identity reference for engine.
+      text: |
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --engine-ref-id-type UserAssigned --engine-ref-ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
+    - name: Create a test with user assigned Managed Identity reference for accessing the metrics of the configured apps.
+      text: |
+        az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --engine-ref-id-type UserAssigned --metrics-reference-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
 """
 
 helps[
@@ -77,6 +97,15 @@ examples:
     - name: Update the Key Vault reference identity to system assigned Managed Identity.
       text: |
         az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --keyvault-reference-id null
+    - name: Update autostop criteria.
+      text: |
+        az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --autostop-error-rate 90 --autostop-time-window 180
+    - name: Update multi-region load configuration.
+      text: |
+        az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --engine-instances 5 --regionwise-engines eastus=2 westus2=1 eastasia=2
+    - name: Update a test with user assigned Managed Identity reference for engine to SystemAssigned.
+      text: |
+        az load test update --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --engine-ref-id-type SystemAssigned
 """
 
 helps[
@@ -88,6 +117,42 @@ examples:
     - name: Delete a load test.
       text: |
         az load test delete --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id
+"""
+
+helps[
+    "load test convert-to-jmx"
+] = """
+type: command
+short-summary: Convert a URL type test to JMX test.
+examples:
+    - name: Convert to JMX test.
+      text: |
+        az load test convert-to-jmx --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id
+"""
+
+helps[
+    "load test set-baseline"
+] = """
+type: command
+short-summary: Set a test run as the baseline for comparison with other runs in the test.
+examples:
+    - name: Set baseline test run.
+      text: |
+        az load test set-baseline --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --test-run-id sample-associated-test-run-id
+"""
+
+helps[
+    "load test compare-to-baseline"
+] = """
+type: command
+short-summary: Compare the sampler statistics from recent test runs with those of the baseline test run.
+examples:
+    - name: Compare recent test runs to baseline.
+      text: |
+        az load test compare-to-baseline --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id -o table
+    - name: Compare recent test runs to baseline with specific aggregation.
+      text: |
+        az load test compare-to-baseline --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --aggregation P95 -o table
 """
 
 helps[
@@ -226,4 +291,10 @@ examples:
     - name: Upload a user property file to a test.
       text: |
         az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path ~/Resources/user-prop.properties --file-type USER_PROPERTIES
+    - name: Upload zipped artifacts to a test.
+      text: |
+        az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path ~/Resources/sample-zip.zip --file-type ZIPPED_ARTIFACTS
+    - name: Upload URL requests JSON configuration file to a test which is of type URL.
+      text: |
+        az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path ~/Resources/sample-url-requests.json --file-type URL_TEST_CONFIG
 """

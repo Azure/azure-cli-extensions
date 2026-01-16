@@ -11,7 +11,6 @@ from azure.cli.core.profiles import ResourceType
 from ..storage_test_util import StorageScenarioMixin
 
 
-@api_version_constraint(ResourceType.MGMT_STORAGE, min_api='2016-12-01')
 class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer()
     @StorageAccountPreparer(kind='StorageV2')
@@ -54,7 +53,7 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
 
         self.storage_cmd('storage blob service-properties show', account_info) \
             .assert_with_checks(JMESPathCheck('staticWebsite.enabled', False),
-                                JMESPathCheck('hourMetrics.enabled', True),
+                                JMESPathCheck('hourMetrics.enabled', False), # service change
                                 JMESPathCheck('minuteMetrics.enabled', False),
                                 JMESPathCheck('minuteMetrics.includeApis', None),
                                 JMESPathCheck('logging.delete', False))

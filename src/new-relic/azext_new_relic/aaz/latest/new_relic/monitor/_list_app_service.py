@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor list-app-service",
 )
 class ListAppService(AAZCommand):
-    """List the app service resources currently being monitored by the NewRelic resource.
+    """Lists the app service resources currently being monitored by the New Relic resource, helping you understand which app services are under monitoring.
 
     :example: List the app service resources currently being monitored by the NewRelic resource.
         az new-relic monitor list-app-service --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --user-email UserEmail@123.com --azure-resource-ids MyAzureResourceIds
@@ -51,7 +51,7 @@ class ListAppService(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor vm-host-payload",
 )
 class VmHostPayload(AAZCommand):
-    """Returns the payload that needs to be passed in the request body for installing NewRelic agent on a VM.
+    """Returns the payload that needs to be passed in the request body for installing the New Relic agent on a VM, providing the necessary configuration details.
 
     :example: Get MonitorsVmHostPayload.
         az monitor vm-host-payload --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup
@@ -51,7 +51,7 @@ class VmHostPayload(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema

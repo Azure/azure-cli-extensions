@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor get-billing-info",
 )
 class GetBillingInfo(AAZCommand):
-    """Get marketplace info mapped to the given monitor.
+    """Retrieve marketplace and organization billing information mapped to the given New Relic monitor resource.
 
     :example: Get marketplace info mapped to the given monitor.
         az new-relic monitor get-billing-info --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup
@@ -55,7 +55,7 @@ class GetBillingInfo(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["--resource-group","--g"],
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema

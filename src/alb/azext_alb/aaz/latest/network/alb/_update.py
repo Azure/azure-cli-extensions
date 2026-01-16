@@ -20,13 +20,13 @@ class Update(AAZCommand):
     This command can only be used to update the tags for the resource. Name and resource group are immutable and cannot be updated
 
     :example: Update the tags of the resource
-        az network alb update -g test-rg -n test-alb --set tags.CostCenter=testBusinessGroup
+        az network alb update -g test-rg -n test-alb --set tags.CostCenter=testBusinessGroup --waf-policy-id /subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Networking/securityPolicies/test-wp
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2025-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.servicenetworking/trafficcontrollers/{}", "2025-01-01"],
         ]
     }
 
@@ -75,6 +75,15 @@ class Update(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg(
             nullable=True,
+        )
+
+        # define Arg Group "SecurityPolicyConfigurations"
+
+        _args_schema = cls._args_schema
+        _args_schema.waf_policy_id = AAZStrArg(
+            options=["--waf-policy-id"],
+            arg_group="SecurityPolicyConfigurations",
+            help="Resource ID of the Waf Security Policy",
         )
         return cls._args_schema
 
@@ -156,7 +165,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2025-01-01",
                     required=True,
                 ),
             }
@@ -255,7 +264,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2025-01-01",
                     required=True,
                 ),
             }
@@ -313,7 +322,20 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("securityPolicyConfigurations", AAZObjectType)
+
+            security_policy_configurations = _builder.get(".properties.securityPolicyConfigurations")
+            if security_policy_configurations is not None:
+                security_policy_configurations.set_prop("wafSecurityPolicy", AAZObjectType)
+
+            waf_security_policy = _builder.get(".properties.securityPolicyConfigurations.wafSecurityPolicy")
+            if waf_security_policy is not None:
+                waf_security_policy.set_prop("id", AAZStrType, ".waf_policy_id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -401,6 +423,14 @@ class _UpdateHelper:
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.security_policies = AAZListType(
+            serialized_name="securityPolicies",
+            flags={"read_only": True},
+        )
+        properties.security_policy_configurations = AAZObjectType(
+            serialized_name="securityPolicyConfigurations",
         )
 
         associations = _schema_traffic_controller_read.properties.associations
@@ -413,6 +443,20 @@ class _UpdateHelper:
         frontends = _schema_traffic_controller_read.properties.frontends
         frontends.Element = AAZObjectType()
         cls._build_schema_resource_id_read(frontends.Element)
+
+        security_policies = _schema_traffic_controller_read.properties.security_policies
+        security_policies.Element = AAZObjectType()
+        cls._build_schema_resource_id_read(security_policies.Element)
+
+        security_policy_configurations = _schema_traffic_controller_read.properties.security_policy_configurations
+        security_policy_configurations.waf_security_policy = AAZObjectType(
+            serialized_name="wafSecurityPolicy",
+        )
+
+        waf_security_policy = _schema_traffic_controller_read.properties.security_policy_configurations.waf_security_policy
+        waf_security_policy.id = AAZStrType(
+            flags={"required": True},
+        )
 
         system_data = _schema_traffic_controller_read.system_data
         system_data.created_at = AAZStrType(

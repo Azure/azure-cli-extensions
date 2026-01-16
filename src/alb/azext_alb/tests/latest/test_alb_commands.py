@@ -21,19 +21,18 @@ from azure.cli.testsdk import (
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class AlbScenario(ScenarioTest):
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='cli_record_test_tc_000999990', location="eastus2euap")
     def test_alb_resources(self):
         self.kwargs.update({
-            'rg': 'cli_record_test_tc_000999990',
             'tc': 'tc1',
             'fe': 'fe1',
             'aso': 'a1',
             'vnet': 'vnet1',
-            'subnet': "s1"
+            'subnet': "s1",
+            'waf_policy': 'waf_policy1',
+            'sp_waf': 'sp_waf1',
         })
-        
-        #Works with subscription 668f1741-ef48-4132-bf98-28b3a3d3f257
-        # Create Resource group.
-        self.cmd('group create -n {rg} --location northeurope')
 
         # Create Traffic Controller
         tcCount1 = len(self.cmd('network alb list -g {rg}').get_output_in_json())
@@ -68,6 +67,17 @@ class AlbScenario(ScenarioTest):
             self.check('name', '{aso}')
         ])
 
+        # Create WAF Security Policy for traffic controller
+        self.kwargs['waf_policy_id'] = self.cmd('network application-gateway waf-policy create --name {waf_policy} --resource-group {rg} --version 2.1').get_output_in_json()['id']
+
+        wafCount1 = len(self.cmd('network alb security-policy list -g {rg} --alb-name {tc}').get_output_in_json())
+        self.cmd('network alb security-policy waf create -g {rg} -n {sp_waf} --alb-name {tc} --waf-policy-id {waf_policy_id}')
+        wafCount2 = len(self.cmd('network alb security-policy list -g {rg} --alb-name {tc}').get_output_in_json())
+        self.assertTrue(wafCount2 == wafCount1 + 1)
+        self.cmd('network alb security-policy show -g {rg} -n {sp_waf} --alb-name {tc}', checks=[
+            self.check('name', '{sp_waf}')
+        ])
+
         #Start Deleting
         self.cmd('network alb association delete -g {rg} -n {aso} --alb-name {tc} -y')
         associationCount3 = len(self.cmd('network alb association list -g {rg} --alb-name {tc}').get_output_in_json())
@@ -76,6 +86,10 @@ class AlbScenario(ScenarioTest):
         self.cmd('network alb frontend delete -g {rg} -n {fe} --alb-name {tc} -y')
         tcFrontendCount3 = len(self.cmd('network alb frontend list -g {rg} --alb-name {tc}').get_output_in_json())
         self.assertTrue(tcFrontendCount3 == tcFrontendCount1)
+
+        self.cmd('network alb security-policy waf delete -g {rg} -n {sp_waf} --alb-name {tc} -y')
+        wafCount3 = len(self.cmd('network alb security-policy list -g {rg} --alb-name {tc}').get_output_in_json())
+        self.assertTrue(wafCount3 == wafCount1)
 
         self.cmd('network alb delete -g {rg} -n {tc} -y')
         tcCount3 = len(self.cmd('network alb list -g {rg}').get_output_in_json())

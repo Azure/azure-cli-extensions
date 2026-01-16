@@ -12,10 +12,8 @@ class ApplicationInsightsCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_applicationinsights._client_factory import applicationinsights_data_plane_client
         applicationinsights_custom = CliCommandType(
             operations_tmpl='azext_applicationinsights.custom#{}',
-            client_factory=applicationinsights_data_plane_client
         )
 
         super().__init__(

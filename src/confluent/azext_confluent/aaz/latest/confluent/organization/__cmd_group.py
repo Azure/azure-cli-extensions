@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Commands to perform actions on a confluent organization
+    """Perform administrative operations on Confluent organization entities via Azure.
     """
     pass
 

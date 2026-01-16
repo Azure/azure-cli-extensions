@@ -57,7 +57,7 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             tags['job'] = os.environ['ENV_JOB_NAME']
         tags = ' '.join(['{}={}'.format(key, value)
                          for key, value in tags.items()])
-        template = 'az network vnet create --resource-group {} --name {} --subnet-name default --tag ' + tags
+        template = 'az network vnet create --resource-group {} --name {} --subnets \'[{{"name":"default","address-prefixes":["10.0.0.0/24"],"default-outbound-access":false}}]\' --tag ' + tags
         self.live_only_execute(self.cli_ctx, template.format(
             self.resource_group_name, name))
 

@@ -102,3 +102,70 @@ Release History
 1.2.1
 ++++++
 * Fixed --vm-size parameter mapping
+
+1.2.2
+++++++
+* Added missing help text
+* Removed dependency on msrestazure library
+
+1.3.0
+++++++
+* Add fleet autoupgradeprofile commands
+
+1.4.0
+++++++
+* Set autoupgradeprofile commands to preview mode
+
+1.5.0
+++++++
+* Upgrade SDK version to 2025-03-01
+
+1.5.1
+++++++
+* create_fleet now creates a role assignment when fleet type is private
+
+1.5.2
+++++++
+* Bug fix for `az fleet create --enable-hub --enable-private-cluster` argument
+
+1.6.0
+++++++
+* Upgrade SDK version to 2025-04-01-preview
+* Add Fleet Gates support
+* Add TargetKubernetesVersion channel support
+* Add Fleet Member labels support
+
+1.6.1
+++++++
+* Modified parameter handling to accept both file paths and inline JSON strings for the --stages argument
+
+1.6.2
+++++++
+* Updated help text for new supported member cluster type.
+
+1.6.3
+++++++
+* Mark gate commands as preview, fixing bug from version 1.6.0.
+
+1.6.4
+++++++
+* Fix help text for `fleet list` command.
+
+1.7.0
+++++++
+* Removed is_preview flag from `enable_vnet_integration` and `assign_identity` parameters.
+* Updated Private Fleet V2 to require user assigned identity.
+
+1.8.0
+++++++
+* Upgrade SDK version to 2025-08-01-preview
+* Add Fleet Managed Namespace support
+
+
+1.8.1
+++++++
+* Ensure role assignment is created for private fleets before fleet creation.
+
+1.8.2
+++++++
+* Fix fleet namespace get-credentials command with fleet member parameter.

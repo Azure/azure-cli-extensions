@@ -2,8 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-import copy
 import json
+import copy
 import shutil
 import subprocess
 import tempfile
@@ -12,25 +12,21 @@ from dataclasses import dataclass
 from os import PathLike
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
-
 import genson
 import ruamel.yaml
+from ruamel.yaml.error import ReusedAnchorWarning
 import yaml
 from knack.log import get_logger
-from ruamel.yaml.error import ReusedAnchorWarning
-
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azext_aosm.common.exceptions import (
-    DefaultValuesNotFoundError,
     MissingChartDependencyError,
     SchemaGetOrGenerateError,
-    TemplateValidationError,
+    TemplateValidationError
 )
 from azext_aosm.common.utils import check_tool_installed, extract_tarfile
-# from azext_aosm.common.constants import CNF_VALUES_SCHEMA_FILENAME
 from azext_aosm.inputs.base_input import BaseInput
-
 logger = get_logger(__name__)
-yaml_processor = ruamel.yaml.YAML(typ="safe", pure=True)
+yaml_processor = ruamel.yaml.YAML(typ="rt", pure=True)
 warnings.simplefilter("ignore", ReusedAnchorWarning)
 
 
@@ -83,7 +79,7 @@ class HelmChartInput(BaseInput):
     :type default_config_path: Optional[str]
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         artifact_name: str,
         artifact_version: str,
@@ -102,6 +98,11 @@ class HelmChartInput(BaseInput):
         self.metadata = self._get_metadata()
         self.helm_template: Optional[str] = None
         self.default_config_path = default_config_path
+
+        if self.default_config_path:
+            self.default_config = self._read_values_yaml_from_default_values()
+        else:
+            self.default_config = self._read_values_yaml_from_chart()
 
     @staticmethod
     def from_chart_path(
@@ -122,22 +123,23 @@ class HelmChartInput(BaseInput):
         :rtype: HelmChartInput
         """
         logger.debug("Creating Helm chart input from chart path '%s'", chart_path)
-        temp_dir = Path(tempfile.mkdtemp())
+
         if not chart_path.exists():
-            raise FileNotFoundError(
+            raise InvalidArgumentValueError(
                 f"ERROR: The Helm chart '{chart_path}' does not exist."
             )
-        logger.debug("Unpacking Helm chart to %s", temp_dir)
+
         if chart_path.is_dir():
-            unpacked_chart_path = Path(chart_path)
+            name, version = HelmChartInput._get_name_and_version(Path(chart_path))
         else:
+            temp_dir = Path(tempfile.mkdtemp())
+            logger.debug("Unpacking Helm chart to %s", temp_dir)
             unpacked_chart_path = extract_tarfile(chart_path, temp_dir)
 
-        name, version = HelmChartInput._get_name_and_version(unpacked_chart_path)
+            name, version = HelmChartInput._get_name_and_version(unpacked_chart_path)
 
-        shutil.rmtree(temp_dir)
-
-        logger.debug("Deleted temporary directory %s", temp_dir)
+            shutil.rmtree(temp_dir)
+            logger.debug("Deleted temporary directory %s", temp_dir)
 
         return HelmChartInput(
             artifact_name=name,
@@ -158,7 +160,7 @@ class HelmChartInput(BaseInput):
         check_tool_installed("helm")
 
         if self.default_config_path:
-            cmd: List[Union[str, PathLike]] = [
+            helm_template_cmd: List[Union[str, PathLike]] = [
                 "helm",
                 "template",
                 self.artifact_name,
@@ -167,7 +169,7 @@ class HelmChartInput(BaseInput):
                 self.default_config_path,
             ]
         else:
-            cmd = [
+            helm_template_cmd = [
                 "helm",
                 "template",
                 self.artifact_name,
@@ -175,7 +177,7 @@ class HelmChartInput(BaseInput):
             ]
 
         try:
-            result = subprocess.run(cmd, capture_output=True, check=True)
+            result = subprocess.run(helm_template_cmd, capture_output=True, check=True)
             helm_template_output = result.stdout
             self.helm_template = helm_template_output.decode()
 
@@ -189,7 +191,7 @@ class HelmChartInput(BaseInput):
             # The errors are going to be collected into a file by the caller of this function.
             error_message = error.stderr.decode()
 
-            # Remove part of the message of the error. This is because this message will polute
+            # Remove part of the message of the error. This is because this message will pollute
             # the error file. We are not running the helm command with the --debug flag,
             # because during testing this flag did not produce any useful output
             # (the invalid YAML was not printed out). If at a later date we find that this flag
@@ -199,25 +201,6 @@ class HelmChartInput(BaseInput):
             )
             raise TemplateValidationError(error_message)
 
-    def validate_values(self) -> None:
-        """
-        Confirm that the default values are provided or that a values.yaml file exists in the
-        Helm chart directory.
-
-        :raises DefaultValuesNotFoundError: If the values.yaml and default values do not exist.
-        """
-        logger.debug("Getting default values for Helm chart %s", self.artifact_name)
-
-        try:
-            self.default_config or self._read_values_yaml_from_chart()
-        except FileNotFoundError:
-            logger.error("No values found for Helm chart '%s'", self.chart_path)
-            raise DefaultValuesNotFoundError(
-                "ERROR: No default values found for the Helm chart"
-                f" '{self.chart_path}'. Please provide default values"
-                " or add a values.yaml file to the Helm chart."
-            )
-
     def get_defaults(self) -> Dict[str, Any]:
         """
         Retrieves the default values for the Helm chart.
@@ -225,12 +208,11 @@ class HelmChartInput(BaseInput):
         :return: The default values for the Helm chart.
         :rtype: Dict[str, Any]
         """
-        default_config = self.default_config or self._read_values_yaml_from_chart()
         logger.debug(
             "Default values for Helm chart input: %s",
-            json.dumps(default_config, indent=4),
+            json.dumps(self.default_config, indent=4),
         )
-        return copy.deepcopy(default_config)
+        return copy.deepcopy(self.default_config)
 
     def get_schema(self) -> Dict[str, Any]:
         """
@@ -429,20 +411,30 @@ class HelmChartInput(BaseInput):
         :rtype: Dict[str, Any]
         :raises FileNotFoundError: If the values.yaml file does not exist.
         """
+
         logger.debug("Reading values.yaml file")
         for file in self._chart_dir.iterdir():
             if file.name.endswith(("values.yaml", "values.yml")):
                 with file.open(encoding="UTF-8") as f:
                     content = yaml_processor.load(f)
                 return content
-
-        logger.error(
-            "values.yaml|yml file not found in Helm chart '%s'", self.chart_path
-        )
-        raise FileNotFoundError(
+        raise InvalidArgumentValueError(
             f"ERROR: The Helm chart '{self.chart_path}' does not contain"
             "a values.yaml file."
         )
+
+    def _read_values_yaml_from_default_values(self) -> Dict[str, Any]:
+
+        try:
+            with open(str(self.default_config_path)) as f:
+                content = yaml_processor.load(f)
+            return content
+        except FileNotFoundError:
+            raise InvalidArgumentValueError(
+                "ERROR: No default values found for the Helm chart"
+                f" '{self.default_config_path}'. Please provide default values"
+                " or add a values.yaml file to the Helm chart."
+            )
 
     def __del__(self):
         shutil.rmtree(self._temp_dir_path)

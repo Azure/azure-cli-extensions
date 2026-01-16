@@ -7,7 +7,9 @@ from pathlib import Path
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from azext_aosm.definition_folder.builder.definition_folder_builder import DefinitionFolderBuilder
+from azext_aosm.definition_folder.builder.definition_folder_builder import (
+    DefinitionFolderBuilder,
+)
 
 
 class TestDefinitionFolderBuilder(TestCase):
@@ -42,11 +44,8 @@ class TestDefinitionFolderBuilder(TestCase):
         element_2.write.assert_called_once()
 
         # Check that the index.json file was written to disk.
-        expected_params = [{"name": "element_1",
-                            "type": "artifact",
-                            "only_delete_on_clean": False },
-                            {"name": "element_2",
-                             "type": "artifact",
-                             "only_delete_on_clean": True}]
+        expected_params = [
+            {"name": "element_1", "type": "artifact", "only_delete_on_clean": False},
+            {"name": "element_2", "type": "artifact", "only_delete_on_clean": True},
+        ]
         mock_write_text.assert_called_once_with(json.dumps(expected_params, indent=4))
-

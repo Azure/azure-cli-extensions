@@ -26,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/cloudservicesnetworks", "2023-10-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/cloudservicesnetworks", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks", "2025-09-01"],
         ]
     }
 
@@ -51,16 +51,24 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.skip_token = AAZStrArg(
+            options=["--skip-token"],
+            help="The opaque token that the server returns to indicate where to continue listing resources from. This is used for paging through large result sets.",
+        )
+        _args_schema.top = AAZIntArg(
+            options=["--top"],
+            help="The maximum number of resources to return from the operation. Example: '$top=10'.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.CloudServicesNetworksListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.CloudServicesNetworksListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.CloudServicesNetworksListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,6 +83,252 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
+
+    class CloudServicesNetworksListBySubscription(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.NetworkCloud/cloudServicesNetworks",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "$skipToken", self.ctx.args.skip_token,
+                ),
+                **self.serialize_query_param(
+                    "$top", self.ctx.args.top,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2025-09-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+                flags={"required": True},
+            )
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.value.Element.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.additional_egress_endpoints = AAZListType(
+                serialized_name="additionalEgressEndpoints",
+            )
+            properties.associated_resource_ids = AAZListType(
+                serialized_name="associatedResourceIds",
+                flags={"read_only": True},
+            )
+            properties.cluster_id = AAZStrType(
+                serialized_name="clusterId",
+                flags={"read_only": True},
+            )
+            properties.detailed_status = AAZStrType(
+                serialized_name="detailedStatus",
+                flags={"read_only": True},
+            )
+            properties.detailed_status_message = AAZStrType(
+                serialized_name="detailedStatusMessage",
+                flags={"read_only": True},
+            )
+            properties.enable_default_egress_endpoints = AAZStrType(
+                serialized_name="enableDefaultEgressEndpoints",
+            )
+            properties.enabled_egress_endpoints = AAZListType(
+                serialized_name="enabledEgressEndpoints",
+                flags={"read_only": True},
+            )
+            properties.hybrid_aks_clusters_associated_ids = AAZListType(
+                serialized_name="hybridAksClustersAssociatedIds",
+                flags={"read_only": True},
+            )
+            properties.interface_name = AAZStrType(
+                serialized_name="interfaceName",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.storage_options = AAZObjectType(
+                serialized_name="storageOptions",
+            )
+            properties.storage_status = AAZObjectType(
+                serialized_name="storageStatus",
+                flags={"read_only": True},
+            )
+            properties.virtual_machines_associated_ids = AAZListType(
+                serialized_name="virtualMachinesAssociatedIds",
+                flags={"read_only": True},
+            )
+
+            additional_egress_endpoints = cls._schema_on_200.value.Element.properties.additional_egress_endpoints
+            additional_egress_endpoints.Element = AAZObjectType()
+            _ListHelper._build_schema_egress_endpoint_read(additional_egress_endpoints.Element)
+
+            associated_resource_ids = cls._schema_on_200.value.Element.properties.associated_resource_ids
+            associated_resource_ids.Element = AAZStrType()
+
+            enabled_egress_endpoints = cls._schema_on_200.value.Element.properties.enabled_egress_endpoints
+            enabled_egress_endpoints.Element = AAZObjectType()
+            _ListHelper._build_schema_egress_endpoint_read(enabled_egress_endpoints.Element)
+
+            hybrid_aks_clusters_associated_ids = cls._schema_on_200.value.Element.properties.hybrid_aks_clusters_associated_ids
+            hybrid_aks_clusters_associated_ids.Element = AAZStrType()
+
+            storage_options = cls._schema_on_200.value.Element.properties.storage_options
+            storage_options.mode = AAZStrType()
+            storage_options.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+            )
+            storage_options.storage_appliance_id = AAZStrType(
+                serialized_name="storageApplianceId",
+            )
+
+            storage_status = cls._schema_on_200.value.Element.properties.storage_status
+            storage_status.mode = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+                flags={"read_only": True},
+            )
+            storage_status.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.status_message = AAZStrType(
+                serialized_name="statusMessage",
+                flags={"read_only": True},
+            )
+            storage_status.volume_id = AAZStrType(
+                serialized_name="volumeId",
+                flags={"read_only": True},
+            )
+
+            virtual_machines_associated_ids = cls._schema_on_200.value.Element.properties.virtual_machines_associated_ids
+            virtual_machines_associated_ids.Element = AAZStrType()
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
     class CloudServicesNetworksListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -120,208 +374,13 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
-                    required=True,
+                    "$skipToken", self.ctx.args.skip_token,
                 ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.extended_location = AAZObjectType(
-                serialized_name="extendedLocation",
-                flags={"required": True},
-            )
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            extended_location = cls._schema_on_200.value.Element.extended_location
-            extended_location.name = AAZStrType(
-                flags={"required": True},
-            )
-            extended_location.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.additional_egress_endpoints = AAZListType(
-                serialized_name="additionalEgressEndpoints",
-            )
-            properties.associated_resource_ids = AAZListType(
-                serialized_name="associatedResourceIds",
-                flags={"read_only": True},
-            )
-            properties.cluster_id = AAZStrType(
-                serialized_name="clusterId",
-                flags={"read_only": True},
-            )
-            properties.detailed_status = AAZStrType(
-                serialized_name="detailedStatus",
-                flags={"read_only": True},
-            )
-            properties.detailed_status_message = AAZStrType(
-                serialized_name="detailedStatusMessage",
-                flags={"read_only": True},
-            )
-            properties.enable_default_egress_endpoints = AAZStrType(
-                serialized_name="enableDefaultEgressEndpoints",
-            )
-            properties.enabled_egress_endpoints = AAZListType(
-                serialized_name="enabledEgressEndpoints",
-                flags={"read_only": True},
-            )
-            properties.hybrid_aks_clusters_associated_ids = AAZListType(
-                serialized_name="hybridAksClustersAssociatedIds",
-                flags={"read_only": True},
-            )
-            properties.interface_name = AAZStrType(
-                serialized_name="interfaceName",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.virtual_machines_associated_ids = AAZListType(
-                serialized_name="virtualMachinesAssociatedIds",
-                flags={"read_only": True},
-            )
-
-            additional_egress_endpoints = cls._schema_on_200.value.Element.properties.additional_egress_endpoints
-            additional_egress_endpoints.Element = AAZObjectType()
-            _ListHelper._build_schema_egress_endpoint_read(additional_egress_endpoints.Element)
-
-            associated_resource_ids = cls._schema_on_200.value.Element.properties.associated_resource_ids
-            associated_resource_ids.Element = AAZStrType()
-
-            enabled_egress_endpoints = cls._schema_on_200.value.Element.properties.enabled_egress_endpoints
-            enabled_egress_endpoints.Element = AAZObjectType()
-            _ListHelper._build_schema_egress_endpoint_read(enabled_egress_endpoints.Element)
-
-            hybrid_aks_clusters_associated_ids = cls._schema_on_200.value.Element.properties.hybrid_aks_clusters_associated_ids
-            hybrid_aks_clusters_associated_ids.Element = AAZStrType()
-
-            virtual_machines_associated_ids = cls._schema_on_200.value.Element.properties.virtual_machines_associated_ids
-            virtual_machines_associated_ids.Element = AAZStrType()
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
-
-    class CloudServicesNetworksListBySubscription(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.NetworkCloud/cloudServicesNetworks",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "$top", self.ctx.args.top,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -363,6 +422,9 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},
@@ -435,6 +497,13 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.storage_options = AAZObjectType(
+                serialized_name="storageOptions",
+            )
+            properties.storage_status = AAZObjectType(
+                serialized_name="storageStatus",
+                flags={"read_only": True},
+            )
             properties.virtual_machines_associated_ids = AAZListType(
                 serialized_name="virtualMachinesAssociatedIds",
                 flags={"read_only": True},
@@ -453,6 +522,35 @@ class List(AAZCommand):
 
             hybrid_aks_clusters_associated_ids = cls._schema_on_200.value.Element.properties.hybrid_aks_clusters_associated_ids
             hybrid_aks_clusters_associated_ids.Element = AAZStrType()
+
+            storage_options = cls._schema_on_200.value.Element.properties.storage_options
+            storage_options.mode = AAZStrType()
+            storage_options.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+            )
+            storage_options.storage_appliance_id = AAZStrType(
+                serialized_name="storageApplianceId",
+            )
+
+            storage_status = cls._schema_on_200.value.Element.properties.storage_status
+            storage_status.mode = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+                flags={"read_only": True},
+            )
+            storage_status.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.status_message = AAZStrType(
+                serialized_name="statusMessage",
+                flags={"read_only": True},
+            )
+            storage_status.volume_id = AAZStrType(
+                serialized_name="volumeId",
+                flags={"read_only": True},
+            )
 
             virtual_machines_associated_ids = cls._schema_on_200.value.Element.properties.virtual_machines_associated_ids
             virtual_machines_associated_ids.Element = AAZStrType()

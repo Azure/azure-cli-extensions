@@ -416,6 +416,7 @@ def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linu
 
 def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
     """
+    This method is not actually invoked. 
     Fallback for unlocking disk when script fails. This will install the ADE extension to unlock the Data disk.
     """
 
@@ -477,7 +478,7 @@ def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encr
 
 def _fetch_compatible_windows_os_urn(source_vm):
     location = source_vm.location
-    fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
+    fetch_urn_command = 'az vm image list -s "2022-datacenter-smalldisk" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter-smalldisk\'].urn | reverse(sort(@))" -o json'.format(loc=location)
     logger.info('Fetching compatible Windows OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
@@ -490,7 +491,7 @@ def _fetch_compatible_windows_os_urn(source_vm):
     os_image_ref = source_vm.storage_profile.image_reference
     if os_image_ref and isinstance(os_image_ref.version, str) and os_image_ref.version in urns[0]:
         if len(urns) < 2:
-            logger.debug('Avoiding Win2016 latest image due to expected disk collision. But no other image available.')
+            logger.debug('Avoiding Win2022-datacenter-smalldisk latest image due to expected disk collision. But no other image available.')
             raise WindowsOsNotAvailableError()
         logger.debug('Returning Urn 1 to avoid disk collision error: %s', urns[1])
         return urns[1]
@@ -507,13 +508,13 @@ def _fetch_compatible_windows_os_urn_v2(source_vm):
         offer = source_vm.storage_profile.image_reference.offer
         publisher = source_vm.storage_profile.image_reference.publisher
         fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location, sku=sku, offer=offer, publisher=publisher)
-        logger.info('Fetching compatible Windows OS images from gallery...')
+        logger.info('Fetching compatible Windows OS images from gallery V2...')
         urns = loads(_call_az_command(fetch_urn_command))
 
     if not urns or len(urns) == 0:
         # If source SKU not available then defaulting 2022 datacenter image.
         fetch_urn_command = 'az vm image list -s "2022-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
-        logger.info('Fetching compatible Windows OS images from gallery for 2022 Datacenter...')
+        logger.info('Fetching compatible Windows OS images from gallery for 2022 Datacenter V2...')
         urns = loads(_call_az_command(fetch_urn_command))
 
     # No OS images available for Windows2016
@@ -525,11 +526,16 @@ def _fetch_compatible_windows_os_urn_v2(source_vm):
 
 
 def _select_distro_linux(distro):
+    # list of images needs to be added to before the docs reflect, and the docs need to remove the keywords long before we remove the reference from the extension
+    # https://learn.microsoft.com/cli/azure/vm/repair?view=azure-cli-latest#az-vm-repair-create-optional-parameters
     image_lookup = {
         'rhel7': 'RedHat:rhel-raw:7-raw:latest',
         'rhel8': 'RedHat:rhel-raw:8-raw:latest',
+        'rhel9': 'RedHat:rhel-raw:9-raw:latest',
         'ubuntu18': 'Canonical:UbuntuServer:18.04-LTS:latest',
         'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest',
+        'ubuntu22': 'Canonical:0001-com-ubuntu-server-jammy:22_04-lts:latest',
+        'ubuntu24': 'Canonical:ubuntu-24_04-lts:server-gen1:latest',
         'centos6': 'OpenLogic:CentOS:6.10:latest',
         'centos7': 'OpenLogic:CentOS:7_9:latest',
         'centos8': 'OpenLogic:CentOS:8_4:latest',
@@ -546,16 +552,20 @@ def _select_distro_linux(distro):
             os_image_urn = distro
         else:
             logger.info('No specific distro was provided , using the default Ubuntu distro')
-            os_image_urn = "Ubuntu2204"
+            os_image_urn = "Canonical:ubuntu-24_04-lts:server-gen1:latest"
     return os_image_urn
 
 
 def _select_distro_linux_Arm64(distro):
+    # list of images needs to be added to before the docs reflect, and the docs need to remove the keywords long before we remove the reference from the extension
+    # https://learn.microsoft.com/cli/azure/vm/repair?view=azure-cli-latest#az-vm-repair-create-optional-parameters
     image_lookup = {
         'rhel8': 'RedHat:rhel-arm64:8_8-arm64-gen2:latest',
-        'rhel9': 'RedHat:rhel-arm64:9_2-arm64:latest',
+        'rhel9': 'RedHat:rhel-arm64:9_3-arm64:latest',
         'ubuntu18': 'Canonical:UbuntuServer:18_04-lts-arm64:latest',
         'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-arm64:latest',
+        'ubuntu22': 'Canonical:0001-com-ubuntu-server-jammy:22_04-lts-arm64:latest',
+        'ubuntu24': 'Canonical:ubuntu-24_04-lts:server-arm64:latest',
         'centos7': 'OpenLogic:CentOS:7_9-arm64:latest',
     }
     if distro in image_lookup:
@@ -566,23 +576,27 @@ def _select_distro_linux_Arm64(distro):
             os_image_urn = distro
         else:
             logger.info('No specific distro was provided , using the default ARM64 Ubuntu distro')
-            os_image_urn = "Canonical:UbuntuServer:18_04-lts-arm64:latest"
+            os_image_urn = "Canonical:ubuntu-24_04-lts:server-arm64:latest"
     return os_image_urn
 
 
 def _select_distro_linux_gen2(distro):
-    # base on the document : https://docs.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
+    # list of images needs to be added to before the docs reflect, and the docs need to remove the keywords long before we remove the reference from the extension
+    # https://learn.microsoft.com/cli/azure/vm/repair?view=azure-cli-latest#az-vm-repair-create-optional-parameters
     image_lookup = {
         'rhel7': 'RedHat:rhel-raw:7-raw-gen2:latest',
         'rhel8': 'RedHat:rhel-raw:8-raw-gen2:latest',
+        'rhel9': 'RedHat:rhel-raw:9-raw-gen2:latest',
         'ubuntu18': 'Canonical:UbuntuServer:18_04-lts-gen2:latest',
         'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest',
+        'ubuntu22': 'Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest',
+        'ubuntu24': 'Canonical:ubuntu-24_04-lts:server:latest',
         'centos7': 'OpenLogic:CentOS:7_9-gen2:latest',
         'centos8': 'OpenLogic:CentOS:8_4-gen2:latest',
         'oracle7': 'Oracle:Oracle-Linux:ol79-gen2:latest',
         'oracle8': 'Oracle:Oracle-Linux:ol82-gen2:latest',
         'sles12': 'SUSE:sles-12-sp5:gen2:latest',
-        'sles15': 'SUSE:sles-15-sp3:gen2:latest',
+        'sles15': 'SUSE:sles-15-sp6:gen2:latest',
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
@@ -593,10 +607,10 @@ def _select_distro_linux_gen2(distro):
                 os_image_urn = distro
             else:
                 logger.info('The provided URN does not contain Gen2 in it and this VM is a gen2 , dropping to default image')
-                os_image_urn = "Canonical:UbuntuServer:18_04-lts-gen2:latest"
+                os_image_urn = "Canonical:ubuntu-24_04-lts:server:latest"
         else:
             logger.info('No specific distro was provided , using the default Ubuntu distro')
-            os_image_urn = "Canonical:UbuntuServer:18_04-lts-gen2:latest"
+            os_image_urn = "Canonical:ubuntu-24_04-lts:server:latest"
     return os_image_urn
 
 
@@ -659,9 +673,15 @@ def _process_bash_parameters(parameters):
     Example: [param1=1, param2=2] => 1 2
     """
     param_string = ''
+
     for param in parameters:
-        if '=' in param:
+        if param.startswith("++"):
+            # Retain the entire string after the `++` prefix
+            param = param[2:]
+        elif '=' in param:
+            # Split and keep only the value after `=`
             param = param.split('=', 1)[1]
+        # Ensure safe output for bash scripts
         param_string += '{p} '.format(p=param)
 
     return param_string.strip(' ')
@@ -732,15 +752,14 @@ def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encryp
 
 def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
 
-    # logging all parameters of the function individually
+    # logging parameters of the function individually
     logger.info('Creating repair VM with command: {}'.format(create_repair_vm_command))
     logger.info('copy_disk_id: {}'.format(copy_disk_id))
-    logger.info('repair_password: {}'.format(repair_password))
-    logger.info('repair_username: {}'.format(repair_username))
     logger.info('fix_uuid: {}'.format(fix_uuid))
 
     if not fix_uuid:
         create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
+    
     logger.info('Validating VM template before continuing...')
     _call_az_command(create_repair_vm_command + ' --validate', secure_params=[repair_password, repair_username])
     logger.info('Creating repair VM...')
@@ -797,3 +816,10 @@ def _fetch_osdisk_security_profile_parameters(source_vm):
             create_repair_vm_command += ' --os-disk-secure-vm-disk-encryption-set {val}'.format(val=source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set.id)
 
     return create_repair_vm_command
+
+
+def _make_public_ip_name(repair_vm_name, associate_public_ip):
+    public_ip_name = '""'
+    if associate_public_ip:
+        public_ip_name = repair_vm_name + "PublicIP"
+    return public_ip_name

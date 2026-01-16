@@ -6,7 +6,7 @@
 manifest = '''
 {
   "isProxyResource": false,
-  "enableDataSourceSetInfo": false,
+  "enableDataSourceSetInfo": true,
   "resourceType": "Microsoft.Storage/storageAccounts",
   "parentResourceType": "Microsoft.Storage/storageAccounts",
   "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
@@ -48,7 +48,7 @@ manifest = '''
               "targetDataStoreCopySettings": []
             }
           ],
-          "name": "Default",
+          "name": "Default_OperationalStore",
           "objectType": "AzureRetentionRule"
         },
         {

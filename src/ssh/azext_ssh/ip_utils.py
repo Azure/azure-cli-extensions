@@ -5,7 +5,7 @@
 
 from azure.cli.core.commands import client_factory
 from azure.cli.core import profiles
-from msrestazure import tools
+from azure.mgmt.core.tools import parse_resource_id
 
 from knack import log
 
@@ -23,7 +23,7 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
     private_ips = []
 
     for nic_ref in vm.network_profile.network_interfaces:
-        parsed_id = tools.parse_resource_id(nic_ref.id)
+        parsed_id = parse_resource_id(nic_ref.id)
         get_args = {
             'name': parsed_id['name'],
             'resource_group': parsed_id['resource_group']
@@ -34,7 +34,7 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
                 return ip_config["privateIPAddress"]
             public_ip_ref = ip_config.get("publicIPAddress", None)
             if public_ip_ref and public_ip_ref.get("id", None):
-                parsed_ip_id = tools.parse_resource_id(public_ip_ref["id"])
+                parsed_ip_id = parse_resource_id(public_ip_ref["id"])
                 api_args = {
                     'name': parsed_ip_id['name'],
                     'resource_group': parsed_ip_id['resource_group']

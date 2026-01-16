@@ -82,6 +82,11 @@ az communication identity token get-for-teams-user --aad-token "MyAzureADToken" 
 az communication sms send --sender "+1833xxxxxxx" \
     --recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
 ```
+##### Send-SMS with delivery report and custom tag #####
+```
+az communication sms send --sender "+1833xxxxxxx" --recipient "+1425xxxxxxx" 
+--message "Hello there!!" --deliveryReport --tag "custom-tag"
+```
 ##### List-Phonenumbers #####
 ```
 az communication phonenumber list
@@ -152,7 +157,7 @@ az communication rooms get --room "roomId"
 ```
 ##### Create-Room #####
 ```
- az communication rooms create --valid-from "2023-03-31T10:20:30" --valid-to "2023-06-31T10:20:30" --pstn-dial-out-enabled "True" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+ az communication rooms create --valid-from "2023-05-31T10:20:30" --valid-to "2025-06-31T10:20:30" --pstn-dial-out-enabled "True" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --collaborator-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
 ```
 ##### Update-Room #####
 ```

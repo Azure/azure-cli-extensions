@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
 
 from datetime import datetime
 
@@ -9,7 +10,7 @@ from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
 
 
 def validate_datetime_format(namespace):
-    format = '%Y-%m-%d %H:%M:%S'
+    format = '%Y-%m-%d %H:%M:%S'  # pylint: disable=redefined-builtin
     if namespace.schedule_start_datetime:
         datetime.strptime(namespace.schedule_start_datetime, format)
     if namespace.schedule_end_datetime:
@@ -20,7 +21,7 @@ def validate_datetime_format(namespace):
 
 
 def validate_time_format(namespace):
-    format = '%H:%M:%S'
+    format = '%H:%M:%S'  # pylint: disable=redefined-builtin
     if namespace.schedule_recurrence_start_time:
         datetime.strptime(namespace.schedule_recurrence_start_time, format)
     if namespace.schedule_recurrence_end_time:

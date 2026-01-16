@@ -17,11 +17,11 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Creates an instance or update an existing instance of an Azure API Center service.
 
-    :example: Create service Example 1
+    :example: Create service Example
         az apic create -g contoso-resources -n contoso -l eastus
 
-    :example: Create Service Example 2
-        az apic create --resource-group contoso-resources --name contoso --location eastus
+    :example: Create Service With System Assigned Identity Example
+        az apic create -g contoso-resources -n contoso -l eastus --identity '{type:systemassigned}'
     """
 
     _aaz_info = {

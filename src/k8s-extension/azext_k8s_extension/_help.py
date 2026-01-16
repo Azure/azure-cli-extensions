@@ -94,6 +94,18 @@ The output includes secrets that you must protect. Be sure that you do not inclu
 --config-protected-file=protected-settings-file
 """
 
+helps[f'{consts.EXTENSION_NAME} troubleshoot'] = f"""
+    type: command
+    short-summary: Perform diagnostic checks on a Kubernetes Extension.
+    long-summary: This command is used to troubleshoot a Kubernetes Extension. It \
+collects logs and other information that can be used to diagnose issues with the extension.
+    examples:
+      - name: Troubleshoot a Kubernetes Extension
+        text: |-
+          az {consts.EXTENSION_NAME} troubleshoot --name extension-name \
+--namespace-list "namespace1,namespace2"
+"""
+
 helps[f'{consts.EXTENSION_NAME} extension-types'] = """
     type: group
     short-summary: Commands to discover Kubernetes Extension Types.

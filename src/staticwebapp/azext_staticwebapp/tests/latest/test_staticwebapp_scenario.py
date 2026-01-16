@@ -67,7 +67,7 @@ class StaticwebappDbConnectionScenarioTest(ScenarioTest):
         location = "East US"
         db_name = "tables"
 
-        self.cmd(f"staticwebapp create -n {name} -g {resource_group}")
+        self.cmd(f"staticwebapp create -n {name} -g {resource_group} -l eastus2")
         # Creating flexible servers takes too long and the polling messes with test recordings
         server_id = f"/subscriptions/{self.get_subscription_id()}/resourceGroups/{resource_group}/providers/Microsoft.DBforMySQL/flexibleServers/{server}"
 
@@ -89,7 +89,7 @@ class StaticwebappDbConnectionScenarioTest(ScenarioTest):
         location = "West US"
         db_name = "tables"
 
-        self.cmd(f"staticwebapp create -n {name} -g {resource_group}")
+        self.cmd(f"staticwebapp create -n {name} -g {resource_group} -l eastus2")
         server_id = self.cmd(f"postgres server create -l '{location}' -g {resource_group} -n {server} -u {username} -p {password}").get_output_in_json()["id"]
         self.cmd(f"postgres db create -g {resource_group} -n {db_name} -s {server}")
 
@@ -106,7 +106,7 @@ class StaticwebappDbConnectionScenarioTest(ScenarioTest):
         location = "East US"
         db_name = "tables"
 
-        self.cmd(f"staticwebapp create -n {name} -g {resource_group}")
+        self.cmd(f"staticwebapp create -n {name} -g {resource_group} -l westeurope")
         # Creating flexible servers takes too long and the polling messes with test recordings
         server_id = f"/subscriptions/{self.get_subscription_id()}/resourceGroups/{resource_group}/providers/Microsoft.DBforMySQL/flexibleServers/{server}"
 

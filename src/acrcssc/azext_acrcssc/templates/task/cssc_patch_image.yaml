@@ -1,0 +1,62 @@
+version: v1.1.0
+alias:
+  values:
+    ScanReport : os-vulnerability-report_trivy_{{ regexReplaceAll "[^a-zA-Z0-9]" .Values.SOURCE_REPOSITORY "-" }}_{{.Values.SOURCE_IMAGE_TAG}}_$(date "+%Y-%m-%d").json
+    cssc : mcr.microsoft.com/acr/cssc:cbcf692
+steps:
+  - id: print-inputs
+    cmd: |
+        bash -c 'echo "Patching OS vulnerabilities for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"'
+        bash -c 'echo "Patching repo: {{.Values.SOURCE_REPOSITORY}}, Tag:{{.Values.SOURCE_IMAGE_TAG}}, NewPatchTag:{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"'
+
+  - id: check-patch-tag
+    cmd: |
+       bash -c 'echo "New Patch tag is {{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"
+       if [ "{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}" != "patched" ] && [ {{.Values.SOURCE_IMAGE_NEWPATCH_TAG}} -gt 999 ]; then
+          echo "New Patch tag is greater than 999. No more than 1000 patches can be created for a tag. Exiting the patching workflow."
+          exit 1
+       fi'
+
+  - id: setup-data-dir
+    cmd: bash mkdir ./data
+  - id: generate-trivy-report
+    retries: 3
+    retryDelay: 5
+    timeout: 1800
+    cmd: |
+      cssc trivy image \
+      {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
+      --pkg-types os \
+      --ignore-unfixed \
+      --format json \
+      --timeout 30m \
+      --scanners vuln \
+      --db-repository "ghcr.io/aquasecurity/trivy-db:2","public.ecr.aws/aquasecurity/trivy-db" \
+      --output /workspace/data/$ScanReport
+
+  - id: buildkitd
+    cmd: mobybuildkit --addr tcp://0.0.0.0:8888
+    entrypoint: buildkitd
+    detach: true
+    privileged: true
+    ports: ["127.0.0.1:8888:8888/tcp"]
+
+  - id: patch-image
+    retries: 3
+    retryDelay: 5
+    timeout: 1800
+    cmd: |
+      cssc copa patch \
+      -i "{{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}" \
+      -r ./data/$ScanReport \
+      -t "{{.Values.SOURCE_IMAGE_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}" \
+      --timeout 30m \
+      --addr tcp://127.0.0.1:8888
+    network: host
+
+  - id: push-image
+    retries: 3
+    retryDelay: 5
+    timeout: 1800
+    cmd: docker push {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}
+  - cmd: bash echo "Patched image pushed to {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"

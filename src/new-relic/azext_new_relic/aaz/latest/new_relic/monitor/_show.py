@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor show",
 )
 class Show(AAZCommand):
-    """Get a NewRelicMonitorResource
+    """Retrieves the properties and configuration details of a specific New Relic monitor resource, providing insight into its setup and status.
 
     :example: Get a NewRelicMonitorResource.
         az new-relic monitor show --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor
@@ -51,7 +51,7 @@ class Show(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema

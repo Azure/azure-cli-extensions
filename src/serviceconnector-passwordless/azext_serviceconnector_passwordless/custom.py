@@ -4,12 +4,14 @@
 # --------------------------------------------------------------------------------------------
 
 
-def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-many-statements
+# pylint: disable=too-many-locals,too-many-statements,unused-argument,too-many-positional-arguments
+def connection_create_ext(cmd, client,
                           connection_name=None, client_type=None,
                           source_resource_group=None, source_id=None,
                           target_resource_group=None, target_id=None,
                           secret_auth_info=None, secret_auth_info_auto=None,
                           user_identity_auth_info=None, system_identity_auth_info=None,
+                          workload_identity_auth_info=None,                     # only used as arg
                           service_principal_auth_info_secret=None,
                           key_vault_id=None,
                           app_config_id=None,
@@ -26,6 +28,10 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                           spring=None, app=None, deployment='default',           # Resource.SpringCloud
                           # Resource.*Postgres, Resource.*Sql*
                           server=None, database=None,
+                          # Resource.FabricSQL
+                          connstr_props=None,
+                          fabric_workspace_uuid=None,
+                          fabric_sql_db_uuid=None,
                           **kwargs,
                           ):
     from azure.cli.command_modules.serviceconnector.custom import connection_create_func
@@ -50,10 +56,13 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                                   customized_keys=customized_keys,
                                   opt_out_list=opt_out_list,
                                   app_config_id=app_config_id,
+                                  connstr_props=connstr_props,
+                                  fabric_workspace_uuid=fabric_workspace_uuid,
+                                  fabric_sql_db_uuid=fabric_sql_db_uuid,
                                   **kwargs)
 
 
-def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-many-statements
+def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-many-statements,too-many-positional-arguments
                                 resource_group_name,
                                 connection_name=None,
                                 location=None,

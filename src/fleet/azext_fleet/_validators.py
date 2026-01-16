@@ -7,14 +7,22 @@ import re
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import CLIError
+from azure.mgmt.core.tools import is_valid_resource_id
 
 
-# https://github.com/Azure/azure-cli/blob/master/doc/authoring_command_modules/authoring_commands.md#supporting-name-or-id-parameters
 def validate_member_cluster_id(namespace):
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(namespace.member_cluster_id):
         raise InvalidArgumentValueError(
             "--member-cluster-id is not a valid Azure resource ID.")
+
+
+def validate_member_cluster_names(namespace):
+    if namespace.member_cluster_names:
+        valid_subresource = re.compile(r'^[a-z0-9]$|^[a-z0-9][-a-z0-9]{0,48}[a-z0-9]$')
+        for name in namespace.member_cluster_names:
+            if not valid_subresource.match(name):
+                raise InvalidArgumentValueError(
+                    f"--member-cluster-names {name} is not a valid member cluster name.")
 
 
 def validate_kubernetes_version(namespace):
@@ -48,7 +56,6 @@ def validate_vm_size(namespace):
 def _validate_subnet_id(subnet_id, name):
     if subnet_id is None or subnet_id == '':
         return
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(subnet_id):
         raise CLIError(name + " is not a valid Azure resource ID.")
 
@@ -57,10 +64,16 @@ def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:
         if namespace.assign_identity == '':
             return
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.assign_identity):
             raise CLIError(
                 "--assign-identity is not a valid Azure resource ID.")
+
+
+def validate_enable_vnet_integration(namespace):
+    if namespace.enable_vnet_integration:
+        if not namespace.enable_managed_identity or namespace.assign_identity is None:
+            raise CLIError("--enable-vnet-integration requires user assigned managed identity to be enabled. "
+                           "Please add --enable-managed-identity and --assign-identity <identity-id> to your command.")
 
 
 def validate_targets(namespace):
@@ -90,3 +103,22 @@ def _validate_target(target):
     if parts[0] not in valid_keys:
         raise InvalidArgumentValueError("Invalid target type, valid types are the following case-sensitive values:"
                                         "'AfterStageWait', 'Group', 'Member', or 'Stage'.")
+
+
+def validate_update_strategy_id(namespace):
+    update_strategy_id = namespace.update_strategy_id
+    if update_strategy_id is None:
+        return
+    if not is_valid_resource_id(update_strategy_id):
+        raise InvalidArgumentValueError(
+            "--update-strategy-id is not a valid Azure resource ID.")
+
+
+def validate_labels(val):
+    result = {}
+    for item in val.split():
+        if '=' not in item:
+            raise ValueError("Expected key=value format")
+        k, v = item.split('=', 1)
+        result[k] = v
+    return result

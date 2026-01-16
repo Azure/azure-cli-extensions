@@ -73,17 +73,17 @@ class JobExecutionInstanceTest(unittest.TestCase):
         collection = JobExecutionInstanceCollection.deserialize(json.loads(NORMAL_LIST_RESPONSE_WITH_1_INSTANCE))
         self.assertIsNotNone(collection)
         self.assertIsNotNone(collection.value)
-        self.assertEquals(type(collection.value), list)
-        self.assertEquals(len(collection.value), 1)
+        self.assertEqual(type(collection.value), list)
+        self.assertEqual(len(collection.value), 1)
         instance_0 = collection.value[0]
-        self.assertEquals("sample-job-execution-instance-0", instance_0.name)
+        self.assertEqual("sample-job-execution-instance-0", instance_0.name)
 
     def testDeserializeNoInstance(self):
         collection = JobExecutionInstanceCollection.deserialize(json.loads(NORMAL_LIST_RESPONSE_WITH_0_INSTANCES))
         self.assertIsNotNone(collection)
         self.assertIsNotNone(collection.value)
-        self.assertEquals(type(collection.value), list)
-        self.assertEquals(len(collection.value), 0)
+        self.assertEqual(type(collection.value), list)
+        self.assertEqual(len(collection.value), 0)
 
     def testDeserializeInvalidResponse(self):
         json_object = json.loads(LIST_RESPONSE_WITH_INVALID_FIELDS)
@@ -95,10 +95,10 @@ class JobExecutionInstanceTest(unittest.TestCase):
         collection = JobExecutionInstanceCollection.deserialize(json.loads(responseStr))
         self.assertIsNotNone(collection)
         self.assertIsNotNone(collection.value)
-        self.assertEquals(type(collection.value), list)
-        self.assertEquals(len(collection.value), 2)
+        self.assertEqual(type(collection.value), list)
+        self.assertEqual(len(collection.value), 2)
         instance_0 = collection.value[0]
-        self.assertEquals("sample-job-execution-instance-0", instance_0.name)
+        self.assertEqual("sample-job-execution-instance-0", instance_0.name)
 
         instance_1 = collection.value[1]
-        self.assertEquals("sample-job-execution-instance-1", instance_1.name)
+        self.assertEqual("sample-job-execution-instance-1", instance_1.name)

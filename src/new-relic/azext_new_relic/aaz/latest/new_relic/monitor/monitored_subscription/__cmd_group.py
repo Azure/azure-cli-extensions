@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor monitored-subscription",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage list of subscriptions and the state of the monitoring.
+    """Manage subscriptions monitored by the New Relic monitor resource, ensuring optimal observability and performance.
     """
     pass
 

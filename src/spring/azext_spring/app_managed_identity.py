@@ -8,7 +8,6 @@ from ._utils import wait_till_end
 from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from azure.cli.core.azclierror import (AzureInternalError, CLIInternalError)
 from azure.core.exceptions import HttpResponseError
-from msrestazure.azure_exceptions import CloudError
 from azure.cli.core.commands import arm as _arm
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import (ResourceType, get_sdk)
@@ -271,7 +270,7 @@ def _create_role_assignment(cmd, client, resource_group, service, name, role, sc
             assignments_client.create(scope=scope, role_assignment_name=assignment_name,
                                       parameters=parameters)
             break
-        except (HttpResponseError, CloudError) as ex:
+        except (HttpResponseError, HttpResponseError) as ex:
             if 'role assignment already exists' in ex.message:
                 logger.warning('Role assignment already exists')
                 break

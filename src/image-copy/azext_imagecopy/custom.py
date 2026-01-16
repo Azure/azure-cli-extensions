@@ -2,12 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=line-too-long
 from multiprocessing import Pool
 
-from knack.util import CLIError
 from azure.cli.core.azclierror import ResourceNotFoundError, ArgumentUsageError
 from knack.log import get_logger
+from knack.util import CLIError
 
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command, get_storage_account_id_from_blob_path
 from azext_imagecopy.create_target import create_target_image
@@ -61,15 +61,15 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
         source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['managedDisk']['id']
         if source_os_disk_id is None:
             raise TypeError
-        else:
-            try:
-                cli_cmd = prepare_cli_command(['disk', 'show', '--ids', source_os_disk_id],
-                                              output_as_json=False,
-                                              only_show_errors=only_show_errors)
-                run_cli_command(cli_cmd)
-            except:
-                raise ResourceNotFoundError('Unable to find the source OS disk. Please make sure the source OS disk is not deleted.\n '
-                                            'If you deleted the source disk where the image was created (or chose to delete the VM while creating the image). Please refer to https://github.com/Azure/azure-cli/issues/25431 for temporary solution.')
+
+        try:
+            cli_cmd = prepare_cli_command(['disk', 'show', '--ids', source_os_disk_id],
+                                          output_as_json=False,
+                                          only_show_errors=only_show_errors)
+            run_cli_command(cli_cmd)
+        except Exception:
+            raise ResourceNotFoundError('Unable to find the source OS disk. Please make sure the source OS disk is not deleted.\n '
+                                        'If you deleted the source disk where the image was created (or chose to delete the VM while creating the image). Please refer to https://github.com/Azure/azure-cli/issues/25431 for temporary solution.')
         source_os_disk_type = "DISK"
         logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
     except TypeError:
@@ -142,7 +142,7 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
 
-    source_os_disk_snapshot_url = json_output['accessSas']
+    source_os_disk_snapshot_url = json_output.get('accessSAS')
     logger.debug("source os disk snapshot url: %s",
                  source_os_disk_snapshot_url)
 

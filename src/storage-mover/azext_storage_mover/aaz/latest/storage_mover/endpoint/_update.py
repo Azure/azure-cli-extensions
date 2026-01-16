@@ -16,9 +16,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2025-07-01"],
         ]
     }
 
@@ -56,6 +56,8 @@ class Update(AAZCommand):
             id_part="name",
         )
 
+        # define Arg Group "Identity"
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -63,6 +65,11 @@ class Update(AAZCommand):
             options=["--storage-blob-container"],
             arg_group="Properties",
             help="Storage Blob Container Object",
+        )
+
+        _args_schema.azure_multi_cloud_connector = AAZObjectArg(
+            options=["--azure-multi-cloud-connector"],
+            arg_group="Properties",
         )
         _args_schema.smb_mount = AAZObjectArg(
             options=["--smb-mount"],
@@ -79,6 +86,12 @@ class Update(AAZCommand):
         storage_blob_container.storage_account_resource_id = AAZResourceIdArg(
             options=["storage-account-resource-id"],
             help="The Azure Resource ID of the storage account that is the target destination.",
+        )
+
+        azure_multi_cloud_connector = cls._args_schema.azure_multi_cloud_connector
+        azure_multi_cloud_connector.aws_s3_bucket_id = AAZResourceIdArg(
+            options=["aws-s3-bucket-id"],
+            help="The AWS S3 bucket ARM resource Id.",
         )
 
         smb_mount = cls._args_schema.smb_mount
@@ -183,7 +196,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -270,7 +283,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -328,17 +341,23 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.discriminate_by("endpointType", "AzureStorageBlobContainer")
+                properties.discriminate_by("endpointType", "AzureMultiCloudConnector")
                 properties.discriminate_by("endpointType", "SmbMount")
 
             disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
             if disc_azure_storage_blob_container is not None:
                 disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
+
+            disc_azure_multi_cloud_connector = _builder.get(".properties{endpointType:AzureMultiCloudConnector}")
+            if disc_azure_multi_cloud_connector is not None:
+                disc_azure_multi_cloud_connector.set_prop("awsS3BucketId", AAZStrType, ".azure_multi_cloud_connector.aws_s3_bucket_id", typ_kwargs={"flags": {"required": True}})
 
             disc_smb_mount = _builder.get(".properties{endpointType:SmbMount}")
             if disc_smb_mount is not None:
@@ -370,6 +389,7 @@ class _UpdateHelper:
     def _build_schema_endpoint_read(cls, _schema):
         if cls._schema_endpoint_read is not None:
             _schema.id = cls._schema_endpoint_read.id
+            _schema.identity = cls._schema_endpoint_read.identity
             _schema.name = cls._schema_endpoint_read.name
             _schema.properties = cls._schema_endpoint_read.properties
             _schema.system_data = cls._schema_endpoint_read.system_data
@@ -382,6 +402,7 @@ class _UpdateHelper:
         endpoint_read.id = AAZStrType(
             flags={"read_only": True},
         )
+        endpoint_read.identity = AAZIdentityObjectType()
         endpoint_read.name = AAZStrType(
             flags={"read_only": True},
         )
@@ -396,6 +417,35 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
+        identity = _schema_endpoint_read.identity
+        identity.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+        identity.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"read_only": True},
+        )
+        identity.type = AAZStrType(
+            flags={"required": True},
+        )
+        identity.user_assigned_identities = AAZDictType(
+            serialized_name="userAssignedIdentities",
+        )
+
+        user_assigned_identities = _schema_endpoint_read.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectType()
+
+        _element = _schema_endpoint_read.identity.user_assigned_identities.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"read_only": True},
+        )
+        _element.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+
         properties = _schema_endpoint_read.properties
         properties.description = AAZStrType()
         properties.endpoint_type = AAZStrType(
@@ -407,12 +457,32 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
+        disc_azure_multi_cloud_connector = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureMultiCloudConnector")
+        disc_azure_multi_cloud_connector.aws_s3_bucket_id = AAZStrType(
+            serialized_name="awsS3BucketId",
+            flags={"required": True},
+        )
+        disc_azure_multi_cloud_connector.multi_cloud_connector_id = AAZStrType(
+            serialized_name="multiCloudConnectorId",
+            flags={"required": True},
+        )
+
         disc_azure_storage_blob_container = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer")
         disc_azure_storage_blob_container.blob_container_name = AAZStrType(
             serialized_name="blobContainerName",
             flags={"required": True},
         )
         disc_azure_storage_blob_container.storage_account_resource_id = AAZStrType(
+            serialized_name="storageAccountResourceId",
+            flags={"required": True},
+        )
+
+        disc_azure_storage_nfs_file_share = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureStorageNfsFileShare")
+        disc_azure_storage_nfs_file_share.file_share_name = AAZStrType(
+            serialized_name="fileShareName",
+            flags={"required": True},
+        )
+        disc_azure_storage_nfs_file_share.storage_account_resource_id = AAZStrType(
             serialized_name="storageAccountResourceId",
             flags={"required": True},
         )
@@ -480,6 +550,7 @@ class _UpdateHelper:
         )
 
         _schema.id = cls._schema_endpoint_read.id
+        _schema.identity = cls._schema_endpoint_read.identity
         _schema.name = cls._schema_endpoint_read.name
         _schema.properties = cls._schema_endpoint_read.properties
         _schema.system_data = cls._schema_endpoint_read.system_data

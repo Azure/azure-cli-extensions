@@ -20,12 +20,15 @@ class Create(AAZCommand):
 
     :example: Create or update volume
         az networkcloud volume create --resource-group "resourceGroupName" --name "volumeName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --size 10000 --tags key1="myvalue1" key2="myvalue2"
+
+    :example: Create or update volume with storage appliance directive
+        az networkcloud volume create --resource-group "resourceGroupName" --name "volumeName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --size 10000 --tags key1="myvalue1" key2="myvalue2" --storage-appliance-id "/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/StorageAppliances/storageApplianceName"
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/volumes/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/volumes/{}", "2025-09-01"],
         ]
     }
 
@@ -46,6 +49,14 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="The ETag of the transformation. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.",
+        )
+        _args_schema.if_none_match = AAZStrArg(
+            options=["--if-none-match"],
+            help="Set to '*' to allow a new record set to be created, but to prevent updating an existing resource. Other values will result in error from server as they are not supported.",
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -69,6 +80,11 @@ class Create(AAZCommand):
             fmt=AAZIntArgFormat(
                 minimum=1,
             ),
+        )
+        _args_schema.storage_appliance_id = AAZResourceIdArg(
+            options=["--storage-appliance-id"],
+            arg_group="Properties",
+            help="The resource ID of the storage appliance that hosts the volume.",
         )
 
         # define Arg Group "VolumeParameters"
@@ -191,7 +207,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -200,6 +216,12 @@ class Create(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
+                **self.serialize_header_param(
+                    "If-None-Match", self.ctx.args.if_none_match,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -229,6 +251,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("sizeMiB", AAZIntType, ".size_mib", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("storageApplianceId", AAZStrType, ".storage_appliance_id")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -254,6 +277,9 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200_201.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
                 flags={"required": True},
@@ -288,6 +314,10 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.allocated_size_mi_b = AAZIntType(
+                serialized_name="allocatedSizeMiB",
+                flags={"read_only": True},
+            )
             properties.attached_to = AAZListType(
                 serialized_name="attachedTo",
                 flags={"read_only": True},
@@ -311,6 +341,9 @@ class Create(AAZCommand):
             properties.size_mi_b = AAZIntType(
                 serialized_name="sizeMiB",
                 flags={"required": True},
+            )
+            properties.storage_appliance_id = AAZStrType(
+                serialized_name="storageApplianceId",
             )
 
             attached_to = cls._schema_on_200_201.properties.attached_to

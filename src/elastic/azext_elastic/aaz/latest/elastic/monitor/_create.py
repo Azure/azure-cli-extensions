@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor create",
 )
 class Create(AAZCommand):
-    """Create a monitor resource.
+    """Create a new Elastic monitor resource in your Azure subscription, enabling observability and monitoring of your Azure resources through Elastic.
 
-    :example: Create monitor
-        az elastic monitor create -n monitor-name -g rg --user-info "{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:alice@microsoft.com}" --sku "{name:ess-consumption-2024_Monthly}"
+    :example: Monitors_Create
+        az elastic monitor create --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2025-06-01"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Create(AAZCommand):
             options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -57,6 +60,16 @@ class Create(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="Body",
+            help="Identity properties of the monitor resource.",
+        )
+        _args_schema.kind = AAZStrArg(
+            options=["--kind"],
+            arg_group="Body",
+            help="The kind of the Elastic resource - observability, security, search etc.",
+        )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
             help="The location of the monitor resource",
@@ -67,13 +80,19 @@ class Create(AAZCommand):
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
             arg_group="Body",
-            help={"short-summary": "SKU of the monitor resource.", "long-summary": "The SKU depends on the Elasticsearch Plans available for your account and is a combination of PlanID_Term.\nEx: If the plan ID is \"planXYZ\" and term is \"Yearly\", the SKU will be \"planXYZ_Yearly\".\nYou may find your eligible plans at https://portal.azure.com/#view/Microsoft_Azure_Marketplace/GalleryItemDetailsBladeNopdl/id/elastic.ec-azure-pp or in the online documentation at https://azuremarketplace.microsoft.com/en-us/marketplace/apps/elastic.ec-azure-pp?tab=PlansAndPrice for more details or in case of any issues with the SKU."},
-            is_experimental=True,
+            help="SKU of the monitor resource.",
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
             help="The tags of the monitor resource.",
+        )
+
+        identity = cls._args_schema.identity
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="Managed identity type.",
+            enum={"SystemAssigned": "SystemAssigned"},
         )
 
         sku = cls._args_schema.sku
@@ -94,11 +113,47 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Flag to determine if User API Key has to be generated and shared.",
         )
+        _args_schema.hosting_type = AAZStrArg(
+            options=["--hosting-type"],
+            arg_group="Properties",
+            help="Hosting type of the monitor resource - either Hosted deployments OR Serverless Projects.",
+            enum={"Hosted": "Hosted", "Serverless": "Serverless"},
+        )
         _args_schema.monitoring_status = AAZStrArg(
             options=["--monitoring-status"],
             arg_group="Properties",
             help="Flag specifying if the resource monitoring is enabled or disabled.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.plan_details = AAZObjectArg(
+            options=["--plan-details"],
+            arg_group="Properties",
+            help="Plan details of the monitor resource.",
+        )
+        _args_schema.project_details = AAZObjectArg(
+            options=["--project-details"],
+            arg_group="Properties",
+            help="Project details of the monitor resource IF it belongs to Serverless offer kind.",
+        )
+        _args_schema.saa_s_azure_subscription_status = AAZStrArg(
+            options=["--saa-s-azure-subscription-status", "--saas-status"],
+            arg_group="Properties",
+            help="Status of Azure Subscription where Marketplace SaaS is located.",
+        )
+        _args_schema.source_campaign_id = AAZStrArg(
+            options=["--source-campaign-id"],
+            arg_group="Properties",
+            help="A unique identifier associated with the campaign.",
+        )
+        _args_schema.source_campaign_name = AAZStrArg(
+            options=["--source-campaign-name"],
+            arg_group="Properties",
+            help="Name of the marketing campaign.",
+        )
+        _args_schema.subscription_state = AAZStrArg(
+            options=["--subscription-state"],
+            arg_group="Properties",
+            help="State of the Azure Subscription containing the monitor resource",
         )
         _args_schema.user_info = AAZObjectArg(
             options=["--user-info"],
@@ -111,6 +166,40 @@ class Create(AAZCommand):
             help="Version of elastic of the monitor resource",
         )
 
+        plan_details = cls._args_schema.plan_details
+        plan_details.offer_id = AAZStrArg(
+            options=["offer-id"],
+            help="Offer ID of the plan",
+        )
+        plan_details.plan_id = AAZStrArg(
+            options=["plan-id"],
+            help="Plan ID",
+        )
+        plan_details.plan_name = AAZStrArg(
+            options=["plan-name"],
+            help="Plan Name",
+        )
+        plan_details.publisher_id = AAZStrArg(
+            options=["publisher-id"],
+            help="Publisher ID of the plan",
+        )
+        plan_details.term_id = AAZStrArg(
+            options=["term-id"],
+            help="Term ID of the plan",
+        )
+
+        project_details = cls._args_schema.project_details
+        project_details.configuration_type = AAZStrArg(
+            options=["configuration-type"],
+            help="Configuration type of the Elasticsearch project",
+            enum={"GeneralPurpose": "GeneralPurpose", "NotApplicable": "NotApplicable", "TimeSeries": "TimeSeries", "Vector": "Vector"},
+        )
+        project_details.project_type = AAZStrArg(
+            options=["project-type"],
+            help="Project type; ex: Elasticsearch / Observability / Security",
+            enum={"Elasticsearch": "Elasticsearch", "NotApplicable": "NotApplicable", "Observability": "Observability", "Security": "Security"},
+        )
+
         user_info = cls._args_schema.user_info
         user_info.company_info = AAZObjectArg(
             options=["company-info"],
@@ -120,28 +209,28 @@ class Create(AAZCommand):
             options=["company-name"],
             help="Company name of the user",
             fmt=AAZStrArgFormat(
-                max_length=64,
+                max_length=128,
             ),
         )
         user_info.email_address = AAZStrArg(
             options=["email-address"],
             help="Email of the user used by Elastic for contacting them if needed",
             fmt=AAZStrArgFormat(
-                pattern="^([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)@(([a-zA-Z-_0-9]+\.)+[a-zA-Z]{2,})$",
+                pattern="^([^<>()\\[\\]\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\"]+)*)@(([a-zA-Z-_0-9]+\\.)+[a-zA-Z]{2,})$",
             ),
         )
         user_info.first_name = AAZStrArg(
             options=["first-name"],
             help="First name of the user",
             fmt=AAZStrArgFormat(
-                max_length=50,
+                max_length=128,
             ),
         )
         user_info.last_name = AAZStrArg(
             options=["last-name"],
             help="Last name of the user",
             fmt=AAZStrArgFormat(
-                max_length=50,
+                max_length=128,
             ),
         )
 
@@ -150,21 +239,21 @@ class Create(AAZCommand):
             options=["business"],
             help="Business of the company",
             fmt=AAZStrArgFormat(
-                max_length=64,
+                max_length=128,
             ),
         )
         company_info.country = AAZStrArg(
             options=["country"],
             help="Country of the company location.",
             fmt=AAZStrArgFormat(
-                max_length=64,
+                max_length=128,
             ),
         )
         company_info.domain = AAZStrArg(
             options=["domain"],
             help="Domain of the company",
             fmt=AAZStrArgFormat(
-                max_length=250,
+                max_length=256,
             ),
         )
         company_info.employees_number = AAZStrArg(
@@ -178,7 +267,7 @@ class Create(AAZCommand):
             options=["state"],
             help="State of the company location.",
             fmt=AAZStrArgFormat(
-                max_length=64,
+                max_length=128,
             ),
         )
         return cls._args_schema
@@ -264,7 +353,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -289,17 +378,43 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("kind", AAZStrType, ".kind")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("sku", AAZObjectType, ".sku")
             _builder.set_prop("tags", AAZDictType, ".tags")
 
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type")
+
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("generateApiKey", AAZBoolType, ".generate_api_key")
+                properties.set_prop("hostingType", AAZStrType, ".hosting_type")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
+                properties.set_prop("planDetails", AAZObjectType, ".plan_details")
+                properties.set_prop("projectDetails", AAZObjectType, ".project_details")
+                properties.set_prop("saaSAzureSubscriptionStatus", AAZStrType, ".saa_s_azure_subscription_status")
+                properties.set_prop("sourceCampaignId", AAZStrType, ".source_campaign_id")
+                properties.set_prop("sourceCampaignName", AAZStrType, ".source_campaign_name")
+                properties.set_prop("subscriptionState", AAZStrType, ".subscription_state")
                 properties.set_prop("userInfo", AAZObjectType, ".user_info")
                 properties.set_prop("version", AAZStrType, ".version")
+
+            plan_details = _builder.get(".properties.planDetails")
+            if plan_details is not None:
+                plan_details.set_prop("offerID", AAZStrType, ".offer_id")
+                plan_details.set_prop("planID", AAZStrType, ".plan_id")
+                plan_details.set_prop("planName", AAZStrType, ".plan_name")
+                plan_details.set_prop("publisherID", AAZStrType, ".publisher_id")
+                plan_details.set_prop("termID", AAZStrType, ".term_id")
+
+            project_details = _builder.get(".properties.projectDetails")
+            if project_details is not None:
+                project_details.set_prop("configurationType", AAZStrType, ".configuration_type")
+                project_details.set_prop("projectType", AAZStrType, ".project_type")
 
             user_info = _builder.get(".properties.userInfo")
             if user_info is not None:
@@ -349,6 +464,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.identity = AAZObjectType()
+            _schema_on_200_201.kind = AAZStrType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
@@ -384,6 +500,9 @@ class Create(AAZCommand):
             properties.generate_api_key = AAZBoolType(
                 serialized_name="generateApiKey",
             )
+            properties.hosting_type = AAZStrType(
+                serialized_name="hostingType",
+            )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",
                 flags={"read_only": True},
@@ -395,8 +514,27 @@ class Create(AAZCommand):
             properties.monitoring_status = AAZStrType(
                 serialized_name="monitoringStatus",
             )
+            properties.plan_details = AAZObjectType(
+                serialized_name="planDetails",
+            )
+            properties.project_details = AAZObjectType(
+                serialized_name="projectDetails",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.saa_s_azure_subscription_status = AAZStrType(
+                serialized_name="saaSAzureSubscriptionStatus",
+            )
+            properties.source_campaign_id = AAZStrType(
+                serialized_name="sourceCampaignId",
+            )
+            properties.source_campaign_name = AAZStrType(
+                serialized_name="sourceCampaignName",
+            )
+            properties.subscription_state = AAZStrType(
+                serialized_name="subscriptionState",
             )
             properties.version = AAZStrType()
 
@@ -448,6 +586,31 @@ class Create(AAZCommand):
             )
             elastic_cloud_user.id = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            plan_details = cls._schema_on_200_201.properties.plan_details
+            plan_details.offer_id = AAZStrType(
+                serialized_name="offerID",
+            )
+            plan_details.plan_id = AAZStrType(
+                serialized_name="planID",
+            )
+            plan_details.plan_name = AAZStrType(
+                serialized_name="planName",
+            )
+            plan_details.publisher_id = AAZStrType(
+                serialized_name="publisherID",
+            )
+            plan_details.term_id = AAZStrType(
+                serialized_name="termID",
+            )
+
+            project_details = cls._schema_on_200_201.properties.project_details
+            project_details.configuration_type = AAZStrType(
+                serialized_name="configurationType",
+            )
+            project_details.project_type = AAZStrType(
+                serialized_name="projectType",
             )
 
             sku = cls._schema_on_200_201.sku

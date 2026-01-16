@@ -170,7 +170,7 @@ az storagesync sync-group server-endpoint list \
 
 ##### Register an on-premises server to a storage sync service.
 
-*This command is not supported in CLI yet. You can use Azure PowerShell command [Register-AzStorageSyncServer](https://docs.microsoft.com/en-us/powershell/module/az.storagesync/register-azstoragesyncserver?view=azps-3.6.1) or [Azure File Sync Agent](https://docs.microsoft.com/en-us/azure/storage/files/storage-sync-files-deployment-guide?tabs=azure-portal#register-windows-server-with-storage-sync-service) instead.*
+*This command is not supported in CLI yet. You can use Azure PowerShell command [Register-AzStorageSyncServer](https://learn.microsoft.com/en-us/powershell/module/az.storagesync/register-azstoragesyncserver?view=azps-3.6.1) or [Azure File Sync Agent](https://learn.microsoft.com/en-us/azure/storage/files/storage-sync-files-deployment-guide?tabs=azure-portal#register-windows-server-with-storage-sync-service) instead.*
 
 ##### Unregister an on-premises server from it's storage sync service.
 ```
@@ -197,6 +197,6 @@ az storagesync registered-server list \
 
 ##### Roll the storage sync server certificate used to describe the server identity to the storage sync service.
 
-*This command is not supported in CLI yet. You can use Azure PowerShell command [Reset-AzStorageSyncServerCertificate](https://docs.microsoft.com/en-us/powershell/module/az.storagesync/reset-azstoragesyncservercertificate?view=azps-3.6.1) instead.*
+*This command is not supported in CLI yet. You can use Azure PowerShell command [Reset-AzStorageSyncServerCertificate](https://learn.microsoft.com/en-us/powershell/module/az.storagesync/reset-azstoragesyncservercertificate?view=azps-3.6.1) instead.*
 
 If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.

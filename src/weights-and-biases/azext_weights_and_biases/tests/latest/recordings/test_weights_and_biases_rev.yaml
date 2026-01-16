@@ -1,0 +1,111 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - weights-and-biases instance list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jawt-rg/providers/Microsoft.WeightsAndBiases/instances?api-version=2024-09-18-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jawt-rg/providers/microsoft.weightsandbiases/instances/lite-test-org1","name":"lite-test-org1","type":"microsoft.weightsandbiases/instances","location":"East
+        US","tags":{},"systemData":{"createdBy":"jawt@microsoft.com","createdByType":"User","createdAt":"2024-12-17T07:22:50.0427033Z","lastModifiedBy":"jawt@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-12-17T07:22:50.0427033Z"},"properties":{"marketplace":{"subscriptionId":"761a923c-204d-4a37-c6ee-77dd91e0e105","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"weightsandbiasesinc1641502883483","offerId":"wandb_liftr","planId":"liftr0plan","planName":"WandB
+        Liftr","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Succeeded","user":{"firstName":"","lastName":"","emailAddress":"jawt@microsoft.com","upn":"jawt@microsoft.com","phoneNumber":""},"partnerProperties":{"region":"eastus","subdomain":"testdomain"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jawt-rg/providers/microsoft.weightsandbiases/instances/wandb-lite-test-org2","name":"wandb-lite-test-org2","type":"microsoft.weightsandbiases/instances","location":"East
+        US","tags":{},"systemData":{"createdBy":"jawt@microsoft.com","createdByType":"User","createdAt":"2025-01-24T10:33:19.6120843Z","lastModifiedBy":"jawt@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-01-24T10:33:19.6120843Z"},"properties":{"marketplace":{"subscriptionId":"fc35d936-3b89-41f8-8110-a24b56826c37","subscriptionStatus":"PendingFulfillmentStart","offerDetails":{"publisherId":"weightsandbiasesinc1641502883483","offerId":"wandb_liftr","planId":"liftr0plan","planName":"WandB
+        Liftr","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Failed","user":{"firstName":"","lastName":"","emailAddress":"jawt@microsoft.com","upn":"jawt@microsoft.com","phoneNumber":""},"partnerProperties":{"region":"eastus","subdomain":"testdomain"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jawt-rg/providers/microsoft.weightsandbiases/instances/wnb-lite-test-org3","name":"wnb-lite-test-org3","type":"microsoft.weightsandbiases/instances","location":"East
+        US","tags":{},"systemData":{"createdBy":"jawt@microsoft.com","createdByType":"User","createdAt":"2025-01-24T12:05:05.984166Z","lastModifiedBy":"jawt@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-01-24T12:05:05.984166Z"},"properties":{"marketplace":{"subscriptionId":"e2aafcd4-a685-49e8-db58-0eb4fb3c774f","subscriptionStatus":"PendingFulfillmentStart","offerDetails":{"publisherId":"weightsandbiasesinc1641502883483","offerId":"wandb_liftr","planId":"liftr0plan","planName":"WandB
+        Liftr","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Failed","user":{"firstName":"","lastName":"","emailAddress":"jawt@microsoft.com","upn":"jawt@microsoft.com","phoneNumber":""},"partnerProperties":{"region":"eastus","subdomain":"testdomain2"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jawt-rg/providers/microsoft.weightsandbiases/instances/wnb-lite-test-org4","name":"wnb-lite-test-org4","type":"microsoft.weightsandbiases/instances","location":"East
+        US","tags":{},"systemData":{"createdBy":"jawt@microsoft.com","createdByType":"User","createdAt":"2025-01-30T09:50:03.126718Z","lastModifiedBy":"jawt@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-01-30T09:50:03.126718Z"},"properties":{"marketplace":{"subscriptionId":"f83024d3-8a29-493c-c3af-1a9e6718ff1a","subscriptionStatus":"PendingFulfillmentStart","offerDetails":{"publisherId":"weightsandbiasesinc1641502883483","offerId":"wandb_liftr","planId":"liftr0plan","planName":"WandB
+        Liftr","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Failed","user":{"firstName":"","lastName":"","emailAddress":"jawt@microsoft.com","upn":"jawt@microsoft.com","phoneNumber":""},"partnerProperties":{"region":"eastus","subdomain":"testorg4"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jawt-rg/providers/Microsoft.WeightsAndBiases/instances/wnb-test-org-5","name":"wnb-test-org-5","type":"microsoft.weightsandbiases/instances","location":"eastus","tags":{},"systemData":{"createdBy":"jawt@microsoft.com","createdByType":"User","createdAt":"2025-01-31T11:53:13.7139846Z","lastModifiedBy":"jawt@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-01-31T11:53:13.7139846Z"},"properties":{"marketplace":{"subscriptionId":"03de7830-78ff-45f3-c564-58dd30bc36ca","subscriptionStatus":"PendingFulfillmentStart","offerDetails":{"publisherId":"weightsandbiasesinc1641502883483","offerId":"wandb_liftr","planId":"liftr0plan","planName":"WandB
+        Liftr","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Failed","user":{"firstName":"","lastName":"","emailAddress":"jawt@microsoft.com","upn":"jawt_microsoft.com#EXT#@MicrosoftCustomerLed.onmicrosoft.com","phoneNumber":""},"partnerProperties":{"subdomain":"testorg5","region":"eastus"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5058'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 11:16:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 86fb3c78-cc56-4c40-ba21-866a9c890c27
+      - 8bbdf178-eb03-4cde-845f-9bc552fe21d3
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 95CDE539C79A419E93D02BD35FBE2004 Ref B: MAA201060514017 Ref C: 2025-03-27T11:16:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - weights-and-biases instance show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --instancename
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.8 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jawt-rg/providers/Microsoft.WeightsAndBiases/instances/wnb-test-org-5?api-version=2024-09-18-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jawt-rg/providers/Microsoft.WeightsAndBiases/instances/wnb-test-org-5","name":"wnb-test-org-5","type":"microsoft.weightsandbiases/instances","location":"eastus","tags":{},"systemData":{"createdBy":"jawt@microsoft.com","createdByType":"User","createdAt":"2025-01-31T11:53:13.7139846Z","lastModifiedBy":"jawt@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-01-31T11:53:13.7139846Z"},"properties":{"marketplace":{"subscriptionId":"03de7830-78ff-45f3-c564-58dd30bc36ca","subscriptionStatus":"PendingFulfillmentStart","offerDetails":{"publisherId":"weightsandbiasesinc1641502883483","offerId":"wandb_liftr","planId":"liftr0plan","planName":"WandB
+        Liftr","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"provisioningState":"Failed","user":{"firstName":"","lastName":"","emailAddress":"jawt@microsoft.com","upn":"jawt_microsoft.com#EXT#@MicrosoftCustomerLed.onmicrosoft.com","phoneNumber":""},"partnerProperties":{"subdomain":"testorg5","region":"eastus"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1037'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 11:16:58 GMT
+      etag:
+      - '"00009f31-0000-0300-0000-679cd68f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: F4BB9A4009F04461BF7226EE2BEF650C Ref B: MAA201060514023 Ref C: 2025-03-27T11:16:57Z'
+    status:
+      code: 200
+      message: OK
+version: 1

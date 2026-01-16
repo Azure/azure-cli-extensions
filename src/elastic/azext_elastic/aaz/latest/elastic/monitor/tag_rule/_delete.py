@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a tag rule set for a given monitor resource.
+    """Delete a tag rule set for a given Elastic monitor resource, removing fine-grained control over observability based on resource tags.
 
-    :example: Delete tag rule
-        az elastic monitor tag-rule delete --monitor-name name -n name -g rg
+    :example: TagRules_Delete
+        az elastic monitor tag-rule delete --resource-group myResourceGroup --monitor-name myMonitor --rule-set-name default
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/tagrules/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/tagrules/{}", "2025-06-01"],
         ]
     }
 
@@ -51,6 +51,9 @@ class Delete(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -60,6 +63,9 @@ class Delete(AAZCommand):
             help="Tag Rule Set resource name",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         return cls._args_schema
 
@@ -153,7 +159,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

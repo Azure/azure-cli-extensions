@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw firewall save-log-profile",
 )
 class SaveLogProfile(AAZCommand):
-    """Save Log Profile for Firewall
+    """Save log profile settings for a Palo Alto Networks Cloud NGFW on Azure.
 
-    :example: Save Log Profile for Firewall
+    :example: Save log profile settings for a Palo Alto Networks Cloud NGFW on Azure.
         az palo-alto cloudngfw firewall save-log-profile --resource-group MyResourceGroup -n MyCloudngfwFirewall --log-option "SAME_DESTINATION" --log-type "TRAFFIC"
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/savelogprofile", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/savelogprofile", "2025-10-08"],
         ]
     }
 
@@ -49,6 +49,9 @@ class SaveLogProfile(AAZCommand):
             help="Firewall resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^(?![-_])(?!.*[-_]{2})(?!.*[-_]$)[a-zA-Z0-9][a-zA-Z0-9-]{0,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -259,7 +262,7 @@ class SaveLogProfile(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }

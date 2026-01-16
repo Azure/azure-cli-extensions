@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class CreateOrUpdate(AAZCommand):
     """Create maintenance updates to resource
-
-    :example: ApplyUpdates_CreateOrUpdate
-        az maintenance applyupdate create-or-update --apply-update-name "20230921151000" --provider-name "Microsoft.Maintenance" --resource-group "Maintenance-RG-1598" --resource-name "configuration1" --resource-type "maintenanceConfigurations" --status "Cancel"
     """
 
     _aaz_info = {
-        "version": "2023-09-01-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/{}/{}/{}/providers/microsoft.maintenance/applyupdates/{}", "2023-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/{}/{}/{}/providers/microsoft.maintenance/applyupdates/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -170,7 +167,7 @@ class CreateOrUpdate(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }

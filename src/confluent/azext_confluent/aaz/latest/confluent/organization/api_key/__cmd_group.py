@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization api-key",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage cluster api key
+    """Manage API keys for Kafka or Schema Registry clusters in Confluent.
     """
     pass
 

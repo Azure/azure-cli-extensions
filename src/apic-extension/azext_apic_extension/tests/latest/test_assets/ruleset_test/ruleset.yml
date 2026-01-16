@@ -1,0 +1,9 @@
+extends: [['spectral:oas', all], 'spectral:asyncapi']
+functions:
+  - greeting
+rules:
+  greetingRule:
+    message: "{{error}}"
+    given: "$.greeting.firstName"
+    then:
+      function: greeting

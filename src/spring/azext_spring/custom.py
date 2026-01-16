@@ -30,9 +30,9 @@ from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.util import sdk_no_wait
-from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
+from .vendored_sdks.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
-from msrestazure.tools import resource_id
+from azure.mgmt.core.tools import resource_id
 from ._resource_quantity import validate_cpu, validate_memory
 from six.moves.urllib import parse
 from threading import Thread
@@ -528,7 +528,7 @@ def parse_auth_flags(auth_list):
 def app_get_build_log(cmd, client, resource_group, service, name, deployment=None):
     if deployment.properties.source.type != "Source":
         raise CLIError("{} deployment has no build logs.".format(deployment.properties.source.type))
-    return stream_logs(client.deployments, resource_group, service, name, deployment.name)
+    return stream_logs(cmd, client.deployments, resource_group, service, name, deployment.name)
 
 
 def app_tail_log(cmd, client, resource_group, service, name,
@@ -717,7 +717,7 @@ def validate_config_server_settings(client, resource_group, name, config_server_
     try:
         result = sdk_no_wait(False, client.config_servers.begin_validate, resource_group, name, config_server_settings).result()
     except Exception as err:  # pylint: disable=broad-except
-        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://learn.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
 
     if not result.is_valid:
         for item in result.details or []:
@@ -1589,8 +1589,7 @@ def try_create_application_insights(cmd, resource_group, name, location):
         logger.warning(APP_INSIGHTS_CREATION_FAILURE_WARNING)
         return None
 
-    app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient,
-                                                  api_version='2020-02-02-preview')
+    app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient)
     ai_properties = {
         "location": location,
         "kind": "web",

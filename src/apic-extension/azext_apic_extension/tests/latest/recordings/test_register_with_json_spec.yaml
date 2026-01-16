@@ -9,11 +9,10 @@ interactions:
       the API in general, and expose some of the new features in OAS3.\n\nSome useful
       links:\n- [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)\n-
       [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)",
-      "kind": "rest", "license": {"name": "Apache 2.0", "url": "http://www.apache.org/licenses/LICENSE-2.0.html"},
-      "summary": "This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You
-      can find out more about\nSwagger at [http://swagger.io](http://swagger.io).
-      In the third iteration of the pet store, we''ve", "title": "Swagger Petstore
-      - OpenAPI 3.0"}}'
+      "externalDocumentation": [{"description": "Find out more about Swagger", "title":
+      "Title", "url": "http://swagger.io"}], "kind": "rest", "license": {"name": "Apache
+      2.0", "url": "http://www.apache.org/licenses/LICENSE-2.0.html"}, "title": "Swagger
+      Petstore - OpenAPI 3.0"}}'
     headers:
       Accept:
       - application/json
@@ -24,43 +23,42 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1144'
+      - '1049'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n -l
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30?api-version=2024-03-01
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis","properties":{"title":"Swagger
-        Petstore - OpenAPI 3.0","summary":"This is a sample Pet Store Server based
+        Petstore - OpenAPI 3.0","description":"This is a sample Pet Store Server based
         on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at
         [http://swagger.io](http://swagger.io). In the third iteration of the pet
-        store, we''ve","description":"This is a sample Pet Store Server based on the
-        OpenAPI 3.0 specification.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io).
-        In the third iteration of the pet store, we''ve switched to the design first
-        approach!\nYou can now help us improve the API whether it''s by making changes
-        to the definition itself or to the code.\nThat way, with time, we can improve
-        the API in general, and expose some of the new features in OAS3.\n\nSome useful
-        links:\n- [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)\n-
-        [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)","kind":"rest","license":{"name":"Apache
-        2.0","url":"http://www.apache.org/licenses/LICENSE-2.0.html"},"externalDocumentation":[],"contacts":[{"email":"apiteam@swagger.io"}],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30","name":"swaggerpetstore-openapi30","systemData":{"createdAt":"2024-06-17T06:09:27.6338825Z","lastModifiedAt":"2024-06-17T06:09:27.6338814Z"}}'
+        store, we''ve switched to the design first approach!\nYou can now help us
+        improve the API whether it''s by making changes to the definition itself or
+        to the code.\nThat way, with time, we can improve the API in general, and
+        expose some of the new features in OAS3.\n\nSome useful links:\n- [The Pet
+        Store repository](https://github.com/swagger-api/swagger-petstore)\n- [The
+        source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)","kind":"rest","lifecycleStage":"design","license":{"name":"Apache
+        2.0","url":"http://www.apache.org/licenses/LICENSE-2.0.html"},"externalDocumentation":[{"title":"Title","description":"Find
+        out more about Swagger","url":"http://swagger.io"}],"contacts":[{"email":"apiteam@swagger.io"}],"packages":[],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30","name":"swaggerpetstore-openapi30","systemData":{"createdAt":"2025-08-06T02:52:25.1432346Z","lastModifiedAt":"2025-08-06T02:52:25.1432327Z"}}'
     headers:
       api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1561'
+      - '1474'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:09:27 GMT
+      - Wed, 06 Aug 2025 02:52:24 GMT
       etag:
-      - da0282ef-0000-0100-0000-666fd3170000
+      - 1e012aae-0000-0100-0000-6892c3690000
       expires:
       - '-1'
       pragma:
@@ -73,12 +71,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/eastus/d5e07f99-3de3-47b7-b5b7-c80f466fc4bb
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 490937ED77EF4AC390219FB5B0C36E9E Ref B: MAA201060513033 Ref C: 2024-06-17T06:09:27Z'
+      - 'Ref A: 729F36B85B30455B90139747C8D01917 Ref B: MAA201060516025 Ref C: 2025-08-06T02:52:24Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -102,25 +102,25 @@ interactions:
       ParameterSetName:
       - -g -n -l
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/versions","properties":{"title":"1-0-19","lifecycleStage":"design"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19","name":"1-0-19","systemData":{"createdAt":"2024-06-17T06:09:30.530961Z","lastModifiedAt":"2024-06-17T06:09:30.5309599Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/versions","properties":{"title":"1-0-19","lifecycleStage":"design","isDefault":true,"isRecommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19","name":"1-0-19","systemData":{"createdAt":"2025-08-06T02:52:26.0413635Z","lastModifiedAt":"2025-08-06T02:52:26.0413622Z"}}'
     headers:
       api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '448'
+      - '488'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:09:30 GMT
+      - Wed, 06 Aug 2025 02:52:25 GMT
       etag:
-      - 8804752d-0000-0100-0000-666fd31a0000
+      - 2001662c-0000-0100-0000-6892c36a0000
       expires:
       - '-1'
       pragma:
@@ -133,12 +133,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/eastus/a975b40e-a497-4a46-af72-1f64a2ee092c
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 45F3EA56500C4DC98858CA2E1DC37229 Ref B: MAA201060514021 Ref C: 2024-06-17T06:09:29Z'
+      - 'Ref A: 725334F0B5FF4BE2B1224C15C308A4C5 Ref B: MAA201060515027 Ref C: 2025-08-06T02:52:25Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -170,7 +172,7 @@ interactions:
       ParameterSetName:
       - -g -n -l
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19/definitions/openapi?api-version=2024-03-01
   response:
@@ -183,10 +185,10 @@ interactions:
         to the definition itself or to the code.\nThat way, with time, we can improve
         the API in general, and expose some of the new features in OAS3.\n\nSome useful
         links:\n- [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)\n-
-        [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19/definitions/openapi","name":"openapi","systemData":{"createdAt":"2024-06-17T06:09:33.0394919Z","lastModifiedAt":"2024-06-17T06:09:33.0394913Z"}}'
+        [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19/definitions/openapi","name":"openapi","systemData":{"createdAt":"2025-08-06T02:52:29.1767458Z","lastModifiedAt":"2025-08-06T02:52:29.1767446Z"}}'
     headers:
       api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -194,9 +196,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:09:32 GMT
+      - Wed, 06 Aug 2025 02:52:28 GMT
       etag:
-      - 1301ee9f-0000-0100-0000-666fd31d0000
+      - 8f009887-0000-0100-0000-6892c36d0000
       expires:
       - '-1'
       pragma:
@@ -209,19 +211,21 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/608d4cc5-f308-4936-9c85-fd763dd13eaa
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: D76CABDB0388446786EF230AAC4AAEF3 Ref B: MAA201060515017 Ref C: 2024-06-17T06:09:31Z'
+      - 'Ref A: 2A1740BC4C4A46F9932EE3B871516A7D Ref B: MAA201060513017 Ref C: 2025-08-06T02:52:26Z'
       x-powered-by:
       - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: '{"format": "inline", "specification": {"name": "openapi", "version": "3-0-2"},
+    body: '{"format": "inline", "specification": {"name": "openapi", "version": "3.0.2"},
       "value": "{\n    \"openapi\": \"3.0.2\",\n    \"info\": {\n        \"title\":
       \"Swagger Petstore - OpenAPI 3.0\",\n        \"description\": \"This is a sample
       Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more
@@ -652,7 +656,7 @@ interactions:
       ParameterSetName:
       - -g -n -l
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19/definitions/openapi/importSpecification?api-version=2024-03-01
   response:
@@ -660,13 +664,13 @@ interactions:
       string: ''
     headers:
       api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Mon, 17 Jun 2024 06:09:36 GMT
+      - Wed, 06 Aug 2025 02:52:30 GMT
       expires:
       - '-1'
       pragma:
@@ -677,12 +681,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/d4901a22-98e7-4c6a-b5e3-6e440147dfa1
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: C25DD1880C20473FB32F559C7947C635 Ref B: MAA201060516039 Ref C: 2024-06-17T06:09:34Z'
+      - 'Ref A: 810231AD85DB47D98B4D4AC32BCBF393 Ref B: MAA201060514053 Ref C: 2025-08-06T02:52:29Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -702,37 +708,36 @@ interactions:
       ParameterSetName:
       - -g -n --api-id
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30?api-version=2024-03-01
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis","properties":{"title":"Swagger
-        Petstore - OpenAPI 3.0","summary":"This is a sample Pet Store Server based
+        Petstore - OpenAPI 3.0","description":"This is a sample Pet Store Server based
         on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at
         [http://swagger.io](http://swagger.io). In the third iteration of the pet
-        store, we''ve","description":"This is a sample Pet Store Server based on the
-        OpenAPI 3.0 specification.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io).
-        In the third iteration of the pet store, we''ve switched to the design first
-        approach!\nYou can now help us improve the API whether it''s by making changes
-        to the definition itself or to the code.\nThat way, with time, we can improve
-        the API in general, and expose some of the new features in OAS3.\n\nSome useful
-        links:\n- [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)\n-
-        [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)","kind":"rest","lifecycleStage":"design","license":{"name":"Apache
-        2.0","url":"http://www.apache.org/licenses/LICENSE-2.0.html"},"externalDocumentation":[],"contacts":[{"email":"apiteam@swagger.io"}],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30","name":"swaggerpetstore-openapi30","systemData":{"createdAt":"2024-06-17T06:09:27.6338825Z","lastModifiedAt":"2024-06-17T06:09:27.6338814Z"}}'
+        store, we''ve switched to the design first approach!\nYou can now help us
+        improve the API whether it''s by making changes to the definition itself or
+        to the code.\nThat way, with time, we can improve the API in general, and
+        expose some of the new features in OAS3.\n\nSome useful links:\n- [The Pet
+        Store repository](https://github.com/swagger-api/swagger-petstore)\n- [The
+        source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)","kind":"rest","lifecycleStage":"design","license":{"name":"Apache
+        2.0","url":"http://www.apache.org/licenses/LICENSE-2.0.html"},"externalDocumentation":[{"title":"Title","description":"Find
+        out more about Swagger","url":"http://swagger.io"}],"contacts":[{"email":"apiteam@swagger.io"}],"packages":[],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30","name":"swaggerpetstore-openapi30","systemData":{"createdAt":"2025-08-06T02:52:25.1432346Z","lastModifiedAt":"2025-08-06T02:52:25.1432327Z"}}'
     headers:
       api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1587'
+      - '1474'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:09:38 GMT
+      - Wed, 06 Aug 2025 02:52:31 GMT
       etag:
-      - da025ef0-0000-0100-0000-666fd31a0000
+      - 1e013dae-0000-0100-0000-6892c36a0000
       expires:
       - '-1'
       pragma:
@@ -745,10 +750,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/eastus/2642d726-ad09-4af8-a6ba-c30e94b8d6e7
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3749'
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: A85BA831B6244CEABD87A540BA9FE3EB Ref B: MAA201060516037 Ref C: 2024-06-17T06:09:38Z'
+      - 'Ref A: AB0C7AF33866456E9E848E24EBD4E301 Ref B: MAA201060515047 Ref C: 2025-08-06T02:52:32Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -768,25 +775,25 @@ interactions:
       ParameterSetName:
       - -g -n --api-id --version-id
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/versions","properties":{"title":"1-0-19","lifecycleStage":"design"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19","name":"1-0-19","systemData":{"createdAt":"2024-06-17T06:09:30.530961Z","lastModifiedAt":"2024-06-17T06:09:30.5309599Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/versions","properties":{"title":"1-0-19","lifecycleStage":"design","isDefault":true,"isRecommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19","name":"1-0-19","systemData":{"createdAt":"2025-08-06T02:52:26.0413635Z","lastModifiedAt":"2025-08-06T02:52:26.0413622Z"}}'
     headers:
       api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '448'
+      - '488'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:09:41 GMT
+      - Wed, 06 Aug 2025 02:52:32 GMT
       etag:
-      - 8804752d-0000-0100-0000-666fd31a0000
+      - 2001662c-0000-0100-0000-6892c36a0000
       expires:
       - '-1'
       pragma:
@@ -799,10 +806,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/eastus/f5754788-bec8-4307-9e77-498caa9d82d1
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3749'
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 4E04CB8F2C334098B97D4EAEE7363C5B Ref B: MAA201060515039 Ref C: 2024-06-17T06:09:41Z'
+      - 'Ref A: 4198E248AA544683AF9B7DDFEF17287D Ref B: MAA201060515047 Ref C: 2025-08-06T02:52:33Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -822,7 +831,7 @@ interactions:
       ParameterSetName:
       - -g -n --api-id --version-id --definition-id
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19/definitions/openapi?api-version=2024-03-01
   response:
@@ -835,20 +844,20 @@ interactions:
         to the definition itself or to the code.\nThat way, with time, we can improve
         the API in general, and expose some of the new features in OAS3.\n\nSome useful
         links:\n- [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)\n-
-        [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)","specification":{"name":"openapi","version":"3-0-2"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19/definitions/openapi","name":"openapi","systemData":{"createdAt":"2024-06-17T06:09:33.0394919Z","lastModifiedAt":"2024-06-17T06:09:36.1392447Z"}}'
+        [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)","specification":{"name":"openapi","version":"3.0.2"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19/definitions/openapi","name":"openapi","systemData":{"createdAt":"2025-08-06T02:52:29.1767458Z","lastModifiedAt":"2025-08-06T02:52:31.459517Z"}}'
     headers:
       api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1221'
+      - '1220'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:09:43 GMT
+      - Wed, 06 Aug 2025 02:52:34 GMT
       etag:
-      - 1301fb9f-0000-0100-0000-666fd3200000
+      - 8f00c187-0000-0100-0000-6892c36f0000
       expires:
       - '-1'
       pragma:
@@ -861,10 +870,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/eastus/6130570c-2d07-47be-ae48-c47ff1e15ad7
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3749'
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 30E7668021084909AAD0796285EEDB77 Ref B: MAA201060514033 Ref C: 2024-06-17T06:09:43Z'
+      - 'Ref A: 07EC671929714C3E802995E21D7FE46B Ref B: MAA201060515021 Ref C: 2025-08-06T02:52:34Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -886,7 +897,7 @@ interactions:
       ParameterSetName:
       - -g -n --api-id --version-id --definition-id --file-name
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore-openapi30/versions/1-0-19/definitions/openapi/exportSpecification?api-version=2024-03-01
   response:
@@ -1309,7 +1320,7 @@ interactions:
         \"header\"\n            }\n        }\n    }\n}"}'
     headers:
       api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1317,7 +1328,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:09:46 GMT
+      - Wed, 06 Aug 2025 02:52:35 GMT
       expires:
       - '-1'
       pragma:
@@ -1330,12 +1341,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/b9dc56b2-7c12-43c7-90e9-81f469b7b144
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 5B318CEF451E4F4B87E1AFE20FD8884B Ref B: MAA201060514009 Ref C: 2024-06-17T06:09:45Z'
+      - 'Ref A: EBBE4388CF0C4A7A9D9D39151D544B0D Ref B: MAA201060514031 Ref C: 2025-08-06T02:52:35Z'
       x-powered-by:
       - ASP.NET
     status:

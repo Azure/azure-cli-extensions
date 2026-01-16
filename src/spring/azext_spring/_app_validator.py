@@ -7,8 +7,7 @@
 import os.path
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from msrestazure.azure_exceptions import CloudError
-from azure.core.exceptions import ResourceNotFoundError
+from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from ._resource_quantity import (validate_cpu as validate_cpu_value, validate_memory as validate_memory_value)
 from ._client_factory import cf_spring
 from ._build_service import (DEFAULT_BUILD_SERVICE_NAME)
@@ -82,7 +81,7 @@ def ensure_not_active_deployment(cmd, namespace):
 def _ensure_deployment_exist(client, resource_group, service, app, deployment):
     try:
         return client.deployments.get(resource_group, service, app, deployment)
-    except CloudError:
+    except HttpResponseError:
         raise InvalidArgumentValueError('Deployment {} not found under app {}'.format(deployment, app))
 
 

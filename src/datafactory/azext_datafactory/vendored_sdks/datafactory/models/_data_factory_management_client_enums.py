@@ -1,3 +1,4 @@
+# pylint: disable=too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -64,6 +65,14 @@ class AzureFunctionActivityMethod(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     OPTIONS = "OPTIONS"
     HEAD = "HEAD"
     TRACE = "TRACE"
+
+
+class AzurePostgreSqlWriteMethodEnum(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The write behavior for the operation. Default is Bulk Insert."""
+
+    BULK_INSERT = "BulkInsert"
+    COPY_COMMAND = "CopyCommand"
+    UPSERT = "Upsert"
 
 
 class AzureSearchIndexWriteBehaviorType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -376,6 +385,12 @@ class GoogleBigQueryV2AuthenticationType(str, Enum, metaclass=CaseInsensitiveEnu
     USER_AUTHENTICATION = "UserAuthentication"
 
 
+class GreenplumAuthenticationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The authentication type to use. Type: string. Only used for V2."""
+
+    BASIC = "Basic"
+
+
 class HBaseAuthenticationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The authentication mechanism to use to connect to the HBase server."""
 
@@ -617,6 +632,12 @@ class ODataAuthenticationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     WINDOWS = "Windows"
     AAD_SERVICE_PRINCIPAL = "AadServicePrincipal"
     MANAGED_SERVICE_IDENTITY = "ManagedServiceIdentity"
+
+
+class OracleAuthenticationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Authentication type for connecting to the Oracle database. Only used for Version 2.0."""
+
+    BASIC = "Basic"
 
 
 class OraclePartitionOption(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -1080,6 +1101,13 @@ class Type(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Linked service reference type."""
 
     LINKED_SERVICE_REFERENCE = "LinkedServiceReference"
+
+
+class ValueType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Type of value copied from source."""
+
+    ACTUAL = "actual"
+    DISPLAY = "display"
 
 
 class VariableType(str, Enum, metaclass=CaseInsensitiveEnumMeta):

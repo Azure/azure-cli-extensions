@@ -36,6 +36,7 @@ JOB_LOG_READER_ROLE_NAME = "Azure Spring Apps Job Log Reader Role"
 # - A job must consume a path can be deployable, it can be custom container or build result resource id,
 # - _job_deployable_factory determines the deployable type and upload necessary binary/code to the service when constructing the deployable_path.
 
+
 def job_create(cmd, client, resource_group, service, name,
                parallelism=None,
                timeout=None,  # timeout in seconds

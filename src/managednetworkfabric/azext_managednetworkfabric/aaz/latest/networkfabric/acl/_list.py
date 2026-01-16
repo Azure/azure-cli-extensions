@@ -25,12 +25,14 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/accesscontrollists", "2024-02-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/accesscontrollists", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists", "2025-07-15"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -52,12 +54,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.AccessControlListsListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.AccessControlListsListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.AccessControlListsListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,6 +74,501 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
+
+    class AccessControlListsListBySubscription(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ManagedNetworkFabric/accessControlLists",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-07-15",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.acl_type = AAZStrType(
+                serialized_name="aclType",
+            )
+            properties.acls_url = AAZStrType(
+                serialized_name="aclsUrl",
+            )
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
+            properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.configuration_type = AAZStrType(
+                serialized_name="configurationType",
+                flags={"required": True},
+            )
+            properties.control_plane_acl_configuration = AAZListType(
+                serialized_name="controlPlaneAclConfiguration",
+            )
+            properties.default_action = AAZStrType(
+                serialized_name="defaultAction",
+            )
+            properties.device_role = AAZStrType(
+                serialized_name="deviceRole",
+            )
+            properties.dynamic_match_configurations = AAZListType(
+                serialized_name="dynamicMatchConfigurations",
+            )
+            properties.global_access_control_list_actions = AAZObjectType(
+                serialized_name="globalAccessControlListActions",
+            )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
+            properties.last_synced_time = AAZStrType(
+                serialized_name="lastSyncedTime",
+                flags={"read_only": True},
+            )
+            properties.match_configurations = AAZListType(
+                serialized_name="matchConfigurations",
+            )
+            properties.network_fabric_ids = AAZListType(
+                serialized_name="networkFabricIds",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            control_plane_acl_configuration = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration
+            control_plane_acl_configuration.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element
+            _element.ip_address_type = AAZStrType(
+                serialized_name="ipAddressType",
+            )
+            _element.match_configurations = AAZListType(
+                serialized_name="matchConfigurations",
+            )
+
+            match_configurations = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations
+            match_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element
+            _element.action = AAZObjectType()
+            _element.match_condition = AAZObjectType(
+                serialized_name="matchCondition",
+            )
+            _element.match_configuration_name = AAZStrType(
+                serialized_name="matchConfigurationName",
+            )
+            _element.sequence_number = AAZIntType(
+                serialized_name="sequenceNumber",
+            )
+
+            action = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element.action
+            action.remark_comment = AAZStrType(
+                serialized_name="remarkComment",
+            )
+            action.type = AAZStrType()
+
+            match_condition = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition
+            match_condition.flags = AAZListType()
+            match_condition.icmp_configuration = AAZObjectType(
+                serialized_name="icmpConfiguration",
+            )
+            _ListHelper._build_schema_icmp_configuration_properties_read(match_condition.icmp_configuration)
+            match_condition.ip_condition = AAZObjectType(
+                serialized_name="ipCondition",
+            )
+            match_condition.port_condition = AAZObjectType(
+                serialized_name="portCondition",
+            )
+            match_condition.protocol_types = AAZStrType(
+                serialized_name="protocolTypes",
+            )
+            match_condition.ttl_match_condition = AAZObjectType(
+                serialized_name="ttlMatchCondition",
+            )
+
+            flags = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.flags
+            flags.Element = AAZStrType()
+
+            ip_condition = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.ip_condition
+            ip_condition.destination_ip_prefix = AAZStrType(
+                serialized_name="destinationIpPrefix",
+            )
+            ip_condition.source_ip_prefix = AAZStrType(
+                serialized_name="sourceIpPrefix",
+            )
+
+            port_condition = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.port_condition
+            port_condition.destination_ports = AAZObjectType(
+                serialized_name="destinationPorts",
+            )
+            _ListHelper._build_schema_control_plane_acl_port_condition_read(port_condition.destination_ports)
+            port_condition.source_ports = AAZObjectType(
+                serialized_name="sourcePorts",
+            )
+            _ListHelper._build_schema_control_plane_acl_port_condition_read(port_condition.source_ports)
+
+            ttl_match_condition = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.ttl_match_condition
+            ttl_match_condition.ttl_match_type = AAZStrType(
+                serialized_name="ttlMatchType",
+            )
+            ttl_match_condition.ttl_value = AAZStrType(
+                serialized_name="ttlValue",
+            )
+
+            dynamic_match_configurations = cls._schema_on_200.value.Element.properties.dynamic_match_configurations
+            dynamic_match_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element
+            _element.ip_groups = AAZListType(
+                serialized_name="ipGroups",
+            )
+            _element.port_groups = AAZListType(
+                serialized_name="portGroups",
+            )
+            _element.vlan_groups = AAZListType(
+                serialized_name="vlanGroups",
+            )
+
+            ip_groups = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.ip_groups
+            ip_groups.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.ip_groups.Element
+            _element.ip_address_type = AAZStrType(
+                serialized_name="ipAddressType",
+            )
+            _element.ip_prefixes = AAZListType(
+                serialized_name="ipPrefixes",
+            )
+            _element.name = AAZStrType()
+
+            ip_prefixes = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.ip_groups.Element.ip_prefixes
+            ip_prefixes.Element = AAZStrType()
+
+            port_groups = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.port_groups
+            port_groups.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.port_groups.Element
+            _element.name = AAZStrType()
+            _element.ports = AAZListType()
+
+            ports = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.port_groups.Element.ports
+            ports.Element = AAZStrType()
+
+            vlan_groups = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.vlan_groups
+            vlan_groups.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.vlan_groups.Element
+            _element.name = AAZStrType()
+            _element.vlans = AAZListType()
+
+            vlans = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.vlan_groups.Element.vlans
+            vlans.Element = AAZStrType()
+
+            global_access_control_list_actions = cls._schema_on_200.value.Element.properties.global_access_control_list_actions
+            global_access_control_list_actions.enable_count = AAZStrType(
+                serialized_name="enableCount",
+            )
+
+            last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            match_configurations = cls._schema_on_200.value.Element.properties.match_configurations
+            match_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.match_configurations.Element
+            _element.actions = AAZListType()
+            _element.ip_address_type = AAZStrType(
+                serialized_name="ipAddressType",
+            )
+            _element.match_conditions = AAZListType(
+                serialized_name="matchConditions",
+            )
+            _element.match_configuration_name = AAZStrType(
+                serialized_name="matchConfigurationName",
+            )
+            _element.sequence_number = AAZIntType(
+                serialized_name="sequenceNumber",
+            )
+
+            actions = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions
+            actions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element
+            _element.counter_name = AAZStrType(
+                serialized_name="counterName",
+            )
+            _element.police_rate_configuration = AAZObjectType(
+                serialized_name="policeRateConfiguration",
+            )
+            _element.remark_comment = AAZStrType(
+                serialized_name="remarkComment",
+            )
+            _element.type = AAZStrType()
+
+            police_rate_configuration = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element.police_rate_configuration
+            police_rate_configuration.bit_rate = AAZObjectType(
+                serialized_name="bitRate",
+            )
+            police_rate_configuration.burst_size = AAZObjectType(
+                serialized_name="burstSize",
+            )
+
+            bit_rate = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element.police_rate_configuration.bit_rate
+            bit_rate.rate = AAZIntType()
+            bit_rate.unit = AAZStrType()
+
+            burst_size = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element.police_rate_configuration.burst_size
+            burst_size.size = AAZIntType()
+            burst_size.unit = AAZStrType()
+
+            match_conditions = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions
+            match_conditions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element
+            _element.dscp_markings = AAZListType(
+                serialized_name="dscpMarkings",
+            )
+            _element.ether_types = AAZListType(
+                serialized_name="etherTypes",
+            )
+            _element.fragments = AAZListType()
+            _element.icmp_configuration = AAZObjectType(
+                serialized_name="icmpConfiguration",
+            )
+            _ListHelper._build_schema_icmp_configuration_properties_read(_element.icmp_configuration)
+            _element.ip_condition = AAZObjectType(
+                serialized_name="ipCondition",
+            )
+            _element.ip_lengths = AAZListType(
+                serialized_name="ipLengths",
+            )
+            _element.port_condition = AAZObjectType(
+                serialized_name="portCondition",
+            )
+            _element.protocol_neighbors = AAZListType(
+                serialized_name="protocolNeighbors",
+            )
+            _element.protocol_types = AAZListType(
+                serialized_name="protocolTypes",
+            )
+            _element.ttl_values = AAZListType(
+                serialized_name="ttlValues",
+            )
+            _element.vlan_match_condition = AAZObjectType(
+                serialized_name="vlanMatchCondition",
+            )
+
+            dscp_markings = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.dscp_markings
+            dscp_markings.Element = AAZStrType()
+
+            ether_types = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ether_types
+            ether_types.Element = AAZStrType()
+
+            fragments = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.fragments
+            fragments.Element = AAZStrType()
+
+            ip_condition = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ip_condition
+            ip_condition.ip_group_names = AAZListType(
+                serialized_name="ipGroupNames",
+            )
+            ip_condition.ip_prefix_values = AAZListType(
+                serialized_name="ipPrefixValues",
+            )
+            ip_condition.prefix_type = AAZStrType(
+                serialized_name="prefixType",
+            )
+            ip_condition.type = AAZStrType()
+
+            ip_group_names = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ip_condition.ip_group_names
+            ip_group_names.Element = AAZStrType()
+
+            ip_prefix_values = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ip_condition.ip_prefix_values
+            ip_prefix_values.Element = AAZStrType()
+
+            ip_lengths = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ip_lengths
+            ip_lengths.Element = AAZStrType()
+
+            port_condition = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.port_condition
+            port_condition.flags = AAZListType()
+            port_condition.layer4_protocol = AAZStrType(
+                serialized_name="layer4Protocol",
+                flags={"required": True},
+            )
+            port_condition.port_group_names = AAZListType(
+                serialized_name="portGroupNames",
+            )
+            port_condition.port_type = AAZStrType(
+                serialized_name="portType",
+            )
+            port_condition.ports = AAZListType()
+
+            flags = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.port_condition.flags
+            flags.Element = AAZStrType()
+
+            port_group_names = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.port_condition.port_group_names
+            port_group_names.Element = AAZStrType()
+
+            ports = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.port_condition.ports
+            ports.Element = AAZStrType()
+
+            protocol_neighbors = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.protocol_neighbors
+            protocol_neighbors.Element = AAZStrType()
+
+            protocol_types = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.protocol_types
+            protocol_types.Element = AAZStrType()
+
+            ttl_values = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ttl_values
+            ttl_values.Element = AAZStrType()
+
+            vlan_match_condition = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition
+            vlan_match_condition.inner_vlans = AAZListType(
+                serialized_name="innerVlans",
+            )
+            vlan_match_condition.vlan_group_names = AAZListType(
+                serialized_name="vlanGroupNames",
+            )
+            vlan_match_condition.vlans = AAZListType()
+
+            inner_vlans = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition.inner_vlans
+            inner_vlans.Element = AAZStrType()
+
+            vlan_group_names = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlan_group_names
+            vlan_group_names.Element = AAZStrType()
+
+            vlans = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlans
+            vlans.Element = AAZStrType()
+
+            network_fabric_ids = cls._schema_on_200.value.Element.properties.network_fabric_ids
+            network_fabric_ids.Element = AAZStrType(
+                nullable=True,
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
     class AccessControlListsListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -117,7 +614,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -153,7 +650,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -181,6 +680,9 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.acl_type = AAZStrType(
+                serialized_name="aclType",
+            )
             properties.acls_url = AAZStrType(
                 serialized_name="aclsUrl",
             )
@@ -197,11 +699,24 @@ class List(AAZCommand):
                 serialized_name="configurationType",
                 flags={"required": True},
             )
+            properties.control_plane_acl_configuration = AAZListType(
+                serialized_name="controlPlaneAclConfiguration",
+            )
             properties.default_action = AAZStrType(
                 serialized_name="defaultAction",
             )
+            properties.device_role = AAZStrType(
+                serialized_name="deviceRole",
+            )
             properties.dynamic_match_configurations = AAZListType(
                 serialized_name="dynamicMatchConfigurations",
+            )
+            properties.global_access_control_list_actions = AAZObjectType(
+                serialized_name="globalAccessControlListActions",
+            )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
             )
             properties.last_synced_time = AAZStrType(
                 serialized_name="lastSyncedTime",
@@ -210,9 +725,93 @@ class List(AAZCommand):
             properties.match_configurations = AAZListType(
                 serialized_name="matchConfigurations",
             )
+            properties.network_fabric_ids = AAZListType(
+                serialized_name="networkFabricIds",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            control_plane_acl_configuration = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration
+            control_plane_acl_configuration.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element
+            _element.ip_address_type = AAZStrType(
+                serialized_name="ipAddressType",
+            )
+            _element.match_configurations = AAZListType(
+                serialized_name="matchConfigurations",
+            )
+
+            match_configurations = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations
+            match_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element
+            _element.action = AAZObjectType()
+            _element.match_condition = AAZObjectType(
+                serialized_name="matchCondition",
+            )
+            _element.match_configuration_name = AAZStrType(
+                serialized_name="matchConfigurationName",
+            )
+            _element.sequence_number = AAZIntType(
+                serialized_name="sequenceNumber",
+            )
+
+            action = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element.action
+            action.remark_comment = AAZStrType(
+                serialized_name="remarkComment",
+            )
+            action.type = AAZStrType()
+
+            match_condition = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition
+            match_condition.flags = AAZListType()
+            match_condition.icmp_configuration = AAZObjectType(
+                serialized_name="icmpConfiguration",
+            )
+            _ListHelper._build_schema_icmp_configuration_properties_read(match_condition.icmp_configuration)
+            match_condition.ip_condition = AAZObjectType(
+                serialized_name="ipCondition",
+            )
+            match_condition.port_condition = AAZObjectType(
+                serialized_name="portCondition",
+            )
+            match_condition.protocol_types = AAZStrType(
+                serialized_name="protocolTypes",
+            )
+            match_condition.ttl_match_condition = AAZObjectType(
+                serialized_name="ttlMatchCondition",
+            )
+
+            flags = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.flags
+            flags.Element = AAZStrType()
+
+            ip_condition = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.ip_condition
+            ip_condition.destination_ip_prefix = AAZStrType(
+                serialized_name="destinationIpPrefix",
+            )
+            ip_condition.source_ip_prefix = AAZStrType(
+                serialized_name="sourceIpPrefix",
+            )
+
+            port_condition = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.port_condition
+            port_condition.destination_ports = AAZObjectType(
+                serialized_name="destinationPorts",
+            )
+            _ListHelper._build_schema_control_plane_acl_port_condition_read(port_condition.destination_ports)
+            port_condition.source_ports = AAZObjectType(
+                serialized_name="sourcePorts",
+            )
+            _ListHelper._build_schema_control_plane_acl_port_condition_read(port_condition.source_ports)
+
+            ttl_match_condition = cls._schema_on_200.value.Element.properties.control_plane_acl_configuration.Element.match_configurations.Element.match_condition.ttl_match_condition
+            ttl_match_condition.ttl_match_type = AAZStrType(
+                serialized_name="ttlMatchType",
+            )
+            ttl_match_condition.ttl_value = AAZStrType(
+                serialized_name="ttlValue",
             )
 
             dynamic_match_configurations = cls._schema_on_200.value.Element.properties.dynamic_match_configurations
@@ -264,6 +863,16 @@ class List(AAZCommand):
             vlans = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.vlan_groups.Element.vlans
             vlans.Element = AAZStrType()
 
+            global_access_control_list_actions = cls._schema_on_200.value.Element.properties.global_access_control_list_actions
+            global_access_control_list_actions.enable_count = AAZStrType(
+                serialized_name="enableCount",
+            )
+
+            last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+
             match_configurations = cls._schema_on_200.value.Element.properties.match_configurations
             match_configurations.Element = AAZObjectType()
 
@@ -289,7 +898,29 @@ class List(AAZCommand):
             _element.counter_name = AAZStrType(
                 serialized_name="counterName",
             )
+            _element.police_rate_configuration = AAZObjectType(
+                serialized_name="policeRateConfiguration",
+            )
+            _element.remark_comment = AAZStrType(
+                serialized_name="remarkComment",
+            )
             _element.type = AAZStrType()
+
+            police_rate_configuration = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element.police_rate_configuration
+            police_rate_configuration.bit_rate = AAZObjectType(
+                serialized_name="bitRate",
+            )
+            police_rate_configuration.burst_size = AAZObjectType(
+                serialized_name="burstSize",
+            )
+
+            bit_rate = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element.police_rate_configuration.bit_rate
+            bit_rate.rate = AAZIntType()
+            bit_rate.unit = AAZStrType()
+
+            burst_size = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element.police_rate_configuration.burst_size
+            burst_size.size = AAZIntType()
+            burst_size.unit = AAZStrType()
 
             match_conditions = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions
             match_conditions.Element = AAZObjectType()
@@ -302,6 +933,10 @@ class List(AAZCommand):
                 serialized_name="etherTypes",
             )
             _element.fragments = AAZListType()
+            _element.icmp_configuration = AAZObjectType(
+                serialized_name="icmpConfiguration",
+            )
+            _ListHelper._build_schema_icmp_configuration_properties_read(_element.icmp_configuration)
             _element.ip_condition = AAZObjectType(
                 serialized_name="ipCondition",
             )
@@ -310,6 +945,9 @@ class List(AAZCommand):
             )
             _element.port_condition = AAZObjectType(
                 serialized_name="portCondition",
+            )
+            _element.protocol_neighbors = AAZListType(
+                serialized_name="protocolNeighbors",
             )
             _element.protocol_types = AAZListType(
                 serialized_name="protocolTypes",
@@ -374,351 +1012,8 @@ class List(AAZCommand):
             ports = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.port_condition.ports
             ports.Element = AAZStrType()
 
-            protocol_types = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.protocol_types
-            protocol_types.Element = AAZStrType()
-
-            ttl_values = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ttl_values
-            ttl_values.Element = AAZStrType()
-
-            vlan_match_condition = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition
-            vlan_match_condition.inner_vlans = AAZListType(
-                serialized_name="innerVlans",
-            )
-            vlan_match_condition.vlan_group_names = AAZListType(
-                serialized_name="vlanGroupNames",
-            )
-            vlan_match_condition.vlans = AAZListType()
-
-            inner_vlans = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition.inner_vlans
-            inner_vlans.Element = AAZStrType()
-
-            vlan_group_names = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlan_group_names
-            vlan_group_names.Element = AAZStrType()
-
-            vlans = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlans
-            vlans.Element = AAZStrType()
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
-
-    class AccessControlListsListBySubscription(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ManagedNetworkFabric/accessControlLists",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.acls_url = AAZStrType(
-                serialized_name="aclsUrl",
-            )
-            properties.administrative_state = AAZStrType(
-                serialized_name="administrativeState",
-                flags={"read_only": True},
-            )
-            properties.annotation = AAZStrType()
-            properties.configuration_state = AAZStrType(
-                serialized_name="configurationState",
-                flags={"read_only": True},
-            )
-            properties.configuration_type = AAZStrType(
-                serialized_name="configurationType",
-                flags={"required": True},
-            )
-            properties.default_action = AAZStrType(
-                serialized_name="defaultAction",
-            )
-            properties.dynamic_match_configurations = AAZListType(
-                serialized_name="dynamicMatchConfigurations",
-            )
-            properties.last_synced_time = AAZStrType(
-                serialized_name="lastSyncedTime",
-                flags={"read_only": True},
-            )
-            properties.match_configurations = AAZListType(
-                serialized_name="matchConfigurations",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            dynamic_match_configurations = cls._schema_on_200.value.Element.properties.dynamic_match_configurations
-            dynamic_match_configurations.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element
-            _element.ip_groups = AAZListType(
-                serialized_name="ipGroups",
-            )
-            _element.port_groups = AAZListType(
-                serialized_name="portGroups",
-            )
-            _element.vlan_groups = AAZListType(
-                serialized_name="vlanGroups",
-            )
-
-            ip_groups = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.ip_groups
-            ip_groups.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.ip_groups.Element
-            _element.ip_address_type = AAZStrType(
-                serialized_name="ipAddressType",
-            )
-            _element.ip_prefixes = AAZListType(
-                serialized_name="ipPrefixes",
-            )
-            _element.name = AAZStrType()
-
-            ip_prefixes = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.ip_groups.Element.ip_prefixes
-            ip_prefixes.Element = AAZStrType()
-
-            port_groups = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.port_groups
-            port_groups.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.port_groups.Element
-            _element.name = AAZStrType()
-            _element.ports = AAZListType()
-
-            ports = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.port_groups.Element.ports
-            ports.Element = AAZStrType()
-
-            vlan_groups = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.vlan_groups
-            vlan_groups.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.vlan_groups.Element
-            _element.name = AAZStrType()
-            _element.vlans = AAZListType()
-
-            vlans = cls._schema_on_200.value.Element.properties.dynamic_match_configurations.Element.vlan_groups.Element.vlans
-            vlans.Element = AAZStrType()
-
-            match_configurations = cls._schema_on_200.value.Element.properties.match_configurations
-            match_configurations.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.match_configurations.Element
-            _element.actions = AAZListType()
-            _element.ip_address_type = AAZStrType(
-                serialized_name="ipAddressType",
-            )
-            _element.match_conditions = AAZListType(
-                serialized_name="matchConditions",
-            )
-            _element.match_configuration_name = AAZStrType(
-                serialized_name="matchConfigurationName",
-            )
-            _element.sequence_number = AAZIntType(
-                serialized_name="sequenceNumber",
-            )
-
-            actions = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions
-            actions.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.match_configurations.Element.actions.Element
-            _element.counter_name = AAZStrType(
-                serialized_name="counterName",
-            )
-            _element.type = AAZStrType()
-
-            match_conditions = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions
-            match_conditions.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element
-            _element.dscp_markings = AAZListType(
-                serialized_name="dscpMarkings",
-            )
-            _element.ether_types = AAZListType(
-                serialized_name="etherTypes",
-            )
-            _element.fragments = AAZListType()
-            _element.ip_condition = AAZObjectType(
-                serialized_name="ipCondition",
-            )
-            _element.ip_lengths = AAZListType(
-                serialized_name="ipLengths",
-            )
-            _element.port_condition = AAZObjectType(
-                serialized_name="portCondition",
-            )
-            _element.protocol_types = AAZListType(
-                serialized_name="protocolTypes",
-            )
-            _element.ttl_values = AAZListType(
-                serialized_name="ttlValues",
-            )
-            _element.vlan_match_condition = AAZObjectType(
-                serialized_name="vlanMatchCondition",
-            )
-
-            dscp_markings = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.dscp_markings
-            dscp_markings.Element = AAZStrType()
-
-            ether_types = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ether_types
-            ether_types.Element = AAZStrType()
-
-            fragments = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.fragments
-            fragments.Element = AAZStrType()
-
-            ip_condition = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ip_condition
-            ip_condition.ip_group_names = AAZListType(
-                serialized_name="ipGroupNames",
-            )
-            ip_condition.ip_prefix_values = AAZListType(
-                serialized_name="ipPrefixValues",
-            )
-            ip_condition.prefix_type = AAZStrType(
-                serialized_name="prefixType",
-            )
-            ip_condition.type = AAZStrType()
-
-            ip_group_names = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ip_condition.ip_group_names
-            ip_group_names.Element = AAZStrType()
-
-            ip_prefix_values = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ip_condition.ip_prefix_values
-            ip_prefix_values.Element = AAZStrType()
-
-            ip_lengths = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.ip_lengths
-            ip_lengths.Element = AAZStrType()
-
-            port_condition = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.port_condition
-            port_condition.flags = AAZListType()
-            port_condition.layer4_protocol = AAZStrType(
-                serialized_name="layer4Protocol",
-                flags={"required": True},
-            )
-            port_condition.port_group_names = AAZListType(
-                serialized_name="portGroupNames",
-            )
-            port_condition.port_type = AAZStrType(
-                serialized_name="portType",
-            )
-            port_condition.ports = AAZListType()
-
-            flags = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.port_condition.flags
-            flags.Element = AAZStrType()
-
-            port_group_names = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.port_condition.port_group_names
-            port_group_names.Element = AAZStrType()
-
-            ports = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.port_condition.ports
-            ports.Element = AAZStrType()
+            protocol_neighbors = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.protocol_neighbors
+            protocol_neighbors.Element = AAZStrType()
 
             protocol_types = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.protocol_types
             protocol_types.Element = AAZStrType()
@@ -743,6 +1038,11 @@ class List(AAZCommand):
 
             vlans = cls._schema_on_200.value.Element.properties.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlans
             vlans.Element = AAZStrType()
+
+            network_fabric_ids = cls._schema_on_200.value.Element.properties.network_fabric_ids
+            network_fabric_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -772,6 +1072,49 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_control_plane_acl_port_condition_read = None
+
+    @classmethod
+    def _build_schema_control_plane_acl_port_condition_read(cls, _schema):
+        if cls._schema_control_plane_acl_port_condition_read is not None:
+            _schema.port_match_type = cls._schema_control_plane_acl_port_condition_read.port_match_type
+            _schema.ports = cls._schema_control_plane_acl_port_condition_read.ports
+            return
+
+        cls._schema_control_plane_acl_port_condition_read = _schema_control_plane_acl_port_condition_read = AAZObjectType()
+
+        control_plane_acl_port_condition_read = _schema_control_plane_acl_port_condition_read
+        control_plane_acl_port_condition_read.port_match_type = AAZStrType(
+            serialized_name="portMatchType",
+        )
+        control_plane_acl_port_condition_read.ports = AAZListType()
+
+        ports = _schema_control_plane_acl_port_condition_read.ports
+        ports.Element = AAZStrType()
+
+        _schema.port_match_type = cls._schema_control_plane_acl_port_condition_read.port_match_type
+        _schema.ports = cls._schema_control_plane_acl_port_condition_read.ports
+
+    _schema_icmp_configuration_properties_read = None
+
+    @classmethod
+    def _build_schema_icmp_configuration_properties_read(cls, _schema):
+        if cls._schema_icmp_configuration_properties_read is not None:
+            _schema.icmp_types = cls._schema_icmp_configuration_properties_read.icmp_types
+            return
+
+        cls._schema_icmp_configuration_properties_read = _schema_icmp_configuration_properties_read = AAZObjectType()
+
+        icmp_configuration_properties_read = _schema_icmp_configuration_properties_read
+        icmp_configuration_properties_read.icmp_types = AAZListType(
+            serialized_name="icmpTypes",
+        )
+
+        icmp_types = _schema_icmp_configuration_properties_read.icmp_types
+        icmp_types.Element = AAZStrType()
+
+        _schema.icmp_types = cls._schema_icmp_configuration_properties_read.icmp_types
 
 
 __all__ = ["List"]

@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a DNS zone by id in a private cloud workload network.
 
     :example: Create a DNS zone by ID in a workload network.
-        az vmware workload-network dns-zone create --resource-group group1 --private-cloud cloud1 --dns-zone dnsZone1 --display-name dnsZone1 --domain domain1 --dns-server-ips 1.1.1.1 --source-ip 8.8.8.8 --dns-services 1 --revision 1
+        az vmware workload-network dns-zone create --resource-group group1 --private-cloud cloud1 --dns-zone dnsZone1 --display-name dnsZone1 --domain "[]" --dns-server-ips "[1.1.1.1]" --source-ip 8.8.8.8 --revision 1
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/dnszones/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/dnszones/{}", "2024-09-01"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Create(AAZCommand):
             help="NSX DNS Zone identifier. Generally the same as the DNS Zone's display name",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.private_cloud = AAZStrArg(
@@ -58,7 +58,7 @@ class Create(AAZCommand):
             help="Name of the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -191,7 +191,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }

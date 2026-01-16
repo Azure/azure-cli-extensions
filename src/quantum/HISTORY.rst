@@ -3,6 +3,50 @@
 Release History
 ===============
 
+1.0.0b10
+++++++
+* Fixed broken dependency on blob_data_service_factory and replaced with vendored_sdk for azure_storage_blob
+* Fixed bug where workspace params were being ignored during job submission if workspace was not set as default
+* Fixed bug where job submission asked for interactive authentication instead of using azure cli credentials
+* Removed QIO and ADFT features, since those are no longer supported for Azure Quantum service and have both been deprecated
+* During job submit, updated default shots to 100
+* During job submit, updated default format to microsoft.quantum-results.v2
+* During job submit, removed requirement for entrypoint, since most modern providers no longer require the entrypoint field
+* During job submit, simplify logic for content_type and default to qir.v1 for QIR jobs and text/plain for others
+* During job output -o table, added support for fields from new microsoft.quantum-results.v2 format
+* During workspace create, added check for duplicate provider ids to fail fast before sending to service
+
+1.0.0b9
+++++++
+* Update minCliCoreVersion
+
+1.0.0b8
+++++++
+* Fix advertisement of newer version breaking -o output.
+
+1.0.0b7
+++++++
+* Fix import resource SDK error
+
+1.0.0b6
+++++++
+* [2025-03-19] Version intended to work with QDK version 1.14.0
+* `az quantum job list` has several new parameters to filter, sort, and paginate the job list, see https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-list
+* The `az quantum run`, `az quantum execute`, and `az quantum job submit` commands can access workspace storage accounts using the workspace managed identity.
+* Storage blob anonymous access is disabled when new workspace storage accounts are created.
+* Service-based Resource Estimation is now fully deprecated. Please use the local Resource Estimator tool, see https://learn.microsoft.com/azure/quantum/intro-to-resource-estimation
+* GitHub Issue 30947 has been fixed, https://github.com/Azure/azure-cli/issues/30947
+
+1.0.0b5
+++++++
+* Retracted due to missing file.
+
+1.0.0b4
+++++++
+* [2024-10-16] Version intended to work with QDK version 1.9.0
+* The Classic QDK is now fully deprecated.  Jobs must be prepared using the Modern QDK or other QIR tools.
+* See https://github.com/Azure/azure-cli-extensions/pull/7987
+
 1.0.0b3
 ++++++
 * [2024-04-11] Version intended to work with QDK version 0.29.0

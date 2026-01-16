@@ -4,6 +4,38 @@ Release History
 ===============
 
 =======
+1.0.0
+++++++
+* Released the first stable version with three new commands.
+* [NEW COMMAND] `az datamigration sql-db retry` - Retry on going migration for the database.
+* [NEW COMMAND] `az datamigration sql-managed-instance delete` -  Delete SQL MI Database Migration resource.
+* [NEW COMMAND] `az datamigration sql-vm delete` -  Delete SQL VM Database Migration resource.
+
+=======
+1.0.0b6
+++++++
+* Added support for stable version 2025-06-30 of the DMS services.
+
+=======
+1.0.0b5
+++++++
+* [PARAMETER UPDATE] `az datamigration sql-managed-instance create`: `--source-location` now supports Managed Identity for accessing Azure Blob.
+
+=======
+1.0.0b4
+++++++
+* Updated the URL to download the SQL Server schema Zip to `https://aka.ms/sqlschemamigrationpackage`
+
+1.0.0b3
+++++++
+* Updated the URL to download the SQL Assessment Zip to `https://aka.ms/sqlassessmentpackage`
+
+=======
+1.0.0b2
+++++++
+* Minor bug fixes and improvements.
+
+=======
 1.0.0b1
 ++++++
 * Added support for version update in command `az datamigration login-migration`.

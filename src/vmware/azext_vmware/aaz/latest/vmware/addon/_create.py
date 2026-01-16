@@ -16,9 +16,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/addons/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/addons/{}", "2024-09-01"],
         ]
     }
 
@@ -44,7 +44,7 @@ class Create(AAZCommand):
             help="Name of the addon for the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.private_cloud = AAZStrArg(
@@ -52,7 +52,7 @@ class Create(AAZCommand):
             help="Name of the private cloud",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -90,10 +90,18 @@ class Create(AAZCommand):
         )
 
         hcx = cls._args_schema.hcx
+        hcx.management_network = AAZStrArg(
+            options=["management-network"],
+            help="HCX management network.",
+        )
         hcx.offer = AAZStrArg(
             options=["offer"],
             help="The HCX offer, example VMware MaaS Cloud Provider (Enterprise)",
             required=True,
+        )
+        hcx.uplink_network = AAZStrArg(
+            options=["uplink-network"],
+            help="HCX uplink network",
         )
 
         srm = cls._args_schema.srm
@@ -195,7 +203,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -220,7 +228,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -239,7 +247,9 @@ class Create(AAZCommand):
 
             disc_hcx = _builder.get(".properties{addonType:HCX}")
             if disc_hcx is not None:
+                disc_hcx.set_prop("managementNetwork", AAZStrType, ".hcx.management_network")
                 disc_hcx.set_prop("offer", AAZStrType, ".hcx.offer", typ_kwargs={"flags": {"required": True}})
+                disc_hcx.set_prop("uplinkNetwork", AAZStrType, ".hcx.uplink_network")
 
             disc_srm = _builder.get(".properties{addonType:SRM}")
             if disc_srm is not None:
@@ -275,7 +285,9 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -300,8 +312,14 @@ class Create(AAZCommand):
             )
 
             disc_hcx = cls._schema_on_200_201.properties.discriminate_by("addon_type", "HCX")
+            disc_hcx.management_network = AAZStrType(
+                serialized_name="managementNetwork",
+            )
             disc_hcx.offer = AAZStrType(
                 flags={"required": True},
+            )
+            disc_hcx.uplink_network = AAZStrType(
+                serialized_name="uplinkNetwork",
             )
 
             disc_srm = cls._schema_on_200_201.properties.discriminate_by("addon_type", "SRM")

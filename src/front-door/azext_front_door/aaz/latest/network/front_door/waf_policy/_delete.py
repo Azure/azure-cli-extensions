@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete Policy
+
+    :example: Delete protection policy
+        az network front-door waf-policy delete --resource-group rg1 --policy-name Policy1
     """
 
     _aaz_info = {
-        "version": "2024-02-01",
+        "version": "2025-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2024-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2025-10-01"],
         ]
     }
 
@@ -142,7 +145,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }

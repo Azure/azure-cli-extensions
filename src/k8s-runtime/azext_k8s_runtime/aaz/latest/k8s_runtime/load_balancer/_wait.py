@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/loadbalancers/{}", "2024-03-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/loadbalancers/{}", "2024-08-01"],
         ]
     }
 
@@ -117,7 +117,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2024-08-01",
                     required=True,
                 ),
             }
@@ -156,9 +156,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -178,6 +176,7 @@ class Wait(AAZWaitCommand):
             properties.bgp_peers = AAZListType(
                 serialized_name="bgpPeers",
             )
+            properties.communities = AAZListType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -191,6 +190,9 @@ class Wait(AAZWaitCommand):
 
             bgp_peers = cls._schema_on_200.properties.bgp_peers
             bgp_peers.Element = AAZStrType()
+
+            communities = cls._schema_on_200.properties.communities
+            communities.Element = AAZStrType()
 
             service_selector = cls._schema_on_200.properties.service_selector
             service_selector.Element = AAZStrType()

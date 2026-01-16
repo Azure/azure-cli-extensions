@@ -57,7 +57,7 @@ from azure.cli.core.util import get_az_user_agent
 from azure.cli.core.azclierror import (ResourceNotFoundError, RequiredArgumentMissingError, ValidationError,
                                        ArgumentUsageError, MutuallyExclusiveArgumentError)
 
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 
 from ._constants import (KUBE_DEFAULT_SKU, KUBE_ASP_KIND, KUBE_APP_KIND, KUBE_FUNCTION_APP_KIND,
                          KUBE_FUNCTION_CONTAINER_APP_KIND, KUBE_CONTAINER_APP_KIND)
@@ -680,7 +680,7 @@ def _is_webapp_kube(custom_location, plan_info, SkuDescription):
 
 
 def _get_custom_location_id(cmd, custom_location, resource_group_name):
-    from msrestazure.tools import resource_id
+    from azure.mgmt.core.tools import resource_id
 
     if custom_location is None:
         return None
@@ -905,7 +905,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
     if deployment_container_image_name:
         update_container_settings(cmd, resource_group_name, name, docker_registry_server_url,
                                   deployment_container_image_name, docker_registry_server_user,
-                                  docker_registry_server_password=docker_registry_server_password)
+                                  container_registry_password=docker_registry_server_password)
 
     if is_kube:
         return webapp
@@ -1457,7 +1457,7 @@ def _resolve_kube_environment_id(cli_ctx, kube_environment, resource_group_name)
     if is_valid_resource_id(kube_environment):
         return kube_environment
 
-    from msrestazure.tools import resource_id
+    from azure.mgmt.core.tools import resource_id
     return resource_id(
         subscription=get_subscription_id(cli_ctx),
         resource_group=resource_group_name,

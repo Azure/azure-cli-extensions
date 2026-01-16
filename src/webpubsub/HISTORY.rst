@@ -3,6 +3,30 @@
 Release History
 ===============
 
+1.7.2
+++++
+* Upgrade `vendored_sdks` to ensure the compatibility with Python 3.13
+
+1.7.1
++++++
+* Upgrade `websockets` to `13.0.1` to sure the compatibility with Python 3.12
+
+1.7.0
++++++
+* Add `az webpubsub update --client-cert-enable/--disable-local-auth/--region-endpoint-enabled` support
+* Add `az webpubsub replica update -region-endpoint-enabled/--unit-count` support
+* Add `az webpubsub custom-certificate list/show/create/delete` support
+* Add `az webpubsub custom-domain list/show/create/delete` support
+* Add `az webpubsub identity assign/remove/show` support
+
+1.6.0
++++++
+* Add `az webpubsub start/stop` support
+* Add `az webpubsub replica start/stop/restart` support
+* Add `az webpubsub network-rule ip-rule add/remove` support
+* Update `az webpubsub hub create/update` to support `webSocketKeepAliveIntervalInSeconds`
+
+
 1.5.1
 +++++
 * Update the min core version to `2.56.0`

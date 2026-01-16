@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups/{}", "2022-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups/{}", "2024-03-01-preview"],
         ]
     }
 
@@ -46,25 +46,25 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,127}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$",
             ),
         )
         _args_schema.backup_name = AAZStrArg(
-            options=["-n", "--name", "--backup-name"],
+            options=["-b", "-n", "--name", "--backup-name"],
             help="The name of the backup",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,255}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$",
             ),
         )
         _args_schema.backup_vault_name = AAZStrArg(
-            options=["--backup-vault-name"],
+            options=["-v", "--backup-vault-name"],
             help="The name of the Backup Vault",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,63}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -145,7 +145,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01-preview",
+                    "api-version", "2024-03-01-preview",
                     required=True,
                 ),
             }
@@ -198,6 +198,10 @@ class Wait(AAZWaitCommand):
             properties = cls._schema_on_200.properties
             properties.backup_id = AAZStrType(
                 serialized_name="backupId",
+                flags={"read_only": True},
+            )
+            properties.backup_policy_resource_id = AAZStrType(
+                serialized_name="backupPolicyResourceId",
                 flags={"read_only": True},
             )
             properties.backup_type = AAZStrType(

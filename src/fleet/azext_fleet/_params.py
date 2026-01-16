@@ -10,24 +10,43 @@ from azure.cli.core.commands.parameters import (
     file_type,
     get_location_type,
     get_enum_type,
-    get_three_state_flag
+    get_three_state_flag,
+    CLIArgumentType
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_fleet._validators import validate_member_cluster_id, validate_kubernetes_version, validate_apiserver_subnet_id, validate_agent_subnet_id, validate_assign_identity, validate_update_strategy_name, validate_vm_size, validate_targets
+from azext_fleet._validators import (
+    validate_member_cluster_id,
+    validate_member_cluster_names,
+    validate_kubernetes_version,
+    validate_apiserver_subnet_id,
+    validate_agent_subnet_id,
+    validate_assign_identity,
+    validate_update_strategy_name,
+    validate_vm_size,
+    validate_targets,
+    validate_update_strategy_id,
+    validate_labels,
+    validate_enable_vnet_integration
+)
+
+labels_type = CLIArgumentType(
+    metavar='KEY=VALUE',
+    type=validate_labels,
+    help='Space-separated labels: key[=value] [key[=value] ...]. Example: env=production region=us-west team=devops'
+)
 
 
 def load_arguments(self, _):
-
     with self.argument_context('fleet') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify the fleet name.')
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
 
     with self.argument_context('fleet create') as c:
         c.argument('tags', tags_type)
-        c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
+        c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'], help='Prefix for host names that are created. If not specified, generate a host name using the managed cluster and resource group names.')
         c.argument('enable_private_cluster', action='store_true', help='Whether to create the Fleet hub as a private cluster or not.')
-        c.argument('enable_vnet_integration', action='store_true', is_preview=True, help='Whether to enable apiserver vnet integration for the Fleet hub or not.')
-        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True, help='The subnet to be used when apiserver vnet integration is enabled.')
+        c.argument('enable_vnet_integration', validator=validate_enable_vnet_integration, action='store_true', help='Whether to enable apiserver vnet integration for the Fleet hub or not.')
+        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, help='The subnet to be used when apiserver vnet integration is enabled.')
         c.argument('agent_subnet_id', validator=validate_agent_subnet_id, help='The ID of the subnet which the Fleet hub node will join on startup.')
         c.argument('enable_managed_identity', action='store_true', help='Enable system assigned managed identity (MSI) on the Fleet resource.')
         c.argument('assign_identity', validator=validate_assign_identity, help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource by specifying the user assigned identity\'s resource Id.')
@@ -36,12 +55,16 @@ def load_arguments(self, _):
 
     with self.argument_context('fleet update') as c:
         c.argument('tags', tags_type)
-        c.argument('enable_managed_identity', arg_type=get_three_state_flag(), help='Enable system assigned managed identity (MSI) on the Fleet resource.')
-        c.argument('assign_identity', validator=validate_assign_identity, help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource. Specify the existing user assigned identity resource.')
+        c.argument('enable_managed_identity', arg_type=get_three_state_flag(),
+                   help='Enable system assigned managed identity (MSI) on the Fleet resource.')
+        c.argument('assign_identity', validator=validate_assign_identity,
+                   help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource. Specify the existing user assigned identity resource.')
 
     with self.argument_context('fleet get-credentials') as c:
+        c.argument('member_name', options_list=['--member', '-m'], help='Specify the fleet member name to get credentials from its associated managed cluster.')
         c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
-        c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(), default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
+        c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
+                   default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
 
     with self.argument_context('fleet member') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify the fleet member name.')
@@ -50,9 +73,21 @@ def load_arguments(self, _):
     with self.argument_context('fleet member create') as c:
         c.argument('member_cluster_id', validator=validate_member_cluster_id)
         c.argument('update_group')
+        c.argument(
+            'member_labels',
+            labels_type,
+            options_list=['--member-labels', '--labels'],
+            help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops'
+        )
 
     with self.argument_context('fleet member update') as c:
         c.argument('update_group')
+        c.argument(
+            'member_labels',
+            labels_type,
+            options_list=['--member-labels', '--labels'],
+            help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops'
+        )
 
     with self.argument_context('fleet updaterun') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify name for the update run.')
@@ -61,16 +96,113 @@ def load_arguments(self, _):
     with self.argument_context('fleet updaterun create') as c:
         c.argument('upgrade_type', arg_type=get_enum_type(['Full', 'NodeImageOnly', 'ControlPlaneOnly']))
         c.argument('kubernetes_version', validator=validate_kubernetes_version)
-        c.argument('node_image_selection', arg_type=get_enum_type(['Latest', 'Consistent']), help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded')
-        c.argument('stages', type=file_type, completer=FilesCompleter(), help='Path to a json file that defines stages to upgrade a fleet. See examples for further reference.')
-        c.argument('update_strategy_name', validator=validate_update_strategy_name, help='The name of the update strategy to use for this update run. If not specified, the default update strategy will be used.')
+        c.argument('node_image_selection', arg_type=get_enum_type(['Latest', 'Consistent']),
+                   help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded')
+        c.argument('stages',
+                   help='Path to a JSON file that defines stages to upgrade a fleet, or a JSON string. See examples for further reference.')
+        c.argument('update_strategy_name', validator=validate_update_strategy_name,
+                   help='The name of the update strategy to use for this update run. If not specified, the default update strategy will be used.')
 
     with self.argument_context('fleet updaterun skip', is_preview=True) as c:
-        c.argument('targets', nargs="+", validator=validate_targets, help='Space-separated list of targets to skip. Targets must be of the form `targetType:targetName` such as Group:MyGroup. Valid target types are: [`Member`, `Group`, `Stage`, `AfterStageWait`]. The target type is case-sensitive.', is_preview=True)
+        c.argument('targets', nargs="+", validator=validate_targets,
+                   help='Space-separated list of targets to skip. Targets must be of the form `targetType:targetName` such as Group:MyGroup. Valid target types are: [`Member`, `Group`, `Stage`, `AfterStageWait`]. The target type is case-sensitive.',
+                   is_preview=True)
 
     with self.argument_context('fleet updatestrategy') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify name for the fleet update strategy.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
 
     with self.argument_context('fleet updatestrategy create') as c:
-        c.argument('stages', type=file_type, completer=FilesCompleter(), help='Path to a json file that defines an update strategy.')
+        c.argument('stages',
+                   help='Path to a JSON file that defines an update strategy, or a JSON string.')
+
+    with self.argument_context('fleet autoupgradeprofile') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Specify name for the auto upgrade profile.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
+
+    with self.argument_context('fleet autoupgradeprofile create') as c:
+        c.argument('update_strategy_id', validator=validate_update_strategy_id,
+                   help='The resource ID of the update strategy that the auto upgrade profile should follow.')
+        c.argument('channel', options_list=['--channel', '-c'], arg_type=get_enum_type(['Stable', 'Rapid', 'NodeImage', 'TargetKubernetesVersion']),
+                   help='The auto upgrade channel type.')
+        c.argument('node_image_selection', arg_type=get_enum_type(['Latest', 'Consistent']),
+                   help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded.')
+        c.argument(
+            'target_kubernetes_version',
+            options_list=['--target-kubernetes-version', '--tkv'],
+            help=(
+                'This is the target Kubernetes version for auto-upgrade. The format must be "{major version}.{minor version}". '
+                'For example, "1.30". By default, this is empty. '
+                'If the upgrade channel is set to TargetKubernetesVersion, this field must not be empty. '
+                'If the upgrade channel is Rapid, Stable, or NodeImage, this field must be empty.'
+            )
+        )
+        c.argument('disabled', action='store_true',
+                   help='The disabled flag ensures auto upgrade profile does not run by default.')
+        c.argument('long_term_support', action='store_true', options_list=['--long-term-support', '--lts'],
+                   help='If upgrade channel is not TargetKubernetesVersion, this field must be False. If set to True: Fleet auto upgrade will generate update runs for patches of minor versions earlier than N-2 (where N is the latest supported minor version) if those minor versions support Long-Term Support (LTS). By default, this is set to False.')
+
+    with self.argument_context('fleet autoupgradeprofile wait') as c:
+        c.argument('auto_upgrade_profile_name', options_list=['--auto-upgrade-profile-name', '--profile-name'],
+                   help='Specify name for the auto upgrade profile.')
+
+    with self.argument_context('fleet autoupgradeprofile generate-update-run') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
+        c.argument('auto_upgrade_profile_name', options_list=['--auto-upgrade-profile-name', '--profile-name', '--name', '-n'], help='Name of the auto upgrade profile.')
+
+    with self.argument_context('fleet gate list') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
+        c.argument('state_filter', options_list=['--state-filter', '--state'], help='Apply a filter on gate state. Valid values are: Pending, Skipped, Completed')
+
+    with self.argument_context('fleet gate show') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
+        c.argument('gate_name', options_list=['--gate-name', '--gate', '-n', '--name'], help='Name of the gate.')
+
+    with self.argument_context('fleet gate update') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
+        c.argument('gate_name', options_list=['--gate-name', '--gate', '-n'], help='Name of the gate.')
+        c.argument(
+            'gate_state',
+            options_list=['--gate-state', '--gs', '--state'],
+            help='The Gate State to patch. Valid values are: Completed.'
+        )
+
+    with self.argument_context('fleet gate approve') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
+        c.argument('gate_name', options_list=['--gate-name', '--gate', '-n'], help='Name of the gate.')
+
+    with self.argument_context('fleet namespace') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
+        c.argument('managed_namespace_name', options_list=['--name', '-n'], help='Name of the managed namespace.')
+
+    with self.argument_context('fleet namespace create') as c:
+        c.argument('managed_namespace_name', options_list=['--name', '-n'], help='The name of the Kubernetes namespace to be created on member clusters.')
+        c.argument('tags', tags_type)
+        c.argument('labels', labels_type, help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops')
+        c.argument('annotations', labels_type, help='Space-separated annotations in key=value format. Example: env=production region=us-west team=devops')
+        c.argument('cpu_requests', help='CPU requests for the namespace. Example: 1000m')
+        c.argument('cpu_limits', help='CPU limits for the namespace. Example: 1000m')
+        c.argument('memory_requests', help='Memory requests for the namespace. Example: 500Mi')
+        c.argument('memory_limits', help='Memory limits for the namespace. Example: 500Mi')
+        c.argument('ingress_policy', help='Ingress policy for the namespace', arg_type=get_enum_type(['DenyAll', 'AllowAll', 'AllowSameNamespace']))
+        c.argument('egress_policy', help='Egress policy for the namespace', arg_type=get_enum_type(['DenyAll', 'AllowAll', 'AllowSameNamespace']))
+        c.argument('delete_policy', help='Delete policy for the namespace.', arg_type=get_enum_type(['Keep', 'Delete']), default='Keep')
+        c.argument('adoption_policy', help='Adoption policy for the namespace.', arg_type=get_enum_type(['Always', 'IfIdentical', 'Never']), default='Never')
+        c.argument('member_cluster_names', nargs='*', validator=validate_member_cluster_names, help='Space-separated list of member cluster names to apply the namespace to.')
+
+    with self.argument_context('fleet namespace update') as c:
+        c.argument('tags', tags_type)
+
+    with self.argument_context('fleet namespace get-credentials') as c:
+        c.argument('managed_namespace_name', options_list=['--name', '-n'], help='Specify the managed namespace name.')
+        c.argument('member_name', options_list=['--member', '-m'], help='Specify the fleet member name to get credentials from its associated managed cluster.')
+        c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
+        c.argument('overwrite_existing', help='Overwrite any existing cluster entry with the same name.')
+        c.argument('path', options_list=['--file'], type=file_type, completer=FilesCompleter(),
+                   default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))

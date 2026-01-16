@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls/{}", "2024-10-01"],
         ]
     }
 
@@ -116,7 +116,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-10-01",
                     required=True,
                 ),
             }
@@ -152,6 +152,9 @@ class Wait(AAZWaitCommand):
             _schema_on_200.etag = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+            )
             _schema_on_200.id = AAZStrType()
             _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
@@ -166,12 +169,19 @@ class Wait(AAZWaitCommand):
             )
             _schema_on_200.zones = AAZListType()
 
+            extended_location = cls._schema_on_200.extended_location
+            extended_location.name = AAZStrType()
+            extended_location.type = AAZStrType()
+
             properties = cls._schema_on_200.properties
             properties.additional_properties = AAZDictType(
                 serialized_name="additionalProperties",
             )
             properties.application_rule_collections = AAZListType(
                 serialized_name="applicationRuleCollections",
+            )
+            properties.autoscale_configuration = AAZObjectType(
+                serialized_name="autoscaleConfiguration",
             )
             properties.firewall_policy = AAZObjectType(
                 serialized_name="firewallPolicy",
@@ -185,6 +195,7 @@ class Wait(AAZWaitCommand):
             )
             properties.ip_groups = AAZListType(
                 serialized_name="ipGroups",
+                flags={"read_only": True},
             )
             properties.management_ip_configuration = AAZObjectType(
                 serialized_name="managementIpConfiguration",
@@ -275,6 +286,16 @@ class Wait(AAZWaitCommand):
 
             target_fqdns = cls._schema_on_200.properties.application_rule_collections.Element.properties.rules.Element.target_fqdns
             target_fqdns.Element = AAZStrType()
+
+            autoscale_configuration = cls._schema_on_200.properties.autoscale_configuration
+            autoscale_configuration.max_capacity = AAZIntType(
+                serialized_name="maxCapacity",
+                nullable=True,
+            )
+            autoscale_configuration.min_capacity = AAZIntType(
+                serialized_name="minCapacity",
+                nullable=True,
+            )
 
             hub_ip_addresses = cls._schema_on_200.properties.hub_ip_addresses
             hub_ip_addresses.private_ip_address = AAZStrType(

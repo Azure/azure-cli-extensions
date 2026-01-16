@@ -31,4 +31,8 @@ helps['apic api register'] = """
         text: |
           az apic api register -g api-center-test -n contosoeuap --api-location "examples/cli-examples/spec-examples/openai.json" --environment-id public
           az apic api register -g api-center-test -n contosoeuap --api-location "examples/cli-examples/spec-examples/openai.yml" --environment-id public
+      - name: Register api by providing spec url.
+        text: |
+          az apic api register -g api-center-test -n contosoeuap --api-location "https://petstore.swagger.io/v2/swagger.json" --environment-id public
+          az apic api register -g api-center-test -n contosoeuap --api-location "https://petstore.swagger.io/v2/swagger.yaml" --environment-id public
 """

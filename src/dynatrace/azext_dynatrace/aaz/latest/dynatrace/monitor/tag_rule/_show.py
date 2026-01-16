@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor tag-rule show"
+    "dynatrace monitor tag-rule show",
 )
 class Show(AAZCommand):
-    """Show a tag rule
+    """Get detailed information about include/exclude tag rules enabled for logs and metrics.
 
     :example: Show tag-rule
         az dynatrace monitor tag-rule show -g rg --monitor-name monitor -n default
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2024-04-24"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Show(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -58,6 +61,9 @@ class Show(AAZCommand):
             help="Monitor rule set name",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]*$",
+            ),
         )
         return cls._args_schema
 
@@ -130,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -189,6 +195,7 @@ class Show(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             log_rules = cls._schema_on_200.properties.log_rules
@@ -207,16 +214,19 @@ class Show(AAZCommand):
 
             filtering_tags = cls._schema_on_200.properties.log_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
-            _build_schema_filtering_tag_read(filtering_tags.Element)
+            _ShowHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             metric_rules = cls._schema_on_200.properties.metric_rules
             metric_rules.filtering_tags = AAZListType(
                 serialized_name="filteringTags",
             )
+            metric_rules.sending_metrics = AAZStrType(
+                serialized_name="sendingMetrics",
+            )
 
             filtering_tags = cls._schema_on_200.properties.metric_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
-            _build_schema_filtering_tag_read(filtering_tags.Element)
+            _ShowHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -241,27 +251,29 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_filtering_tag_read = None
+class _ShowHelper:
+    """Helper class for Show"""
 
+    _schema_filtering_tag_read = None
 
-def _build_schema_filtering_tag_read(_schema):
-    global _schema_filtering_tag_read
-    if _schema_filtering_tag_read is not None:
-        _schema.action = _schema_filtering_tag_read.action
-        _schema.name = _schema_filtering_tag_read.name
-        _schema.value = _schema_filtering_tag_read.value
-        return
+    @classmethod
+    def _build_schema_filtering_tag_read(cls, _schema):
+        if cls._schema_filtering_tag_read is not None:
+            _schema.action = cls._schema_filtering_tag_read.action
+            _schema.name = cls._schema_filtering_tag_read.name
+            _schema.value = cls._schema_filtering_tag_read.value
+            return
 
-    _schema_filtering_tag_read = AAZObjectType()
+        cls._schema_filtering_tag_read = _schema_filtering_tag_read = AAZObjectType()
 
-    filtering_tag_read = _schema_filtering_tag_read
-    filtering_tag_read.action = AAZStrType()
-    filtering_tag_read.name = AAZStrType()
-    filtering_tag_read.value = AAZStrType()
+        filtering_tag_read = _schema_filtering_tag_read
+        filtering_tag_read.action = AAZStrType()
+        filtering_tag_read.name = AAZStrType()
+        filtering_tag_read.value = AAZStrType()
 
-    _schema.action = _schema_filtering_tag_read.action
-    _schema.name = _schema_filtering_tag_read.name
-    _schema.value = _schema_filtering_tag_read.value
+        _schema.action = cls._schema_filtering_tag_read.action
+        _schema.name = cls._schema_filtering_tag_read.name
+        _schema.value = cls._schema_filtering_tag_read.value
 
 
 __all__ = ["Show"]

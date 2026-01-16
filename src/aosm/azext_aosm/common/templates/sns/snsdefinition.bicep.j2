@@ -1,0 +1,79 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Highly Confidential Material
+//
+// Bicep template to create a SNS.
+//
+// Requires an existing NSDV from which the values will be populated.
+param location string
+@description('The site name where the NFVI is available')
+param siteName string
+@description('The nfvi details for the site')
+param nfviList array = []
+@description('List of configuration group values')
+param cgvs array = []
+@description('The site network service name where the RETs from NSDV will be deployed')
+param snsName string
+@description('The Network service design version id from which the RETs will be deployed')
+param nsdvId string = ''
+@description('The Identity to be used for the SNS')
+param userIdentity string
+var cgv_params = loadJsonContent('../deploy_input.jsonc')
+var cgv_list = cgv_params.cgv_list
+
+var identityObject = (userIdentity == '')  ? {
+  type: 'SystemAssigned'
+} : {
+  type: 'UserAssigned'
+  userAssignedIdentities: {
+    '${userIdentity}': {}
+  }
+}
+
+resource site 'Microsoft.HybridNetwork/sites@2024-04-15' = {
+  name: siteName
+  location: location
+  properties: {
+    nfvis: nfviList
+  }
+}
+
+// The operator will create a config group values object that will satisfy this schema.
+{%- for cgv in cgvs %}
+resource cgv{{loop.index}} 'Microsoft.Hybridnetwork/configurationGroupValues@2024-04-15' = {
+  name: cgv_list[{{loop.index-1}}].cgv_name
+  location: location
+  properties: {
+    configurationGroupSchemaResourceReference: {
+        id: '{{cgv.cgs_id}}'
+        idType: 'Open'
+    }
+    configurationType: cgv_list[{{loop.index-1}}].cgv_configuration_type
+    configurationValue: string(loadJsonContent('{{cgv.cgv_file_path}}'))    
+  }
+}
+{%- endfor %}
+
+resource sns 'Microsoft.HybridNetwork/sitenetworkservices@2024-04-15' =  {
+  name: snsName
+  location: location 
+  sku: {
+    name: 'Standard'
+  } 
+   identity: identityObject
+  properties: {
+    siteReference: {
+      id: site.id
+    }  
+    networkServiceDesignVersionResourceReference: {
+      id: '{{nsdvId}}'
+      idType: 'Open'
+    }
+    desiredStateConfigurationGroupValueReferences: {        
+    {%- for cgv in cgvs %}
+      {{cgv.cgs_name}}: {
+        id: cgv{{loop.index}}.id
+      }
+    {%- endfor %}
+    }
+  }
+}

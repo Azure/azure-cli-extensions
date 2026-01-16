@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the AppComplianceAutomation webhook and its properties.
+
+    :example: Webhook_Get
+        az acat report webhook show --report-name testReportName --webhook-name testWebhookName
     """
 
     _aaz_info = {

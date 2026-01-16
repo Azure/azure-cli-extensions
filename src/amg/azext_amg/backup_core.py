@@ -158,20 +158,27 @@ def get_all_folders(grafana_url, http_headers, **kwargs):
     folders_to_exclude = kwargs.get('folders_to_exclude')
     if folders_to_include:
         folders_to_include = [f.lower() for f in folders_to_include]
-        folders = [f for f in folders if f.get('title', '').lower() in folders_to_include]
+        folders = [f for f in folders if
+                   f.get('title', '').lower() in folders_to_include or
+                   f.get('folderTitle', '').lower() in folders_to_include]
     if folders_to_exclude:
         folders_to_exclude = [f.lower() for f in folders_to_exclude]
-        folders = [f for f in folders if f.get('title', '').lower() not in folders_to_exclude]
+        folders = [f for f in folders if
+                   f.get('title', '').lower() not in folders_to_exclude and
+                   f.get('folderTitle', '').lower() not in folders_to_exclude]
 
     individual_folders = []
     for folder in folders:
         (status_folder_settings, content_folder_settings) = get_folder(folder['uid'], grafana_url, http_headers)
-        # TODO: get_folder_permissions usually requires admin permission but we
-        # don't save the permissions in backup or migrate. Figure out what to do.
+
+        skip_folder_permissions = kwargs.get('skip_folder_permissions')
         (status_folder_permissions, content_folder_permissions) = get_folder_permissions(folder['uid'],
                                                                                          grafana_url,
                                                                                          http_headers)
-        if status_folder_settings == 200 and status_folder_permissions == 200:
+        if skip_folder_permissions and status_folder_settings == 200:
+            logger.info("Skipping folder permissions for folder %s", folder['title'])
+            individual_folders.append((content_folder_settings, None))
+        elif status_folder_settings == 200 and status_folder_permissions == 200:
             individual_folders.append((content_folder_settings, content_folder_permissions))
         else:
             logger.warning("Getting folder %s FAILED", folder['title'])

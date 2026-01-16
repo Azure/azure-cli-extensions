@@ -1,0 +1,11 @@
+name: green
+endpoint_name: endpoint
+model: name:version
+code_configuration:
+  code: ../model-5/onlinescoring/
+  scoring_script: score.py
+environment:
+  conda_file: ../model-5/environment/conda.yml
+  image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04:latest
+instance_type: Standard_DS2_v2
+instance_count: 1

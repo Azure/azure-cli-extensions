@@ -40,8 +40,8 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.org_name = AAZStrArg(
-            options=["-n", "--name", "--org-name"],
+        _args_schema.organization_name = AAZStrArg(
+            options=["-n", "--name", "--organization-name"],
             help="Name of the Organizations resource",
             required=True,
             id_part="name",
@@ -50,7 +50,6 @@ class Wait(AAZWaitCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Resource group name",
             required=True,
         )
         return cls._args_schema
@@ -102,7 +101,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.org_name,
+                    "organizationName", self.ctx.args.organization_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

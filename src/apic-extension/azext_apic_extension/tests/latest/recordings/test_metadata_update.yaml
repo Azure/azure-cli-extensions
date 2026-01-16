@@ -13,26 +13,26 @@ interactions:
       ParameterSetName:
       - -g -n --metadata-name --schema
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false},{"entity":"environment","required":true,"deprecated":false},{"entity":"deployment","required":true,"deprecated":false}],"schema":"{\"type\":\"boolean\",
-        \"title\":\"Public Facing\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-06-17T06:08:56.191846Z","lastModifiedAt":"2024-06-17T06:08:56.1918453Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false},{"entity":"environment","required":false,"deprecated":false},{"entity":"deployment","required":true,"deprecated":false}],"schema":"{\"type\":\"boolean\",
+        \"title\":\"Public Facing\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003","name":"clitest000003","systemData":{"createdAt":"2025-05-26T07:39:23.3930735Z","lastModifiedAt":"2025-05-26T07:39:23.393072Z"}}'
     headers:
       api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '616'
+      - '617'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:08:58 GMT
+      - Mon, 26 May 2025 07:39:24 GMT
       etag:
-      - 6602f5b0-0000-0100-0000-666fd2f80000
+      - 87011432-0000-0100-0000-68341aab0000
       expires:
       - '-1'
       pragma:
@@ -45,10 +45,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/50696ddb-ba43-4afa-abd1-c0ef039642d4
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3749'
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 604BD0C7867A445A8AE3E67593495BAF Ref B: MAA201060516037 Ref C: 2024-06-17T06:08:57Z'
+      - 'Ref A: E15043E534454A4A8730873E0F7BD292 Ref B: MAA201060514047 Ref C: 2025-05-26T07:39:24Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -56,7 +58,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"assignedTo": [{"deprecated": false, "entity": "api", "required":
-      true}, {"deprecated": false, "entity": "environment", "required": true}, {"deprecated":
+      true}, {"deprecated": false, "entity": "environment", "required": false}, {"deprecated":
       false, "entity": "deployment", "required": true}], "schema": "{\"type\":\"boolean\",
       \"title\":\"Updated Title\"}"}}'
     headers:
@@ -69,32 +71,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '286'
+      - '287'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --metadata-name --schema
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false},{"entity":"environment","required":true,"deprecated":false},{"entity":"deployment","required":true,"deprecated":false}],"schema":"{\"type\":\"boolean\",
-        \"title\":\"Updated Title\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003","name":"clitest000003","systemData":{"lastModifiedAt":"2024-06-17T06:08:59.7704977Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false},{"entity":"environment","required":false,"deprecated":false},{"entity":"deployment","required":true,"deprecated":false}],"schema":"{\"type\":\"boolean\",
+        \"title\":\"Updated Title\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003","name":"clitest000003","systemData":{"createdAt":"2025-05-26T07:39:23.3930735Z","lastModifiedAt":"2025-05-26T07:39:26.7492139Z"}}'
     headers:
       api-supported-versions:
-      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview, 2024-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '574'
+      - '618'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:08:59 GMT
+      - Mon, 26 May 2025 07:39:26 GMT
       etag:
-      - 6602abb1-0000-0100-0000-666fd2fb0000
+      - 8701a032-0000-0100-0000-68341aae0000
       expires:
       - '-1'
       pragma:
@@ -107,12 +109,14 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=33608faa-33a6-4705-beb1-c8904392c4a4/southeastasia/f355baf3-6b29-41b1-927b-2fbb377e90a0
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: E772990A91294410A19E5D385980730F Ref B: MAA201060516037 Ref C: 2024-06-17T06:08:59Z'
+      - 'Ref A: D9971E42FC2C44F182360C58D056BCEA Ref B: MAA201060514047 Ref C: 2025-05-26T07:39:25Z'
       x-powered-by:
       - ASP.NET
     status:

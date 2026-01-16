@@ -2,6 +2,39 @@
 
 Release History
 ===============
+1.3.0
+- Added a new required property: PublicNetworkAccess for Cluster.
+- Updated the default value of AccessKeysAuthentication property for Database to 'Disabled'.
+
+1.2.3
+- Added breaking change warning for upcoming release
+
+1.2.2
+- Added breaking change warning for upcoming release
+
+1.2.1
+- Added support for listing all SKUs a cluster can scale to.
+- Added a new enum: NoCluster for Clustering policy.
+
+1.2.1b2
++++++++++
+- Update module documentation.
+
+1.2.1b1
++++++++++
+- Fix: Make latest version as peview as last 2 versions(1.2.0 abd 1.1.0) are mistakenly not marked as preview.
+
+1.2.0
++++++++++
+- Fixes for highAvailability and accessKeysAuthentication argument.
+
+1.1.0
++++++++++
+- Adds support for using Microsoft Entra token-based authentication.
+- Cluster has new properties: highAvailability and redundancyMode.
+- New product SKUs added.
+- Database has new properties: accessKeysAuthentication.
+
 1.0.0
 +++++++++
 - Added support for new enterprise SKU E1

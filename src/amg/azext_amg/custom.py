@@ -9,10 +9,10 @@ import requests
 from knack.log import get_logger
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
-from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.util import should_disable_connection_verify
-from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError, ManualInterrupt
-from ._validators import process_grafana_create_namespace
+from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError, InvalidArgumentValueError, ManualInterrupt
+from azure.mgmt.authorization import AuthorizationManagementClient
+from azure.mgmt.authorization.models import RoleAssignmentCreateParameters, PrincipalType
 
 from azure.cli.core.aaz import AAZBoolArg, AAZListArg, AAZStrArg
 from .aaz.latest.grafana._create import Create as _GrafanaCreate
@@ -20,7 +20,7 @@ from .aaz.latest.grafana._delete import Delete as _GrafanaDelete
 from .aaz.latest.grafana._update import Update as _GrafanaUpdate
 
 from ._client_factory import cf_amg
-from .utils import get_yes_or_no_option, MGMT_SERVICE_CLIENT_API_VERSION
+from .utils import get_yes_or_no_option, search_folders
 
 logger = get_logger(__name__)
 
@@ -62,7 +62,12 @@ class GrafanaCreate(_GrafanaCreate):
         if not args.skip_system_assigned_identity:
             args.identity = {"type": "SystemAssigned"}
 
-        process_grafana_create_namespace(self.ctx, self.ctx.args)
+        if args.sku_tier and str(args.sku_tier).lower() == "essential":
+            raise ArgumentUsageError(
+                "Creation of Grafana resources with the 'Essential' SKU tier is not supported. "
+                "Supported SKU tiers are: 'Standard'. "
+                "Please specify a supported SKU tier using the '--sku-tier' parameter."
+            )
 
     # override the output method to create role assignments after instance creation
     def _output(self, *args, **kwargs):
@@ -81,19 +86,17 @@ class GrafanaCreate(_GrafanaCreate):
 
             principal_ids = args.principal_ids
             if not principal_ids:
-                user_principal_id, _ = _get_login_account_principal_id(cli_ctx)
+                user_principal_id = _get_login_account_principal_id(cli_ctx)
                 principal_ids = [user_principal_id]
             grafana_admin_role_id = resolve_role_id(cli_ctx, "Grafana Admin", subscription_scope)
 
             for principal_id in principal_ids:
-                principal_types = {"User", "Group"}
-                _create_role_assignment(cli_ctx, principal_id, principal_types, grafana_admin_role_id,
+                _create_role_assignment(cli_ctx, principal_id, grafana_admin_role_id,
                                         self.ctx.vars.instance.id)
 
             if self.ctx.vars.instance.identity:
                 monitoring_reader_role_id = resolve_role_id(cli_ctx, "Monitoring Reader", subscription_scope)
-                principal_types = {"ServicePrincipal"}
-                _create_role_assignment(cli_ctx, self.ctx.vars.instance.identity.principal_id, {"ServicePrincipal"},
+                _create_role_assignment(cli_ctx, self.ctx.vars.instance.identity.principal_id,
                                         monitoring_reader_role_id, subscription_scope)
 
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -141,58 +144,58 @@ def _gen_guid():
 
 
 def _get_login_account_principal_id(cli_ctx):
-    from azure.graphrbac.models import GraphErrorException
     from azure.cli.core._profile import Profile, _USER_ENTITY, _USER_TYPE, _SERVICE_PRINCIPAL, _USER_NAME
-    from azure.graphrbac import GraphRbacManagementClient
+    from azure.cli.command_modules.role import graph_client_factory
+
     profile = Profile(cli_ctx=cli_ctx)
-    cred, _, tenant_id = profile.get_login_credentials(
-        resource=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    client = GraphRbacManagementClient(cred, tenant_id,
-                                       base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
     active_account = profile.get_subscription()
     assignee = active_account[_USER_ENTITY][_USER_NAME]
-    principal_type = "User"
+
+    graph_client = graph_client_factory(cli_ctx)
     try:
         if active_account[_USER_ENTITY][_USER_TYPE] == _SERVICE_PRINCIPAL:
-            result = list(client.service_principals.list(
+            result = list(graph_client.service_principal_list(
                 filter=f"servicePrincipalNames/any(c:c eq '{assignee}')"))
-            principal_type = "ServicePrincipal"
         else:
-            result = [client.signed_in_user.get()]
-    except GraphErrorException as ex:
-        logger.warning("Graph query error %s", ex)
+            result = [graph_client.signed_in_user_get()]
+    except Exception as error:
+        raise CLIInternalError(f"Failed to get the current logged-in account. {error}")
     if not result:
         raise CLIInternalError((f"Failed to retrieve principal id for '{assignee}', which is needed to create a "
                                 f"role assignment. Consider using '--principal-ids' to bypass the lookup"))
+    return result[0]['id']
 
-    return result[0].object_id, principal_type
 
-
-def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definition_id, scope):
+def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
     import time
     from azure.core.exceptions import HttpResponseError, ResourceExistsError
-    from msrestazure.azure_exceptions import CloudError
 
-    assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
-    RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                             'RoleAssignmentCreateParameters', mod='models',
-                                             operation_group='role_assignments')
-    parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
-                                                principal_id=principal_id, principal_type=principal_types.pop())
+    assignments_client = get_mgmt_service_client(cli_ctx, AuthorizationManagementClient).role_assignments
+    principal_types = [p.value for p in PrincipalType]
+    current_principal_type = principal_types.pop(0)
 
     logger.info("Creating an assignment with a role '%s' on the scope of '%s'", role_definition_id, scope)
     retry_times = 36
     assignment_name = _gen_guid()
     for retry_time in range(0, retry_times):
         try:
+            parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
+                                                        principal_id=principal_id,
+                                                        principal_type=current_principal_type)
             assignments_client.create(scope=scope, role_assignment_name=assignment_name,
                                       parameters=parameters)
             break
         except ResourceExistsError:  # Exception from Track-2 SDK
             logger.info('Role assignment already exists')
             break
-        except CloudError as ex:
+        except HttpResponseError as ex:
+            if 'UnmatchedPrincipalType' in ex.message:  # try each principal_type until we get the right one
+                logger.debug("Principal type '%s' is not matched", current_principal_type)
+                try:
+                    current_principal_type = principal_types.pop(0)
+                except:
+                    raise CLIInternalError("Failed to create a role assignment. No matching principal types found.")
+                continue
             if 'role assignment already exists' in ex.message:  # Exception from Track-1 SDK
                 logger.info('Role assignment already exists')
                 break
@@ -202,27 +205,27 @@ def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definit
                                retry_times)
                 continue
             raise
-        except HttpResponseError as ex:
-            # try each principal_type until we get the right one
-            if ex.message.find('UnmatchedPrincipalType') != -1:
-                parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
-                                                            principal_id=principal_id,
-                                                            principal_type=principal_types.pop())
-                continue
-            break
 
 
-def _delete_role_assignment(cli_ctx, principal_id):
-    assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
+def _delete_role_assignment(cli_ctx, principal_id, role_definition_id=None, scope=None):
+    assignments_client = get_mgmt_service_client(cli_ctx, AuthorizationManagementClient).role_assignments
     f = f"principalId eq '{principal_id}'"
-    assignments = list(assignments_client.list_for_subscription(filter=f))
-    for a in assignments or []:
-        assignments_client.delete_by_id(a.id)
+
+    if role_definition_id and scope:
+        # delete specific role assignment
+        assignments = list(assignments_client.list_for_scope(scope, filter=f))
+        assignments_with_role = [a for a in assignments if a.role_definition_id.lower() == role_definition_id.lower()]
+        for a in assignments_with_role:
+            assignments_client.delete_by_id(a.id)
+    else:
+        # delete all role assignments for the principal
+        assignments = list(assignments_client.list_for_subscription(filter=f))
+        for a in assignments or []:
+            assignments_client.delete_by_id(a.id)
 
 
 def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_to_include=None,
-                   folders_to_exclude=None, resource_group_name=None):
+                   folders_to_exclude=None, resource_group_name=None, skip_folder_permissions=False):
     import os
     from pathlib import Path
     from .backup import backup
@@ -240,7 +243,8 @@ def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_t
            components=components,
            http_headers=headers,
            folders_to_include=folders_to_include,
-           folders_to_exclude=folders_to_exclude)
+           folders_to_exclude=folders_to_exclude,
+           skip_folder_permissions=skip_folder_permissions)
 
 
 def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data_sources=None,
@@ -389,6 +393,9 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
     import copy
     data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition,
                                           api_key_or_token=api_key_or_token)
+    if data.get("meta", {}).get("isFolder", False):
+        raise ArgumentUsageError("The provided definition is a folder, not a dashboard")
+
     if "dashboard" in data:
         payload = data
     else:
@@ -535,30 +542,43 @@ def test_notification_channel(cmd, grafana_name, notification_channel, resource_
                                       api_key_or_token=api_key_or_token)
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/alert-notifications/test",
                              data, api_key_or_token=api_key_or_token)
-    return response
+    return json.loads(response.content)
 
 
-def create_folder(cmd, grafana_name, title, resource_group_name=None, api_key_or_token=None, subscription=None):
+def create_folder(cmd, grafana_name, title, parent_folder=None, resource_group_name=None, api_key_or_token=None,
+                  subscription=None):
     payload = {
-        "title": title
+        "title": title,
     }
+    if parent_folder:
+        data = _find_folder(cmd, resource_group_name, grafana_name, parent_folder, api_key_or_token=api_key_or_token)
+        payload["parentUid"] = data["uid"]
+
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/folders", payload,
                              api_key_or_token=api_key_or_token, subscription=subscription)
     return json.loads(response.content)
 
 
 def list_folders(cmd, grafana_name, resource_group_name=None, api_key_or_token=None, subscription=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders",
-                             api_key_or_token=api_key_or_token, subscription=subscription)
-    return json.loads(response.content)
+    endpoint, headers = _get_grafana_request_context(cmd, resource_group_name, grafana_name, subscription,
+                                                     api_key_or_token=api_key_or_token)
+
+    status, content = search_folders(
+        grafana_url=endpoint,
+        http_get_headers=headers
+    )
+
+    if status >= 400:
+        raise ArgumentUsageError(f"Failed to find folders. Error: {content}")
+
+    return content
 
 
 def update_folder(cmd, grafana_name, folder, title, resource_group_name=None, api_key_or_token=None):
     f = show_folder(cmd, grafana_name, folder, resource_group_name, api_key_or_token=api_key_or_token)
-    version = f['version']
     data = {
         "title": title,
-        "version": int(version)
+        "overwrite": True
     }
     response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/folders/" + f["uid"], data,
                              api_key_or_token=api_key_or_token)
@@ -576,22 +596,19 @@ def delete_folder(cmd, grafana_name, folder, resource_group_name=None, api_key_o
 
 
 def _find_folder(cmd, resource_group_name, grafana_name, folder, api_key_or_token=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/" + folder,
-                             raise_for_error_status=False, api_key_or_token=api_key_or_token)
-    if response.status_code >= 400:
-        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders",
-                                 api_key_or_token=api_key_or_token)
-        if response.status_code >= 400:
-            raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
-        result = json.loads(response.content)
-        result = [f for f in result if f["title"] == folder]
-        if len(result) == 0:
-            raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
-        if len(result) > 1:
-            raise ArgumentUsageError((f"More than one folder has the same title of '{folder}'. Please use other "
-                                     f"unique identifiers"))
-        return result[0]
-    return json.loads(response.content)
+    folders = list_folders(cmd, grafana_name, resource_group_name=resource_group_name,
+                           api_key_or_token=api_key_or_token)
+
+    # try uid first
+    match = next((f for f in folders if f['uid'] == folder), None)
+    if match:
+        return match
+
+    # If we get here, the folder is not found by uid, so we try by title
+    match = next((f for f in folders if f['title'] == folder), None)
+    if not match:
+        raise ArgumentUsageError(f"Couldn't find the folder '{folder}'.")
+    return match
 
 
 def list_api_keys(cmd, grafana_name, resource_group_name=None):
@@ -720,6 +737,8 @@ def create_service_account_token(cmd, grafana_name, service_account, token, time
 
     if time_to_live:
         data['secondsToLive'] = _convert_duration_to_seconds(time_to_live)
+    else:
+        data['secondsToLive'] = _convert_duration_to_seconds("1d")
 
     response = _send_request(cmd, resource_group_name, grafana_name, "post",
                              "/api/serviceaccounts/" + service_account_id + '/tokens', data)
@@ -825,6 +844,25 @@ def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=No
     return json.loads(response.content)
 
 
+def link_monitor(cmd, grafana_name, monitor_name, monitor_resource_group_name, monitor_subscription_id=None,
+                 resource_group_name=None, skip_role_assignments=False):
+    from .integrations import link_amw_to_amg
+    link_amw_to_amg(cmd, grafana_name, monitor_name, resource_group_name, monitor_resource_group_name,
+                    monitor_subscription_id, skip_role_assignments)
+
+
+def unlink_monitor(cmd, grafana_name, monitor_name, monitor_resource_group_name, monitor_subscription_id=None,
+                   resource_group_name=None, skip_role_assignments=False):
+    from .integrations import unlink_amw_from_amg
+    unlink_amw_from_amg(cmd, grafana_name, monitor_name, resource_group_name, monitor_resource_group_name,
+                        monitor_subscription_id, skip_role_assignments)
+
+
+def list_monitors(cmd, grafana_name, resource_group_name=None):
+    from .integrations import list_amw_linked_to_amg
+    return list_amw_linked_to_amg(cmd, grafana_name, resource_group_name)
+
+
 def _find_data_source(cmd, resource_group_name, grafana_name, data_source, api_key_or_token=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources/name/" + data_source,
                              raise_for_error_status=False, api_key_or_token=api_key_or_token)
@@ -857,10 +895,12 @@ def _find_notification_channel(cmd, resource_group_name, grafana_name, notificat
 # For UX: we accept a file path for complex payload such as dashboard/data-source definition
 def _try_load_file_content(file_content):
     import os
-    potentail_file_path = os.path.expanduser(file_content)
-    if os.path.exists(potentail_file_path):
+    potential_file_path = os.path.expanduser(file_content)
+    if os.path.exists(potential_file_path):
         from azure.cli.core.util import read_file_content
-        file_content = read_file_content(potentail_file_path)
+        file_content = read_file_content(potential_file_path)
+    else:
+        raise InvalidArgumentValueError(f"Couldn't find the file '{file_content}'")
     return file_content
 
 
@@ -892,14 +932,8 @@ def _get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription):
 
 def _send_request(cmd, resource_group_name, grafana_name, http_method, path, body=None, raise_for_error_status=True,
                   api_key_or_token=None, subscription=None):
-    endpoint = _get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription)
-
-    creds = _get_data_plane_creds(cmd, api_key_or_token, subscription)
-
-    headers = {
-        "content-type": "application/json",
-        "authorization": "Bearer " + creds[1]
-    }
+    endpoint, headers = _get_grafana_request_context(cmd, resource_group_name, grafana_name, subscription,
+                                                     api_key_or_token=api_key_or_token)
 
     # TODO: handle re-try on 429
     response = requests.request(http_method, url=endpoint + path, headers=headers, json=body, timeout=60,
@@ -910,3 +944,14 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
             response.raise_for_status()
     # TODO: log headers, requests and response
     return response
+
+
+def _get_grafana_request_context(cmd, resource_group_name, grafana_name, subscription, api_key_or_token=None):
+    endpoint = _get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription)
+    creds = _get_data_plane_creds(cmd, api_key_or_token, subscription)
+    headers = {
+        "content-type": "application/json",
+        "authorization": "Bearer " + creds[1]
+    }
+
+    return endpoint, headers

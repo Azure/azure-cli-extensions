@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "standby-vm-pool",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Standby Virtual Machine Pool Operations
+    """Manage Standby Virtual Machine Pool
     """
     pass
 

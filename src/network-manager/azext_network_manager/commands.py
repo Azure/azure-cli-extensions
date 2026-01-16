@@ -48,3 +48,7 @@ def load_command_table(self, _):
         from .custom import ConnectionManagementGroupCreate
         self.command_table["network manager connection management-group create"] = \
             ConnectionManagementGroupCreate(loader=self)
+
+    with self.command_group("network manager ipam-pool static-cidr"):
+        from .custom import StaticCidrUpdate
+        self.command_table["network manager ipam-pool static-cidr update"] = StaticCidrUpdate(loader=self)

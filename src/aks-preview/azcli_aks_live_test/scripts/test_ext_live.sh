@@ -40,7 +40,7 @@ source azEnv/bin/activate
 
 # login before the recording test to avoid the newly added test case does not include a corresponding
 # recording file and fall back to live mode, otherwise it will prompt `az login`.
-az login --identity -u "${IDENTITY_RESOURCE_ID}"
+az login --identity --resource-id "${IDENTITY_RESOURCE_ID}"
 az account set -s "${AZCLI_ALT_SUBSCRIPTION_ID}"
 az account show
 

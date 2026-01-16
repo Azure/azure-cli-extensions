@@ -12,6 +12,7 @@
 from knack.log import get_logger
 from .aaz.latest.elastic_san.volume_group import Create as _VolumeGroupCreate
 from .aaz.latest.elastic_san.volume_group import Update as _VolumeGroupUpdate
+from .aaz.latest.elastic_san import Create as _ElasticSanCreate
 
 logger = get_logger(__name__)
 
@@ -41,6 +42,28 @@ class VolumeGroupCreate(_VolumeGroupCreate):
             args.identity["user_assigned_identities"] = {
                 uai_id: {}}
             del args.identity.user_assigned_identity_id
+        if has_value(args.EnforceDataIntegrityCheckForIscsi) and args.EnforceDataIntegrityCheckForIscsi:
+            logger.warning("CRC protection feature is not supported for Azure VMware solution (AVS) yet. "
+                           "Do not enable this flag if you plan to use the volumes within this volume group as "
+                           "datastores for AVS, as the datastore creation will fail. For Azure Virtual Machines, "
+                           "enabling this flag would need CRC32C to be set on iSCSI header and data digests on the "
+                           "client for all the connections from the client to the volumes in this volume group. "
+                           "You can achieve that by disconnecting the volumes from the client and reconnecting using "
+                           "multi-session scripts generated in portal connect flow or from documentation, which "
+                           "contain steps to set CRC32C on header and data digests. Do not enable CRC protection on "
+                           "the volume group if you are using Fedora or its downstream Linux distributions such as "
+                           "RHEL, CentOS etc. as data digests are not supported on them. "
+                           "If you enable this flag for those distributions, connectivity to the volumes will fail. "
+                           "Learn more: https://go.microsoft.com/fwlink/?LinkId=2294733&id=Microsoft_Azure_ElasticSan")
+        else:
+            logger.warning("CRC protection is recommended if you plan to connect the volumes in this volume group to "
+                           "Azure Virtual Machines. Do not enable it if you are using Fedora or its downstream Linux "
+                           "distributions such as RHEL, CentOS etc. on your VM, as data digests are not supported on "
+                           "them. If you enable this flag for those distributions, connectivity to the volumes will "
+                           "fail. Also, do not enable this flag if you plan to use the volumes within this volume "
+                           "group as datastores for Azure VMware Solution (AVS), as this feature is not supported for "
+                           "AVS yet and the datastore creation will fail. "
+                           "Learn more: https://go.microsoft.com/fwlink/?LinkId=2294733&id=Microsoft_Azure_ElasticSan")
 
 
 class VolumeGroupUpdate(_VolumeGroupUpdate):
@@ -68,6 +91,28 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
             args.identity["user_assigned_identities"] = {
                 uai_id: {}}
             del args.identity.user_assigned_identity_id
+        if has_value(args.EnforceDataIntegrityCheckForIscsi) and args.EnforceDataIntegrityCheckForIscsi:
+            logger.warning("CRC protection feature is not supported for Azure VMware solution (AVS) yet. "
+                           "Do not enable this flag if you plan to use the volumes within this volume group as "
+                           "datastores for AVS, as the datastore creation will fail. For Azure Virtual Machines, "
+                           "enabling this flag would need CRC32C to be set on iSCSI header and data digests on the "
+                           "client for all the connections from the client to the volumes in this volume group. "
+                           "You can achieve that by disconnecting the volumes from the client and reconnecting using "
+                           "multi-session scripts generated in portal connect flow or from documentation, which "
+                           "contain steps to set CRC32C on header and data digests. Do not enable CRC protection on "
+                           "the volume group if you are using Fedora or its downstream Linux distributions such as "
+                           "RHEL, CentOS etc. as data digests are not supported on them. "
+                           "If you enable this flag for those distributions, connectivity to the volumes will fail. "
+                           "Learn more: https://go.microsoft.com/fwlink/?LinkId=2294733&id=Microsoft_Azure_ElasticSan")
+        else:
+            logger.warning("CRC protection is recommended if you plan to connect the volumes in this volume group to "
+                           "Azure Virtual Machines. Do not enable it if you are using Fedora or its downstream Linux "
+                           "distributions such as RHEL, CentOS etc. on your VM, as data digests are not supported on "
+                           "them. If you enable this flag for those distributions, connectivity to the volumes will "
+                           "fail. Also, do not enable this flag if you plan to use the volumes within this volume "
+                           "group as datastores for Azure VMware Solution (AVS), as this feature is not supported for "
+                           "AVS yet and the datastore creation will fail. "
+                           "Learn more: https://go.microsoft.com/fwlink/?LinkId=2294733&id=Microsoft_Azure_ElasticSan")
 
     def pre_instance_update(self, instance):
         from azure.cli.core.aaz import has_value
@@ -83,3 +128,12 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
                         args.encryption_properties.key_vault_properties):
                     args.encryption_properties.key_vault_properties = \
                         instance.properties.encryption_properties.key_vault_properties
+
+
+class ElasticSanCreate(_ElasticSanCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.base_size_tib._required = False
+        args_schema.extended_capacity_size_tib._required = False
+        return args_schema

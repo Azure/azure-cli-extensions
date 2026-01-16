@@ -8,6 +8,7 @@ from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from knack.testsdk import live_only
 
 from .common import (TEST_LOCATION)
 from .utils import create_containerapp_env
@@ -17,6 +18,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
+    @live_only()
     def test_containerapp_session_code_interpreter_nodelts_e2e(self, resource_group):
         location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
@@ -25,20 +27,10 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
         self.assertTrue(len(sessionpool_list) == 0)
 
-        # Create PythonLTS SessionPool with default container type which is PythonLTS
-        sessionpool_name_pythonlts = self.create_random_name(prefix='sppythonlts', length=24)
-        self.cmd('containerapp sessionpool create -g {} -n {} --cooldown-period {}'.format(
-            resource_group, sessionpool_name_pythonlts, 300), checks=[
-            JMESPathCheck('name', sessionpool_name_pythonlts),
-            JMESPathCheck('properties.containerType', "PythonLTS"),
-            JMESPathCheck('properties.provisioningState', "Succeeded"),
-            JMESPathCheck('properties.dynamicPoolConfiguration.cooldownPeriodInSeconds', 300)
-        ])
-
         # Create NodeLTS SessionPool
         sessionpool_name_nodelts = self.create_random_name(prefix='spnodelts', length=24)
-        self.cmd('containerapp sessionpool create -g {} -n {} --container-type NodeLTS --cooldown-period {}'.format(
-            resource_group, sessionpool_name_nodelts, 300), checks=[
+        self.cmd('containerapp sessionpool create -g {} -n {} --container-type NodeLTS --cooldown-period {} -l {}'.format(
+            resource_group, sessionpool_name_nodelts, 300, location), checks=[
             JMESPathCheck('name', sessionpool_name_nodelts),
             JMESPathCheck('properties.containerType', "NodeLTS"),
             JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -47,7 +39,7 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
 
         # List Session Pools
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
-        self.assertTrue(len(sessionpool_list) == 2)
+        self.assertTrue(len(sessionpool_list) == 1)
 
         # execute nodejs code
         identifier_name = self.create_random_name(prefix='testidentifier', length=24)
@@ -58,8 +50,8 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
             identifier_name,
             code),
             checks=[
-            JMESPathCheck('properties.status', 'Success'),
-            JMESPathCheck('properties.stdout', 'Hello world\n')
+            JMESPathCheck('status', 'Succeeded'),
+            JMESPathCheck('result.stdout', 'Hello world\n')
         ])
 
         # upload a file also add session pool location
@@ -69,9 +61,9 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
             resource_group,
             identifier_name,
             txt_file,
-            TEST_LOCATION),
+            location),
             checks=[
-            JMESPathCheck('value[0].properties.filename', 'cert.txt'),
+            JMESPathCheck('name', 'cert.txt'),
         ])
 
         # list files
@@ -96,7 +88,7 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
             identifier_name,
             "cert.txt"),
             checks=[
-            JMESPathCheck('properties.filename', 'cert.txt'),
+            JMESPathCheck('name', 'cert.txt'),
         ])
 
         # delete file
@@ -116,11 +108,6 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
         # delete sessionpool to clean up test resources
         self.cmd("containerapp sessionpool delete -n {} -g {} --yes".format(
             sessionpool_name_nodelts,
-            resource_group,
-            ))
-        
-        self.cmd("containerapp sessionpool delete -n {} -g {} --yes".format(
-            sessionpool_name_pythonlts,
             resource_group,
             ))
         

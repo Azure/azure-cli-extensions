@@ -2,6 +2,42 @@
 
 Release History
 ===============
+3.0.1
++++++
+* Add NG of type Subnet support for routing config
+
+3.0.0
++++++
+* Add new parameter connect-capabilities to cmd `az network manager connect-config`
+
+2.0.1
++++++
+* Fix the post commit commands for AVNM configuration (All config types)
+
+2.0.0
++++++
+* Modify cmd `az network manager routing-config`
+* Modify cmd `az network manager routing-config rule-collection`
+* Modify cmd `az network manager routing-config rule-collection rule`
+* Add new types `Routing` and `SecurityUser`  for commitType param for Network Manager post-commit operation
+
+1.3.1
++++++
+* Fix argument regex requirement (fix: https://github.com/Azure/azure-rest-api-specs/pull/31130)
+* Stable version
+
+1.3.0
++++++
+* Add new cmd `az network manager ipam-pool`
+* Add new cmd `az network manager ipam-pool static-cidr`
+* Add new cmd `az network manager verifier-workspace`
+* Add new cmd `az network manager verifier-workspace reachability-analysis-intent`
+* Add new cmd `az network manager verifier-workspace reachability-analysis-run`
+* `az network manager security-admin-config create`: add parameter `network-group-address-space-aggregation-option`
+* `az network manager security-admin-config update`: add parameter `network-group-address-space-aggregation-option`
+* `az network manager security-admin-config rule-collection rule create`: add `NetworkGroup` as option of parameter `address-prefix-type`
+* `az network manager security-admin-config rule-collection rule update`: add `NetworkGroup` as option of parameter `address-prefix-type`
+
 1.2.0
 +++++
 * Add new cmd `az network manager routing-config`

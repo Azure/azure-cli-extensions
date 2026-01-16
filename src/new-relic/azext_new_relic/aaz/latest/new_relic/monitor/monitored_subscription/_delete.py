@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor monitored-subscription delete",
 )
 class Delete(AAZCommand):
-    """Delete the subscriptions that are being monitored by the NewRelic monitor resource
+    """Delete subscriptions being monitored by the New Relic monitor resource, removing their observability and monitoring capabilities.
 
     :example: Delete the subscriptions that are being monitored by the NewRelic monitor resource
         az new-relic monitor monitored-subscription delete --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default
@@ -67,7 +67,7 @@ class Delete(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["--resource-group","--g"],
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema

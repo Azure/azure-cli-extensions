@@ -19,12 +19,12 @@ var identityObject = (configObject.managedIdentityId == '')  ? {
 
 var nfdvSymbolicName = '${configObject.publisherName}/${configObject.nfdgName}/${configObject.nfdv}'
 
-resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2023-09-01' existing = {
+resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2024-04-15' existing = {
   name: nfdvSymbolicName
   scope: resourceGroup(configObject.publisherResourceGroup)
 }
 
-resource nfResource 'Microsoft.HybridNetwork/networkFunctions@2023-09-01' = [for (values, i) in configObject.deployParameters: {
+resource nfResource 'Microsoft.HybridNetwork/networkFunctions@2024-04-15' = [for (values, i) in configObject.deployParameters: {
   name: '${configObject.nfdgName}${i}'
   location: configObject.location
   identity: identityObject

@@ -14,6 +14,7 @@ from azext_aks_preview._helpers import (
     get_nodepool_snapshot,
     get_nodepool_snapshot_by_snapshot_id,
     process_message_for_run_command,
+    filter_hard_taints,
 )
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
@@ -158,6 +159,57 @@ class CheckProcessRunCommandMessage(unittest.TestCase):
             process_message_for_run_command(failed_message)
         self.assertEqual(str(cm.exception), err)
 
+
+class FilterHardTaintsTestCase(unittest.TestCase):
+    def test_filter_hard_taints_keeps_only_soft_taints(self):
+        input_taints = ["taint1=val1:NoSchedule", "taint2=val2:NoExecute", "taint3=val3:PreferNoSchedule"]
+        expected_filtered_taints = ["taint3=val3:PreferNoSchedule"]
+        self.assertEqual(filter_hard_taints(input_taints), expected_filtered_taints)
+
+    def test_filter_hard_taints_preserves_critical_addons_only_taints(self):
+        input_taints = [
+            "CriticalAddonsOnly=true:NoSchedule",  
+            "CriticalAddonsOnly=true:NoExecute",
+            "taint1=val1:NoSchedule",
+            "taint2=val2:PreferNoSchedule"
+        ]
+        expected_filtered_taints = [
+            "CriticalAddonsOnly=true:NoSchedule", 
+            "CriticalAddonsOnly=true:NoExecute", 
+            "taint2=val2:PreferNoSchedule"
+        ]
+        self.assertEqual(filter_hard_taints(input_taints), expected_filtered_taints)
+    
+    def test_filter_hard_taints_with_empty_list(self):
+        input_taints = []
+        expected_filtered_taints = []
+        self.assertEqual(filter_hard_taints(input_taints), expected_filtered_taints)
+    
+    def test_filter_hard_taints_with_empty_strings(self):
+        input_taints = ["taint1=val1:NoSchedule", "", "taint3=val3:PreferNoSchedule"]
+        expected_filtered_taints = ["taint3=val3:PreferNoSchedule"]
+        self.assertEqual(filter_hard_taints(input_taints), expected_filtered_taints)
+    
+    def test_filter_hard_taints_with_invalid_format(self):
+        input_taints = ["invalid-format", "taint1=val1:NoSchedule", "another-invalid", "taint2=val2:PreferNoSchedule"]
+        expected_filtered_taints = ["invalid-format", "another-invalid", "taint2=val2:PreferNoSchedule"]
+        self.assertEqual(filter_hard_taints(input_taints), expected_filtered_taints)
+    
+    def test_filter_hard_taints_case_insensitive(self):
+        input_taints = ["taint1=val1:noschedule", "taint2=val2:PREFERNOSCHEDULE", "taint3=val3:prefernoschedule"]
+        expected_filtered_taints = ["taint2=val2:PREFERNOSCHEDULE", "taint3=val3:prefernoschedule"]
+        self.assertEqual(filter_hard_taints(input_taints), expected_filtered_taints)
+    
+    def test_filter_hard_taints_mixed_effects(self):
+        input_taints = [
+            "key1=value1:NoSchedule", 
+            "key2=value2:NoExecute", 
+            "key3=value3:PreferNoSchedule",
+            "key4:NoSchedule",
+            "key5:PreferNoSchedule"
+        ]
+        expected_filtered_taints = ["key3=value3:PreferNoSchedule", "key5:PreferNoSchedule"]
+        self.assertEqual(filter_hard_taints(input_taints), expected_filtered_taints)
 
 if __name__ == "__main__":
     unittest.main()

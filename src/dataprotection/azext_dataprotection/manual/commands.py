@@ -78,8 +78,14 @@ def load_command_table(self, _):
     self.command_table['dataprotection backup-instance stop-protection'] = BackupInstanceStopProtection(loader=self)
     self.command_table['dataprotection backup-instance suspend-backup'] = BackupInstanceSuspendBackup(loader=self)
 
-    from .aaz_operations.backup_vault import Update as BackupVaultUpdate
+    from .aaz_operations.backup_vault import (
+        Create as BackupVaultCreate,
+        Update as BackupVaultUpdate,
+        IdentityRemove as BackupVaultIdentityRemove
+    )
+    self.command_table['dataprotection backup-vault create'] = BackupVaultCreate(loader=self)
     self.command_table['dataprotection backup-vault update'] = BackupVaultUpdate(loader=self)
+    self.command_table['dataprotection backup-vault identity remove'] = BackupVaultIdentityRemove(loader=self)
 
     from .aaz_operations.backup_policy import Create as BackupPolicyCreate
     self.command_table['dataprotection backup-policy create'] = BackupPolicyCreate(loader=self)
@@ -112,6 +118,7 @@ def load_command_table(self, _):
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
         g.custom_command('validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True)
         g.custom_command('update', 'dataprotection_backup_instance_update', supports_no_wait=True)
+        g.custom_command('validate-for-update', 'dataprotection_backup_instance_validate_for_update', supports_no_wait=True)
 
     with self.command_group('dataprotection backup-instance restore', exception_handler=exception_handler) as g:
         g.custom_command('trigger', 'dataprotection_backup_instance_restore_trigger', supports_no_wait=True)

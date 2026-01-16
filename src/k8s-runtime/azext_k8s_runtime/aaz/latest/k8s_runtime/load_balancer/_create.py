@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-03-01",
+        "version": "2024-08-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/loadbalancers/{}", "2024-03-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/loadbalancers/{}", "2024-08-01"],
         ]
     }
 
@@ -78,6 +78,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The list of BGP peers it should advertise to. Null or empty means to advertise to all peers.",
         )
+        _args_schema.communities = AAZListArg(
+            options=["--communities"],
+            arg_group="Properties",
+            help="BGP Communities",
+        )
         _args_schema.service_selector = AAZDictArg(
             options=["--service-selector"],
             arg_group="Properties",
@@ -89,6 +94,9 @@ class Create(AAZCommand):
 
         bgp_peers = cls._args_schema.bgp_peers
         bgp_peers.Element = AAZStrArg()
+
+        communities = cls._args_schema.communities
+        communities.Element = AAZStrArg()
 
         service_selector = cls._args_schema.service_selector
         service_selector.Element = AAZStrArg()
@@ -172,7 +180,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2024-08-01",
                     required=True,
                 ),
             }
@@ -197,13 +205,14 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("addresses", AAZListType, ".addresses", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("advertiseMode", AAZStrType, ".advertise_mode", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("bgpPeers", AAZListType, ".bgp_peers")
+                properties.set_prop("communities", AAZListType, ".communities")
                 properties.set_prop("serviceSelector", AAZDictType, ".service_selector")
 
             addresses = _builder.get(".properties.addresses")
@@ -213,6 +222,10 @@ class Create(AAZCommand):
             bgp_peers = _builder.get(".properties.bgpPeers")
             if bgp_peers is not None:
                 bgp_peers.set_elements(AAZStrType, ".")
+
+            communities = _builder.get(".properties.communities")
+            if communities is not None:
+                communities.set_elements(AAZStrType, ".")
 
             service_selector = _builder.get(".properties.serviceSelector")
             if service_selector is not None:
@@ -244,9 +257,7 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -266,6 +277,7 @@ class Create(AAZCommand):
             properties.bgp_peers = AAZListType(
                 serialized_name="bgpPeers",
             )
+            properties.communities = AAZListType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -279,6 +291,9 @@ class Create(AAZCommand):
 
             bgp_peers = cls._schema_on_200_201.properties.bgp_peers
             bgp_peers.Element = AAZStrType()
+
+            communities = cls._schema_on_200_201.properties.communities
+            communities.Element = AAZStrType()
 
             service_selector = cls._schema_on_200_201.properties.service_selector
             service_selector.Element = AAZStrType()

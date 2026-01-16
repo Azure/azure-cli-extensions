@@ -14,6 +14,7 @@ from ._delete import *
 from ._learned_ip_prefix import *
 from ._list import *
 from ._list_fqdn_tags import *
+from ._packet_capture_operation import *
 from ._show import *
 from ._update import *
 from ._wait import *

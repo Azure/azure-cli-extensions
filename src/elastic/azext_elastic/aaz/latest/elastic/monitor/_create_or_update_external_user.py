@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor create-or-update-external-user",
 )
 class CreateOrUpdateExternalUser(AAZCommand):
-    """Create or update external user
+    """Create or update external user configurations for your Elastic monitor resource, enabling access and management by external users.
 
-    :example: Create or update external user
-        az monitor create-or-update-external-user --monitor-name {monitor} -g {rg} --user-name newuser --full-name fullname --password password --email-id email@outlook.com --roles [admin,other_role]
+    :example: ExternalUser_CreateOrUpdate
+        az elastic monitor create-or-update-external-user --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/createorupdateexternaluser", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/createorupdateexternaluser", "2025-06-01"],
         ]
     }
 
@@ -49,6 +49,9 @@ class CreateOrUpdateExternalUser(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -152,7 +155,7 @@ class CreateOrUpdateExternalUser(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

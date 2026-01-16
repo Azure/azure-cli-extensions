@@ -13,7 +13,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 from knack.util import CLIError
-from msrestazure.tools import resource_id
+from azure.mgmt.core.tools import resource_id
 from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import (GitImplementation, ConfigurationServiceGeneration)
 from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._utils import (get_hostname, get_bearer_auth)
@@ -286,7 +286,7 @@ def _validate_acs_settings(client, resource_group, service, acs_settings):
     try:
         result = sdk_no_wait(False, client.configuration_services.begin_validate, resource_group, service, DEFAULT_NAME, acs_settings).result()
     except Exception as err:  # pylint: disable=broad-except
-        raise ClientRequestError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+        raise ClientRequestError("{0}. You may raise a support ticket if needed by the following link: https://learn.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
 
     if result is not None and result.git_property_validation_result is not None:
         git_result = result.git_property_validation_result

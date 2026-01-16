@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage cloudngfw resource
+    """Manage Palo Alto Networks Cloud NGFW resources within the Azure CLI.
     """
     pass
 

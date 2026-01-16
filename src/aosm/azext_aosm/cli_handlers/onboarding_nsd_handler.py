@@ -106,7 +106,6 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
                         resource_element.properties.file_path
                     ).absolute(),
                 )
-                # TODO: generalise for nexus in nexus ready stories
                 # For NSDs, we don't have the option to expose ARM template parameters. This could be supported by
                 # adding an 'expose_all_parameters' option to NSD input.jsonc file, as we have for NFD input files.
                 # For now, we prefer this simpler interface for NSDs, but we might need to revisit in the future.
@@ -115,14 +114,6 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
                 )
             elif resource_element.resource_element_type == "NF":
                 assert isinstance(resource_element.properties, NetworkFunctionPropertiesConfig)
-                # TODO: change artifact name and version to the nfd name and version or justify why it was this
-                #       in the first place
-                # AC4 note: I couldn't find a reference in the old code, but this
-                # does ring a bell. Was it so the artifact manifest didn't get broken with changes to NF versions?
-                # I.e., you could make an NF version change in CGV, and the artifact manifest, which is immutable,
-                # would still be valid?
-                # I am concerned that if we have multiple NFs we will have clashing artifact names.
-                # I'm not changing the behaviour right now as it's too high risk, but we should look again here.
                 nfdv_object = self._get_nfdv(resource_element.properties)
 
                 # Add nfvi_type to list for creating nfvisFromSite later
@@ -131,11 +122,8 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
                 self.nfvi_types.append(nfdv_object.properties.network_function_template.nfvi_type)
 
                 nfd_input = NFDInput(
-                    # This would be the alternative if we swap from nsd name/version to nfd.
-                    # artifact_name=resource_element.properties.name,
-                    # artifact_version=resource_element.properties.version,
-                    artifact_name=self.config.nsd_name,
-                    artifact_version=self.config.nsd_version,
+                    artifact_name=resource_element.properties.name,
+                    artifact_version=resource_element.properties.version,
                     default_config={"location": self.config.location},
                     network_function_definition=nfdv_object,
                     arm_template_output_path=Path(
@@ -145,7 +133,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
                     ),
                 )
                 nfd_processor = NFDProcessor(
-                    name=self.config.nsd_name, input_artifact=nfd_input
+                    name=resource_element.properties.name, input_artifact=nfd_input
                 )
                 processor_list.append(nfd_processor)
             else:
@@ -161,7 +149,8 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
         template_path = get_template_path(
             NSD_TEMPLATE_FOLDER_NAME, NSD_BASE_TEMPLATE_FILENAME
         )
-        bicep_contents = render_bicep_contents_from_j2(template_path, {})
+        params = {"disablePublicNetworkAccess": self.config.disable_public_network_access}
+        bicep_contents = render_bicep_contents_from_j2(template_path, params)
         # Create Bicep element with manifest contents
         bicep_file = BicepDefinitionElementBuilder(
             Path(NSD_OUTPUT_FOLDER_FILENAME, BASE_FOLDER_NAME), bicep_contents
@@ -294,6 +283,9 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
             "nsDesignGroup": self.config.nsd_name,
             "nsDesignVersion": self.config.nsd_version,
             "nfviSiteName": self.nfvi_site_name,
+            "disablePublicNetworkAccess": self.config.disable_public_network_access,
+            "vnetPrivateEndPoints": self.config.vnet_private_end_points,
+            "networkFabricControllerIds": self.config.network_fabric_controller_ids
         }
         base_file = JSONDefinitionElementBuilder(
             Path(NSD_OUTPUT_FOLDER_FILENAME), json.dumps(params_content, indent=4)
@@ -320,8 +312,10 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
 
     def _get_nfdv(self, nf_properties) -> NetworkFunctionDefinitionVersion:
         """Get the existing NFDV resource object."""
-        print(
-            f"Reading existing NFDV resource object {nf_properties.version} from group {nf_properties.name}"
+        logger.info(
+            "Reading existing NFDV resource object %s from group %s",
+            nf_properties.version,
+            nf_properties.name,
         )
         assert isinstance(self.aosm_client, HybridNetworkManagementClient)
         nfdv_object = self.aosm_client.network_function_definition_versions.get(

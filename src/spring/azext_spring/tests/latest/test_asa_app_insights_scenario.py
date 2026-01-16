@@ -41,7 +41,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
 
     def test_create_asc_heavy_cases(self):
         self.kwargs.update({
-            'serviceName': 'cli-unittest',
+            'serviceName': 'cli-unittest-12',
             'SKU': 'Basic',
             'location': 'eastus2',
             'rg': 'cli',
@@ -154,7 +154,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
 
     def test_asc_update(self):
         self.kwargs.update({
-            'serviceName': 'cli-unittest10',
+            'serviceName': 'cli-unittest11',
             'rg': 'cli',
             'shared_ai_name': 'cli_scenario_test_202207021820'
         })
@@ -206,7 +206,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
 
     def test_asc_app_insights_update(self):
         self.kwargs.update({
-            'serviceName': 'cli-unittest10',
+            'serviceName': 'cli-unittest11',
             'rg': 'cli',
             'shared_ai_name': 'cli_scenario_test_202207021820'
         })
@@ -348,11 +348,11 @@ class AzureSpringCloudCreateTests(ScenarioTest):
 
     def _test_app_insights_enable_status(self, rg, service_name, target_status):
         result = self.cmd('spring app-insights show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
-        self.assertEquals(result['traceEnabled'], target_status)
+        self.assertEqual(result['traceEnabled'], target_status)
 
     def _test_sampling_rate(self, rg, service_name, target_sampling_rate):
         result = self.cmd('spring app-insights show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
-        self.assertEquals(result['appInsightsSamplingRate'], target_sampling_rate)
+        self.assertEqual(result['appInsightsSamplingRate'], target_sampling_rate)
 
     def _asc_update_disable_ai(self, rg, service_name):
         self.cmd('spring update -g {} -n {} --disable-app-insights --no-wait'.format(rg, service_name))

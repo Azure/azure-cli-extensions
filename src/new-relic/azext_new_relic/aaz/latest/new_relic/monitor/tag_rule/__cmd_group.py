@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor tag-rule",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage tag rule of a NewRelic Monitor resource
+    """Provides a set of commands to manage tag rules for New Relic monitor resources, allowing you to control which Azure resources are monitored based on their tags.
     """
     pass
 

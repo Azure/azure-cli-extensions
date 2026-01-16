@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import re
+import time
+import os
 from knack.prompting import prompt, prompt_y_n, NoTTYException
 from knack.log import get_logger
 from azure.cli.core import telemetry
@@ -12,10 +14,10 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
 )
 from azure.cli.command_modules.serviceconnector._utils import (
-    run_cli_cmd as run_cli_cmd_base,
     should_load_source as should_load_source_base
 )
 from ._resource_config import PASSWORDLESS_SOURCE_RESOURCES
+from azure.cli.core import get_default_cli
 
 logger = get_logger(__name__)
 
@@ -46,6 +48,34 @@ def run_cli_cmd(cmd, retry=0, interval=0, should_retry_func=None, should_return_
         telemetry.set_exception(
             e, "Cli-Command-Fail-" + cmd.split(" -")[0].strip() + '-' + error_code)
         raise e
+
+
+def run_cli_cmd_base(cmd, retry=0, interval=0, should_retry_func=None):
+    '''Run a CLI command
+    :param cmd: The CLI command to be executed
+    :param retry: The times to re-try
+    :param interval: The seconds wait before retry
+    '''
+    output = _in_process_execute(cmd)
+
+    if output.error or (should_retry_func and should_retry_func(output)):
+        if retry:
+            time.sleep(interval)
+            return run_cli_cmd(cmd, retry - 1, interval)
+        raise CLIInternalError('Command execution failed, command is: '
+                               '{}, error message is: \n {}'.format(cmd, output.error))
+    return output.result
+
+
+def _in_process_execute(command):
+    import shlex
+
+    if command.startswith('az '):
+        command = command[3:]
+
+    cli = get_default_cli()
+    cli.invoke(shlex.split(command), out_file=open(os.devnull, 'w'))  # Don't print output
+    return cli.result
 
 
 # pylint: disable=broad-except, line-too-long
@@ -107,4 +137,16 @@ def confirm_admin_set():
         telemetry.set_exception(e, "No-TTY")
         logger.warning(
             'Unable to prompt for confirmation as no tty available. Use --yes to enable the operation.')
+        return False
+
+
+def is_packaged_installed(package_name):
+    """Check if a package is installed in the current Python environment."""
+    try:
+        __import__(package_name)
+        return True
+    except ImportError:
+        return False
+    except Exception as e:
+        logger.error("Error checking for package %s: %s", package_name, str(e))
         return False

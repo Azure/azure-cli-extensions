@@ -1,0 +1,343 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "sasikwsestoragee0dc2ea37", "containerName": "azureml-blobstore-c2d2b02b-3250-4809-be79-86cf1ca775ec",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "None"}, "systemData": {"createdAt": "2019-10-08T20:28:47.663599Z", "lastModifiedAt":
+        "2019-10-08T20:28:47.663599Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '782'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 28 Jun 2022 03:34:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.384'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "79464072dfcbd3f70c512756abb39d2c0230d85bf14f1b122384a8590c4640c4"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 28 Jun 2022 03:34:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.270'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.11.0 Python/3.7.10 (Windows-10-10.0.19041-SP0)
+      x-ms-date:
+      - Tue, 28 Jun 2022 03:34:23 GMT
+      x-ms-version:
+      - '2021-04-10'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/train/MLTable
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Tue, 28 Jun 2022 03:34:23 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2021-04-10'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: "paths:\r\n  - file: https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/machineData.csv\r\ntransformations:\r\n
+      \ - read_delimited:\r\n      delimiter: ','\r\n      encoding: 'ascii'\r\n      empty_as_string:
+      false"
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '232'
+      Content-Type:
+      - application/octet-stream
+      If-None-Match:
+      - '*'
+      User-Agent:
+      - azsdk-python-storage-blob/12.11.0 Python/3.7.10 (Windows-10-10.0.19041-SP0)
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-date:
+      - Tue, 28 Jun 2022 03:34:24 GMT
+      x-ms-version:
+      - '2021-04-10'
+    method: PUT
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/train/MLTable
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Tue, 28 Jun 2022 03:34:24 GMT
+      etag:
+      - '"0x8DA58B718FD85B2"'
+      last-modified:
+      - Tue, 28 Jun 2022 03:34:24 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-content-crc64:
+      - SwRHt3kgOeg=
+      x-ms-request-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-04-10'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azsdk-python-storage-blob/12.11.0 Python/3.7.10 (Windows-10-10.0.19041-SP0)
+      x-ms-date:
+      - Tue, 28 Jun 2022 03:34:24 GMT
+      x-ms-meta-name:
+      - aefe89ee-c94b-439f-8ffa-733d2161cc69
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - 841a9a56-6337-4628-a9ad-024696f01b2f
+      x-ms-version:
+      - '2021-04-10'
+    method: PUT
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/train/MLTable?se=0000-00-00T00&sp=rt&sv=0000-00-00&sr=b&sig=000000000000000
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Tue, 28 Jun 2022 03:34:24 GMT
+      etag:
+      - '"0x8DA58B719241C30"'
+      last-modified:
+      - Tue, 28 Jun 2022 03:34:25 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-request-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-04-10'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"properties": {"mlflow.source.git.repoURL": "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+      "mlflow.source.git.branch": "ayushmishra/bu1788024", "mlflow.source.git.commit":
+      "d377f1ea91a7c4606099b25670c5bd7ab8d7b1e2", "azureml.git.dirty": "True"}, "tags":
+      {}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sasik_rg/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/computes/cpu-cluster",
+      "displayName": "test-amlregjob-000015-1", "experimentName": "cli_e2e_test",
+      "isArchived": false, "jobType": "AutoML", "outputs": {}, "taskDetails": {"dataSettings":
+      {"targetColumnName": "ERP", "testData": {}, "trainingData": {"data": {"uri":
+      "azureml://datastores/workspaceblobstore/paths/LocalUpload/dbd2f27d41d8ee08011d83b39ac3cbf4/train",
+      "jobInputType": "MLTable"}}, "validationData": {}}, "featurizationSettings":
+      {"mode": "custom", "transformerParams": {"imputer": [{"fields": ["MYCT"], "parameters":
+      {"strategy": "mean"}}]}}, "limitSettings": {"enableEarlyTermination": true,
+      "exitScore": 0.85, "maxConcurrentTrials": 2, "maxTrials": 2, "timeout": "PT3H",
+      "trialTimeout": "PT20M"}, "trainingSettings": {"enableStackEnsemble": false,
+      "enableVoteEnsemble": false, "blockedTrainingAlgorithms": ["ElasticNet", "LassoLars", "XGBoostRegressor"]}, "logVerbosity": "Debug", "taskType": "Regression",
+       "primaryMetric":
+      "R2Score"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1404'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.10 (Windows-10-10.0.19041-SP0)
+      x-azureml-token:
+      - <dummyToken>
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs/test-amlregjob-000015-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/jobs/test-amlregjob-000015-1",
+        "name": "test-amlregjob-000015-1", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {}, "properties": {"mlflow.source.git.repoURL":
+        "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "ayushmishra/bu1788024", "mlflow.source.git.commit":
+        "d377f1ea91a7c4606099b25670c5bd7ab8d7b1e2", "azureml.git.dirty": "True"},
+        "displayName": "test-amlregjob-000015-1", "status": "NotStarted", "experimentName":
+        "cli_e2e_test", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus2.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2?",
+        "status": null, "errorMessage": null, "properties": null}, "Studio": {"jobServiceType":
+        "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/test-amlregjob-000015-1?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sasik_rg/workspaces/sasik_ws_eastus2",
+        "status": null, "errorMessage": null, "properties": null}}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/computes/cpu-cluster",
+        "isArchived": false, "schedule": null, "identity": null, "jobType": "AutoML",
+        "resources": {"instanceCount": 1, "instanceType": null, "properties": null},
+        "environmentId": null, "environmentVariables": null, "taskDetails": {"logVerbosity":
+        "Debug", "limitSettings": {"maxTrials": 2, "trialTimeout": "PT20M", "timeout":
+        "PT3H", "maxConcurrentTrials": 2, "maxCoresPerTrial": -1, "exitScore": 0.85,
+        "enableEarlyTermination": true}, "dataSettings": {"targetColumnName": "ERP",
+        "trainingData": {"data": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/dbd2f27d41d8ee08011d83b39ac3cbf4/train",
+        "mode": "ReadOnlyMount", "jobInputType": "MLTable"}}, "testData": {"data":
+        null, "testDataSize": null}, "weightColumnName": null, "validationData": {"data":
+        null, "validationDataSize": null, "nCrossValidations": null, "cvSplitColumnNames":
+        null}}, "featurizationSettings": {"datasetLanguage": null, "mode": "Custom",
+        "blockedTransformers": null, "columnNameAndTypes": null, "dropColumns": null,
+        "transformerParams": {"imputer": [{"fields": ["MYCT"], "parameters": {"strategy":
+        "mean"}}]}, "enableDnnFeaturization": false}, "trainingSettings": {"enableOnnxCompatibleModels":
+        false, "stackEnsembleSettings": null, "enableStackEnsemble": false, "enableVoteEnsemble":
+        false, "ensembleModelDownloadTimeout": "PT5M", "enableModelExplainability":
+        false, "enableDnnTraining": false, "allowedTrainingAlgorithms": null, "blockedTrainingAlgorithms": ["ElasticNet", "LassoLars",
+        "XGBoostRegressor"]}, "taskType": "Regression", "primaryMetric": "R2Score"}, "outputs": {}}, "systemData": {"createdAt": "2022-06-28T03:34:30.2734955Z",
+        "createdBy": "Ayush Mishra", "createdByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3213'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 28 Jun 2022 03:34:30 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sasik_rg/providers/Microsoft.MachineLearningServices/workspaces/sasik_ws_eastus2/jobs/test-amlregjob-000015-1?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.041'
+    status:
+      code: 201
+      message: Created
+version: 1

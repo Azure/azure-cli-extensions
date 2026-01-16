@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/datastores/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/datastores/{}", "2024-09-01"],
         ]
     }
 
@@ -47,7 +47,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.datastore_name = AAZStrArg(
@@ -56,7 +56,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.private_cloud = AAZStrArg(
@@ -65,7 +65,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -146,7 +146,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -210,7 +210,12 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.status = AAZStrType()
+            properties.pure_storage_volume = AAZObjectType(
+                serialized_name="pureStorageVolume",
+            )
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
 
             disk_pool_volume = cls._schema_on_200.properties.disk_pool_volume
             disk_pool_volume.lun_name = AAZStrType(
@@ -236,6 +241,16 @@ class Show(AAZCommand):
 
             net_app_volume = cls._schema_on_200.properties.net_app_volume
             net_app_volume.id = AAZStrType(
+                flags={"required": True},
+            )
+
+            pure_storage_volume = cls._schema_on_200.properties.pure_storage_volume
+            pure_storage_volume.size_gb = AAZIntType(
+                serialized_name="sizeGb",
+                flags={"required": True},
+            )
+            pure_storage_volume.storage_pool_id = AAZStrType(
+                serialized_name="storagePoolId",
                 flags={"required": True},
             )
 

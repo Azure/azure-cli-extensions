@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaps/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaps/{}", "2025-07-15"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Show(AAZCommand):
             help="Name of the Network Tap.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -120,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -156,6 +159,7 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -174,6 +178,37 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.properties
             properties.administrative_state = AAZStrType(
                 serialized_name="administrativeState",
@@ -187,9 +222,18 @@ class Show(AAZCommand):
             properties.destinations = AAZListType(
                 flags={"required": True},
             )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
+            properties.network_fabric_ids = AAZListType(
+                serialized_name="networkFabricIds",
+                flags={"read_only": True},
+            )
             properties.network_packet_broker_id = AAZStrType(
                 serialized_name="networkPacketBrokerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.polling_type = AAZStrType(
                 serialized_name="pollingType",
@@ -200,6 +244,7 @@ class Show(AAZCommand):
             )
             properties.source_tap_rule_id = AAZStrType(
                 serialized_name="sourceTapRuleId",
+                nullable=True,
                 flags={"read_only": True},
             )
 
@@ -210,9 +255,11 @@ class Show(AAZCommand):
             _element.destination_id = AAZStrType(
                 serialized_name="destinationId",
                 flags={"required": True},
+                nullable=True,
             )
             _element.destination_tap_rule_id = AAZStrType(
                 serialized_name="destinationTapRuleId",
+                nullable=True,
             )
             _element.destination_type = AAZStrType(
                 serialized_name="destinationType",
@@ -232,7 +279,19 @@ class Show(AAZCommand):
             )
 
             neighbor_group_ids = cls._schema_on_200.properties.destinations.Element.isolation_domain_properties.neighbor_group_ids
-            neighbor_group_ids.Element = AAZStrType()
+            neighbor_group_ids.Element = AAZStrType(
+                nullable=True,
+            )
+
+            last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            network_fabric_ids = cls._schema_on_200.properties.network_fabric_ids
+            network_fabric_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

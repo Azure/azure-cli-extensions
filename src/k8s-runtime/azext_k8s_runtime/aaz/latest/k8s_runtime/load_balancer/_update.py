@@ -16,12 +16,18 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a LoadBalancer
+
+    :example: Update a load balancer advertise mode
+        az k8s-runtime load-balancer update --load-balancer-name testlb1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --advertise-mode ARP
+
+    :example: Update a load balancer IP address
+        az k8s-runtime load-balancer update --load-balancer-name testlb1 --resource-uri subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/example/providers/Microsoft.Kubernetes/connectedClusters/cluster1 --addresses "192.168.50.1/32"
     """
 
     _aaz_info = {
-        "version": "2024-03-01",
+        "version": "2024-08-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/loadbalancers/{}", "2024-03-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/loadbalancers/{}", "2024-08-01"],
         ]
     }
 
@@ -56,6 +62,59 @@ class Update(AAZCommand):
             options=["--resource-uri"],
             help="The fully qualified Azure Resource manager identifier of the resource.",
             required=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.addresses = AAZListArg(
+            options=["--addresses"],
+            arg_group="Properties",
+            help="IP Range",
+        )
+        _args_schema.advertise_mode = AAZStrArg(
+            options=["--advertise-mode"],
+            arg_group="Properties",
+            help="Advertise Mode",
+            enum={"ARP": "ARP", "BGP": "BGP", "Both": "Both"},
+        )
+        _args_schema.bgp_peers = AAZListArg(
+            options=["--bgp-peers"],
+            arg_group="Properties",
+            help="The list of BGP peers it should advertise to. Null or empty means to advertise to all peers.",
+            nullable=True,
+        )
+        _args_schema.communities = AAZListArg(
+            options=["--communities"],
+            arg_group="Properties",
+            help="BGP Communities",
+            nullable=True,
+        )
+        _args_schema.service_selector = AAZDictArg(
+            options=["--service-selector"],
+            arg_group="Properties",
+            help="A dynamic label mapping to select related services. For instance, if you want to create a load balancer only for services with label \"a=b\", then please specify {\"a\": \"b\"} in the field.",
+            nullable=True,
+        )
+
+        addresses = cls._args_schema.addresses
+        addresses.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        bgp_peers = cls._args_schema.bgp_peers
+        bgp_peers.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        communities = cls._args_schema.communities
+        communities.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        service_selector = cls._args_schema.service_selector
+        service_selector.Element = AAZStrArg(
+            nullable=True,
         )
         return cls._args_schema
 
@@ -134,7 +193,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2024-08-01",
                     required=True,
                 ),
             }
@@ -230,7 +289,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01",
+                    "api-version", "2024-08-01",
                     required=True,
                 ),
             }
@@ -288,6 +347,31 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("addresses", AAZListType, ".addresses", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("advertiseMode", AAZStrType, ".advertise_mode", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("bgpPeers", AAZListType, ".bgp_peers")
+                properties.set_prop("communities", AAZListType, ".communities")
+                properties.set_prop("serviceSelector", AAZDictType, ".service_selector")
+
+            addresses = _builder.get(".properties.addresses")
+            if addresses is not None:
+                addresses.set_elements(AAZStrType, ".")
+
+            bgp_peers = _builder.get(".properties.bgpPeers")
+            if bgp_peers is not None:
+                bgp_peers.set_elements(AAZStrType, ".")
+
+            communities = _builder.get(".properties.communities")
+            if communities is not None:
+                communities.set_elements(AAZStrType, ".")
+
+            service_selector = _builder.get(".properties.serviceSelector")
+            if service_selector is not None:
+                service_selector.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -324,9 +408,7 @@ class _UpdateHelper:
         load_balancer_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        load_balancer_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
+        load_balancer_read.properties = AAZObjectType()
         load_balancer_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
@@ -346,6 +428,7 @@ class _UpdateHelper:
         properties.bgp_peers = AAZListType(
             serialized_name="bgpPeers",
         )
+        properties.communities = AAZListType()
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
@@ -359,6 +442,9 @@ class _UpdateHelper:
 
         bgp_peers = _schema_load_balancer_read.properties.bgp_peers
         bgp_peers.Element = AAZStrType()
+
+        communities = _schema_load_balancer_read.properties.communities
+        communities.Element = AAZStrType()
 
         service_selector = _schema_load_balancer_read.properties.service_selector
         service_selector.Element = AAZStrType()

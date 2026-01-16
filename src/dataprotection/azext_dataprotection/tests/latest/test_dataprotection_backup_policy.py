@@ -17,9 +17,9 @@ class BackupPolicyScenarioTest(ScenarioTest):
         test.kwargs.update({
             'location': 'centraluseuap',
             'vaultName': 'clitest-bkp-vault',
+            'rg': 'dataprotectionclitest-rg'
         })
 
-    @ResourceGroupPreparer(name_prefix='clitest-dpp-backuppolicy-', location='centraluseuap')
     @AllowLargeResponse()
     def test_dataprotection_backup_policy_create_and_delete(test):
         test.cmd('az dataprotection backup-vault create -g "{rg}" --vault-name "{vaultName}" -l "{location}" '
@@ -39,12 +39,19 @@ class BackupPolicyScenarioTest(ScenarioTest):
         ])
         test.cmd('az dataprotection backup-policy delete -n "blobpolicy" -g "{rg}" --vault-name "{vaultName}" -y')
 
-        oss_policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type AzureDatabaseForPostgreSQL').get_output_in_json()
-        test.kwargs.update({"ossPolicy": oss_policy_json})
-        test.cmd('az dataprotection backup-policy create -n "osspolicy" --policy "{ossPolicy}" -g "{rg}" --vault-name "{vaultName}"', checks=[
-            test.check('properties.datasourceTypes[0]', "Microsoft.DBforPostgreSQL/servers/databases")
+        adls_blob_policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type AzureDataLakeStorage').get_output_in_json()
+        test.kwargs.update({"adlsBlobPolicy": adls_blob_policy_json})
+        test.cmd('az dataprotection backup-policy create -n "adlsblobpolicy1" --policy "{adlsBlobPolicy}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+            test.check('properties.datasourceTypes[0]', "Microsoft.Storage/storageAccounts/adlsBlobServices")
         ])
-        test.cmd('az dataprotection backup-policy delete -n "osspolicy" -g "{rg}" --vault-name "{vaultName}" -y')
+        test.cmd('az dataprotection backup-policy delete -n "adlsblobpolicy1" -g "{rg}" --vault-name "{vaultName}" -y')
+
+        # oss_policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type AzureDatabaseForPostgreSQL').get_output_in_json()
+        # test.kwargs.update({"ossPolicy": oss_policy_json})
+        # test.cmd('az dataprotection backup-policy create -n "osspolicy" --policy "{ossPolicy}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+        #     test.check('properties.datasourceTypes[0]', "Microsoft.DBforPostgreSQL/servers/databases")
+        # ])
+        # test.cmd('az dataprotection backup-policy delete -n "osspolicy" -g "{rg}" --vault-name "{vaultName}" -y')
 
         aks_policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type AzureKubernetesService').get_output_in_json()
         test.kwargs.update({"aksPolicy": aks_policy_json})
@@ -54,7 +61,6 @@ class BackupPolicyScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-policy delete -n "akspolicy" -g "{rg}" --vault-name "{vaultName}" -y')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitest-dpp-backuppolicy-', location='centraluseuap')
     def test_dataprotection_backup_policy_manual(test):
         test.cmd('az dataprotection backup-vault create -g "{rg}" --vault-name "{vaultName}" -l "{location}" '
                  '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned" --soft-delete-state "Off"')

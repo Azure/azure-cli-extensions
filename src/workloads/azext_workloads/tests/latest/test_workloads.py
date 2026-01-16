@@ -6,329 +6,469 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
+import json
+import time
 
 from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+ENV_FILE = os.path.join(TEST_DIR, 'data', 'env.json')
 
 
-class WorkloadsScenario(ScenarioTest):
-    def test_workloads_svi(self):
-        self.kwargs.update({
-            'name': 'C36',
-            'configuration': os.path.join(TEST_DIR, 'create_infra_distributed_non_ha_config.json'),
-            'msi': os.path.join(TEST_DIR, 'MSI.json')
-        })
+class WorkloadsSapVirtualInstanceScenario(ScenarioTest):
+    # Function to load parameters from JSON file
+    def load_env(self, LOAD_ENV_FILE):
+        with open(LOAD_ENV_FILE, 'r') as f:
+            envs = json.load(f)
+        return envs
 
-        self.cmd('az workloads sap-virtual-instance create -g CLI-TESTING -n {name} --environment NonProd --sap-product S4HANA --configuration "{configuration}" --identity "{msi}"', checks=[
-            self.check('name', '{name}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
-            self.check('sapProduct', 'S4HANA'),
-            self.check('environment', 'NonProd'),
-            self.check('provisioningState', 'Succeeded'),
-            self.check('configuration.configurationType', 'DeploymentWithOSConfig'),
-            self.check('configuration.infrastructureConfiguration.deploymentType', 'ThreeTier')
+    # Common function to load parameters and update kwargs
+    def load_and_update_kwargs(self, env_file):
+        envs = self.load_env(env_file)
+        for key, value in envs.items():
+            self.kwargs[key] = os.path.join(TEST_DIR, 'data', value) if 'Path' in key else value
+
+    def test_workloads_distributed_ha_avset_difftransrgShare(self):
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+        self.cmd('az workloads sap-virtual-instance create -g {ResourceGroupCreateSVI} -n {CreateDistributedHAAvSetDiffTransRgShareSID} --environment {EnviornmentNonProd} --sap-product {SapProduct} --location {Location} --configuration "{CreateDistributedHAAvSetDiffTransRgShareConfigPath}" --identity "{MsiPath}"', checks=[
+            self.check('name', '{CreateDistributedHAAvSetDiffTransRgShareSID}'),
+            self.check('resourceGroup', '{ResourceGroupCreateSVI}'),
+            self.check('sapProduct', '{SapProduct}'),
+            self.check('environment', '{EnviornmentNonProd}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}')
+        ])
+        
+    def test_workloads_distributed_ha_avzone_cusrestrustedtransshare(self):
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+
+        # Create Distributed HA AvZone with Custom Resource Trusted Access TransShare
+        self.cmd('az workloads sap-virtual-instance create -g {ResourceGroupCreateSVI} -n {CreateDistributedHAAvZoneWithCustomResourceTrustedAccessTransShareSID} --environment {EnviornmentNonProd} --sap-product {SapProduct} --location {Location} --configuration "{CreateDistributedHAAvZoneWithCustomResourceTrustedAccessTransShareConfigPath}" --identity "{MsiPath}" --managed-resources-network-access-type {MrgNetAccTypPrvt}', checks=[
+            self.check('name', '{CreateDistributedHAAvZoneWithCustomResourceTrustedAccessTransShareSID}'),
+            self.check('resourceGroup', '{ResourceGroupCreateSVI}'),
+            self.check('sapProduct', '{SapProduct}'),
+            self.check('environment', '{EnviornmentNonProd}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('managedResourcesNetworkAccessType', '{MrgNetAccTypPrvt}'),
+            self.check('configuration.infrastructureConfiguration.storageConfiguration.transportFileShareConfiguration.configurationType', '{MountTransShareConfigType}')
         ])
 
-    def test_workloads_svi_install(self):
-        self.kwargs.update({
-            'name': 'C36',
-            'configuration': os.path.join(TEST_DIR, 'InstallPayload.json'),
-            'msi': os.path.join(TEST_DIR, 'MSI.json')
-        })
+        # Install Distributed HA AvZone with Custom Resource Trusted Access TransShare
+        self.cmd('az workloads sap-virtual-instance create -g {ResourceGroupCreateSVI} -n {CreateDistributedHAAvZoneWithCustomResourceTrustedAccessTransShareSID} --environment {EnviornmentNonProd} --sap-product {SapProduct} --location {Location} --configuration "{InstallDistributedHAAvZoneWithCustomResourceTrustedAccessTransShareConfigPath}" --identity "{MsiPath}" --managed-resources-network-access-type {MrgNetAccTypPrvt}', checks=[
+            self.check('name', '{CreateDistributedHAAvZoneWithCustomResourceTrustedAccessTransShareSID}'),
+            self.check('resourceGroup', '{ResourceGroupCreateSVI}'),
+            self.check('sapProduct', '{SapProduct}'),
+            self.check('environment', '{EnviornmentNonProd}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}')
+        ])
 
-        self.cmd('az workloads sap-virtual-instance create -g CLI-TESTING -n {name} --environment NonProd --sap-product S4HANA --configuration "{configuration}" --identity "{msi}"', checks=[
-            self.check('name', '{name}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
-            self.check('sapProduct', 'S4HANA'),
-            self.check('environment', 'NonProd'),
-            self.check('provisioningState', 'Succeeded')
+    def test_workloads_distributed_trustedaccessnotransshare(self):
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+
+        # Create Distributed System with Trusted Access NoTransShare
+        self.cmd('az workloads sap-virtual-instance create -g {ResourceGroupCreateSVI} -n {CreateDistributedSystemWithTrustedAccessNoTransShareSID} --environment {EnviornmentNonProd} --sap-product {SapProduct} --location {Location} --configuration "{CreateDistributedSystemWithTrustedAccessNoTransShareConfigPath}" --identity "{MsiPath}" --managed-resources-network-access-type {MrgNetAccTypPrvt}', checks=[
+            self.check('name', '{CreateDistributedSystemWithTrustedAccessNoTransShareSID}'),
+            self.check('resourceGroup', '{ResourceGroupCreateSVI}'),
+            self.check('sapProduct', '{SapProduct}'),
+            self.check('environment', '{EnviornmentNonProd}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('managedResourcesNetworkAccessType', '{MrgNetAccTypPrvt}')
+        ])
+
+    def test_workloads_singlesystem_cusrestrusted(self):
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+
+        # Create Single System with Custom Resource Trusted Access
+        self.cmd('az workloads sap-virtual-instance create -g {ResourceGroupCreateSVI} -n {CreateSingleSystemWithCustomResourceTrustedAccessSID} --environment {EnviornmentNonProd} --sap-product {SapProduct} --location {Location} --configuration "{CreateSingleSystemWithCustomResourceTrustedAccessConfigPath}" --tags {TestType}={TestTypeValue} --identity "{MsiPath}" --managed-resources-network-access-type {MrgNetAccTypPrvt}', checks=[
+            self.check('name', '{CreateSingleSystemWithCustomResourceTrustedAccessSID}'),
+            self.check('resourceGroup', '{ResourceGroupCreateSVI}'),
+            self.check('sapProduct', '{SapProduct}'),
+            self.check('environment', '{EnviornmentNonProd}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('managedResourcesNetworkAccessType', '{MrgNetAccTypPrvt}'),
+            self.check('tags.{TestType}', '{TestTypeValue}')
+        ])
+
+        # Install Single System with Custom Resource Trusted Access
+        self.cmd('az workloads sap-virtual-instance create -g {ResourceGroupCreateSVI} -n {CreateSingleSystemWithCustomResourceTrustedAccessSID} --environment {EnviornmentNonProd} --sap-product {SapProduct} --location {Location} --configuration "{InstallSingleSystemWithCustomResourceTrustedAccessConfigPath}" --identity "{MsiPath}" --managed-resources-network-access-type {MrgNetAccTypPrvt}', checks=[
+            self.check('name', '{CreateSingleSystemWithCustomResourceTrustedAccessSID}'),
+            self.check('resourceGroup', '{ResourceGroupCreateSVI}'),
+            self.check('sapProduct', '{SapProduct}'),
+            self.check('environment', '{EnviornmentNonProd}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}')
+        ])
+    
+    def test_workloads_singlesystem_notrusted(self):
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+
+        # Create Single System with No Trusted Access
+        self.cmd('az workloads sap-virtual-instance create -g {ResourceGroupCreateSVI} -n {CreateSingleSystemWithNoTrustedAccessSID} --environment {EnviornmentNonProd} --sap-product {SapProduct} --location {Location} --configuration "{CreateSingleSystemWithNoTrustedAccessConfigPath}" --identity "{MsiPath}"', checks=[
+            self.check('name', '{CreateSingleSystemWithNoTrustedAccessSID}'),
+            self.check('resourceGroup', '{ResourceGroupCreateSVI}'),
+            self.check('sapProduct', '{SapProduct}'),
+            self.check('environment', '{EnviornmentNonProd}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}')
         ])
 
     def test_workloads_svi_show(self):
-        self.kwargs.update({
-            'name': 'C36',
-            'appservername': 'c36appvm0-0',
-            'csservername': 'c36ascsvm-0',
-            'dbservername': 'C36'
-        })
-        self.cmd('workloads sap-virtual-instance show -g CLI-TESTING -n {name}', checks=[
-            self.check('name', '{name}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
-            self.check('sapProduct', 'S4HANA'),
-            self.check('environment', 'NonProd'),
-            self.check('provisioningState', 'Succeeded'),
-            self.check('status', 'Running'),
-            self.check('health', 'Healthy')
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+
+        # Show the SAP Virtual Instance
+        self.cmd('workloads sap-virtual-instance show -g {ResourceGroupCreateSVI} -n {ShowVISID}', checks=[
+            self.check('name', '{ShowVISID}'),
+            self.check('resourceGroup', '{ResourceGroupCreateSVI}'),
+            self.check('sapProduct', '{SapProduct}'),
+            self.check('environment', '{EnviornmentNonProd}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('status', '{VisStatusRunning}'),
+            self.check('health', '{VishealthHealthy}')
         ])
 
-        self.cmd('workloads sap-virtual-instance list -g CLI-TESTING', checks=[
-            self.check('[0].name', '{name}'),
-            self.check('[0].resourceGroup', 'CLI-TESTING'),
-            self.check('[0].sapProduct', 'S4HANA'),
-            self.check('[0].environment', 'NonProd'),
-            self.check('[0].provisioningState', 'Succeeded'),
-            self.check('[0].status', 'Running'),
-            self.check('[0].health', 'Healthy')
+        # List the SAP Virtual Instance
+        self.cmd('workloads sap-virtual-instance list -g {ResourceGroupCreateSVI}', checks=[
+            self.exists('[0].name'),
+            self.check('[0].resourceGroup', '{ResourceGroupCreateSVI}'),
+            self.check('[0].sapProduct', '{SapProduct}'),
+            self.check('[0].environment', '{EnviornmentNonProd}'),
+            self.check('[0].provisioningState', '{ProvisioningStateSucceeded}')
         ])
 
-        self.cmd('workloads sap-central-instance show --sap-virtual-instance-name {name} -g CLI-TESTING -n {csservername}', checks=[
-            self.check('name', '{csservername}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
-            self.check('provisioningState', 'Succeeded'),
-            self.check('status', 'Running'),
-            self.check('health', 'Healthy')
+        # Show the SAP Central Instance
+        self.cmd('workloads sap-central-instance show --sap-virtual-instance-name {ShowVISID} -g {ResourceGroupCreateSVI} -n {ShowCSID}', checks=[
+            self.check('name', '{ShowCSID}'),
+            self.check('resourceGroup', '{ResourceGroupCreateSVI}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('status', '{VisStatusRunning}'),
+            self.check('health', '{VishealthHealthy}')
         ])
 
-        self.cmd('workloads sap-application-server-instance show --sap-virtual-instance-name {name} -g CLI-TESTING -n {appservername}', checks=[
-            self.check('name', '{appservername}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
-            self.check('provisioningState', 'Succeeded'),
-            self.check('status', 'Running'),
-            self.check('health', 'Healthy')
+        # Show the SAP Application Server Instance
+        self.cmd('workloads sap-application-server-instance show --sap-virtual-instance-name {ShowVISID} -g {ResourceGroupCreateSVI} -n {ShowAppID}', checks=[
+            self.check('name', '{ShowAppID}'),
+            self.check('resourceGroup', '{ResourceGroupCreateSVI}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('status', '{VisStatusRunning}'),
+            self.check('health', '{VishealthHealthy}')
         ])
 
-        self.cmd('workloads sap-database-instance show --sap-virtual-instance-name {name} -g CLI-TESTING -n {dbservername}', checks=[
-            self.check('name', '{dbservername}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
-            self.check('provisioningState', 'Succeeded'),
-            self.check('status', 'Running')
+        # Show the SAP Database Instance
+        self.cmd('workloads sap-database-instance show --sap-virtual-instance-name {ShowVISID} -g {ResourceGroupCreateSVI} -n {ShowDBID}', checks=[
+            self.check('name', '{ShowDBID}'),
+            self.check('resourceGroup', '{ResourceGroupCreateSVI}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('status', '{VisStatusRunning}')
         ])
 
     def test_workloads_svi_childinstances_stop(self):
-        self.kwargs.update({
-            'name': 'C36',
-            'appservername': 'c36appvm0-0',
-            'csservername': 'c36ascsvm-0',
-            'dbservername': 'C36'
-        })
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
 
-        self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername}', checks=[
-            self.check('status', 'Succeeded')
+        # Stop the SAP Application Server Instance
+        self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --application-instance-name {OpsAppID}', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
-        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername}', checks=[
-            self.check('status', 'Succeeded')
+        # Stop the SAP Central Instance
+        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --central-instance-name {OpsCSID}', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
-        self.cmd('workloads sap-database-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername}', checks=[
-            self.check('status', 'Succeeded')
+        # Stop the SAP Database Instance
+        self.cmd('workloads sap-database-instance stop --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --database-instance-name {OpsDBID}', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
     def test_workloads_svi_childinstances_soft_stop(self):
-        self.kwargs.update({
-            'name': 'C36',
-            'appservername': 'c36appvm0-0',
-            'csservername': 'c36ascsvm-0',
-            'dbservername': 'C36'
-        })
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
 
-        self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername} --soft-stop-timeout-seconds 300', checks=[
-            self.check('status', 'Succeeded')
+        # Soft Stop the SAP Application Server Instance
+        self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --application-instance-name {OpsAppID} --soft-stop-timeout-seconds {SoftStopTimeoutSecond}', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
-        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername}', checks=[
-            self.check('status', 'Succeeded')
+        # Stop the SAP Central Instance
+        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --central-instance-name {OpsCSID}', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
-        self.cmd('workloads sap-database-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername} --soft-stop-timeout-seconds 300', checks=[
-            self.check('status', 'Succeeded')
+        # Soft Stop the SAP Database Instance
+        self.cmd('workloads sap-database-instance stop --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --database-instance-name {OpsDBID} --soft-stop-timeout-seconds {SoftStopTimeoutSecond}', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
     def test_workloads_svi_childinstances_stop_with_infra(self):
-        self.kwargs.update({
-            'name': 'C36',
-            'appservername': 'c36appvm0-0',
-            'csservername': 'c36ascsvm-0',
-            'dbservername': 'C36'
-        })
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
 
-        self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername} --deallocate-vm', checks=[
-            self.check('status', 'Succeeded')
+        # Stop the SAP Application Server Instance with Deallocate VM
+        self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --application-instance-name {OpsAppID} --deallocate-vm', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
-        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername} --deallocate-vm', checks=[
-            self.check('status', 'Succeeded')
+        # Wait for 5 minutes
+        time.sleep(300)
+        
+        # Stop the SAP Database Instance with Deallocate VM
+        self.cmd('workloads sap-database-instance stop --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --database-instance-name {OpsDBID} --deallocate-vm', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
-        self.cmd('workloads sap-database-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername} --deallocate-vm', checks=[
-            self.check('status', 'Succeeded')
+        # Stop the SAP Central Instance with Deallocate VM
+        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --central-instance-name {OpsCSID} --deallocate-vm', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
     def test_workloads_svi_childinstances_start_with_infra(self):
-        self.kwargs.update({
-            'name': 'C36',
-            'appservername': 'c36appvm0-0',
-            'csservername': 'c36ascsvm-0',
-            'dbservername': 'C36'
-        })
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
 
-        self.cmd('workloads sap-database-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername} --start-vm', checks=[
-            self.check('status', 'Succeeded')
+        # Start the SAP Central Instance with Start VM
+        self.cmd('workloads sap-central-instance start --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --central-instance-name {OpsCSID} --start-vm', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
+        ])
+        
+        # Start the SAP Database Instance with Start VM
+        self.cmd('workloads sap-database-instance start --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --database-instance-name {OpsDBID} --start-vm', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
-        self.cmd('workloads sap-central-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername} --start-vm', checks=[
-            self.check('status', 'Succeeded')
-        ])
-
-        self.cmd('workloads sap-application-server-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername} --start-vm', checks=[
-            self.check('status', 'Succeeded')
+        # Start the SAP Application Server Instance with Start VM
+        self.cmd('workloads sap-application-server-instance start --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --application-instance-name {OpsAppID} --start-vm', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
     def test_workloads_svi_childinstances_start(self):
-        self.kwargs.update({
-            'name': 'C36',
-            'appservername': 'c36appvm0-0',
-            'csservername': 'c36ascsvm-0',
-            'dbservername': 'C36'
-        })
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
 
-        self.cmd('workloads sap-database-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername}', checks=[
-            self.check('status', 'Succeeded')
+        # Start the SAP Database Instance
+        self.cmd('workloads sap-database-instance start --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --database-instance-name {OpsDBID}', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
-        self.cmd('workloads sap-central-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername}', checks=[
-            self.check('status', 'Succeeded')
+        # Wait for 2 minutes
+        time.sleep(120)
+
+        # Start the SAP Central Instance
+        self.cmd('workloads sap-central-instance start --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --central-instance-name {OpsCSID}', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
-        self.cmd('workloads sap-application-server-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername}', checks=[
-            self.check('status', 'Succeeded')
+        # Start the SAP Application Server Instance
+        self.cmd('workloads sap-application-server-instance start --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --application-instance-name {OpsAppID}', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
     def test_workloads_svi_stop_start(self):
-        self.kwargs.update({
-            'name': 'C36',
-        })
-        self.cmd('workloads sap-virtual-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING', checks=[
-            self.check('status', 'Succeeded')
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+        
+        # Stop the SAP Virtual Instance
+        self.cmd('workloads sap-virtual-instance stop --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG}', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
-        self.cmd('workloads sap-virtual-instance start --sap-virtual-instance-name {name} -g CLI-TESTING', checks=[
-            self.check('status', 'Succeeded')
+        # Start the SAP Virtual Instance
+        self.cmd('workloads sap-virtual-instance start --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG}', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
     def test_workloads_svi_soft_stop(self):
-        self.kwargs.update({
-            'name': 'C36',
-        })
-        self.cmd('workloads sap-virtual-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --soft-stop-timeout-seconds 300', checks=[
-            self.check('status', 'Succeeded')
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+
+        # Soft Stop the SAP Virtual Instance
+        self.cmd('workloads sap-virtual-instance stop --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --soft-stop-timeout-seconds {SoftStopTimeoutSecond}', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
     def test_workloads_svi_stop_with_infra(self):
-        self.kwargs.update({
-            'name': 'C36',
-        })
-        self.cmd('workloads sap-virtual-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --deallocate-vm', checks=[
-            self.check('status', 'Succeeded')
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+
+        # Stop the SAP Virtual Instance with Deallocate VM
+        self.cmd('workloads sap-virtual-instance stop --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --deallocate-vm', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
     def test_workloads_svi_start_with_infra(self):
-        self.kwargs.update({
-            'name': 'C36',
-        })
-        self.cmd('workloads sap-virtual-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --start-vm', checks=[
-            self.check('status', 'Succeeded')
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+
+        # Start the SAP Virtual Instance with Start VM
+        self.cmd('workloads sap-virtual-instance start --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} --start-vm', checks=[
+            self.check('status', '{OperationStatusSucceeded}')
         ])
 
     def test_workloads_svi_update_tags(self):
-        self.kwargs.update({
-            'name': 'C36',
-            'appservername': 'app0',
-            'csservername': 'cs0',
-            'dbservername': 'db0'
-        })
-        self.cmd('workloads sap-virtual-instance update -g CLI-TESTING -n {name} --tags tag=test tag2=test2', checks=[
-            self.check('name', '{name}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
-            self.check('provisioningState', 'Succeeded'),
-            self.check('tags.tag', 'test'),
-            self.check('tags.tag2', 'test2')
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+        
+        # Update tags for SAP Virtual Instance
+        self.cmd('workloads sap-virtual-instance update -g {OpsVISRG} -n {OpsVISID} --tags {TestType}={TestTypeValue}', checks=[
+            self.check('name', '{OpsVISID}'),
+            self.check('resourceGroup', '{OpsVISRG}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('tags.{TestType}', '{TestTypeValue}')
         ])
 
-        self.cmd('workloads sap-central-instance update --sap-virtual-instance-name {name} -g CLI-TESTING -n {csservername} --tags tag=test3 tag2=test4', checks=[
-            self.check('name', '{csservername}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
-            self.check('provisioningState', 'Succeeded'),
-            self.check('tags.tag', 'test3'),
-            self.check('tags.tag2', 'test4')
+        # Update tags for SAP Central Instance
+        self.cmd('workloads sap-central-instance update --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} -n {OpsCSID} --tags {TestType}={TestTypeValue}', checks=[
+            self.check('name', '{OpsCSID}'),
+            self.check('resourceGroup', '{OpsVISRG}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('tags.{TestType}', '{TestTypeValue}')
         ])
 
-        self.cmd('workloads sap-application-server-instance update --sap-virtual-instance-name {name} -g CLI-TESTING -n {appservername} --tags tag=test5 tag2=test6', checks=[
-            self.check('name', '{appservername}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
-            self.check('provisioningState', 'Succeeded'),
-            self.check('tags.tag', 'test5'),
-            self.check('tags.tag2', 'test6')
+        # Update tags for SAP Application Server Instance
+        self.cmd('workloads sap-application-server-instance update --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} -n {OpsAppID} --tags {TestType}={TestTypeValue}', checks=[
+            self.check('name', '{OpsAppID}'),
+            self.check('resourceGroup', '{OpsVISRG}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('tags.{TestType}', '{TestTypeValue}')
         ])
 
-        self.cmd('workloads sap-database-instance update --sap-virtual-instance-name {name} -g CLI-TESTING -n {dbservername} --tags tag=test7 tag2=test8', checks=[
-            self.check('name', '{dbservername}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
-            self.check('provisioningState', 'Succeeded'),
-            self.check('tags.tag', 'test7'),
-            self.check('tags.tag2', 'test8')
+        # Update tags for SAP Database Instance
+        self.cmd('workloads sap-database-instance update --sap-virtual-instance-name {OpsVISID} -g {OpsVISRG} -n {OpsDBID} --tags {TestType}={TestTypeValue}', checks=[
+            self.check('name', '{OpsDBID}'),
+            self.check('resourceGroup', '{OpsVISRG}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('tags.{TestType}', '{TestTypeValue}')
         ])
 
-    @unittest.skip('recording file not getting generted properly throwing Subscription not found')
+    def test_workloads_svi_update_trustedaccess(self):
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+        
+        # Update Trusted Access for SAP Virtual Instance to Private
+        self.cmd('workloads sap-virtual-instance update -g {OpsVISRG} -n {OpsVISID} --managed-resources-network-access-type {MrgNetAccTypPrvt}')
+
+        # Get the SAP Virtual Instance
+        self.cmd('workloads sap-virtual-instance show -g {OpsVISRG} -n {OpsVISID}', checks=[
+            self.check('name', '{OpsVISID}'),
+            self.check('resourceGroup', '{OpsVISRG}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('managedResourcesNetworkAccessType', '{MrgNetAccTypPrvt}')
+        ])
+
+        # Update Trusted Access for SAP Central Instance to Public
+        self.cmd('workloads sap-virtual-instance update -g {OpsVISRG} -n {OpsVISID} --managed-resources-network-access-type {MrgNetAccTypPub}')
+
+        # Get the SAP Virtual Instance
+        self.cmd('workloads sap-virtual-instance show -g {OpsVISRG} -n {OpsVISID}', checks=[
+            self.check('name', '{OpsVISID}'),
+            self.check('resourceGroup', '{OpsVISRG}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
+            self.check('managedResourcesNetworkAccessType', '{MrgNetAccTypPub}')
+        ])
+
     def test_workloads_svi_discover(self):
-        self.kwargs.update({
-            'name': 'C13',
-            'msi': os.path.join(TEST_DIR, 'MSI.json'),
-            'centralservervmid': '/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourcegroups/ps_cli_tf_rg/providers/microsoft.compute/virtualmachines/c13ascsvm'
-        })
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
 
-        self.cmd('workloads sap-virtual-instance create -g PS_CLI_TF_RG -n {name} --location eastus --environment NonProd --sap-product S4HANA --central-server-vm {centralservervmid} --identity "{msi}"', checks=[
-            self.check('name', '{name}'),
-            self.check('resourceGroup', 'PS_CLI_TF_RG'),
-            self.check('sapProduct', 'S4HANA'),
-            self.check('environment', 'NonProd'),
-            self.check('provisioningState', 'Succeeded'),
+        # Get Central Server VM ID
+        result = self.cmd('workloads sap-central-instance show --sap-virtual-instance-name {DiscoverVIS} -g {DiscoverRG} -n {DiscoverCSID}').get_output_in_json()
+        centralservervmid = result['vmDetails'][0]['virtualMachineId']
+
+        # Update kwargs with the centralservervmid
+        self.kwargs.update({
+            'centralservervmid': centralservervmid
+        })
+        
+        # Delete the SAP Virtual Instance
+        self.cmd('workloads sap-virtual-instance delete -g {DiscoverRG} -n {DiscoverVIS} --yes')
+
+        # Run the get command and expect it to fail
+        result = self.cmd('workloads sap-virtual-instance show -g {DiscoverRG} -n {DiscoverVIS}', expect_failure=True).output
+
+        # Check if the output is empty
+        if not result:
+            print("Command failed but no output was returned")
+        else:
+            # Parse the output as JSON
+            result_json = json.loads(result)
+
+            # Check if the error code is 'ResourceNotFound'
+            assert result_json['error']['code'] == 'ResourceNotFound', f"Expected 'ResourceNotFound', but got {result_json['error']['code']}"
+
+        # Create SAP Virtual Instance with Discovery Configuration
+        self.cmd('workloads sap-virtual-instance create -g {DiscoverRG} -n {DiscoverVIS} --location {Location} --environment {EnviornmentNonProd} --sap-product {SapProduct} --central-server-vm {centralservervmid} --identity "{MsiPath}"', checks=[
+            self.check('name', '{DiscoverVIS}'),
+            self.check('resourceGroup', '{DiscoverRG}'),
+            self.check('sapProduct', '{SapProduct}'),
+            self.check('environment', '{EnviornmentNonProd}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
             self.check('configuration.configurationType', 'Discovery')
         ])
     
-    @unittest.skip('recording file not getting generted properly throwing Subscription not found')
     def test_workloads_svi_discover_custom(self):
-        self.kwargs.update({
-            'name': 'C13',
-            'msi': os.path.join(TEST_DIR, 'MSI.json'),
-            'centralservervmid': '/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourcegroups/ps_cli_tf_rg/providers/microsoft.compute/virtualmachines/c13ascsvm',
-            'managedrgname': self.create_random_name(prefix='managedrg', length=15),
-            'managedrgsaname': self.create_random_name(prefix='managedrgsa', length=24),
-            'networkaccesstype': 'Private'
-        })
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
 
-        self.cmd('workloads sap-virtual-instance create -g PS_CLI_TF_RG -n {name} --location eastus --environment NonProd --sap-product S4HANA --central-server-vm {centralservervmid} --identity "{msi}" --managed-rg-name {managedrgname} --managed-rg-sa-name {managedrgsaname} --managed-resources-network-access-type {networkaccesstype}', checks=[
-            self.check('name', '{name}'),
-            self.check('resourceGroup', 'PS_CLI_TF_RG'),
-            self.check('sapProduct', 'S4HANA'),
-            self.check('environment', 'NonProd'),
-            self.check('managedResourceGroupConfiguration.name', '{managedrgname}'),
-            self.check('configuration.managedRgStorageAccountName', '{managedrgsaname}'),
-            self.check('managedResourcesNetworkAccessType', '{networkaccesstype}'),
-            self.check('provisioningState', 'Succeeded'),
+        # Get Central Server VM ID
+        result = self.cmd('workloads sap-central-instance show --sap-virtual-instance-name {DiscoverVIS} -g {DiscoverRG} -n {DiscoverCSID}').get_output_in_json()
+        centralservervmid = result['vmDetails'][0]['virtualMachineId']
+
+        # Update kwargs with the centralservervmid
+        self.kwargs.update({
+            'centralservervmid': centralservervmid
+        })
+        
+        # Delete the SAP Virtual Instance
+        self.cmd('workloads sap-virtual-instance delete -g {DiscoverRG} -n {DiscoverVIS} --yes')
+
+        # Run the get command and expect it to fail
+        result = self.cmd('workloads sap-virtual-instance show -g {DiscoverRG} -n {DiscoverVIS}', expect_failure=True).output
+
+        # Check if the output is empty
+        if not result:
+            print("Command failed but no output was returned")
+        else:
+            # Parse the output as JSON
+            result_json = json.loads(result)
+
+            # Check if the error code is 'ResourceNotFound'
+            assert result_json['error']['code'] == 'ResourceNotFound', f"Expected 'ResourceNotFound', but got {result_json['error']['code']}"
+
+        # Create SAP Virtual Instance with Discovery Configuration
+        self.cmd('workloads sap-virtual-instance create -g {DiscoverRG} -n {DiscoverVIS} --location {Location} --environment {EnviornmentNonProd} --sap-product {SapProduct} --central-server-vm {centralservervmid} --identity "{MsiPath}" --managed-rg-name {ManagedRG} --managed-rg-sa-name {ManagedRGSAName} --managed-resources-network-access-type {MrgNetAccTypPrvt}', checks=[
+            self.check('name', '{DiscoverVIS}'),
+            self.check('resourceGroup', '{DiscoverRG}'),
+            self.check('sapProduct', '{SapProduct}'),
+            self.check('environment', '{EnviornmentNonProd}'),
+            self.check('managedResourceGroupConfiguration.name', '{ManagedRG}'),
+            self.check('configuration.managedRgStorageAccountName', '{ManagedRGSAName}'),
+            self.check('managedResourcesNetworkAccessType', '{MrgNetAccTypPrvt}'),
+            self.check('provisioningState', '{ProvisioningStateSucceeded}'),
             self.check('configuration.configurationType', 'Discovery')
         ])
 
     def test_invoke_commands(self):
-        self.kwargs.update({
-            'databasetype': 'HANA',
-            'sapproduct': 'S4HANA'
-        })
-        count = len(self.cmd('workloads sap-disk-configuration --app-location eastus --database-type {databasetype} --db-vm-sku Standard_M32ts --deployment-type SingleServer --environment NonProd --sap-product {sapproduct} --location eastus').get_output_in_json())
+        # Load parameters from JSON file
+        self.load_and_update_kwargs(ENV_FILE)
+        
+        # Count of SAP Disk Configuration entries
+        count = len(self.cmd('workloads sap-disk-configuration --app-location eastus --database-type {DatabaseType} --db-vm-sku {DbVMSku} --deployment-type {DeploymentTypeSingleServer} --environment {EnviornmentNonProd} --sap-product {SapProduct} --location {Location}').get_output_in_json())
         self.assertTrue(count >= 1)
 
-        self.cmd('workloads sap-sizing-recommendation --database-type {databasetype} --app-location eastus --location eastus --sap-product {sapproduct} --deployment-type SingleServer --environment NonProd --saps 10000 --db-memory 256 --db-scale-method ScaleUp', checks=[
+        # Check for deployment type for SAP Sizing Recommendation
+        self.cmd('workloads sap-sizing-recommendation --database-type {DatabaseType} --app-location eastus --location {Location} --sap-product {SapProduct} --deployment-type {DeploymentTypeSingleServer} --environment {EnviornmentNonProd} --saps {Saps} --db-memory {DbMemory} --db-scale-method ScaleUp', checks=[
             self.check('deploymentType', 'SingleServer')
         ])
 
-        count = len(self.cmd('workloads sap-supported-sku --database-type {databasetype} --app-location eastus --location eastus --sap-product {sapproduct} --deployment-type ThreeTier --environment Prod').get_output_in_json())
+        # Count of SAP Supported SKU entries
+        count = len(self.cmd('workloads sap-supported-sku --database-type {DatabaseType} --app-location eastus --location {Location} --sap-product {SapProduct} --deployment-type {DeploymentTypeThreeTier} --environment {EnviornmentProd}').get_output_in_json())
         self.assertTrue(count >= 1)
 
     def test_workloads_svi_remove(self):
-        self.kwargs.update({
-            'name': 'C36'
-        })
+        # Load parameters from JSON
+        self.load_and_update_kwargs(ENV_FILE)
 
-        self.cmd('workloads sap-virtual-instance delete -g CLI-TESTING -n {name} --yes')
+        # Delete the SAP Virtual Instance
+        self.cmd('workloads sap-virtual-instance delete -g {OpsVISRG} -n {OpsVISID} --yes')

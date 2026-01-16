@@ -10,5 +10,11 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    from .custom import AssociationCreate
+    from .custom import AssociationCreate, WafSecurityPolicyCreate, WafSecurityPolicyDelete, WafSecurityPolicyUpdate
     self.command_table["network alb association create"] = AssociationCreate(loader=self)
+    self.command_table["network alb security-policy waf create"] = WafSecurityPolicyCreate(loader=self)
+    self.command_table["network alb security-policy waf delete"] = WafSecurityPolicyDelete(loader=self)
+    self.command_table["network alb security-policy waf update"] = WafSecurityPolicyUpdate(loader=self)
+
+    with self.command_group("network alb security-policy waf") as _:
+        pass

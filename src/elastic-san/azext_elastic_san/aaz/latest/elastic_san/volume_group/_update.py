@@ -34,9 +34,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2024-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2024-07-01-preview"],
         ]
     }
 
@@ -85,6 +85,28 @@ class Update(AAZCommand):
             ),
         )
 
+        # define Arg Group "DeleteRetentionPolicy"
+
+        _args_schema = cls._args_schema
+        _args_schema.delete_retention_policy_state = AAZStrArg(
+            options=["--delete-retention-state", "--delete-retention-policy-state"],
+            arg_group="DeleteRetentionPolicy",
+            help="Manage delete retention policy state",
+            is_preview=True,
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.delete_retention_period_days = AAZIntArg(
+            options=["--retention-period", "--delete-retention-period-days"],
+            arg_group="DeleteRetentionPolicy",
+            help="The number of days to retain the resources after deletion.",
+            is_preview=True,
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
@@ -127,6 +149,12 @@ class Update(AAZCommand):
             options=["--encryption-properties"],
             arg_group="Properties",
             help="Encryption Properties describing Key Vault and Identity information",
+            nullable=True,
+        )
+        _args_schema.enforce_data_integrity_check_for_iscsi = AAZBoolArg(
+            options=["--data-integrity-check", "--enforce-data-integrity-check-for-iscsi"],
+            arg_group="Properties",
+            help="A boolean indicating whether or not Data Integrity Check is enabled",
             nullable=True,
         )
         _args_schema.network_acls = AAZObjectArg(
@@ -286,7 +314,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2024-07-01-preview",
                     required=True,
                 ),
             }
@@ -389,7 +417,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2024-07-01-preview",
                     required=True,
                 ),
             }
@@ -447,7 +475,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             identity = _builder.get(".identity")
@@ -461,10 +489,17 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("deleteRetentionPolicy", AAZObjectType)
                 properties.set_prop("encryption", AAZStrType, ".encryption")
                 properties.set_prop("encryptionProperties", AAZObjectType, ".encryption_properties")
+                properties.set_prop("enforceDataIntegrityCheckForIscsi", AAZBoolType, ".enforce_data_integrity_check_for_iscsi")
                 properties.set_prop("networkAcls", AAZObjectType, ".network_acls")
                 properties.set_prop("protocolType", AAZStrType, ".protocol_type")
+
+            delete_retention_policy = _builder.get(".properties.deleteRetentionPolicy")
+            if delete_retention_policy is not None:
+                delete_retention_policy.set_prop("policyState", AAZStrType, ".delete_retention_policy_state")
+                delete_retention_policy.set_prop("retentionPeriodDays", AAZIntType, ".delete_retention_period_days")
 
             encryption_properties = _builder.get(".properties.encryptionProperties")
             if encryption_properties is not None:
@@ -571,7 +606,7 @@ class _UpdateHelper:
         volume_group_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        volume_group_read.identity = AAZObjectType()
+        volume_group_read.identity = AAZIdentityObjectType()
         volume_group_read.name = AAZStrType(
             flags={"read_only": True},
         )
@@ -617,9 +652,15 @@ class _UpdateHelper:
         )
 
         properties = _schema_volume_group_read.properties
+        properties.delete_retention_policy = AAZObjectType(
+            serialized_name="deleteRetentionPolicy",
+        )
         properties.encryption = AAZStrType()
         properties.encryption_properties = AAZObjectType(
             serialized_name="encryptionProperties",
+        )
+        properties.enforce_data_integrity_check_for_iscsi = AAZBoolType(
+            serialized_name="enforceDataIntegrityCheckForIscsi",
         )
         properties.network_acls = AAZObjectType(
             serialized_name="networkAcls",
@@ -634,6 +675,14 @@ class _UpdateHelper:
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
+        )
+
+        delete_retention_policy = _schema_volume_group_read.properties.delete_retention_policy
+        delete_retention_policy.policy_state = AAZStrType(
+            serialized_name="policyState",
+        )
+        delete_retention_policy.retention_period_days = AAZIntType(
+            serialized_name="retentionPeriodDays",
         )
 
         encryption_properties = _schema_volume_group_read.properties.encryption_properties

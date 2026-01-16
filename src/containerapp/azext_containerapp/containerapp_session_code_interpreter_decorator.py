@@ -83,16 +83,10 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                                      "sessionPools")
 
     def construct_payload(self):
-        self.session_code_interpreter_def["properties"]["identifier"] = self.get_argument_identifier()
-
-        self.session_code_interpreter_def["properties"]["codeInputType"] = "inline"
-        self.session_code_interpreter_def["properties"]["executionType"] = "synchronous"
-
-        if self.get_argument_timeout_in_seconds() is not None:
-            self.session_code_interpreter_def["properties"]["timeoutInSeconds"] = self.get_argument_timeout_in_seconds()
-        else:
-            self.session_code_interpreter_def["properties"]["timeoutInSeconds"] = 60
-        self.session_code_interpreter_def["properties"]["code"] = self.get_argument_code()
+        self.session_code_interpreter_def["codeInputType"] = "inline"
+        self.session_code_interpreter_def["executionType"] = "synchronous"
+        self.session_code_interpreter_def["timeoutInSeconds"] = self.get_argument_timeout_in_seconds()
+        self.session_code_interpreter_def["code"] = self.get_argument_code()
 
     def execute(self):
         try:
@@ -111,6 +105,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
                 filepath=self.get_argument_filepath(),
+                path=self.get_argument_path(),
                 session_pool_endpoint=self.get_sessionpool_endpoint(),
                 no_wait=self.get_argument_no_wait())
         except Exception as e:
@@ -122,6 +117,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
                 filename=self.get_argument_filename(),
+                path=self.get_argument_path(),
                 session_pool_endpoint=self.get_sessionpool_endpoint())
         except Exception as e:
             handle_raw_exception(e)
@@ -132,6 +128,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
                 filename=self.get_argument_filename(),
+                path=self.get_argument_path(),
                 session_pool_endpoint=self.get_sessionpool_endpoint())
         except Exception as e:
             handle_raw_exception(e)
@@ -152,6 +149,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
                 filename=self.get_argument_filename(),
+                path=self.get_argument_path(),
                 session_pool_endpoint=self.get_sessionpool_endpoint(),
                 no_wait=self.get_argument_no_wait())
         except Exception as e:

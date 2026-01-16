@@ -6,7 +6,8 @@
 from azext_webpubsub.vendored_sdks.azure_mgmt_webpubsub.models._models_py3 import WebPubSubSocketIOSettings
 from .vendored_sdks.azure_mgmt_webpubsub.models import (
     ResourceSku,
-    WebPubSubResource
+    WebPubSubResource,
+    WebPubSubTlsSettings
 )
 
 from .vendored_sdks.azure_mgmt_webpubsub.operations import (
@@ -46,6 +47,18 @@ def webpubsub_show(client, webpubsub_name, resource_group_name):
     return client.get(resource_group_name, webpubsub_name)
 
 
+def webpubsub_start(client: WebPubSubOperations, webpubsub_name, resource_group_name):
+    resource = client.get(resource_group_name=resource_group_name, resource_name=webpubsub_name)
+    parameter = WebPubSubResource(resource_stopped=False, location=resource.location)
+    return client.begin_update(resource_group_name, webpubsub_name, parameter)
+
+
+def webpubsub_stop(client: WebPubSubOperations, webpubsub_name, resource_group_name):
+    resource = client.get(resource_group_name=resource_group_name, resource_name=webpubsub_name)
+    parameter = WebPubSubResource(resource_stopped=True, location=resource.location)
+    return client.begin_update(resource_group_name, webpubsub_name, parameter)
+
+
 def webpubsub_restart(client, webpubsub_name, resource_group_name):
     return client.begin_restart(resource_group_name, webpubsub_name)
 
@@ -58,7 +71,8 @@ def webpubsub_set(client, webpubsub_name, resource_group_name, parameters):
     return client.begin_update(resource_group_name, webpubsub_name, parameters)
 
 
-def update_webpubsub(instance, tags=None, sku=None, unit_count=None, service_mode=None):
+def update_webpubsub(instance: WebPubSubResource, tags=None, sku=None, unit_count=None, service_mode=None,
+                     client_cert_enabled=None, disable_local_auth=None, region_endpoint_enabled=None):
     if service_mode is not None and instance.kind is not None and instance.kind.casefold() == "socketio".casefold():
         instance.socket_io = WebPubSubSocketIOSettings(service_mode=service_mode)
     sku = sku if sku else instance.sku.name
@@ -67,6 +81,18 @@ def update_webpubsub(instance, tags=None, sku=None, unit_count=None, service_mod
 
     if tags is not None:
         instance.tags = tags
+
+    if client_cert_enabled is not None:
+        instance.tls = WebPubSubTlsSettings(client_cert_enabled=client_cert_enabled)
+
+    if disable_local_auth is not None:
+        instance.disable_local_auth = disable_local_auth
+
+    if region_endpoint_enabled is not None:
+        if region_endpoint_enabled:
+            instance.region_endpoint_enabled = "Enabled"
+        else:
+            instance.region_endpoint_enabled = "Disabled"
 
     return instance
 

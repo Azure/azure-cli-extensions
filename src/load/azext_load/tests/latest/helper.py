@@ -66,6 +66,7 @@ def create_test_run(
     resource_group=None,
     test_id=None,
     test_run_id=None,
+    no_wait=False,
 ):
     if not load_test_resource:
         load_test_resource = ScenarioTest.kwargs["load_test_resource"]
@@ -76,23 +77,30 @@ def create_test_run(
     if not test_run_id:
         test_run_id = ScenarioTest.kwargs["test_run_id"]
 
-    test_run = ScenarioTest.cmd(
-        "az load test-run create "
-        f"--load-test-resource {load_test_resource} "
-        f"--resource-group {resource_group} "
-        f"--test-id {test_id} "
-        f"--test-run-id {test_run_id} ",
-        checks=[JMESPathCheck("testRunId", ScenarioTest.kwargs["test_run_id"])],
-    ).get_output_in_json()
+    command = "az load test-run create " \
+        f"--load-test-resource {load_test_resource} " \
+        f"--resource-group {resource_group} " \
+        f"--test-id {test_id} " \
+        f"--test-run-id {test_run_id} "
+    if no_wait:
+        command += "--no-wait "
 
-    test_runs = ScenarioTest.cmd(
-        "az load test-run list "
-        f"--load-test-resource {load_test_resource} "
-        f"--resource-group {resource_group} "
-        f"--test-id {test_id}"
-    ).get_output_in_json()
+    if no_wait:
+        ScenarioTest.cmd(command)
+    else:
+        test_run = ScenarioTest.cmd(
+            command,
+            checks=[JMESPathCheck("testRunId", ScenarioTest.kwargs["test_run_id"])],
+        ).get_output_in_json()
 
-    assert test_run["testRunId"] in [run.get("testRunId") for run in test_runs]
+        test_runs = ScenarioTest.cmd(
+            "az load test-run list "
+            f"--load-test-resource {load_test_resource} "
+            f"--resource-group {resource_group} "
+            f"--test-id {test_id}"
+        ).get_output_in_json()
+
+        assert test_run["testRunId"] in [run.get("testRunId") for run in test_runs]
 
 
 def delete_test_run(

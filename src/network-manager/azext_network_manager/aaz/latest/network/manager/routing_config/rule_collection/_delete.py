@@ -24,9 +24,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01-preview",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}/rulecollections/{}", "2023-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}/rulecollections/{}", "2024-05-01"],
         ]
     }
 
@@ -77,6 +77,10 @@ class Delete(AAZCommand):
                 pattern="^[a-zA-Z0-9_.-]*$",
             ),
         )
+        _args_schema.force = AAZBoolArg(
+            options=["--force"],
+            help="Deletes the resource even if it is part of a deployed configuration. If the configuration has been deployed, the service will do a cleanup deployment in the background, prior to the delete.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -102,7 +106,16 @@ class Delete(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -112,15 +125,6 @@ class Delete(AAZCommand):
                     self.ctx.args.no_wait,
                     session,
                     self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -173,16 +177,19 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "force", self.ctx.args.force,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
             return parameters
 
-        def on_204(self, session):
+        def on_200(self, session):
             pass
 
-        def on_200_201(self, session):
+        def on_204(self, session):
             pass
 
 

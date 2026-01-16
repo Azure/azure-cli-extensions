@@ -15,6 +15,7 @@ def load_arguments(self, _):
     with self.argument_context("load test create") as c:
         c.argument("test_id", argtypes.test_id_no_completer)
         c.argument("test_plan", argtypes.test_plan)
+        c.argument("test_type", argtypes.test_type)
         c.argument("display_name", argtypes.test_display_name)
         c.argument("test_description", argtypes.test_description)
         c.argument("env", argtypes.env, help="space-separated environment variables: key[=value] [key[=value] ...].")
@@ -26,8 +27,19 @@ def load_arguments(self, _):
         c.argument(
             "key_vault_reference_identity", argtypes.key_vault_reference_identity
         )
+        c.argument(
+            "metrics_reference_identity", argtypes.metrics_reference_identity, help="The identity that will be used to access the metrics. This will be defaulted to SystemAssigned if not given."
+        )
         c.argument("engine_instances", argtypes.engine_instances)
         c.argument("custom_no_wait", argtypes.custom_no_wait)
+        c.argument("disable_public_ip", argtypes.disable_public_ip)
+        c.argument("autostop", argtypes.autostop)
+        c.argument("autostop_error_rate", argtypes.autostop_error_rate)
+        c.argument("autostop_error_rate_time_window", argtypes.autostop_error_rate_time_window)
+        c.argument("autostop_maximum_virtual_users_per_engine", argtypes.autostop_maximum_virtual_users_per_engine)
+        c.argument("regionwise_engines", argtypes.regionwise_engines)
+        c.argument("engine_ref_id_type", argtypes.engine_ref_id_type)
+        c.argument("engine_ref_ids", argtypes.engine_ref_ids)
 
     with self.argument_context("load test update") as c:
         c.argument("load_test_config_file", argtypes.load_test_config_file)
@@ -40,10 +52,27 @@ def load_arguments(self, _):
         c.argument(
             "key_vault_reference_identity", argtypes.key_vault_reference_identity, help="The identity that will be used to access the key vault. Provide `null` or `None` to use the system assigned identity of the load test resource."
         )
+        c.argument(
+            "metrics_reference_identity", argtypes.metrics_reference_identity, help="The identity that will be used to access the metrics. Provide `null` or `None` to use the system assigned identity of the load test resource."
+        )
         c.argument("engine_instances", argtypes.engine_instances)
         c.argument("subnet_id", argtypes.subnet_id)
         c.argument("split_csv", argtypes.split_csv)
         c.argument("custom_no_wait", argtypes.custom_no_wait)
+        c.argument("disable_public_ip", argtypes.disable_public_ip)
+        c.argument("autostop", argtypes.autostop)
+        c.argument("autostop_error_rate", argtypes.autostop_error_rate)
+        c.argument("autostop_error_rate_time_window", argtypes.autostop_error_rate_time_window)
+        c.argument("autostop_maximum_virtual_users_per_engine", argtypes.autostop_maximum_virtual_users_per_engine)
+        c.argument("regionwise_engines", argtypes.regionwise_engines)
+        c.argument("engine_ref_id_type", argtypes.engine_ref_id_type)
+        c.argument("engine_ref_ids", argtypes.engine_ref_ids)
+
+    with self.argument_context("load test set-baseline") as c:
+        c.argument("test_run_id", argtypes.test_run_id)
+
+    with self.argument_context("load test compare-to-baseline") as c:
+        c.argument("response_time_aggregate", argtypes.response_time_aggregate)
 
     with self.argument_context("load test download-files") as c:
         c.argument("path", argtypes.dir_path)

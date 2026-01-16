@@ -11,7 +11,7 @@
 
 import os
 from knack.log import get_logger
-from azure.cli.core.aaz import register_client, AAZClientConfiguration, has_value
+from azure.cli.core.aaz import register_client, AAZClientConfiguration, has_value, register_command
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.aaz._client import AAZMgmtClient
 from .utils import (
@@ -179,7 +179,21 @@ class DeleteAcatReport(_AcatDeleteReport):
         self.post_operations()
 
 
+@register_command(
+    "acat report download",
+)
 class DownloadAcatReport(_AcatDownloadSnapshot):
+    """
+    Downloads the compliance result in acat report.
+    :example: Download pdf compliance report
+        az acat report download --report-name yourReportName --download-type "ComplianceReport"
+    :example: Download the file to specified path
+        az acat report download \\
+            --report-name yourReportName \\
+            --download-type "CompliancePdfReport" \\
+            --path "C:/workspace" \\
+            --name "out.pdf"
+    """
     class DownloadAcatReportWithDupAadToken(_AcatDownloadSnapshot.SnapshotDownload):
         CLIENT_TYPE = "AcatMgmtClient"
 
@@ -256,7 +270,16 @@ class DownloadAcatReport(_AcatDownloadSnapshot):
             args.name = downloadType
 
 
+@register_command(
+    "acat report get-control-assessments",
+)
 class GetControlAssessment(_AcatListSnapshot):
+    """ Get control assessments for acat report.
+    :example: Get all control assessments
+        az acat report get-control-assessments --report-name yourReportName
+    :example: Filter the assessments by conpliance status
+        az acat report get-control-assessments --report-name yourReportName --compliance-status failed
+    """
     class GetControlAssessmentWithDupAadToken(_AcatListSnapshot.SnapshotList):
         CLIENT_TYPE = "AcatMgmtClient"
 

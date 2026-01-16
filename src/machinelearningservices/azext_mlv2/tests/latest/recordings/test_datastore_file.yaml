@@ -1,0 +1,66 @@
+interactions:
+- request:
+    body: '{"properties": {"tags": {}, "credentials": {"credentialsType": "AccountKey",
+      "secrets": {"secretsType": "AccountKey", "key": "REDACTEDVALUE"}}, "datastoreType":
+      "AzureFile", "accountName": "sdkvnextclidcdnrc7zb7xyy", "endpoint": "core.windows.net",
+      "fileShareName": "testfileshare", "protocol": "https"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '304'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/testfileds000011?api-version=0000-00-00&skipValidation=true
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/datastores/testfileds000011\",\n
+        \ \"name\": \"testfileds000011\",\n  \"type\": \"Microsoft.MachineLearningServices/workspaces/datastores\",\n
+        \ \"properties\": {\n    \"description\": null,\n    \"tags\": {},\n    \"properties\":
+        null,\n    \"isDefault\": false,\n    \"credentials\": {\n      \"credentialsType\":
+        \"AccountKey\"\n    },\n    \"datastoreType\": \"AzureFile\",\n    \"accountName\":
+        \"sdkvnextclidcdnrc7zb7xyy\",\n    \"fileShareName\": \"testfileshare\",\n
+        \   \"endpoint\": \"core.windows.net\",\n    \"protocol\": \"https\",\n    \"serviceDataAccessAuthIdentity\":
+        \"None\"\n  },\n  \"systemData\": {\n    \"createdAt\": \"2022-03-17T02:39:13.8477681Z\",\n
+        \   \"createdBy\": \"Harneet Virk\",\n    \"createdByType\": \"User\",\n    \"lastModifiedAt\":
+        \"2022-03-17T02:39:14.7088611Z\",\n    \"lastModifiedBy\": \"Harneet Virk\",\n
+        \   \"lastModifiedByType\": \"User\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '966'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Mar 2022 02:39:14 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v2testharnvir-rg/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/datastores/testfileds000011?api-version=2022-02-01-preview&skipValidation=true
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.024'
+    status:
+      code: 201
+      message: Created
+version: 1

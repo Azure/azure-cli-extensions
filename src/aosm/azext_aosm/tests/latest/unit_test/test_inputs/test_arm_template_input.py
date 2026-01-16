@@ -10,13 +10,16 @@ from unittest.mock import mock_open, patch
 
 from azext_aosm.inputs.arm_template_input import ArmTemplateInput
 
+from azure.cli.core.azclierror import InvalidTemplateError
+
 code_directory = os.path.dirname(__file__)
 parent_directory = os.path.abspath(os.path.join(code_directory, "../.."))
 arm_template_path = os.path.join(parent_directory, "mock_arm_templates", "simple-template.json")
 no_params_template_path = os.path.join(parent_directory, "mock_arm_templates", "no-params-template.json")
+valid_arm_template_path = os.path.join(parent_directory, "mock_arm_templates", "valid-template.json")
+invalid_arm_template_path = os.path.join(parent_directory, "mock_arm_templates", "invalid-template.json")
 
-
-class TestARMTemplateInput(TestCase):
+class TestARMTemplateInputNoParams(TestCase):
     """Test the ARMTempalteInput class."""
 
     def setUp(self):
@@ -25,18 +28,9 @@ class TestARMTemplateInput(TestCase):
         self.arm_input = ArmTemplateInput(
             artifact_name="test-artifact-name",
             artifact_version="1.1.1",
-            template_path=arm_template_path,
+            template_path=no_params_template_path,
             default_config=None
         )
-
-    def test_get_defaults_is_none(self):
-        """Test ARM template input when default config is None"""
-        arm_template_input = self.arm_input
-
-        # Test when default_config is None
-        arm_template_input.default_config = None
-        defaults = arm_template_input.get_defaults()
-        self.assertEqual(defaults, {})
 
     def test_get_defaults_is_empty_dict(self):
         """Test ARM template input when default config is {}"""
@@ -60,6 +54,37 @@ class TestARMTemplateInput(TestCase):
             "param2": "value2"
         })
 
+    @patch("builtins.open", mock_open(
+        read_data='{"$schema": "#", "resources": { } }'))
+    def test_get_schema_no_parameters(self):
+        """Test getting the schema for the ARM template input when no parameters are found."""
+
+        # Assert logger warning when no parameters in file
+        with self.assertLogs(level='WARNING'):
+            schema = self.arm_input.get_schema()
+            expected_schema = {
+                '$schema': 'https://json-schema.org/draft-07/schema#',
+                'properties': {},
+                'required': [],
+                'type': 'object'
+            }
+            # Assert outputted schema is base schema with empty properties
+            self.assertEqual(schema, expected_schema)
+
+
+class TestARMTemplateInputWithParams(TestCase):
+    """Test the ARMTempalteInput class."""
+
+    def setUp(self):
+        # Prints out info logs in console if fails
+        logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+        self.arm_input = ArmTemplateInput(
+            artifact_name="test-artifact-name",
+            artifact_version="1.1.1",
+            template_path=arm_template_path,
+            default_config=None
+        )
+
     def test_get_schema_with_params(self):
         """Test getting the schema for the ARM template input."""
         schema = self.arm_input.get_schema()
@@ -69,31 +94,7 @@ class TestARMTemplateInput(TestCase):
             'required': [],
             'type': 'object'
         }
-        print("SCHEMA", schema)
         self.assertEqual(schema, expected_schema)
-
-    @patch("builtins.open", mock_open(
-        read_data='{"$schema": "#", "resources": { } }'))
-    def test_get_schema_no_parameters(self):
-        """Test getting the schema for the ARM template input when no parameters are found."""
-
-        no_params_arm_input = ArmTemplateInput(
-            artifact_name="test-artifact-name",
-            artifact_version="1.1.1",
-            template_path=no_params_template_path,
-            default_config=None
-        )
-        # Assert logger warning when no parameters in file
-        with self.assertLogs(level='WARNING'):
-            schema = no_params_arm_input.get_schema()
-            expected_schema = {
-                '$schema': 'https://json-schema.org/draft-07/schema#',
-                'properties': {},
-                'required': [],
-                'type': 'object'
-            }
-            # Assert outputted schema is base schema with empty properties
-            self.assertEqual(schema, expected_schema)
 
     def test_generate_schema_from_params_with_default_values(self):
         """ Test _generate_schema_from_arm_params for ARM template input.
@@ -169,3 +170,28 @@ class TestARMTemplateInput(TestCase):
                             },
                            'required': ['test', 'vmImageRepositoryCredentials']}
         self.assertEqual(schema, expected_schema)
+
+    def test_validate_arm_templates_invalid(self):                       
+        """Test the validate_resource_types method with invalid resource type."""
+        arm_template_input = self.arm_input
+
+        invalid_arm_input = ArmTemplateInput(
+            artifact_name="test-artifact-name",
+            artifact_version="1.1.1",
+            template_path=invalid_arm_template_path,
+            default_config=None
+        )        
+        with self.assertRaises(InvalidTemplateError):
+            invalid_arm_input.validate_resource_types()
+       
+    def test_validate_arm_templates_valid(self):                       
+        """Test the validate_resource_types method with valid resource types."""
+        arm_template_input = self.arm_input
+
+        invalid_arm_input = ArmTemplateInput(
+            artifact_name="test-artifact-name1",
+            artifact_version="1.1.1",
+            template_path=valid_arm_template_path,
+            default_config=None
+        )        
+        invalid_arm_input.validate_resource_types()

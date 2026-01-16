@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor tag-rule create",
 )
 class Create(AAZCommand):
-    """Create a TagRule
+    """Creates a new set of tag rules for a specific New Relic monitor resource, determining which Azure resources are monitored based on their tags.
 
     :example: Create a TagRule.
         az new-relic monitor tag-rule create --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default --log-rules "{send-aad-logs:'Enabled',send-subscription-logs:'Enabled',send-activity-logs:'Enabled',filtering-tags:[{name:'Environment',value:'Prod',action:'Include'}]}" --metric-rules "{user-email:'UserEmail@123.com',filtering-tags:[{name:'Environment',value:'Prod',action:'Include'}]}"
@@ -51,7 +51,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         _args_schema.rule_set_name = AAZStrArg(

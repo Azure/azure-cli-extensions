@@ -36,9 +36,8 @@ class WebpubsubScenarioTest(ScenarioTest):
             'location': 'eastus',
             'tags': '{}={}'.format(tags_key, tags_val),
             'unit_count': 1,
-            'updated_tags': '{}={}'.format(tags_key, updated_tags_val),
             'replica_name': replica_name,
-            'replica_location': replica_location
+            'replica_location': replica_location,
         })
 
         # Test create primary
@@ -55,8 +54,8 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('externalIp'),
         ])
 
-          # test create replica
-        self.cmd('az webpubsub replica create -n {name} --replica-name {replica_name} -g {rg} --sku {sku} --unit-count {unit_count} -l {replica_location} --tags {tags}', checks=[
+        # test create replica
+        self.cmd('webpubsub replica create -n {name} --replica-name {replica_name} -g {rg} --sku {sku} --unit-count {unit_count} -l {replica_location} --tags {tags}', checks=[
             self.check('name', '{replica_name}'),
             self.check('location', '{replica_location}'),
             self.check('provisioningState', 'Succeeded'),
@@ -65,7 +64,7 @@ class WebpubsubScenarioTest(ScenarioTest):
         ])
 
        # test show replica
-        self.cmd('az webpubsub replica show -n {name} --replica-name {replica_name} -g {rg}', checks=[
+        self.cmd('webpubsub replica show -n {name} --replica-name {replica_name} -g {rg}', checks=[
             self.check('name', '{replica_name}'),
             self.check('location', '{replica_location}'),
             self.check('provisioningState', 'Succeeded'),
@@ -74,7 +73,7 @@ class WebpubsubScenarioTest(ScenarioTest):
         ])
 
         # test list replica
-        self.cmd('az webpubsub replica list -n {name} -g {rg}', checks=[
+        self.cmd('webpubsub replica list -n {name} -g {rg}', checks=[
             self.check('[0].name', '{replica_name}'),
             self.check('[0].location', '{replica_location}'),
             self.check('[0].provisioningState', 'Succeeded'),
@@ -82,5 +81,7 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.check('[0].tags.{}'.format(tags_key), tags_val),
         ])
 
-        # test remove replica
-        self.cmd('az webpubsub replica delete -n {name} --replica-name {replica_name} -g {rg}')
+        count = len(self.cmd('webpubsub replica list -n {name} -g {rg}').get_output_in_json())
+        self.cmd('webpubsub replica delete -n {name} --replica-name {replica_name} -g {rg}')
+        final_count = len(self.cmd('webpubsub replica list -n {name} -g {rg}').get_output_in_json())
+        self.assertTrue(final_count == count - 1)

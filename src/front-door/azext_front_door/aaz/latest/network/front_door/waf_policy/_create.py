@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create policy with specified rule set name within a resource group.
+
+    :example: Creates specific policy
+        az network front-door waf-policy create --resource-group rg1 --policy-name Policy1 --location WestUs --enabled-state Enabled --mode Prevention --redirect-url http://www.bing.com --custom-block-response-status-code 429 --custom-block-response-body PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg== --request-body-check Disabled --javascript-challenge-expiration-in-minutes 30 --captcha-expiration-in-minutes 30 --log-scrubbing "{state:Enabled,scrubbing-rules:[{match-variable:RequestIPAddress,selector-match-operator:EqualsAny,selector:null,state:Enabled}]}" --custom-rules "{rules:[{name:Rule1,priority:1,rule-type:RateLimitRule,rate-limit-threshold:1000,match-conditions:[{match-variable:RemoteAddr,operator:IPMatch,match-value:[192.168.1.0/24,10.0.0.0/24]}],action:Block},{name:Rule2,priority:2,rule-type:MatchRule,match-conditions:[{match-variable:RemoteAddr,operator:GeoMatch,match-value:[CH]},{match-variable:RequestHeader,operator:Contains,selector:UserAgent,match-value:[windows],transforms:[Lowercase]}],action:Block},{name:Rule3,priority:1,rule-type:RateLimitRule,rate-limit-threshold:1000,match-conditions:[{match-variable:RemoteAddr,operator:ServiceTagMatch,match-value:[AzureBackup,AzureBotService]}],action:CAPTCHA}]}" --managed-rules "{managed-rule-sets:[{rule-set-type:DefaultRuleSet,rule-set-version:1.0,rule-set-action:Block,exclusions:[{matchVariable:RequestHeaderNames,selectorMatchOperator:Equals,selector:User-Agent}],rule-group-overrides:[{rule-group-name:SQLI,exclusions:[{matchVariable:RequestCookieNames,selectorMatchOperator:StartsWith,selector:token}],rules:[{rule-id:942100,enabled-state:Enabled,action:Redirect,exclusions:[{matchVariable:QueryStringArgNames,selectorMatchOperator:Equals,selector:query}]},{rule-id:942110,enabled-state:Disabled}]}]},{rule-set-type:Microsoft_HTTPDDoSRuleSet,rule-set-version:1.0,rule-group-overrides:[{rule-group-name:ExcessiveRequests,rules:[{rule-id:500100,enabled-state:Enabled,action:Block,sensitivity:High}]}]}]}" --sku Premium_AzureFrontDoor
     """
 
     _aaz_info = {
-        "version": "2024-02-01",
+        "version": "2025-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2024-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2025-10-01"],
         ]
     }
 
@@ -81,6 +84,15 @@ class Create(AAZCommand):
         # define Arg Group "PolicySettings"
 
         _args_schema = cls._args_schema
+        _args_schema.captcha_expiration_in_minutes = AAZIntArg(
+            options=["--captcha-expiration-in-minutes"],
+            arg_group="PolicySettings",
+            help="Defines the Captcha cookie validity lifetime in minutes. This setting is only applicable to Premium_AzureFrontDoor. Value must be an integer between 5 and 1440 with the default value being 30.",
+            fmt=AAZIntArgFormat(
+                maximum=1440,
+                minimum=5,
+            ),
+        )
         _args_schema.custom_block_response_body = AAZStrArg(
             options=["--custom-block-response-body"],
             arg_group="PolicySettings",
@@ -197,7 +209,7 @@ class Create(AAZCommand):
             options=["action"],
             help="Describes what action to be applied when rule matches.",
             required=True,
-            enum={"Allow": "Allow", "AnomalyScoring": "AnomalyScoring", "Block": "Block", "JSChallenge": "JSChallenge", "Log": "Log", "Redirect": "Redirect"},
+            enum={"Allow": "Allow", "AnomalyScoring": "AnomalyScoring", "Block": "Block", "CAPTCHA": "CAPTCHA", "JSChallenge": "JSChallenge", "Log": "Log", "Redirect": "Redirect"},
         )
         _element.enabled_state = AAZStrArg(
             options=["enabled-state"],
@@ -281,7 +293,7 @@ class Create(AAZCommand):
             options=["operator"],
             help="Comparison type to use for matching with the variable value.",
             required=True,
-            enum={"Any": "Any", "BeginsWith": "BeginsWith", "Contains": "Contains", "EndsWith": "EndsWith", "Equal": "Equal", "GeoMatch": "GeoMatch", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "IPMatch": "IPMatch", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "RegEx": "RegEx"},
+            enum={"Any": "Any", "BeginsWith": "BeginsWith", "Contains": "Contains", "EndsWith": "EndsWith", "Equal": "Equal", "GeoMatch": "GeoMatch", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "IPMatch": "IPMatch", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "RegEx": "RegEx", "ServiceTagMatch": "ServiceTagMatch"},
         )
         _element.selector = AAZStrArg(
             options=["selector"],
@@ -367,7 +379,7 @@ class Create(AAZCommand):
         _element.action = AAZStrArg(
             options=["action"],
             help="Describes the override action to be applied when rule matches.",
-            enum={"Allow": "Allow", "AnomalyScoring": "AnomalyScoring", "Block": "Block", "JSChallenge": "JSChallenge", "Log": "Log", "Redirect": "Redirect"},
+            enum={"Allow": "Allow", "AnomalyScoring": "AnomalyScoring", "Block": "Block", "CAPTCHA": "CAPTCHA", "JSChallenge": "JSChallenge", "Log": "Log", "Redirect": "Redirect"},
         )
         _element.enabled_state = AAZStrArg(
             options=["enabled-state"],
@@ -382,6 +394,11 @@ class Create(AAZCommand):
             options=["rule-id"],
             help="Identifier for the managed rule.",
             required=True,
+        )
+        _element.sensitivity = AAZStrArg(
+            options=["sensitivity"],
+            help="Describes the override sensitivity to be applied when rule matches.",
+            enum={"High": "High", "Low": "Low", "Medium": "Medium"},
         )
 
         exclusions = cls._args_schema.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules.Element.exclusions
@@ -516,7 +533,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }
@@ -646,6 +663,7 @@ class Create(AAZCommand):
                 _elements.set_prop("enabledState", AAZStrType, ".enabled_state")
                 _elements.set_prop("exclusions", AAZListType, ".exclusions")
                 _elements.set_prop("ruleId", AAZStrType, ".rule_id", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("sensitivity", AAZStrType, ".sensitivity")
 
             exclusions = _builder.get(".properties.managedRules.managedRuleSets[].ruleGroupOverrides[].rules[].exclusions")
             if exclusions is not None:
@@ -653,11 +671,12 @@ class Create(AAZCommand):
 
             policy_settings = _builder.get(".properties.policySettings")
             if policy_settings is not None:
+                policy_settings.set_prop("captchaExpirationInMinutes", AAZIntType, ".captcha_expiration_in_minutes")
                 policy_settings.set_prop("customBlockResponseBody", AAZStrType, ".custom_block_response_body")
                 policy_settings.set_prop("customBlockResponseStatusCode", AAZIntType, ".custom_block_response_status_code")
                 policy_settings.set_prop("enabledState", AAZStrType, ".enabled_state")
                 policy_settings.set_prop("javascriptChallengeExpirationInMinutes", AAZIntType, ".javascript_challenge_expiration_in_minutes")
-                policy_settings.set_prop("logScrubbing", AAZObjectType, ".log_scrubbing")
+                policy_settings.set_prop("logScrubbing", AAZObjectType, ".log_scrubbing", typ_kwargs={"flags": {"client_flatten": True}})
                 policy_settings.set_prop("mode", AAZStrType, ".mode")
                 policy_settings.set_prop("redirectUrl", AAZStrType, ".redirect_url")
                 policy_settings.set_prop("requestBodyCheck", AAZStrType, ".request_body_check")
@@ -951,12 +970,16 @@ class _CreateHelper:
             serialized_name="ruleId",
             flags={"required": True},
         )
+        _element.sensitivity = AAZStrType()
 
         exclusions = _schema_web_application_firewall_policy_read.properties.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules.Element.exclusions
         exclusions.Element = AAZObjectType()
         cls._build_schema_managed_rule_exclusion_read(exclusions.Element)
 
         policy_settings = _schema_web_application_firewall_policy_read.properties.policy_settings
+        policy_settings.captcha_expiration_in_minutes = AAZIntType(
+            serialized_name="captchaExpirationInMinutes",
+        )
         policy_settings.custom_block_response_body = AAZStrType(
             serialized_name="customBlockResponseBody",
         )
@@ -971,6 +994,7 @@ class _CreateHelper:
         )
         policy_settings.log_scrubbing = AAZObjectType(
             serialized_name="logScrubbing",
+            flags={"client_flatten": True},
         )
         policy_settings.mode = AAZStrType()
         policy_settings.redirect_url = AAZStrType(

@@ -2,6 +2,125 @@
 
 Release History
 ===============
+
+1.6.0
+++++++
+* Added confcom containers from_image command to generate container definitions from an image reference
+
+1.5.1
+++++++
+* Bumped the Kata genpolicy version to gen4
+
+1.5.0
+++++++
+* restored the behaviour of --upload-fragment in acifragmentgen to attach to first image in input
+* added confcom fragment push command to allow explicit uploading of standalone fragments
+* added confcom fragment attach command to allow explicit uploading of image attached fragments
+
+1.4.5
+++++++
+* Drop the dependency on OPA
+
+1.4.4
+++++++
+* Improve the package building process
+
+1.4.3
+++++++
+* Fix installing OPA on Windows and in strict networking environments
+
+1.4.2
+++++++
+* Update policy model to use pydantic and explicitly declare collections where order doesn't affect function. These fields will serialize in alphabetical order and comparisons will ignore order.
+
+1.4.0
+++++++
+* Add --with-containers flag to acipolicygen and acifragmentgen to allow passing container policy definitions directly
+
+1.3.1
+++++++
+* bugfix for --exclude-default-fragments flag not working as intended
+
+1.3.0
+++++++
+* Add a new --enable-stdio flag, with a warning if neither this or --disable-stdio is set
+
+1.2.7
+++++++
+* bugfix making it so that oras discover function doesn't error when no fragments are found in the remote repository
+* splitting out documentation into command-specific files and adding info about --input flag
+* adding standalone fragment support
+* bugfix for oras pulling fragments when offline
+
+1.2.6
+++++++
+* bugfix making it so the fields in the --input format are case-insensitive
+
+1.2.5
+++++++
+* consolidating functions for --input policygen
+* bugfix for "scenario" field in json input
+* updating tests and examples to use azurelinux
+* "name" field is required when using --input
+
+1.2.4
+++++++
+* rolling back genpolicy version for Azure Linux V2 support instead of V3
+
+1.2.3
+++++++
+* adding fragment support for VN2
+* bugfix for vn2 workload identities
+* no longer encouraged to have multiple images in the same tar file
+
+1.2.2
+++++++
+* support for pure OCI v1 schema 2 formatted images
+* adding debug logging
+* changing where parameters and variables are filled in for arm templates
+* updating documentation about fragments
+* bugfix for exec processes in fragment generation
+* bugfix for custom mount options in fragment generation
+
+1.2.1
+++++++
+* updating genpolicy to version 3.2.0.azl3.genpolicy3
+
+1.2.0
+++++++
+* fixing metadata for uploaded fragments
+* fixing support for non-image feed names and attaching fragments to an image
+* bug fixes for image-attached fragments
+* adding ability to generate a fragment import from an image name using the remote attached fragments
+* updating stdout import statement to look more like the file output
+* adding `--omit-id` to the `acifragmentgen` command
+* updating genpolicy to version 3.2.0.azl3.genpolicy2
+
+1.1.1
+++++++
+* updating dmverity-vhd version with bugfix for empty image layers
+
+1.1.0
+++++++
+* adding support for image-attached fragments via `acifragmentgen`
+* adding workload identity support for VN2
+* adding `--exclude-default-fragments` to disallow sidecars from policy
+* adding `--omit-id` for policy stability across multiple image registries
+* better handle broken base64 policies in templates
+* improve error handling structure
+* make some mount types in VN2 required readonly
+* prompt users if they want to overwrite their policy in VN2
+* changing where dmverity-vhd and sign1util binaries are fetched from. This includes a significant speedup in dmverity-vhd hashing
+
+1.0.1
+++++++
+* getting rid of msrestazure dependency in _validators.py
+
+1.0.0
+++++++
+* adding support for Virtual Node
+* updating genpolicy version up through 3.2.0.azl1.genpolicy1
+
 0.3.6
 ++++++
 * updating genpolicy version up through 3.2.0.azl1.genpolicy0. Please note that this is a breaking change for deploying older policies. With the new node image, 0.3.6 or newer will be required.

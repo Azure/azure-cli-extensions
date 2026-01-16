@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2024-09-01"],
         ]
     }
 
@@ -46,7 +46,7 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._]+$",
+                pattern="^[-\\w\\._]+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -176,6 +176,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.zones = AAZListType()
 
             identity = cls._schema_on_200.identity
             identity.principal_id = AAZStrType(
@@ -198,7 +199,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="dnsZoneType",
             )
             properties.encryption = AAZObjectType()
-            properties.endpoints = AAZObjectType()
+            properties.endpoints = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.extended_network_blocks = AAZListType(
                 serialized_name="extendedNetworkBlocks",
             )
@@ -224,6 +227,7 @@ class Wait(AAZWaitCommand):
             )
             properties.nsx_public_ip_quota_raised = AAZStrType(
                 serialized_name="nsxPublicIpQuotaRaised",
+                flags={"read_only": True},
             )
             properties.nsxt_certificate_thumbprint = AAZStrType(
                 serialized_name="nsxtCertificateThumbprint",
@@ -284,6 +288,7 @@ class Wait(AAZWaitCommand):
             )
             key_vault_properties.key_state = AAZStrType(
                 serialized_name="keyState",
+                flags={"read_only": True},
             )
             key_vault_properties.key_vault_url = AAZStrType(
                 serialized_name="keyVaultUrl",
@@ -293,6 +298,7 @@ class Wait(AAZWaitCommand):
             )
             key_vault_properties.version_type = AAZStrType(
                 serialized_name="versionType",
+                flags={"read_only": True},
             )
 
             endpoints = cls._schema_on_200.properties.endpoints
@@ -402,6 +408,9 @@ class Wait(AAZWaitCommand):
 
             tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200.zones
+            zones.Element = AAZStrType()
 
             return cls._schema_on_200
 

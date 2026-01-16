@@ -69,13 +69,6 @@ def _load_legacy_identity_arguments(self):
 
 
 def _load_sms_arguments(self):
-    with self.argument_context('communication sms send-sms') as c:
-        c.argument('sender', options_list=['--sender', '-s'],
-                   type=str, help='The sender of the SMS')
-        c.argument('recipients', options_list=['--recipient', '-r'],
-                   nargs='+', help='The recipient(s) of the SMS')
-        c.argument('message', options_list=['--message', '-m'],
-                   type=str, help='The message in the SMS')
     with self.argument_context('communication sms send') as c:
         c.argument('sender', options_list=['--sender'],
                    type=str, help='The sender of the SMS')
@@ -83,6 +76,22 @@ def _load_sms_arguments(self):
                    nargs='+', help='The recipient(s) of the SMS')
         c.argument('message', options_list=['--message'],
                    type=str, help='The message in the SMS')
+        c.argument('delivery_report', options_list=['--deliveryReport'],
+                   action='store_true', help='Enable delivery report for the SMS')
+        c.argument('tag', options_list=['--tag'],
+                   type=str, help='Custom tag for the SMS message')
+
+    with self.argument_context('communication sms send-sms') as c:
+        c.argument('sender', options_list=['--sender', '-s'],
+                   type=str, help='The sender of the SMS')
+        c.argument('recipients', options_list=['--recipient', '-r'],
+                   nargs='+', help='The recipient(s) of the SMS')
+        c.argument('message', options_list=['--message', '-m'],
+                   type=str, help='The message in the SMS')
+        c.argument('delivery_report', options_list=['--deliveryReport'],
+                   action='store_true', help='Enable delivery report for the SMS')
+        c.argument('tag', options_list=['--tag'],
+                   type=str, help='Custom tag for the SMS message')
 
 
 def _load_phonenumber_arguments(self):
@@ -212,12 +221,14 @@ def _load_rooms_arguments(self):
                    help='Set this flag to true if, at the time of the call, '
                    'dial out to a PSTN number is enabled in a particular room. '
                    'By default, this flag is set to false. Optional.')
-        c.argument('presenters', options_list=['--presenter-participants'],
+        c.argument('presenters', options_list=['--presenter-participants', '--presenters'],
                    nargs='+', help='Collection of identities to be invited to the room as presenter. Optional.')
-        c.argument('attendees', options_list=['--attendee-participants'],
+        c.argument('attendees', options_list=['--attendee-participants', '--attendees'],
                    nargs='+', help='Collection of identities to be invited to the room as attendee. Optional.')
-        c.argument('consumers', options_list=['--consumer-participants'],
+        c.argument('consumers', options_list=['--consumer-participants', '--consumers'],
                    nargs='+', help='Collection of identities to be invited to the room as consumer. Optional.')
+        c.argument('collaborators', options_list=['--collaborator-participants', '--collaborators'],
+                   nargs='+', help='Collection of identities to be invited to the room as collaborator. Optional.')
 
     with self.argument_context('communication rooms delete') as c:
         c.argument('room_id', options_list=['--room'],
@@ -243,12 +254,14 @@ def _load_rooms_arguments(self):
     with self.argument_context('communication rooms participant add-or-update') as c:
         c.argument('room_id', options_list=['--room'],
                    type=str, help='Room Id')
-        c.argument('presenters', options_list=['--presenter-participants'],
+        c.argument('presenters', options_list=['--presenter-participants', '--presenters'],
                    nargs='+', help='Collection of identities to be added to the room as presenter.')
-        c.argument('attendees', options_list=['--attendee-participants'],
+        c.argument('attendees', options_list=['--attendee-participants', '--attendees'],
                    nargs='+', help='Collection of identities to be added to the room as attendee.')
-        c.argument('consumers', options_list=['--consumer-participants'],
+        c.argument('consumers', options_list=['--consumer-participants', '--consumers'],
                    nargs='+', help='Collection of identities to be added to the room as consumer.')
+        c.argument('collaborators', options_list=['--collaborator-participants', '--collaborators'],
+                   nargs='+', help='Collection of identities to be added to the room as collaborator.')
 
     with self.argument_context('communication rooms participant remove') as c:
         c.argument('room_id', options_list=['--room'],
@@ -280,7 +293,21 @@ def _load_email_arguments(self):
         c.argument('attachments', options_list=['--attachments'], nargs='+',
                    help='List of email attachments. Optional.')
         c.argument('attachment_types', options_list=['--attachment-types'], nargs='+',
-                   help='List of email attachment types, in the same order of attachments.'
-                   ' Required for each attachment. Known values are: avi, bmp, doc, docm,'
+                   help='List of email attachment types and inline attachment types, '
+                   'in the same order of attachments followed by inline attachments.'
+                   ' Required for each attachment. Known values for attachments are: avi, bmp, doc, docm,'
                    ' docx, gif, jpeg, mp3, one, pdf, png, ppsm, ppsx, ppt, pptm, pptx,'
                    ' pub, rpmsg, rtf, tif, txt, vsd, wav, wma, xls, xlsb, xlsm, and xlsx')
+        c.argument('inline_attachments', options_list=['--inline-attachments'], nargs='+',
+                   help='List of inline attachments. Optional. Format: FileLocation/ContentId'
+                   ' example: "ImageName.png/image"')
+        c.argument('waitUntil', options_list=['--wait-until'],
+                   arg_type=get_enum_type(['started', 'completed', '1', '0']),
+                   help='Indicates whether to wait until the server operation is started or completed. '
+                   'Accepted values are: started, completed, 1, 0.')
+
+    with self.argument_context('communication email status get') as c:
+        c.argument('operation_id', options_list=['--operation-id'], type=str,
+                   help='System generated message id (GUID) returned from a previous call to send email')
+        c.argument('connection_string', options_list=['--connection-string'], type=str,
+                   help='Connection string for Azure Communication Service. Must be provided.')

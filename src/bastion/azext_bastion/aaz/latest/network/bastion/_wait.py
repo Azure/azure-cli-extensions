@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts/{}", "2024-01-01"],
         ]
     }
 
@@ -41,12 +41,13 @@ class Wait(AAZWaitCommand):
 
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="Name of the bastion host.",
+            options=["-n", "--name", "--bastion-host-name"],
+            help="The name of the Bastion Host.",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Resource group name of the Bastion Host.",
             required=True,
         )
         return cls._args_schema
@@ -116,7 +117,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }
@@ -165,6 +166,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.zones = AAZListType()
 
             properties = cls._schema_on_200.properties
             properties.disable_copy_paste = AAZBoolType(
@@ -179,6 +181,12 @@ class Wait(AAZWaitCommand):
             properties.enable_ip_connect = AAZBoolType(
                 serialized_name="enableIpConnect",
             )
+            properties.enable_kerberos = AAZBoolType(
+                serialized_name="enableKerberos",
+            )
+            properties.enable_session_recording = AAZBoolType(
+                serialized_name="enableSessionRecording",
+            )
             properties.enable_shareable_link = AAZBoolType(
                 serialized_name="enableShareableLink",
             )
@@ -188,6 +196,9 @@ class Wait(AAZWaitCommand):
             properties.ip_configurations = AAZListType(
                 serialized_name="ipConfigurations",
             )
+            properties.network_acls = AAZObjectType(
+                serialized_name="networkAcls",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -195,6 +206,10 @@ class Wait(AAZWaitCommand):
             properties.scale_units = AAZIntType(
                 serialized_name="scaleUnits",
             )
+            properties.virtual_network = AAZObjectType(
+                serialized_name="virtualNetwork",
+            )
+            _WaitHelper._build_schema_sub_resource_read(properties.virtual_network)
 
             ip_configurations = cls._schema_on_200.properties.ip_configurations
             ip_configurations.Element = AAZObjectType()
@@ -230,11 +245,27 @@ class Wait(AAZWaitCommand):
             )
             _WaitHelper._build_schema_sub_resource_read(properties.subnet)
 
+            network_acls = cls._schema_on_200.properties.network_acls
+            network_acls.ip_rules = AAZListType(
+                serialized_name="ipRules",
+            )
+
+            ip_rules = cls._schema_on_200.properties.network_acls.ip_rules
+            ip_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.network_acls.ip_rules.Element
+            _element.address_prefix = AAZStrType(
+                serialized_name="addressPrefix",
+            )
+
             sku = cls._schema_on_200.sku
             sku.name = AAZStrType()
 
             tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200.zones
+            zones.Element = AAZStrType()
 
             return cls._schema_on_200
 

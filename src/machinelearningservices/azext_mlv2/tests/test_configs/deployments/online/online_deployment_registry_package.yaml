@@ -1,0 +1,12 @@
+name: blue
+endpoint_name: banti
+description: description for online deployment
+model: azureml://registries/mrsteamregistrycanary/models/mlflow_sklearn/versions/1
+code_configuration:
+  code: ../model-1/onlinescoring/
+  scoring_script: score.py
+environment: azureml://registries/mrsteamregistrycanary/environments/dhpkg-dolly3b-env1/versions/4
+instance_count: 1
+instance_type: Standard_DS2_V2
+scale_settings:
+  type: default

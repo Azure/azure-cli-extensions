@@ -1,0 +1,143 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric bootstrapdevice show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device?api-version=2025-07-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device","name":"example-device","type":"Microsoft.ManagedNetworkFabric/networkBootstrapDevices","location":"eastus2euap","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2024-02-12T09:32:41.2764291Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2024-02-12T09:32:41.2764291Z"},"properties":{"annotation":null,"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab3-5-1-comprack1","networkDeviceSku":"DefaultSku","networkDeviceRole":"ToR","hostName":"CR1-TOR1","serialNumber":"NA","version":"1.0.0","provisioningState":"Succeeded","managementIpv4Address":null,"managementIpv6Address":null,"configurationState":"Succeeded","administrativeState":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1044'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:51:21 GMT
+      etag:
+      - '"00001300-0000-3400-0000-65c9e5b90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 2DCCD9B97FCA46E99BB59030E241699D Ref B: MAA201060516021 Ref C: 2024-02-12T09:51:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric bootstrapdevice list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices?api-version=2025-07-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/nffab3-5-1-AggrRack-CE2","name":"nffab3-5-1-AggrRack-CE2","type":"Microsoft.ManagedNetworkFabric/networkBootstrapDevices","location":"eastus2euap","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2024-02-12T09:32:33.3602612Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2024-02-12T09:32:33.3602612Z"},"properties":{"annotation":null,"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab3-5-1-aggrack","networkDeviceSku":"DefaultSku","networkDeviceRole":"CE","hostName":"AR-CE2","serialNumber":"NA","version":"1.0.0","provisioningState":"Succeeded","managementIpv4Address":null,"managementIpv6Address":null,"configurationState":"Succeeded","administrativeState":"Enabled"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/nffab3-5-1-AggrRack-CE1","name":"nffab3-5-1-AggrRack-CE1","type":"Microsoft.ManagedNetworkFabric/networkBootstrapDevices","location":"eastus2euap","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2024-02-12T09:32:33.52637Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2024-02-12T09:32:33.52637Z"},"properties":{"annotation":null,"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab3-5-1-aggrack","networkDeviceSku":"DefaultSku","networkDeviceRole":"CE","hostName":"AR-CE1","serialNumber":"NA","version":"1.0.0","provisioningState":"Succeeded","managementIpv4Address":null,"managementIpv6Address":null,"configurationState":"Succeeded","administrativeState":"Enabled"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device","name":"example-device","type":"Microsoft.ManagedNetworkFabric/networkBootstrapDevices","location":"eastus2euap","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2024-02-12T09:32:41.2764291Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2024-02-12T09:32:41.2764291Z"},"properties":{"annotation":null,"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab3-5-1-comprack1","networkDeviceSku":"DefaultSku","networkDeviceRole":"ToR","hostName":"CR1-TOR1","serialNumber":"NA","version":"1.0.0","provisioningState":"Succeeded","managementIpv4Address":null,"managementIpv6Address":null,"configurationState":"Succeeded","administrativeState":"Enabled"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2800'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:51:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 7926a30e-e199-492f-87dc-40560dd1d1ed
+      - a370bc2e-bf02-42d6-a350-2ef45f953eb8
+      - 7d94b1a4-12a9-41f2-8f51-74cbaa1bb4fd
+      x-msedge-ref:
+      - 'Ref A: A17FC499168146489E54A558FBBEA198 Ref B: MAA201060516029 Ref C: 2024-02-12T09:51:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric bootstrapdevice list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices?api-version=2025-07-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/nfa-tool-ts-GA-cli-nf101023-1-AggrRack-MgmtSwitch1","name":"nfa-tool-ts-GA-cli-nf101023-1-AggrRack-MgmtSwitch1","type":"Microsoft.ManagedNetworkFabric/networkBootstrapDevices","location":"eastus2euap","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-10-10T10:20:29.2466082Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2024-02-02T06:56:43.7213665Z"},"properties":{"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SR-NF-TEST-1/providers/Microsoft.ManagedNetworkFabric/networkRacks/NFSingleRackTEST-2-2-aggrack","networkDeviceSku":"DefaultSku","networkDeviceRole":"NPB","hostName":"NFSR-AR-NPB1","serialNumber":"Arista;DCS-7280CR3K-32D4A;11.01;JPE22162468","version":"1.0.0","configurationState":"Succeeded","administrativeState":"Enabled","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device","name":"example-device","type":"Microsoft.ManagedNetworkFabric/networkBootstrapDevices","location":"eastus2euap","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2024-02-12T09:32:41.2764291Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2024-02-12T09:32:41.2764291Z"},"properties":{"annotation":null,"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkRacks/nffab3-5-1-comprack1","networkDeviceSku":"DefaultSku","networkDeviceRole":"ToR","hostName":"CR1-TOR1","serialNumber":"NA","version":"1.0.0","provisioningState":"Succeeded","managementIpv4Address":null,"managementIpv6Address":null,"configurationState":"Succeeded","administrativeState":"Enabled"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2056'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 09:51:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 15c8763f-d0cc-430b-bf41-ae32e30fd94f
+      - 18449927-7d5c-4a0b-8d32-9927a659fd20
+      x-msedge-ref:
+      - 'Ref A: 917482D0CF59417C8EDECB6D3EA011BE Ref B: MAA201060516025 Ref C: 2024-02-12T09:51:27Z'
+    status:
+      code: 200
+      message: OK
+version: 1

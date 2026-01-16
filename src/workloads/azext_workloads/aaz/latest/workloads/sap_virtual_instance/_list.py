@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-virtual-instance list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List all Virtual Instances for SAP solutions resources in a Resource Group.
@@ -23,9 +22,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/sapvirtualinstances", "2024-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances", "2024-09-01"],
         ]
     }
 
@@ -46,14 +46,17 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPVirtualInstancesListByResourceGroup(ctx=self.ctx)()
+        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        if condition_0:
+            self.SapVirtualInstancesListByResourceGroup(ctx=self.ctx)()
+        if condition_1:
+            self.SapVirtualInstancesListBySubscription(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,7 +72,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class SAPVirtualInstancesListByResourceGroup(AAZHttpOperation):
+    class SapVirtualInstancesListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -113,7 +116,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -149,7 +152,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -166,7 +171,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -207,8 +212,12 @@ class List(AAZCommand):
             properties.environment = AAZStrType(
                 flags={"required": True},
             )
-            properties.errors = AAZObjectType()
-            properties.health = AAZStrType()
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
+            properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.managed_resource_group_configuration = AAZObjectType(
                 serialized_name="managedResourceGroupConfiguration",
             )
@@ -223,8 +232,268 @@ class List(AAZCommand):
                 serialized_name="sapProduct",
                 flags={"required": True},
             )
-            properties.state = AAZStrType()
-            properties.status = AAZStrType()
+            properties.state = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            configuration = cls._schema_on_200.value.Element.properties.configuration
+            configuration.configuration_type = AAZStrType(
+                serialized_name="configurationType",
+                flags={"required": True},
+            )
+
+            disc_deployment = cls._schema_on_200.value.Element.properties.configuration.discriminate_by("configuration_type", "Deployment")
+            disc_deployment.app_location = AAZStrType(
+                serialized_name="appLocation",
+            )
+            disc_deployment.infrastructure_configuration = AAZObjectType(
+                serialized_name="infrastructureConfiguration",
+            )
+            _ListHelper._build_schema_infrastructure_configuration_read(disc_deployment.infrastructure_configuration)
+            disc_deployment.software_configuration = AAZObjectType(
+                serialized_name="softwareConfiguration",
+            )
+            _ListHelper._build_schema_software_configuration_read(disc_deployment.software_configuration)
+
+            disc_deployment_with_os_config = cls._schema_on_200.value.Element.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig")
+            disc_deployment_with_os_config.app_location = AAZStrType(
+                serialized_name="appLocation",
+            )
+            disc_deployment_with_os_config.infrastructure_configuration = AAZObjectType(
+                serialized_name="infrastructureConfiguration",
+            )
+            _ListHelper._build_schema_infrastructure_configuration_read(disc_deployment_with_os_config.infrastructure_configuration)
+            disc_deployment_with_os_config.os_sap_configuration = AAZObjectType(
+                serialized_name="osSapConfiguration",
+            )
+            disc_deployment_with_os_config.software_configuration = AAZObjectType(
+                serialized_name="softwareConfiguration",
+            )
+            _ListHelper._build_schema_software_configuration_read(disc_deployment_with_os_config.software_configuration)
+
+            os_sap_configuration = cls._schema_on_200.value.Element.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig").os_sap_configuration
+            os_sap_configuration.deployer_vm_packages = AAZObjectType(
+                serialized_name="deployerVmPackages",
+            )
+            os_sap_configuration.sap_fqdn = AAZStrType(
+                serialized_name="sapFqdn",
+            )
+
+            deployer_vm_packages = cls._schema_on_200.value.Element.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig").os_sap_configuration.deployer_vm_packages
+            deployer_vm_packages.storage_account_id = AAZStrType(
+                serialized_name="storageAccountId",
+            )
+            deployer_vm_packages.url = AAZStrType()
+
+            disc_discovery = cls._schema_on_200.value.Element.properties.configuration.discriminate_by("configuration_type", "Discovery")
+            disc_discovery.app_location = AAZStrType(
+                serialized_name="appLocation",
+                flags={"read_only": True},
+            )
+            disc_discovery.central_server_vm_id = AAZStrType(
+                serialized_name="centralServerVmId",
+            )
+            disc_discovery.managed_rg_storage_account_name = AAZStrType(
+                serialized_name="managedRgStorageAccountName",
+            )
+
+            errors = cls._schema_on_200.value.Element.properties.errors
+            errors.properties = AAZObjectType()
+            _ListHelper._build_schema_error_definition_read(errors.properties)
+
+            managed_resource_group_configuration = cls._schema_on_200.value.Element.properties.managed_resource_group_configuration
+            managed_resource_group_configuration.name = AAZStrType()
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
+
+    class SapVirtualInstancesListBySubscription(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Workloads/sapVirtualInstances",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-09-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.identity = AAZObjectType()
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.value.Element.identity
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.configuration = AAZObjectType(
+                flags={"required": True},
+            )
+            properties.environment = AAZStrType(
+                flags={"required": True},
+            )
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
+            properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.managed_resource_group_configuration = AAZObjectType(
+                serialized_name="managedResourceGroupConfiguration",
+            )
+            properties.managed_resources_network_access_type = AAZStrType(
+                serialized_name="managedResourcesNetworkAccessType",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.sap_product = AAZStrType(
+                serialized_name="sapProduct",
+                flags={"required": True},
+            )
+            properties.state = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
 
             configuration = cls._schema_on_200.value.Element.properties.configuration
             configuration.configuration_type = AAZStrType(

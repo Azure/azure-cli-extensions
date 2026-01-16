@@ -25,12 +25,14 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkdevices", "2024-02-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkdevices", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices", "2025-07-15"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -52,12 +54,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.NetworkDevicesListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.NetworkDevicesListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.NetworkDevicesListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,6 +74,335 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
+
+    class NetworkDevicesListBySubscription(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ManagedNetworkFabric/networkDevices",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-07-15",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.identity = AAZIdentityObjectType()
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
+            properties.annotation = AAZStrType()
+            properties.certificate_rotation_status = AAZListType(
+                serialized_name="certificateRotationStatus",
+                flags={"read_only": True},
+            )
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.host_name = AAZStrType(
+                serialized_name="hostName",
+            )
+            properties.identity_selector = AAZObjectType(
+                serialized_name="identitySelector",
+            )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
+            properties.management_ipv4_address = AAZStrType(
+                serialized_name="managementIpv4Address",
+                flags={"read_only": True},
+            )
+            properties.management_ipv6_address = AAZStrType(
+                serialized_name="managementIpv6Address",
+                flags={"read_only": True},
+            )
+            properties.network_device_role = AAZStrType(
+                serialized_name="networkDeviceRole",
+                flags={"read_only": True},
+            )
+            properties.network_device_sku = AAZStrType(
+                serialized_name="networkDeviceSku",
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            properties.network_rack_id = AAZStrType(
+                serialized_name="networkRackId",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.rw_device_config = AAZStrType(
+                serialized_name="rwDeviceConfig",
+                flags={"read_only": True},
+            )
+            properties.secret_rotation_status = AAZListType(
+                serialized_name="secretRotationStatus",
+                flags={"read_only": True},
+            )
+            properties.serial_number = AAZStrType(
+                serialized_name="serialNumber",
+                flags={"required": True},
+            )
+            properties.version = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            certificate_rotation_status = cls._schema_on_200.value.Element.properties.certificate_rotation_status
+            certificate_rotation_status.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.certificate_rotation_status.Element
+            _element.certificate_archive_reference = AAZObjectType(
+                serialized_name="certificateArchiveReference",
+                flags={"read_only": True},
+            )
+            _element.certificate_type = AAZStrType(
+                serialized_name="certificateType",
+                flags={"read_only": True},
+            )
+            _element.expire_time = AAZStrType(
+                serialized_name="expireTime",
+                flags={"read_only": True},
+            )
+            _element.last_rotation_time = AAZStrType(
+                serialized_name="lastRotationTime",
+                flags={"read_only": True},
+            )
+            _element.synchronization_status = AAZStrType(
+                serialized_name="synchronizationStatus",
+                flags={"read_only": True},
+            )
+
+            certificate_archive_reference = cls._schema_on_200.value.Element.properties.certificate_rotation_status.Element.certificate_archive_reference
+            certificate_archive_reference.certificate_name = AAZStrType(
+                serialized_name="certificateName",
+                flags={"read_only": True},
+            )
+            certificate_archive_reference.certificate_version = AAZStrType(
+                serialized_name="certificateVersion",
+                flags={"read_only": True},
+            )
+            certificate_archive_reference.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            certificate_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+                flags={"read_only": True},
+            )
+
+            identity_selector = cls._schema_on_200.value.Element.properties.identity_selector
+            identity_selector.identity_type = AAZStrType(
+                serialized_name="identityType",
+                flags={"required": True},
+            )
+            identity_selector.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
+                nullable=True,
+            )
+
+            last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            secret_rotation_status = cls._schema_on_200.value.Element.properties.secret_rotation_status
+            secret_rotation_status.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.secret_rotation_status.Element
+            _element.last_rotation_time = AAZStrType(
+                serialized_name="lastRotationTime",
+                flags={"read_only": True},
+            )
+            _element.secret_archive_reference = AAZObjectType(
+                serialized_name="secretArchiveReference",
+                flags={"read_only": True},
+            )
+            _element.secret_type = AAZStrType(
+                serialized_name="secretType",
+                flags={"read_only": True},
+            )
+            _element.synchronization_status = AAZStrType(
+                serialized_name="synchronizationStatus",
+                flags={"read_only": True},
+            )
+
+            secret_archive_reference = cls._schema_on_200.value.Element.properties.secret_rotation_status.Element.secret_archive_reference
+            secret_archive_reference.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            secret_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_name = AAZStrType(
+                serialized_name="secretName",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_version = AAZStrType(
+                serialized_name="secretVersion",
+                flags={"read_only": True},
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
     class NetworkDevicesListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -117,7 +448,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -153,7 +484,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -162,6 +495,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -180,18 +514,60 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.value.Element.properties
             properties.administrative_state = AAZStrType(
                 serialized_name="administrativeState",
                 flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
+            properties.certificate_rotation_status = AAZListType(
+                serialized_name="certificateRotationStatus",
+                flags={"read_only": True},
+            )
             properties.configuration_state = AAZStrType(
                 serialized_name="configurationState",
                 flags={"read_only": True},
             )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
+            )
+            properties.identity_selector = AAZObjectType(
+                serialized_name="identitySelector",
+            )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
             )
             properties.management_ipv4_address = AAZStrType(
                 serialized_name="managementIpv4Address",
@@ -208,12 +584,25 @@ class List(AAZCommand):
             properties.network_device_sku = AAZStrType(
                 serialized_name="networkDeviceSku",
             )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                nullable=True,
+                flags={"read_only": True},
+            )
             properties.network_rack_id = AAZStrType(
                 serialized_name="networkRackId",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.rw_device_config = AAZStrType(
+                serialized_name="rwDeviceConfig",
+                flags={"read_only": True},
+            )
+            properties.secret_rotation_status = AAZListType(
+                serialized_name="secretRotationStatus",
                 flags={"read_only": True},
             )
             properties.serial_number = AAZStrType(
@@ -224,175 +613,102 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            certificate_rotation_status = cls._schema_on_200.value.Element.properties.certificate_rotation_status
+            certificate_rotation_status.Element = AAZObjectType()
 
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
-
-    class NetworkDevicesListBySubscription(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ManagedNetworkFabric/networkDevices",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _element = cls._schema_on_200.value.Element.properties.certificate_rotation_status.Element
+            _element.certificate_archive_reference = AAZObjectType(
+                serialized_name="certificateArchiveReference",
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType(
+            _element.certificate_type = AAZStrType(
+                serialized_name="certificateType",
+                flags={"read_only": True},
+            )
+            _element.expire_time = AAZStrType(
+                serialized_name="expireTime",
+                flags={"read_only": True},
+            )
+            _element.last_rotation_time = AAZStrType(
+                serialized_name="lastRotationTime",
+                flags={"read_only": True},
+            )
+            _element.synchronization_status = AAZStrType(
+                serialized_name="synchronizationStatus",
+                flags={"read_only": True},
+            )
+
+            certificate_archive_reference = cls._schema_on_200.value.Element.properties.certificate_rotation_status.Element.certificate_archive_reference
+            certificate_archive_reference.certificate_name = AAZStrType(
+                serialized_name="certificateName",
+                flags={"read_only": True},
+            )
+            certificate_archive_reference.certificate_version = AAZStrType(
+                serialized_name="certificateVersion",
+                flags={"read_only": True},
+            )
+            certificate_archive_reference.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            certificate_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+                flags={"read_only": True},
+            )
+
+            identity_selector = cls._schema_on_200.value.Element.properties.identity_selector
+            identity_selector.identity_type = AAZStrType(
+                serialized_name="identityType",
                 flags={"required": True},
             )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
+            identity_selector.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
+                nullable=True,
             )
-            _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
+
+            last_operation = cls._schema_on_200.value.Element.properties.last_operation
+            last_operation.details = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
-            properties.administrative_state = AAZStrType(
-                serialized_name="administrativeState",
+            secret_rotation_status = cls._schema_on_200.value.Element.properties.secret_rotation_status
+            secret_rotation_status.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.secret_rotation_status.Element
+            _element.last_rotation_time = AAZStrType(
+                serialized_name="lastRotationTime",
                 flags={"read_only": True},
             )
-            properties.annotation = AAZStrType()
-            properties.configuration_state = AAZStrType(
-                serialized_name="configurationState",
+            _element.secret_archive_reference = AAZObjectType(
+                serialized_name="secretArchiveReference",
                 flags={"read_only": True},
             )
-            properties.host_name = AAZStrType(
-                serialized_name="hostName",
-            )
-            properties.management_ipv4_address = AAZStrType(
-                serialized_name="managementIpv4Address",
+            _element.secret_type = AAZStrType(
+                serialized_name="secretType",
                 flags={"read_only": True},
             )
-            properties.management_ipv6_address = AAZStrType(
-                serialized_name="managementIpv6Address",
+            _element.synchronization_status = AAZStrType(
+                serialized_name="synchronizationStatus",
                 flags={"read_only": True},
             )
-            properties.network_device_role = AAZStrType(
-                serialized_name="networkDeviceRole",
+
+            secret_archive_reference = cls._schema_on_200.value.Element.properties.secret_rotation_status.Element.secret_archive_reference
+            secret_archive_reference.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                nullable=True,
                 flags={"read_only": True},
             )
-            properties.network_device_sku = AAZStrType(
-                serialized_name="networkDeviceSku",
-            )
-            properties.network_rack_id = AAZStrType(
-                serialized_name="networkRackId",
+            secret_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
                 flags={"read_only": True},
             )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
+            secret_archive_reference.secret_name = AAZStrType(
+                serialized_name="secretName",
                 flags={"read_only": True},
             )
-            properties.serial_number = AAZStrType(
-                serialized_name="serialNumber",
-                flags={"required": True},
-            )
-            properties.version = AAZStrType(
+            secret_archive_reference.secret_version = AAZStrType(
+                serialized_name="secretVersion",
                 flags={"read_only": True},
             )
 

@@ -3,6 +3,15 @@
 Release History
 ===============
 
+1.0.1
+++++++
+* Support for the new stable API version (2024-09-20).
+
+1.0.0
+++++++
+* Moved deidservice under healthcareapis
+* Bumped to 1.0.0 following the guidelines: https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md
+
 0.4.0
 ++++++
 

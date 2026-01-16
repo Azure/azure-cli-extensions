@@ -1,0 +1,59 @@
+interactions:
+- request:
+    body: '{"from": "sanitized", "smsRecipients": [{"to": "sanitized", "repeatabilityRequestId":
+      "sanitized", "repeatabilityFirstSent": "sanitized"}], "message": "Hello there!!",
+      "smsSendOptions": {"enableDeliveryReport": true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '217'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - AzureCli/1.14.0 azsdk-python-communication-sms/1.1.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      x-ms-content-sha256:
+      - RtIViSWxr6dA0B771KeBBY+OnnYuOSDlAX1boky3cqw=
+      x-ms-date:
+      - Fri, 19 Sep 2025 07:24:34 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/sms?api-version=2021-03-07
+  response:
+    body:
+      string: '{"value": [{"to": "sanitized", "messageId": "sanitized", "httpStatusCode":
+        202, "repeatabilityResult": "accepted", "successful": true}]}'
+    headers:
+      api-supported-versions:
+      - 2020-07-20-preview1, 2021-03-07, 2024-02-05-preview, 2024-12-10-preview, 2024-12-19-privatepreview,
+        2025-05-29-preview, 2025-08-01-preview, 2025-08-30-preview
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 Sep 2025 07:24:35 GMT
+      ms-cv:
+      - 2/chv8Fn5kCwlP1JvZoZ4A.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250919T072434Z-r1b54ff6d45w2n2qhC1OSLw2zn0000000b8g000000000kwb
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 185ms
+    status:
+      code: 202
+      message: Accepted
+    url: sanitized
+version: 1

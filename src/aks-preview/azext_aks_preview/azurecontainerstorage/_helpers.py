@@ -3,19 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import re
 from typing import Tuple
 
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
-    CONST_ACSTOR_K8S_EXTENSION_NAME,
     CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
     CONST_DISK_TYPE_PV_WITH_ANNOTATION,
     CONST_EPHEMERAL_NVME_PERF_TIER_BASIC,
     CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM,
     CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
-    CONST_EXT_INSTALLATION_NAME,
     CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
     CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
     CONST_K8S_EXTENSION_NAME,
@@ -24,16 +21,21 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
+    CONST_ACSTOR_V1_K8S_EXTENSION_NAME,
+    CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
 )
 from azure.cli.command_modules.acs._roleassignments import (
     add_role_assignment,
     build_role_scope,
     delete_role_assignments,
 )
-from azure.cli.core.azclierror import UnknownError
+from azure.cli.core.azclierror import ResourceNotFoundError, UnknownError
 from knack.log import get_logger
 
 logger = get_logger(__name__)
+
+# Global cache to store VM SKU information.
+vm_sku_details_cache = {}
 
 
 def validate_storagepool_creation(
@@ -131,12 +133,12 @@ def check_if_extension_is_installed(cmd, resource_group, cluster_name) -> bool:
             client,
             resource_group,
             cluster_name,
-            CONST_EXT_INSTALLATION_NAME,
+            CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
             "managedClusters",
         )
 
         extension_type = extension.extension_type.lower()
-        if extension_type != CONST_ACSTOR_K8S_EXTENSION_NAME:
+        if extension_type != CONST_ACSTOR_V1_K8S_EXTENSION_NAME:
             return_val = False
     except:  # pylint: disable=bare-except
         return_val = False
@@ -150,29 +152,36 @@ def get_extension_installed_and_cluster_configs(
     cluster_name,
     agentpool_profiles
 ) -> Tuple[bool, bool, bool, bool, bool, float, str, str]:
-    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
-    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
-    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
-    is_extension_installed = False
-    is_elasticSan_enabled = False
-    is_azureDisk_enabled = False
-    is_ephemeralDisk_nvme_enabled = False
-    is_ephemeralDisk_localssd_enabled = False
-    ephemeral_disk_volume_type = CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY
-    perf_tier = CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
-    resource_cpu_value = -1
+
+    try:
+        client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+        client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+        k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+        is_extension_installed = False
+        is_elasticSan_enabled = False
+        is_azureDisk_enabled = False
+        is_ephemeralDisk_nvme_enabled = False
+        is_ephemeralDisk_localssd_enabled = False
+        ephemeral_disk_volume_type = CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY
+        perf_tier = CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+        resource_cpu_value = -1
+    except UnknownError as e:
+        logger.error("\nError fetching k8s extension module: %s", e)
+        return False, False, False, False, False, -1, "", ""
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.error("\nException occurred while fetching k8s extension module: %s", ex)
+        return False, False, False, False, False, -1, "", ""
 
     try:
         extension = k8s_extension_custom_mod.show_k8s_extension(
             client,
             resource_group,
             cluster_name,
-            CONST_EXT_INSTALLATION_NAME,
+            CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
             "managedClusters",
         )
 
-        extension_type = extension.extension_type.lower()
-        is_extension_installed = extension_type == CONST_ACSTOR_K8S_EXTENSION_NAME
+        is_extension_installed = extension.extension_type.lower() == CONST_ACSTOR_V1_K8S_EXTENSION_NAME
         config_settings = extension.configuration_settings
 
         if is_extension_installed and config_settings is not None:
@@ -241,6 +250,35 @@ def get_extension_installed_and_cluster_configs(
         ephemeral_disk_volume_type,
         perf_tier
     )
+
+
+def get_container_storage_extension_installed(
+    cmd,
+    resource_group,
+    cluster_name,
+    extension_name,
+) -> Tuple[bool, str]:
+
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    is_extension_installed = False
+    extension_version = ""
+
+    try:
+        extension = k8s_extension_custom_mod.show_k8s_extension(
+            client,
+            resource_group,
+            cluster_name,
+            extension_name,
+            "managedClusters",
+        )
+        is_extension_installed = True
+        extension_version = extension.current_version
+    except ResourceNotFoundError:
+        # Extension not found, which is expected if not installed.
+        is_extension_installed = False
+    return is_extension_installed, extension_version
 
 
 def get_initial_resource_value_args(
@@ -410,38 +448,6 @@ def get_desired_resource_value_args(
     )
 
 
-# get_cores_from_sku returns the number of core in the vm_size passed.
-# Returns -1 if there is a problem with parsing the vm_size.
-def get_cores_from_sku(vm_size):
-    cpu_value = -1
-    pattern = r'([a-z])+(\d+)[a-z]*(?=_v(\d+)[^_]*$|$)'
-    match = re.search(pattern, vm_size.lower())
-    if match:
-        series_prefix = match.group(1)
-        size_val = int(match.group(2))
-        version_val = match.group(3)
-        version = -1
-        if version_val is not None:
-            version = int(version_val)
-
-        cpu_value = size_val
-        # https://learn.microsoft.com/en-us/azure/virtual-machines/dv2-dsv2-series
-        # https://learn.microsoft.com/en-us/azure/virtual-machines/dv2-dsv2-series-memory
-        if version == 2 and (series_prefix in ('d', 'ds')):
-            if size_val in (2, 11):
-                cpu_value = 2
-            elif size_val in (3, 12):
-                cpu_value = 4
-            elif size_val in (4, 13):
-                cpu_value = 8
-            elif size_val in (5, 14):
-                cpu_value = 16
-            elif size_val == 15:
-                cpu_value = 20
-
-    return cpu_value
-
-
 def check_if_new_storagepool_creation_required(
     storage_pool_type,
     ephemeral_disk_volume_type,
@@ -467,6 +473,33 @@ def check_if_new_storagepool_creation_required(
     return should_create_storagepool
 
 
+def generate_vm_sku_cache_for_region(cli_ctx, location=None):
+    result = _get_vm_sku_details(cli_ctx, location)
+    for vm_data in result:
+        sku_name = vm_data.name.lower()
+        capabilities = vm_data.capabilities
+        cpu_value = -1
+        nvme_enabled = False
+        for entry in capabilities:
+            if entry.name == 'vCPUs' and cpu_value == -1:
+                cpu_value = int(entry.value)
+
+            if entry.name == 'vCPUsAvailable':
+                cpu_value = int(entry.value)
+
+            if entry.name == 'NvmeDiskSizeInMiB':
+                nvme_enabled = True
+
+            vm_sku_details_cache[sku_name] = (cpu_value, nvme_enabled)
+
+
+def get_vm_sku_details(sku_name):
+    result = vm_sku_details_cache.get(sku_name)
+    if result is None:
+        return None, None
+    return result
+
+
 def _get_ephemeral_nvme_cpu_value_based_on_vm_size_perf_tier(nodepool_skus, perf_tier):
     cpu_value = -1
     multiplication_factor = 0.25
@@ -475,7 +508,11 @@ def _get_ephemeral_nvme_cpu_value_based_on_vm_size_perf_tier(nodepool_skus, perf
     elif perf_tier.lower() == CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM.lower():
         multiplication_factor = 0.5
     for vm_size in nodepool_skus:
-        number_of_cores = get_cores_from_sku(vm_size)
+        number_of_cores, _ = get_vm_sku_details(vm_size.lower())
+        if number_of_cores is None:
+            raise UnknownError(
+                f"Unable to find details for virtual machine size {vm_size}."
+            )
         if number_of_cores != -1:
             if cpu_value == -1:
                 cpu_value = number_of_cores * multiplication_factor
@@ -554,3 +591,18 @@ def _generate_k8s_extension_resource_args(
     ]
 
     return resource_args
+
+
+def _get_vm_sku_details(cli_ctx, location=None):
+    def _is_vm_in_required_location(desired_location, location_list):
+        for val in location_list:
+            if desired_location.lower() == val.lower():
+                return True
+        return False
+
+    from azext_aks_preview._client_factory import get_compute_client
+    result = get_compute_client(cli_ctx).resource_skus.list()
+    result = [x for x in result if x.resource_type.lower() == 'virtualmachines']
+    if location:
+        result = [r for r in result if _is_vm_in_required_location(location, r.locations)]
+    return result

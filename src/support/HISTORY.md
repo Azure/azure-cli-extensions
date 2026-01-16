@@ -1,6 +1,10 @@
 Release History
 ===============
 
+2.0.1
+-----
+* Remove dependency on msrestazure
+
 2.0.0
 -----
 * Upgrade CLI Support extension to new Support RP API 2024-04-01

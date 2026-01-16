@@ -102,7 +102,7 @@ def step_update(test, checks=None):
     test.cmd(
         "az networkcloud cloudservicesnetwork update --name {name} "
         "--additional-egress-endpoints {additionalEgressEndpoint} "
-        "--enable-default-egress-endpoints  {defaultEgressEndpoint} "
+        "--enable-default-egress-endpoints {defaultEgressEndpoint} "
         "--tags {tagsUpdate} "
         "--resource-group {rg}"
     )

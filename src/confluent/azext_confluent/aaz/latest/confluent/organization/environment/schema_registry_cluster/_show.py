@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization environment schema-registry-cluster show",
 )
 class Show(AAZCommand):
-    """Get schema registry cluster by Id
+    """Retrieve details of a specific Schema Registry cluster by its ID.
     """
 
     _aaz_info = {
@@ -60,8 +60,6 @@ class Show(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource Group Name",
             required=True,
         )
         return cls._args_schema

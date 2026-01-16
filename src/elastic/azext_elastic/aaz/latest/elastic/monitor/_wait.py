@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2025-06-01"],
         ]
     }
 
@@ -45,6 +45,9 @@ class Wait(AAZWaitCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -116,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -153,6 +156,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.kind = AAZStrType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -188,6 +192,9 @@ class Wait(AAZWaitCommand):
             properties.generate_api_key = AAZBoolType(
                 serialized_name="generateApiKey",
             )
+            properties.hosting_type = AAZStrType(
+                serialized_name="hostingType",
+            )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",
                 flags={"read_only": True},
@@ -199,8 +206,27 @@ class Wait(AAZWaitCommand):
             properties.monitoring_status = AAZStrType(
                 serialized_name="monitoringStatus",
             )
+            properties.plan_details = AAZObjectType(
+                serialized_name="planDetails",
+            )
+            properties.project_details = AAZObjectType(
+                serialized_name="projectDetails",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.saa_s_azure_subscription_status = AAZStrType(
+                serialized_name="saaSAzureSubscriptionStatus",
+            )
+            properties.source_campaign_id = AAZStrType(
+                serialized_name="sourceCampaignId",
+            )
+            properties.source_campaign_name = AAZStrType(
+                serialized_name="sourceCampaignName",
+            )
+            properties.subscription_state = AAZStrType(
+                serialized_name="subscriptionState",
             )
             properties.version = AAZStrType()
 
@@ -252,6 +278,31 @@ class Wait(AAZWaitCommand):
             )
             elastic_cloud_user.id = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            plan_details = cls._schema_on_200.properties.plan_details
+            plan_details.offer_id = AAZStrType(
+                serialized_name="offerID",
+            )
+            plan_details.plan_id = AAZStrType(
+                serialized_name="planID",
+            )
+            plan_details.plan_name = AAZStrType(
+                serialized_name="planName",
+            )
+            plan_details.publisher_id = AAZStrType(
+                serialized_name="publisherID",
+            )
+            plan_details.term_id = AAZStrType(
+                serialized_name="termID",
+            )
+
+            project_details = cls._schema_on_200.properties.project_details
+            project_details.configuration_type = AAZStrType(
+                serialized_name="configurationType",
+            )
+            project_details.project_type = AAZStrType(
+                serialized_name="projectType",
             )
 
             sku = cls._schema_on_200.sku

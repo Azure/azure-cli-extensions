@@ -2,6 +2,70 @@
 
 Release History
 ===============
+1.2.0b3
+++++++++++++++++++
+
+**New Features:**
+
+* Added new command ``az apic api-analysis`` to manage API analysis in Azure API Center.
+  * Added ``az apic api-analysis create`` to create an API analysis.
+  * Added ``az apic api-analysis delete`` to delete an API analysis.
+  * Added ``az apic api-analysis list`` to list all API analyses.
+  * Added ``az apic api-analysis show`` to show details of an API analysis.
+  * Added ``az apic api-analysis update`` to update an API analysis.
+  * Added ``az apic api-analysis import-ruleset`` to import an API analysis ruleset.
+  * Added ``az apic api-analysis export-ruleset`` to export an API analysis ruleset.
+* Added new command ``az apic import apim`` to import an API from an Azure API Management instance.
+
+**Deprecations:**
+  * Deprecated the ``az apic import-from-apim`` command.
+
+1.2.0b2
+++++++++++++++++++
+* Remove msrestazure dependency
+
+1.2.0b1
+++++++++++++++++++
+
+**New Features:**
+
+* Added new command ``az apic integration create`` to manage integrations in Azure API Center.
+  * Added ``az apic integration create apim`` to manage Azure API Management integrations as an API source.
+  * Added ``az apic integration create aws`` to manage Amazon API Gateway as an API source.
+* Added new command ``az apic import aws`` to import an API from an Amazon API Gateway instance.
+* Added url option for ``--api-location`` parameter in ``az apic api register`` command.
+
+**Updates:**
+
+* Added examples for using ``@filename`` syntax in several commands' help documentations.
+* Improved error messages for the ``az apic api register`` command.
+
+**Fixes:**
+
+* Corrected the example for ``az apic update`` command.
+* Fixed an expired link in ``az apic api definition import-specification`` command's help documentation.
+
+1.1.0
+++++++++++++++++++
+
+**New Features:**
+
+* Added ``--custom-metadata-only`` parameter to ``az apic metadata export`` command.
+* Added single custom metadata update for ``az apic api update`` command.
+
+**Updates:**
+
+* Added example for ``az apic api update`` command.
+* Added examples with system assigned identity for ``az apic create`` and ``az apic update`` commands.
+
+**Fixes:**
+
+* Set external document correctly in ``az apic api register`` command.
+* Do not use API description as summary in ``az apic api register`` command. 
+
+**Removals:**
+
+* Eliminated duplicate example for ``az apic create`` command.
 
 1.0.0
 ++++++++++++++++++

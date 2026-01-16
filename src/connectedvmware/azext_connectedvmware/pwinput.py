@@ -34,7 +34,10 @@ try:
 except ImportError:
     pass  # There is no typing module on Python 2, but that's fine because we use the comment-style of type hints.
 
-if sys.platform == 'win32':
+if not sys.stdin.isatty():
+    def pwinput(prompt='Password: ', mask='*'):
+        return sys.stdin.readline().rstrip()
+elif sys.platform == 'win32':
     # For some reason, mypy reports that msvcrt doesn't have getch, ignore this warning:
     from msvcrt import getch  # type: ignore
 

@@ -11,7 +11,7 @@ from jinja2 import Template
 from azure.cli.core.azclierror import CLIInternalError
 
 CHART_NAME = "nginxdemo-0.1.0.tgz"
-
+SNS_CGV_FILE = "ConfigGroupSchema-CGV.json"
 
 def mock_in_unit_test(unit_test, target, replacement):
     """Mock a function in a unit test."""
@@ -49,6 +49,14 @@ def get_path_to_test_chart():
     templates_dir = os.path.join(code_dir, "integration_test_mocks", "cnf_mocks")
     chart_path = os.path.join(templates_dir, CHART_NAME)
     return chart_path
+
+
+def get_cgv_path():
+    code_dir = os.path.dirname(__file__)
+    cgv_file = os.path.join(
+       code_dir, "integration_test_mocks", "mock_input_templates", SNS_CGV_FILE
+    )    
+    return cgv_file
 
 
 def get_path_to_vnf_mocks():

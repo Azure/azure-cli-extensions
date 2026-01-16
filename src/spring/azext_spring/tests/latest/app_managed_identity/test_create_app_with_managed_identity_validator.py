@@ -18,25 +18,25 @@ class TestCreateAppWithManagedIdentityValitorWithConflict(unittest.TestCase):
         ns = Namespace(system_assigned=None,
                        assign_identity=False)
         validate_create_app_with_system_identity_or_warning(ns)
-        self.assertEquals(ns.system_assigned, False)
+        self.assertEqual(ns.system_assigned, False)
 
     def test_system_identity_override_2(self):
         ns = Namespace(system_assigned=None,
                        assign_identity=True)
         validate_create_app_with_system_identity_or_warning(ns)
-        self.assertEquals(ns.system_assigned, True)
+        self.assertEqual(ns.system_assigned, True)
 
     def test_system_identity_override_3(self):
         ns = Namespace(system_assigned=True,
                        assign_identity=None)
         validate_create_app_with_system_identity_or_warning(ns)
-        self.assertEquals(ns.system_assigned, True)
+        self.assertEqual(ns.system_assigned, True)
 
     def test_system_identity_override_4(self):
         ns = Namespace(system_assigned=False,
                        assign_identity=None)
         validate_create_app_with_system_identity_or_warning(ns)
-        self.assertEquals(ns.system_assigned, False)
+        self.assertEqual(ns.system_assigned, False)
 
 
 class TestCreateAppWithManagedIdentityValitorWithConflict(unittest.TestCase):

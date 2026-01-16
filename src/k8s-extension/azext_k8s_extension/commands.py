@@ -23,6 +23,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_k8s_extension', table_transformer=k8s_extension_list_table_format)
         g.custom_show_command('show', 'show_k8s_extension', table_transformer=k8s_extension_show_table_format)
         g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)
+        g.custom_command('troubleshoot', 'troubleshoot_extension', is_preview=True)
 
     # Subgroup - k8s-extension extension-types
     k8s_cluster_extension_type_sdk = CliCommandType(

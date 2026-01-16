@@ -8,13 +8,15 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 # pylint: disable=too-many-boolean-expressions
+# pylint: disable=protected-access
+# pylint: disable=too-many-branches
 
 from knack.util import CLIError
 from datetime import datetime
 from .vendored_sdks.alertsmanagement.models import ActionType
 
 
-class bcolors:
+class bcolors:  # pylint: disable=too-few-public-methods
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -60,10 +62,10 @@ def _alert_rule_ids(subscription, resource_group, alert_ids):
     """
     if alert_ids is None:
         return None
-    from msrestazure.tools import resource_id, is_valid_resource_id
+    from azure.mgmt.core.tools import resource_id, is_valid_resource_id
     ids = []
     ids.append(alert_ids[0])
-    for id in alert_ids[1:]:
+    for id in alert_ids[1:]:  # pylint: disable=redefined-builtin
         if not is_valid_resource_id(id):
             rid = resource_id(subscription=subscription, resource_group=resource_group,
                               namespace='microsoft.insights', type='alertrules', name=id)
@@ -117,7 +119,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
             }
         ]
     elif rule_type == ActionType.ADD_ACTION_GROUPS:
-        if action_groups is None:
+        if action_groups is None:  # pylint: disable=no-else-return
             print(bcolors.FAIL + 'Missing Argument: --action-groups must be used when using AddActionGroups' + bcolors.ENDC)
             return
         else:

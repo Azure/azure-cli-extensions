@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor delete",
 )
 class Delete(AAZCommand):
-    """Delete a NewRelicMonitorResource
+    """Deletes an existing New Relic monitor resource from your Azure subscription, removing the integration and stopping the observability of your Azure resources through New Relic.
 
     :example: Delete a NewRelicMonitorResource.
         az new-relic monitor delete --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --user-email UserEmail@123.com
@@ -52,7 +52,7 @@ class Delete(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         _args_schema.user_email = AAZStrArg(

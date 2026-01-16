@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.0.2
+++++++
+* Updated CLI command descriptions.
+
+1.0.1
+++++++
+* Update module documentation.
+
 1.0.0b1
 ++++++
 * Initial release.

@@ -1,0 +1,43 @@
+{
+    "version": "1.0",
+    "scenarios": {
+        "requestGroup1": {
+            "requests": [
+                {
+                    "requestName": "add",
+                    "responseVariables": [
+                        {
+                            "extractorType": "XPathExtractor",
+                            "expression": "/note/body",
+                            "variableName": "token"
+                        }
+                    ],
+                    "queryParameters": [
+                        {
+                            "key": "param1",
+                            "value": "value1"
+                        }
+                    ],
+                    "requestType": "URL",
+                    "endpoint": "http://www.contoso.com/orders",
+                    "headers": {
+                        "api-token": "my-token"
+                    },
+                    "body": "{\r\n  \"customer\": \"Contoso\",\r\n  \"items\": {\r\n\t  \"product_id\": 321,\r\n\t  \"count\": 50,\r\n\t  \"amount\": 245.95\r\n  }\r\n}",
+                    "method": "POST",
+                    "requestBodyFormat": "JSON"
+                }
+            ],
+            "csvDataSetConfigList": []
+        }
+    },
+    "testSetup": [
+        {
+            "virtualUsersPerEngine": 50,
+            "durationInSeconds": 300,
+            "loadType": "Linear",
+            "scenario": "requestGroup1",
+            "rampUpTimeInSeconds": 60
+        }
+    ]
+}

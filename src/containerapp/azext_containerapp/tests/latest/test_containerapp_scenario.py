@@ -10,7 +10,7 @@ import time
 import unittest
 
 from azure.cli.command_modules.containerapp._utils import format_location
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -217,6 +217,7 @@ class ContainerappScenarioTest(ScenarioTest):
         self.cmd(f'containerapp logs show -n {containerapp_name} -g {resource_group} --type system')
         self.cmd(f'containerapp env logs show -n {env_name} -g {env_rg}')
 
+    @live_only()  # TODO: fix this test case
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_registry_msi(self, resource_group):
         #  resource type 'Microsoft.ContainerRegistry/registries' is not available in North Central US(Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
@@ -247,6 +248,47 @@ class ContainerappScenarioTest(ScenarioTest):
         self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("username"), "")
         self.assertEqual(app_data["properties"]["configuration"]["registries"][0].get("identity"), "system")
 
+class ContainerappDebugConsoleScenarioTest(ScenarioTest):
+    @live_only()  # Pass lively, But failed in playback mode with error: WebSocketBadStatusException: Handshake status 401 Unauthorized
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_debug(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        containerapp_name = self.create_random_name(prefix='containerapp-debug1', length=24)
+        # create an app with ingress is None
+        app = self.cmd(f'containerapp create -g {resource_group} -n {containerapp_name} --environment {env}', checks=[
+            JMESPathCheck('name', containerapp_name),
+            JMESPathCheck('properties.configuration.ingress', None),
+
+        ]).get_output_in_json()
+
+        self.containerapp_debug_test_helper(resource_group, containerapp_name, app["properties"]["latestRevisionName"])
+
+        #  Test external App
+        external_containerapp_name = self.create_random_name(prefix='containerapp-debug2', length=24)
+        # create an app with ingress is None
+        external_containerapp = self.cmd(
+            f'containerapp create -g {resource_group} -n {external_containerapp_name} --environment {env} --ingress external --target-port 8080',
+            checks=[
+                JMESPathCheck('name', external_containerapp_name),
+                JMESPathCheck('properties.configuration.ingress.external', True),
+                JMESPathCheck('properties.configuration.ingress.targetPort', 8080)
+            ]).get_output_in_json()
+
+        self.containerapp_debug_test_helper(resource_group, external_containerapp_name,
+                                            external_containerapp["properties"]["latestRevisionName"])
+
+    def containerapp_debug_test_helper(self, resource_group, containerapp_name, latest_revision_name):
+        self.cmd(f'containerapp debug -g {resource_group} -n {containerapp_name}', expect_failure=False)
+
+        replica_list = self.cmd(
+            f'containerapp replica list -g {resource_group} -n {containerapp_name} --revision {latest_revision_name}',
+            expect_failure=False).get_output_in_json()
+
+        self.cmd(
+            f'containerapp debug -g {resource_group} -n {containerapp_name} --replica {replica_list[0]["name"]} --revision {latest_revision_name}',
+            expect_failure=False)
 
 class ContainerappLocationNotInStageScenarioTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):

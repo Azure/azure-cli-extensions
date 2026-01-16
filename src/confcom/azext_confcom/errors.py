@@ -12,7 +12,7 @@ class AccContainerError(Exception):
     """Generic ACC Container errors"""
 
 
-def eprint(*args, **kwargs):
+def eprint(*args, exit_code=1, **kwargs):
     # print to stderr with formatting to be noticeable in the terminal
     logger.error(*args, **kwargs)
-    sys.exit(1)
+    sys.exit(exit_code)

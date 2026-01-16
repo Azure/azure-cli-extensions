@@ -5,7 +5,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - oracle-database autonomous-database show
       Connection:
@@ -13,30 +13,34 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.13 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Oracle.Database/autonomousDatabases/eamonterraformtest501?api-version=2023-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/autonomousDatabases/ADBScli1?api-version=2025-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Oracle.Database/autonomousDatabases/eamonterraformtest501","name":"eamonterraformtest501","type":"oracle.database/autonomousdatabases","location":"eastus","tags":{},"systemData":{"createdBy":"eamon.el-homsi@oracle.com","createdByType":"User","createdAt":"2024-04-17T19:55:06.3169995Z","lastModifiedBy":"857ad006-4380-4712-ba4c-22f7c64d84e7","lastModifiedByType":"Application","lastModifiedAt":"2024-04-17T20:48:27.1444348Z"},"properties":{"dataBaseType":"Regular","autonomousMaintenanceScheduleType":"Regular","characterSet":"AL32UTF8","computeCount":2,"computeModel":"ECPU","connectionStrings":{"allConnectionStrings":{},"high":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_eamonterraformtest501_high.adb.oraclecloud.com","low":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_eamonterraformtest501_low.adb.oraclecloud.com","medium":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_eamonterraformtest501_medium.adb.oraclecloud.com","profiles":[{"consumerGroup":"High","displayName":"eamonterraformtest501_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
-        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Low","displayName":"eamonterraformtest501_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
-        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Medium","displayName":"eamonterraformtest501_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
-        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"High","displayName":"eamonterraformtest501_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
-        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Low","displayName":"eamonterraformtest501_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
-        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Medium","displayName":"eamonterraformtest501_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
-        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"}]},"connectionUrls":{"apexUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/ords/apex","databaseTransformsUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/odi/","graphStudioUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/graphstudio/","machineLearningNotebookUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/oml/","ordsUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/ords/","sqlDevWebUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/ords/sql-developer"},"dataStorageSizeInGbs":1024,"dataStorageSizeInTbs":1,"dbVersion":"19c","dbWorkload":"DW","displayName":"eamonterraformtest501","isAutoScalingEnabled":true,"isAutoScalingForStorageEnabled":false,"isLocalDataGuardEnabled":false,"isRemoteDataGuardEnabled":false,"localDisasterRecoveryType":"BackupBased","localStandbyDb":{"lifecycleState":"Standby"},"isMtlsConnectionRequired":false,"licenseModel":"LicenseIncluded","provisioningState":"Failed","ncharacterSet":"AL16UTF16","ociUrl":"https://cloud.oracle.com/db/adbs/ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqa6ad253hddyjdmflhjyjxs7ysao2l54lpe2qdgmq6bnja?region=us-ashburn-1&tenant=orpsandbox3&compartmentId=ocid1.compartment.oc1..aaaaaaaazcet2jt2uowjtgxsae5uositfy2thngqgokwdifyzmyygdpckeua","openMode":"ReadWrite","permissionLevel":"Restricted","privateEndpoint":"opkzo7sj.adb.us-ashburn-1.oraclecloud.com","privateEndpointIp":"10.0.1.29","privateEndpointLabel":"opkzo7sj","lifecycleState":"Available","subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Microsoft.Network/virtualNetworks/eamonterraformtest501_vnet/subnets/delegated","timeCreated":"2024-04-17T20:04:27.412Z","timeLocalDataGuardEnabled":"Wed
-        Apr 17 20:04:46 UTC 2024","timeMaintenanceBegin":"2024-04-21T12:00:00Z","timeMaintenanceEnd":"2024-04-21T14:00:00Z","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Microsoft.Network/virtualNetworks/eamonterraformtest501_vnet","ocid":"ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqa6ad253hddyjdmflhjyjxs7ysao2l54lpe2qdgmq6bnja","backupRetentionPeriodInDays":60,"actualUsedDataStorageSizeInTbs":1,"usedDataStorageSizeInTbs":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/autonomousDatabases/ADBScli1","name":"ADBScli1","type":"oracle.database/autonomousdatabases","location":"eastus","systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-11-20T15:52:18.6199093Z","lastModifiedBy":"a50e6610-5416-4c2a-88b6-172c7f376f7d","lastModifiedByType":"Application","lastModifiedAt":"2025-12-04T19:31:05.3315662Z"},"properties":{"dataBaseType":"Regular","actualUsedDataStorageSizeInTbs":0.007189959287643433,"allocatedStorageSizeInTbs":0.0087890625,"autonomousMaintenanceScheduleType":"Regular","characterSet":"AL32UTF8","computeCount":2,"computeModel":"ECPU","connectionStrings":{"allConnectionStrings":{},"high":"adb.us-ashburn-1.oraclecloud.com:1522/gb9a8851d81be03_adbscli1_high.adb.oraclecloud.com","low":"adb.us-ashburn-1.oraclecloud.com:1522/gb9a8851d81be03_adbscli1_low.adb.oraclecloud.com","medium":"adb.us-ashburn-1.oraclecloud.com:1522/gb9a8851d81be03_adbscli1_medium.adb.oraclecloud.com","profiles":[{"consumerGroup":"High","displayName":"adbscli1_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=kgdksljf.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbscli1_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Low","displayName":"adbscli1_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=kgdksljf.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbscli1_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Medium","displayName":"adbscli1_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=kgdksljf.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbscli1_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Tp","displayName":"adbscli1_tp","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=kgdksljf.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbscli1_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Tpurgent","displayName":"adbscli1_tpurgent","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=kgdksljf.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbscli1_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"High","displayName":"adbscli1_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=kgdksljf.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbscli1_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Low","displayName":"adbscli1_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=kgdksljf.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbscli1_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Medium","displayName":"adbscli1_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=kgdksljf.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbscli1_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Tp","displayName":"adbscli1_tp","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=kgdksljf.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbscli1_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Tpurgent","displayName":"adbscli1_tpurgent","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=kgdksljf.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbscli1_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"}]},"connectionUrls":{"apexUrl":"https://kgdksljf.adb.us-ashburn-1.oraclecloudapps.com/ords/apex","databaseTransformsUrl":"https://kgdksljf.adb.us-ashburn-1.oraclecloudapps.com/odi/","graphStudioUrl":"https://kgdksljf.adb.us-ashburn-1.oraclecloudapps.com/graphstudio/","machineLearningNotebookUrl":"https://kgdksljf.adb.us-ashburn-1.oraclecloudapps.com/oml/","ordsUrl":"https://kgdksljf.adb.us-ashburn-1.oraclecloudapps.com/ords/","sqlDevWebUrl":"https://kgdksljf.adb.us-ashburn-1.oraclecloudapps.com/ords/sql-developer"},"dataStorageSizeInGbs":32,"databaseEdition":"EnterpriseEdition","dbVersion":"19c","dbWorkload":"OLTP","displayName":"ADBScli1","isAutoScalingEnabled":false,"isAutoScalingForStorageEnabled":false,"peerDbIds":[],"isLocalDataGuardEnabled":false,"isRemoteDataGuardEnabled":false,"localDisasterRecoveryType":"BackupBased","localStandbyDb":{"lifecycleState":"Standby"},"isMtlsConnectionRequired":false,"licenseModel":"BringYourOwnLicense","provisioningState":"Succeeded","ncharacterSet":"AL16UTF16","ociUrl":"https://cloud.oracle.com/db/adbs/ocid1.autonomousdatabase.oc1.iad.anuwcljs2edokzyaymqnbmf6sdvempht5uvdem2sz7kbxmiwudn5rogrhjya?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","openMode":"ReadWrite","privateEndpoint":"kgdksljf.adb.us-ashburn-1.oraclecloud.com","privateEndpointIp":"10.0.1.236","privateEndpointLabel":"kgdksljf","lifecycleState":"Available","subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated","supportedRegionsToCloneTo":["westus","canadacentral","brazilsouth","centralus"],"timeCreated":"2025-11-20T15:56:23.39Z","timeLocalDataGuardEnabled":"Thu
+        Nov 20 15:56:39 UTC 2025","timeMaintenanceBegin":"2025-12-07T09:00:00Z","timeMaintenanceEnd":"2025-12-07T11:00:00Z","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet","ocid":"ocid1.autonomousdatabase.oc1.iad.anuwcljs2edokzyaymqnbmf6sdvempht5uvdem2sz7kbxmiwudn5rogrhjya","backupRetentionPeriodInDays":60}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5995'
+      - '7520'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 Jul 2024 15:30:22 GMT
+      - Thu, 04 Dec 2025 19:48:21 GMT
       etag:
-      - '"730330d6-0000-0100-0000-662049a50000"'
+      - '"d705d50a-0000-0100-0000-6931e1790000"'
       expires:
       - '-1'
       pragma:
@@ -52,62 +56,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: 6224DC4F381E413081FC3F6BF7862A1F Ref B: AMS231020615047 Ref C: 2024-07-09T15:30:22Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - oracle-database autonomous-database list
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group
-      User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.13 (macOS-10.16-x86_64-i386-64bit)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Oracle.Database/autonomousDatabases?api-version=2023-09-01
-  response:
-    body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Oracle.Database/autonomousDatabases/eamonterraformtest501","name":"eamonterraformtest501","type":"oracle.database/autonomousdatabases","location":"eastus","tags":{},"systemData":{"createdBy":"eamon.el-homsi@oracle.com","createdByType":"User","createdAt":"2024-04-17T19:55:06.3169995Z","lastModifiedBy":"857ad006-4380-4712-ba4c-22f7c64d84e7","lastModifiedByType":"Application","lastModifiedAt":"2024-04-17T20:48:27.1444348Z"},"properties":{"dataBaseType":"Regular","autonomousMaintenanceScheduleType":"Regular","characterSet":"AL32UTF8","computeCount":2,"computeModel":"ECPU","connectionStrings":{"allConnectionStrings":{},"high":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_eamonterraformtest501_high.adb.oraclecloud.com","low":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_eamonterraformtest501_low.adb.oraclecloud.com","medium":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_eamonterraformtest501_medium.adb.oraclecloud.com","profiles":[{"consumerGroup":"High","displayName":"eamonterraformtest501_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
-        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Low","displayName":"eamonterraformtest501_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
-        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Medium","displayName":"eamonterraformtest501_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
-        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"High","displayName":"eamonterraformtest501_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
-        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Low","displayName":"eamonterraformtest501_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
-        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Medium","displayName":"eamonterraformtest501_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
-        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"}]},"connectionUrls":{"apexUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/ords/apex","databaseTransformsUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/odi/","graphStudioUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/graphstudio/","machineLearningNotebookUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/oml/","ordsUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/ords/","sqlDevWebUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/ords/sql-developer"},"dataStorageSizeInGbs":1024,"dataStorageSizeInTbs":1,"dbVersion":"19c","dbWorkload":"DW","displayName":"eamonterraformtest501","isAutoScalingEnabled":true,"isAutoScalingForStorageEnabled":false,"isLocalDataGuardEnabled":false,"isRemoteDataGuardEnabled":false,"localDisasterRecoveryType":"BackupBased","localStandbyDb":{"lifecycleState":"Standby"},"isMtlsConnectionRequired":false,"licenseModel":"LicenseIncluded","provisioningState":"Failed","ncharacterSet":"AL16UTF16","ociUrl":"https://cloud.oracle.com/db/adbs/ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqa6ad253hddyjdmflhjyjxs7ysao2l54lpe2qdgmq6bnja?region=us-ashburn-1&tenant=orpsandbox3&compartmentId=ocid1.compartment.oc1..aaaaaaaazcet2jt2uowjtgxsae5uositfy2thngqgokwdifyzmyygdpckeua","openMode":"ReadWrite","permissionLevel":"Restricted","privateEndpoint":"opkzo7sj.adb.us-ashburn-1.oraclecloud.com","privateEndpointIp":"10.0.1.29","privateEndpointLabel":"opkzo7sj","lifecycleState":"Available","subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Microsoft.Network/virtualNetworks/eamonterraformtest501_vnet/subnets/delegated","timeCreated":"2024-04-17T20:04:27.412Z","timeLocalDataGuardEnabled":"Wed
-        Apr 17 20:04:46 UTC 2024","timeMaintenanceBegin":"2024-04-21T12:00:00Z","timeMaintenanceEnd":"2024-04-21T14:00:00Z","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Microsoft.Network/virtualNetworks/eamonterraformtest501_vnet","ocid":"ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqa6ad253hddyjdmflhjyjxs7ysao2l54lpe2qdgmq6bnja","backupRetentionPeriodInDays":60,"actualUsedDataStorageSizeInTbs":1,"usedDataStorageSizeInTbs":1}}]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '6007'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 09 Jul 2024 15:30:22 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3749'
-      x-msedge-ref:
-      - 'Ref A: B1BCC990DF424A3E85298416C966E8B8 Ref B: AMS231020512037 Ref C: 2024-07-09T15:30:22Z'
+      - 'Ref A: 5001301F576B40A480C40F1244064C2D Ref B: SJC211051204017 Ref C: 2025-12-04T19:48:20Z'
     status:
       code: 200
       message: OK

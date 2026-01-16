@@ -7,25 +7,31 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
-import datetime
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ScVmmScenarioTest(ScenarioTest):
     def test_scvmm(self):
+        vmm_user = self.cmd(
+            'az keyvault secret show --name SyntheticsVMMServerUsername --vault-name arcscvmmsynthetics --query value -o json',
+        ).output.strip()
         vmm_pass = self.cmd(
-            'az keyvault secret show --name SyntheticsVMMServerPassword --vault-name arcscvmmsynthetics --query value -o tsv',
+            'az keyvault secret show --name SyntheticsVMMServerPassword --vault-name arcscvmmsynthetics --query value -o json',
+        ).output.strip()
+        guest_user = self.cmd(
+            'az keyvault secret show --name SyntheticsTemplateVMUsernameAdmin --vault-name arcscvmmsynthetics --query value -o json',
         ).output.strip()
         guest_pass = self.cmd(
-            'az keyvault secret show --name arcvmw-domain-password --vault-name arcprivatecloudtest-kv --query value -o tsv',
+            'az keyvault secret show --name SyntheticsTemplateVMPassword --vault-name arcscvmmsynthetics --query value -o json',
         ).output.strip()
+        
         self.kwargs.update(
             {
                 'resource_group': 'azcli-test-rg-vmm',
                 'fqdn': 'vmmnebdev0809.cdm.lab',
                 'port': '8100',
-                'vmmserver_username': 'cdmlab\\\\cdmlabuser',
+                'vmmserver_username': vmm_user,
                 'vmmserver_password': vmm_pass,
                 'location': 'eastus2euap',
                 'custom_location': 'azcli-test-cl-vmm',
@@ -46,7 +52,7 @@ class ScVmmScenarioTest(ScenarioTest):
                 'nic_name': 'nic_1',
                 'checkpoint_name': 'azcli-test-checkpoint',
                 'checkpoint_description': 'azcli-test-checkpoint',
-                'guest_username': 'Administrator',
+                'guest_username': guest_user,
                 'guest_password': guest_pass,         
                 'extension_name': 'RunCommand',
                 'extension_type': 'CustomScriptExtension',
@@ -95,6 +101,7 @@ class ScVmmScenarioTest(ScenarioTest):
                 self.check('properties.uuid', '{ivmt_uuid}'),
             ],
         )
+        
         self.cmd(
             "az scvmm vmmserver inventory-item show -g {resource_group} -v {vmmserver_name}"
             " -i {ivnet_uuid}",
@@ -256,6 +263,7 @@ class ScVmmScenarioTest(ScenarioTest):
         self.cmd(
             'az scvmm vm create-checkpoint -g {resource_group} --name {vm_name} --checkpoint-name {checkpoint_name} --checkpoint-description {checkpoint_description}',
         )
+        
         alias_sub = self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}',
                         checks=[
                             self.check('properties.provisioningState', 'Succeeded'),
@@ -271,6 +279,7 @@ class ScVmmScenarioTest(ScenarioTest):
         self.cmd(
             'az scvmm vm restore-checkpoint -g {resource_group} --name {vm_name} --checkpoint-id {checkpoint_id}',
         )
+        
         self.cmd(
             'az scvmm vm show -g {resource_group} --name {vm_name}',
             checks=[
@@ -297,6 +306,7 @@ class ScVmmScenarioTest(ScenarioTest):
         self.cmd(
             'az scvmm vm delete-checkpoint -g {resource_group} --name {vm_name} --checkpoint-id {checkpoint_id}',
         )
+        
         self.cmd(
             'az scvmm vm show -g {resource_group} --name {vm_name}',
             checks=[
@@ -304,6 +314,23 @@ class ScVmmScenarioTest(ScenarioTest):
                 self.check('properties.infrastructureProfile.checkpoints | length(@)', 0),                           
             ]
         )
+
+        self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} -y')
+        
+        with self.assertRaisesRegex(SystemExit, "3"):
+            self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}')
+
+        scvmm_id = self.cmd(
+            'az scvmm vmmserver show -g {resource_group} --name {vmmserver_name} --query id -o tsv'
+        ).output.strip()
+        
+        self.assertTrue(scvmm_id, "Expected SCVMM ID to be non-empty")
+
+        self.cmd('az scvmm vm create-from-machines --scvmm-id {}'.format(scvmm_id))
+
+        self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+        ])
 
         self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} --delete-from-host -y')
 

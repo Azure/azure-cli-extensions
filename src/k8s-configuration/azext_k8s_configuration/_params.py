@@ -15,12 +15,11 @@ from .validators import (
     validate_configuration_name,
     validate_fluxconfig_name,
     validate_namespace,
-    validate_operator_instance_name,
-    validate_operator_namespace,
 )
 
 from .action import (
     KustomizationAddAction,
+    VerifyConfigAction
 )
 from . import consts
 
@@ -67,7 +66,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "kind",
-            arg_type=get_enum_type([consts.GIT, consts.BUCKET, consts.AZBLOB]),
+            arg_type=get_enum_type([consts.GIT, consts.BUCKET, consts.AZBLOB, consts.OCI]),
             help="Source kind to reconcile",
         )
         c.argument(
@@ -88,13 +87,13 @@ def load_arguments(self, _):
         )
         c.argument(
             "tag",
-            arg_group="Git Repo Ref",
-            help="Tag within the git source to reconcile with the cluster",
+            arg_group="Git Repo Ref / OCI Repo Ref",
+            help="Tag within the git or OCI source to reconcile with the cluster",
         )
         c.argument(
             "semver",
-            arg_group="Git Repo Ref",
-            help="Semver range within the git source to reconcile with the cluster",
+            arg_group="Git Repo Ref / OCI Repo Ref",
+            help="Semver range within the git or OCI source to reconcile with the cluster",
         )
         c.argument(
             "commit",
@@ -142,6 +141,12 @@ def load_arguments(self, _):
             help="File path to known_hosts contents containing public SSH keys required to access private Git instances",
         )
         c.argument(
+            "provider",
+            arg_group="Git Auth",
+            arg_type=get_enum_type(["generic", "azure"]),
+            help="Name of the provider used for authentication, azure provider can be used to authenticate to Azure DevOps repositories using Managed Identity",
+        )
+        c.argument(
             "bucket_access_key",
             arg_group="Bucket Auth",
             help="Access Key ID used to authenticate with the bucket",
@@ -175,7 +180,7 @@ def load_arguments(self, _):
             "kustomization",
             action=KustomizationAddAction,
             options_list=["--kustomization", "-k"],
-            help="Define kustomizations to sync sources with parameters ['name', 'path', 'depends_on', 'timeout', 'sync_interval', 'retry_interval', 'prune', 'force']",
+            help="Define kustomizations to sync sources with parameters ['name', 'path', 'depends_on', 'timeout', 'sync_interval', 'retry_interval', 'prune', 'force', 'disable_health_check']",
             nargs="+",
         )
         c.argument(
@@ -234,6 +239,76 @@ def load_arguments(self, _):
             options_list=["--mi-client-id", "--managed-identity-client-id"],
             help="The client ID of the managed identity for authentication with Azure Blob",
         )
+        c.argument(
+            "digest",
+            arg_group="OCI Repo Ref",
+            help="Digest of the OCI artifact to reconcile with the cluster",
+        )
+        c.argument(
+            "oci_media_type",
+            arg_group="OCI Repo Ref",
+            options_list=["--oci-media-type", "--oci-layer-selector-media-type"],
+            help="OCI artifact layer media type to select for extraction or copy.",
+        )
+        c.argument(
+            "oci_operation",
+            arg_group="OCI Repo Ref",
+            arg_type=get_enum_type(["extract", "copy"]),
+            options_list=["--oci-operation", "--oci-layer-selector-operation"],
+            help="Operation to perform on the selected OCI artifact layer: 'extract' to extract the layer, 'copy' to copy the tarball as-is (default: extract)",
+        )
+        c.argument(
+            "tls_ca_certificate",
+            arg_group="OCI Repository Auth",
+            help="Base64-encoded CA certificate for TLS communication with OCI repository",
+        )
+        c.argument(
+            "tls_client_certificate",
+            arg_group="OCI Repository Auth",
+            help="Base64-encoded client certificate for TLS authentication with OCI repository",
+        )
+        c.argument(
+            "tls_private_key",
+            arg_group="OCI Repository Auth",
+            help="Base64-encoded private key for TLS authentication with OCI repository",
+        )
+        c.argument(
+            "service_account_name",
+            arg_group="OCI Repository Auth",
+            help="Name of the Kubernetes service account to use for accessing the OCI repository",
+        )
+        c.argument(
+            "use_workload_identity",
+            arg_group="OCI Repository Auth",
+            arg_type=get_three_state_flag(),
+            help="Use workload identity for authentication with OCI repository",
+        )
+        c.argument(
+            "oci_insecure",
+            arg_type=get_three_state_flag(),
+            help="Allow connecting to an insecure (HTTP) OCI container registry.",
+        )
+        c.argument(
+            "verification_provider",
+            action=VerifyConfigAction,
+            arg_group="OCI Repository Auth",
+            help="Provider used for OCI verification."
+        )
+        c.argument(
+            "match_oidc_identity",
+            action=VerifyConfigAction,
+            arg_group="OCI Repository Auth",
+            nargs="+",
+            help="List of OIDC identities to match for verification of OCI artifacts. Each entry should be a JSON string with 'issuer' and 'subject' fields."
+        )
+        c.argument(
+            "verification_config",
+            action=VerifyConfigAction,
+            arg_group="OCI Repository Auth",
+            nargs="+",
+            help="An object containing trusted public keys of trusted authors for OCI artifacts."
+        )
+        
 
     with self.argument_context("k8s-configuration flux update") as c:
         c.argument(
@@ -319,6 +394,11 @@ def load_arguments(self, _):
             "force",
             arg_type=get_three_state_flag(),
             help="Re-create resources that cannot be updated on the cluster (i.e. jobs)",
+        )
+        c.argument(
+            "disable_health_check",
+            arg_type=get_three_state_flag(),
+            help="Disable health checks for kustomizations applied to the cluster."
         )
 
     with self.argument_context("k8s-configuration flux kustomization delete") as c:

@@ -78,7 +78,7 @@ class SerialPortsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2018-05-01"
+        api_version = "2024-07-01"
         accept = "application/json"
         accept_language = "en"
         content_type = "application/json"

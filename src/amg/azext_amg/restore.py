@@ -118,8 +118,8 @@ def create_dashboard(grafana_url, content, http_headers, overwrite):
     return result[0] == 200
 
 
-def check_dashboard_exists(grafana_url, payload, http_headers):
-    result = send_grafana_get(f'{grafana_url}/api/dashboards/uid/{payload["dashboard"]["uid"]}', http_headers)
+def check_dashboard_exists(grafana_url, uid, http_headers):
+    result = send_grafana_get(f'{grafana_url}/api/dashboards/uid/{uid}', http_headers)
     return result[0] == 200
 
 
@@ -296,21 +296,29 @@ def _load_and_create_annotation(grafana_url, file_path, http_headers):
 def create_annotation(grafana_url, annotation, http_headers, overwrite):
     exists_before, old_id = check_annotation_exists_and_return_id(grafana_url, annotation, http_headers)
 
+    annotation_id = annotation['id']
+    # check that the dashboard exists.
+    if not check_dashboard_exists(grafana_url, annotation['dashboardUID'], http_headers):
+        print_styled_text([
+            (Style.WARNING, f'Create annotation id {annotation_id}: '),
+            (Style.ERROR, 'FAILURE, dashboard does not exist')
+        ])
+        return False
+
     if exists_before:
         if overwrite:
             (status, content) = send_grafana_delete(f'{grafana_url}/api/annotations/{old_id}', http_headers)
             logger.info("delete status: %s, msg: %s", status, content)
         else:
             print_styled_text([
-                (Style.WARNING, f'Create annotation id {old_id}: '),
+                (Style.WARNING, f'Create annotation id {annotation_id}: '),
                 (Style.ERROR, 'FAILURE'),
                 (Style.ERROR, ' (annotation with same time period, dashboardUID, and text already exists,'),
-                (Style.ERROR, ' please enable --overwrite if you want to overwrite the snapshot)')
+                (Style.ERROR, ' please enable --overwrite if you want to overwrite the annotation)')
             ])
             return False
 
     (status, content) = send_grafana_post(f'{grafana_url}/api/annotations', json.dumps(annotation), http_headers)
-    annotation_id = annotation['id']
     print_styled_text([
         (Style.WARNING, f'Create annotation id {annotation_id}: '),
         (Style.SUCCESS, 'SUCCESS') if status == 200 else (Style.ERROR, 'FAILURE')

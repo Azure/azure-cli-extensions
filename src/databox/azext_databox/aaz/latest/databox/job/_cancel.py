@@ -20,12 +20,15 @@ class Cancel(AAZCommand):
 
     :example: Cancel job
         az databox job cancel -g rg --job-name name --reason reason
+
+    :example: JobsCancelPost
+        az databox job cancel --resource-group YourResourceGroupName --job-name TestJobName1 --reason CancelTest
     """
 
     _aaz_info = {
-        "version": "2022-12-01",
+        "version": "2025-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databox/jobs/{}/cancel", "2022-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databox/jobs/{}/cancel", "2025-02-01"],
         ]
     }
 
@@ -51,7 +54,7 @@ class Cancel(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\.]+$",
+                pattern="^[-\\w\\.]+$",
                 max_length=24,
                 min_length=3,
             ),
@@ -132,7 +135,7 @@ class Cancel(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01",
+                    "api-version", "2025-02-01",
                     required=True,
                 ),
             }

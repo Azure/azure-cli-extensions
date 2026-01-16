@@ -20,9 +20,9 @@ class RestoreFile(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-01-preview",
+        "version": "2024-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups/{}/restorefiles", "2022-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups/{}/restorefiles", "2024-03-01-preview"],
         ]
     }
 
@@ -49,25 +49,25 @@ class RestoreFile(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,127}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$",
             ),
         )
         _args_schema.backup_name = AAZStrArg(
-            options=["--backup-name"],
+            options=["-b", "--backup-name"],
             help="The name of the backup",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,255}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$",
             ),
         )
         _args_schema.backup_vault_name = AAZStrArg(
-            options=["--backup-vault-name"],
+            options=["-v", "--backup-vault-name"],
             help="The name of the Backup Vault",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,63}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -94,7 +94,7 @@ class RestoreFile(AAZCommand):
             arg_group="Body",
             help="Destination folder where the files will be restored. The path name should start with a forward slash. If it is omitted from request then restore is done at the root folder of the destination volume by default",
             fmt=AAZStrArgFormat(
-                pattern="^\/.*$",
+                pattern="^\\/.*$",
             ),
         )
 
@@ -131,15 +131,6 @@ class RestoreFile(AAZCommand):
                     self.ctx.args.no_wait,
                     session,
                     None,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -192,7 +183,7 @@ class RestoreFile(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01-preview",
+                    "api-version", "2024-03-01-preview",
                     required=True,
                 ),
             }
@@ -223,9 +214,6 @@ class RestoreFile(AAZCommand):
                 file_list.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
-
-        def on_204(self, session):
-            pass
 
 
 class _RestoreFileHelper:

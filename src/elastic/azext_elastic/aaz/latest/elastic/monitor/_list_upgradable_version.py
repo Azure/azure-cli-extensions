@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor list-upgradable-version",
 )
 class ListUpgradableVersion(AAZCommand):
-    """List upgradable version
+    """List all upgradable versions for your Elastic monitor resource, helping you plan and execute upgrades.
 
-    :example: List upgradable version
-        az elastic monitor list-upgradable-version --monitor-name name -g rg
+    :example: UpgradableVersions_Details
+        az elastic monitor list-upgradable-version --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/listupgradableversions", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/listupgradableversions", "2025-06-01"],
         ]
     }
 
@@ -49,6 +49,9 @@ class ListUpgradableVersion(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -120,7 +123,7 @@ class ListUpgradableVersion(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

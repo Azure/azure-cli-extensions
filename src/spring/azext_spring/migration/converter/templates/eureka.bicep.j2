@@ -1,0 +1,20 @@
+param managedEnvironments_aca_env_name string
+
+resource eurekaTest 'Microsoft.App/managedEnvironments/javaComponents@2024-10-02-preview' = {
+    name: '${managedEnvironments_aca_env_name}/{{ data.eurekaName }}'
+    properties: {
+        componentType: 'SpringCloudEureka'
+        configurations: [
+            {%- for config in data.configurations %}
+            {
+                propertyName: '{{ config.propertyName }}'
+                value: '{{ config.value }}'
+            }{%- if not loop.last %}{%- endif %}
+            {%- endfor %}
+        ]
+        scale: {
+            minReplicas: {{ data.replicas }}
+            maxReplicas: {{ data.replicas }}
+        }
+    }
+}

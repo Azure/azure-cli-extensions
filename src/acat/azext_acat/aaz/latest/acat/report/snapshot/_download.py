@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Download(AAZCommand):
     """Download compliance needs from snapshot, like: Compliance Report, Resource List.
+
+    :example: Snapshot_Download_ComplianceDetailedPdfReport
+        az acat report snapshot download --report-name testReportName  --download-type ComplianceDetailedPdfReport
     """
 
     _aaz_info = {

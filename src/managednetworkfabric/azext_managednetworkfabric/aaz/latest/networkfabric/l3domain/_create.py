@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a L3 Isolation Domain resource
 
-    :example: Create a L3 Isolation Domain
+    :example: Create an L3 Isolation Domain
         az networkfabric l3domain create --resource-group "example-rg" --resource-name "example-l3domain" --location "westus3" --nf-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabricName" --redistribute-connected-subnets "True" --redistribute-static-routes "True" --aggregate-route-configuration "{ipv4Routes:[{prefix:'10.0.0.1/28'},{prefix:'10.0.0.2/28'}],ipv6Routes:[{prefix:'2fff::/64'},{prefix:'2fff::/65'}]}" --connected-subnet-route-policy "{exportRoutePolicy:{exportIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}}"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2025-07-15"],
         ]
     }
 
@@ -52,82 +52,109 @@ class Create(AAZCommand):
             options=["--resource-name"],
             help="Name of the L3 Isolation Domain.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
 
-        # define Arg Group "Body"
+        # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
-            help="Location of Azure region",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-            help="Resource tags.",
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities.",
+            blank=[],
         )
 
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
         _args_schema.aggregate_route_configuration = AAZObjectArg(
-            options=["--aggregate-route-configuration"],
+            options=["--aggr-route-config", "--aggregate-route-configuration"],
             arg_group="Properties",
             help="Aggregate route configurations.",
         )
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Description for underlying resource.",
+            help="Switch configuration description.",
         )
         _args_schema.connected_subnet_route_policy = AAZObjectArg(
-            options=["--connected-subnet-route-policy"],
+            options=["--cs-route-policy", "--connected-subnet-route-policy"],
             arg_group="Properties",
-            help="Connected Subnet RoutePolicy.",
+            help="Connected Subnet RoutePolicy",
         )
-        _args_schema.nf_id = AAZResourceIdArg(
-            options=["--nf-id"],
+        _args_schema.export_policy_config = AAZObjectArg(
+            options=["--export-policy-config"],
+            arg_group="Properties",
+            help="BMP Export Policy configuration.",
+        )
+        _args_schema.network_fabric_id = AAZResourceIdArg(
+            options=["--nf-id", "--network-fabric-id"],
             arg_group="Properties",
             help="ARM Resource ID of the Network Fabric.",
             required=True,
+            nullable=True,
         )
         _args_schema.redistribute_connected_subnets = AAZStrArg(
-            options=["--redistribute-connected-subnets"],
+            options=["--redist-conn-subnets", "--redistribute-connected-subnets"],
             arg_group="Properties",
-            help="Advertise Connected Subnets. Default value is True. Example: True.",
+            help="Advertise Connected Subnets. Ex: \"True\" | \"False\".",
+            default="True",
             enum={"False": "False", "True": "True"},
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
         )
         _args_schema.redistribute_static_routes = AAZStrArg(
-            options=["--redistribute-static-routes"],
+            options=["--redist-static-routes", "--redistribute-static-routes"],
             arg_group="Properties",
-            help="Advertise Static Routes. Default value is False. Example: True.",
+            help="Advertise Static Routes. Ex: \"True\" | \"False\".",
+            default="False",
             enum={"False": "False", "True": "True"},
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
         )
+        _args_schema.static_route_route_policy = AAZObjectArg(
+            options=["--sr-route-policy", "--static-route-route-policy"],
+            arg_group="Properties",
+            help="Static Route - route policy.",
+        )
+        _args_schema.v4route_prefix_limit = AAZObjectArg(
+            options=["--v4route-prefix-limit"],
+            arg_group="Properties",
+            help="IPv4 VRF Limit configuration.",
+        )
+        cls._build_args_route_prefix_limit_properties_create(_args_schema.v4route_prefix_limit)
+        _args_schema.v6route_prefix_limit = AAZObjectArg(
+            options=["--v6route-prefix-limit"],
+            arg_group="Properties",
+            help="IPv6 VRF Limit configuration.",
+        )
+        cls._build_args_route_prefix_limit_properties_create(_args_schema.v6route_prefix_limit)
 
         aggregate_route_configuration = cls._args_schema.aggregate_route_configuration
         aggregate_route_configuration.ipv4_routes = AAZListArg(
             options=["ipv4-routes"],
             help="List of IPv4 Route prefixes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         aggregate_route_configuration.ipv6_routes = AAZListArg(
             options=["ipv6-routes"],
-            help="List of IPv6 Route prefixes.",
+            help="List of Ipv6Routes prefixes.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         ipv4_routes = cls._args_schema.aggregate_route_configuration.ipv4_routes
@@ -143,11 +170,6 @@ class Create(AAZCommand):
             options=["export-route-policy"],
             help="Array of ARM Resource ID of the RoutePolicies.",
         )
-        connected_subnet_route_policy.export_route_policy_id = AAZResourceIdArg(
-            options=["export-route-policy-id"],
-            help="ARM Resource ID of the Route Policy. This is used for the backward compatibility.",
-            nullable=True,
-        )
 
         export_route_policy = cls._args_schema.connected_subnet_route_policy.export_route_policy
         export_route_policy.export_ipv4_route_policy_id = AAZResourceIdArg(
@@ -160,6 +182,47 @@ class Create(AAZCommand):
             help="ARM Resource ID of the RoutePolicy.",
             nullable=True,
         )
+
+        export_policy_config = cls._args_schema.export_policy_config
+        export_policy_config.export_policies = AAZListArg(
+            options=["export-policies"],
+            help="Export Policy for the BGP Monitoring Protocol (BMP) Configuration.",
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
+        )
+
+        export_policies = cls._args_schema.export_policy_config.export_policies
+        export_policies.Element = AAZStrArg(
+            enum={"All": "All", "LocalRib": "LocalRib", "Post-Policy": "Post-Policy", "Pre-Policy": "Pre-Policy"},
+        )
+
+        static_route_route_policy = cls._args_schema.static_route_route_policy
+        static_route_route_policy.export_route_policy = AAZObjectArg(
+            options=["export-route-policy"],
+            help="Array of ARM Resource ID of the RoutePolicies.",
+        )
+        cls._build_args_l3_export_route_policy_create(static_route_route_policy.export_route_policy)
+
+        # define Arg Group "Resource"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Resource",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_aggregate_route_create = None
@@ -175,7 +238,7 @@ class Create(AAZCommand):
         aggregate_route_create = cls._args_aggregate_route_create
         aggregate_route_create.prefix = AAZStrArg(
             options=["prefix"],
-            help="Prefix of the aggregate Route.",
+            help="IPv4 Prefix of the aggregate Ipv4Route.",
             required=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -183,6 +246,56 @@ class Create(AAZCommand):
         )
 
         _schema.prefix = cls._args_aggregate_route_create.prefix
+
+    _args_l3_export_route_policy_create = None
+
+    @classmethod
+    def _build_args_l3_export_route_policy_create(cls, _schema):
+        if cls._args_l3_export_route_policy_create is not None:
+            _schema.export_ipv4_route_policy_id = cls._args_l3_export_route_policy_create.export_ipv4_route_policy_id
+            _schema.export_ipv6_route_policy_id = cls._args_l3_export_route_policy_create.export_ipv6_route_policy_id
+            return
+
+        cls._args_l3_export_route_policy_create = AAZObjectArg()
+
+        l3_export_route_policy_create = cls._args_l3_export_route_policy_create
+        l3_export_route_policy_create.export_ipv4_route_policy_id = AAZResourceIdArg(
+            options=["export-ipv4-route-policy-id"],
+            help="ARM Resource ID of the RoutePolicy.",
+            nullable=True,
+        )
+        l3_export_route_policy_create.export_ipv6_route_policy_id = AAZResourceIdArg(
+            options=["export-ipv6-route-policy-id"],
+            help="ARM Resource ID of the RoutePolicy.",
+            nullable=True,
+        )
+
+        _schema.export_ipv4_route_policy_id = cls._args_l3_export_route_policy_create.export_ipv4_route_policy_id
+        _schema.export_ipv6_route_policy_id = cls._args_l3_export_route_policy_create.export_ipv6_route_policy_id
+
+    _args_route_prefix_limit_properties_create = None
+
+    @classmethod
+    def _build_args_route_prefix_limit_properties_create(cls, _schema):
+        if cls._args_route_prefix_limit_properties_create is not None:
+            _schema.hard_limit = cls._args_route_prefix_limit_properties_create.hard_limit
+            _schema.threshold = cls._args_route_prefix_limit_properties_create.threshold
+            return
+
+        cls._args_route_prefix_limit_properties_create = AAZObjectArg()
+
+        route_prefix_limit_properties_create = cls._args_route_prefix_limit_properties_create
+        route_prefix_limit_properties_create.hard_limit = AAZIntArg(
+            options=["hard-limit"],
+            help="Hard limit for the routes.",
+        )
+        route_prefix_limit_properties_create.threshold = AAZIntArg(
+            options=["threshold"],
+            help="Threshold for the routes.",
+        )
+
+        _schema.hard_limit = cls._args_route_prefix_limit_properties_create.hard_limit
+        _schema.threshold = cls._args_route_prefix_limit_properties_create.threshold
 
     def _execute_operations(self):
         self.pre_operations()
@@ -265,7 +378,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -290,18 +403,32 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("aggregateRouteConfiguration", AAZObjectType, ".aggregate_route_configuration")
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("connectedSubnetRoutePolicy", AAZObjectType, ".connected_subnet_route_policy")
-                properties.set_prop("networkFabricId", AAZStrType, ".nf_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("exportPolicyConfiguration", AAZObjectType, ".export_policy_config")
+                properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}, "nullable": True})
                 properties.set_prop("redistributeConnectedSubnets", AAZStrType, ".redistribute_connected_subnets")
                 properties.set_prop("redistributeStaticRoutes", AAZStrType, ".redistribute_static_routes")
+                properties.set_prop("staticRouteRoutePolicy", AAZObjectType, ".static_route_route_policy")
+                _CreateHelper._build_schema_route_prefix_limit_properties_create(properties.set_prop("v4routePrefixLimit", AAZObjectType, ".v4route_prefix_limit"))
+                _CreateHelper._build_schema_route_prefix_limit_properties_create(properties.set_prop("v6routePrefixLimit", AAZObjectType, ".v6route_prefix_limit"))
 
             aggregate_route_configuration = _builder.get(".properties.aggregateRouteConfiguration")
             if aggregate_route_configuration is not None:
@@ -319,12 +446,23 @@ class Create(AAZCommand):
             connected_subnet_route_policy = _builder.get(".properties.connectedSubnetRoutePolicy")
             if connected_subnet_route_policy is not None:
                 connected_subnet_route_policy.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy")
-                connected_subnet_route_policy.set_prop("exportRoutePolicyId", AAZStrType, ".export_route_policy_id", typ_kwargs={"nullable": True})
 
             export_route_policy = _builder.get(".properties.connectedSubnetRoutePolicy.exportRoutePolicy")
             if export_route_policy is not None:
                 export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id", typ_kwargs={"nullable": True})
                 export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id", typ_kwargs={"nullable": True})
+
+            export_policy_configuration = _builder.get(".properties.exportPolicyConfiguration")
+            if export_policy_configuration is not None:
+                export_policy_configuration.set_prop("exportPolicies", AAZListType, ".export_policies")
+
+            export_policies = _builder.get(".properties.exportPolicyConfiguration.exportPolicies")
+            if export_policies is not None:
+                export_policies.set_elements(AAZStrType, ".")
+
+            static_route_route_policy = _builder.get(".properties.staticRouteRoutePolicy")
+            if static_route_route_policy is not None:
+                _CreateHelper._build_schema_l3_export_route_policy_create(static_route_route_policy.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy"))
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -353,6 +491,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
@@ -368,6 +507,37 @@ class Create(AAZCommand):
             )
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200_201.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
                 flags={"read_only": True},
             )
 
@@ -387,9 +557,17 @@ class Create(AAZCommand):
             properties.connected_subnet_route_policy = AAZObjectType(
                 serialized_name="connectedSubnetRoutePolicy",
             )
+            properties.export_policy_configuration = AAZObjectType(
+                serialized_name="exportPolicyConfiguration",
+            )
+            properties.last_operation = AAZObjectType(
+                serialized_name="lastOperation",
+                flags={"read_only": True},
+            )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -401,6 +579,20 @@ class Create(AAZCommand):
             properties.redistribute_static_routes = AAZStrType(
                 serialized_name="redistributeStaticRoutes",
             )
+            properties.static_route_route_policy = AAZObjectType(
+                serialized_name="staticRouteRoutePolicy",
+            )
+            properties.unique_rd_configuration = AAZObjectType(
+                serialized_name="uniqueRdConfiguration",
+            )
+            properties.v4route_prefix_limit = AAZObjectType(
+                serialized_name="v4routePrefixLimit",
+            )
+            _CreateHelper._build_schema_route_prefix_limit_properties_read(properties.v4route_prefix_limit)
+            properties.v6route_prefix_limit = AAZObjectType(
+                serialized_name="v6routePrefixLimit",
+            )
+            _CreateHelper._build_schema_route_prefix_limit_properties_read(properties.v6route_prefix_limit)
 
             aggregate_route_configuration = cls._schema_on_200_201.properties.aggregate_route_configuration
             aggregate_route_configuration.ipv4_routes = AAZListType(
@@ -422,20 +614,35 @@ class Create(AAZCommand):
             connected_subnet_route_policy.export_route_policy = AAZObjectType(
                 serialized_name="exportRoutePolicy",
             )
-            connected_subnet_route_policy.export_route_policy_id = AAZStrType(
-                serialized_name="exportRoutePolicyId",
-                nullable=True,
+            _CreateHelper._build_schema_l3_export_route_policy_read(connected_subnet_route_policy.export_route_policy)
+
+            export_policy_configuration = cls._schema_on_200_201.properties.export_policy_configuration
+            export_policy_configuration.export_policies = AAZListType(
+                serialized_name="exportPolicies",
             )
 
-            export_route_policy = cls._schema_on_200_201.properties.connected_subnet_route_policy.export_route_policy
-            export_route_policy.export_ipv4_route_policy_id = AAZStrType(
-                serialized_name="exportIpv4RoutePolicyId",
-                nullable=True,
+            export_policies = cls._schema_on_200_201.properties.export_policy_configuration.export_policies
+            export_policies.Element = AAZStrType()
+
+            last_operation = cls._schema_on_200_201.properties.last_operation
+            last_operation.details = AAZStrType(
+                flags={"read_only": True},
             )
-            export_route_policy.export_ipv6_route_policy_id = AAZStrType(
-                serialized_name="exportIpv6RoutePolicyId",
-                nullable=True,
+
+            static_route_route_policy = cls._schema_on_200_201.properties.static_route_route_policy
+            static_route_route_policy.export_route_policy = AAZObjectType(
+                serialized_name="exportRoutePolicy",
             )
+            _CreateHelper._build_schema_l3_export_route_policy_read(static_route_route_policy.export_route_policy)
+
+            unique_rd_configuration = cls._schema_on_200_201.properties.unique_rd_configuration
+            unique_rd_configuration.unique_rds = AAZListType(
+                serialized_name="uniqueRds",
+                flags={"read_only": True},
+            )
+
+            unique_rds = cls._schema_on_200_201.properties.unique_rd_configuration.unique_rds
+            unique_rds.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
@@ -472,6 +679,20 @@ class _CreateHelper:
             return
         _builder.set_prop("prefix", AAZStrType, ".prefix", typ_kwargs={"flags": {"required": True}})
 
+    @classmethod
+    def _build_schema_l3_export_route_policy_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id", typ_kwargs={"nullable": True})
+        _builder.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id", typ_kwargs={"nullable": True})
+
+    @classmethod
+    def _build_schema_route_prefix_limit_properties_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("hardLimit", AAZIntType, ".hard_limit")
+        _builder.set_prop("threshold", AAZIntType, ".threshold")
+
     _schema_aggregate_route_read = None
 
     @classmethod
@@ -488,6 +709,50 @@ class _CreateHelper:
         )
 
         _schema.prefix = cls._schema_aggregate_route_read.prefix
+
+    _schema_l3_export_route_policy_read = None
+
+    @classmethod
+    def _build_schema_l3_export_route_policy_read(cls, _schema):
+        if cls._schema_l3_export_route_policy_read is not None:
+            _schema.export_ipv4_route_policy_id = cls._schema_l3_export_route_policy_read.export_ipv4_route_policy_id
+            _schema.export_ipv6_route_policy_id = cls._schema_l3_export_route_policy_read.export_ipv6_route_policy_id
+            return
+
+        cls._schema_l3_export_route_policy_read = _schema_l3_export_route_policy_read = AAZObjectType()
+
+        l3_export_route_policy_read = _schema_l3_export_route_policy_read
+        l3_export_route_policy_read.export_ipv4_route_policy_id = AAZStrType(
+            serialized_name="exportIpv4RoutePolicyId",
+            nullable=True,
+        )
+        l3_export_route_policy_read.export_ipv6_route_policy_id = AAZStrType(
+            serialized_name="exportIpv6RoutePolicyId",
+            nullable=True,
+        )
+
+        _schema.export_ipv4_route_policy_id = cls._schema_l3_export_route_policy_read.export_ipv4_route_policy_id
+        _schema.export_ipv6_route_policy_id = cls._schema_l3_export_route_policy_read.export_ipv6_route_policy_id
+
+    _schema_route_prefix_limit_properties_read = None
+
+    @classmethod
+    def _build_schema_route_prefix_limit_properties_read(cls, _schema):
+        if cls._schema_route_prefix_limit_properties_read is not None:
+            _schema.hard_limit = cls._schema_route_prefix_limit_properties_read.hard_limit
+            _schema.threshold = cls._schema_route_prefix_limit_properties_read.threshold
+            return
+
+        cls._schema_route_prefix_limit_properties_read = _schema_route_prefix_limit_properties_read = AAZObjectType()
+
+        route_prefix_limit_properties_read = _schema_route_prefix_limit_properties_read
+        route_prefix_limit_properties_read.hard_limit = AAZIntType(
+            serialized_name="hardLimit",
+        )
+        route_prefix_limit_properties_read.threshold = AAZIntType()
+
+        _schema.hard_limit = cls._schema_route_prefix_limit_properties_read.hard_limit
+        _schema.threshold = cls._schema_route_prefix_limit_properties_read.threshold
 
 
 __all__ = ["Create"]

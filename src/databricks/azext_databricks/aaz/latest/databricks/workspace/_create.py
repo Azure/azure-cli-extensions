@@ -18,16 +18,27 @@ class Create(AAZCommand):
     """Create a new workspace.
 
     :example: Create a workspace
-        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location westus --sku standard
+        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location westus --sku standard --compute-mode Hybrid
+    
+    :example: Create a Serverless workspace
+        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location westus --sku premium --compute-mode Serverless
 
     :example: Create a workspace with managed identity for storage account
-        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus2euap --sku premium --prepare-encryption
+        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus2euap --sku premium --compute-mode Hybrid --prepare-encryption
+
+    :example: Create a workspace with automatic cluster update feature enabled
+        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus2euap --sku premium --compute-mode Hybrid --enable-automatic-cluster-update
+
+    :example: Create a workspace with all enhanced security & compliance features enabled with specific compliance standards
+        az databricks workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus2euap --sku premium --compute-mode Hybrid --enable-compliance-security-profile --compliance-standards='["HIPAA","PCI_DSS"]' --enable-automatic-cluster-update --enable-enhanced-security-monitoring
+    
+    Note: Serverless compute mode does not support custom VNet configuration, custom encryption, access connectors, default catalog properties, workspace custom parameters, or managed resource groups. These features are only available with Hybrid compute mode.
     """
 
     _aaz_info = {
-        "version": "2024-05-01",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2024-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -67,10 +78,16 @@ class Create(AAZCommand):
                 resource_group_arg="resource_group",
             ),
         )
+        _args_schema.compute_mode = AAZStrArg(
+            options=["--compute-mode"],
+            help="The compute mode for the workspace. Allowed values: 'Hybrid', 'Serverless'.",
+            required=False,
+            default="Hybrid",
+            enum={"Hybrid": "Hybrid", "Serverless": "Serverless"},
+        )
         _args_schema.managed_resource_group = AAZStrArg(
             options=["--managed-resource-group"],
             help="The managed resource group to create. It can be either a name or a resource ID.",
-            required=True,
         )
         _args_schema.enable_no_public_ip = AAZBoolArg(
             options=["--enable-no-public-ip"],
@@ -176,6 +193,53 @@ class Create(AAZCommand):
             help="The version of KeyVault key.",
         )
 
+        # define Arg Group "Enhanced Security Compliance"
+        _args_schema.enable_automatic_cluster_update = AAZBoolArg(
+            options=["--enable-automatic-cluster-update", "--enable-acu"],
+            arg_group="Enhanced Security Compliance",
+            help="Enable Automatic Cluster Update feature.",
+            nullable=True,
+            enum={
+                'true': True, 't': True, 'yes': True, 'y': True, '1': True,
+                "false": False, 'f': False, 'no': False, 'n': False, '0': False,
+                "Enabled": True, "Disabled": False, "enabled": True, "disabled": False, 
+            }
+        )
+        _args_schema.compliance_standards = AAZListArg(
+            options=["--compliance-standards"],
+            arg_group="Enhanced Security Compliance",
+            help="Compliance Standards associated with the workspace, allowed values referenced here: https://learn.microsoft.com/en-us/azure/databricks/security/privacy/security-profile.",
+            nullable=True,
+        )
+        _args_schema.compliance_standards.Element = AAZStrArg(
+            nullable=True,
+            arg_group="Enhanced Security Compliance",
+            help="Compliance standards, allowed values: NONE, HIPAA, PCI_DSS, CYBER_ESSENTIAL_PLUS, FEDRAMP_HIGH, CANADA_PROTECTED_B, IRAP_PROTECTED, ISMAP, HITRUST, K_FSI, GERMANY_C5, GERMANY_TISAX.",
+            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS", "CYBER_ESSENTIAL_PLUS": "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH": "FEDRAMP_HIGH", "CANADA_PROTECTED_B": "CANADA_PROTECTED_B", "IRAP_PROTECTED": "IRAP_PROTECTED", "ISMAP": "ISMAP", "HITRUST": "HITRUST", "K_FSI": "K_FSI", "GERMANY_C5": "GERMANY_C5", "GERMANY_TISAX": "GERMANY_TISAX"},
+        )
+        _args_schema.enable_compliance_security_profile = AAZBoolArg(
+            options=["--enable-compliance-security-profile", "--enable-csp"],
+            arg_group="Enhanced Security Compliance",
+            help="Enable Compliance Security Profile.",
+            nullable=True,
+            enum={
+                'true': True, 't': True, 'yes': True, 'y': True, '1': True,
+                "false": False, 'f': False, 'no': False, 'n': False, '0': False,
+                "Enabled": True, "Disabled": False, "enabled": True, "disabled": False, 
+            }
+        )
+        _args_schema.enable_enhanced_security_monitoring = AAZBoolArg(
+            options=["--enable-enhanced-security-monitoring", "--enable-esm"],
+            arg_group="Enhanced Security Compliance",
+            help="Enable Enhanced Security Monitoring feature.",
+            nullable=True,
+            enum={
+                'true': True, 't': True, 'yes': True, 'y': True, '1': True,
+                "false": False, 'f': False, 'no': False, 'n': False, '0': False,
+                "Enabled": True, "Disabled": False, "enabled": True, "disabled": False, 
+            }
+        )
+
         # define Arg Group "Parameters"
 
         # define Arg Group "Properties"
@@ -264,7 +328,7 @@ class Create(AAZCommand):
 
         compliance_standards = cls._args_schema.enhanced_security_compliance.compliance_security_profile.compliance_standards
         compliance_standards.Element = AAZStrArg(
-            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS"},
+            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS", "CYBER_ESSENTIAL_PLUS": "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH": "FEDRAMP_HIGH", "CANADA_PROTECTED_B": "CANADA_PROTECTED_B", "IRAP_PROTECTED": "IRAP_PROTECTED", "ISMAP": "ISMAP", "HITRUST": "HITRUST", "K_FSI": "K_FSI", "GERMANY_C5": "GERMANY_C5", "GERMANY_TISAX": "GERMANY_TISAX"},
         )
 
         enhanced_security_monitoring = cls._args_schema.enhanced_security_compliance.enhanced_security_monitoring
@@ -376,7 +440,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -409,11 +473,15 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("accessConnector", AAZObjectType, ".access_connector")
+                properties.set_prop("computeMode", AAZStrType, ".compute_mode")
                 properties.set_prop("defaultCatalog", AAZObjectType, ".default_catalog")
                 properties.set_prop("defaultStorageFirewall", AAZStrType, ".default_storage_firewall")
                 properties.set_prop("encryption", AAZObjectType)
                 properties.set_prop("enhancedSecurityCompliance", AAZObjectType, ".enhanced_security_compliance")
-                properties.set_prop("managedResourceGroupId", AAZStrType, ".managed_resource_group", typ_kwargs={"flags": {"required": True}})
+                # Only add managedResourceGroupId if specified
+                managed_resource_group_id = getattr(self.ctx.args, 'managed_resource_group', None)
+                if managed_resource_group_id is not None:
+                    properties.set_prop("managedResourceGroupId", AAZStrType, ".managed_resource_group")
                 properties.set_prop("parameters", AAZObjectType)
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
                 properties.set_prop("requiredNsgRules", AAZStrType, ".required_nsg_rules")
@@ -483,6 +551,49 @@ class Create(AAZCommand):
             enhanced_security_monitoring = _builder.get(".properties.enhancedSecurityCompliance.enhancedSecurityMonitoring")
             if enhanced_security_monitoring is not None:
                 enhanced_security_monitoring.set_prop("value", AAZStrType, ".value")
+
+            args = self.ctx.args.to_serialized_data()
+            # Check if any of the enhanced security compliance parameters are set
+            if set(['enable_compliance_security_profile', 'enable_csp',
+                    'enable_enhanced_security_monitoring', 'enable_esm',
+                    'enable_automatic_cluster_update', 'enable_acu',
+                    'compliance_standards']).intersection(set(args.keys())):
+                if enhanced_security_compliance is None:
+                    # In case the `--enhanced-security-compliance` parameter doesn't exist, this object should be created
+                    properties.set_prop("enhancedSecurityCompliance", AAZObjectType)
+                    enhanced_security_compliance = _builder.get(".properties.enhancedSecurityCompliance")
+                if 'enable_compliance_security_profile' in args or 'enable_csp' in args:
+                    compliance_security_profile = enhanced_security_compliance.set_prop("complianceSecurityProfile", AAZObjectType)
+                    if args.get('enable_compliance_security_profile') or args.get('enable_csp'):
+                        compliance_security_profile.set_const("value", "Enabled", AAZStrType)
+                        # Process the compliance standards only if the compliance security profile is enabled
+                        compliance_standards = compliance_security_profile.set_prop("complianceStandards", AAZListType, ".compliance_standards")
+                        if compliance_standards is None:
+                            # Create an empty list if it doesn't exist
+                            compliance_security_profile.set_const("complianceStandards", [], AAZListType)
+                        else:
+                            compliance_standards.set_elements(AAZStrType, ".")
+                    else:
+                        # Use default if the compliance security profile is disabled
+                        compliance_security_profile.set_const("value", "Disabled", AAZStrType)
+                        compliance_security_profile.set_const("complianceStandards", [], AAZListType)
+                else:
+                    # Set default values if these parameters are not set
+                    compliance_security_profile = enhanced_security_compliance.set_prop("complianceSecurityProfile", AAZObjectType)
+                    compliance_security_profile.set_const("value", "Disabled", AAZStrType)
+                    compliance_security_profile.set_const("complianceStandards", [], AAZListType)
+                if 'enable_enhanced_security_monitoring' in args or 'enable_esm' in args:
+                    enhanced_security_monitoring = enhanced_security_compliance.set_prop("enhancedSecurityMonitoring", AAZObjectType)
+                    if args.get('enable_enhanced_security_monitoring') or args.get('enable_esm'):
+                        enhanced_security_monitoring.set_const("value", "Enabled", AAZStrType)
+                    else:
+                        enhanced_security_monitoring.set_const("value", "Disabled", AAZStrType)
+                if 'enable_automatic_cluster_update' in args or 'enable_acu' in args:
+                    automatic_cluster_update = enhanced_security_compliance.set_prop("automaticClusterUpdate", AAZObjectType)
+                    if args.get('enable_automatic_cluster_update') or args.get('enable_acu'):
+                        automatic_cluster_update.set_const("value", "Enabled", AAZStrType)
+                    else:
+                        automatic_cluster_update.set_const("value", "Disabled", AAZStrType)
 
             parameters = _builder.get(".properties.parameters")
             if parameters is not None:
@@ -572,6 +683,9 @@ class Create(AAZCommand):
                 serialized_name="accessConnector",
             )
             properties.authorizations = AAZListType()
+            properties.compute_mode = AAZStrType(
+                serialized_name="computeMode",
+            )
             properties.created_by = AAZObjectType(
                 serialized_name="createdBy",
             )
@@ -604,7 +718,6 @@ class Create(AAZCommand):
             _CreateHelper._build_schema_managed_identity_configuration_read(properties.managed_disk_identity)
             properties.managed_resource_group_id = AAZStrType(
                 serialized_name="managedResourceGroupId",
-                flags={"required": True},
             )
             properties.parameters = AAZObjectType()
             properties.private_endpoint_connections = AAZListType(

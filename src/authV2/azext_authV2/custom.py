@@ -2,9 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+
+# pylint: disable=line-too-long, too-many-locals, too-many-boolean-expressions, too-many-branches
+
 import json
-from re import A
-import re
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
 from azure.cli.core.util import send_raw_request
@@ -13,7 +14,6 @@ from azure.cli.command_modules.appservice.custom import update_app_settings
 from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice._params import AUTH_TYPES
-from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD, AZURE_CHINA_CLOUD, AZURE_US_GOV_CLOUD, AZURE_GERMAN_CLOUD
 
 MICROSOFT_SECRET_SETTING_NAME = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
 FACEBOOK_SECRET_SETTING_NAME = "FACEBOOK_PROVIDER_AUTHENTICATION_SECRET"
@@ -159,8 +159,16 @@ def update_auth_settings_v2(cmd, resource_group_name, name, set_string=None, ena
     if excluded_paths is not None:
         if "globalValidation" not in existing_auth.keys():
             existing_auth["globalValidation"] = {}
-        excluded_paths_list_string = excluded_paths[1:-1]
-        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths_list_string.split(",")
+        try:
+            parsed = json.loads(excluded_paths)
+            if isinstance(parsed, list):
+                excluded_paths_list = parsed
+            else:
+                excluded_paths_list = [parsed] if parsed else []
+        except json.JSONDecodeError:
+            excluded_paths_list = excluded_paths.split(",")
+
+        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths_list
 
     existing_auth = update_http_settings_in_auth_settings(existing_auth, require_https,
                                                           proxy_convention, proxy_custom_host_header,

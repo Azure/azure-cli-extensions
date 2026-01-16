@@ -2,11 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from __future__ import print_function
-
+import configparser
 import os
-
-from six.moves import configparser
 
 from azure.cli.core._help import PRIVACY_STATEMENT
 
@@ -73,7 +70,7 @@ class Configuration(object):
                 self.config.write(config_file)
         else:
             with open(os.path.join(self.config_dir, CONFIG_FILE_NAME), 'r') as config_file:
-                self.config.readfp(config_file)  # pylint: disable=deprecated-method
+                self.config.read_file(config_file)
                 self.update()
 
     def get_config_dir(self):

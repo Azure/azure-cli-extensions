@@ -744,7 +744,7 @@ class quotarequestsubmitresponse202(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar id: The quota request ID. To check the request status, use the **id** value in a `Quota
-     Request Status <https://docs.microsoft.com/en-us/rest/api/reserved-vm-
+     Request Status <https://learn.microsoft.com/en-us/rest/api/reserved-vm-
      instances/quotarequeststatus/get>`_ GET operation.
     :vartype id: str
     :ivar name: Operation ID.

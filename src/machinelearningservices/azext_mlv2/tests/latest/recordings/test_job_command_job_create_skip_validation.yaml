@@ -1,0 +1,606 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/main/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "mainstorage9c05dabf5c924", "containerName": "azureml-blobstore-54887b46-3cb0-485b-bb15-62e7b5578ee6",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2021-10-04T20:10:30.5073114Z",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2021-10-04T20:10:31.4975497Z", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '979'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Jul 2022 01:32:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc=""
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '4.015'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.12 (Windows-10-10.0.22000-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "e5634147a72a6c0dffd472b5d67f529f474f639a70bcdd8599560789ad602b11"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Jul 2022 01:32:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc=""
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.126'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.12.0 Python/3.8.12 (Windows-10-10.0.22000-SP0)
+      x-ms-date:
+      - Tue, 26 Jul 2022 01:32:45 GMT
+      x-ms-version:
+      - '2021-06-08'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '508'
+      content-type:
+      - application/octet-stream
+      date:
+      - Tue, 26 Jul 2022 01:32:46 GMT
+      etag:
+      - '"0x8DA6EA0DC12008D"'
+      last-modified:
+      - Tue, 26 Jul 2022 00:50:39 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      vary:
+      - Origin
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Tue, 26 Jul 2022 00:50:38 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-name:
+      - fa5899b7-8349-45d6-8eef-8c0e5387f816
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - 7bd826df-70a2-4a88-96aa-51a378e71cfc
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-06-08'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.12.0 Python/3.8.12 (Windows-10-10.0.22000-SP0)
+      x-ms-date:
+      - Tue, 26 Jul 2022 01:32:46 GMT
+      x-ms-version:
+      - '2021-06-08'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Tue, 26 Jul 2022 01:32:46 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2021-06-08'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: '{"properties": {"properties": {"empty_property": null, "mlflow.source.git.repoURL":
+      "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+      "mlflow.source.git.branch": "zhangxingzhi/add-skip-validation-for-pipeline-component",
+      "mlflow.source.git.commit": "faccb2fa05281de4a44d87ea59d5420a39facd89", "azureml.git.dirty":
+      "True"}, "tags": {"empty_tag": null}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureml-examples/providers/Microsoft.MachineLearningServices/workspaces/main/computes/cpu-cluster",
+      "displayName": "test_display_name", "experimentName": "mfe-test1", "identity":
+      {"identityType": "AMLToken"}, "isArchived": false, "jobType": "Command", "command":
+      "pip freeze", "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureml-examples/providers/Microsoft.MachineLearningServices/workspaces/main/environments/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/versions/1",
+      "environmentVariables": {}, "inputs": {"hello_input": {"mode": "ReadOnlyMount",
+      "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+      "jobInputType": "uri_folder"}}, "outputs": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1199'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.12 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs/test-cjob-000011-5?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/main/jobs/test-cjob-000011-5",
+        "name": "test-cjob-000011-5", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "zhangxingzhi/add-skip-validation-for-pipeline-component",
+        "mlflow.source.git.commit": "faccb2fa05281de4a44d87ea59d5420a39facd89", "azureml.git.dirty":
+        "True", "_azureml.ComputeTargetType": "amlctrain"}, "displayName": "test_display_name",
+        "status": "Starting", "experimentName": "mfe-test1", "services": {"Tracking":
+        {"jobServiceType": "Tracking", "port": null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/main?",
+        "status": null, "errorMessage": null, "properties": null}, "Studio": {"jobServiceType":
+        "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/test-cjob-000011-5?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azureml-examples/workspaces/main",
+        "status": null, "errorMessage": null, "properties": null}}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/main/computes/cpu-cluster",
+        "isArchived": false, "schedule": null, "identity": {"identityType": "AMLToken"},
+        "jobType": "Command", "resources": {"instanceCount": 1, "instanceType": null,
+        "properties": null}, "codeId": null, "command": "pip freeze", "environmentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/main/environments/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/versions/1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.test-cjob-000011-5",
+        "mode": "ReadWriteMount", "jobOutputType": "uri_folder"}}, "distribution":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}}, "systemData":
+        {"createdAt": "2022-07-26T01:32:50.6300034Z", "createdBy": "Xingzhi Zhang",
+        "createdByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2643'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Jul 2022 01:32:50 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureml-examples/providers/Microsoft.MachineLearningServices/workspaces/main/jobs/test-cjob-000011-5?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc=""
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.711'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/main/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "mainstorage9c05dabf5c924", "containerName": "azureml-blobstore-54887b46-3cb0-485b-bb15-62e7b5578ee6",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2021-10-04T20:10:30.5073114Z",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2021-10-04T20:10:31.4975497Z", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '979'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Jul 2022 01:32:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc=""
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.103'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.12 (Windows-10-10.0.22000-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "e5634147a72a6c0dffd472b5d67f529f474f639a70bcdd8599560789ad602b11"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Jul 2022 01:32:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc=""
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.134'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.12.0 Python/3.8.12 (Windows-10-10.0.22000-SP0)
+      x-ms-date:
+      - Tue, 26 Jul 2022 01:32:53 GMT
+      x-ms-version:
+      - '2021-06-08'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '508'
+      content-type:
+      - application/octet-stream
+      date:
+      - Tue, 26 Jul 2022 01:32:54 GMT
+      etag:
+      - '"0x8DA6EA0DC12008D"'
+      last-modified:
+      - Tue, 26 Jul 2022 00:50:39 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      vary:
+      - Origin
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Tue, 26 Jul 2022 00:50:38 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-name:
+      - fa5899b7-8349-45d6-8eef-8c0e5387f816
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - 7bd826df-70a2-4a88-96aa-51a378e71cfc
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-06-08'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.12.0 Python/3.8.12 (Windows-10-10.0.22000-SP0)
+      x-ms-date:
+      - Tue, 26 Jul 2022 01:32:54 GMT
+      x-ms-version:
+      - '2021-06-08'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Tue, 26 Jul 2022 01:32:54 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2021-06-08'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: '{"properties": {"properties": {"empty_property": null, "mlflow.source.git.repoURL":
+      "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+      "mlflow.source.git.branch": "zhangxingzhi/add-skip-validation-for-pipeline-component",
+      "mlflow.source.git.commit": "faccb2fa05281de4a44d87ea59d5420a39facd89", "azureml.git.dirty":
+      "True"}, "tags": {"empty_tag": null}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureml-examples/providers/Microsoft.MachineLearningServices/workspaces/main/computes/cpu-cluster",
+      "displayName": "test_display_name", "experimentName": "mfe-test1", "identity":
+      {"identityType": "AMLToken"}, "isArchived": false, "jobType": "Command", "command":
+      "pip freeze", "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureml-examples/providers/Microsoft.MachineLearningServices/workspaces/main/environments/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/versions/1",
+      "environmentVariables": {}, "inputs": {"hello_input": {"mode": "ReadOnlyMount",
+      "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+      "jobInputType": "uri_folder"}}, "outputs": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1199'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.12 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs/test-cjob-000011-5?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/main/jobs/test-cjob-000011-5",
+        "name": "test-cjob-000011-5", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null, "_aml_system_ComputeTargetStatus":
+        "{\"AllocationState\":\"steady\",\"PreparingNodeCount\":0,\"RunningNodeCount\":0,\"CurrentNodeCount\":1}"},
+        "properties": {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata.visualstudio.com/DefaultCollection/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "zhangxingzhi/add-skip-validation-for-pipeline-component",
+        "mlflow.source.git.commit": "faccb2fa05281de4a44d87ea59d5420a39facd89", "azureml.git.dirty":
+        "True", "_azureml.ComputeTargetType": "amlctrain", "ProcessInfoFile": "azureml-logs/process_info.json",
+        "ProcessStatusFile": "azureml-logs/process_status.json"}, "displayName": "test_display_name",
+        "status": "Queued", "experimentName": "mfe-test1", "services": {"Tracking":
+        {"jobServiceType": "Tracking", "port": null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/main?",
+        "status": null, "errorMessage": null, "properties": null}, "Studio": {"jobServiceType":
+        "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/test-cjob-000011-5?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azureml-examples/workspaces/main",
+        "status": null, "errorMessage": null, "properties": null}}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/main/computes/cpu-cluster",
+        "isArchived": false, "schedule": null, "identity": {"identityType": "AMLToken"},
+        "jobType": "Command", "resources": {"instanceCount": 1, "instanceType": null,
+        "properties": null}, "codeId": null, "command": "pip freeze", "environmentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/main/environments/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/versions/1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.test-cjob-000011-5",
+        "mode": "ReadWriteMount", "jobOutputType": "uri_folder"}}, "distribution":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}}, "systemData":
+        {"createdAt": "2022-07-26T01:32:50.6300034Z", "createdBy": "Xingzhi Zhang",
+        "createdByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2893'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Jul 2022 01:32:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc=""
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.083'
+    status:
+      code: 200
+      message: OK
+version: 1

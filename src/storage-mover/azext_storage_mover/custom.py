@@ -73,6 +73,66 @@ def endpoint_update_for_storage_smb_file_share(cmd, endpoint_name, resource_grou
     return Update_Endpoint(args)
 
 
+def _get_args_for_endpoint_for_storage_nfs_file_share(endpoint_name, resource_group, storage_mover_name,
+                                                      file_share_name=None, storage_account_resource_id=None,
+                                                      description=None):
+    args = {
+        "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
+        "description": description,
+        "azure_storage_nfs_file_share": {
+            "file_share_name": file_share_name,
+            "storage_account_resource_id": storage_account_resource_id,
+        }
+    }
+    return args
+
+
+def endpoint_create_for_storage_nfs_file_share(cmd, endpoint_name, resource_group, storage_mover_name,
+                                               file_share_name, storage_account_resource_id, description=None):
+    Create_Endpoint = Create(cmd.loader)
+    args = _get_args_for_endpoint_for_storage_nfs_file_share(endpoint_name, resource_group, storage_mover_name,
+                                                             file_share_name, storage_account_resource_id, description)
+    return Create_Endpoint(args)
+
+
+def endpoint_update_for_storage_nfs_file_share(cmd, endpoint_name, resource_group, storage_mover_name,
+                                               description=None):
+    Update_Endpoint = Update(cmd.loader)
+    args = _get_args_for_endpoint_for_storage_nfs_file_share(endpoint_name, resource_group, storage_mover_name,
+                                                             description=description)
+    return Update_Endpoint(args)
+
+
+def _get_args_for_endpoint_for_multi_cloud_connector(endpoint_name, resource_group, storage_mover_name,
+                                                     multi_cloud_connector_id=None, aws_s3_bucket_id=None,
+                                                     description=None):
+    args = {
+        "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
+        "description": description,
+        "azure_multi_cloud_connector": {
+            "multi_cloud_connector_id": multi_cloud_connector_id,
+            "aws_s3_bucket_id": aws_s3_bucket_id,
+        }
+    }
+    return args
+
+
+def endpoint_create_for_multi_cloud_connector(cmd, endpoint_name, resource_group, storage_mover_name,
+                                              multi_cloud_connector_id, aws_s3_bucket_id, description=None):
+    Create_Endpoint = Create(cmd.loader)
+    args = _get_args_for_endpoint_for_multi_cloud_connector(endpoint_name, resource_group, storage_mover_name,
+                                                            multi_cloud_connector_id, aws_s3_bucket_id, description)
+    return Create_Endpoint(args)
+
+
+def endpoint_update_for_multi_cloud_connector(cmd, endpoint_name, resource_group, storage_mover_name,
+                                              description=None):
+    Update_Endpoint = Update(cmd.loader)
+    args = _get_args_for_endpoint_for_multi_cloud_connector(endpoint_name, resource_group, storage_mover_name,
+                                                            description=description)
+    return Update_Endpoint(args)
+
+
 def _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name,
                                    export=None, host=None, nfs_version=None, description=None):
     args = {

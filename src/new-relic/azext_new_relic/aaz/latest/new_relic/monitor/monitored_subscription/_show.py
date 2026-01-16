@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor monitored-subscription show",
 )
 class Show(AAZCommand):
-    """Get the subscriptions currently being monitored by the NewRelic monitor resource.
+    """Get detailed information about all subscriptions currently being monitored by the New Relic monitor resource.
 
     :example: List the subscriptions currently being monitored by the NewRelic monitor resource.
         az new-relic monitor monitored-subscription show --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default
@@ -66,7 +66,7 @@ class Show(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["--resource-group","--g"],
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema

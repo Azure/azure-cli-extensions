@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "confluent organization list-service-accounts",
 )
 class ListServiceAccounts(AAZCommand):
-    """Organization service accounts details
+    """List all the details of service accounts within a Confluent organization.
     """
 
     _aaz_info = {
@@ -48,8 +48,6 @@ class ListServiceAccounts(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            help="Resource group name",
             required=True,
         )
 

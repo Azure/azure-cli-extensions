@@ -16,7 +16,7 @@ interactions:
       - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_purview000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_purview000001?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001","name":"cli_test_purview000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2023-03-29T01:49:40Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
@@ -622,7 +622,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002/listkeys?api-version=2021-07-01
   response:
     body:
-      string: '{"atlasKafkaPrimaryEndpoint":"Endpoint=sb://atlas-f553921a-9b69-4405-b43f-2e6879ce750d.servicebus.windows.net/;SharedAccessKeyName=AlternateSharedAccessKey;SharedAccessKey=5+HI8+D/M9hU5OxmjPk/40k9dzU0lcHdg+AEhIKG1sI=","atlasKafkaSecondaryEndpoint":"Endpoint=sb://atlas-f553921a-9b69-4405-b43f-2e6879ce750d.servicebus.windows.net/;SharedAccessKeyName=AlternateSharedAccessKey;SharedAccessKey=VDF1rI51lLyu//D8vW/yxlD44K4T/HimZ+AEhC8ajV4="}'
+      string: '{"atlasKafkaPrimaryEndpoint":"Endpoint=sb://atlas-f553921a-9b69-4405-b43f-2e6879ce750d.servicebus.windows.net/;SharedAccessKeyName=AlternateSharedAccessKey;SharedAccessKey=********************************************","atlasKafkaSecondaryEndpoint":"Endpoint=sb://atlas-f553921a-9b69-4405-b43f-2e6879ce750d.servicebus.windows.net/;SharedAccessKeyName=AlternateSharedAccessKey;SharedAccessKey=********************************************"}'
     headers:
       api-supported-versions:
       - 2020-12-01-preview, 2021-07-01, 2021-12-01

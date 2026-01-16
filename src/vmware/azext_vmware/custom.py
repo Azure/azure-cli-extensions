@@ -25,7 +25,7 @@ Any services connected using these credentials will stop working and may cause y
 
 Check if you're using your cloudadmin credentials for any connected services like backup and disaster recovery appliances, VMware HCX, or any vRealize suite products. Verify you're not using cloudadmin credentials for connected services before generating a new password.
 
-If you are using cloudadmin for connected services, learn how you can setup a connection to an external identity source to create and manage new credentials for your connected services: https://docs.microsoft.com/en-us/azure/azure-vmware/configure-identity-source-vcenter
+If you are using cloudadmin for connected services, learn how you can setup a connection to an external identity source to create and manage new credentials for your connected services: https://learn.microsoft.com/en-us/azure/azure-vmware/configure-identity-source-vcenter
 
 Press Y to confirm no services are using my cloudadmin credentials to connect to vCenter
 '''
@@ -65,7 +65,7 @@ def privatecloud_addidentitysource(cmd, resource_group_name, name, private_cloud
     return Create(cli_ctx=cmd.cli_ctx)(command_args=command_args)
 
 
-def privatecloud_deleteidentitysource(cmd, resource_group_name, name, private_cloud, alias, domain, yes=False):
+def privatecloud_deleteidentitysource(cmd, resource_group_name, name, private_cloud, yes=False):
     from .aaz.latest.vmware.private_cloud.identity_source import Delete
     from knack.prompting import prompt_y_n
     msg = 'This will delete the identity source. Are you sure?'

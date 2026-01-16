@@ -25,7 +25,7 @@ from azext_aosm.configuration_models.common_parameters_config import (
     NFDCommonParametersConfig,
     CoreVNFCommonParametersConfig,
 )
-from azext_aosm.vendored_sdks.azure_storagev2.blob.v2022_11_02 import (
+from azext_aosm.vendored_sdks.azure_storagev2.blob import (
     BlobClient,
     BlobType,
 )
@@ -33,6 +33,7 @@ from azext_aosm.common.registry import ContainerRegistry, AzureContainerRegistry
 from azext_aosm.vendored_sdks.models import ArtifactType
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from azure.core.exceptions import ServiceResponseError
+from azure.cli.core.commands import LongRunningOperation
 from knack.log import get_logger
 from oras.client import OrasClient
 
@@ -79,7 +80,10 @@ class BaseACRArtifact(BaseArtifact):
     @staticmethod
     @lru_cache(maxsize=32)
     def _manifest_credentials(
-        config: BaseCommonParametersConfig,
+        publisherResourceGroupName: str,
+        publisherName: str,
+        acrArtifactStoreName: str,
+        acrManifestName: str,
         aosm_client: HybridNetworkManagementClient,
     ) -> MutableMapping[str, Any]:
         """Gets the details for uploading the artifacts in the manifest."""
@@ -90,10 +94,10 @@ class BaseACRArtifact(BaseArtifact):
         while retries < 2:
             try:
                 credential_dict = aosm_client.artifact_manifests.list_credential(
-                    resource_group_name=config.publisherResourceGroupName,
-                    publisher_name=config.publisherName,
-                    artifact_store_name=config.acrArtifactStoreName,
-                    artifact_manifest_name=config.acrManifestName,
+                    resource_group_name=publisherResourceGroupName,
+                    publisher_name=publisherName,
+                    artifact_store_name=acrArtifactStoreName,
+                    artifact_manifest_name=acrManifestName,
                 ).as_dict()
                 break
             except ServiceResponseError as error:
@@ -166,7 +170,7 @@ class LocalFileACRArtifact(BaseACRArtifact):
 
     def upload(
         self, config: BaseCommonParametersConfig, command_context: CommandContext
-    ):
+    ):  # pylint: disable=too-many-locals
         """Upload the artifact."""
         logger.debug("LocalFileACRArtifact config: %s", config)
 
@@ -189,8 +193,39 @@ class LocalFileACRArtifact(BaseACRArtifact):
             logger.debug("Converted bicep file to ARM as: %s", self.file_path)
 
         manifest_credentials = self._manifest_credentials(
-            config=config, aosm_client=command_context.aosm_client
+            publisherResourceGroupName=config.publisherResourceGroupName,
+            publisherName=config.publisherName,
+            acrArtifactStoreName=config.acrArtifactStoreName,
+            acrManifestName=config.acrManifestName,
+            aosm_client=command_context.aosm_client
         )
+        if config.disablePublicNetworkAccess:
+            if config.vnetPrivateEndPoints:
+                parameters = {
+                    "manualPrivateEndPointConnections": [
+                        {"id": end_point} for end_point in config.vnetPrivateEndPoints
+                    ]
+                }
+                poller = command_context.aosm_client.artifact_stores.begin_approve_private_end_points(
+                    config.publisherResourceGroupName,
+                    config.publisherName,
+                    config.acrArtifactStoreName,
+                    parameters
+                )
+                LongRunningOperation(command_context.cli_ctx)(poller)
+            if config.networkFabricControllerIds:
+                parameters_nfc = {
+                    "networkFabricControllerIds": [
+                        {"id": end_point} for end_point in config.networkFabricControllerIds
+                    ]
+                }
+                nnf_poller = command_context.aosm_client.artifact_stores.begin_add_network_fabric_controller_end_points(
+                    config.publisherResourceGroupName,
+                    config.publisherName,
+                    config.acrArtifactStoreName,
+                    parameters_nfc
+                )
+                LongRunningOperation(command_context.cli_ctx)(nnf_poller)
         oras_client = self._get_oras_client(manifest_credentials=manifest_credentials)
         target_acr = self._get_acr(oras_client)
         target = f"{target_acr}/{self.artifact_name}:{self.artifact_version}"
@@ -223,7 +258,6 @@ class LocalFileACRArtifact(BaseACRArtifact):
             )
 
         elif self.artifact_type == ArtifactType.OCI_ARTIFACT.value:
-
             target_acr_name = target_acr.replace(".azurecr.io", "")
             target_acr_with_protocol = f"oci://{target_acr}"
             username = manifest_credentials["username"]
@@ -307,7 +341,7 @@ class LocalFileACRArtifact(BaseACRArtifact):
 class RemoteACRArtifact(BaseACRArtifact):
     """Class for ACR artifacts from a remote ACR image."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         artifact_name,
         artifact_type,
@@ -363,7 +397,11 @@ class RemoteACRArtifact(BaseACRArtifact):
         logger.debug("RemoteACRArtifact config: %s", config)
 
         manifest_credentials = self._manifest_credentials(
-            config=config, aosm_client=command_context.aosm_client
+            publisherResourceGroupName=config.publisherResourceGroupName,
+            publisherName=config.publisherName,
+            acrArtifactStoreName=config.acrArtifactStoreName,
+            acrManifestName=config.acrManifestName,
+            aosm_client=command_context.aosm_client
         )
 
         target_acr = clean_registry_name(manifest_credentials["acr_server_url"])
@@ -380,8 +418,9 @@ class RemoteACRArtifact(BaseACRArtifact):
         if command_context.cli_options["no_subscription_permissions"] or not isinstance(
             self.source_registry, AzureContainerRegistry
         ):
-            print(
-                f"Using docker pull and push to copy image artifact: {self.artifact_name}"
+            logger.info(
+                "Using docker pull and push to copy image artifact: %s",
+                self.artifact_name,
             )
             check_tool_installed("docker")
             self.source_registry.pull_image_to_local_registry(source_image=source_image)
@@ -395,7 +434,9 @@ class RemoteACRArtifact(BaseACRArtifact):
                 local_docker_image=source_image,
             )
         else:
-            print(f"Using az acr import to copy image artifact: {self.artifact_name}")
+            logger.info(
+                "Using az acr import to copy image artifact: %s", self.artifact_name
+            )
 
             self.source_registry.copy_image_to_target_acr(
                 source_image=source_image,
@@ -516,7 +557,8 @@ class LocalFileStorageAccountArtifact(BaseStorageAccountArtifact):
         current_readable = self._convert_to_readable_size(current_bytes)
         total_readable = self._convert_to_readable_size(total_bytes)
         message = f"Uploaded {current_readable} of {total_readable} bytes"
-        logger.info(message)
+        # We use print here to allow the terminal to easily update the line rather than
+        # create a new line for each chunk.
         print(message)
 
     @staticmethod

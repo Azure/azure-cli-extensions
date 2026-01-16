@@ -31,10 +31,9 @@ from azure.cli.command_modules.containerapp._models import (
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands import AzCliCommand
 from azure.core.exceptions import DeserializationError, ResourceNotFoundError
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 from knack.log import get_logger
-
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._constants import CONNECTED_ENVIRONMENT_RESOURCE_TYPE, \
@@ -309,8 +308,8 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
             or self.get_argument_scale_rule_type() \
             or self.get_argument_scale_rule_auth() \
             or self.get_argument_polling_interval() \
-            or self.get_argument_min_executions() \
-            or self.get_argument_max_executions()
+            or self.get_argument_min_executions() is not None \
+            or self.get_argument_max_executions() is not None
 
     def set_up_trigger_configurations(self):
         if self.should_update_trigger_configurations():  # pylint: disable=too-many-nested-blocks

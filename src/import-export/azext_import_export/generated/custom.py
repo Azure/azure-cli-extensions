@@ -23,7 +23,7 @@ def import_export_job_create(cmd, client, name, resource_group_name, client_tena
                              state=None, cancel_requested=None, percent_complete=None, incomplete_blob_list_uri=None,
                              drive_list=None, export=None):
     # pylint: disable=redefined-builtin
-    from msrestazure.tools import resource_id, is_valid_resource_id
+    from azure.mgmt.core.tools import resource_id, is_valid_resource_id
     from azure.cli.core.commands.client_factory import get_subscription_id
     storage_account_id = storage_account
     if not is_valid_resource_id(storage_account_id):

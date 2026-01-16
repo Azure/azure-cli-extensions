@@ -5,8 +5,9 @@
 import unittest
 import json
 import os
-from tempfile import TemporaryDirectory
 
+from tempfile import TemporaryDirectory
+from azure.cli.testsdk import live_only
 from azext_aosm.custom import (
     onboard_nfd_generate_config,
     onboard_nfd_build,
@@ -23,6 +24,7 @@ INPUT_FILE_NAME = "cnf_input.jsonc"
 
 
 class TestCNF(unittest.TestCase):
+    @live_only()  # to avoid 'CannotOverwriteExistingCassetteException' when run from recording
     def test_generate_config(self):
         """Test generating a config file for a VNF."""
         starting_directory = os.getcwd()
@@ -39,6 +41,7 @@ class TestCNF(unittest.TestCase):
             finally:
                 os.chdir(starting_directory)
 
+    @live_only()  # to avoid 'CannotOverwriteExistingCassetteException' when run from recording
     def test_build(self):
         """Test the build command for CNFs."""
         starting_directory = os.getcwd()
@@ -67,12 +70,15 @@ class TestCNF(unittest.TestCase):
 
                 expected_deploy_params = {
                     "location": "uksouth",
-                    "publisherName": "automated-cli-test-nginx-publisher",
+                    "publisherName": "automated-scenario-test-nginx-publisher",
                     "publisherResourceGroupName": "cli_test_cnf_nfd",
                     "acrArtifactStoreName": "nginx-acr",
                     "acrManifestName": "nginx-acr-manifest-1-0-0",
                     "nfDefinitionGroup": "nginx",
                     "nfDefinitionVersion": "1.0.0",
+                    "disablePublicNetworkAccess": False,
+                    "vnetPrivateEndPoints": [],
+                    "networkFabricControllerIds": []
                 }
                 with open(
                     "cnf-cli-output/all_deploy.parameters.json"

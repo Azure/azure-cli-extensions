@@ -1,0 +1,7 @@
+$schema: http://azureml/sdk-2-0/ModelVersionPackage.json
+target_environment_name: diabetes-batch
+inferencing_server: 
+    type: azureml_batch
+    code_configuration:
+      code: ../model-1/onlinescoring/
+      scoring_script: score.py

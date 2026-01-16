@@ -23,7 +23,7 @@ class VmwareHcxScenarioTest(ScenarioTest):
         })
 
         # create a private cloud
-        self.cmd('vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 4 --network-block 192.168.48.0/22 --nsxt-password 5rqdLj4GF3cePUe6( --vcenter-password UpfBXae9ZquZSDXk( --accept-eula')
+        self.cmd('vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 4 --network-block 192.168.48.0/22 --accept-eula')
 
         # Create a HCX addon
         self.cmd('az vmware addon hcx create -g {rg} -c {privatecloud} --offer "VMware MaaS Cloud Provider"')

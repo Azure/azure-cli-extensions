@@ -1,0 +1,2005 @@
+interactions:
+- request:
+    body: '{"tags": {"version": "original"}, "location": "WestCentralUS", "identity":
+      {"type": "SystemAssigned"}, "properties": {"regionDetails": [{"acrDetails":
+      [{"systemCreatedAcrAccount": {"acrAccountSku": "Premium"}}], "location": "WestCentralUS",
+      "storageAccountDetails": [{"systemCreatedStorageAccount": {"storageAccountHnsEnabled":
+      false, "storageAccountType": "standard_lrs"}}]}], "managedResourceGroupTags":
+      {"version": "original"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '431'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=2022-10-01-preview&type=async
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 07 Nov 2022 20:57:38 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=2022-10-01-preview&type=location
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.101'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:57:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.044'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:57:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.042'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:57:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.045'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:57:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.045'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:57:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.045'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.043'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.042'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.044'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.044'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.044'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.044'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/bc5334af-a616-470c-beff-01f48f28501d?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "Succeeded", "percentComplete": 100.0}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '49'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.075'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: '{"tags": {"version": "original"}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "d13fc06d-689c-4e93-a6e2-f167f9c4eedd",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest",
+        "name": "registryUpdateTest", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis121afc699ce14e0da44", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis121afc699ce14e0da44"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regisa1b3d732e2e340c78fd", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regisa1b3d732e2e340c78fd"}}}]}],
+        "intellectualPropertyPublisher": null, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registryUpdateTest/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "managedResourceGroupTags": {"version": "original"}, "mlFlowRegistryUri":
+        "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest"},
+        "systemData": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1903'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.020'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: '{"tags": {"version": "original"}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "d13fc06d-689c-4e93-a6e2-f167f9c4eedd",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest",
+        "name": "registryUpdateTest", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis121afc699ce14e0da44", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis121afc699ce14e0da44"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regisa1b3d732e2e340c78fd", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regisa1b3d732e2e340c78fd"}}}]}],
+        "intellectualPropertyPublisher": null, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registryUpdateTest/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "managedResourceGroupTags": {"version": "original"}, "mlFlowRegistryUri":
+        "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest"},
+        "systemData": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1903'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.021'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"version": "updated"}, "location": "WestCentralUS", "identity":
+      {"type": "SystemAssigned"}, "properties": {"regionDetails": [{"acrDetails":
+      [{"systemCreatedAcrAccount": {"acrAccountSku": "Premium"}}], "location": "WestCentralUS",
+      "storageAccountDetails": [{"systemCreatedStorageAccount": {"storageAccountHnsEnabled":
+      false, "storageAccountType": "standard_lrs"}}]}], "managedResourceGroupTags":
+      {"version": "updated"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '429'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/907e41a3-4c62-446f-99bc-86bf05a5efe7?api-version=2022-10-01-preview&type=async
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 07 Nov 2022 20:58:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/907e41a3-4c62-446f-99bc-86bf05a5efe7?api-version=2022-10-01-preview&type=location
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westcentralus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.099'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/907e41a3-4c62-446f-99bc-86bf05a5efe7?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.058'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/907e41a3-4c62-446f-99bc-86bf05a5efe7?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "Succeeded", "percentComplete": 100.0}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '49'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.041'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: '{"tags": {"version": "updated"}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "d13fc06d-689c-4e93-a6e2-f167f9c4eedd",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest",
+        "name": "registryUpdateTest", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis121afc699ce14e0da44", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis121afc699ce14e0da44"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regisa1b3d732e2e340c78fd", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regisa1b3d732e2e340c78fd"}}}]}],
+        "intellectualPropertyPublisher": null, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registryUpdateTest/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "managedResourceGroupTags": {"version": "updated"}, "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest"},
+        "systemData": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1901'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.018'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: '{"tags": {"version": "updated"}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "d13fc06d-689c-4e93-a6e2-f167f9c4eedd",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest",
+        "name": "registryUpdateTest", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis121afc699ce14e0da44", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis121afc699ce14e0da44"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regisa1b3d732e2e340c78fd", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regisa1b3d732e2e340c78fd"}}}]}],
+        "intellectualPropertyPublisher": null, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registryUpdateTest/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "managedResourceGroupTags": {"version": "updated"}, "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest"},
+        "systemData": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1901'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.021'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"version": "updatedAgain"}, "location": "WestCentralUS", "identity":
+      {"type": "SystemAssigned"}, "properties": {"regionDetails": [{"acrDetails":
+      [{"systemCreatedAcrAccount": {"acrAccountSku": "Premium"}}], "location": "WestCentralUS",
+      "storageAccountDetails": [{"systemCreatedStorageAccount": {"storageAccountHnsEnabled":
+      false, "storageAccountType": "standard_lrs"}}]}], "managedResourceGroupTags":
+      {"version": "updatedAgain"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '439'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/67ff590f-9e6e-4edd-8962-361a3dd23e70?api-version=2022-10-01-preview&type=async
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 07 Nov 2022 20:58:48 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/67ff590f-9e6e-4edd-8962-361a3dd23e70?api-version=2022-10-01-preview&type=location
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.103'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/67ff590f-9e6e-4edd-8962-361a3dd23e70?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.043'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/67ff590f-9e6e-4edd-8962-361a3dd23e70?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "Succeeded", "percentComplete": 100.0}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '49'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.050'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: '{"tags": {"version": "original"}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "d13fc06d-689c-4e93-a6e2-f167f9c4eedd",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest",
+        "name": "registryUpdateTest", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis121afc699ce14e0da44", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis121afc699ce14e0da44"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regisa1b3d732e2e340c78fd", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regisa1b3d732e2e340c78fd"}}}]}],
+        "intellectualPropertyPublisher": null, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registryUpdateTest/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "managedResourceGroupTags": {"version": "original"}, "mlFlowRegistryUri":
+        "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest"},
+        "systemData": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1903'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.017'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: '{"tags": {"version": "original"}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "d13fc06d-689c-4e93-a6e2-f167f9c4eedd",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest",
+        "name": "registryUpdateTest", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis121afc699ce14e0da44", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis121afc699ce14e0da44"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regisa1b3d732e2e340c78fd", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regisa1b3d732e2e340c78fd"}}}]}],
+        "intellectualPropertyPublisher": null, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registryUpdateTest/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "managedResourceGroupTags": {"version": "original"}, "mlFlowRegistryUri":
+        "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest"},
+        "systemData": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1903'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.018'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"version": "updated"}, "location": "WestCentralUS", "identity":
+      {"type": "SystemAssigned"}, "properties": {"regionDetails": [{"acrDetails":
+      [{"systemCreatedAcrAccount": {"acrAccountSku": "Premium"}}], "location": "WestCentralUS",
+      "storageAccountDetails": [{"systemCreatedStorageAccount": {"storageAccountHnsEnabled":
+      false, "storageAccountType": "standard_lrs"}}]}], "managedResourceGroupTags":
+      {"version": "updated"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '429'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/b4db8b37-a1cb-4bb8-a7b6-384494861785?api-version=2022-10-01-preview&type=async
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 07 Nov 2022 20:58:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/b4db8b37-a1cb-4bb8-a7b6-384494861785?api-version=2022-10-01-preview&type=location
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westcentralus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.118'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/b4db8b37-a1cb-4bb8-a7b6-384494861785?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:58:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.041'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/WestCentralUS/registryOperationsStatus/b4db8b37-a1cb-4bb8-a7b6-384494861785?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "Succeeded", "percentComplete": 100.0}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '49'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:59:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.041'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: '{"tags": {"version": "updated"}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "d13fc06d-689c-4e93-a6e2-f167f9c4eedd",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest",
+        "name": "registryUpdateTest", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis121afc699ce14e0da44", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis121afc699ce14e0da44"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regisa1b3d732e2e340c78fd", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regisa1b3d732e2e340c78fd"}}}]}],
+        "intellectualPropertyPublisher": null, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registryUpdateTest/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "managedResourceGroupTags": {"version": "updated"}, "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest"},
+        "systemData": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1901'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:59:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.048'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: '{"tags": {"version": "original"}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "d13fc06d-689c-4e93-a6e2-f167f9c4eedd",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest",
+        "name": "registryUpdateTest", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis121afc699ce14e0da44", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis121afc699ce14e0da44"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regisa1b3d732e2e340c78fd", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regisa1b3d732e2e340c78fd"}}}]}],
+        "intellectualPropertyPublisher": null, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registryUpdateTest/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "managedResourceGroupTags": {"version": "original"}, "mlFlowRegistryUri":
+        "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest"},
+        "systemData": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1903'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:59:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.019'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"version": "updatedYetAgain"}, "location": "westcentralus", "identity":
+      {"type": "SystemAssigned"}, "properties": {"publicNetworkAccess": "Enabled",
+      "discoveryUrl": "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registryUpdateTest/discovery",
+      "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azureml-rg-registryUpdateTest_0ee7545b-b225-42c1-adaa-34f32ac2faec"},
+      "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/registry-testing-rg/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest",
+      "regionDetails": [{"acrDetails": [{"systemCreatedAcrAccount": {"acrAccountSku":
+      "Premium"}}], "location": "westcentralus", "storageAccountDetails": [{"systemCreatedStorageAccount":
+      {"storageAccountHnsEnabled": false, "storageAccountType": "standard_lrs"}}]}],
+      "managedResourceGroupTags": {"version": "updatedYetAgain"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1011'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westcentralus/registryOperationsStatus/91eb2c86-40a6-497e-aeeb-3745041203b1?api-version=2022-10-01-preview&type=async
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 07 Nov 2022 20:59:04 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westcentralus/registryOperationsStatus/91eb2c86-40a6-497e-aeeb-3745041203b1?api-version=2022-10-01-preview&type=location
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.100'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westcentralus/registryOperationsStatus/91eb2c86-40a6-497e-aeeb-3745041203b1?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:59:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.045'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westcentralus/registryOperationsStatus/91eb2c86-40a6-497e-aeeb-3745041203b1?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: '{"status": "Succeeded", "percentComplete": 100.0}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '49'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:59:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.044'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: '{"tags": {"version": "updated"}, "location": "westcentralus", "identity":
+        {"type": "SystemAssigned", "principalId": "d13fc06d-689c-4e93-a6e2-f167f9c4eedd",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}, "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest",
+        "name": "registryUpdateTest", "type": "Microsoft.MachineLearningServices/registries",
+        "properties": {"regionDetails": [{"location": "westcentralus", "storageAccountDetails":
+        [{"userCreatedStorageAccount": null, "systemCreatedStorageAccount": {"storageAccountName":
+        "regis121afc699ce14e0da44", "storageAccountType": "standard_lrs", "storageAccountHnsEnabled":
+        false, "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/regis121afc699ce14e0da44"}}}],
+        "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
+        {"acrAccountName": "regisa1b3d732e2e340c78fd", "acrAccountSku": "Premium",
+        "armResourceId": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/regisa1b3d732e2e340c78fd"}}}]}],
+        "intellectualPropertyPublisher": null, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/registryUpdateTest/discovery",
+        "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
+        "managedResourceGroupTags": {"version": "updated"}, "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest"},
+        "systemData": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1901'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:59:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.018'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/registryUpdateTest?api-version=0000-00-00
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westcentralus/registryOperationsStatus/bdcb475a-9e23-4f1e-b79f-345b8423af79?api-version=2022-10-01-preview&type=async
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 07 Nov 2022 20:59:12 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westcentralus/registryOperationsStatus/bdcb475a-9e23-4f1e-b79f-345b8423af79?api-version=2022-10-01-preview&type=location
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-westcentralus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.123'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westcentralus/registryOperationsStatus/bdcb475a-9e23-4f1e-b79f-345b8423af79?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: "{\n  \"status\": \"InProgress\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:59:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.041'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.1.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/westcentralus/registryOperationsStatus/bdcb475a-9e23-4f1e-b79f-345b8423af79?api-version=0000-00-00&type=async
+  response:
+    body:
+      string: "{\n  \"status\": \"Succeeded\",\n  \"percentComplete\": 100.0\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '55'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Nov 2022 20:59:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-westcentralus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.039'
+    status:
+      code: 200
+      message: OK
+version: 1

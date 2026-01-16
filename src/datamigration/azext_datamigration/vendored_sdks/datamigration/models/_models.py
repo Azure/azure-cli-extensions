@@ -193,12 +193,18 @@ class AzureBlob(msrest.serialization.Model):
     :type account_key: str
     :param blob_container_name: Blob container name where backups are stored.
     :type blob_container_name: str
+    :param auth_type: Authentication type for accessing Azure Blob.
+    :type auth_type: str
+    :param identity: Identity details for authentication.
+    :type identity: object
     """
 
     _attribute_map = {
         'storage_account_resource_id': {'key': 'storageAccountResourceId', 'type': 'str'},
         'account_key': {'key': 'accountKey', 'type': 'str'},
         'blob_container_name': {'key': 'blobContainerName', 'type': 'str'},
+        'auth_type': {'key': 'authType', 'type': 'str'},
+        'identity': {'key': 'identity', 'type': 'object'},
     }
 
     def __init__(
@@ -209,6 +215,8 @@ class AzureBlob(msrest.serialization.Model):
         self.storage_account_resource_id = kwargs.get('storage_account_resource_id', None)
         self.account_key = kwargs.get('account_key', None)
         self.blob_container_name = kwargs.get('blob_container_name', None)
+        self.auth_type = kwargs.get('auth_type', None)
+        self.identity = kwargs.get('identity', None)
 
 
 class BackupConfiguration(msrest.serialization.Model):

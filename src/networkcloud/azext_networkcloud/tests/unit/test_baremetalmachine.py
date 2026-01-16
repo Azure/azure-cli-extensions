@@ -9,6 +9,9 @@ from azext_networkcloud.operations.baremetalmachine._run_command import RunComma
 from azext_networkcloud.operations.baremetalmachine._run_data_extract import (
     RunDataExtract,
 )
+from azext_networkcloud.operations.baremetalmachine._run_data_extracts_restricted import (
+    RunDataExtractsRestricted,
+)
 from azext_networkcloud.operations.baremetalmachine._run_read_command import (
     RunReadCommand,
 )
@@ -30,6 +33,13 @@ class TestRunDataExtract(unittest.TestCase, RunCommandOptionsTestClass):
         self._cli_ctx = DummyCli()
         self._loader = NetworkcloudCommandsLoader(cli_ctx=self._cli_ctx)
         self.cmd = RunDataExtract(loader=self._loader, cli_ctx=self._cli_ctx)
+
+
+class TestRunDataExtractRestricted(unittest.TestCase, RunCommandOptionsTestClass):
+    def setUp(self):
+        self._cli_ctx = DummyCli()
+        self._loader = NetworkcloudCommandsLoader(cli_ctx=self._cli_ctx)
+        self.cmd = RunDataExtractsRestricted(loader=self._loader, cli_ctx=self._cli_ctx)
 
 
 class TestRunReadCommand(unittest.TestCase, RunCommandOptionsTestClass):

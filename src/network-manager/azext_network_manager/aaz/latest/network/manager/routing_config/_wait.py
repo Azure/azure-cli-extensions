@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}", "2023-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}", "2024-05-01"],
         ]
     }
 
@@ -65,7 +65,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.RoutingConfigurationsGet(ctx=self.ctx)()
+        self.NetworkManagerRoutingConfigurationsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -80,7 +80,7 @@ class Wait(AAZWaitCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class RoutingConfigurationsGet(AAZHttpOperation):
+    class NetworkManagerRoutingConfigurationsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -132,7 +132,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }

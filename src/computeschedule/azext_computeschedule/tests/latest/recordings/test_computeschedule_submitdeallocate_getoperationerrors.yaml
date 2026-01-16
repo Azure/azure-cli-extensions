@@ -1,0 +1,126 @@
+interactions:
+- request:
+    body: '{"correlationid": "5d269725-134c-403a-adc0-9c4fa823249b", "executionParameters":
+      {"retryPolicy": {"retryCount": 3, "retryWindowInMinutes": 75}}, "resources":
+      {"ids": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/SA-CLIEXTVM-8"]},
+      "schedule": {"deadline": "2025-02-19T17:01:59.000Z", "deadlineType": "InitiateAt",
+      "timezone": "UTC"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - computeschedule vm-submit-deallocate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '404'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --schedule --execution-parameters --resources --correlationid
+      User-Agent:
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ComputeSchedule/locations/eastus2euap/virtualMachinesSubmitDeallocate?api-version=2024-10-01
+  response:
+    body:
+      string: '{"description":"Deallocate Resource request","type":"VirtualMachines","location":"eastus2euap","results":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/SA-CLIEXTVM-8","errorCode":null,"errorDetails":null,"operation":{"operationId":"07940b0c-ed24-4a6e-acde-0591d50c4cee","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/SA-CLIEXTVM-8","opType":"Deallocate","subscriptionId":"1d04e8f1-ee04-4056-b0b2-718f5bb45b04","deadline":"2025-02-19T17:01:59+00:00","deadlineType":"InitiateAt","state":"PendingScheduling","timeZone":"UTC","resourceOperationError":null,"completedAt":null,"retryPolicy":{"retryCount":3,"retryWindowInMinutes":75}}}]}'
+    headers:
+      alt-svc:
+      - h3=":30711"
+      api-supported-versions:
+      - 1.0, 2.0, 2024-06-01-preview, 2024-08-15-preview, 2024-10-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '799'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Feb 2025 17:01:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 6B460ED5CB5E429F89DD77D903F0855B Ref B: MNZ221060619019 Ref C: 2025-02-19T17:01:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"operationIds": ["07940b0c-ed24-4a6e-acde-0591d50c4cee"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - computeschedule vm-get-operation-errors
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '58'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --operation-ids
+      User-Agent:
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ComputeSchedule/locations/eastus2euap/virtualMachinesGetOperationErrors?api-version=2024-10-01
+  response:
+    body:
+      string: '{"results":[{"operationId":"07940b0c-ed24-4a6e-acde-0591d50c4cee","creationTime":"2025-02-19T17:01:00.9217627+00:00","activationTime":"2025-02-19T17:01:59+00:00","completedAt":null,"operationErrors":[],"requestErrorCode":null,"requestErrorDetails":null}]}'
+    headers:
+      alt-svc:
+      - h3=":30322"
+      api-supported-versions:
+      - 1.0, 2.0, 2024-06-01-preview, 2024-08-15-preview, 2024-10-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Feb 2025 17:01:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 546E17CA59B74614955898F36AF7EEE3 Ref B: MNZ221060619051 Ref C: 2025-02-19T17:01:04Z'
+    status:
+      code: 200
+      message: OK
+version: 1

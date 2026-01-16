@@ -27,7 +27,7 @@ class LogAnalyticsDataClientTests(ScenarioTest):
             'az monitor log-analytics query -w {workspace_customerId} '
             '--analytics-query "Heartbeat | getschema"',
             checks=[
-                self.check("length(@)", 30),
+                self.check("length(@)", 31),
                 self.check("@[0]", {'ColumnName': 'TenantId', 'ColumnOrdinal': '0', 'ColumnType': 'string',
                                     'DataType': 'System.String', 'TableName': 'getschema'})
             ]

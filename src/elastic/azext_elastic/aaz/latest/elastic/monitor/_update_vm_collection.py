@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic monitor update-vm-collection",
 )
 class UpdateVmCollection(AAZCommand):
-    """Update the vm details that will be monitored by the Elastic monitor                                resource.
+    """Update the VM details that will be monitored by the Elastic monitor resource, ensuring optimal observability and performance.
 
     :example: Update vm collection
         az elastic monitor update-vm-collection --monitor-name monitor1 -g rg --operation-name Add --vi-resource-id id
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/vmcollectionupdate", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/vmcollectionupdate", "2024-06-15-preview"],
         ]
     }
 
@@ -49,6 +49,9 @@ class UpdateVmCollection(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -131,7 +134,7 @@ class UpdateVmCollection(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }

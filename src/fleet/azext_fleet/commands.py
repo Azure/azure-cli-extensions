@@ -5,7 +5,16 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azext_fleet._client_factory import cf_fleets, cf_fleet_members, cf_update_runs, cf_fleet_update_strategies
+from azext_fleet._client_factory import (
+    cf_fleets,
+    cf_fleet_members,
+    cf_update_runs,
+    cf_fleet_update_strategies,
+    cf_auto_upgrade_profiles,
+    cf_auto_upgrade_profile_operations,
+    cf_gates,
+    cf_fleet_managed_namespaces
+)
 
 
 def load_command_table(self, _):
@@ -22,6 +31,12 @@ def load_command_table(self, _):
         client_factory=cf_fleet_members
     )
 
+    managed_namespaces_sdk = CliCommandType(
+        operations_tmpl="azext_fleet.vendored_sdks.operations._fleet_managed_namespaces_operations#FleetManagedNamespacesOperations.{}",
+        operation_group="fleet_managed_namespaces",
+        client_factory=cf_fleet_managed_namespaces
+    )
+
     update_runs_sdk = CliCommandType(
         operations_tmpl="azext_fleet.vendored_sdks.operations._update_runs_operations#UpdateRunsOperations.{}",
         operation_group="update_runs",
@@ -32,6 +47,24 @@ def load_command_table(self, _):
         operations_tmpl="azext_fleet.vendored_sdks.operations._fleet_update_strategies_operations#FleetUpdateStrategiesOperations.{}",
         operation_group="fleet_update_strategies",
         client_factory=cf_fleet_update_strategies
+    )
+
+    auto_upgrade_profiles_sdk = CliCommandType(
+        operations_tmpl="azext_fleet.vendored_sdks.operations._auto_upgrade_profiles_operations#AutoUpgradeProfilesOperations.{}",
+        operation_group="auto_upgrade_profiles",
+        client_factory=cf_auto_upgrade_profiles
+    )
+
+    auto_upgrade_profile_operations_sdk = CliCommandType(
+        operations_tmpl="azext_fleet.vendored_sdks.operations._auto_upgrade_profile_operations_operations#AutoUpgradeProfileOperationsOperations.{}",
+        operation_group="auto_upgrade_profile_operations",
+        client_factory=cf_auto_upgrade_profile_operations
+    )
+
+    gates_sdk = CliCommandType(
+        operations_tmpl="azext_fleet.vendored_sdks.operations._gates_operations#GatesOperations.{}",
+        operation_group="gates",
+        client_factory=cf_gates
     )
 
     # fleets command group
@@ -72,4 +105,33 @@ def load_command_table(self, _):
         g.custom_show_command("show", "show_fleet_update_strategy")
         g.custom_command("list", "list_fleet_update_strategies")
         g.custom_command("delete", "delete_fleet_update_strategy", supports_no_wait=True, confirmation=True)
+        g.wait_command("wait")
+
+    # auto upgrade profiles command group
+    with self.command_group("fleet autoupgradeprofile", auto_upgrade_profiles_sdk, client_factory=cf_auto_upgrade_profiles) as g:
+        g.custom_command("create", "create_auto_upgrade_profile", supports_no_wait=True)
+        g.custom_show_command("show", "show_auto_upgrade_profile")
+        g.custom_command("list", "list_auto_upgrade_profiles")
+        g.custom_command("delete", "delete_auto_upgrade_profile", supports_no_wait=True, confirmation=True)
+        g.wait_command("wait")
+
+    # auto upgrade profiles operation command group
+    with self.command_group("fleet autoupgradeprofile", auto_upgrade_profile_operations_sdk, client_factory=cf_auto_upgrade_profile_operations) as g:
+        g.custom_command("generate-update-run", "generate_update_run", supports_no_wait=True)
+
+    # fleet gates command group
+    with self.command_group("fleet gate", gates_sdk, client_factory=cf_gates, is_preview=True) as g:
+        g.custom_command("list", "list_gates_by_fleet")
+        g.custom_show_command("show", "show_gate")
+        g.custom_command("update", "update_gate")
+        g.custom_command("approve", "approve_gate")
+
+    # fleet namespaces command group
+    with self.command_group("fleet namespace", managed_namespaces_sdk, client_factory=cf_fleet_managed_namespaces, is_preview=True) as g:
+        g.custom_command("create", "create_managed_namespace", supports_no_wait=True)
+        g.custom_command("update", "update_managed_namespace", supports_no_wait=True)
+        g.custom_command("delete", "delete_managed_namespace", supports_no_wait=True, confirmation=True)
+        g.custom_command("list", "list_managed_namespaces")
+        g.custom_show_command("show", "show_managed_namespace")
+        g.custom_command("get-credentials", "get_namespace_credentials")
         g.wait_command("wait")

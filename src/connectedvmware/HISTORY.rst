@@ -2,6 +2,14 @@
 
 Release History
 ===============
+1.2.1
+++++++
+* For pwinput, read input from stdin when tty is not available
+
+1.2.0
+++++++
+* Add support to enable a VM using managed object name (moName).
+
 1.1.1
 ++++++
 * `create-from-machines` : Search for BIOS IDs with both Little Endian and Middle Endian format.

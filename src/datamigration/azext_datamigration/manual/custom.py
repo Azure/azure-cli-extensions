@@ -112,10 +112,10 @@ def datamigration_performance_data_collection(connection_string=None,
             else:
                 sp = subprocess.Popen(cmd, shell=False)
                 try:
-                    outs, errs = sp.communicate(timeout=time)
+                    _, _ = sp.communicate(timeout=time)
                 except subprocess.TimeoutExpired:
                     sp.send_signal(signal.SIGTERM)
-                    outs, errs = sp.communicate()
+                    _, _ = sp.communicate()
 
         # When Config file.
         elif config_file_path is not None:
@@ -128,10 +128,10 @@ def datamigration_performance_data_collection(connection_string=None,
             else:
                 sp = subprocess.Popen(cmd, shell=False)
                 try:
-                    outs, errs = sp.communicate(timeout=time)
+                    _, _ = sp.communicate(timeout=time)
                 except subprocess.TimeoutExpired:
                     sp.send_signal(signal.SIGTERM)
-                    outs, errs = sp.communicate()
+                    _, _ = sp.communicate()
 
         else:
             raise RequiredArgumentMissingError('No valid parameter set used. Please provide any one of the these prameters: sql_connection_string, config_file_path')
@@ -298,7 +298,7 @@ def datamigration_login_migration(src_sql_connection_str=None,
         logFilePath = os.path.join(defaultOutputFolder, "LoginsMigrationLogs")
         from knack.log import get_logger
         logger = get_logger(__name__)
-        logger.warning(f"If outputFolder parameter is not provided, the default event and error logs folder path: {logFilePath}")
+        logger.warning("If outputFolder parameter is not provided, the default event and error logs folder path: %s", logFilePath)
 
     except Exception as e:
         raise e
@@ -363,11 +363,11 @@ def datamigration_sql_server_schema(action=None,
 
     try:
         # Setup the console app
-        defaultOutputFolder, exePath = helper.sqlServerSchema_console_app_setup()
+        _, exePath = helper.sqlServerSchema_console_app_setup()
 
         if config_file_path is not None:
             helper.test_path_exist(config_file_path)
-            print(f"Run through the provided config file:")
+            print(f"Run through the provided config file: {config_file_path}")
             cmd = f'{exePath} --configFile "{config_file_path}"'
             subprocess.call(cmd, shell=False)
         else:
@@ -383,8 +383,7 @@ def datamigration_sql_server_schema(action=None,
             if action == "DeploySchema":
                 if input_script_file_path is None:
                     raise RequiredArgumentMissingError(inputFilePathError)
-                else:
-                    helper.test_path_exist(input_script_file_path)
+                helper.test_path_exist(input_script_file_path)
 
             # parameter set for Perfornace data collection
             parameterList = {

@@ -4,7 +4,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=too-many-lines disable=line-too-long useless-object-inheritance condition-evals-to-constant
+# pylint: disable=too-many-lines line-too-long useless-object-inheritance condition-evals-to-constant too-many-positional-arguments
 
 import sys
 from azure.cli.core.commands import cached_get, cached_put
@@ -135,7 +135,7 @@ def delete_frontdoor_resource_property_entry(resource, prop):
 # region Frontdoor
 def _front_door_subresource_id(cmd, resource_group, front_door_name, child_type, child_name):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import resource_id
+    from azure.mgmt.core.tools import resource_id
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -661,6 +661,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
                               redirect_protocol, custom_host, custom_path,
                               custom_fragment, custom_query_string)
 
+    rule = None
     if route_type == 'Forward':
         rule = RoutingRule(
             name=item_name,

@@ -8,7 +8,6 @@
 import os
 import subprocess
 import tempfile
-import azext_k8s_runtime.custom_commands.storage_class as sc
 import azext_k8s_runtime.custom_commands.load_balancer as lb
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, live_only
@@ -46,68 +45,6 @@ class K8sRuntimeScenario(ScenarioTest):
         self.kwargs.update({
             "resource_uri": connected_cluster_resource_uri,
         })
-
-    @live_only()
-    @ResourceGroupPreparer(name_prefix='k8srttest', random_name_length=16)
-    def test_storage_class_enable_disable(self, resource_group):
-        self.create_connected_cluster(resource_group)
-
-        enable_result = self.cmd("az k8s-runtime storage-class enable --resource-uri {resource_uri}", checks=[
-            self.check("extension.name", sc.STORAGE_CLASS_EXTENSION_NAME),
-            self.check("extension.extensionType", sc.STORAGE_CLASS_EXTENSION_TYPE),
-            self.check("extension.provisioningState", "Succeeded"),
-            self.check("extension.identity.type", "SystemAssigned"),
-        ]).get_output_in_json()
-
-        assert enable_result["extension"]["identity"]["principalId"] == enable_result["storage_class_contributor_role_assignment"]["principalId"]
-
-        k8s_ext_contrib_role_assignment = enable_result["kubernetes_extension_contributor_role_assignment"]
-
-        assert k8s_ext_contrib_role_assignment["id"].startswith(self.kwargs["resource_uri"] + "/providers/Microsoft.Authorization/roleAssignments/")
-        assert k8s_ext_contrib_role_assignment["roleDefinitionId"].endswith(sc.KUBERNETES_EXTENSION_CONTRIBUTOR_ROLE_ID)
-        assert k8s_ext_contrib_role_assignment["principalId"] == sc.KUBERNETES_RUNTIME_FPA_APP_ID
-
-        self.cmd("az k8s-runtime storage-class disable --resource-uri {resource_uri}", checks=[
-            self.check("extension.id", enable_result["extension"]["id"]),
-            self.check("storage_class_contributor_role_assignment.id",
-                       enable_result["storage_class_contributor_role_assignment"]["id"]),
-            self.check("kubernetes_extension_contributor_role_assignment.id",
-                       enable_result["kubernetes_extension_contributor_role_assignment"]["id"]),
-        ])
-
-        os.remove(self.kwargs["kubeconfig"])
-
-    def test_storage_class_enable_disable_only_connected_cluster(self):
-        self.kwargs["resource_uri"] = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Kubernetes/managedClusters/cluster"
-
-        self.cmd("az k8s-runtime storage-class enable --resource-uri {resource_uri}", expect_failure=True)
-        self.cmd("az k8s-runtime storage-class disable --resource-uri {resource_uri}", expect_failure=True)
-
-    @live_only()
-    @ResourceGroupPreparer(name_prefix='k8srttest', random_name_length=16)
-    def test_storage_class_delete_storage_class(self, resource_group):
-        self.create_connected_cluster(resource_group)
-
-        self.cmd("az k8s-runtime storage-class enable --resource-uri {resource_uri}", checks=[
-            self.check("extension.provisioningState", "Succeeded"),
-        ])
-
-        test_sc = "rwx-test"
-        self.kwargs.update({"test_sc": test_sc})
-
-        # The default storage classes of AKS cannot be deleted.
-        # Has to create a new one and delete it.
-        self.cmd("az k8s-runtime storage-class create --resource-uri {resource_uri} --storage-class-name {test_sc} --type-properties rwx.backing-storage-class-name=managed")
-
-        self.cmd("az k8s-runtime storage-class delete --yes --resource-uri {resource_uri} --storage-class-name {test_sc}")
-
-        self.failIf(
-            subprocess.call(f"kubectl get storageclass {test_sc} --kubeconfig {self.kwargs.get('kubeconfig')}") == 0,
-            "Storage class {test_sc} is not deleted in the AKS cluster"
-        )
-        self.cmd("az k8s-runtime storage-class show --resource-uri {resource_uri} --storage-class-name {test_sc}", expect_failure=True)
-
-        os.remove(self.kwargs["kubeconfig"])
 
     @live_only()
     @ResourceGroupPreparer(name_prefix='k8srttest', random_name_length=16)

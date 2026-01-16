@@ -18,13 +18,13 @@ param nfDefinitionVersion string
 // The publisher resource is the top level AOSM resource under which all other designer resources
 // are created.
 // If using publish command, this is created from deploying the vnfbase.bicep
-resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing =  {
+resource publisher 'Microsoft.HybridNetwork/publishers@2024-04-15' existing =  {
   name: publisherName
 }
 
 // The artifact store is the resource in which all the artifacts (except VHD images) required to deploy the NF are stored.
 // If using publish command, this is created from deploying the vnfbase.bicep
-resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2024-04-15' existing = {
   parent: publisher
   name: acrArtifactStoreName
 }
@@ -32,7 +32,7 @@ resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@202
 {%- if sa_nf_applications %}
 // The storage account is the resource in which the VHD images are stored.
 // If using publish command, this is created from deploying the vnfbase.bicep
-resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2024-04-15' existing = {
   parent: publisher
   name: saArtifactStoreName
 }
@@ -40,13 +40,13 @@ resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023
 
 // The NFD Group is the parent resource under which all NFD versions will be created.
 // If using publish command, this is created from deploying the vnfbase.bicep
-resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2023-09-01' existing = {
+resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2024-04-15' existing = {
   parent: publisher
   name: nfDefinitionGroup
 }
 
 // This will deploy an NFDV in 'Preview' state. It should be changed to 'Active' once it is finalised.
-resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2023-09-01' = {
+resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2024-04-15' = {
   parent: nfdg
   name: nfDefinitionVersion
   location: location

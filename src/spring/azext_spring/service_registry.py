@@ -10,7 +10,7 @@ from azext_spring.vendored_sdks.appplatform.v2024_05_01_preview import models
 from azext_spring._utils import (wait_till_end)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
-from msrestazure.tools import resource_id
+from azure.mgmt.core.tools import resource_id
 
 SERVICE_REGISTRY_NAME = "serviceRegistry"
 RESOURCE_ID = "resourceId"

@@ -9,7 +9,7 @@ az extension add --name log-analytics-solution
 
 ### Included Features
 #### Log Analytics Solution Management:
-Manage Log Analytics Solution: [more info](https://docs.microsoft.com/en-us/azure/azure-monitor/insights/solutions) \
+Manage Log Analytics Solution: [more info](https://learn.microsoft.com/en-us/azure/azure-monitor/insights/solutions) \
 *Examples:*
 
 ##### Create a log-analytics solution for the plan product of OMSGallery/Containers

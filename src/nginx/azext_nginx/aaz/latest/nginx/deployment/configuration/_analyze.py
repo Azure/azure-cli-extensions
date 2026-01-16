@@ -22,9 +22,9 @@ class Analyze(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-01-preview",
+        "version": "2024-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}/analyze", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}/analyze", "2024-11-01-preview"],
         ]
     }
 
@@ -92,7 +92,14 @@ class Analyze(AAZCommand):
 
         files = cls._args_schema.files
         files.Element = AAZObjectArg()
-        cls._build_args_nginx_configuration_file_create(files.Element)
+
+        _element = cls._args_schema.files.Element
+        _element.content = AAZStrArg(
+            options=["content"],
+        )
+        _element.virtual_path = AAZStrArg(
+            options=["virtual-path"],
+        )
 
         package = cls._args_schema.package
         package.data = AAZStrArg(
@@ -107,30 +114,21 @@ class Analyze(AAZCommand):
 
         protected_files = cls._args_schema.protected_files
         protected_files.Element = AAZObjectArg()
-        cls._build_args_nginx_configuration_file_create(protected_files.Element)
-        return cls._args_schema
 
-    _args_nginx_configuration_file_create = None
-
-    @classmethod
-    def _build_args_nginx_configuration_file_create(cls, _schema):
-        if cls._args_nginx_configuration_file_create is not None:
-            _schema.content = cls._args_nginx_configuration_file_create.content
-            _schema.virtual_path = cls._args_nginx_configuration_file_create.virtual_path
-            return
-
-        cls._args_nginx_configuration_file_create = AAZObjectArg()
-
-        nginx_configuration_file_create = cls._args_nginx_configuration_file_create
-        nginx_configuration_file_create.content = AAZStrArg(
+        _element = cls._args_schema.protected_files.Element
+        _element.content = AAZStrArg(
             options=["content"],
+            help="The content of the protected file. This value is a PUT only value. If you perform a GET request on this value, it will be empty because it is a protected file.",
         )
-        nginx_configuration_file_create.virtual_path = AAZStrArg(
+        _element.content_hash = AAZStrArg(
+            options=["content-hash"],
+            help="The hash of the content of the file. This value is used to determine if the file has changed.",
+        )
+        _element.virtual_path = AAZStrArg(
             options=["virtual-path"],
+            help="The virtual path of the protected file.",
         )
-
-        _schema.content = cls._args_nginx_configuration_file_create.content
-        _schema.virtual_path = cls._args_nginx_configuration_file_create.virtual_path
+        return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
@@ -201,7 +199,7 @@ class Analyze(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01-preview",
+                    "api-version", "2024-11-01-preview",
                     required=True,
                 ),
             }
@@ -237,7 +235,12 @@ class Analyze(AAZCommand):
 
             files = _builder.get(".config.files")
             if files is not None:
-                _AnalyzeHelper._build_schema_nginx_configuration_file_create(files.set_elements(AAZObjectType, "."))
+                files.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".config.files[]")
+            if _elements is not None:
+                _elements.set_prop("content", AAZStrType, ".content")
+                _elements.set_prop("virtualPath", AAZStrType, ".virtual_path")
 
             package = _builder.get(".config.package")
             if package is not None:
@@ -250,7 +253,13 @@ class Analyze(AAZCommand):
 
             protected_files = _builder.get(".config.protectedFiles")
             if protected_files is not None:
-                _AnalyzeHelper._build_schema_nginx_configuration_file_create(protected_files.set_elements(AAZObjectType, "."))
+                protected_files.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".config.protectedFiles[]")
+            if _elements is not None:
+                _elements.set_prop("content", AAZStrType, ".content", typ_kwargs={"flags": {"secret": True}})
+                _elements.set_prop("contentHash", AAZStrType, ".content_hash")
+                _elements.set_prop("virtualPath", AAZStrType, ".virtual_path")
 
             return self.serialize_content(_content_value)
 
@@ -278,7 +287,36 @@ class Analyze(AAZCommand):
             )
 
             data = cls._schema_on_200.data
+            data.diagnostics = AAZListType()
             data.errors = AAZListType()
+
+            diagnostics = cls._schema_on_200.data.diagnostics
+            diagnostics.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.data.diagnostics.Element
+            _element.category = AAZStrType()
+            _element.description = AAZStrType(
+                flags={"required": True},
+            )
+            _element.directive = AAZStrType(
+                flags={"required": True},
+            )
+            _element.file = AAZStrType(
+                flags={"required": True},
+            )
+            _element.id = AAZStrType()
+            _element.level = AAZStrType(
+                flags={"required": True},
+            )
+            _element.line = AAZFloatType(
+                flags={"required": True},
+            )
+            _element.message = AAZStrType(
+                flags={"required": True},
+            )
+            _element.rule = AAZStrType(
+                flags={"required": True},
+            )
 
             errors = cls._schema_on_200.data.errors
             errors.Element = AAZObjectType()
@@ -309,13 +347,6 @@ class Analyze(AAZCommand):
 
 class _AnalyzeHelper:
     """Helper class for Analyze"""
-
-    @classmethod
-    def _build_schema_nginx_configuration_file_create(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("content", AAZStrType, ".content")
-        _builder.set_prop("virtualPath", AAZStrType, ".virtual_path")
 
 
 __all__ = ["Analyze"]

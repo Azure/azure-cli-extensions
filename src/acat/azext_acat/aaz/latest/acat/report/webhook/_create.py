@@ -16,6 +16,13 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a new AppComplianceAutomation webhook or update an exiting AppComplianceAutomation webhook.
+
+    :example: Webhook_CreateOrUpdate
+        az acat report webhook create --report-name testReportName --webhook-name testWebhookName --content-type application/json --enable-ssl-verification true --events "[generate_snapshot_failed]" --payload-url https://example.com --send-all-events false --status Enabled --update-webhook-key true --webhook-key 00000000-0000-0000-0000-000000000000
+
+    :example: Webhook_CreateOrUpdate
+        az acat report webhook create --report-name testReportName --webhook-name testWebhookName --content-type application/json --enable-ssl true --events "[generate_snapshot_failed]" --payload-url https://example.com --send-all-events false --status Enabled --update-webhook-key true --secret 00000000-0000-0000-0000-000000000000
+        az acat report webhook create --report-name testReportName --webhook-name testWebhookName --payload-url https://example.com  --secret 00000000-0000-0000-0000-000000000000
     """
 
     _aaz_info = {

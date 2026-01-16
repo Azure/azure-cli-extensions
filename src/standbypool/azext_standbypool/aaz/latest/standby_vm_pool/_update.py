@@ -15,22 +15,16 @@ from azure.cli.core.aaz import *
     "standby-vm-pool update",
 )
 class Update(AAZCommand):
-    """Update a standby virtual machine pool
+    """Update a StandbyVirtualMachinePoolResource
 
-    :example: Update max ready capacity
-        az standby-vm-pool update --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool --max-ready-capacity 3
-
-    :example: Update virtual machine state
-        az standby-vm-pool update --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool --vm-state Deallocate
-
-    :example: Update attached virtual machine scale set
-        az standby-vm-pool update --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool --vmss-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.Compute/virtualMachineScaleSets/testvmss
+    :example: StandbyVirtualMachinePool_Update
+        az standby-vm-pool update --resource-group rgstandbypool --name pool --max-ready-capacity 304 --min-ready-capacity 300 --vm-state Running --vmss-id /subscriptions/00000000-0000-0000-0000-000000000009/resourceGroups/rgstandbypool/providers/Microsoft.Compute/virtualMachineScaleSets/myVmss --tags "{}" --location West US --subscription 00000000-0000-0000-0000-000000000009
     """
 
     _aaz_info = {
-        "version": "2023-12-01-preview",
+        "version": "2025-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2023-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2025-03-01"],
         ]
     }
 
@@ -51,7 +45,6 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group",
             required=True,
         )
         _args_schema.name = AAZStrArg(
@@ -70,7 +63,16 @@ class Update(AAZCommand):
         _args_schema.max_ready_capacity = AAZIntArg(
             options=["--max-ready-capacity"],
             arg_group="ElasticityProfile",
-            help="Specifies maximum number of virtual machines in the standby virtual machine pool.",
+            help="Specifies the maximum number of virtual machines in the standby virtual machine pool.",
+            fmt=AAZIntArgFormat(
+                maximum=2000,
+                minimum=0,
+            ),
+        )
+        _args_schema.min_ready_capacity = AAZIntArg(
+            options=["--min-ready-capacity"],
+            arg_group="ElasticityProfile",
+            help="Specifies the desired minimum number of virtual machines in the standby virtual machine pool. MinReadyCapacity cannot exceed MaxReadyCapacity.",
             fmt=AAZIntArgFormat(
                 maximum=2000,
                 minimum=0,
@@ -89,7 +91,7 @@ class Update(AAZCommand):
             options=["--vm-state"],
             arg_group="Properties",
             help="Specifies the desired state of virtual machines in the pool.",
-            enum={"Deallocated": "Deallocated", "Running": "Running"},
+            enum={"Deallocated": "Deallocated", "Hibernated": "Hibernated", "Running": "Running"},
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -166,7 +168,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-01-preview",
+                    "api-version", "2025-03-01",
                     required=True,
                 ),
             }
@@ -202,7 +204,8 @@ class Update(AAZCommand):
 
             elasticity_profile = _builder.get(".properties.elasticityProfile")
             if elasticity_profile is not None:
-                elasticity_profile.set_prop("maxReadyCapacity", AAZIntType, ".max_ready_capacity")
+                elasticity_profile.set_prop("maxReadyCapacity", AAZIntType, ".max_ready_capacity", typ_kwargs={"flags": {"required": True}})
+                elasticity_profile.set_prop("minReadyCapacity", AAZIntType, ".min_ready_capacity")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -269,6 +272,9 @@ class Update(AAZCommand):
             elasticity_profile.max_ready_capacity = AAZIntType(
                 serialized_name="maxReadyCapacity",
                 flags={"required": True},
+            )
+            elasticity_profile.min_ready_capacity = AAZIntType(
+                serialized_name="minReadyCapacity",
             )
 
             system_data = cls._schema_on_200.system_data

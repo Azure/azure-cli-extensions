@@ -28,9 +28,7 @@ from azure.cli.core.azclierror import AzureResponseError, InvalidArgumentValueEr
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.mgmt.resource.locks.models import ManagementLockObject
 from knack.log import get_logger
-from msrestazure.azure_exceptions import CloudError
-from msrest.exceptions import HttpOperationError
-import azure.core.exceptions
+from azure.core.exceptions import HttpResponseError
 
 from .._client_factory import cf_resources
 from .DefaultExtension import DefaultExtension, user_confirmation_factory
@@ -172,7 +170,7 @@ class AzureMLKubernetes(DefaultExtension):
                     configuration_settings[self.OPEN_SHIFT] = 'true'
             except:
                 pass
-        except CloudError as ex:
+        except HttpResponseError as ex:
             raise ex
 
         # generate values for the extension if none is set.
@@ -333,7 +331,7 @@ class AzureMLKubernetes(DefaultExtension):
                         cmd, subscription_id, resource_group_name, cluster_name, '', True)
                     configuration_protected_settings[self.AZURE_LOG_ANALYTICS_CONNECTION_STRING] = shared_key
                     logger.info("Get log analytics connection string succeeded.")
-                except azure.core.exceptions.HttpResponseError:
+                except HttpResponseError:
                     logger.info("Failed to get log analytics connection string.")
 
             original_extension_config_settings = original_extension.configuration_settings
@@ -346,7 +344,7 @@ class AzureMLKubernetes(DefaultExtension):
                         cmd, subscription_id, resource_group_name, cluster_name, '', self.RELAY_HC_AUTH_NAME, True)
                     configuration_protected_settings[self.RELAY_SERVER_CONNECTION_STRING] = relay_connection_string
                     logger.info("Get relay connection string succeeded.")
-                except azure.core.exceptions.HttpResponseError as ex:
+                except HttpResponseError as ex:
                     if ex.response.status_code == 404:
                         raise ResourceNotFoundError("Relay server not found. "
                                                     "Check {} for more information.".format(self.TSG_LINK)) from ex
@@ -360,7 +358,7 @@ class AzureMLKubernetes(DefaultExtension):
                         cmd, subscription_id, resource_group_name, cluster_name, '', {}, True)
                     configuration_protected_settings[self.SERVICE_BUS_CONNECTION_STRING] = service_bus_connection_string
                     logger.info("Get service bus connection string succeeded.")
-                except azure.core.exceptions.HttpResponseError as ex:
+                except HttpResponseError as ex:
                     if ex.response.status_code == 404:
                         raise ResourceNotFoundError("Service bus not found."
                                                     "Check {} for more information.".format(self.TSG_LINK)) from ex
@@ -632,7 +630,7 @@ def _get_relay_connection_str(
                                                                    "namespace_name": relay_namespace_name,
                                                                    "hybrid_connection_name": hybrid_connection_name,
                                                                    "name": auth_rule_name})
-    except azure.core.exceptions.HttpResponseError as e:
+    except HttpResponseError as e:
         if e.response.status_code != 404 or get_key_only:
             raise e
         # create namespace
@@ -687,7 +685,7 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
             key: azure.mgmt.servicebus.models.AccessKeys = service_bus_client.namespaces.list_keys(
                 resource_group_name, service_bus_namespace_name, rule.name)
             return key.primary_connection_string, service_bus_resource_id
-    except azure.core.exceptions.HttpResponseError as e:
+    except HttpResponseError as e:
         if e.response.status_code != 404 or get_key_only:
             raise e
         # create namespace
@@ -741,7 +739,7 @@ def _get_log_analytics_ws_connection_string(
         customer_id = log_analytics_ws_object.customer_id
         shared_key = log_analytics_ws_client.shared_keys.get_shared_keys(
             resource_group_name, log_analytics_ws_name).primary_shared_key
-    except azure.core.exceptions.HttpResponseError as e:
+    except HttpResponseError as e:
         if e.response.status_code != 404 or get_key_only:
             raise e
         log_analytics_ws = azure.mgmt.loganalytics.models.Workspace(location=cluster_location, tags=resource_tag)

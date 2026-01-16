@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.0.0
++++++
+* Replace msrestazure with azure.core
+
 0.2.1
 ++++++
 * GA.

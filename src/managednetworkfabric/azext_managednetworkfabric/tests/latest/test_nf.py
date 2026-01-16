@@ -9,83 +9,154 @@
 NF tests scenarios
 """
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest
+
 from .config import CONFIG
 
 
-def setup_scenario1(test):
-    ''' Env setup_scenario1 '''
+def setup_scenario(test):
+    """Env setup_scenario"""
     pass
 
 
-def cleanup_scenario1(test):
-    '''Env cleanup_scenario1 '''
+def cleanup_scenario(test):
+    """Env cleanup_scenario"""
     pass
 
 
 def call_scenario1(test):
-    ''' # Testcase: scenario1'''
-    setup_scenario1(test)
-    step_create(test, checks=[])
+    """Testcase: scenario1"""
+    setup_scenario(test)
+    step_create_scenario1(test, checks=[])
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
-    cleanup_scenario1(test)
+    cleanup_scenario(test)
 
 
-def step_create(test, checks=None):
-    '''nf create operation'''
-    if checks is None:
-        checks = []
-    test.cmd('az networkfabric fabric create --resource-group {rg} --location {location} --resource-name {name} --nf-sku {nf_sku} --nfc-id {nfc_id}'
-             ' --fabric-asn {fabric_asn} --ipv4-prefix {ipv4_prefix} --ipv6-prefix {ipv6_prefix} --rack-count {rack_count} --server-count-per-rack {server_count_per_rack}'
-             ' --ts-config {terminalServerConf} --managed-network-config {managedNetworkConf}', checks=checks)
+def call_scenario2(test):
+    """Testcase: scenario1"""
+    setup_scenario(test)
+    step_create_scenario1(test, checks=[])
+    cleanup_scenario(test)
 
 
-def step_show(test, checks=None):
-    '''nf show operation'''
+def step_create_scenario1(test, checks=None):
+    """nf create operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric fabric show --resource-name {name} --resource-group {rg}')
+        "az networkfabric fabric create --resource-group {rg} --location {location} --resource-name {name} --nf-sku {nfSku} --nfc-id {nfcId}"
+        " --fabric-asn {fabricAsn} --ipv4-prefix {ipv4Prefix} --ipv6-prefix {ipv6Prefix} --rack-count {rackCount} --server-count-per-rack {serverCountPerRack}"
+        " --ts-config {terminalServerConf} --managed-network-config {managedNetworkConf} --user-assigned {userAssignedIdentity}"
+        " --control-plane-acls {controlPlaneAcls} --fabric-version {fabricVersion} --annotation {annotation}"
+        " --ha-threshold {hardwareAlertThreshold} --storage-account-config {storageAccountConfiguration}"
+        " --storage-array-count {storageArrayCount} --trusted-ip-prefixes {trustedIpPrefixes} --unique-rd-config {uniqueRdConfiguration}"
+        " --authorized-transceiver {authorizedTransceiver} --tags {tags} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
+        checks=checks,
+    )
+
+
+def step_create_scenario2(test, checks=None):
+    """nf create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric fabric create --resource-group {rg} --location {location} --resource-name {name} --network-fabric-sku {nfSku} --network-fabric-controller-id {nfcId}"
+        " --fabric-asn {fabricAsn} --ipv4-prefix {ipv4Prefix} --ipv6-prefix {ipv6Prefix} --rack-count {rackCount} --server-count-per-rack {serverCountPerRack}"
+        " --terminal-server-configuration {terminalServerConf} --user-assigned {userAssignedIdentity} --control-plane-acls {controlPlaneAcls} --fabric-version {fabricVersion} "
+        " --annotation {annotation} --feature-flags {featureFlags} --management-network-configuration {managementNetworkConfig} --qos-configuration {qosConfig}"
+        " --hardware-alert-threshold {hardwareAlertThreshold} --storage-account-configuration {storageAccountConfiguration}"
+        " --storage-array-count {storageArrayCount} --trusted-ip-prefixes {trustedIpPrefixes} --unique-rd-configuration {uniqueRdConfiguration}"
+        " --authorized-transceiver {authorizedTransceiver} --tags {tags} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
+        checks=checks,
+    )
+
+
+def step_show(test, checks=None):
+    """nf show operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric fabric show --resource-name {name} --resource-group {rg}"
+    )
 
 
 def step_list_resource_group(test, checks=None):
-    '''nf list by resource group operation'''
+    """nf list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd('az networkfabric fabric list --resource-group {rg}')
+    test.cmd("az networkfabric fabric list --resource-group {rg}")
 
 
 def step_list_subscription(test, checks=None):
-    '''nf list by subscription'''
+    """nf list by subscription"""
     if checks is None:
         checks = []
-    test.cmd('az networkfabric fabric list')
+    test.cmd("az networkfabric fabric list")
 
 
 class GA_NFScenarioTest1(ScenarioTest):
-    ''' NFScenario test'''
+    """NFScenario test"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.kwargs.update({
-            'name': CONFIG.get('NETWORK_FABRIC', 'name'),
-            'rg': CONFIG.get('NETWORK_FABRIC', 'resource_group'),
-            'location': CONFIG.get('NETWORK_FABRIC', 'location'),
-            'nf_sku': CONFIG.get('NETWORK_FABRIC', 'nf_sku'),
-            'nfc_id': CONFIG.get('NETWORK_FABRIC', 'nfc_id'),
-            'fabric_asn': CONFIG.get('NETWORK_FABRIC', 'fabric_asn'),
-            'ipv4_prefix': CONFIG.get('NETWORK_FABRIC', 'ipv4_prefix'),
-            'ipv6_prefix': CONFIG.get('NETWORK_FABRIC', 'ipv6_prefix'),
-            'rack_count': CONFIG.get('NETWORK_FABRIC', 'rack_count'),
-            'server_count_per_rack': CONFIG.get('NETWORK_FABRIC', 'server_count_per_rack'),
-            'terminalServerConf': CONFIG.get('NETWORK_FABRIC', 'terminalServerConf'),
-            'deleteNFRGName': CONFIG.get('NETWORK_FABRIC', 'delete_nf_resource_group'),
-            'deleteNFName': CONFIG.get('NETWORK_FABRIC', 'delete_nf_name'),
-            'managedNetworkConf': CONFIG.get('NETWORK_FABRIC', 'managedNetworkConf')
-        })
+        self.kwargs.update(
+            {
+                "name": CONFIG.get("NETWORK_FABRIC", "name"),
+                "annotation": CONFIG.get("NETWORK_FABRIC", "annotation"),
+                "rg": CONFIG.get("NETWORK_FABRIC", "resource_group"),
+                "location": CONFIG.get("NETWORK_FABRIC", "location"),
+                "nfSku": CONFIG.get("NETWORK_FABRIC", "nf_sku"),
+                "nfcId": CONFIG.get("NETWORK_FABRIC", "nfc_id"),
+                "fabricAsn": CONFIG.get("NETWORK_FABRIC", "fabric_asn"),
+                "ipv4Prefix": CONFIG.get("NETWORK_FABRIC", "ipv4_prefix"),
+                "ipv6Prefix": CONFIG.get("NETWORK_FABRIC", "ipv6_prefix"),
+                "rackCount": CONFIG.get("NETWORK_FABRIC", "rack_count"),
+                "serverCountPerRack": CONFIG.get(
+                    "NETWORK_FABRIC", "server_count_per_rack"
+                ),
+                "terminalServerConf": CONFIG.get(
+                    "NETWORK_FABRIC", "terminal_server_conf"
+                ),
+                "managedNetworkConf": CONFIG.get(
+                    "NETWORK_FABRIC", "managed_network_conf"
+                ),
+                "controlPlaneAcls": CONFIG.get("NETWORK_FABRIC", "control_plane_acls"),
+                "fabricVersion": CONFIG.get("NETWORK_FABRIC", "fabric_version"),
+                "hardwareAlertThreshold": CONFIG.get(
+                    "NETWORK_FABRIC", "hardware_alert_threshold"
+                ),
+                "storageAccountConfiguration": CONFIG.get(
+                    "NETWORK_FABRIC", "storage_account_configuration"
+                ),
+                "storageArrayCount": CONFIG.get(
+                    "NETWORK_FABRIC", "storage_array_count"
+                ),
+                "trustedIpPrefixes": CONFIG.get(
+                    "NETWORK_FABRIC", "trusted_ip_prefixes"
+                ),
+                "uniqueRdConfiguration": CONFIG.get(
+                    "NETWORK_FABRIC", "unique_rd_configuration"
+                ),
+                "authorizedTransceiver": CONFIG.get(
+                    "NETWORK_FABRIC", "authorized_transceiver"
+                ),
+                "qosConfig": CONFIG.get("NETWORK_FABRIC", "qos_configuration"),
+                "managementNetworkConfig": CONFIG.get(
+                    "NETWORK_FABRIC", "management_network_configuration"
+                ),
+                "featureFlags": CONFIG.get("NETWORK_FABRIC", "feature_flags"),
+                "tags": CONFIG.get("NETWORK_FABRIC", "tags"),
+                "userAssignedIdentity": CONFIG.get(
+                    "MANAGED_IDENTITY", "user_assigned_identity"
+                ),
+                "systemAssignedIdentity": CONFIG.get(
+                    "MANAGED_IDENTITY", "system_assigned_identity"
+                ),
+            }
+        )
 
     def test_GA_nf_scenario1(self):
-        ''' test scenario for NF CRUD operations'''
+        """test scenario for NF CRUD operations"""
         call_scenario1(self)

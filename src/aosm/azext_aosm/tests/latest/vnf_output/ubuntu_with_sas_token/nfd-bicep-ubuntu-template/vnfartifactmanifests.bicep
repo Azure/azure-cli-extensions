@@ -20,24 +20,24 @@ param vhdVersion string
 param armTemplateVersion string
 
 // Created by the az aosm definition publish command before the template is deployed
-resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing = {
+resource publisher 'Microsoft.HybridNetwork/publishers@2024-04-15' existing = {
   name: publisherName
   scope: resourceGroup()
 }
 
 // Created by the az aosm definition publish command before the template is deployed
-resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2024-04-15' existing = {
   parent: publisher
   name: acrArtifactStoreName
 }
 
 // Created by the az aosm definition publish command before the template is deployed
-resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2024-04-15' existing = {
   parent: publisher
   name: saArtifactStoreName
 }
 
-resource saArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2023-09-01' = {
+resource saArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2024-04-15' = {
   parent: saArtifactStore
   name: saManifestName
   location: location
@@ -52,7 +52,7 @@ resource saArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/a
   }
 }
 
-resource acrArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2023-09-01' = {
+resource acrArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2024-04-15' = {
   parent: acrArtifactStore
   name: acrManifestName
   location: location

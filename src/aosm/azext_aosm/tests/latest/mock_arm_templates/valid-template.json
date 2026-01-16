@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.15.31.15270",
+      "templateHash": "1656082395923655778"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "uksouth"
+    }
+  },
+  "variables": {
+    "userAssignedIdentities_uamiTestIdentity_name": "uamiTestIdentity"
+  },
+  "resources": [    
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2015-08-31-preview",
+      "name": "[parameters('userAssignedIdentities_uamiTestIdentity_name')]",
+      "location": "eastus2euap"
+    }
+  ]
+}

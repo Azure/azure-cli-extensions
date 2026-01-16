@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2025-09-01"],
         ]
     }
 
@@ -46,6 +46,14 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="The ETag of the transformation. Omit this value to always overwrite the current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.",
+        )
+        _args_schema.if_none_match = AAZStrArg(
+            options=["--if-none-match"],
+            help="Set to '*' to allow a new record set to be created, but to prevent updating an existing resource. Other values will result in error from server as they are not supported.",
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -58,6 +66,25 @@ class Update(AAZCommand):
                 pattern="^([a-zA-Z0-9][a-zA-Z0-9]{0,62}[a-zA-Z0-9])$",
             ),
         )
+
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities.",
+            blank=[],
+        )
+
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -185,7 +212,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -194,6 +221,12 @@ class Update(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
+                **self.serialize_header_param(
+                    "If-None-Match", self.ctx.args.if_none_match,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -210,8 +243,18 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -253,13 +296,37 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
+    _schema_extended_location_read = None
+
+    @classmethod
+    def _build_schema_extended_location_read(cls, _schema):
+        if cls._schema_extended_location_read is not None:
+            _schema.name = cls._schema_extended_location_read.name
+            _schema.type = cls._schema_extended_location_read.type
+            return
+
+        cls._schema_extended_location_read = _schema_extended_location_read = AAZObjectType()
+
+        extended_location_read = _schema_extended_location_read
+        extended_location_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        extended_location_read.type = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.name = cls._schema_extended_location_read.name
+        _schema.type = cls._schema_extended_location_read.type
+
     _schema_virtual_machine_read = None
 
     @classmethod
     def _build_schema_virtual_machine_read(cls, _schema):
         if cls._schema_virtual_machine_read is not None:
+            _schema.etag = cls._schema_virtual_machine_read.etag
             _schema.extended_location = cls._schema_virtual_machine_read.extended_location
             _schema.id = cls._schema_virtual_machine_read.id
+            _schema.identity = cls._schema_virtual_machine_read.identity
             _schema.location = cls._schema_virtual_machine_read.location
             _schema.name = cls._schema_virtual_machine_read.name
             _schema.properties = cls._schema_virtual_machine_read.properties
@@ -271,13 +338,18 @@ class _UpdateHelper:
         cls._schema_virtual_machine_read = _schema_virtual_machine_read = AAZObjectType()
 
         virtual_machine_read = _schema_virtual_machine_read
+        virtual_machine_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
         virtual_machine_read.extended_location = AAZObjectType(
             serialized_name="extendedLocation",
             flags={"required": True},
         )
+        cls._build_schema_extended_location_read(virtual_machine_read.extended_location)
         virtual_machine_read.id = AAZStrType(
             flags={"read_only": True},
         )
+        virtual_machine_read.identity = AAZIdentityObjectType()
         virtual_machine_read.location = AAZStrType(
             flags={"required": True},
         )
@@ -296,12 +368,35 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
-        extended_location = _schema_virtual_machine_read.extended_location
-        extended_location.name = AAZStrType(
+        identity = _schema_virtual_machine_read.identity
+        identity.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+        identity.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"read_only": True},
+        )
+        identity.type = AAZStrType(
             flags={"required": True},
         )
-        extended_location.type = AAZStrType(
-            flags={"required": True},
+        identity.user_assigned_identities = AAZDictType(
+            serialized_name="userAssignedIdentities",
+        )
+
+        user_assigned_identities = _schema_virtual_machine_read.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectType(
+            nullable=True,
+        )
+
+        _element = _schema_virtual_machine_read.identity.user_assigned_identities.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"read_only": True},
+        )
+        _element.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
         )
 
         properties = _schema_virtual_machine_read.properties
@@ -328,6 +423,10 @@ class _UpdateHelper:
             serialized_name="clusterId",
             flags={"read_only": True},
         )
+        properties.console_extended_location = AAZObjectType(
+            serialized_name="consoleExtendedLocation",
+        )
+        cls._build_schema_extended_location_read(properties.console_extended_location)
         properties.cpu_cores = AAZIntType(
             serialized_name="cpuCores",
             flags={"required": True},
@@ -353,6 +452,10 @@ class _UpdateHelper:
         properties.network_data = AAZStrType(
             serialized_name="networkData",
         )
+        properties.network_data_content = AAZStrType(
+            serialized_name="networkDataContent",
+            flags={"secret": True},
+        )
         properties.placement_hints = AAZListType(
             serialized_name="placementHints",
         )
@@ -373,6 +476,10 @@ class _UpdateHelper:
         )
         properties.user_data = AAZStrType(
             serialized_name="userData",
+        )
+        properties.user_data_content = AAZStrType(
+            serialized_name="userDataContent",
+            flags={"secret": True},
         )
         properties.virtio_interface = AAZStrType(
             serialized_name="virtioInterface",
@@ -537,8 +644,10 @@ class _UpdateHelper:
         tags = _schema_virtual_machine_read.tags
         tags.Element = AAZStrType()
 
+        _schema.etag = cls._schema_virtual_machine_read.etag
         _schema.extended_location = cls._schema_virtual_machine_read.extended_location
         _schema.id = cls._schema_virtual_machine_read.id
+        _schema.identity = cls._schema_virtual_machine_read.identity
         _schema.location = cls._schema_virtual_machine_read.location
         _schema.name = cls._schema_virtual_machine_read.name
         _schema.properties = cls._schema_virtual_machine_read.properties

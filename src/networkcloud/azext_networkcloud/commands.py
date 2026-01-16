@@ -7,12 +7,14 @@
 # pylint: disable=too-many-lines,import-outside-toplevel
 # pylint: disable=too-many-statements
 
-""" Load Command model table importing custom commands"""
+"""Load Command model table importing custom commands"""
 
 from ._format import (
     transform_child_resource_table_output,
     transform_cluster_manager_table_output,
     transform_hydrated_resource_table_output,
+    transform_kubernetescluster_agentpool_table_output,
+    transform_kubernetescluster_feature_table_output,
     transform_rack_sku_table_output,
     transform_resource_table_output,
 )
@@ -36,17 +38,23 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
 
         from .operations.baremetalmachine._run_command import RunCommand
         from .operations.baremetalmachine._run_data_extract import RunDataExtract
+        from .operations.baremetalmachine._run_data_extracts_restricted import (
+            RunDataExtractsRestricted,
+        )
         from .operations.baremetalmachine._run_read_command import RunReadCommand
 
         self.command_table["networkcloud baremetalmachine run-command"] = RunCommand(
             loader=self
         )
+        self.command_table["networkcloud baremetalmachine run-read-command"] = (
+            RunReadCommand(loader=self)
+        )
+        self.command_table["networkcloud baremetalmachine run-data-extract"] = (
+            RunDataExtract(loader=self)
+        )
         self.command_table[
-            "networkcloud baremetalmachine run-read-command"
-        ] = RunReadCommand(loader=self)
-        self.command_table[
-            "networkcloud baremetalmachine run-data-extract"
-        ] = RunDataExtract(loader=self)
+            "networkcloud baremetalmachine run-data-extracts-restricted"
+        ] = RunDataExtractsRestricted(loader=self)
 
     # cloudservicesnetwork
     with self.command_group("networkcloud cloudservicesnetwork"):
@@ -62,6 +70,8 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     # cluster
     with self.command_group("networkcloud cluster"):
         from .aaz.latest.networkcloud.cluster import List, Show
+        from .operations.cluster._create import Create
+        from .operations.cluster._update import Update
 
         self.command_table["networkcloud cluster show"] = Show(
             loader=self, table_transformer=transform_resource_table_output
@@ -69,6 +79,8 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table["networkcloud cluster list"] = List(
             loader=self, table_transformer=transform_resource_table_output
         )
+        self.command_table["networkcloud cluster create"] = Create(loader=self)
+        self.command_table["networkcloud cluster update"] = Update(loader=self)
 
     # cluster baremetalmachinekeyset
     with self.command_group("networkcloud cluster baremetalmachinekeyset"):
@@ -121,6 +133,8 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     # clustermanager
     with self.command_group("networkcloud clustermanager"):
         from .aaz.latest.networkcloud.clustermanager import List, Show
+        from .operations.clustermanager._create import Create
+        from .operations.clustermanager._update import Update
 
         self.command_table["networkcloud clustermanager show"] = Show(
             loader=self, table_transformer=transform_cluster_manager_table_output
@@ -128,6 +142,8 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table["networkcloud clustermanager list"] = List(
             loader=self, table_transformer=transform_cluster_manager_table_output
         )
+        self.command_table["networkcloud clustermanager create"] = Create(loader=self)
+        self.command_table["networkcloud clustermanager update"] = Update(loader=self)
 
     # kubernetescluster
     with self.command_group("networkcloud kubernetescluster"):
@@ -157,10 +173,12 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         from .aaz.latest.networkcloud.kubernetescluster.agentpool import List, Show
 
         self.command_table["networkcloud kubernetescluster agentpool show"] = Show(
-            loader=self, table_transformer=transform_child_resource_table_output
+            loader=self,
+            table_transformer=transform_kubernetescluster_agentpool_table_output,
         )
         self.command_table["networkcloud kubernetescluster agentpool list"] = List(
-            loader=self, table_transformer=transform_child_resource_table_output
+            loader=self,
+            table_transformer=transform_kubernetescluster_agentpool_table_output,
         )
 
         from .operations.kubernetescluster.agentpool._create import Create
@@ -173,6 +191,19 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
 
         self.command_table["networkcloud kubernetescluster agentpool update"] = Update(
             loader=self
+        )
+
+    # kubernetescluster feature
+    with self.command_group("networkcloud kubernetescluster feature"):
+        from .aaz.latest.networkcloud.kubernetescluster.feature import List, Show
+
+        self.command_table["networkcloud kubernetescluster feature show"] = Show(
+            loader=self,
+            table_transformer=transform_kubernetescluster_feature_table_output,
+        )
+        self.command_table["networkcloud kubernetescluster feature list"] = List(
+            loader=self,
+            table_transformer=transform_kubernetescluster_feature_table_output,
         )
 
     # l2network
@@ -228,6 +259,11 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         )
         self.command_table["networkcloud storageappliance list"] = List(
             loader=self, table_transformer=transform_hydrated_resource_table_output
+        )
+        from .operations.storageappliance._run_read_command import RunReadCommand
+
+        self.command_table["networkcloud storageappliance run-read-command"] = (
+            RunReadCommand(loader=self)
         )
 
     # trunkednetwork

@@ -15,8 +15,8 @@ from azure.cli.core.aaz import *
     "new-relic monitor monitored-subscription create",
 )
 class Create(AAZCommand):
-    """Create the subscriptions that should be monitored by the NewRelic monitor resource.
-    
+    """Create subscriptions to be monitored by the New Relic monitor resource, enabling observability and monitoring.
+
     :example: Create the subscriptions that should be monitored by the NewRelic monitor resource.
     Please run below commands in the mentioned order
     1) az new-relic monitor monitored-subscription create --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default --patch-operation AddBegin --subscriptions "[{status:'InProgress',subscription-id:'subscription-id'}]"
@@ -66,7 +66,7 @@ class Create(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["--resource-group","--g"],
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 

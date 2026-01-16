@@ -17,10 +17,9 @@ from azure.cli.core import AzCommandsLoader
 class DevCenterCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_devcenter._client_factory import cf_devcenter_cl
 
         devcenter_custom = CliCommandType(
-            operations_tmpl="azext_devcenter.custom#{}", client_factory=cf_devcenter_cl
+            operations_tmpl="azext_devcenter.custom#{}"
         )
         parent = super(DevCenterCommandsLoader, self)
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=devcenter_custom)
@@ -44,7 +43,6 @@ class DevCenterCommandsLoader(AzCommandsLoader):
 
     def load_arguments(self, command):
         from azext_devcenter._params import load_arguments
-
         load_arguments(self, command)
 
 
