@@ -2787,6 +2787,81 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return opentelemetry_logs_port
 
+    def get_enable_high_log_scale_mode(self) -> Union[bool, None]:
+        """Obtain the value of enable_high_log_scale_mode.
+
+        This method overrides the base class implementation to automatically enable high log scale mode
+        when container network logs are enabled. It validates that:
+        1. ACNS (Advanced Container Networking Services) is enabled
+        2. Monitoring addon is enabled
+        3. User has not explicitly disabled high log scale mode
+
+        :return: bool or None
+        """
+        # Read the original value passed by the command
+        enable_high_log_scale_mode = self.raw_param.get("enable_high_log_scale_mode")
+
+        # Check if container network logs are being enabled
+        enable_container_network_logs = (
+            self.raw_param.get("enable_container_network_logs") or
+            self.raw_param.get("enable_retina_flow_logs")
+        )
+
+        # If container network logs are being enabled, auto-enable high log scale mode
+        if enable_container_network_logs:
+            # If user explicitly set enable_high_log_scale_mode to False, raise an error
+            if enable_high_log_scale_mode is False:
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot explicitly disable --enable-high-log-scale-mode when "
+                    "--enable-container-network-logs is specified. Container network logs "
+                    "requires high log scale mode to be enabled."
+                )
+
+            # Validate that ACNS is enabled (either being enabled now or already enabled in cluster)
+            enable_acns = self.raw_param.get("enable_acns")
+            acns_already_enabled = (
+                self.mc and
+                self.mc.network_profile and
+                self.mc.network_profile.advanced_networking and
+                self.mc.network_profile.advanced_networking.enabled
+            )
+            if not enable_acns and not acns_already_enabled:
+                raise RequiredArgumentMissingError(
+                    "Container network logs with high log scale mode requires ACNS to be enabled. "
+                    "Please add --enable-acns to your command."
+                )
+
+            # Validate that monitoring addon is enabled (either being enabled now or already enabled in cluster)
+            addon_consts = self.get_addon_consts()
+            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+
+            # Check if monitoring is being enabled in the command
+            enable_addons = self.raw_param.get("enable_addons")
+            monitoring_being_enabled = enable_addons and "monitoring" in enable_addons
+
+            # Check if enabling Azure Monitor logs
+            enable_azure_monitor_logs = self.raw_param.get("enable_azure_monitor_logs")
+
+            # Check if monitoring addon is already enabled in the cluster
+            monitoring_addon_enabled = False
+            if self.mc and self.mc.addon_profiles:
+                if CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles:
+                    monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+                elif CONST_MONITORING_ADDON_NAME_CAMELCASE in self.mc.addon_profiles:
+                    monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME_CAMELCASE].enabled
+
+            if not monitoring_being_enabled and not enable_azure_monitor_logs and not monitoring_addon_enabled:
+                raise RequiredArgumentMissingError(
+                    "Container network logs with high log scale mode requires the monitoring addon to be enabled. "
+                    "Please add '--enable-addons monitoring' or '--enable-azure-monitor-logs' to your command."
+                )
+
+            # Auto-enable high log scale mode
+            return True
+
+        # If container network logs are not being enabled, return the original value
+        return enable_high_log_scale_mode
+
     def _get_enable_vpa(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_vpa.
         This function supports the option of enable_vpa. When enabled, if both enable_vpa and enable_vpa are
@@ -3914,6 +3989,13 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 config = monitoring_addon_profile.config or {}
                 config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
                 monitoring_addon_profile.config = config
+
+        # Trigger validation for high log scale mode when container network logs are enabled.
+        # This ensures proper error messages are raised before cluster creation if the user
+        # explicitly disables high log scale mode while enabling container network logs.
+        if self.context.raw_param.get("enable_container_network_logs") or \
+           self.context.raw_param.get("enable_retina_flow_logs"):
+            self.context.get_enable_high_log_scale_mode()
 
         mc.addon_profiles = addon_profiles
         return mc
@@ -5373,6 +5455,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
+
+        # Trigger validation for high log scale mode when container network logs are enabled.
+        # This ensures proper error messages are raised before cluster update if the user
+        # explicitly disables high log scale mode while enabling container network logs.
+        if self.context.raw_param.get("enable_container_network_logs") or \
+           self.context.raw_param.get("enable_retina_flow_logs"):
+            self.context.get_enable_high_log_scale_mode()
 
         container_network_logs_enabled = self.context.get_container_network_logs(mc)
         if container_network_logs_enabled is not None:
