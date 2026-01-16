@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "2.1.2"
+VERSION = "2.1.3"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -21,6 +21,7 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.13',
     'License :: OSI Approved :: MIT License',
 ]
 
