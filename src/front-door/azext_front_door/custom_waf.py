@@ -154,6 +154,7 @@ class AddExclusionAzureManagedRuleSet(_WafPolicyUpdate):
         if rule_id and not rule_group_id:
             raise RequiredArgumentMissingError("Must specify --rule-group-id when you specify --rule-id")
 
+    # pylint: disable=too-many-branches
     def pre_instance_update(self, instance):
         args = self.ctx.args
 
@@ -161,8 +162,10 @@ class AddExclusionAzureManagedRuleSet(_WafPolicyUpdate):
         match_variable = args.match_variable.to_serialized_data()
         operator = args.operator.to_serialized_data()
         value = args.value.to_serialized_data()
-        rule_group_id = args.rule_group_id.to_serialized_data() if hasattr(args, 'rule_group_id') and args.rule_group_id else None
-        rule_id = args.rule_id.to_serialized_data() if hasattr(args, 'rule_id') and args.rule_id else None
+        rule_group_id = (args.rule_group_id.to_serialized_data()
+                         if hasattr(args, 'rule_group_id') and args.rule_group_id else None)
+        rule_id = (args.rule_id.to_serialized_data()
+                   if hasattr(args, 'rule_id') and args.rule_id else None)
 
         exclusion = {
             'matchVariable': match_variable,
@@ -1043,8 +1046,10 @@ class CreateCustomRule(_WafPolicyUpdate):
                                 if hasattr(args, 'rate_limit_threshold') and args.rate_limit_threshold
                                 else None)
 
-        if rule_type.lower() == "ratelimitrule" and (rate_limit_duration is None or rate_limit_threshold is None):
-            raise RequiredArgumentMissingError("--rate-limit-duration and --rate-limit-threshold are required for a RateLimitRule")
+        is_rate_limit = rule_type.lower() == "ratelimitrule"
+        if is_rate_limit and (rate_limit_duration is None or rate_limit_threshold is None):
+            raise RequiredArgumentMissingError(
+                "--rate-limit-duration and --rate-limit-threshold are required for a RateLimitRule")
 
     def pre_instance_update(self, instance):
         args = self.ctx.args
