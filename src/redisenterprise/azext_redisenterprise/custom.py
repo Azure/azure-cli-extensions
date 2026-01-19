@@ -55,7 +55,6 @@ class RedisEnterpriseUpdate(_Update):
              new_sku.startswith('ComputeOptimized_') or
              new_sku.startswith('MemoryOptimized_') or
              new_sku.startswith('FlashOptimized_'))):
-            
             # Unset capacity and zones in the instance
             try:
                 if hasattr(instance, 'sku') and instance.sku and hasattr(instance.sku, 'capacity'):
