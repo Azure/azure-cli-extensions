@@ -57,10 +57,10 @@ def load_command_table(self, _):
         client_factory=cf_fd_rules_engines
     )
 
-    waf_policy_sdk = CliCommandType(
-        operations_tmpl='azext_front_door.vendored_sdks.operations._policies_operations#PoliciesOperations.{}',
-        client_factory=cf_waf_policies
-    )
+    # waf_policy_sdk = CliCommandType(
+    #     operations_tmpl='azext_front_door.vendored_sdks.operations._policies_operations#PoliciesOperations.{}',
+    #     client_factory=cf_waf_policies
+    # )
 
     fd_frontdoor_custom_sdk = CliCommandType(
         operations_tmpl='azext_front_door.custom#{}',
