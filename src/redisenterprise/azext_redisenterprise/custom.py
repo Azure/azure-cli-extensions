@@ -40,18 +40,19 @@ class RedisEnterpriseUpdate(_Update):
             current_sku = str(instance.sku.name) if hasattr(instance, 'sku') and instance.sku else None
         except (AttributeError, TypeError):
             current_sku = None
-            
+
         new_sku = str(self.ctx.args.sku) if self.ctx.args.sku is not None else None
-        
+
         if new_sku and current_sku and new_sku != current_sku:
             self._handle_sku_change(current_sku, new_sku, instance)
-    
+
     def _handle_sku_change(self, current_sku, new_sku, instance):
         """Handle SKU change logic for capacity and zones"""
-        # Check if changing from Azure Cache for Redis Enterprise to Azure Managed Redis SKU types that don't support capacity/zones
-        if (current_sku.startswith('Enterprise') and 
-            (new_sku.startswith('Balanced_') or 
-             new_sku.startswith('ComputeOptimized_') or 
+        # Check if changing from Azure Cache for Redis Enterprise to Azure Managed Redis SKU types
+        # that don't support capacity/zones
+        if (current_sku.startswith('Enterprise') and
+            (new_sku.startswith('Balanced_') or
+             new_sku.startswith('ComputeOptimized_') or
              new_sku.startswith('MemoryOptimized_') or
              new_sku.startswith('FlashOptimized_'))):
             
@@ -61,7 +62,7 @@ class RedisEnterpriseUpdate(_Update):
                     instance.sku.capacity = None
             except (AttributeError, TypeError):
                 pass
-            
+
             try:
                 if hasattr(instance, 'zones'):
                     instance.zones = None
