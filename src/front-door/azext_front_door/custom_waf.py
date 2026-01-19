@@ -412,6 +412,9 @@ class ListExclusionAzureManagedRuleSet(_WafPolicyShow):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
+        # Disable --ids for list command
+        args_schema.policy_name._id_part = None
+
         args_schema.rule_set_type = AAZStrArg(
             options=['--type'],
             help='The type of the managed rule set.',
@@ -616,6 +619,15 @@ class RemoveAzureManagedRuleSet(_WafPolicyUpdate):
 class ListAzureManagedRuleSet(_WafPolicyShow):
     """List managed rule sets in a WAF policy."""
 
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # Disable --ids for list command
+        args_schema.policy_name._id_part = None
+
+        return args_schema
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result.get('managedRules', {}).get('managedRuleSets', [])
@@ -819,6 +831,9 @@ class ListOverrideAzureManagedRuleSet(_WafPolicyShow):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # Disable --ids for list command
+        args_schema.policy_name._id_part = None
 
         args_schema.rule_set_type = AAZStrArg(
             options=['--type'],
@@ -1184,6 +1199,15 @@ class DeleteCustomRule(_WafPolicyUpdate):
 class ListCustomRules(_WafPolicyShow):
     """List custom rules in a WAF policy."""
 
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # Disable --ids for list command
+        args_schema.policy_name._id_part = None
+
+        return args_schema
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result.get('customRules', {}).get('rules', [])
@@ -1402,6 +1426,9 @@ class ListCustomRuleMatchConditions(_WafPolicyShow):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # Disable --ids for list command
+        args_schema.policy_name._id_part = None
 
         # Remove -n and --name aliases from policy_name so rule_name can use them
         _remove_policy_name_alias(args_schema)

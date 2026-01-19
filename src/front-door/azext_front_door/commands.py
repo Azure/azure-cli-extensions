@@ -165,6 +165,18 @@ def load_command_table(self, _):
     self.command_table['network front-door waf-policy create'] = WafPolicyCreate(loader=self)
     self.command_table['network front-door waf-policy update'] = WafPolicyUpdate(loader=self)
 
+    # Register command groups for waf-policy subcommands
+    with self.command_group('network front-door waf-policy managed-rules'):
+        pass
+    with self.command_group('network front-door waf-policy managed-rules exclusion'):
+        pass
+    with self.command_group('network front-door waf-policy managed-rules override'):
+        pass
+    with self.command_group('network front-door waf-policy rule'):
+        pass
+    with self.command_group('network front-door waf-policy rule match-condition'):
+        pass
+
     # Managed rules commands
     self.command_table['network front-door waf-policy managed-rules add'] = AddAzureManagedRuleSet(loader=self)
     self.command_table['network front-door waf-policy managed-rules remove'] = RemoveAzureManagedRuleSet(loader=self)
