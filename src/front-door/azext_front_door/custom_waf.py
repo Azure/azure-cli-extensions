@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=protected-access
-from azure.cli.core.aaz import AAZBoolArg, AAZStrArg, AAZResourceGroupNameArg, AAZStrArgFormat
+from azure.cli.core.aaz import AAZBoolArg, AAZStrArg
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError
 from azext_front_door.aaz.latest.network.front_door.waf_policy import Create as _WafPolicyCreate, \
     Update as _WafPolicyUpdate, Show as _WafPolicyShow
@@ -146,8 +146,10 @@ class AddExclusionAzureManagedRuleSet(_WafPolicyUpdate):
         args = self.ctx.args
 
         # Validate rule_id requires rule_group_id
-        rule_id = args.rule_id.to_serialized_data() if hasattr(args, 'rule_id') and args.rule_id else None
-        rule_group_id = args.rule_group_id.to_serialized_data() if hasattr(args, 'rule_group_id') and args.rule_group_id else None
+        rule_id = (args.rule_id.to_serialized_data()
+                   if hasattr(args, 'rule_id') and args.rule_id else None)
+        rule_group_id = (args.rule_group_id.to_serialized_data()
+                         if hasattr(args, 'rule_group_id') and args.rule_group_id else None)
 
         if rule_id and not rule_group_id:
             raise RequiredArgumentMissingError("Must specify --rule-group-id when you specify --rule-id")
@@ -232,8 +234,10 @@ class AddExclusionAzureManagedRuleSet(_WafPolicyUpdate):
 
                 rule_override = None
                 for rule in rule_group_override.rules:
-                    rule_id_val = rule.rule_id if hasattr(rule, 'rule_id') else rule.get('ruleId', '')
-                    rule_id_str = rule_id_val.to_serialized_data() if hasattr(rule_id_val, 'to_serialized_data') else rule_id_val
+                    rule_id_val = (rule.rule_id if hasattr(rule, 'rule_id')
+                                   else rule.get('ruleId', ''))
+                    rule_id_str = (rule_id_val.to_serialized_data()
+                                   if hasattr(rule_id_val, 'to_serialized_data') else rule_id_val)
                     if rule_id_str.upper() == rule_id.upper():
                         rule_override = rule
                         break
@@ -247,8 +251,10 @@ class AddExclusionAzureManagedRuleSet(_WafPolicyUpdate):
                     rule_group_override.rules.append(rule_override)
                     # Re-find it
                     for rule in rule_group_override.rules:
-                        rule_id_val = rule.rule_id if hasattr(rule, 'rule_id') else rule.get('ruleId', '')
-                        rule_id_str = rule_id_val.to_serialized_data() if hasattr(rule_id_val, 'to_serialized_data') else rule_id_val
+                        rule_id_val = (rule.rule_id if hasattr(rule, 'rule_id')
+                                       else rule.get('ruleId', ''))
+                        rule_id_str = (rule_id_val.to_serialized_data()
+                                       if hasattr(rule_id_val, 'to_serialized_data') else rule_id_val)
                         if rule_id_str.upper() == rule_id.upper():
                             rule_override = rule
                             break
@@ -330,8 +336,10 @@ class RemoveExclusionAzureManagedRuleSet(_WafPolicyUpdate):
 
     def pre_operations(self):
         args = self.ctx.args
-        rule_id = args.rule_id.to_serialized_data() if hasattr(args, 'rule_id') and args.rule_id else None
-        rule_group_id = args.rule_group_id.to_serialized_data() if hasattr(args, 'rule_group_id') and args.rule_group_id else None
+        rule_id = (args.rule_id.to_serialized_data()
+                   if hasattr(args, 'rule_id') and args.rule_id else None)
+        rule_group_id = (args.rule_group_id.to_serialized_data()
+                         if hasattr(args, 'rule_group_id') and args.rule_group_id else None)
 
         if rule_id and not rule_group_id:
             raise RequiredArgumentMissingError("Must specify --rule-group-id when you specify --rule-id")
@@ -343,8 +351,10 @@ class RemoveExclusionAzureManagedRuleSet(_WafPolicyUpdate):
         match_variable = args.match_variable.to_serialized_data()
         operator = args.operator.to_serialized_data()
         value = args.value.to_serialized_data()
-        rule_group_id = args.rule_group_id.to_serialized_data() if hasattr(args, 'rule_group_id') and args.rule_group_id else None
-        rule_id = args.rule_id.to_serialized_data() if hasattr(args, 'rule_id') and args.rule_id else None
+        rule_group_id = (args.rule_group_id.to_serialized_data()
+                         if hasattr(args, 'rule_group_id') and args.rule_group_id else None)
+        rule_id = (args.rule_id.to_serialized_data()
+                   if hasattr(args, 'rule_id') and args.rule_id else None)
 
         managed_rules = instance.properties.managed_rules
         if managed_rules is None or managed_rules.managed_rule_sets is None:
@@ -394,11 +404,18 @@ class RemoveExclusionAzureManagedRuleSet(_WafPolicyUpdate):
 
         # Find and remove the matching exclusion
         for i, exclusion in enumerate(exclusions):
-            exc_match_var = exclusion.match_variable.to_serialized_data() if hasattr(exclusion.match_variable, 'to_serialized_data') else exclusion.get('matchVariable', '')
-            exc_operator = exclusion.selector_match_operator.to_serialized_data() if hasattr(exclusion.selector_match_operator, 'to_serialized_data') else exclusion.get('selectorMatchOperator', '')
-            exc_selector = exclusion.selector.to_serialized_data() if hasattr(exclusion.selector, 'to_serialized_data') else exclusion.get('selector', '')
+            exc_match_var = (exclusion.match_variable.to_serialized_data()
+                             if hasattr(exclusion.match_variable, 'to_serialized_data')
+                             else exclusion.get('matchVariable', ''))
+            exc_operator = (exclusion.selector_match_operator.to_serialized_data()
+                            if hasattr(exclusion.selector_match_operator, 'to_serialized_data')
+                            else exclusion.get('selectorMatchOperator', ''))
+            exc_selector = (exclusion.selector.to_serialized_data()
+                            if hasattr(exclusion.selector, 'to_serialized_data')
+                            else exclusion.get('selector', ''))
 
-            if exc_match_var == match_variable and exc_operator == operator and exc_selector == value:
+            if (exc_match_var == match_variable and exc_operator == operator
+                    and exc_selector == value):
                 del exclusions[i]
                 return
 
@@ -433,8 +450,10 @@ class ListExclusionAzureManagedRuleSet(_WafPolicyShow):
 
     def pre_operations(self):
         args = self.ctx.args
-        rule_id = args.rule_id.to_serialized_data() if hasattr(args, 'rule_id') and args.rule_id else None
-        rule_group_id = args.rule_group_id.to_serialized_data() if hasattr(args, 'rule_group_id') and args.rule_group_id else None
+        rule_id = (args.rule_id.to_serialized_data()
+                   if hasattr(args, 'rule_id') and args.rule_id else None)
+        rule_group_id = (args.rule_group_id.to_serialized_data()
+                         if hasattr(args, 'rule_group_id') and args.rule_group_id else None)
 
         if rule_id and not rule_group_id:
             raise RequiredArgumentMissingError("Must specify --rule-group-id when you specify --rule-id")
@@ -444,8 +463,10 @@ class ListExclusionAzureManagedRuleSet(_WafPolicyShow):
         ctx_args = self.ctx.args
 
         rule_set_type = ctx_args.rule_set_type.to_serialized_data()
-        rule_group_id = ctx_args.rule_group_id.to_serialized_data() if hasattr(ctx_args, 'rule_group_id') and ctx_args.rule_group_id else None
-        rule_id = ctx_args.rule_id.to_serialized_data() if hasattr(ctx_args, 'rule_id') and ctx_args.rule_id else None
+        rule_group_id = (ctx_args.rule_group_id.to_serialized_data()
+                         if hasattr(ctx_args, 'rule_group_id') and ctx_args.rule_group_id else None)
+        rule_id = (ctx_args.rule_id.to_serialized_data()
+                   if hasattr(ctx_args, 'rule_id') and ctx_args.rule_id else None)
 
         managed_rule_sets = result.get('managedRules', {}).get('managedRuleSets', [])
         if not managed_rule_sets:
@@ -538,7 +559,8 @@ class AddAzureManagedRuleSet(_WafPolicyUpdate):
 
         rule_set_type = args.rule_set_type.to_serialized_data()
         version = args.version.to_serialized_data()
-        rule_set_action = args.rule_set_action.to_serialized_data() if hasattr(args, 'rule_set_action') and args.rule_set_action else None
+        rule_set_action = (args.rule_set_action.to_serialized_data()
+                           if hasattr(args, 'rule_set_action') and args.rule_set_action else None)
 
         new_rule_set = {
             'ruleSetType': rule_set_type,
@@ -690,14 +712,17 @@ class AddOverrideAzureManagedRuleSet(_WafPolicyUpdate):
 
         return args_schema
 
+    # pylint: disable=too-many-nested-blocks
     def pre_instance_update(self, instance):
         args = self.ctx.args
 
         rule_set_type = args.rule_set_type.to_serialized_data()
         rule_group_id = args.rule_group_id.to_serialized_data()
         rule_id = args.rule_id.to_serialized_data()
-        action = args.action.to_serialized_data() if hasattr(args, 'action') and args.action else None
-        disabled = args.disabled.to_serialized_data() if hasattr(args, 'disabled') and args.disabled else None
+        action = (args.action.to_serialized_data()
+                  if hasattr(args, 'action') and args.action else None)
+        disabled = (args.disabled.to_serialized_data()
+                    if hasattr(args, 'disabled') and args.disabled else None)
 
         override = {
             'ruleId': rule_id,
@@ -788,6 +813,7 @@ class RemoveOverrideAzureManagedRuleSet(_WafPolicyUpdate):
 
         return args_schema
 
+    # pylint: disable=too-many-nested-blocks
     def pre_instance_update(self, instance):
         args = self.ctx.args
 
@@ -1010,8 +1036,12 @@ class CreateCustomRule(_WafPolicyUpdate):
     def pre_operations(self):
         args = self.ctx.args
         rule_type = args.rule_type.to_serialized_data()
-        rate_limit_duration = args.rate_limit_duration.to_serialized_data() if hasattr(args, 'rate_limit_duration') and args.rate_limit_duration else None
-        rate_limit_threshold = args.rate_limit_threshold.to_serialized_data() if hasattr(args, 'rate_limit_threshold') and args.rate_limit_threshold else None
+        rate_limit_duration = (args.rate_limit_duration.to_serialized_data()
+                               if hasattr(args, 'rate_limit_duration') and args.rate_limit_duration
+                               else None)
+        rate_limit_threshold = (args.rate_limit_threshold.to_serialized_data()
+                                if hasattr(args, 'rate_limit_threshold') and args.rate_limit_threshold
+                                else None)
 
         if rule_type.lower() == "ratelimitrule" and (rate_limit_duration is None or rate_limit_threshold is None):
             raise RequiredArgumentMissingError("--rate-limit-duration and --rate-limit-threshold are required for a RateLimitRule")
@@ -1023,16 +1053,26 @@ class CreateCustomRule(_WafPolicyUpdate):
         priority = args.priority.to_serialized_data()
         rule_type = args.rule_type.to_serialized_data()
         action = args.action.to_serialized_data()
-        rate_limit_duration = args.rate_limit_duration.to_serialized_data() if hasattr(args, 'rate_limit_duration') and args.rate_limit_duration else None
-        rate_limit_threshold = args.rate_limit_threshold.to_serialized_data() if hasattr(args, 'rate_limit_threshold') and args.rate_limit_threshold else None
-        disabled = args.disabled.to_serialized_data() if hasattr(args, 'disabled') and args.disabled else None
+        rate_limit_duration = (args.rate_limit_duration.to_serialized_data()
+                               if hasattr(args, 'rate_limit_duration') and args.rate_limit_duration
+                               else None)
+        rate_limit_threshold = (args.rate_limit_threshold.to_serialized_data()
+                                if hasattr(args, 'rate_limit_threshold') and args.rate_limit_threshold
+                                else None)
+        disabled = (args.disabled.to_serialized_data()
+                    if hasattr(args, 'disabled') and args.disabled else None)
 
         # Get optional match condition parameters
-        match_variable = args.match_variable.to_serialized_data() if hasattr(args, 'match_variable') and args.match_variable else None
-        operator = args.operator.to_serialized_data() if hasattr(args, 'operator') and args.operator else None
-        values = args.values.to_serialized_data() if hasattr(args, 'values') and args.values else None
-        negate = args.negate.to_serialized_data() if hasattr(args, 'negate') and args.negate else None
-        transforms = args.transforms.to_serialized_data() if hasattr(args, 'transforms') and args.transforms else None
+        match_variable = (args.match_variable.to_serialized_data()
+                          if hasattr(args, 'match_variable') and args.match_variable else None)
+        operator = (args.operator.to_serialized_data()
+                    if hasattr(args, 'operator') and args.operator else None)
+        values = (args.values.to_serialized_data()
+                  if hasattr(args, 'values') and args.values else None)
+        negate = (args.negate.to_serialized_data()
+                  if hasattr(args, 'negate') and args.negate else None)
+        transforms = (args.transforms.to_serialized_data()
+                      if hasattr(args, 'transforms') and args.transforms else None)
 
         match_conditions = []
         if match_variable and operator and values:
@@ -1133,11 +1173,18 @@ class UpdateCustomRule(_WafPolicyUpdate):
         args = self.ctx.args
 
         rule_name = args.rule_name.to_serialized_data()
-        priority = args.priority.to_serialized_data() if hasattr(args, 'priority') and args.priority else None
-        action = args.action.to_serialized_data() if hasattr(args, 'action') and args.action else None
-        rate_limit_duration = args.rate_limit_duration.to_serialized_data() if hasattr(args, 'rate_limit_duration') and args.rate_limit_duration else None
-        rate_limit_threshold = args.rate_limit_threshold.to_serialized_data() if hasattr(args, 'rate_limit_threshold') and args.rate_limit_threshold else None
-        disabled = args.disabled.to_serialized_data() if hasattr(args, 'disabled') and args.disabled else None
+        priority = (args.priority.to_serialized_data()
+                    if hasattr(args, 'priority') and args.priority else None)
+        action = (args.action.to_serialized_data()
+                  if hasattr(args, 'action') and args.action else None)
+        rate_limit_duration = (args.rate_limit_duration.to_serialized_data()
+                               if hasattr(args, 'rate_limit_duration') and args.rate_limit_duration
+                               else None)
+        rate_limit_threshold = (args.rate_limit_threshold.to_serialized_data()
+                                if hasattr(args, 'rate_limit_threshold') and args.rate_limit_threshold
+                                else None)
+        disabled = (args.disabled.to_serialized_data()
+                    if hasattr(args, 'disabled') and args.disabled else None)
 
         custom_rules = instance.properties.custom_rules
         if custom_rules is None or custom_rules.rules is None:

@@ -9,7 +9,7 @@ from azure.cli.core.commands import CliCommandType
 from .custom import (
     list_frontdoor_resource_property, get_frontdoor_resource_property_entry, delete_frontdoor_resource_property_entry)
 from ._client_factory import (
-    cf_frontdoor, cf_fd_endpoints, cf_waf_policies, cf_fd_rules_engines, cf_front_door_name_availability)
+    cf_frontdoor, cf_fd_endpoints, cf_fd_rules_engines, cf_front_door_name_availability)
 
 
 # pylint: disable=too-many-locals, too-many-statements
