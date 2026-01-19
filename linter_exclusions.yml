@@ -2197,6 +2197,36 @@ network front-door waf-policy update:
     captcha_expiration_in_minutes:
       rule_exclusions:
       - option_length_too_long
+network front-door waf-policy managed-rules:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+network front-door waf-policy managed-rules exclusion:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+network front-door waf-policy managed-rules exclusion list:
+  rule_exclusions:
+  - no_ids_for_list_commands
+network front-door waf-policy managed-rules list:
+  rule_exclusions:
+  - no_ids_for_list_commands
+network front-door waf-policy managed-rules override:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+network front-door waf-policy managed-rules override list:
+  rule_exclusions:
+  - no_ids_for_list_commands
+network front-door waf-policy rule:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+network front-door waf-policy rule list:
+  rule_exclusions:
+  - no_ids_for_list_commands
+network front-door waf-policy rule match-condition:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+network front-door waf-policy rule match-condition list:
+  rule_exclusions:
+  - no_ids_for_list_commands
 network manager connect-config create:
   parameters:
     delete_existing_peering:
