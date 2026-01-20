@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6.0
+++++++
+* Added confcom containers from_image command to generate container definitions from an image reference
+
 1.5.1
 ++++++
 * Bumped the Kata genpolicy version to gen4
