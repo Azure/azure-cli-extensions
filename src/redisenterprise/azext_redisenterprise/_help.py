@@ -33,12 +33,3 @@ helps['redisenterprise show'] = """
     type: command
     short-summary: Get information about a RedisEnterprise cluster
 """
-
-helps['redisenterprise update'] = """
-    type: command
-    short-summary: Update an existing RedisEnterprise cluster
-    examples:
-      - name: Update cluster SKU
-        text: |-
-               az redisenterprise update --cluster-name "cache1" --sku "ComputeOptimized_X5" --resource-group "rg1"
-"""

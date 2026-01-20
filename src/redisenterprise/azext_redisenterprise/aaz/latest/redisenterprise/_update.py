@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update an existing (overwrite/recreate, with potential downtime) cache cluster
+
+    :example: Updates cluster SKU
+        az redisenterprise update --cluster-name "cache1" --sku "ComputeOptimized_X5" --resource-group "rg1"
     """
 
     _aaz_info = {
