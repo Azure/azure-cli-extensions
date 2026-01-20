@@ -8,10 +8,12 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from azure.cli.core.commands import CliCommandType
+# from azure.cli.core.commands import CliCommandType
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-
-    with self.command_group('trustedsigning', deprecate_info=self.deprecate(redirect='artifact-signing', hide=True)):
-         pass
+    with self.command_group(
+        "trustedsigning",
+        deprecate_info=self.deprecate(redirect="artifact-signing", hide=True),
+    ):
+        pass
