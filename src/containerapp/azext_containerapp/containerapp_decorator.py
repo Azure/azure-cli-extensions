@@ -1790,7 +1790,7 @@ class ContainerAppPreviewListDecorator(BaseContainerAppDecorator):
         if self.get_argument_kind():
             containerapps = [c for c in containerapps if c.get("kind") == self.get_argument_kind()]
         return containerapps
-    
+
     def get_argument_kind(self):
         return self.get_param("kind")
 
