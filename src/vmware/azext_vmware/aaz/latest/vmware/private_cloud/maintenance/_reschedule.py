@@ -72,12 +72,12 @@ class Reschedule(AAZCommand):
         _args_schema.message = AAZStrArg(
             options=["--message"],
             arg_group="Body",
-            help="rescheduling reason",
+            help="Scheduling message",
         )
         _args_schema.reschedule_time = AAZDateTimeArg(
             options=["--reschedule-time"],
             arg_group="Body",
-            help="reschedule time",
+            help="Reschedule time for the maintenance",
             fmt=AAZDateTimeFormat(
                 protocol="iso",
             ),

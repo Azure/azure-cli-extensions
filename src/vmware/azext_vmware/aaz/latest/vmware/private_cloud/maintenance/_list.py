@@ -55,7 +55,7 @@ class List(AAZCommand):
         )
         _args_schema.from_date = AAZDateTimeArg(
             options=["--from-date"],
-            help="date from which result should be returned. ie. scheduledStartTime >= from",
+            help="Date from which result should be returned. ie. scheduledStartTime >= from",
             fmt=AAZDateTimeFormat(
                 protocol="iso",
             ),
@@ -72,7 +72,7 @@ class List(AAZCommand):
         )
         _args_schema.to_date = AAZDateTimeArg(
             options=["--to-date"],
-            help="date till which result should be returned. i.e. scheduledStartTime <= to",
+            help="Date till which result should be returned. i.e. scheduledStartTime <= to-date",
             fmt=AAZDateTimeFormat(
                 protocol="iso",
             ),

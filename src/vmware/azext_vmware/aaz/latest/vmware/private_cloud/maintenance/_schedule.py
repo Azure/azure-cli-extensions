@@ -72,12 +72,12 @@ class Schedule(AAZCommand):
         _args_schema.message = AAZStrArg(
             options=["--message"],
             arg_group="Body",
-            help="scheduling message",
+            help="Scheduling message",
         )
         _args_schema.schedule_time = AAZDateTimeArg(
             options=["--schedule-time"],
             arg_group="Body",
-            help="schedule time",
+            help="Schedule time for maintenance",
             fmt=AAZDateTimeFormat(
                 protocol="iso",
             ),
