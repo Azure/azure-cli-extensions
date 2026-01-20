@@ -12,13 +12,14 @@ This package contains specialized manager classes for different Kubernetes opera
 - exec_command_in_pod: Standalone function for pod command execution
 """
 
-from .aks_agent_manager import AKSAgentManager
+from .aks_agent_manager import AKSAgentManager, AKSAgentManagerClient
 from .helm_manager import HelmManager, create_helm_manager
 from .pod_exec import exec_command_in_pod
 
 __all__ = [
     "HelmManager",
     "AKSAgentManager",
+    "AKSAgentManagerClient",
     "exec_command_in_pod",
     "create_helm_manager",
 ]

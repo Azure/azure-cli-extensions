@@ -28,19 +28,6 @@ class TestAKSAgentManager(unittest.TestCase):
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_init_default_values(self, mock_helm_manager, mock_load_config, mock_init_client):
-        """Test AKSAgentManager initialization with default values."""
-        manager = AKSAgentManager()
-
-        self.assertEqual(manager.namespace, "kube-system")
-        self.assertEqual(manager.helm_release_name, "aks-agent")
-        self.assertIsNotNone(manager.llm_config_manager)
-        mock_init_client.assert_called_once()
-        mock_load_config.assert_called_once()
-
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
     def test_init_custom_values(self, mock_helm_manager, mock_load_config, mock_init_client):
         """Test AKSAgentManager initialization with custom values."""
         manager = AKSAgentManager(
@@ -56,23 +43,10 @@ class TestAKSAgentManager(unittest.TestCase):
         self.assertEqual(manager.resource_group_name, self.resource_group)
         self.assertEqual(manager.cluster_name, self.cluster_name)
         self.assertEqual(manager.subscription_id, self.subscription_id)
-
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_set_aks_context(self, mock_helm_manager, mock_load_config, mock_init_client):
-        """Test setting AKS context."""
-        manager = AKSAgentManager()
-
-        manager.set_aks_context(
-            resource_group_name=self.resource_group,
-            cluster_name=self.cluster_name,
-            subscription_id=self.subscription_id
-        )
-
-        self.assertEqual(manager.resource_group_name, self.resource_group)
-        self.assertEqual(manager.cluster_name, self.cluster_name)
-        self.assertEqual(manager.subscription_id, self.subscription_id)
+        self.assertEqual(manager.helm_release_name, "aks-agent")
+        self.assertIsNotNone(manager.llm_config_manager)
+        mock_init_client.assert_called_once()
+        mock_load_config.assert_called_once()
 
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.client.CoreV1Api')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.config.load_kube_config')
@@ -101,7 +75,11 @@ class TestAKSAgentManager(unittest.TestCase):
         mock_api_instance.list_namespaced_pod.side_effect = [mock_agent_pod_list, mock_mcp_pod_list]
         mock_core_api.return_value = mock_api_instance
 
-        manager = AKSAgentManager()
+        manager = AKSAgentManager(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id
+        )
         success, result = manager.get_agent_pods()
 
         self.assertTrue(success)
@@ -123,7 +101,11 @@ class TestAKSAgentManager(unittest.TestCase):
         mock_api_instance.list_namespaced_pod.return_value = mock_pod_list
         mock_core_api.return_value = mock_api_instance
 
-        manager = AKSAgentManager()
+        manager = AKSAgentManager(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id
+        )
         success, result = manager.get_agent_pods()
 
         self.assertFalse(success)
@@ -133,70 +115,43 @@ class TestAKSAgentManager(unittest.TestCase):
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_check_llm_config_exists_true(self, mock_helm_manager, mock_load_config, mock_init_client):
-        """Test checking if LLM config exists - returns True when both secret and model_list exist."""
-        manager = AKSAgentManager()
+    def test_get_llm_config_empty(self, mock_helm_manager, mock_load_config, mock_init_client):
+        """Test getting LLM config when secret doesn't exist."""
+        manager = AKSAgentManager(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id
+        )
 
-        # Mock the core_v1 API
-        mock_secret = Mock()
-        manager.core_v1 = Mock()
-        manager.core_v1.read_namespaced_secret.return_value = mock_secret
-
-        # Set model_list to non-empty dict
-        manager.llm_config_manager.model_list = {"model1": {"provider": "openai"}}
-
-        result = manager.check_llm_config_exists()
-        self.assertTrue(result)
-
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_check_llm_config_exists_false_empty_model_list(self, mock_helm_manager, mock_load_config, mock_init_client):
-        """Test checking if LLM config exists - returns False when secret exists but model_list is empty."""
-        manager = AKSAgentManager()
-
-        # Mock the core_v1 API
-        mock_secret = Mock()
-        manager.core_v1 = Mock()
-        manager.core_v1.read_namespaced_secret.return_value = mock_secret
-
-        # Set model_list to empty dict
-        manager.llm_config_manager.model_list = {}
-
-        result = manager.check_llm_config_exists()
-        self.assertFalse(result)
-
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_check_llm_config_exists_false_404(self, mock_helm_manager, mock_load_config, mock_init_client):
-        """Test checking if LLM config exists - returns False for 404."""
-        manager = AKSAgentManager()
-
-        # Mock the core_v1 API to raise ApiException with 404
+        # Mock the core_v1 API to raise ApiException with 404 (secret not found)
         manager.core_v1 = Mock()
         manager.core_v1.read_namespaced_secret.side_effect = ApiException(status=404)
 
-        result = manager.check_llm_config_exists()
-        self.assertFalse(result)
+        result = manager.get_llm_config()
+        self.assertEqual(result, {})
 
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_check_llm_config_exists_raises_azcli_error(self, mock_helm_manager, mock_load_config, mock_init_client):
-        """Test checking if LLM config exists - raises AzCLIError for unexpected errors."""
-        from azure.cli.core.azclierror import AzCLIError
+    def test_get_llm_config_with_models(self, mock_helm_manager, mock_load_config, mock_init_client):
+        """Test getting LLM config when models exist."""
+        manager = AKSAgentManager(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id
+        )
 
-        manager = AKSAgentManager()
+        # Set model_list with test data
+        test_models = {"model1": {"provider": "openai"}}
+        manager.llm_config_manager.model_list = test_models
 
-        # Mock the core_v1 API to raise a generic exception
+        # Mock the core_v1 API to return a secret (secret exists)
+        mock_secret = Mock()
         manager.core_v1 = Mock()
-        manager.core_v1.read_namespaced_secret.side_effect = ValueError("Unexpected error")
+        manager.core_v1.read_namespaced_secret.return_value = mock_secret
 
-        with self.assertRaises(AzCLIError) as context:
-            manager.check_llm_config_exists()
-
-        self.assertIn("Failed to check LLM config existence", str(context.exception))
+        result = manager.get_llm_config()
+        self.assertEqual(result, test_models)
 
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._run_helm_command')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
@@ -206,7 +161,11 @@ class TestAKSAgentManager(unittest.TestCase):
         """Test successful agent deployment."""
         mock_helm_cmd.return_value = (True, "deployed successfully")
 
-        manager = AKSAgentManager()
+        manager = AKSAgentManager(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id
+        )
         success, error_msg = manager.deploy_agent()
 
         self.assertTrue(success)
@@ -221,7 +180,11 @@ class TestAKSAgentManager(unittest.TestCase):
         """Test agent deployment failure returns False and error message."""
         mock_helm_cmd.return_value = (False, "deployment failed")
 
-        manager = AKSAgentManager()
+        manager = AKSAgentManager(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id
+        )
         success, error_msg = manager.deploy_agent()
 
         self.assertFalse(success)
@@ -231,81 +194,46 @@ class TestAKSAgentManager(unittest.TestCase):
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_uninstall_agent_success_with_secret_deletion(self, mock_helm_manager, mock_load_config,
-                                                          mock_init_client, mock_helm_cmd):
-        """Test successful agent uninstallation with secret deletion."""
+    def test_uninstall_agent_success(self, mock_helm_manager, mock_load_config,
+                                     mock_init_client, mock_helm_cmd):
+        """Test successful agent uninstallation."""
         mock_helm_cmd.return_value = (True, "uninstalled successfully")
 
-        manager = AKSAgentManager()
-        manager.delete_llm_config_secret = Mock()
+        manager = AKSAgentManager(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id
+        )
 
-        result = manager.uninstall_agent(delete_secret=True)
-
-        self.assertTrue(result)
-        manager.delete_llm_config_secret.assert_called_once()
-
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._run_helm_command')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_uninstall_agent_success_without_secret_deletion(self, mock_helm_manager, mock_load_config,
-                                                             mock_init_client, mock_helm_cmd):
-        """Test successful agent uninstallation without secret deletion."""
-        mock_helm_cmd.return_value = (True, "uninstalled successfully")
-
-        manager = AKSAgentManager()
-        manager.delete_llm_config_secret = Mock()
-
-        result = manager.uninstall_agent(delete_secret=False)
+        result = manager.uninstall_agent()
 
         self.assertTrue(result)
-        manager.delete_llm_config_secret.assert_not_called()
 
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_create_llm_config_secret(self, mock_helm_manager, mock_load_config, mock_init_client):
-        """Test creating LLM config secret."""
-        manager = AKSAgentManager()
-        manager.core_v1 = Mock()
-        manager.llm_config_manager = Mock()
-        manager.llm_config_manager.get_llm_model_secret_data.return_value = {"API_KEY": "encoded"}
-        manager.llm_config_manager.get_env_vars.return_value = []
+    def test_save_llm_config(self, mock_helm_manager, mock_load_config, mock_init_client):
+        """Test saving LLM configuration."""
+        from azext_aks_agent.agent.llm_providers import LLMProvider
 
-        # Mock existing secret check
-        manager.core_v1.read_namespaced_secret.side_effect = ApiException(status=404)
-        manager.core_v1.create_namespaced_secret.return_value = Mock()
+        manager = AKSAgentManager(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id
+        )
 
-        manager.create_llm_config_secret()
+        mock_provider = Mock(spec=LLMProvider)
+        mock_provider.name = "openai"
+        test_params = {"api_key": "test-key", "model": "gpt-4"}
 
-        manager.core_v1.create_namespaced_secret.assert_called_once()
+        # Mock the llm_config_manager.save method and create_llm_config_secret
+        manager.llm_config_manager.save = Mock()
+        manager.create_llm_config_secret = Mock()
 
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_delete_llm_config_secret(self, mock_helm_manager, mock_load_config, mock_init_client):
-        """Test deleting LLM config secret."""
-        manager = AKSAgentManager()
-        manager.core_v1 = Mock()
-        manager.core_v1.delete_namespaced_secret.return_value = Mock()
+        manager.save_llm_config(mock_provider, test_params)
 
-        manager.delete_llm_config_secret()
-
-        manager.core_v1.delete_namespaced_secret.assert_called_once()
-
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
-    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
-    def test_get_default_cluster_role(self, mock_helm_manager, mock_load_config, mock_init_client):
-        """Test getting default cluster role."""
-        manager = AKSAgentManager()
-
-        cluster_role = manager.get_default_cluster_role()
-
-        self.assertIsNotNone(cluster_role)
-        self.assertEqual(cluster_role.metadata.name, "aks-agent-aks-mcp")
-        self.assertIsNotNone(cluster_role.rules)
-        self.assertGreater(len(cluster_role.rules), 0)
+        manager.llm_config_manager.save.assert_called_once_with(mock_provider, test_params)
+        manager.create_llm_config_secret.assert_called_once()
 
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._run_helm_command')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
@@ -321,7 +249,11 @@ class TestAKSAgentManager(unittest.TestCase):
             (True, json.dumps({"info": {"status": "deployed"}}))
         ]
 
-        manager = AKSAgentManager()
+        manager = AKSAgentManager(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id
+        )
         manager.core_v1 = Mock()
         manager.apps_v1 = Mock()
 

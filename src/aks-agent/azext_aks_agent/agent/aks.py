@@ -65,8 +65,7 @@ def get_aks_credentials(
                 try:
                     # Run kubelogin convert-kubeconfig -l azurecli
                     subprocess.run(
-                        ["kubelogin", "convert-kubeconfig", "-l", "azurecli"],
-                        cwd=os.path.dirname(kubeconfig_path),
+                        ["kubelogin", "convert-kubeconfig", "-l", "azurecli", "--kubeconfig", kubeconfig_path],
                         check=True,
                     )
                     logger.info("Converted kubeconfig to use Azure CLI authentication.")

@@ -7,20 +7,25 @@ import base64
 import json
 import os
 import tempfile
+from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
 from azext_aks_agent._consts import (
     AGENT_LABEL_SELECTOR,
     AGENT_NAMESPACE,
     AKS_MCP_LABEL_SELECTOR,
+    CONFIG_DIR,
 )
 from azext_aks_agent.agent.k8s.helm_manager import HelmManager
-from azext_aks_agent.agent.llm_config_manager import LLMConfigManager
+from azext_aks_agent.agent.llm_config_manager import (
+    LLMConfigManager,
+    LLMConfigManagerLocal,
+)
+from azext_aks_agent.agent.llm_providers import LLMProvider
 from azure.cli.core.azclierror import AzCLIError
 from knack.log import get_logger
 from kubernetes import client, config
-from kubernetes.client.models.v1_cluster_role import V1ClusterRole
-from kubernetes.client.models.v1_policy_rule import V1PolicyRule
 from kubernetes.client.rest import ApiException
 
 from .pod_exec import exec_command_in_pod
@@ -28,7 +33,45 @@ from .pod_exec import exec_command_in_pod
 logger = get_logger(__name__)
 
 
-class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
+class AKSAgentManagerLLMConfigBase(ABC):
+    """Abstract base class for AKS Agent Manager with LLM configuration support."""
+
+    @abstractmethod
+    def get_llm_config(self) -> Dict:
+        """
+        Get LLM configuration.
+
+        Returns:
+            Dictionary of model configurations if exists, empty dict otherwise
+        """
+
+    @abstractmethod
+    def save_llm_config(self, provider: LLMProvider, params: dict) -> None:
+        """
+        Save LLM configuration.
+
+        Args:
+            provider: LLM provider instance
+            params: Dictionary of model parameters
+        """
+
+    @abstractmethod
+    def exec_aks_agent(self, command_flags: str = "") -> bool:
+        """
+        Execute AKS agent command.
+
+        Args:
+            command_flags: Additional flags for the aks-agent command
+
+        Returns:
+            True if execution was successful
+
+        Raises:
+            AzCLIError: If execution fails
+        """
+
+
+class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many-instance-attributes
     """
     AKS Agent Manager for deploying and recycling AKS agent helm charts.
 
@@ -40,46 +83,44 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
     - Clean up resources
     """
 
-    def __init__(self, namespace: str = AGENT_NAMESPACE, kubeconfig_path: Optional[str] = None,
-                 helm_manager: Optional[HelmManager] = None,
-                 resource_group_name: Optional[str] = None, cluster_name: Optional[str] = None,
-                 subscription_id: Optional[str] = None):
+    def __init__(self, resource_group_name: str, cluster_name: str,
+                 subscription_id: str, namespace: str = AGENT_NAMESPACE,
+                 kubeconfig_path: Optional[str] = None,
+                 helm_manager: Optional[HelmManager] = None):
         """
         Initialize the AKS Agent Manager.
 
         Args:
-            namespace: Kubernetes namespace for AKS agent (default: 'aks-agent')
-            kubeconfig_path: Path to kubeconfig file (default: None - use default config)
-            helm_manager: HelmManager instance (default: None - create new one)
             resource_group_name: Azure resource group name for AKS cluster
             cluster_name: AKS cluster name
             subscription_id: Azure subscription ID
+            namespace: Kubernetes namespace for AKS agent (default: 'aks-agent')
+            kubeconfig_path: Path to kubeconfig file (default: None - use default config)
+            helm_manager: HelmManager instance (default: None - create new one)
         """
         self.namespace = namespace
         self.kubeconfig_path = kubeconfig_path
-        self._kubeconfig_dir: Optional[str] = None
         self.helm_release_name = "aks-agent"
         self.chart_name = "aks-agent"
 
         self.llm_secret_name = "llm-config-secrets"
 
-        # AKS context - initialized via set_aks_context() or constructor
-        self.resource_group_name: Optional[str] = resource_group_name
-        self.cluster_name: Optional[str] = cluster_name
-        self.subscription_id: Optional[str] = subscription_id
+        # AKS context - initialized via constructor
+        self.resource_group_name: str = resource_group_name
+        self.cluster_name: str = cluster_name
+        self.subscription_id: str = subscription_id
 
         self.chart_repo = "oci://mcr.microsoft.com/aks/aks-agent-chart/aks-agent"
-        self.chart_version = "0.1.0"
+        self.chart_version = "0.2.0"
 
         # credentials for aks-mcp
         # Managed identity client ID for accessing Azure resources
         self.managed_identity_client_id: str = ""
-        # Defautlt empty customized cluster role name means using default cluster role
+        # Default empty customized cluster role name means using default cluster role
         self.customized_cluster_role_name: str = ""
-
+        # When aks mcp service account is set, helm charts wont create rbac for aks mcp
+        self.aks_mcp_service_account_name: str = ""
         self.llm_config_manager = LLMConfigManager()
-
-        self.kubeconfig_path = kubeconfig_path
 
         # Initialize Kubernetes client
         self._init_k8s_client()
@@ -87,27 +128,6 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
         self.helm_manager = helm_manager or HelmManager(kubeconfig_path=self.kubeconfig_path)
 
         self._load_existing_helm_release_config()
-
-    def set_aks_context(self, resource_group_name: Optional[str] = None,
-                        cluster_name: Optional[str] = None,
-                        subscription_id: Optional[str] = None):
-        """
-        Set AKS context information for the agent.
-
-        Args:
-            resource_group_name: Azure resource group name for AKS cluster
-            cluster_name: AKS cluster name
-            subscription_id: Azure subscription ID
-        """
-        if resource_group_name:
-            self.resource_group_name = resource_group_name
-        if cluster_name:
-            self.cluster_name = cluster_name
-        if subscription_id:
-            self.subscription_id = subscription_id
-
-        logger.debug("AKS context set: resource_group=%s, cluster=%s, subscription=%s",
-                     self.resource_group_name, self.cluster_name, self.subscription_id)
 
     def _init_k8s_client(self):
         """Initialize Kubernetes client configuration."""
@@ -178,6 +198,7 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
 
                 service_account_config = aks_config.get("serviceAccount", {})
                 self.customized_cluster_role_name = service_account_config.get("customClusterRoleName", "")
+                self.aks_mcp_service_account_name = service_account_config.get("name", "")
 
             except json.JSONDecodeError as e:
                 logger.error("Failed to parse Helm values JSON: %s", e)
@@ -213,8 +234,6 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
                 secret_data[key] = decoded_value
 
             logger.debug("Read %d API keys from secret '%s'", len(secret_data), self.llm_secret_name)
-
-            from azext_aks_agent.agent.llm_providers.base import LLMProvider
 
             # Populate API keys into model_list
 
@@ -394,8 +413,7 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
         """
         return self.helm_manager.run_command(args, check=check)
 
-    def deploy_agent(self, chart_version: Optional[str] = None,
-                     create_namespace: bool = True) -> Tuple[bool, str]:
+    def deploy_agent(self, chart_version: Optional[str] = None) -> Tuple[bool, str]:
         """
         Deploy AKS agent using helm chart.
 
@@ -414,7 +432,6 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
         helm_args = [
             "upgrade", self.helm_release_name, self.chart_repo,
             "--namespace", self.namespace,
-            "--create-namespace" if create_namespace else "",
             "--wait",
             "--install",
             "--timeout", "2m"
@@ -597,12 +614,12 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
 
         return status
 
-    def check_llm_config_exists(self) -> bool:
+    def get_llm_config(self) -> Dict:
         """
-        Check if LLM configuration exists by verifying secret in Kubernetes cluster.
+        Get LLM configuration from Kubernetes cluster.
 
         Returns:
-            True if LLM config secret exists, False otherwise
+            Dictionary of model configurations if exists, empty dict otherwise
 
         Raises:
             ApiException: If API error occurs (except 404)
@@ -615,12 +632,12 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
                 namespace=self.namespace
             )
             logger.debug("LLM config secret '%s' found", self.llm_secret_name)
-            return True and self.llm_config_manager.model_list != {}
+            return self.llm_config_manager.model_list if self.llm_config_manager.model_list else {}
         except ApiException as e:
             if e.status == 404:
                 logger.debug("LLM config secret '%s' not found in namespace '%s'",
                              self.llm_secret_name, self.namespace)
-                return False
+                return {}
             logger.error("Failed to check LLM config existence (API error %s): %s",
                          e.status, e)
             raise
@@ -822,7 +839,8 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
             helm_values["mcpAddons"]["aks"] = {}
 
         helm_values["mcpAddons"]["aks"]["serviceAccount"] = {
-            "customClusterRoleName": self.customized_cluster_role_name
+            "name": self.aks_mcp_service_account_name,
+            "create": False,
         }
 
         helm_values["mcpAddons"]["aks"]["workloadIdentity"] = {
@@ -834,24 +852,274 @@ class AKSAgentManager:  # pylint: disable=too-many-instance-attributes
 
         return helm_values
 
-    def get_default_cluster_role(self) -> V1ClusterRole:
+    def save_llm_config(self, provider: LLMProvider, params: dict) -> None:
         """
-        Get the default cluster role used by the AKS agent.
+        Save LLM configuration using the LLMConfigManager.
+
+        Args:
+            provider: LLMProvider instance
+            params: Dictionary of model parameters
+        """
+        self.llm_config_manager.save(provider, params)
+        # Create the Kubernetes secret using the cached configuration
+        self.create_llm_config_secret()
+
+
+class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many-instance-attributes
+
+    def __init__(self, resource_group_name: str, cluster_name: str,
+                 subscription_id: str,
+                 kubeconfig_path: str,
+                 config_dir: Optional[str] = None):
+        """
+        Initialize the AKS Agent Manager.
+
+        Args:
+            resource_group_name: Azure resource group name for AKS cluster
+            cluster_name: AKS cluster name
+            subscription_id: Azure subscription ID
+            kubeconfig_path: Path to kubeconfig file (default: None - use default config)
+        """
+        self.kubeconfig_path = kubeconfig_path
+
+        # AKS context - initialized via constructor
+        self.resource_group_name: str = resource_group_name
+        self.cluster_name: str = cluster_name
+        self.subscription_id: str = subscription_id
+
+        if config_dir is None:
+            config_dir = os.path.join(CONFIG_DIR, "config")
+
+        # Store base config directory for custom_toolset.yaml
+        self.base_config_dir = Path(config_dir)
+
+        # Create cluster-specific config directory to match LLMConfigManagerLocal
+        self.config_dir = self.base_config_dir / subscription_id / resource_group_name / cluster_name
+
+        # Docker image for client mode execution
+        self.docker_image = "mcr.microsoft.com/aks/aks-agent:v0.2.0-client"
+
+        self.llm_config_manager = LLMConfigManagerLocal(
+            subscription_id=subscription_id,
+            resource_group_name=resource_group_name,
+            cluster_name=cluster_name
+        )
+
+        # Ensure custom_toolset.yaml exists
+        self._ensure_custom_toolset()
+
+    def _ensure_custom_toolset(self) -> None:
+        """
+        Ensure custom_toolset.yaml exists in the config directory.
+        Creates the file with default MCP server configuration if it doesn't exist.
+        """
+        import yaml
+
+        custom_toolset_file = self.config_dir / "custom_toolset.yaml"
+
+        # Create config directory if it doesn't exist
+        self.config_dir.mkdir(parents=True, exist_ok=True)
+
+        # Only create if file doesn't exist
+        if not custom_toolset_file.exists():
+            default_config = {
+                "mcp_servers": {
+                    "aks-mcp": {
+                        "description": (
+                            "Azure MCP server exposes the Azure and Kubernetes capabilities "
+                            "for Azure Kubernetes Service clusters"
+                        ),
+                        "config": {
+                            "url": "http://localhost:8000/sse",
+                        }
+                    }
+                }
+            }
+
+            try:
+                with open(custom_toolset_file, 'w', encoding='utf-8') as f:
+                    yaml.dump(default_config, f, default_flow_style=False, sort_keys=False)
+                logger.debug("Created custom_toolset.yaml at: %s", custom_toolset_file)
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                logger.warning("Failed to create custom_toolset.yaml: %s", e)
+        else:
+            logger.debug("custom_toolset.yaml already exists at: %s", custom_toolset_file)
+
+    def save_llm_config(self, provider: LLMProvider, params: dict) -> None:
+        """
+        Save LLM configuration using the LLMConfigManager.
+
+        Args:
+            provider: LLMProvider instance
+            params: Dictionary of model parameters
+        """
+        self.llm_config_manager.save(provider, params)
+
+    def get_llm_config(self) -> Dict:
+        """
+        Get LLM configuration from local file.
 
         Returns:
-            The default cluster role rules
+            Dictionary of model configurations if exists, empty dict otherwise
         """
-        rules = [
-            {
-                "api_groups": ["*"],
-                "resources": ["*"],
-                "verbs": ["get", "list", "watch"]
-            },
-        ]
-        cluster_role = V1ClusterRole(
-            metadata=client.V1ObjectMeta(
-                name=f"{self.helm_release_name}-aks-mcp"
-            ),
-            rules=[V1PolicyRule(**rule) for rule in rules]
-        )
-        return cluster_role
+        return self.llm_config_manager.model_list if self.llm_config_manager.model_list else {}
+
+    def exec_aks_agent(self, command_flags: str = "") -> bool:
+        """
+        Execute commands on the AKS agent using Docker container.
+
+        This method runs the AKS agent in a Docker container with the local
+        LLM configuration and kubeconfig mounted.
+
+        Args:
+            command_flags: Additional flags for the aks-agent command
+
+        Returns:
+            True if execution was successful
+
+        Raises:
+            AzCLIError: If execution fails or Docker is not available
+        """
+        import subprocess
+        import sys
+
+        logger.info("Executing AKS agent command in Docker container with flags: %s", command_flags)
+
+        try:
+            # Check if configuration exists
+            model_list_file = self.config_dir / "model_list.yaml"
+            custom_toolset_file = self.config_dir / "custom_toolset.yaml"
+
+            if not self.config_dir.exists() or not model_list_file.exists() or not custom_toolset_file.exists():
+                raise AzCLIError(
+                    "AKS agent configuration not found.\n"
+                    "Please run 'az aks agent-init' first to initialize the agent."
+                )
+
+            # Check if Docker is available
+            try:
+                subprocess.run(
+                    ["docker", "--version"],
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE
+                )
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                raise AzCLIError(
+                    "Docker is not available. Please install Docker to use client mode.\n"
+                    "Visit https://docs.docker.com/get-docker/ for installation instructions."
+                )
+
+            # Prepare Docker run command
+            docker_image = self.docker_image
+
+            # Build volume mounts
+            volumes = []
+            if self.kubeconfig_path:
+                volumes.extend(["-v", f"{self.kubeconfig_path}:/root/.kube/config:ro"])
+
+            # Mount Azure config directory
+            azure_config_dir = os.path.expanduser("~/.azure")
+            if os.path.exists(azure_config_dir):
+                volumes.extend(["-v", f"{azure_config_dir}:/root/.azure"])
+                logger.debug("Mounting Azure config directory: %s", azure_config_dir)
+            else:
+                logger.debug("Azure config directory not found, skipping mount: %s", azure_config_dir)
+
+            # Mount LLM config files
+            model_list_file = self.config_dir / "model_list.yaml"
+            custom_toolset_file = self.config_dir / "custom_toolset.yaml"
+
+            # Mount model_list.yaml
+            volumes.extend(["-v", f"{model_list_file}:/etc/aks-agent/config/model_list.yaml:ro"])
+
+            # Mount custom_toolset.yaml
+            volumes.extend(["-v", f"{custom_toolset_file}:/etc/aks-agent/config/custom_toolset.yaml:ro"])
+
+            # Build environment variables for AKS context
+            env_vars = [
+                "-e", f"AKS_RESOURCE_GROUP={self.resource_group_name}",
+                "-e", f"AKS_CLUSTER_NAME={self.cluster_name}",
+                "-e", f"AKS_SUBSCRIPTION_ID={self.subscription_id}"
+            ]
+
+            # Prepare the command
+            exec_command = [
+                "docker", "run",
+                "--rm",
+                "-it",
+                *volumes,
+                *env_vars,
+                docker_image,
+                "ask"
+            ]
+
+            # Add command flags if provided
+            if command_flags:
+                # Parse command_flags - it might be a quoted string with multiple args
+                import shlex
+                flag_parts = shlex.split(command_flags)
+                exec_command.extend(flag_parts)
+
+            logger.debug("Running Docker command: %s", " ".join(exec_command))
+
+            # Execute the Docker container with interactive TTY
+            result = subprocess.run(
+                exec_command,
+                stdin=sys.stdin,
+                stdout=sys.stdout,
+                stderr=sys.stderr
+            )
+
+            if result.returncode != 0:
+                raise AzCLIError(f"Docker container exited with code {result.returncode}")
+
+            logger.info("AKS agent command executed successfully in Docker container")
+            return True
+
+        except AzCLIError:
+            raise
+        except subprocess.CalledProcessError as e:
+            logger.error("Failed to execute Docker command: %s", e)
+            raise AzCLIError(f"Failed to execute AKS agent in Docker: {e}")
+        except Exception as e:
+            logger.error("Failed to execute AKS agent command: %s", e)
+            raise
+
+    def uninstall_agent(self) -> bool:
+        """
+        Uninstall AKS agent by removing local LLM configuration files.
+
+        Returns:
+            True if uninstallation was successful
+        """
+        logger.info("Removing local AKS agent configuration")
+
+        try:
+            config_files = [
+                self.config_dir / "model_list.yaml",
+                self.config_dir / "custom_toolset.yaml"
+            ]
+
+            removed_files = []
+            for config_file in config_files:
+                if config_file.exists():
+                    config_file.unlink()
+                    removed_files.append(str(config_file))
+                    logger.debug("Removed config file: %s", config_file)
+
+            if removed_files:
+                logger.info("Successfully removed %d configuration file(s)", len(removed_files))
+            else:
+                logger.info("No configuration files found to remove")
+
+            # Optionally remove the config directory if it's empty
+            if self.config_dir.exists() and not any(self.config_dir.iterdir()):
+                self.config_dir.rmdir()
+                logger.debug("Removed empty config directory: %s", self.config_dir)
+
+            return True
+
+        except Exception as e:
+            logger.error("Failed to remove local configuration: %s", e)
+            raise AzCLIError(f"Failed to uninstall local agent configuration: {e}")

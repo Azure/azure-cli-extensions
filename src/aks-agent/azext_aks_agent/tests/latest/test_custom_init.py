@@ -27,35 +27,28 @@ class TestAksAgentInit(unittest.TestCase):
         self.subscription_id = 'test-subscription-id'
         self.kubeconfig_path = '/mock/kubeconfig/path'
 
-    @patch('azext_aks_agent.custom._setup_and_create_llm_config')
-    @patch('azext_aks_agent.custom._prompt_managed_identity_configuration')
-    @patch('azext_aks_agent.custom._prompt_cluster_role_configuration')
+    @patch('azext_aks_agent.custom.CLITelemetryClient')
+    @patch('azext_aks_agent.custom._setup_helm_deployment')
+    @patch('azext_aks_agent.custom._setup_llm_configuration')
     @patch('azext_aks_agent.custom.get_aks_credentials')
     @patch('azext_aks_agent.custom.AKSAgentManager')
     @patch('azext_aks_agent.custom.get_subscription_id')
     @patch('azext_aks_agent.custom.get_console')
-    def test_init_new_deployment_no_llm_config(
+    def test_init_cluster_mode_new_deployment(
             self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
-            mock_get_aks_creds, mock_prompt_cluster_role, mock_prompt_managed_identity,
-            mock_setup_llm):
-        """Test initialization with new deployment and no existing LLM config."""
+            mock_get_aks_creds, mock_setup_llm, mock_setup_helm, mock_telemetry_client):
+        """Test initialization with cluster mode and new deployment."""
         # Setup mocks
         mock_console = MagicMock()
         mock_get_console.return_value = mock_console
+        mock_console.input.side_effect = ['1', 'test-namespace']  # Mode 1 = cluster, namespace
         mock_get_subscription_id.return_value = self.subscription_id
         mock_get_aks_creds.return_value = self.kubeconfig_path
+        mock_telemetry_client.return_value.__enter__ = Mock()
+        mock_telemetry_client.return_value.__exit__ = Mock()
 
         mock_agent_manager = MagicMock()
-        mock_agent_manager.check_llm_config_exists.return_value = False
-        mock_agent_manager.get_agent_status.return_value = {
-            "helm_status": "not_found",
-            "ready": True
-        }
-        mock_agent_manager.deploy_agent.return_value = (True, "")
         mock_aks_manager_class.return_value = mock_agent_manager
-
-        mock_prompt_cluster_role.return_value = ""
-        mock_prompt_managed_identity.return_value = ""
 
         # Execute
         aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
@@ -66,338 +59,181 @@ class TestAksAgentInit(unittest.TestCase):
             self.resource_group,
             self.cluster_name
         )
-        mock_aks_manager_class.assert_called_once()
-        mock_agent_manager.check_llm_config_exists.assert_called_once()
+        mock_aks_manager_class.assert_called_once_with(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            namespace='test-namespace',
+            subscription_id=self.subscription_id,
+            kubeconfig_path=self.kubeconfig_path
+        )
         mock_setup_llm.assert_called_once_with(mock_console, mock_agent_manager)
-        mock_prompt_cluster_role.assert_called_once()
-        mock_prompt_managed_identity.assert_called_once()
-        mock_agent_manager.deploy_agent.assert_called_once()
+        mock_setup_helm.assert_called_once_with(mock_console, mock_agent_manager)
 
-    @patch('azext_aks_agent.custom._get_existing_cluster_role')
-    @patch('azext_aks_agent.custom._setup_and_create_llm_config')
+    @patch('azext_aks_agent.custom.CLITelemetryClient')
+    @patch('azext_aks_agent.custom._setup_llm_configuration')
     @patch('azext_aks_agent.custom.get_aks_credentials')
-    @patch('azext_aks_agent.custom.AKSAgentManager')
+    @patch('azext_aks_agent.custom.AKSAgentManagerClient')
     @patch('azext_aks_agent.custom.get_subscription_id')
     @patch('azext_aks_agent.custom.get_console')
-    def test_init_existing_llm_config_user_skips_update(
-            self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
-            mock_get_aks_creds, mock_setup_llm, mock_get_cluster_role):
-        """Test initialization raises AzCLIError when LLM config exists, user skips update, but cluster role not found."""
+    def test_init_client_mode(
+            self, mock_get_console, mock_get_subscription_id, mock_aks_manager_client_class,
+            mock_get_aks_creds, mock_setup_llm, mock_telemetry_client):
+        """Test initialization with client mode."""
         # Setup mocks
         mock_console = MagicMock()
         mock_get_console.return_value = mock_console
-        mock_console.input.side_effect = ['n']  # User skips LLM config update
+        mock_console.input.side_effect = ['2']  # Mode 2 = client
         mock_get_subscription_id.return_value = self.subscription_id
         mock_get_aks_creds.return_value = self.kubeconfig_path
+        mock_telemetry_client.return_value.__enter__ = Mock()
+        mock_telemetry_client.return_value.__exit__ = Mock()
 
         mock_agent_manager = MagicMock()
-        mock_agent_manager.check_llm_config_exists.return_value = True
-        mock_agent_manager.get_agent_status.return_value = {
-            "helm_status": "deployed",
-            "ready": True
-        }
-        mock_agent_manager.managed_identity_client_id = ""
-        mock_aks_manager_class.return_value = mock_agent_manager
+        mock_aks_manager_client_class.return_value = mock_agent_manager
 
-        mock_get_cluster_role.return_value = None  # Cannot find cluster role
-
-        # Execute - should raise AzCLIError with wrapped message
-        with self.assertRaises(AzCLIError) as cm:
-            aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
+        # Execute
+        aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
 
         # Assert
-        mock_agent_manager.check_llm_config_exists.assert_called_once()
-        mock_setup_llm.assert_not_called()
-        # Verify the error message contains the wrapped format
-        self.assertIn("Agent initialization failed:", str(cm.exception))
-        self.assertIn("Could not determine existing cluster role", str(cm.exception))
-
-    @patch('azext_aks_agent.custom._get_existing_cluster_role')
-    @patch('azext_aks_agent.custom._setup_and_create_llm_config')
-    @patch('azext_aks_agent.custom.get_aks_credentials')
-    @patch('azext_aks_agent.custom.AKSAgentManager')
-    @patch('azext_aks_agent.custom.get_subscription_id')
-    @patch('azext_aks_agent.custom.get_console')
-    def test_init_existing_llm_config_user_updates(
-            self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
-            mock_get_aks_creds, mock_setup_llm, mock_get_cluster_role):
-        """Test initialization raises AzCLIError when LLM config exists, user updates, but cluster role not found."""
-        # Setup mocks
-        mock_console = MagicMock()
-        mock_get_console.return_value = mock_console
-        mock_console.input.side_effect = ['yes']  # User updates LLM config
-        mock_get_subscription_id.return_value = self.subscription_id
-        mock_get_aks_creds.return_value = self.kubeconfig_path
-
-        mock_agent_manager = MagicMock()
-        mock_agent_manager.check_llm_config_exists.return_value = True
-        mock_agent_manager.get_agent_status.return_value = {
-            "helm_status": "deployed",
-            "ready": True
-        }
-        mock_agent_manager.managed_identity_client_id = ""
-        mock_aks_manager_class.return_value = mock_agent_manager
-
-        mock_get_cluster_role.return_value = None  # Cannot find cluster role
-
-        # Execute - should raise AzCLIError with wrapped message
-        with self.assertRaises(AzCLIError) as cm:
-            aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
-
-        # Assert
-        mock_agent_manager.check_llm_config_exists.assert_called_once()
+        mock_get_aks_creds.assert_called_once_with(
+            self.mock_client,
+            self.resource_group,
+            self.cluster_name
+        )
+        mock_aks_manager_client_class.assert_called_once_with(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id,
+            kubeconfig_path=self.kubeconfig_path
+        )
         mock_setup_llm.assert_called_once_with(mock_console, mock_agent_manager)
-        # Verify the error message contains the wrapped format
-        self.assertIn("Agent initialization failed:", str(cm.exception))
-        self.assertIn("Could not determine existing cluster role", str(cm.exception))
 
-    @patch('azext_aks_agent.custom._get_existing_cluster_role')
-    @patch('azext_aks_agent.custom._display_cluster_role_rules')
-    @patch('azext_aks_agent.custom._prompt_managed_identity_configuration')
-    @patch('azext_aks_agent.custom._setup_and_create_llm_config')
+    @patch('azext_aks_agent.custom.CLITelemetryClient')
+    @patch('azext_aks_agent.custom._setup_llm_configuration')
     @patch('azext_aks_agent.custom.get_aks_credentials')
     @patch('azext_aks_agent.custom.AKSAgentManager')
     @patch('azext_aks_agent.custom.get_subscription_id')
     @patch('azext_aks_agent.custom.get_console')
-    def test_init_deployed_helm_with_managed_identity_update(
+    def test_init_invalid_mode_choice_retry(
             self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
-            mock_get_aks_creds, mock_setup_llm, mock_prompt_managed_identity,
-            mock_display_rules, mock_get_cluster_role):
-        """Test initialization when helm is deployed and user updates managed identity."""
+            mock_get_aks_creds, mock_setup_llm, mock_telemetry_client):
+        """Test initialization with invalid mode choice, then valid choice."""
         # Setup mocks
         mock_console = MagicMock()
         mock_get_console.return_value = mock_console
-        mock_console.input.side_effect = ['n', 'yes']  # Skip LLM update, change managed identity
+        mock_console.input.side_effect = ['3', 'invalid', '1', 'test-namespace']  # Invalid, then mode 1
         mock_get_subscription_id.return_value = self.subscription_id
         mock_get_aks_creds.return_value = self.kubeconfig_path
+        mock_telemetry_client.return_value.__enter__ = Mock()
+        mock_telemetry_client.return_value.__exit__ = Mock()
 
         mock_agent_manager = MagicMock()
-        mock_agent_manager.check_llm_config_exists.return_value = True
-        mock_agent_manager.get_agent_status.side_effect = [
-            {"helm_status": "deployed", "ready": False},
-            {"helm_status": "deployed", "ready": True}
-        ]
-        mock_agent_manager.managed_identity_client_id = "existing-client-id"
-        mock_agent_manager.deploy_agent.return_value = (True, "")
         mock_aks_manager_class.return_value = mock_agent_manager
-
-        mock_get_cluster_role.return_value = "test-cluster-role"
-        mock_cluster_role = Mock()
-        mock_agent_manager.rbac_v1.read_cluster_role.return_value = mock_cluster_role
-        mock_prompt_managed_identity.return_value = "new-client-id"
 
         # Execute
         aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
 
-        # Assert
-        mock_prompt_managed_identity.assert_called_once()
-        self.assertEqual(mock_agent_manager.managed_identity_client_id, "new-client-id")
-        mock_agent_manager.deploy_agent.assert_called_once()
+        # Assert - should have prompted multiple times for mode
+        mode_prompts = [call for call in mock_console.input.call_args_list
+                        if 'Enter your choice (1 or 2)' in str(call)]
+        self.assertTrue(len(mode_prompts) >= 2, "Should prompt multiple times for invalid input")
 
-    @patch('azext_aks_agent.custom._prompt_managed_identity_configuration')
-    @patch('azext_aks_agent.custom._prompt_cluster_role_configuration')
-    @patch('azext_aks_agent.custom._setup_and_create_llm_config')
+    @patch('azext_aks_agent.custom.CLITelemetryClient')
+    @patch('azext_aks_agent.custom._setup_helm_deployment')
+    @patch('azext_aks_agent.custom._setup_llm_configuration')
     @patch('azext_aks_agent.custom.get_aks_credentials')
     @patch('azext_aks_agent.custom.AKSAgentManager')
     @patch('azext_aks_agent.custom.get_subscription_id')
     @patch('azext_aks_agent.custom.get_console')
-    def test_init_with_custom_cluster_role(
+    def test_init_empty_namespace_retry(
             self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
-            mock_get_aks_creds, mock_setup_llm, mock_prompt_cluster_role,
-            mock_prompt_managed_identity):
-        """Test initialization with custom cluster role."""
+            mock_get_aks_creds, mock_setup_llm, mock_setup_helm, mock_telemetry_client):
+        """Test initialization with empty namespace, then valid namespace."""
         # Setup mocks
         mock_console = MagicMock()
         mock_get_console.return_value = mock_console
+        mock_console.input.side_effect = ['1', '', '  ', 'test-namespace']  # Mode 1, empty inputs, then valid
         mock_get_subscription_id.return_value = self.subscription_id
         mock_get_aks_creds.return_value = self.kubeconfig_path
+        mock_telemetry_client.return_value.__enter__ = Mock()
+        mock_telemetry_client.return_value.__exit__ = Mock()
 
         mock_agent_manager = MagicMock()
-        mock_agent_manager.check_llm_config_exists.return_value = False
-        mock_agent_manager.get_agent_status.return_value = {
-            "helm_status": "not_found",
-            "ready": True
-        }
-        mock_agent_manager.deploy_agent.return_value = (True, "")
         mock_aks_manager_class.return_value = mock_agent_manager
-
-        mock_prompt_cluster_role.return_value = "custom-cluster-role"
-        mock_prompt_managed_identity.return_value = "test-client-id"
 
         # Execute
         aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
 
-        # Assert
-        self.assertEqual(mock_agent_manager.customized_cluster_role_name, "custom-cluster-role")
-        self.assertEqual(mock_agent_manager.managed_identity_client_id, "test-client-id")
-        mock_agent_manager.deploy_agent.assert_called_once()
+        # Assert - should have prompted multiple times for namespace
+        namespace_prompts = [call for call in mock_console.input.call_args_list
+                             if 'Enter namespace' in str(call)]
+        self.assertTrue(len(namespace_prompts) >= 2, "Should prompt multiple times for empty namespace")
 
-    @patch('azext_aks_agent.custom._setup_and_create_llm_config')
+    @patch('azext_aks_agent.custom.CLITelemetryClient')
+    @patch('azext_aks_agent.custom._setup_llm_configuration')
     @patch('azext_aks_agent.custom.get_aks_credentials')
     @patch('azext_aks_agent.custom.AKSAgentManager')
     @patch('azext_aks_agent.custom.get_subscription_id')
     @patch('azext_aks_agent.custom.get_console')
-    def test_init_deployment_failure_logs_error(
+    def test_init_setup_llm_configuration_error(
             self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
-            mock_get_aks_creds, mock_setup_llm):
-        """Test initialization raises AzCLIError when deployment fails."""
+            mock_get_aks_creds, mock_setup_llm, mock_telemetry_client):
+        """Test initialization raises error when LLM configuration setup fails."""
         # Setup mocks
         mock_console = MagicMock()
         mock_get_console.return_value = mock_console
+        mock_console.input.side_effect = ['1', 'test-namespace']
         mock_get_subscription_id.return_value = self.subscription_id
         mock_get_aks_creds.return_value = self.kubeconfig_path
 
+        # Properly mock the context manager - __exit__ must return None to allow exceptions to propagate
+        mock_telemetry_instance = MagicMock()
+        mock_telemetry_client.return_value = mock_telemetry_instance
+        mock_telemetry_instance.__enter__ = Mock(return_value=mock_telemetry_instance)
+        mock_telemetry_instance.__exit__ = Mock(return_value=None)
+
         mock_agent_manager = MagicMock()
-        mock_agent_manager.check_llm_config_exists.return_value = False
-        mock_agent_manager.get_agent_status.return_value = {"helm_status": "not_found"}
-        mock_agent_manager.deploy_agent.return_value = (False, "Deployment failed")
         mock_aks_manager_class.return_value = mock_agent_manager
 
-        # Execute - should raise AzCLIError with wrapped message
+        # Make setup_llm raise an error
+        mock_setup_llm.side_effect = AzCLIError("Failed to configure LLM")
+
+        # Execute - should raise AzCLIError wrapped with "Agent initialization failed"
         with self.assertRaises(AzCLIError) as cm:
             aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
 
-        # Verify the error message contains the wrapped format
-        self.assertIn("Agent initialization failed:", str(cm.exception))
-        self.assertIn("Failed to deploy agent", str(cm.exception))
+        # The error should be wrapped with "Agent initialization failed:"
+        exception_str = str(cm.exception)
+        self.assertIn("Agent initialization failed", exception_str)
+        self.assertIn("Failed to configure LLM", exception_str)
 
-    @patch('azext_aks_agent.custom._get_existing_cluster_role')
-    @patch('azext_aks_agent.custom._setup_and_create_llm_config')
+    @patch('azext_aks_agent.custom.CLITelemetryClient')
+    @patch('azext_aks_agent.custom._setup_llm_configuration')
     @patch('azext_aks_agent.custom.get_aks_credentials')
-    @patch('azext_aks_agent.custom.AKSAgentManager')
     @patch('azext_aks_agent.custom.get_subscription_id')
     @patch('azext_aks_agent.custom.get_console')
-    def test_init_deployed_no_cluster_role_logs_error(
-            self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
-            mock_get_aks_creds, mock_setup_llm, mock_get_cluster_role):
-        """Test initialization raises AzCLIError when deployed but cannot determine cluster role."""
+    def test_init_telemetry_tracking(
+            self, mock_get_console, mock_get_subscription_id,
+            mock_get_aks_creds, mock_setup_llm, mock_telemetry_client):
+        """Test that telemetry tracks mode correctly."""
         # Setup mocks
         mock_console = MagicMock()
         mock_get_console.return_value = mock_console
-        mock_console.input.return_value = 'n'
+        mock_console.input.side_effect = ['2']  # Client mode
         mock_get_subscription_id.return_value = self.subscription_id
         mock_get_aks_creds.return_value = self.kubeconfig_path
 
-        mock_agent_manager = MagicMock()
-        mock_agent_manager.check_llm_config_exists.return_value = True
-        mock_agent_manager.get_agent_status.return_value = {"helm_status": "deployed"}
-        mock_aks_manager_class.return_value = mock_agent_manager
+        mock_telemetry_instance = MagicMock()
+        mock_telemetry_client.return_value = mock_telemetry_instance
+        mock_telemetry_instance.__enter__ = Mock(return_value=mock_telemetry_instance)
+        mock_telemetry_instance.__exit__ = Mock()
 
-        mock_get_cluster_role.return_value = None  # Cannot find cluster role
-
-        # Execute - should raise AzCLIError with wrapped message
-        with self.assertRaises(AzCLIError) as cm:
+        # Execute
+        with patch('azext_aks_agent.custom.AKSAgentManagerClient'):
             aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
 
-        # Verify the error message contains the wrapped format
-        self.assertIn("Agent initialization failed:", str(cm.exception))
-        self.assertIn("Could not determine existing cluster role", str(cm.exception))
-
-    @patch('azext_aks_agent.custom._prompt_managed_identity_configuration')
-    @patch('azext_aks_agent.custom._prompt_cluster_role_configuration')
-    @patch('azext_aks_agent.custom._setup_and_create_llm_config')
-    @patch('azext_aks_agent.custom.get_aks_credentials')
-    @patch('azext_aks_agent.custom.AKSAgentManager')
-    @patch('azext_aks_agent.custom.get_subscription_id')
-    @patch('azext_aks_agent.custom.get_console')
-    def test_init_deployment_not_ready_shows_warning(
-            self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
-            mock_get_aks_creds, mock_setup_llm, mock_prompt_cluster_role,
-            mock_prompt_managed_identity):
-        """Test initialization shows warning when deployment not ready."""
-        # Setup mocks
-        mock_console = MagicMock()
-        mock_get_console.return_value = mock_console
-        mock_get_subscription_id.return_value = self.subscription_id
-        mock_get_aks_creds.return_value = self.kubeconfig_path
-
-        mock_agent_manager = MagicMock()
-        mock_agent_manager.check_llm_config_exists.return_value = False
-        mock_agent_manager.get_agent_status.side_effect = [
-            {"helm_status": "not_found"},
-            {"helm_status": "deployed", "ready": False}
-        ]
-        mock_agent_manager.deploy_agent.return_value = (True, "")
-        mock_aks_manager_class.return_value = mock_agent_manager
-
-        mock_prompt_cluster_role.return_value = ""
-        mock_prompt_managed_identity.return_value = ""
-
-        # Execute
-        aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
-
-        # Assert - check that console.print was called with warning message
-        warning_calls = [call for call in mock_console.print.call_args_list
-                         if "not yet ready" in str(call)]
-        self.assertTrue(len(warning_calls) > 0, "Expected warning message about agent not ready")
-
-    @patch('azext_aks_agent.custom._prompt_managed_identity_configuration')
-    @patch('azext_aks_agent.custom._prompt_cluster_role_configuration')
-    @patch('azext_aks_agent.custom._setup_and_create_llm_config')
-    @patch('azext_aks_agent.custom.get_aks_credentials')
-    @patch('azext_aks_agent.custom.AKSAgentManager')
-    @patch('azext_aks_agent.custom.get_subscription_id')
-    @patch('azext_aks_agent.custom.get_console')
-    def test_init_with_azureopenai_model_and_workload_identity(
-            self, mock_get_console, mock_get_subscription_id, mock_aks_manager_class,
-            mock_get_aks_creds, mock_setup_llm, mock_prompt_cluster_role,
-            mock_prompt_managed_identity):
-        """Test initialization with Azure OpenAI model and workload identity client ID."""
-        # Setup mocks
-        mock_console = MagicMock()
-        mock_get_console.return_value = mock_console
-        mock_get_subscription_id.return_value = self.subscription_id
-        mock_get_aks_creds.return_value = self.kubeconfig_path
-
-        mock_agent_manager = MagicMock()
-        mock_agent_manager.check_llm_config_exists.return_value = False
-        mock_agent_manager.get_agent_status.return_value = {
-            "helm_status": "not_found",
-            "ready": True
-        }
-        mock_agent_manager.deploy_agent.return_value = (True, "")
-        mock_aks_manager_class.return_value = mock_agent_manager
-
-        # Setup LLM config manager with Azure OpenAI model
-        mock_llm_config_manager = MagicMock()
-        mock_llm_config_manager.model_list = {
-            "azure/gpt-4": {
-                "model": "azure/gpt-4",
-                "api_base": "https://test-openai.openai.azure.com",
-                "api_version": "2024-02-15-preview"
-            }
-        }
-        mock_agent_manager.llm_config_manager = mock_llm_config_manager
-
-        # Mock _setup_and_create_llm_config to set the model_list
-        def setup_llm_side_effect(console, agent_manager):
-            agent_manager.llm_config_manager.model_list = {
-                "azure/gpt-4": {
-                    "model": "azure/gpt-4",
-                    "api_base": "https://test-openai.openai.azure.com",
-                    "api_version": "2024-02-15-preview"
-                }
-            }
-        mock_setup_llm.side_effect = setup_llm_side_effect
-
-        mock_prompt_cluster_role.return_value = "custom-role"
-        mock_prompt_managed_identity.return_value = "test-workload-client-id-12345"
-
-        # Execute
-        aks_agent_init(self.mock_cmd, self.mock_client, self.resource_group, self.cluster_name)
-
-        # Assert
-        mock_setup_llm.assert_called_once_with(mock_console, mock_agent_manager)
-        mock_prompt_managed_identity.assert_called_once()
-
-        # Verify that managed identity client ID was set
-        self.assertEqual(mock_agent_manager.managed_identity_client_id, "test-workload-client-id-12345")
-
-        # Verify that customized cluster role name was set
-        self.assertEqual(mock_agent_manager.customized_cluster_role_name, "custom-role")
-
-        # Verify deploy_agent was called
-        mock_agent_manager.deploy_agent.assert_called_once()
+        # Assert telemetry mode was set
+        self.assertEqual(mock_telemetry_instance.mode, 'client')
 
 
 if __name__ == '__main__':
