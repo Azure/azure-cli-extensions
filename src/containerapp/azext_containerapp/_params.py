@@ -338,7 +338,7 @@ def load_arguments(self, _):
         c.argument('environment_type', arg_type=get_enum_type(["managed", "connected"]), help="Type of environment.", is_preview=True)
 
     with self.argument_context('containerapp list') as c:
-        c.argument('kind', arg_type=get_enum_type(['functionapp']), help="Filter by kind. Use 'functionapp' to list only Azure Functions on Container Apps.", is_preview=True)
+        c.argument('kind', arg_type=get_enum_type(['functionapp', 'logicapp']), help="Filter by kind. Use 'functionapp' to list only Azure Functions on Container Apps.", is_preview=True)
 
     with self.argument_context('containerapp connected-env') as c:
         c.argument('name', name_type, help='Name of the Container Apps connected environment.')
