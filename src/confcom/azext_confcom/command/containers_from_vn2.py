@@ -8,6 +8,7 @@ from pathlib import Path
 import yaml
 
 # from azext_confcom.lib.deployments import parse_deployment_template
+from azext_confcom import config
 from azext_confcom.lib.images import get_image_config, get_image_layers
 from azext_confcom.lib.platform import VN2_MOUNTS
 # from azext_confcom.lib.platform import ACI_MOUNTS
@@ -35,14 +36,16 @@ def containers_from_vn2(
 ) -> None:
 
     with Path(template).open("r") as f:
-        template_yaml = yaml.safe_load(f)
+        template_yaml = list(yaml.safe_load_all(f))
 
     # Find containers matching the specified name (and check there's exactly one)
-    template_containers = [
-        container
-        for container in find_vn2_containers(template_yaml)
-        if container.get("name") == container_name
-    ]
+    template_containers = []
+    for doc in template_yaml:
+        template_containers += [
+            container
+            for container in find_vn2_containers(doc)
+            if container.get("name") == container_name
+        ]
     assert len(template_containers) > 0, f"No containers with name {container_name} found."
     assert len(template_containers) <= 1, f"Multiple containers with name {container_name} found."
 
@@ -59,6 +62,15 @@ def containers_from_vn2(
             "strategy": "string",
             "required": False,
         })
+
+
+    env_rules += (
+        config.OPENGCS_ENV_RULES
+        + config.FABRIC_ENV_RULES
+        + config.MANAGED_IDENTITY_ENV_RULES
+        + config.ENABLE_RESTART_ENV_RULE
+        + config.VIRTUAL_NODE_ENV_RULES
+    )
 
     mounts = image_config.pop("mounts", [])
     mounts += [
@@ -77,9 +89,11 @@ def containers_from_vn2(
     mounts += VN2_MOUNTS
 
     return json.dumps({
+        "id": image,
         "name": template_container.get("name"),
         "layers": get_image_layers(image),
         "env_rules": env_rules,
         "mounts": mounts,
+        "command": template_container.get("command", []) + template_container.get("args", []),
         **image_config,
     })

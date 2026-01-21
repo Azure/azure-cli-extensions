@@ -12,22 +12,12 @@
         "required": false
       },
       {
-        "pattern": "FROM_CONFIG=None",
+        "pattern": "THIM_ENDPOINT====VIRTUALNODE2.CC.THIM.TEST===",
         "strategy": "string",
         "required": false
       },
       {
-        "pattern": "FROM_BINARY_CONFIG=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_SECRET=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_STRINGDATA=None",
+        "pattern": "APP_MODE=production",
         "strategy": "string",
         "required": false
       },

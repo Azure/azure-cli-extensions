@@ -12,26 +12,6 @@
         "required": false
       },
       {
-        "pattern": "FROM_CONFIG=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_BINARY_CONFIG=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_SECRET=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_STRINGDATA=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
         "name": "TERM",
         "value": "xterm",
         "strategy": "string",
@@ -141,6 +121,26 @@
       }
     ],
     "mounts": [
+      {
+        "destination": "/etc/config",
+        "options": [
+          "rbind",
+          "rshared",
+          "rw"
+        ],
+        "source": "sandbox:///tmp/atlas/emptydir/.+",
+        "type": "bind"
+      },
+      {
+        "destination": "/etc/secret",
+        "options": [
+          "rbind",
+          "rshared",
+          "rw"
+        ],
+        "source": "sandbox:///tmp/atlas/emptydir/.+",
+        "type": "bind"
+      },
       {
         "destination": "/etc/resolv.conf",
         "options": [

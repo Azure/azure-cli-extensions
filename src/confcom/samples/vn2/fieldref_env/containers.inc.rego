@@ -12,22 +12,7 @@
         "required": false
       },
       {
-        "pattern": "FROM_CONFIG=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_BINARY_CONFIG=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_SECRET=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_STRINGDATA=None",
+        "pattern": "POD_NAME=None",
         "strategy": "string",
         "required": false
       },

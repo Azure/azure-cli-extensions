@@ -12,26 +12,6 @@
         "required": false
       },
       {
-        "pattern": "FROM_CONFIG=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_BINARY_CONFIG=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_SECRET=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_STRINGDATA=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
         "name": "TERM",
         "value": "xterm",
         "strategy": "string",
@@ -192,7 +172,11 @@
         "type": "bind"
       }
     ],
-    "command": [],
+    "command": [
+      "/bin/sh",
+      "-c",
+      "sleep 3600"
+    ],
     "working_dir": "/"
   }
 ]

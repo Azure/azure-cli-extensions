@@ -12,22 +12,12 @@
         "required": false
       },
       {
-        "pattern": "FROM_CONFIG=None",
+        "pattern": "CPU_REQUEST=None",
         "strategy": "string",
         "required": false
       },
       {
-        "pattern": "FROM_BINARY_CONFIG=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_SECRET=None",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "pattern": "FROM_STRINGDATA=None",
+        "pattern": "MEM_LIMIT=None",
         "strategy": "string",
         "required": false
       },
