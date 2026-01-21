@@ -11,9 +11,5 @@
 # from azure.cli.core.commands import CliCommandType
 
 
-def load_command_table(self, _):  # pylint: disable=unused-argument
-    with self.command_group(
-        "trustedsigning",
-        deprecate_info=self.deprecate(redirect="artifact-signing", hide=True),
-    ):
-        pass
+def load_command_table(self, _):  # pylint: disable=unused-argumentAdd a comment on  lines R13 to R14Add diff commentMarkdown input:  edit mode selected.WritePreviewAdd a suggestionHeadingBoldItalicQuoteCodeLinkUnordered listNumbered listTask listMentionReferenceSaved repliesAdd FilesPaste, drop, or click to add filesCancelCommentStart a reviewReturn to code
+    pass
