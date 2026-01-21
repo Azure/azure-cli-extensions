@@ -12,6 +12,7 @@ from .__cmd_group import *
 from ._approve_connection import *
 from ._create import *
 from ._delete import *
+from ._execute_action import *
 from ._list import *
 from ._reject_connection import *
 from ._show import *
