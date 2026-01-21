@@ -1,0 +1,1100 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.3
+    method: GET
+    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2F8c0f0bff-5806-4d21-8802-ebe21a1afa4f%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/8c0f0bff-5806-4d21-8802-ebe21a1afa4f/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=86400, private
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:09:45 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AoFi0qrsTuxDoJ9BOl10KPo; expires=Fri, 02-Jul-2021 11:09:46 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevrzt2CFVGyKjLTBxUuaLBt401CiR-wqS4SM9ATwUcIAdCksyAoYhrfrTH1PhT-CjSh1Td-ZflG3tvAfmwidNp3H3QeZUmDUmTL38Fx4AqX8yNHc7ju4tn1DIdYg_8v5YrT8ookqAPwnQebqGOf3GudLsYepkXlOSB2MT3bcqgyeBcgAA;
+        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.11722.21 - KRSLR2 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - codesigning create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --resource-group
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount?api-version=2020-12-14-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount","name":"MyAccount","type":"microsoft.codesigning/codesigningaccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:09:52.2908382Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:09:52.2908382Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '594'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:09:55 GMT
+      etag:
+      - '"00001b57-0000-0700-0000-60b767030000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 75CD3DDF37904736BE88E2C1D6010B19 Ref B: MAA01EDGE0407 Ref C: 2021-06-02T11:09:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.3
+    method: GET
+    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2F8c0f0bff-5806-4d21-8802-ebe21a1afa4f%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/8c0f0bff-5806-4d21-8802-ebe21a1afa4f/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=86400, private
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:09:56 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AvnsSycYX9VIu5jaOAC12_c; expires=Fri, 02-Jul-2021 11:09:56 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrkHMHlKTieOuQGMZAYQTihsYznEtTf1IqzwQtavoAQZl6muQVOi6T7QcJS_3RUEmWAmf9nrOTTM7OIFgXElV9o4F9z-2qXhW3lZvY8HiT8njtY_1P1LEF7GXeX2dOWQkQf_dlzPHcAVxZFVu6HwFipRzOhkSgboYMv_2TsO-BPd4gAA;
+        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.11722.21 - SEASLR1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - codesigning show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount?api-version=2020-12-14-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount","name":"MyAccount","type":"microsoft.codesigning/codesigningaccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:09:52.2908382Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:09:52.2908382Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '594'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:09:57 GMT
+      etag:
+      - '"00001b57-0000-0700-0000-60b767030000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 637CB604001C40AEB97CCCDF71A602C7 Ref B: MAA01EDGE0605 Ref C: 2021-06-02T11:09:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.3
+    method: GET
+    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2F8c0f0bff-5806-4d21-8802-ebe21a1afa4f%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/8c0f0bff-5806-4d21-8802-ebe21a1afa4f/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=86400, private
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:09:57 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=Ak24b3oMCqtLpvoAXyZBa9M; expires=Fri, 02-Jul-2021 11:09:58 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevrt3fx2VKXKcnIRgudIipIIUbYgcSjdWU_sA4Rgi2H2VZdqqDAaU3JTWGX0xWXWKMXIGJFRpabs2B9ygdNweOJSmYfmEKcB8ybkil6j9yKRnQkP8ohVCW2Cm_Zntb9W9mIVLnHnvJ3AoOsovvFthkm2GzjJrhHw8TIrHC2GbO2_gAgAA;
+        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.11722.21 - KRSLR1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - codesigning list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts?api-version=2020-12-14-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount","name":"MyAccount","type":"microsoft.codesigning/codesigningaccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:09:52.2908382Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:09:52.2908382Z"},"properties":{"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '606'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:09:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - f385673a-3701-493c-90e5-bf733e4cd919
+      - f5ddfbda-27d1-490b-afdc-ddf4d17be517
+      - 85a2b7ef-69e2-4572-9ee6-21e28a2a72ff
+      x-msedge-ref:
+      - 'Ref A: 24863C86222E4CEFA6C02757D60359AD Ref B: MAA01EDGE0508 Ref C: 2021-06-02T11:09:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.3
+    method: GET
+    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2F8c0f0bff-5806-4d21-8802-ebe21a1afa4f%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/8c0f0bff-5806-4d21-8802-ebe21a1afa4f/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=86400, private
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:09:59 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=ApqzJACJ5dlIs3g73L0Tb3U; expires=Fri, 02-Jul-2021 11:09:59 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrjMQxeBHW2gNWFoFwzvogMq_3MoAlcrQR4zyf0D5Jw8LAZCzeBTIn_b1pNM7biaTjWVLC_uSLG0sdLmwHxXCyHrtH2qud3Yc4ke5O5n8rNVk9bFkKsrOB_07GoZ9yrXmYBMAI5TwpTxQWO-lO9VSG_T734zSGTDtPj2WB8MMqMLsgAA;
+        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.11722.21 - SEASLR1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - codesigning list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CodeSigning/codeSigningAccounts?api-version=2020-12-14-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amritarg/providers/Microsoft.CodeSigning/codeSigningAccounts/account1","name":"account1","type":"microsoft.codesigning/codesigningaccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T09:07:18.735511Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T09:07:18.735511Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount","name":"MyAccount","type":"microsoft.codesigning/codesigningaccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:09:52.2908382Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:09:52.2908382Z"},"properties":{"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1130'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:10:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - aa4f7a0d-4940-445a-ad2f-b5e055110299
+      - f888cb19-4a23-429f-97f5-565b016926a9
+      - 539d6220-b2d1-433f-a178-ca81baa4365f
+      x-msedge-ref:
+      - 'Ref A: 12284080070248C0A1763F7F2E69106F Ref B: MAA01EDGE0506 Ref C: 2021-06-02T11:09:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.3
+    method: GET
+    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2F8c0f0bff-5806-4d21-8802-ebe21a1afa4f%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/8c0f0bff-5806-4d21-8802-ebe21a1afa4f/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=86400, private
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:10:00 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=Am-yQradxTJIjttWwFAGZ2A; expires=Fri, 02-Jul-2021 11:10:01 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevr3440iJkFKSBWwENLKYR5FINk61rHQcZb59iIF0X6uMQs_UIXNewlpNjEOBJ-jdlBzpc09Y8CaegQ03-Y7FyrHubO288rYUTc-7M_D6SIHWfDzvAe0ZeW-8Z6D4Uoi2Lacq81Z67N5DfSFeLKCbEkOSOY21uyT-cWkO5f_mPFiPIgAA;
+        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.11722.21 - KRSLR1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"key1": "value1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - codesigning update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '28'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: PATCH
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount?api-version=2020-12-14-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount","name":"MyAccount","type":"microsoft.codesigning/codesigningaccounts","location":"eastus","tags":{"key1":"value1"},"systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:09:52.2908382Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:10:02.5447071Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '619'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:10:05 GMT
+      etag:
+      - '"00004557-0000-0700-0000-60b7670b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-msedge-ref:
+      - 'Ref A: 157A72FDBD0745798AD36DA21D05501C Ref B: MAA01EDGE0616 Ref C: 2021-06-02T11:10:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.3
+    method: GET
+    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2F8c0f0bff-5806-4d21-8802-ebe21a1afa4f%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/8c0f0bff-5806-4d21-8802-ebe21a1afa4f/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=86400, private
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:10:05 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AmhZn0A98VlIlijIl3jpDuo; expires=Fri, 02-Jul-2021 11:10:05 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrHjThGnB7_dZEYpT8Pv2NxB6my8QLaIQSmyZXBBphYm8yNj3rPAma5NKHxyLxttBV73LHi2falOLQsIy2ZV-HScc0D52HX2ZThiQbH3UuRSzzxWV7VY2r-Vp4SWlXly919FJHBFumNmmNoVtOdU3IqwdQ-uPFQCDYHx82-kq2W8YgAA;
+        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.11722.21 - SEASLR2 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"profileType": "PublicTrust", "rotationPolicy": "30 Days",
+      "commonName": "Contoso Inc", "organization": "Contoso Inc"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - codesigning certificate-profile create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '135'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --account-name --common-name --organization --name --resource-group
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles/profileA?api-version=2020-12-14-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles/profileA","name":"profileA","type":"microsoft.codesigning/codesigningaccounts/certificateprofiles","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:10:06.6020053Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:10:06.6020053Z"},"properties":{"profileType":"PublicTrust","rotationPolicy":"30
+        Days","commonName":"Contoso Inc","organization":"Contoso Inc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '733'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:10:07 GMT
+      etag:
+      - '"05006708-0000-0700-0000-60b767100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: 5F25B257D15D4B8A84D146EBF3F65A0D Ref B: MAA01EDGE0515 Ref C: 2021-06-02T11:10:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.3
+    method: GET
+    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2F8c0f0bff-5806-4d21-8802-ebe21a1afa4f%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/8c0f0bff-5806-4d21-8802-ebe21a1afa4f/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=86400, private
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:10:08 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AkqglEZnuNpLh_7b8ifj7hY; expires=Fri, 02-Jul-2021 11:10:08 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrqeIG73gKp58oBhB-ZDsnMzcs6ARyrnkM2oyLRnnQYHlSiH0-HXhlQ6y9vavxcFVr5U9h2ZN0TfhAVQOumb7ROTNmLWcUirjzXu15eoDi8Z7r7cct1ypdrLFJauGJYpXuLvWzmht5Y8w9Q5LzAoxkQyJYK3N8MBAssf9Q7noHuc0gAA;
+        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.11722.26 - KRSLR2 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - codesigning certificate-profile show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --account-name --name --resource-group
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles/profileA?api-version=2020-12-14-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles/profileA","name":"profileA","type":"microsoft.codesigning/codesigningaccounts/certificateprofiles","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:10:06.6020053Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:10:06.6020053Z"},"properties":{"profileType":"PublicTrust","rotationPolicy":"30
+        Days","commonName":"Contoso Inc","organization":"Contoso Inc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '733'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:10:09 GMT
+      etag:
+      - '"05006708-0000-0700-0000-60b767100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: C61472987504411B906EFEDFB58E5D90 Ref B: MAA01EDGE0621 Ref C: 2021-06-02T11:10:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.3
+    method: GET
+    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2F8c0f0bff-5806-4d21-8802-ebe21a1afa4f%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/8c0f0bff-5806-4d21-8802-ebe21a1afa4f/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=86400, private
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:10:09 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AsTKY75RmlRJlBUYKplvyrU; expires=Fri, 02-Jul-2021 11:10:09 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrixCumsZx0fW6DcvxK1p2GRvVbn2vetDxikt34hSqULq2xLbGKnZhjkdnJjbMg4NrqCi_dEy879qbBxEQf487LD7mjO3kurRmY_25ekyXR6ia-vsnTZ4MAfeLP4nj5fN1kxhLwrW5OsGouZYZ-zEA5gSIy68oN-9aDuARNKvqT4ggAA;
+        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.11722.21 - KRSLR1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - codesigning certificate-profile list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --account-name --resource-group
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles?api-version=2020-12-14-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles/profileA","name":"profileA","type":"microsoft.codesigning/codesigningaccounts/certificateprofiles","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:10:06.6020053Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:10:06.6020053Z"},"properties":{"profileType":"PublicTrust","rotationPolicy":"30
+        Days","commonName":"Contoso Inc","organization":"Contoso Inc","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '745'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:10:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: A448170968AC4530BE757FF31304264C Ref B: MAA01EDGE0616 Ref C: 2021-06-02T11:10:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.3
+    method: GET
+    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2F8c0f0bff-5806-4d21-8802-ebe21a1afa4f%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/8c0f0bff-5806-4d21-8802-ebe21a1afa4f/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=86400, private
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:10:10 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=Ak2KlVy26spHk5oekdSL5Ug; expires=Fri, 02-Jul-2021 11:10:10 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevr1lq0YD1eqskBa7V38fZyNaFI3ITKVKCm3pI2nuMOMMLbs3bsdwT9o5VvFJBxPgqsR_WNCI7tyR1EiNLYhhv_Wf78o0RFne1FJylX_Wryd2-lS_rf5wRKyYt3486mGe_MYlFXvGy2jvWt8XV1qJm5ZkMb2tHxmMjnnfX1DjMBNkQgAA;
+        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.11722.26 - SEASLR1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - codesigning certificate-profile delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --account-name --name --resource-group
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles/profileA?api-version=2020-12-14-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Jun 2021 11:10:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: D521AE37F0C040F29733E094A3D86E09 Ref B: MAA01EDGE0606 Ref C: 2021-06-02T11:10:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.3
+    method: GET
+    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2F8c0f0bff-5806-4d21-8802-ebe21a1afa4f%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/8c0f0bff-5806-4d21-8802-ebe21a1afa4f/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=86400, private
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 11:10:14 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=Aidk_XMcvu9AvEMCE0-siuQ; expires=Fri, 02-Jul-2021 11:10:14 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrSRQu_DV82mVCAHaHKEUCUhlf0emGFghgYsvrYCKTazbTAQCeCr9CRmdzlQOHwduuZV4qJ-LXsic1EztCVle7uPvWMTFr3j5osr-VpNytwHn8-y5YOkEkjGyGzjySG2u8x9_HXHidG__NuqZ8JqsSRSFsQLY4PXBmymHS79HqZmggAA;
+        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.11722.21 - KRSLR1 ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - codesigning delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount?api-version=2020-12-14-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Jun 2021 11:10:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: FEDE9F16D9D24F76AEE6A9CE8133784F Ref B: MAA01EDGE0616 Ref C: 2021-06-02T11:10:14Z'
+    status:
+      code: 200
+      message: OK
+version: 1
