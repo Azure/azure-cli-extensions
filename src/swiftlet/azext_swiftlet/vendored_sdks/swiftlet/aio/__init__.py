@@ -6,5 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._swiftlet_management_client_async import SwiftletManagementClient
+from ._swiftlet_management_client import SwiftletManagementClient
 __all__ = ['SwiftletManagementClient']
