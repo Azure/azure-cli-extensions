@@ -5,7 +5,8 @@ Release History
 upcoming
 ++++++
 * 'az containerapp function invocations': Update application insights query 
-* 'az containerapp function keys': Update minimum replica check 
+* 'az containerapp function keys': Update minimum replica check
+* 'az containerapp env create': Improved error message for environment kind incompatibility
 
 1.3.0b1
 ++++++
