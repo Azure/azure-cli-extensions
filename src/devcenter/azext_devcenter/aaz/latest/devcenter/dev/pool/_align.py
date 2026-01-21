@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "edge-action add-attachment",
+    "devcenter dev pool align",
 )
-class AddAttachment(AAZCommand):
-    """A long-running operation for adding an EdgeAction attachment.
+class Align(AAZCommand):
+    """Aligns all Dev Boxes in the pool with the current configuration.
 
-    :example: EdgeActions_AddAttachment
-        az edge-action add-attachment --resource-group testrg --edge-action-name edgeAction1 --attached-resource-id /subscriptions/sub1/resourceGroups/rs1/providers/Microsoft.Cdn/Profiles/myProfile/afdEndpoints/ep1/routes/route1
+    :example: Align
+        az devcenter dev pool align  --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "myProject" --pool-name "DevPool" --targets ["NetworkProperties"]
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2025-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions/{}/addattachment", "2025-09-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/pools/{}:align", "2025-08-01-preview"],
         ]
     }
 
@@ -32,7 +32,7 @@ class AddAttachment(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -42,37 +42,59 @@ class AddAttachment(AAZCommand):
             return cls._args_schema
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
+        # define Arg Group "Client"
+
+        _args_schema = cls._args_schema
+        _args_schema.endpoint = AAZStrArg(
+            options=["--endpoint"],
+            arg_group="Client",
+            help="The API endpoint for the developer resources. Use az configure -d endpoint=<endpoint_uri> to configure a default.",
+            required=True,
+        )
+
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.edge_action_name = AAZStrArg(
-            options=["--edge-action-name"],
-            help="The name of the Edge Action",
+        _args_schema.pool_name = AAZStrArg(
+            options=["--pool-name"],
+            help="Pool name.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9]+",
-                max_length=50,
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
             ),
         )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
 
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.attached_resource_id = AAZResourceIdArg(
-            options=["--attached-resource-id"],
+        _args_schema.targets = AAZListArg(
+            options=["--targets"],
             arg_group="Body",
-            help="The attached resource Id",
+            help="The targets to align on. Possible values are \"NetworkProperties\", \"HibernateSupport\", or \"SingleSignOnStatus\".",
             required=True,
+        )
+
+        targets = cls._args_schema.targets
+        targets.Element = AAZStrArg(
+            enum={"HibernateSupport": "HibernateSupport", "NetworkProperties": "NetworkProperties", "SingleSignOnStatus": "SingleSignOnStatus"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.EdgeActionsAddAttachment(ctx=self.ctx)()
+        yield self.DevBoxesAlignPool(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,12 +105,9 @@ class AddAttachment(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
 
-    class EdgeActionsAddAttachment(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
+    class DevBoxesAlignPool(AAZHttpOperation):
+        CLIENT_TYPE = "AAZMicrosoftDevcenterDataPlaneClient_devcenter"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
@@ -99,7 +118,7 @@ class AddAttachment(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -108,16 +127,15 @@ class AddAttachment(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/edgeActions/{edgeActionName}/addAttachment",
+                "/projects/{projectName}/pools/{poolName}:align",
                 **self.url_parameters
             )
 
@@ -127,21 +145,22 @@ class AddAttachment(AAZCommand):
 
         @property
         def error_format(self):
-            return "MgmtErrorFormat"
+            return "ODataV4Format"
 
         @property
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "edgeActionName", self.ctx.args.edge_action_name,
+                    "endpoint", self.ctx.args.endpoint,
+                    skip_quote=True,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "poolName", self.ctx.args.pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
             }
@@ -151,20 +170,20 @@ class AddAttachment(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2025-08-01-preview",
                     required=True,
                 ),
             }
             return parameters
+        
+        def on_200(self, session):
+            pass
 
         @property
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
-                    "Accept", "application/json",
                 ),
             }
             return parameters
@@ -176,38 +195,17 @@ class AddAttachment(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("attachedResourceId", AAZStrType, ".attached_resource_id", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("targets", AAZListType, ".targets", typ_kwargs={"flags": {"required": True}})
+
+            targets = _builder.get(".targets")
+            if targets is not None:
+                targets.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
 
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.edge_action_id = AAZStrType(
-                serialized_name="edgeActionId",
-                flags={"required": True},
-            )
-
-            return cls._schema_on_200
+class _AlignHelper:
+    """Helper class for Align"""
 
 
-class _AddAttachmentHelper:
-    """Helper class for AddAttachment"""
-
-
-__all__ = ["AddAttachment"]
+__all__ = ["Align"]

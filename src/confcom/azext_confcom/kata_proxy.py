@@ -23,8 +23,8 @@ _binaries_dir = get_binaries_dir()
 _kata_binaries = {
     "Linux": {
         "path": _binaries_dir / "genpolicy-linux",
-        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/genpolicy",
-        "sha256": "4cd497ca5e995ddacb53af4da47449c16291aea62e9f8b8ee0fe36ca8d41fe66",
+        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy4/genpolicy",
+        "sha256": "8ce7b6d93809c2c999845986784e75a114af5c29e880c5ac90522e856c49b546",
     },
     "Windows": {
         "path": _binaries_dir / "genpolicy-windows.exe",
@@ -36,12 +36,12 @@ _data_dir = get_data_dir()
 _kata_data = [
     {
         "path": _data_dir / "genpolicy-settings.json",
-        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/genpolicy-settings.json",  # pylint: disable=line-too-long
+        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy4/genpolicy-settings.json",  # pylint: disable=line-too-long
         "sha256": "c38be1474b133d49800a43bd30c40e7585b5f302179a307f9c6d89f195daee94",
     },
     {
         "path": _data_dir / "rules.rego",
-        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy3/rules.rego",
+        "url": "https://github.com/microsoft/kata-containers/releases/download/3.2.0.azl3.genpolicy4/rules.rego",
         "sha256": "2ca6c0e9617f97a922724112bd738fd73881d35b9ae5d31d573f0871d1ecf897",
     },
 ]
