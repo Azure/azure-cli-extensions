@@ -14,6 +14,10 @@ helps[
     short-summary: Run AI assistant to analyze and troubleshoot Azure Kubernetes Service (AKS) clusters.
     long-summary: |-
       This command allows you to ask questions about your Azure Kubernetes cluster and get answers using AI models.
+
+      Prerequisites:
+      - Run 'az aks agent-init' first to configure the LLM provider and deployment mode
+      - For client mode: Docker must be installed and running
     parameters:
         - name: --name -n
           type: string
@@ -49,6 +53,17 @@ helps[
         - name: --status
           type: bool
           short-summary: Show AKS agent deployment status including helm release, deployments, and pod information.
+        - name: --namespace
+          type: string
+          short-summary: The Kubernetes namespace where the AKS Agent is deployed. Required for cluster mode.
+        - name: --mode
+          type: string
+          short-summary: The mode decides how the agent is deployed.
+          long-summary: |-
+            The agent can be deployed in two modes:
+            - cluster mode: Deploys AKS agent as a Helm release on the cluster with managed aks-mcp instance
+            - client mode: Configures agent to run locally in a Docker container
+            Default is 'cluster' mode.
     examples:
         - name: Ask about pod issues in the cluster with OpenAI
           text: |-
@@ -87,6 +102,13 @@ helps[
     long-summary: |-
       This command interactively guides you to select an LLM provider and model, validates the connection, and saves the configuration for later use.
       You can run this command multiple times to add or update different model configurations.
+
+      The command supports two deployment modes:
+      - cluster mode: Deploys AKS agent as a Helm release on the cluster with managed aks-mcp instance
+      - client mode: Configures agent to run locally in a Docker container
+
+      Note: Configuration is required before running 'az aks agent'. The agent will validate that all necessary
+      configuration files (model_list.yaml, custom_toolset.yaml) exist before execution.
     parameters:
         - name: --name -n
           type: string
@@ -114,6 +136,17 @@ helps[
         - name: --resource-group -g
           type: string
           short-summary: Name of the resource group.
+        - name: --namespace
+          type: string
+          short-summary: The Kubernetes namespace where the AKS Agent is deployed. Required for cluster mode.
+        - name: --mode
+          type: string
+          short-summary: The mode decides how the agent is deployed.
+          long-summary: |-
+            The agent can be deployed in two modes:
+            - cluster mode: Deploys AKS agent as a Helm release on the cluster with managed aks-mcp instance
+            - client mode: Configures agent to run locally in a Docker container
+            Default is 'cluster' mode.
     examples:
         - name: Cleanup and uninstall AKS agent from the cluster
           text: az aks agent-cleanup --resource-group myResourceGroup --name myAKSCluster
