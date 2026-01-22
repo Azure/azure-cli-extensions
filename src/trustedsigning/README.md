@@ -1,6 +1,6 @@
 # Azure CLI Trustedsigning Extension #
 The `trustedsigning` command group has been deprecated and will be removed in a future release.
- Use the `artifact-signing` command group instead.
+Use the `artifact-signing` command group instead.
 
 ## How to use ##
 Install this extension using the below CLI command
