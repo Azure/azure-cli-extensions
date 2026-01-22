@@ -237,15 +237,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             if osdisk_security_params:
                 create_repair_vm_command += osdisk_security_params
 
-        # #### DEBUG EXIT BEFORE ANYTHING IS CREATED #####
-        from pprint import pprint
-        print("TAGS:")
-        pprint(tags)
-        print("CREATE REPAIR VM COMMAND:")
-        pprint(create_repair_vm_command)
-        # raise RuntimeError("EXITING BEFORE CREATING ANYTHING FOR DEBUGGING PURPOSES")
-        # #### END DEBUG EXIT #####
-
         # Creating a new resource group for the repair VM and its resources.
         # First, check if the repair group already exists.
         # If it doesn't, create a new resource group at the same location as the source VM.
@@ -951,7 +942,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
     return return_dict
 
 
-def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None):
+def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False size=None):
     """
     This function manages the process of repairing and restoring a specified virtual machine (VM). The process involves
     the creation of a repair VM, the generation of a copy of the problem VM's disk, and the formation of a new resource
@@ -966,6 +957,8 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     :param copy_disk_name: (Optional) The name to assign to the copy of the disk. If not provided, a unique name is generated.
     :param repair_group_name: (Optional) The name of the repair resource group. If not provided, a unique name is generated.
     :param tags: (Optional) Tags to apply to the repair VM.
+    :param copy_tags: (Optional) Boolean indicating whether to copy tags from the source VM to the repair VM.
+    :param size: (Optional) The size of the repair VM.
     """
     from datetime import datetime
     import secrets
@@ -994,7 +987,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     existing_rg = _check_existing_rg(repair_group_name)
 
     # Create a repair VM, copy of the disk, and a new resource group
-    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True, tags=tags)
+    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True, tags=tags, copy_tags=copy_tags, size=size)
 
     # Log the output of the create operation
     logger.info('create_out: %s', create_out)
@@ -1068,7 +1061,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     return return_dict
 
 
-def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None):
+def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False, size=None):
     """
     Button-triggered repair operation. Supports tags for the repair VM.
     """
@@ -1093,7 +1086,7 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     repair_group_name = 'repair-' + vm_name + '-' + timestamp
     existing_rg = _check_existing_rg(repair_group_name)
 
-    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True, tags=tags)
+    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True, tags=tags, copy_tags=copy_tags, size=size)
 
     # log create_out
     logger.info('create_out: %s', create_out)

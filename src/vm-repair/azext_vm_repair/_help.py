@@ -15,17 +15,16 @@ helps['vm repair'] = """
 helps['vm repair create'] = """
     type: command
     short-summary: Create a new repair VM and attach the source VM's copied OS disk as a data disk.
-    parameters:
-        - name: --tags
-          type: string
-          short-summary: Space-separated tags in 'key[=value]' format. Use '' to clear existing tags.
     examples:
         - name: Create a repair VM
           text: >
             az vm repair create -g MyResourceGroup -n myVM --verbose
         - name: Create a repair VM with tags
           text: >
-            az vm repair create -g MyResourceGroup -n myVM --tags env=dev owner=alice --verbose
+            az vm repair create -g MyResourceGroup -n myVM --tags "env=dev owner=alice" --verbose
+        - name: Create a repair VM with identical tags to the source VM
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --copy-tags --verbose
         - name: Create a repair VM and set the VM authentication
           text: >
             az vm repair create -g MyResourceGroup -n myVM --repair-username username --repair-password password!234 --verbose

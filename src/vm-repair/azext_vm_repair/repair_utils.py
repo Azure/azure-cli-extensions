@@ -887,8 +887,8 @@ def _supports_nested_virtualization(vm_size: str) -> bool:
 
     # Valid x64 VM families
     x64_families = {
-        "d", "ds", "dd", "dds",
-        "e", "es", "ed", "eds",
+        "d", "ds", "dd", "dds", "das", "dads", "dals", "dalds"
+        "e", "es", "ed", "eds", "eas", "eads",
         "f", "fs", "fsv2", "fx",
         "m"
     }
