@@ -42,37 +42,6 @@ class ActivationProperties(_serialization.Model):
         self.status: Optional[Union[str, "_models.ActivationStatus"]] = None
 
 
-class ActiveDirectoryObject(_serialization.Model):
-    """The Active Directory Object that will be used for authenticating the token of a container
-    registry.
-
-    :ivar object_id: The user/group/application object ID for Active Directory Object that will be
-     used for authenticating the token of a container registry.
-    :vartype object_id: str
-    :ivar tenant_id: The tenant ID of user/group/application object Active Directory Object that
-     will be used for authenticating the token of a container registry.
-    :vartype tenant_id: str
-    """
-
-    _attribute_map = {
-        "object_id": {"key": "objectId", "type": "str"},
-        "tenant_id": {"key": "tenantId", "type": "str"},
-    }
-
-    def __init__(self, *, object_id: Optional[str] = None, tenant_id: Optional[str] = None, **kwargs: Any) -> None:
-        """
-        :keyword object_id: The user/group/application object ID for Active Directory Object that will
-         be used for authenticating the token of a container registry.
-        :paramtype object_id: str
-        :keyword tenant_id: The tenant ID of user/group/application object Active Directory Object that
-         will be used for authenticating the token of a container registry.
-        :paramtype tenant_id: str
-        """
-        super().__init__(**kwargs)
-        self.object_id = object_id
-        self.tenant_id = tenant_id
-
-
 class Actor(_serialization.Model):
     """The agent that initiated the event. For most situations, this could be from the authorization
     context of the request.
@@ -96,19 +65,21 @@ class Actor(_serialization.Model):
         self.name = name
 
 
-class ProxyResource(_serialization.Model):
-    """The resource model definition for a ARM proxy resource. It will have everything other than
-    required location and tags.
+class Resource(_serialization.Model):
+    """Common fields that are returned in the response for all Azure Resource Manager resources.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
     """
 
@@ -135,18 +106,41 @@ class ProxyResource(_serialization.Model):
         self.system_data: Optional["_models.SystemData"] = None
 
 
+class ProxyResource(Resource):
+    """The resource model definition for a Azure Resource Manager proxy resource. It will not have
+    tags and a location.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
+    """
+
+
 class Archive(ProxyResource):
     """An object that represents a archive for a container registry.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
     :ivar package_source: The package source of the archive.
     :vartype package_source: ~azure.mgmt.containerregistry.models.ArchivePackageSourceProperties
@@ -211,7 +205,7 @@ class ArchiveListResult(_serialization.Model):
     """The result of a request to list archives for a container registry.
 
     :ivar value: The list of archives. Since this list may be incomplete, the nextLink field should
-     be used to request the next list of distributions.
+     be used to request the next list of archives.
     :vartype value: list[~azure.mgmt.containerregistry.models.Archive]
     :ivar next_link: The URI that can be used to request the next list of archives.
     :vartype next_link: str
@@ -227,7 +221,7 @@ class ArchiveListResult(_serialization.Model):
     ) -> None:
         """
         :keyword value: The list of archives. Since this list may be incomplete, the nextLink field
-         should be used to request the next list of distributions.
+         should be used to request the next list of archives.
         :paramtype value: list[~azure.mgmt.containerregistry.models.Archive]
         :keyword next_link: The URI that can be used to request the next list of archives.
         :paramtype next_link: str
@@ -350,13 +344,16 @@ class ArchiveVersion(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
     :ivar provisioning_state: The provisioning state of the archive at the time the operation was
      called. Known values are: "Creating", "Updating", "Deleting", "Succeeded", "Failed", and
@@ -396,12 +393,12 @@ class ArchiveVersion(ProxyResource):
 
 
 class ArchiveVersionListResult(_serialization.Model):
-    """The result of a request to list export pipelines for a container registry.
+    """The result of a request to list archive versions for a container registry.
 
-    :ivar value: The list of export pipelines. Since this list may be incomplete, the nextLink
-     field should be used to request the next list of export pipelines.
+    :ivar value: The list of archive versions. Since this list may be incomplete, the nextLink
+     field should be used to request the next list of archive versions.
     :vartype value: list[~azure.mgmt.containerregistry.models.ArchiveVersion]
-    :ivar next_link: The URI that can be used to request the next list of pipeline runs.
+    :ivar next_link: The URI that can be used to request the next list of archive versions.
     :vartype next_link: str
     """
 
@@ -414,10 +411,10 @@ class ArchiveVersionListResult(_serialization.Model):
         self, *, value: Optional[list["_models.ArchiveVersion"]] = None, next_link: Optional[str] = None, **kwargs: Any
     ) -> None:
         """
-        :keyword value: The list of export pipelines. Since this list may be incomplete, the nextLink
-         field should be used to request the next list of export pipelines.
+        :keyword value: The list of archive versions. Since this list may be incomplete, the nextLink
+         field should be used to request the next list of archive versions.
         :paramtype value: list[~azure.mgmt.containerregistry.models.ArchiveVersion]
-        :keyword next_link: The URI that can be used to request the next list of pipeline runs.
+        :keyword next_link: The URI that can be used to request the next list of archive versions.
         :paramtype next_link: str
         """
         super().__init__(**kwargs)
@@ -505,14 +502,19 @@ class CacheRule(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
+    :ivar identity: The identity of the cache rule.
+    :vartype identity: ~azure.mgmt.containerregistry.models.IdentityProperties
     :ivar credential_set_resource_id: The ARM resource ID of the credential store which is
      associated with the cache rule.
     :vartype credential_set_resource_id: str
@@ -542,6 +544,7 @@ class CacheRule(ProxyResource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
+        "identity": {"key": "identity", "type": "IdentityProperties"},
         "credential_set_resource_id": {"key": "properties.credentialSetResourceId", "type": "str"},
         "source_repository": {"key": "properties.sourceRepository", "type": "str"},
         "target_repository": {"key": "properties.targetRepository", "type": "str"},
@@ -552,12 +555,15 @@ class CacheRule(ProxyResource):
     def __init__(
         self,
         *,
+        identity: Optional["_models.IdentityProperties"] = None,
         credential_set_resource_id: Optional[str] = None,
         source_repository: Optional[str] = None,
         target_repository: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
+        :keyword identity: The identity of the cache rule.
+        :paramtype identity: ~azure.mgmt.containerregistry.models.IdentityProperties
         :keyword credential_set_resource_id: The ARM resource ID of the credential store which is
          associated with the cache rule.
         :paramtype credential_set_resource_id: str
@@ -568,6 +574,7 @@ class CacheRule(ProxyResource):
         :paramtype target_repository: str
         """
         super().__init__(**kwargs)
+        self.identity = identity
         self.credential_set_resource_id = credential_set_resource_id
         self.source_repository = source_repository
         self.target_repository = target_repository
@@ -578,9 +585,10 @@ class CacheRule(ProxyResource):
 class CacheRulesListResult(_serialization.Model):
     """The result of a request to list cache rules for a container registry.
 
-    :ivar value: The list of cache rules.
+    :ivar value: The list of cache rules. Since this list may be incomplete, the nextLink field
+     should be used to request the next list of cache rules.
     :vartype value: list[~azure.mgmt.containerregistry.models.CacheRule]
-    :ivar next_link: If provided, client must use NextLink URI to request next list of cache rules.
+    :ivar next_link: The URI that can be used to request the next list of cache rules.
     :vartype next_link: str
     """
 
@@ -593,10 +601,10 @@ class CacheRulesListResult(_serialization.Model):
         self, *, value: Optional[list["_models.CacheRule"]] = None, next_link: Optional[str] = None, **kwargs: Any
     ) -> None:
         """
-        :keyword value: The list of cache rules.
+        :keyword value: The list of cache rules. Since this list may be incomplete, the nextLink field
+         should be used to request the next list of cache rules.
         :paramtype value: list[~azure.mgmt.containerregistry.models.CacheRule]
-        :keyword next_link: If provided, client must use NextLink URI to request next list of cache
-         rules.
+        :keyword next_link: The URI that can be used to request the next list of cache rules.
         :paramtype next_link: str
         """
         super().__init__(**kwargs)
@@ -607,22 +615,34 @@ class CacheRulesListResult(_serialization.Model):
 class CacheRuleUpdateParameters(_serialization.Model):
     """The parameters for updating a cache rule.
 
+    :ivar identity: The identity of the cache rule.
+    :vartype identity: ~azure.mgmt.containerregistry.models.IdentityProperties
     :ivar credential_set_resource_id: The ARM resource ID of the credential store which is
      associated with the Cache rule.
     :vartype credential_set_resource_id: str
     """
 
     _attribute_map = {
+        "identity": {"key": "identity", "type": "IdentityProperties"},
         "credential_set_resource_id": {"key": "properties.credentialSetResourceId", "type": "str"},
     }
 
-    def __init__(self, *, credential_set_resource_id: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *,
+        identity: Optional["_models.IdentityProperties"] = None,
+        credential_set_resource_id: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         """
+        :keyword identity: The identity of the cache rule.
+        :paramtype identity: ~azure.mgmt.containerregistry.models.IdentityProperties
         :keyword credential_set_resource_id: The ARM resource ID of the credential store which is
          associated with the Cache rule.
         :paramtype credential_set_resource_id: str
         """
         super().__init__(**kwargs)
+        self.identity = identity
         self.credential_set_resource_id = credential_set_resource_id
 
 
@@ -663,13 +683,16 @@ class ConnectedRegistry(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
     :ivar provisioning_state: Provisioning state of the resource. Known values are: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed", and "Canceled".
@@ -702,6 +725,9 @@ class ConnectedRegistry(ProxyResource):
     :vartype notifications_list: list[str]
     :ivar garbage_collection: The garbage collection properties of the connected registry.
     :vartype garbage_collection: ~azure.mgmt.containerregistry.models.GarbageCollectionProperties
+    :ivar registry_sync_result: The result of the connected registry's most recent sync with its
+     parent.
+    :vartype registry_sync_result: ~azure.mgmt.containerregistry.models.RegistrySyncResult
     """
 
     _validation = {
@@ -735,6 +761,7 @@ class ConnectedRegistry(ProxyResource):
         "status_details": {"key": "properties.statusDetails", "type": "[StatusDetailProperties]"},
         "notifications_list": {"key": "properties.notificationsList", "type": "[str]"},
         "garbage_collection": {"key": "properties.garbageCollection", "type": "GarbageCollectionProperties"},
+        "registry_sync_result": {"key": "properties.registrySyncResult", "type": "RegistrySyncResult"},
     }
 
     def __init__(
@@ -747,6 +774,7 @@ class ConnectedRegistry(ProxyResource):
         logging: Optional["_models.LoggingProperties"] = None,
         notifications_list: Optional[list[str]] = None,
         garbage_collection: Optional["_models.GarbageCollectionProperties"] = None,
+        registry_sync_result: Optional["_models.RegistrySyncResult"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -767,6 +795,9 @@ class ConnectedRegistry(ProxyResource):
         :paramtype notifications_list: list[str]
         :keyword garbage_collection: The garbage collection properties of the connected registry.
         :paramtype garbage_collection: ~azure.mgmt.containerregistry.models.GarbageCollectionProperties
+        :keyword registry_sync_result: The result of the connected registry's most recent sync with its
+         parent.
+        :paramtype registry_sync_result: ~azure.mgmt.containerregistry.models.RegistrySyncResult
         """
         super().__init__(**kwargs)
         self.provisioning_state: Optional[Union[str, "_models.ProvisioningState"]] = None
@@ -782,6 +813,7 @@ class ConnectedRegistry(ProxyResource):
         self.status_details: Optional[list["_models.StatusDetailProperties"]] = None
         self.notifications_list = notifications_list
         self.garbage_collection = garbage_collection
+        self.registry_sync_result = registry_sync_result
 
 
 class ConnectedRegistryListResult(_serialization.Model):
@@ -919,13 +951,16 @@ class CredentialSet(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
     :ivar identity: Identities associated with the resource. This is used to access the KeyVault
      secrets.
@@ -1551,13 +1586,16 @@ class ExportPipeline(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
     :ivar location: The location of the export pipeline.
     :vartype location: str
@@ -1626,7 +1664,7 @@ class ExportPipelineListResult(_serialization.Model):
     :ivar value: The list of export pipelines. Since this list may be incomplete, the nextLink
      field should be used to request the next list of export pipelines.
     :vartype value: list[~azure.mgmt.containerregistry.models.ExportPipeline]
-    :ivar next_link: The URI that can be used to request the next list of pipeline runs.
+    :ivar next_link: The URI that can be used to request the next list of export pipelines.
     :vartype next_link: str
     """
 
@@ -1642,7 +1680,7 @@ class ExportPipelineListResult(_serialization.Model):
         :keyword value: The list of export pipelines. Since this list may be incomplete, the nextLink
          field should be used to request the next list of export pipelines.
         :paramtype value: list[~azure.mgmt.containerregistry.models.ExportPipeline]
-        :keyword next_link: The URI that can be used to request the next list of pipeline runs.
+        :keyword next_link: The URI that can be used to request the next list of export pipelines.
         :paramtype next_link: str
         """
         super().__init__(**kwargs)
@@ -1656,6 +1694,7 @@ class ExportPipelineTargetProperties(_serialization.Model):
     :ivar type: The type of target for the export pipeline.
     :vartype type: str
     :ivar uri: The target uri of the export pipeline.
+     When 'AzureStorageBlob': "https://accountName.blob.core.windows.net/containerName/blobName"
      When 'AzureStorageBlobContainer':  "https://accountName.blob.core.windows.net/containerName".
     :vartype uri: str
     :ivar key_vault_uri: They key vault secret uri to obtain the target storage SAS token.
@@ -1685,6 +1724,7 @@ class ExportPipelineTargetProperties(_serialization.Model):
         :keyword type: The type of target for the export pipeline.
         :paramtype type: str
         :keyword uri: The target uri of the export pipeline.
+         When 'AzureStorageBlob': "https://accountName.blob.core.windows.net/containerName/blobName"
          When 'AzureStorageBlobContainer':  "https://accountName.blob.core.windows.net/containerName".
         :paramtype uri: str
         :keyword key_vault_uri: They key vault secret uri to obtain the target storage SAS token.
@@ -1842,7 +1882,7 @@ class IdentityProperties(_serialization.Model):
      user identity
      dictionary key references will be ARM resource ids in the form:
      '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/
-         providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
+     providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
     :vartype user_assigned_identities: dict[str,
      ~azure.mgmt.containerregistry.models.UserIdentityProperties]
     """
@@ -1874,7 +1914,7 @@ class IdentityProperties(_serialization.Model):
          The user identity
          dictionary key references will be ARM resource ids in the form:
          '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/
-             providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
+         providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
         :paramtype user_assigned_identities: dict[str,
          ~azure.mgmt.containerregistry.models.UserIdentityProperties]
         """
@@ -1950,13 +1990,16 @@ class ImportPipeline(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
     :ivar location: The location of the import pipeline.
     :vartype location: str
@@ -2032,7 +2075,7 @@ class ImportPipelineListResult(_serialization.Model):
     :ivar value: The list of import pipelines. Since this list may be incomplete, the nextLink
      field should be used to request the next list of import pipelines.
     :vartype value: list[~azure.mgmt.containerregistry.models.ImportPipeline]
-    :ivar next_link: The URI that can be used to request the next list of pipeline runs.
+    :ivar next_link: The URI that can be used to request the next list of import pipelines.
     :vartype next_link: str
     """
 
@@ -2048,7 +2091,7 @@ class ImportPipelineListResult(_serialization.Model):
         :keyword value: The list of import pipelines. Since this list may be incomplete, the nextLink
          field should be used to request the next list of import pipelines.
         :paramtype value: list[~azure.mgmt.containerregistry.models.ImportPipeline]
-        :keyword next_link: The URI that can be used to request the next list of pipeline runs.
+        :keyword next_link: The URI that can be used to request the next list of import pipelines.
         :paramtype next_link: str
         """
         super().__init__(**kwargs)
@@ -2062,6 +2105,7 @@ class ImportPipelineSourceProperties(_serialization.Model):
     :ivar type: The type of source for the import pipeline. "AzureStorageBlobContainer"
     :vartype type: str or ~azure.mgmt.containerregistry.models.PipelineSourceType
     :ivar uri: The source uri of the import pipeline.
+     When 'AzureStorageBlob': "https://accountName.blob.core.windows.net/containerName/blobName"
      When 'AzureStorageBlobContainer': "https://accountName.blob.core.windows.net/containerName".
     :vartype uri: str
     :ivar key_vault_uri: They key vault secret uri to obtain the source storage SAS token.
@@ -2091,6 +2135,7 @@ class ImportPipelineSourceProperties(_serialization.Model):
         :keyword type: The type of source for the import pipeline. "AzureStorageBlobContainer"
         :paramtype type: str or ~azure.mgmt.containerregistry.models.PipelineSourceType
         :keyword uri: The source uri of the import pipeline.
+         When 'AzureStorageBlob': "https://accountName.blob.core.windows.net/containerName/blobName"
          When 'AzureStorageBlobContainer': "https://accountName.blob.core.windows.net/containerName".
         :paramtype uri: str
         :keyword key_vault_uri: They key vault secret uri to obtain the source storage SAS token.
@@ -2662,36 +2707,6 @@ class OperationServiceSpecificationDefinition(_serialization.Model):
         self.log_specifications = log_specifications
 
 
-class PackageType(_serialization.Model):
-    """The properties of a package type.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar name: The name of the package type.
-    :vartype name: str
-    :ivar endpoint: The endpoint of the package type.
-    :vartype endpoint: str
-    """
-
-    _validation = {
-        "endpoint": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "name": {"key": "name", "type": "str"},
-        "endpoint": {"key": "endpoint", "type": "str"},
-    }
-
-    def __init__(self, *, name: Optional[str] = None, **kwargs: Any) -> None:
-        """
-        :keyword name: The name of the package type.
-        :paramtype name: str
-        """
-        super().__init__(**kwargs)
-        self.name = name
-        self.endpoint: Optional[str] = None
-
-
 class ParentProperties(_serialization.Model):
     """The properties of the connected registry parent.
 
@@ -2736,13 +2751,16 @@ class PipelineRun(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
     :ivar provisioning_state: The provisioning state of a pipeline run. Known values are:
      "Creating", "Updating", "Deleting", "Succeeded", "Failed", and "Canceled".
@@ -3225,13 +3243,16 @@ class PrivateEndpointConnection(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
     :ivar private_endpoint: The resource of private endpoint.
     :vartype private_endpoint: ~azure.mgmt.containerregistry.models.PrivateEndpoint
@@ -3322,66 +3343,57 @@ class PrivateEndpointConnectionListResult(_serialization.Model):
         self.next_link = next_link
 
 
-class PrivateLinkResource(_serialization.Model):
-    """A resource that supports private link capabilities.
+class PrivateLinkResource(Resource):
+    """A private link resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar type: The resource type is private link resource.
-    :vartype type: str
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
     :ivar group_id: The private link resource group id.
     :vartype group_id: str
     :ivar required_members: The private link resource required member names.
     :vartype required_members: list[str]
-    :ivar required_zone_names: The private link resource Private link DNS zone name.
+    :ivar required_zone_names: The private link resource private link DNS zone name.
     :vartype required_zone_names: list[str]
     """
 
     _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
         "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "group_id": {"readonly": True},
+        "required_members": {"readonly": True},
     }
 
     _attribute_map = {
-        "type": {"key": "type", "type": "str"},
         "id": {"key": "id", "type": "str"},
         "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
         "group_id": {"key": "properties.groupId", "type": "str"},
         "required_members": {"key": "properties.requiredMembers", "type": "[str]"},
         "required_zone_names": {"key": "properties.requiredZoneNames", "type": "[str]"},
     }
 
-    def __init__(
-        self,
-        *,
-        id: Optional[str] = None,  # pylint: disable=redefined-builtin
-        name: Optional[str] = None,
-        group_id: Optional[str] = None,
-        required_members: Optional[list[str]] = None,
-        required_zone_names: Optional[list[str]] = None,
-        **kwargs: Any
-    ) -> None:
+    def __init__(self, *, required_zone_names: Optional[list[str]] = None, **kwargs: Any) -> None:
         """
-        :keyword id: The resource ID.
-        :paramtype id: str
-        :keyword name: The name of the resource.
-        :paramtype name: str
-        :keyword group_id: The private link resource group id.
-        :paramtype group_id: str
-        :keyword required_members: The private link resource required member names.
-        :paramtype required_members: list[str]
-        :keyword required_zone_names: The private link resource Private link DNS zone name.
+        :keyword required_zone_names: The private link resource private link DNS zone name.
         :paramtype required_zone_names: list[str]
         """
         super().__init__(**kwargs)
-        self.type: Optional[str] = None
-        self.id = id
-        self.name = name
-        self.group_id = group_id
-        self.required_members = required_members
+        self.group_id: Optional[str] = None
+        self.required_members: Optional[list[str]] = None
         self.required_zone_names = required_zone_names
 
 
@@ -3535,82 +3547,82 @@ class RegenerateCredentialParameters(_serialization.Model):
         self.name = name
 
 
-class Resource(_serialization.Model):
-    """An Azure resource.
+class TrackedResource(Resource):
+    """The resource model definition for an Azure Resource Manager tracked top level resource which
+    has 'tags' and a 'location'.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to server.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar location: The location of the resource. This cannot be changed after the resource is
-     created. Required.
-    :vartype location: str
-    :ivar tags: The tags of the resource.
-    :vartype tags: dict[str, str]
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar location: The geo-location where the resource lives. Required.
+    :vartype location: str
     """
 
     _validation = {
         "id": {"readonly": True},
         "name": {"readonly": True},
         "type": {"readonly": True},
-        "location": {"required": True},
         "system_data": {"readonly": True},
+        "location": {"required": True},
     }
 
     _attribute_map = {
         "id": {"key": "id", "type": "str"},
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
-        "location": {"key": "location", "type": "str"},
-        "tags": {"key": "tags", "type": "{str}"},
         "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
     }
 
     def __init__(self, *, location: str, tags: Optional[dict[str, str]] = None, **kwargs: Any) -> None:
         """
-        :keyword location: The location of the resource. This cannot be changed after the resource is
-         created. Required.
-        :paramtype location: str
-        :keyword tags: The tags of the resource.
+        :keyword tags: Resource tags.
         :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
         """
         super().__init__(**kwargs)
-        self.id: Optional[str] = None
-        self.name: Optional[str] = None
-        self.type: Optional[str] = None
-        self.location = location
         self.tags = tags
-        self.system_data: Optional["_models.SystemData"] = None
+        self.location = location
 
 
-class Registry(Resource):
+class Registry(TrackedResource):
     """An object that represents a container registry.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to server.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar location: The location of the resource. This cannot be changed after the resource is
-     created. Required.
-    :vartype location: str
-    :ivar tags: The tags of the resource.
-    :vartype tags: dict[str, str]
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar location: The geo-location where the resource lives. Required.
+    :vartype location: str
     :ivar sku: The SKU of the container registry. Required.
     :vartype sku: ~azure.mgmt.containerregistry.models.Sku
     :ivar identity: The identity of the container registry.
@@ -3638,11 +3650,15 @@ class Registry(Resource):
     :ivar data_endpoint_host_names: List of host names that will serve data when
      dataEndpointEnabled is true.
     :vartype data_endpoint_host_names: list[str]
-    :ivar regional_endpoint_enabled: Enable per-region endpoints for accessing registry.
-    :vartype regional_endpoint_enabled: bool
+    :ivar regional_endpoints: Enable per-region endpoints for accessing registry. Known values are:
+     "Enabled" and "Disabled".
+    :vartype regional_endpoints: str or ~azure.mgmt.containerregistry.models.RegionalEndpoints
     :ivar regional_endpoint_host_names: List of host names that will serve registry when
-     regionalEndpointEnabled is true.
+     RegionalEndpoints is enabled.
     :vartype regional_endpoint_host_names: list[str]
+    :ivar endpoint_protocol: The connectivity protocol for the registry, such as IPv4 or dual stack
+     (IPv4 and IPv6). Known values are: "IPv4" and "IPv4AndIPv6".
+    :vartype endpoint_protocol: str or ~azure.mgmt.containerregistry.models.EndpointProtocol
     :ivar private_endpoint_connections: List of private endpoint connections for a container
      registry.
     :vartype private_endpoint_connections:
@@ -3679,8 +3695,8 @@ class Registry(Resource):
         "id": {"readonly": True},
         "name": {"readonly": True},
         "type": {"readonly": True},
-        "location": {"required": True},
         "system_data": {"readonly": True},
+        "location": {"required": True},
         "sku": {"required": True},
         "login_server": {"readonly": True},
         "creation_date": {"readonly": True},
@@ -3695,9 +3711,9 @@ class Registry(Resource):
         "id": {"key": "id", "type": "str"},
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
-        "location": {"key": "location", "type": "str"},
-        "tags": {"key": "tags", "type": "{str}"},
         "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
         "sku": {"key": "sku", "type": "Sku"},
         "identity": {"key": "identity", "type": "IdentityProperties"},
         "login_server": {"key": "properties.loginServer", "type": "str"},
@@ -3710,8 +3726,9 @@ class Registry(Resource):
         "encryption": {"key": "properties.encryption", "type": "EncryptionProperty"},
         "data_endpoint_enabled": {"key": "properties.dataEndpointEnabled", "type": "bool"},
         "data_endpoint_host_names": {"key": "properties.dataEndpointHostNames", "type": "[str]"},
-        "regional_endpoint_enabled": {"key": "properties.regionalEndpointEnabled", "type": "bool"},
+        "regional_endpoints": {"key": "properties.regionalEndpoints", "type": "str"},
         "regional_endpoint_host_names": {"key": "properties.regionalEndpointHostNames", "type": "[str]"},
+        "endpoint_protocol": {"key": "properties.endpointProtocol", "type": "str"},
         "private_endpoint_connections": {
             "key": "properties.privateEndpointConnections",
             "type": "[PrivateEndpointConnection]",
@@ -3741,7 +3758,8 @@ class Registry(Resource):
         policies: Optional["_models.Policies"] = None,
         encryption: Optional["_models.EncryptionProperty"] = None,
         data_endpoint_enabled: Optional[bool] = None,
-        regional_endpoint_enabled: bool = False,
+        regional_endpoints: Optional[Union[str, "_models.RegionalEndpoints"]] = None,
+        endpoint_protocol: Optional[Union[str, "_models.EndpointProtocol"]] = None,
         public_network_access: Optional[Union[str, "_models.PublicNetworkAccess"]] = None,
         network_rule_bypass_options: Optional[Union[str, "_models.NetworkRuleBypassOptions"]] = None,
         network_rule_bypass_allowed_for_tasks: bool = False,
@@ -3755,11 +3773,10 @@ class Registry(Resource):
         **kwargs: Any
     ) -> None:
         """
-        :keyword location: The location of the resource. This cannot be changed after the resource is
-         created. Required.
-        :paramtype location: str
-        :keyword tags: The tags of the resource.
+        :keyword tags: Resource tags.
         :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
         :keyword sku: The SKU of the container registry. Required.
         :paramtype sku: ~azure.mgmt.containerregistry.models.Sku
         :keyword identity: The identity of the container registry.
@@ -3774,8 +3791,12 @@ class Registry(Resource):
         :paramtype encryption: ~azure.mgmt.containerregistry.models.EncryptionProperty
         :keyword data_endpoint_enabled: Enable a single data endpoint per region for serving data.
         :paramtype data_endpoint_enabled: bool
-        :keyword regional_endpoint_enabled: Enable per-region endpoints for accessing registry.
-        :paramtype regional_endpoint_enabled: bool
+        :keyword regional_endpoints: Enable per-region endpoints for accessing registry. Known values
+         are: "Enabled" and "Disabled".
+        :paramtype regional_endpoints: str or ~azure.mgmt.containerregistry.models.RegionalEndpoints
+        :keyword endpoint_protocol: The connectivity protocol for the registry, such as IPv4 or dual
+         stack (IPv4 and IPv6). Known values are: "IPv4" and "IPv4AndIPv6".
+        :paramtype endpoint_protocol: str or ~azure.mgmt.containerregistry.models.EndpointProtocol
         :keyword public_network_access: Whether or not public network access is allowed for the
          container registry. Known values are: "Enabled" and "Disabled".
         :paramtype public_network_access: str or
@@ -3804,7 +3825,7 @@ class Registry(Resource):
          "AbacRepositoryPermissions" and "LegacyRegistryPermissions".
         :paramtype role_assignment_mode: str or ~azure.mgmt.containerregistry.models.RoleAssignmentMode
         """
-        super().__init__(location=location, tags=tags, **kwargs)
+        super().__init__(tags=tags, location=location, **kwargs)
         self.sku = sku
         self.identity = identity
         self.login_server: Optional[str] = None
@@ -3817,8 +3838,9 @@ class Registry(Resource):
         self.encryption = encryption
         self.data_endpoint_enabled = data_endpoint_enabled
         self.data_endpoint_host_names: Optional[list[str]] = None
-        self.regional_endpoint_enabled = regional_endpoint_enabled
+        self.regional_endpoints = regional_endpoints
         self.regional_endpoint_host_names: Optional[list[str]] = None
+        self.endpoint_protocol = endpoint_protocol
         self.private_endpoint_connections: Optional[list["_models.PrivateEndpointConnection"]] = None
         self.public_network_access = public_network_access
         self.network_rule_bypass_options = network_rule_bypass_options
@@ -4034,6 +4056,66 @@ class RegistryPassword(_serialization.Model):
         self.value = value
 
 
+class RegistrySyncResult(_serialization.Model):
+    """The registry sync result of the connected registry.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar sync_trigger: The action that triggered the most recent registry sync. Required. Known
+     values are: "NotActivated", "Syncing", "Failed", "Succeeded", "TimedOut", and "Pending".
+    :vartype sync_trigger: str or ~azure.mgmt.containerregistry.models.SyncTrigger
+    :ivar sync_state: The status of the connected registry's most recent sync. Required. Known
+     values are: "SyncTokenUpdate", "InitialSync", "ManualResync", and "RecoveryService".
+    :vartype sync_state: str or ~azure.mgmt.containerregistry.models.SyncState
+    :ivar last_sync_start_time: The time that the connected registry's most recent sync started.
+    :vartype last_sync_start_time: ~datetime.datetime
+    :ivar last_sync_end_time: The time that the connected registry's most recent sync ended.
+    :vartype last_sync_end_time: ~datetime.datetime
+    :ivar last_successful_sync_end_time: The time that the connected registry's most recent
+     successful sync ended.
+    :vartype last_successful_sync_end_time: ~datetime.datetime
+    """
+
+    _validation = {
+        "sync_trigger": {"required": True, "readonly": True},
+        "sync_state": {"required": True, "readonly": True},
+    }
+
+    _attribute_map = {
+        "sync_trigger": {"key": "syncTrigger", "type": "str"},
+        "sync_state": {"key": "syncState", "type": "str"},
+        "last_sync_start_time": {"key": "lastSyncStartTime", "type": "iso-8601"},
+        "last_sync_end_time": {"key": "lastSyncEndTime", "type": "iso-8601"},
+        "last_successful_sync_end_time": {"key": "lastSuccessfulSyncEndTime", "type": "iso-8601"},
+    }
+
+    def __init__(
+        self,
+        *,
+        last_sync_start_time: Optional[datetime.datetime] = None,
+        last_sync_end_time: Optional[datetime.datetime] = None,
+        last_successful_sync_end_time: Optional[datetime.datetime] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword last_sync_start_time: The time that the connected registry's most recent sync started.
+        :paramtype last_sync_start_time: ~datetime.datetime
+        :keyword last_sync_end_time: The time that the connected registry's most recent sync ended.
+        :paramtype last_sync_end_time: ~datetime.datetime
+        :keyword last_successful_sync_end_time: The time that the connected registry's most recent
+         successful sync ended.
+        :paramtype last_successful_sync_end_time: ~datetime.datetime
+        """
+        super().__init__(**kwargs)
+        self.sync_trigger: Optional[Union[str, "_models.SyncTrigger"]] = None
+        self.sync_state: Optional[Union[str, "_models.SyncState"]] = None
+        self.last_sync_start_time = last_sync_start_time
+        self.last_sync_end_time = last_sync_end_time
+        self.last_successful_sync_end_time = last_successful_sync_end_time
+
+
 class RegistryUpdateParameters(_serialization.Model):
     """The parameters for updating a container registry.
 
@@ -4053,10 +4135,12 @@ class RegistryUpdateParameters(_serialization.Model):
     :vartype encryption: ~azure.mgmt.containerregistry.models.EncryptionProperty
     :ivar data_endpoint_enabled: Enable a single data endpoint per region for serving data.
     :vartype data_endpoint_enabled: bool
-    :ivar regional_endpoint_enabled: Enable per-region endpoints for accessing registry.
-    :vartype regional_endpoint_enabled: bool
-    :ivar dual_stack_endpoints_enabled:
-    :vartype dual_stack_endpoints_enabled: bool
+    :ivar regional_endpoints: Enable per-region endpoints for accessing registry. Known values are:
+     "Enabled" and "Disabled".
+    :vartype regional_endpoints: str or ~azure.mgmt.containerregistry.models.RegionalEndpoints
+    :ivar endpoint_protocol: The connectivity protocol for the registry, such as IPv4 or dual stack
+     (IPv4 and IPv6). Known values are: "IPv4" and "IPv4AndIPv6".
+    :vartype endpoint_protocol: str or ~azure.mgmt.containerregistry.models.EndpointProtocol
     :ivar public_network_access: Whether or not public network access is allowed for the container
      registry. Known values are: "Enabled" and "Disabled".
     :vartype public_network_access: str or ~azure.mgmt.containerregistry.models.PublicNetworkAccess
@@ -4086,8 +4170,8 @@ class RegistryUpdateParameters(_serialization.Model):
         "policies": {"key": "properties.policies", "type": "Policies"},
         "encryption": {"key": "properties.encryption", "type": "EncryptionProperty"},
         "data_endpoint_enabled": {"key": "properties.dataEndpointEnabled", "type": "bool"},
-        "regional_endpoint_enabled": {"key": "properties.regionalEndpointEnabled", "type": "bool"},
-        "dual_stack_endpoints_enabled": {"key": "properties.dualStackEndpointsEnabled", "type": "bool"},
+        "regional_endpoints": {"key": "properties.regionalEndpoints", "type": "str"},
+        "endpoint_protocol": {"key": "properties.endpointProtocol", "type": "str"},
         "public_network_access": {"key": "properties.publicNetworkAccess", "type": "str"},
         "network_rule_bypass_options": {"key": "properties.networkRuleBypassOptions", "type": "str"},
         "network_rule_bypass_allowed_for_tasks": {"key": "properties.networkRuleBypassAllowedForTasks", "type": "bool"},
@@ -4107,8 +4191,8 @@ class RegistryUpdateParameters(_serialization.Model):
         policies: Optional["_models.Policies"] = None,
         encryption: Optional["_models.EncryptionProperty"] = None,
         data_endpoint_enabled: Optional[bool] = None,
-        regional_endpoint_enabled: Optional[bool] = None,
-        dual_stack_endpoints_enabled: Optional[bool] = None,
+        regional_endpoints: Optional[Union[str, "_models.RegionalEndpoints"]] = None,
+        endpoint_protocol: Optional[Union[str, "_models.EndpointProtocol"]] = None,
         public_network_access: Optional[Union[str, "_models.PublicNetworkAccess"]] = None,
         network_rule_bypass_options: Optional[Union[str, "_models.NetworkRuleBypassOptions"]] = None,
         network_rule_bypass_allowed_for_tasks: Optional[bool] = None,
@@ -4134,10 +4218,12 @@ class RegistryUpdateParameters(_serialization.Model):
         :paramtype encryption: ~azure.mgmt.containerregistry.models.EncryptionProperty
         :keyword data_endpoint_enabled: Enable a single data endpoint per region for serving data.
         :paramtype data_endpoint_enabled: bool
-        :keyword regional_endpoint_enabled: Enable per-region endpoints for accessing registry.
-        :paramtype regional_endpoint_enabled: bool
-        :keyword dual_stack_endpoints_enabled:
-        :paramtype dual_stack_endpoints_enabled: bool
+        :keyword regional_endpoints: Enable per-region endpoints for accessing registry. Known values
+         are: "Enabled" and "Disabled".
+        :paramtype regional_endpoints: str or ~azure.mgmt.containerregistry.models.RegionalEndpoints
+        :keyword endpoint_protocol: The connectivity protocol for the registry, such as IPv4 or dual
+         stack (IPv4 and IPv6). Known values are: "IPv4" and "IPv4AndIPv6".
+        :paramtype endpoint_protocol: str or ~azure.mgmt.containerregistry.models.EndpointProtocol
         :keyword public_network_access: Whether or not public network access is allowed for the
          container registry. Known values are: "Enabled" and "Disabled".
         :paramtype public_network_access: str or
@@ -4167,8 +4253,8 @@ class RegistryUpdateParameters(_serialization.Model):
         self.policies = policies
         self.encryption = encryption
         self.data_endpoint_enabled = data_endpoint_enabled
-        self.regional_endpoint_enabled = regional_endpoint_enabled
-        self.dual_stack_endpoints_enabled = dual_stack_endpoints_enabled
+        self.regional_endpoints = regional_endpoints
+        self.endpoint_protocol = endpoint_protocol
         self.public_network_access = public_network_access
         self.network_rule_bypass_options = network_rule_bypass_options
         self.network_rule_bypass_allowed_for_tasks = network_rule_bypass_allowed_for_tasks
@@ -4243,26 +4329,28 @@ class RegistryUsageListResult(_serialization.Model):
         self.value = value
 
 
-class Replication(Resource):
+class Replication(TrackedResource):
     """An object that represents a replication for a container registry.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to server.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar location: The location of the resource. This cannot be changed after the resource is
-     created. Required.
-    :vartype location: str
-    :ivar tags: The tags of the resource.
-    :vartype tags: dict[str, str]
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar location: The geo-location where the resource lives. Required.
+    :vartype location: str
     :ivar provisioning_state: The provisioning state of the replication at the time the operation
      was called. Known values are: "Creating", "Updating", "Deleting", "Succeeded", "Failed", and
      "Canceled".
@@ -4282,8 +4370,8 @@ class Replication(Resource):
         "id": {"readonly": True},
         "name": {"readonly": True},
         "type": {"readonly": True},
-        "location": {"required": True},
         "system_data": {"readonly": True},
+        "location": {"required": True},
         "provisioning_state": {"readonly": True},
         "status": {"readonly": True},
     }
@@ -4292,9 +4380,9 @@ class Replication(Resource):
         "id": {"key": "id", "type": "str"},
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
-        "location": {"key": "location", "type": "str"},
-        "tags": {"key": "tags", "type": "{str}"},
         "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
         "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
         "status": {"key": "properties.status", "type": "Status"},
         "region_endpoint_enabled": {"key": "properties.regionEndpointEnabled", "type": "bool"},
@@ -4311,11 +4399,10 @@ class Replication(Resource):
         **kwargs: Any
     ) -> None:
         """
-        :keyword location: The location of the resource. This cannot be changed after the resource is
-         created. Required.
-        :paramtype location: str
-        :keyword tags: The tags of the resource.
+        :keyword tags: Resource tags.
         :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
         :keyword region_endpoint_enabled: Specifies whether the replication's regional endpoint is
          enabled. Requests will not be routed to a replication whose regional endpoint is disabled,
          however its data will continue to be synced with other replications.
@@ -4324,7 +4411,7 @@ class Replication(Resource):
          replication. Known values are: "Enabled" and "Disabled".
         :paramtype zone_redundancy: str or ~azure.mgmt.containerregistry.models.ZoneRedundancy
         """
-        super().__init__(location=location, tags=tags, **kwargs)
+        super().__init__(tags=tags, location=location, **kwargs)
         self.provisioning_state: Optional[Union[str, "_models.ProvisioningState"]] = None
         self.status: Optional["_models.Status"] = None
         self.region_endpoint_enabled = region_endpoint_enabled
@@ -4495,13 +4582,16 @@ class ScopeMap(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
     :ivar description: The user friendly description of the scope map.
     :vartype description: str
@@ -4804,32 +4894,6 @@ class StatusDetailProperties(_serialization.Model):
         self.correlation_id: Optional[str] = None
 
 
-class StorageAccountProperties(_serialization.Model):
-    """The properties of a storage account for a container registry. Only applicable to Classic SKU.
-
-    All required parameters must be populated in order to send to server.
-
-    :ivar id: The resource ID of the storage account. Required.
-    :vartype id: str
-    """
-
-    _validation = {
-        "id": {"required": True},
-    }
-
-    _attribute_map = {
-        "id": {"key": "id", "type": "str"},
-    }
-
-    def __init__(self, *, id: str, **kwargs: Any) -> None:  # pylint: disable=redefined-builtin
-        """
-        :keyword id: The resource ID of the storage account. Required.
-        :paramtype id: str
-        """
-        super().__init__(**kwargs)
-        self.id = id
-
-
 class SyncProperties(_serialization.Model):
     """The sync properties of the connected registry with its parent.
 
@@ -4966,8 +5030,8 @@ class SystemData(_serialization.Model):
     :vartype last_modified_by: str
     :ivar last_modified_by_type: The type of identity that last modified the resource. Known values
      are: "User", "Application", "ManagedIdentity", and "Key".
-    :vartype last_modified_by_type: str or ~azure.mgmt.containerregistry.models.LastModifiedByType
-    :ivar last_modified_at: The timestamp of resource modification (UTC).
+    :vartype last_modified_by_type: str or ~azure.mgmt.containerregistry.models.CreatedByType
+    :ivar last_modified_at: The timestamp of resource last modification (UTC).
     :vartype last_modified_at: ~datetime.datetime
     """
 
@@ -4987,7 +5051,7 @@ class SystemData(_serialization.Model):
         created_by_type: Optional[Union[str, "_models.CreatedByType"]] = None,
         created_at: Optional[datetime.datetime] = None,
         last_modified_by: Optional[str] = None,
-        last_modified_by_type: Optional[Union[str, "_models.LastModifiedByType"]] = None,
+        last_modified_by_type: Optional[Union[str, "_models.CreatedByType"]] = None,
         last_modified_at: Optional[datetime.datetime] = None,
         **kwargs: Any
     ) -> None:
@@ -5003,9 +5067,8 @@ class SystemData(_serialization.Model):
         :paramtype last_modified_by: str
         :keyword last_modified_by_type: The type of identity that last modified the resource. Known
          values are: "User", "Application", "ManagedIdentity", and "Key".
-        :paramtype last_modified_by_type: str or
-         ~azure.mgmt.containerregistry.models.LastModifiedByType
-        :keyword last_modified_at: The timestamp of resource modification (UTC).
+        :paramtype last_modified_by_type: str or ~azure.mgmt.containerregistry.models.CreatedByType
+        :keyword last_modified_at: The timestamp of resource last modification (UTC).
         :paramtype last_modified_at: ~datetime.datetime
         """
         super().__init__(**kwargs)
@@ -5161,13 +5224,16 @@ class Token(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
     :ivar creation_date: The creation date of scope map.
     :vartype creation_date: ~datetime.datetime
@@ -5497,26 +5563,28 @@ class UserIdentityProperties(_serialization.Model):
         self.client_id: Optional[str] = None
 
 
-class Webhook(Resource):
+class Webhook(TrackedResource):
     """An object that represents a webhook for a container registry.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to server.
 
-    :ivar id: The resource ID.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar location: The location of the resource. This cannot be changed after the resource is
-     created. Required.
-    :vartype location: str
-    :ivar tags: The tags of the resource.
-    :vartype tags: dict[str, str]
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
     :vartype system_data: ~azure.mgmt.containerregistry.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar location: The geo-location where the resource lives. Required.
+    :vartype location: str
     :ivar status: The status of the webhook at the time the operation was called. Known values are:
      "enabled" and "disabled".
     :vartype status: str or ~azure.mgmt.containerregistry.models.WebhookStatus
@@ -5536,8 +5604,8 @@ class Webhook(Resource):
         "id": {"readonly": True},
         "name": {"readonly": True},
         "type": {"readonly": True},
-        "location": {"required": True},
         "system_data": {"readonly": True},
+        "location": {"required": True},
         "provisioning_state": {"readonly": True},
     }
 
@@ -5545,9 +5613,9 @@ class Webhook(Resource):
         "id": {"key": "id", "type": "str"},
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
-        "location": {"key": "location", "type": "str"},
-        "tags": {"key": "tags", "type": "{str}"},
         "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
         "status": {"key": "properties.status", "type": "str"},
         "scope": {"key": "properties.scope", "type": "str"},
         "actions": {"key": "properties.actions", "type": "[str]"},
@@ -5565,11 +5633,10 @@ class Webhook(Resource):
         **kwargs: Any
     ) -> None:
         """
-        :keyword location: The location of the resource. This cannot be changed after the resource is
-         created. Required.
-        :paramtype location: str
-        :keyword tags: The tags of the resource.
+        :keyword tags: Resource tags.
         :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
         :keyword status: The status of the webhook at the time the operation was called. Known values
          are: "enabled" and "disabled".
         :paramtype status: str or ~azure.mgmt.containerregistry.models.WebhookStatus
@@ -5580,7 +5647,7 @@ class Webhook(Resource):
         :keyword actions: The list of actions that trigger the webhook to post notifications.
         :paramtype actions: list[str or ~azure.mgmt.containerregistry.models.WebhookAction]
         """
-        super().__init__(location=location, tags=tags, **kwargs)
+        super().__init__(tags=tags, location=location, **kwargs)
         self.status = status
         self.scope = scope
         self.actions = actions

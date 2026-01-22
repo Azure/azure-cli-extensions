@@ -44,12 +44,14 @@ if TYPE_CHECKING:
 
 
 class ContainerRegistryManagementClient:  # pylint: disable=too-many-instance-attributes
-    """ContainerRegistryManagementClient.
+    """The Microsoft Azure Container Registry management API provides create, read, update, and delete
+    functionality for Azure Container Registry resources including registries, replications,
+    webhooks, tasks, runs, and other registry components.
 
-    :ivar archives: ArchivesOperations operations
-    :vartype archives: azure.mgmt.containerregistry.operations.ArchivesOperations
-    :ivar archive_versions: ArchiveVersionsOperations operations
-    :vartype archive_versions: azure.mgmt.containerregistry.operations.ArchiveVersionsOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.containerregistry.operations.Operations
+    :ivar registries: RegistriesOperations operations
+    :vartype registries: azure.mgmt.containerregistry.operations.RegistriesOperations
     :ivar cache_rules: CacheRulesOperations operations
     :vartype cache_rules: azure.mgmt.containerregistry.operations.CacheRulesOperations
     :ivar connected_registries: ConnectedRegistriesOperations operations
@@ -59,12 +61,12 @@ class ContainerRegistryManagementClient:  # pylint: disable=too-many-instance-at
     :vartype credential_sets: azure.mgmt.containerregistry.operations.CredentialSetsOperations
     :ivar export_pipelines: ExportPipelinesOperations operations
     :vartype export_pipelines: azure.mgmt.containerregistry.operations.ExportPipelinesOperations
-    :ivar registries: RegistriesOperations operations
-    :vartype registries: azure.mgmt.containerregistry.operations.RegistriesOperations
     :ivar import_pipelines: ImportPipelinesOperations operations
     :vartype import_pipelines: azure.mgmt.containerregistry.operations.ImportPipelinesOperations
-    :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.containerregistry.operations.Operations
+    :ivar archives: ArchivesOperations operations
+    :vartype archives: azure.mgmt.containerregistry.operations.ArchivesOperations
+    :ivar archive_versions: ArchiveVersionsOperations operations
+    :vartype archive_versions: azure.mgmt.containerregistry.operations.ArchiveVersionsOperations
     :ivar pipeline_runs: PipelineRunsOperations operations
     :vartype pipeline_runs: azure.mgmt.containerregistry.operations.PipelineRunsOperations
     :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
@@ -87,7 +89,7 @@ class ContainerRegistryManagementClient:  # pylint: disable=too-many-instance-at
     :keyword cloud_setting: The cloud setting for which to get the ARM endpoint. Default value is
      None.
     :paramtype cloud_setting: ~azure.core.AzureClouds
-    :keyword api_version: Api Version. Default value is "2025-12-01-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2026-01-01-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -134,19 +136,22 @@ class ContainerRegistryManagementClient:  # pylint: disable=too-many-instance-at
                 policies.SensitiveHeaderCleanupPolicy(**kwargs) if self._config.redirect_policy else None,
                 self._config.http_logging_policy,
             ]
-        # Remove base_url from kwargs to avoid conflict with the explicit base_url parameter
-        kwargs.pop("base_url", None)
-        self._client: ARMPipelineClient = ARMPipelineClient(base_url=cast(str, endpoint), policies=_policies, **kwargs)
+        # self._client: ARMPipelineClient = ARMPipelineClient(base_url=cast(str, endpoint), policies=_policies, **kwargs)
+
+        if 'base_url' in kwargs:
+            # If base_url is already in kwargs, don't pass it explicitly
+            self._client: ARMPipelineClient = ARMPipelineClient(policies=_policies, **kwargs)
+        else:
+            # Otherwise use the endpoint parameter
+            self._client: ARMPipelineClient = ARMPipelineClient(base_url=cast(str, endpoint), policies=_policies, **kwargs)
 
         client_models = {k: v for k, v in _models._models.__dict__.items() if isinstance(v, type)}
         client_models |= {k: v for k, v in _models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.archives = ArchivesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.archive_versions = ArchiveVersionsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
+        self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
+        self.registries = RegistriesOperations(self._client, self._config, self._serialize, self._deserialize)
         self.cache_rules = CacheRulesOperations(self._client, self._config, self._serialize, self._deserialize)
         self.connected_registries = ConnectedRegistriesOperations(
             self._client, self._config, self._serialize, self._deserialize
@@ -155,11 +160,13 @@ class ContainerRegistryManagementClient:  # pylint: disable=too-many-instance-at
         self.export_pipelines = ExportPipelinesOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.registries = RegistriesOperations(self._client, self._config, self._serialize, self._deserialize)
         self.import_pipelines = ImportPipelinesOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
+        self.archives = ArchivesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.archive_versions = ArchiveVersionsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.pipeline_runs = PipelineRunsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.private_endpoint_connections = PrivateEndpointConnectionsOperations(
             self._client, self._config, self._serialize, self._deserialize

@@ -12,15 +12,15 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ._patch import *  # pylint: disable=unused-wildcard-import
 
-from ._operations import ArchivesOperations  # type: ignore
-from ._operations import ArchiveVersionsOperations  # type: ignore
+from ._operations import Operations  # type: ignore
+from ._operations import RegistriesOperations  # type: ignore
 from ._operations import CacheRulesOperations  # type: ignore
 from ._operations import ConnectedRegistriesOperations  # type: ignore
 from ._operations import CredentialSetsOperations  # type: ignore
 from ._operations import ExportPipelinesOperations  # type: ignore
-from ._operations import RegistriesOperations  # type: ignore
 from ._operations import ImportPipelinesOperations  # type: ignore
-from ._operations import Operations  # type: ignore
+from ._operations import ArchivesOperations  # type: ignore
+from ._operations import ArchiveVersionsOperations  # type: ignore
 from ._operations import PipelineRunsOperations  # type: ignore
 from ._operations import PrivateEndpointConnectionsOperations  # type: ignore
 from ._operations import ReplicationsOperations  # type: ignore
@@ -33,15 +33,15 @@ from ._patch import *
 from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
-    "ArchivesOperations",
-    "ArchiveVersionsOperations",
+    "Operations",
+    "RegistriesOperations",
     "CacheRulesOperations",
     "ConnectedRegistriesOperations",
     "CredentialSetsOperations",
     "ExportPipelinesOperations",
-    "RegistriesOperations",
     "ImportPipelinesOperations",
-    "Operations",
+    "ArchivesOperations",
+    "ArchiveVersionsOperations",
     "PipelineRunsOperations",
     "PrivateEndpointConnectionsOperations",
     "ReplicationsOperations",

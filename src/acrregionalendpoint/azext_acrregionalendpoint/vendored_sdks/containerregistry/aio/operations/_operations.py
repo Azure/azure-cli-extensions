@@ -54,6 +54,7 @@ from ...operations._operations import (
     build_connected_registries_delete_request,
     build_connected_registries_get_request,
     build_connected_registries_list_request,
+    build_connected_registries_resync_request,
     build_connected_registries_update_request,
     build_credential_sets_create_request,
     build_credential_sets_delete_request,
@@ -122,14 +123,14 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T
 List = list
 
 
-class ArchivesOperations:
+class Operations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
         :class:`~azure.mgmt.containerregistry.aio.ContainerRegistryManagementClient`'s
-        :attr:`archives` attribute.
+        :attr:`operations` attribute.
     """
 
     models = _models
@@ -144,26 +145,18 @@ class ArchivesOperations:
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list(
-        self, resource_group_name: str, registry_name: str, package_type: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.Archive"]:
-        """Lists all archives for the specified container registry and package type.
+    def list(self, **kwargs: Any) -> AsyncItemPaged["_models.OperationDefinition"]:
+        """List the operations for the provider.
 
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param package_type: The type of the package resource. Required.
-        :type package_type: str
-        :return: An iterator like instance of Archive
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.Archive]
+        :return: An iterator like instance of OperationDefinition
+        :rtype:
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.OperationDefinition]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[_models._models.ArchiveListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models._models.OperationListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -176,10 +169,216 @@ class ArchivesOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_archives_list_request(
-                    resource_group_name=resource_group_name,
-                    registry_name=registry_name,
-                    package_type=package_type,
+                _request = build_operations_list_request(
+                    api_version=self._config.api_version,
+                    headers=_headers,
+                    params=_params,
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            else:
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                _request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            return _request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize(
+                _models._models.OperationListResult, pipeline_response  # pylint: disable=protected-access
+            )
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)  # type: ignore
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            _request = prepare_request(next_link)
+
+            _stream = False
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+                _request, stream=_stream, **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(get_next, extract_data)
+
+
+class RegistriesOperations:
+    """
+    .. warning::
+        **DO NOT** instantiate this class directly.
+
+        Instead, you should access the following operations through
+        :class:`~azure.mgmt.containerregistry.aio.ContainerRegistryManagementClient`'s
+        :attr:`registries` attribute.
+    """
+
+    models = _models
+
+    def __init__(self, *args, **kwargs) -> None:
+        input_args = list(args)
+        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._config: ContainerRegistryManagementClientConfiguration = (
+            input_args.pop(0) if input_args else kwargs.pop("config")
+        )
+        self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
+        self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
+
+    @overload
+    async def check_name_availability(
+        self,
+        registry_name_check_request: _models.RegistryNameCheckRequest,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> _models.RegistryNameStatus:
+        """Checks whether the container registry name is available for use. The name must contain only
+        alphanumeric characters, be globally unique, and between 5 and 50 characters in length.
+
+        :param registry_name_check_request: The request body. Required.
+        :type registry_name_check_request:
+         ~azure.mgmt.containerregistry.models.RegistryNameCheckRequest
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: RegistryNameStatus
+        :rtype: ~azure.mgmt.containerregistry.models.RegistryNameStatus
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    async def check_name_availability(
+        self, registry_name_check_request: IO[bytes], *, content_type: str = "application/json", **kwargs: Any
+    ) -> _models.RegistryNameStatus:
+        """Checks whether the container registry name is available for use. The name must contain only
+        alphanumeric characters, be globally unique, and between 5 and 50 characters in length.
+
+        :param registry_name_check_request: The request body. Required.
+        :type registry_name_check_request: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: RegistryNameStatus
+        :rtype: ~azure.mgmt.containerregistry.models.RegistryNameStatus
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def check_name_availability(
+        self, registry_name_check_request: Union[_models.RegistryNameCheckRequest, IO[bytes]], **kwargs: Any
+    ) -> _models.RegistryNameStatus:
+        """Checks whether the container registry name is available for use. The name must contain only
+        alphanumeric characters, be globally unique, and between 5 and 50 characters in length.
+
+        :param registry_name_check_request: The request body. Is either a RegistryNameCheckRequest type
+         or a IO[bytes] type. Required.
+        :type registry_name_check_request:
+         ~azure.mgmt.containerregistry.models.RegistryNameCheckRequest or IO[bytes]
+        :return: RegistryNameStatus
+        :rtype: ~azure.mgmt.containerregistry.models.RegistryNameStatus
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.RegistryNameStatus] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(registry_name_check_request, (IOBase, bytes)):
+            _content = registry_name_check_request
+        else:
+            _json = self._serialize.body(registry_name_check_request, "RegistryNameCheckRequest")
+
+        _request = build_registries_check_name_availability_request(
+            subscription_id=self._config.subscription_id,
+            content_type=content_type,
+            api_version=self._config.api_version,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("RegistryNameStatus", pipeline_response.http_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace
+    def list(self, **kwargs: Any) -> AsyncItemPaged["_models.Registry"]:
+        """Lists all the container registries under the specified subscription.
+
+        :return: An iterator like instance of Registry
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.Registry]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models._models.RegistryListResult] = kwargs.pop("cls", None)
+
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        def prepare_request(next_link=None):
+            if not next_link:
+
+                _request = build_registries_list_request(
                     subscription_id=self._config.subscription_id,
                     api_version=self._config.api_version,
                     headers=_headers,
@@ -206,7 +405,90 @@ class ArchivesOperations:
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
-                _models._models.ArchiveListResult, pipeline_response  # pylint: disable=protected-access
+                _models._models.RegistryListResult, pipeline_response  # pylint: disable=protected-access
+            )
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)  # type: ignore
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            _request = prepare_request(next_link)
+
+            _stream = False
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+                _request, stream=_stream, **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(get_next, extract_data)
+
+    @distributed_trace
+    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> AsyncItemPaged["_models.Registry"]:
+        """Lists all the container registries under the specified resource group.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :return: An iterator like instance of Registry
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.Registry]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models._models.RegistryListResult] = kwargs.pop("cls", None)
+
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        def prepare_request(next_link=None):
+            if not next_link:
+
+                _request = build_registries_list_by_resource_group_request(
+                    resource_group_name=resource_group_name,
+                    subscription_id=self._config.subscription_id,
+                    api_version=self._config.api_version,
+                    headers=_headers,
+                    params=_params,
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            else:
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                _request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            return _request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize(
+                _models._models.RegistryListResult, pipeline_response  # pylint: disable=protected-access
             )
             list_of_elem = deserialized.value
             if cls:
@@ -235,22 +517,16 @@ class ArchivesOperations:
         return AsyncItemPaged(get_next, extract_data)
 
     @distributed_trace_async
-    async def get(
-        self, resource_group_name: str, registry_name: str, package_type: str, archive_name: str, **kwargs: Any
-    ) -> _models.Archive:
-        """Gets the properties of the archive.
+    async def get(self, resource_group_name: str, registry_name: str, **kwargs: Any) -> _models.Registry:
+        """Gets the properties of the specified container registry.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param registry_name: The name of the container registry. Required.
         :type registry_name: str
-        :param package_type: The type of the package resource. Required.
-        :type package_type: str
-        :param archive_name: The name of the archive resource. Required.
-        :type archive_name: str
-        :return: Archive
-        :rtype: ~azure.mgmt.containerregistry.models.Archive
+        :return: Registry
+        :rtype: ~azure.mgmt.containerregistry.models.Registry
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -264,13 +540,11 @@ class ArchivesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[_models.Archive] = kwargs.pop("cls", None)
+        cls: ClsType[_models.Registry] = kwargs.pop("cls", None)
 
-        _request = build_archives_get_request(
+        _request = build_registries_get_request(
             resource_group_name=resource_group_name,
             registry_name=registry_name,
-            package_type=package_type,
-            archive_name=archive_name,
             subscription_id=self._config.subscription_id,
             api_version=self._config.api_version,
             headers=_headers,
@@ -293,7 +567,7 @@ class ArchivesOperations:
             )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("Archive", pipeline_response.http_response)
+        deserialized = self._deserialize("Registry", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -301,13 +575,7 @@ class ArchivesOperations:
         return deserialized  # type: ignore
 
     async def _create_initial(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        package_type: str,
-        archive_name: str,
-        archive_create_parameters: Union[_models.Archive, IO[bytes]],
-        **kwargs: Any
+        self, resource_group_name: str, registry_name: str, registry: Union[_models.Registry, IO[bytes]], **kwargs: Any
     ) -> AsyncIterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -326,16 +594,14 @@ class ArchivesOperations:
         content_type = content_type or "application/json"
         _json = None
         _content = None
-        if isinstance(archive_create_parameters, (IOBase, bytes)):
-            _content = archive_create_parameters
+        if isinstance(registry, (IOBase, bytes)):
+            _content = registry
         else:
-            _json = self._serialize.body(archive_create_parameters, "Archive")
+            _json = self._serialize.body(registry, "Registry")
 
-        _request = build_archives_create_request(
+        _request = build_registries_create_request(
             resource_group_name=resource_group_name,
             registry_name=registry_name,
-            package_type=package_type,
-            archive_name=archive_name,
             subscription_id=self._config.subscription_id,
             content_type=content_type,
             api_version=self._config.api_version,
@@ -370,6 +636,7 @@ class ArchivesOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -383,31 +650,25 @@ class ArchivesOperations:
         self,
         resource_group_name: str,
         registry_name: str,
-        package_type: str,
-        archive_name: str,
-        archive_create_parameters: _models.Archive,
+        registry: _models.Registry,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.Archive]:
-        """Creates a archive for a container registry with the specified parameters.
+    ) -> AsyncLROPoller[_models.Registry]:
+        """Creates a container registry with the specified parameters.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param registry_name: The name of the container registry. Required.
         :type registry_name: str
-        :param package_type: The type of the package resource. Required.
-        :type package_type: str
-        :param archive_name: The name of the archive resource. Required.
-        :type archive_name: str
-        :param archive_create_parameters: The parameters for creating a archive. Required.
-        :type archive_create_parameters: ~azure.mgmt.containerregistry.models.Archive
+        :param registry: The parameters for creating a container registry. Required.
+        :type registry: ~azure.mgmt.containerregistry.models.Registry
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns Archive
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Archive]
+        :return: An instance of AsyncLROPoller that returns Registry
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Registry]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -416,67 +677,51 @@ class ArchivesOperations:
         self,
         resource_group_name: str,
         registry_name: str,
-        package_type: str,
-        archive_name: str,
-        archive_create_parameters: IO[bytes],
+        registry: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.Archive]:
-        """Creates a archive for a container registry with the specified parameters.
+    ) -> AsyncLROPoller[_models.Registry]:
+        """Creates a container registry with the specified parameters.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param registry_name: The name of the container registry. Required.
         :type registry_name: str
-        :param package_type: The type of the package resource. Required.
-        :type package_type: str
-        :param archive_name: The name of the archive resource. Required.
-        :type archive_name: str
-        :param archive_create_parameters: The parameters for creating a archive. Required.
-        :type archive_create_parameters: IO[bytes]
+        :param registry: The parameters for creating a container registry. Required.
+        :type registry: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns Archive
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Archive]
+        :return: An instance of AsyncLROPoller that returns Registry
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Registry]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
     @distributed_trace_async
     async def begin_create(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        package_type: str,
-        archive_name: str,
-        archive_create_parameters: Union[_models.Archive, IO[bytes]],
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.Archive]:
-        """Creates a archive for a container registry with the specified parameters.
+        self, resource_group_name: str, registry_name: str, registry: Union[_models.Registry, IO[bytes]], **kwargs: Any
+    ) -> AsyncLROPoller[_models.Registry]:
+        """Creates a container registry with the specified parameters.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param registry_name: The name of the container registry. Required.
         :type registry_name: str
-        :param package_type: The type of the package resource. Required.
-        :type package_type: str
-        :param archive_name: The name of the archive resource. Required.
-        :type archive_name: str
-        :param archive_create_parameters: The parameters for creating a archive. Is either a Archive
-         type or a IO[bytes] type. Required.
-        :type archive_create_parameters: ~azure.mgmt.containerregistry.models.Archive or IO[bytes]
-        :return: An instance of AsyncLROPoller that returns Archive
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Archive]
+        :param registry: The parameters for creating a container registry. Is either a Registry type or
+         a IO[bytes] type. Required.
+        :type registry: ~azure.mgmt.containerregistry.models.Registry or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns Registry
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Registry]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.Archive] = kwargs.pop("cls", None)
+        cls: ClsType[_models.Registry] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -484,9 +729,7 @@ class ArchivesOperations:
             raw_result = await self._create_initial(
                 resource_group_name=resource_group_name,
                 registry_name=registry_name,
-                package_type=package_type,
-                archive_name=archive_name,
-                archive_create_parameters=archive_create_parameters,
+                registry=registry,
                 content_type=content_type,
                 cls=lambda x, y, z: x,
                 headers=_headers,
@@ -497,7 +740,7 @@ class ArchivesOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("Archive", pipeline_response.http_response)
+            deserialized = self._deserialize("Registry", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -512,162 +755,23 @@ class ArchivesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[_models.Archive].from_continuation_token(
+            return AsyncLROPoller[_models.Registry].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[_models.Archive](
+        return AsyncLROPoller[_models.Registry](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
-    async def _delete_initial(
-        self, resource_group_name: str, registry_name: str, package_type: str, archive_name: str, **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        _request = build_archives_delete_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            package_type=package_type,
-            archive_name=archive_name,
-            subscription_id=self._config.subscription_id,
-            api_version=self._config.api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [202, 204]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-
-        deserialized = response.iter_bytes()
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
-    async def begin_delete(
-        self, resource_group_name: str, registry_name: str, package_type: str, archive_name: str, **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Deletes a archive from a container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param package_type: The type of the package resource. Required.
-        :type package_type: str
-        :param archive_name: The name of the archive resource. Required.
-        :type archive_name: str
-        :return: An instance of AsyncLROPoller that returns None
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[None] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._delete_initial(
-                resource_group_name=resource_group_name,
-                registry_name=registry_name,
-                package_type=package_type,
-                archive_name=archive_name,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
-            if cls:
-                return cls(pipeline_response, None, {})  # type: ignore
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[None].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    @distributed_trace_async
-    async def update(
+    async def _update_initial(
         self,
         resource_group_name: str,
         registry_name: str,
-        package_type: str,
-        archive_name: str,
-        published_version: Optional[str] = None,
+        registry_update_parameters: Union[_models.RegistryUpdateParameters, IO[bytes]],
         **kwargs: Any
-    ) -> _models.Archive:
-        """Updates a archive for a container registry with the specified parameters.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param package_type: The type of the package resource. Required.
-        :type package_type: str
-        :param archive_name: The name of the archive resource. Required.
-        :type archive_name: str
-        :param published_version: The published version of the archive. Default value is None.
-        :type published_version: str
-        :return: Archive
-        :rtype: ~azure.mgmt.containerregistry.models.Archive
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
+    ) -> AsyncIterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -679,271 +783,25 @@ class ArchivesOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: str = kwargs.pop("content_type", _headers.pop("Content-Type", "application/json"))
-        cls: ClsType[_models.Archive] = kwargs.pop("cls", None)
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        _archive_update_parameters = _models.ArchiveUpdateParameters(published_version=published_version)
-        _json = self._serialize.body(_archive_update_parameters, "ArchiveUpdateParameters")
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(registry_update_parameters, (IOBase, bytes)):
+            _content = registry_update_parameters
+        else:
+            _json = self._serialize.body(registry_update_parameters, "RegistryUpdateParameters")
 
-        _request = build_archives_update_request(
+        _request = build_registries_update_request(
             resource_group_name=resource_group_name,
             registry_name=registry_name,
-            package_type=package_type,
-            archive_name=archive_name,
             subscription_id=self._config.subscription_id,
             content_type=content_type,
             api_version=self._config.api_version,
             json=_json,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("Archive", pipeline_response.http_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-
-class ArchiveVersionsOperations:
-    """
-    .. warning::
-        **DO NOT** instantiate this class directly.
-
-        Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerregistry.aio.ContainerRegistryManagementClient`'s
-        :attr:`archive_versions` attribute.
-    """
-
-    models = _models
-
-    def __init__(self, *args, **kwargs) -> None:
-        input_args = list(args)
-        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
-        self._config: ContainerRegistryManagementClientConfiguration = (
-            input_args.pop(0) if input_args else kwargs.pop("config")
-        )
-        self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
-        self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
-
-    @distributed_trace
-    def list(
-        self, resource_group_name: str, registry_name: str, package_type: str, archive_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.ArchiveVersion"]:
-        """Lists all archive versions for the specified container registry, repository type and archive
-        name.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param package_type: The type of the package resource. Required.
-        :type package_type: str
-        :param archive_name: The name of the archive resource. Required.
-        :type archive_name: str
-        :return: An iterator like instance of ArchiveVersion
-        :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.ArchiveVersion]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[_models._models.ArchiveVersionListResult] = kwargs.pop("cls", None)
-
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        def prepare_request(next_link=None):
-            if not next_link:
-
-                _request = build_archive_versions_list_request(
-                    resource_group_name=resource_group_name,
-                    registry_name=registry_name,
-                    package_type=package_type,
-                    archive_name=archive_name,
-                    subscription_id=self._config.subscription_id,
-                    api_version=self._config.api_version,
-                    headers=_headers,
-                    params=_params,
-                )
-                _request.url = self._client.format_url(_request.url)
-
-            else:
-                # make call to next link with the client's api-version
-                _parsed_next_link = urllib.parse.urlparse(next_link)
-                _next_request_params = case_insensitive_dict(
-                    {
-                        key: [urllib.parse.quote(v) for v in value]
-                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
-                    }
-                )
-                _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
-                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
-                )
-                _request.url = self._client.format_url(_request.url)
-
-            return _request
-
-        async def extract_data(pipeline_response):
-            deserialized = self._deserialize(
-                _models._models.ArchiveVersionListResult, pipeline_response  # pylint: disable=protected-access
-            )
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.next_link or None, AsyncList(list_of_elem)
-
-        async def get_next(next_link=None):
-            _request = prepare_request(next_link)
-
-            _stream = False
-            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(
-                    _models.ErrorResponse,
-                    pipeline_response,
-                )
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-        return AsyncItemPaged(get_next, extract_data)
-
-    @distributed_trace_async
-    async def get(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        package_type: str,
-        archive_name: str,
-        archive_version_name: str,
-        **kwargs: Any
-    ) -> _models.ArchiveVersion:
-        """Gets the properties of the archive version.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param package_type: The type of the package resource. Required.
-        :type package_type: str
-        :param archive_name: The name of the archive resource. Required.
-        :type archive_name: str
-        :param archive_version_name: The name of the archive version resource. Required.
-        :type archive_version_name: str
-        :return: ArchiveVersion
-        :rtype: ~azure.mgmt.containerregistry.models.ArchiveVersion
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[_models.ArchiveVersion] = kwargs.pop("cls", None)
-
-        _request = build_archive_versions_get_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            package_type=package_type,
-            archive_name=archive_name,
-            archive_version_name=archive_version_name,
-            subscription_id=self._config.subscription_id,
-            api_version=self._config.api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("ArchiveVersion", pipeline_response.http_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-    async def _create_initial(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        package_type: str,
-        archive_name: str,
-        archive_version_name: str,
-        **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        _request = build_archive_versions_create_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            package_type=package_type,
-            archive_name=archive_name,
-            archive_version_name=archive_version_name,
-            subscription_id=self._config.subscription_id,
-            api_version=self._config.api_version,
+            content=_content,
             headers=_headers,
             params=_params,
         )
@@ -973,6 +831,7 @@ class ArchiveVersionsOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -981,47 +840,97 @@ class ArchiveVersionsOperations:
 
         return deserialized  # type: ignore
 
-    @distributed_trace_async
-    async def begin_create(
+    @overload
+    async def begin_update(
         self,
         resource_group_name: str,
         registry_name: str,
-        package_type: str,
-        archive_name: str,
-        archive_version_name: str,
+        registry_update_parameters: _models.RegistryUpdateParameters,
+        *,
+        content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.ArchiveVersion]:
-        """Creates a archive for a container registry with the specified parameters.
+    ) -> AsyncLROPoller[_models.Registry]:
+        """Updates a container registry with the specified parameters.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param registry_name: The name of the container registry. Required.
         :type registry_name: str
-        :param package_type: The type of the package resource. Required.
-        :type package_type: str
-        :param archive_name: The name of the archive resource. Required.
-        :type archive_name: str
-        :param archive_version_name: The name of the archive version resource. Required.
-        :type archive_version_name: str
-        :return: An instance of AsyncLROPoller that returns ArchiveVersion
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.ArchiveVersion]
+        :param registry_update_parameters: The parameters for updating a container registry. Required.
+        :type registry_update_parameters: ~azure.mgmt.containerregistry.models.RegistryUpdateParameters
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns Registry
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Registry]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        _headers = kwargs.pop("headers", {}) or {}
+
+    @overload
+    async def begin_update(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        registry_update_parameters: IO[bytes],
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.Registry]:
+        """Updates a container registry with the specified parameters.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param registry_update_parameters: The parameters for updating a container registry. Required.
+        :type registry_update_parameters: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns Registry
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Registry]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def begin_update(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        registry_update_parameters: Union[_models.RegistryUpdateParameters, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.Registry]:
+        """Updates a container registry with the specified parameters.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param registry_update_parameters: The parameters for updating a container registry. Is either
+         a RegistryUpdateParameters type or a IO[bytes] type. Required.
+        :type registry_update_parameters: ~azure.mgmt.containerregistry.models.RegistryUpdateParameters
+         or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns Registry
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Registry]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[_models.ArchiveVersion] = kwargs.pop("cls", None)
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.Registry] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._create_initial(
+            raw_result = await self._update_initial(
                 resource_group_name=resource_group_name,
                 registry_name=registry_name,
-                package_type=package_type,
-                archive_name=archive_name,
-                archive_version_name=archive_version_name,
+                registry_update_parameters=registry_update_parameters,
+                content_type=content_type,
                 cls=lambda x, y, z: x,
                 headers=_headers,
                 params=_params,
@@ -1031,7 +940,7 @@ class ArchiveVersionsOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ArchiveVersion", pipeline_response.http_response)
+            deserialized = self._deserialize("Registry", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -1046,24 +955,18 @@ class ArchiveVersionsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[_models.ArchiveVersion].from_continuation_token(
+            return AsyncLROPoller[_models.Registry].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[_models.ArchiveVersion](
+        return AsyncLROPoller[_models.Registry](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
     async def _delete_initial(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        package_type: str,
-        archive_name: str,
-        archive_version_name: str,
-        **kwargs: Any
+        self, resource_group_name: str, registry_name: str, **kwargs: Any
     ) -> AsyncIterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -1078,12 +981,9 @@ class ArchiveVersionsOperations:
 
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        _request = build_archive_versions_delete_request(
+        _request = build_registries_delete_request(
             resource_group_name=resource_group_name,
             registry_name=registry_name,
-            package_type=package_type,
-            archive_name=archive_name,
-            archive_version_name=archive_version_name,
             subscription_id=self._config.subscription_id,
             api_version=self._config.api_version,
             headers=_headers,
@@ -1098,7 +998,7 @@ class ArchiveVersionsOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [202, 204]:
+        if response.status_code not in [200, 202, 204]:
             try:
                 await response.read()  # Load the body in memory and close the socket
             except (StreamConsumedError, StreamClosedError):
@@ -1113,6 +1013,7 @@ class ArchiveVersionsOperations:
         response_headers = {}
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -1122,28 +1023,14 @@ class ArchiveVersionsOperations:
         return deserialized  # type: ignore
 
     @distributed_trace_async
-    async def begin_delete(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        package_type: str,
-        archive_name: str,
-        archive_version_name: str,
-        **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Deletes a archive version from a container registry.
+    async def begin_delete(self, resource_group_name: str, registry_name: str, **kwargs: Any) -> AsyncLROPoller[None]:
+        """Deletes a container registry.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param registry_name: The name of the container registry. Required.
         :type registry_name: str
-        :param package_type: The type of the package resource. Required.
-        :type package_type: str
-        :param archive_name: The name of the archive resource. Required.
-        :type archive_name: str
-        :param archive_version_name: The name of the archive version resource. Required.
-        :type archive_version_name: str
         :return: An instance of AsyncLROPoller that returns None
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -1159,9 +1046,6 @@ class ArchiveVersionsOperations:
             raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 registry_name=registry_name,
-                package_type=package_type,
-                archive_name=archive_name,
-                archive_version_name=archive_version_name,
                 cls=lambda x, y, z: x,
                 headers=_headers,
                 params=_params,
@@ -1190,6 +1074,742 @@ class ArchiveVersionsOperations:
                 deserialization_callback=get_long_running_output,
             )
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    async def _generate_credentials_initial(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        generate_credentials_parameters: Union[_models.GenerateCredentialsParameters, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(generate_credentials_parameters, (IOBase, bytes)):
+            _content = generate_credentials_parameters
+        else:
+            _json = self._serialize.body(generate_credentials_parameters, "GenerateCredentialsParameters")
+
+        _request = build_registries_generate_credentials_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            subscription_id=self._config.subscription_id,
+            content_type=content_type,
+            api_version=self._config.api_version,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    async def begin_generate_credentials(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        generate_credentials_parameters: _models.GenerateCredentialsParameters,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.GenerateCredentialsResult]:
+        """Generate keys for a token of a specified container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param generate_credentials_parameters: The parameters for generating credentials. Required.
+        :type generate_credentials_parameters:
+         ~azure.mgmt.containerregistry.models.GenerateCredentialsParameters
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns GenerateCredentialsResult
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.GenerateCredentialsResult]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    async def begin_generate_credentials(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        generate_credentials_parameters: IO[bytes],
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.GenerateCredentialsResult]:
+        """Generate keys for a token of a specified container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param generate_credentials_parameters: The parameters for generating credentials. Required.
+        :type generate_credentials_parameters: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns GenerateCredentialsResult
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.GenerateCredentialsResult]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def begin_generate_credentials(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        generate_credentials_parameters: Union[_models.GenerateCredentialsParameters, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.GenerateCredentialsResult]:
+        """Generate keys for a token of a specified container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param generate_credentials_parameters: The parameters for generating credentials. Is either a
+         GenerateCredentialsParameters type or a IO[bytes] type. Required.
+        :type generate_credentials_parameters:
+         ~azure.mgmt.containerregistry.models.GenerateCredentialsParameters or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns GenerateCredentialsResult
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.GenerateCredentialsResult]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.GenerateCredentialsResult] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._generate_credentials_initial(
+                resource_group_name=resource_group_name,
+                registry_name=registry_name,
+                generate_credentials_parameters=generate_credentials_parameters,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("GenerateCredentialsResult", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[_models.GenerateCredentialsResult].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[_models.GenerateCredentialsResult](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
+
+    async def _import_image_initial(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        parameters: Union[_models.ImportImageParameters, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(parameters, (IOBase, bytes)):
+            _content = parameters
+        else:
+            _json = self._serialize.body(parameters, "ImportImageParameters")
+
+        _request = build_registries_import_image_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            subscription_id=self._config.subscription_id,
+            content_type=content_type,
+            api_version=self._config.api_version,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    async def begin_import_image(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        parameters: _models.ImportImageParameters,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Copies an image to this container registry from the specified container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param parameters: The parameters specifying the image to copy and the source container
+         registry. Required.
+        :type parameters: ~azure.mgmt.containerregistry.models.ImportImageParameters
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    async def begin_import_image(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        parameters: IO[bytes],
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Copies an image to this container registry from the specified container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param parameters: The parameters specifying the image to copy and the source container
+         registry. Required.
+        :type parameters: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def begin_import_image(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        parameters: Union[_models.ImportImageParameters, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Copies an image to this container registry from the specified container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param parameters: The parameters specifying the image to copy and the source container
+         registry. Is either a ImportImageParameters type or a IO[bytes] type. Required.
+        :type parameters: ~azure.mgmt.containerregistry.models.ImportImageParameters or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._import_image_initial(
+                resource_group_name=resource_group_name,
+                registry_name=registry_name,
+                parameters=parameters,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    @distributed_trace_async
+    async def list_credentials(
+        self, resource_group_name: str, registry_name: str, **kwargs: Any
+    ) -> _models.RegistryListCredentialsResult:
+        """Lists the login credentials for the specified container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :return: RegistryListCredentialsResult
+        :rtype: ~azure.mgmt.containerregistry.models.RegistryListCredentialsResult
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models.RegistryListCredentialsResult] = kwargs.pop("cls", None)
+
+        _request = build_registries_list_credentials_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("RegistryListCredentialsResult", pipeline_response.http_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def list_usages(
+        self, resource_group_name: str, registry_name: str, **kwargs: Any
+    ) -> _models.RegistryUsageListResult:
+        """Gets the quota usages for the specified container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :return: RegistryUsageListResult
+        :rtype: ~azure.mgmt.containerregistry.models.RegistryUsageListResult
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models.RegistryUsageListResult] = kwargs.pop("cls", None)
+
+        _request = build_registries_list_usages_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("RegistryUsageListResult", pipeline_response.http_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace
+    def list_private_link_resources(
+        self, resource_group_name: str, registry_name: str, **kwargs: Any
+    ) -> AsyncItemPaged["_models.PrivateLinkResource"]:
+        """Lists the private link resources for a container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :return: An iterator like instance of PrivateLinkResource
+        :rtype:
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.PrivateLinkResource]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models._models.PrivateLinkResourceListResult] = kwargs.pop("cls", None)
+
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        def prepare_request(next_link=None):
+            if not next_link:
+
+                _request = build_registries_list_private_link_resources_request(
+                    resource_group_name=resource_group_name,
+                    registry_name=registry_name,
+                    subscription_id=self._config.subscription_id,
+                    api_version=self._config.api_version,
+                    headers=_headers,
+                    params=_params,
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            else:
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                _request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            return _request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize(
+                _models._models.PrivateLinkResourceListResult, pipeline_response  # pylint: disable=protected-access
+            )
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)  # type: ignore
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            _request = prepare_request(next_link)
+
+            _stream = False
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+                _request, stream=_stream, **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(get_next, extract_data)
+
+    @distributed_trace_async
+    async def get_private_link_resource(
+        self, resource_group_name: str, registry_name: str, group_name: str, **kwargs: Any
+    ) -> _models.PrivateLinkResource:
+        """Gets a private link resource by a specified group name for a container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param group_name: The name of the private link associated with the Azure resource. Required.
+        :type group_name: str
+        :return: PrivateLinkResource
+        :rtype: ~azure.mgmt.containerregistry.models.PrivateLinkResource
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models.PrivateLinkResource] = kwargs.pop("cls", None)
+
+        _request = build_registries_get_private_link_resource_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            group_name=group_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("PrivateLinkResource", pipeline_response.http_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def regenerate_credential(
+        self, resource_group_name: str, registry_name: str, name: Union[str, _models.PasswordName], **kwargs: Any
+    ) -> _models.RegistryListCredentialsResult:
+        """Regenerates one of the login credentials for the specified container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param name: Specifies name of the password which should be regenerated -- password or
+         password2. Known values are: "password" and "password2". Required.
+        :type name: str or ~azure.mgmt.containerregistry.models.PasswordName
+        :return: RegistryListCredentialsResult
+        :rtype: ~azure.mgmt.containerregistry.models.RegistryListCredentialsResult
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: str = kwargs.pop("content_type", _headers.pop("Content-Type", "application/json"))
+        cls: ClsType[_models.RegistryListCredentialsResult] = kwargs.pop("cls", None)
+
+        _regenerate_credential_parameters = _models.RegenerateCredentialParameters(name=name)
+        _json = self._serialize.body(_regenerate_credential_parameters, "RegenerateCredentialParameters")
+
+        _request = build_registries_regenerate_credential_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            subscription_id=self._config.subscription_id,
+            content_type=content_type,
+            api_version=self._config.api_version,
+            json=_json,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("RegistryListCredentialsResult", pipeline_response.http_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
 
 
 class CacheRulesOperations:
@@ -1430,6 +2050,7 @@ class CacheRulesOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -1572,6 +2193,158 @@ class CacheRulesOperations:
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
+    async def _update_initial(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        cache_rule_name: str,
+        identity: Optional[_models.IdentityProperties] = None,
+        credential_set_resource_id: Optional[str] = None,
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: str = kwargs.pop("content_type", _headers.pop("Content-Type", "application/json"))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _cache_rule_update_parameters = _models.CacheRuleUpdateParameters(
+            credential_set_resource_id=credential_set_resource_id, identity=identity
+        )
+        _json = self._serialize.body(_cache_rule_update_parameters, "CacheRuleUpdateParameters")
+
+        _request = build_cache_rules_update_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            cache_rule_name=cache_rule_name,
+            subscription_id=self._config.subscription_id,
+            content_type=content_type,
+            api_version=self._config.api_version,
+            json=_json,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 201]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 201:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_update(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        cache_rule_name: str,
+        identity: Optional[_models.IdentityProperties] = None,
+        credential_set_resource_id: Optional[str] = None,
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.CacheRule]:
+        """Updates a cache rule for a container registry with the specified parameters.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param cache_rule_name: The name of the cache rule. Required.
+        :type cache_rule_name: str
+        :param identity: The identity of the cache rule. Default value is None.
+        :type identity: ~azure.mgmt.containerregistry.models.IdentityProperties
+        :param credential_set_resource_id: The ARM resource ID of the credential store which is
+         associated with the Cache rule. Default value is None.
+        :type credential_set_resource_id: str
+        :return: An instance of AsyncLROPoller that returns CacheRule
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.CacheRule]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: str = kwargs.pop("content_type", _headers.pop("Content-Type", "application/json"))
+        cls: ClsType[_models.CacheRule] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._update_initial(
+                resource_group_name=resource_group_name,
+                registry_name=registry_name,
+                cache_rule_name=cache_rule_name,
+                identity=identity,
+                credential_set_resource_id=credential_set_resource_id,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("CacheRule", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[_models.CacheRule].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[_models.CacheRule](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
+
     async def _delete_initial(
         self, resource_group_name: str, registry_name: str, cache_rule_name: str, **kwargs: Any
     ) -> AsyncIterator[bytes]:
@@ -1621,6 +2394,7 @@ class CacheRulesOperations:
         response_headers = {}
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -1687,152 +2461,6 @@ class CacheRulesOperations:
             )
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    async def _update_initial(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        cache_rule_name: str,
-        credential_set_resource_id: Optional[str] = None,
-        **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: str = kwargs.pop("content_type", _headers.pop("Content-Type", "application/json"))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        _cache_rule_update_parameters = _models.CacheRuleUpdateParameters(
-            credential_set_resource_id=credential_set_resource_id
-        )
-        _json = self._serialize.body(_cache_rule_update_parameters, "CacheRuleUpdateParameters")
-
-        _request = build_cache_rules_update_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            cache_rule_name=cache_rule_name,
-            subscription_id=self._config.subscription_id,
-            content_type=content_type,
-            api_version=self._config.api_version,
-            json=_json,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 201]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 201:
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-        deserialized = response.iter_bytes()
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
-    async def begin_update(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        cache_rule_name: str,
-        credential_set_resource_id: Optional[str] = None,
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.CacheRule]:
-        """Updates a cache rule for a container registry with the specified parameters.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param cache_rule_name: The name of the cache rule. Required.
-        :type cache_rule_name: str
-        :param credential_set_resource_id: The ARM resource ID of the credential store which is
-         associated with the Cache rule. Default value is None.
-        :type credential_set_resource_id: str
-        :return: An instance of AsyncLROPoller that returns CacheRule
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.CacheRule]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: str = kwargs.pop("content_type", _headers.pop("Content-Type", "application/json"))
-        cls: ClsType[_models.CacheRule] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._update_initial(
-                resource_group_name=resource_group_name,
-                registry_name=registry_name,
-                cache_rule_name=cache_rule_name,
-                credential_set_resource_id=credential_set_resource_id,
-                content_type=content_type,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("CacheRule", pipeline_response.http_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
-            return deserialized
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod,
-                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[_models.CacheRule].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[_models.CacheRule](
-            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
-        )
-
 
 class ConnectedRegistriesOperations:
     """
@@ -1854,6 +2482,101 @@ class ConnectedRegistriesOperations:
         )
         self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
+
+    @distributed_trace
+    def list(
+        self, resource_group_name: str, registry_name: str, *, filter: Optional[str] = None, **kwargs: Any
+    ) -> AsyncItemPaged["_models.ConnectedRegistry"]:
+        """Lists all connected registries for the specified container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :keyword filter: An OData filter expression that describes a subset of connectedRegistries to
+         return. The parameters that can be filtered are parent.id (the resource id of the
+         connectedRegistry parent), mode, and connectionState. The supported operator is eq. Default
+         value is None.
+        :paramtype filter: str
+        :return: An iterator like instance of ConnectedRegistry
+        :rtype:
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.ConnectedRegistry]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models._models.ConnectedRegistryListResult] = kwargs.pop("cls", None)
+
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        def prepare_request(next_link=None):
+            if not next_link:
+
+                _request = build_connected_registries_list_request(
+                    resource_group_name=resource_group_name,
+                    registry_name=registry_name,
+                    subscription_id=self._config.subscription_id,
+                    filter=filter,
+                    api_version=self._config.api_version,
+                    headers=_headers,
+                    params=_params,
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            else:
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                _request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            return _request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize(
+                _models._models.ConnectedRegistryListResult, pipeline_response  # pylint: disable=protected-access
+            )
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)  # type: ignore
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            _request = prepare_request(next_link)
+
+            _stream = False
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+                _request, stream=_stream, **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(get_next, extract_data)
 
     @distributed_trace_async
     async def get(
@@ -1986,6 +2709,7 @@ class ConnectedRegistriesOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -2203,6 +2927,7 @@ class ConnectedRegistriesOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -2401,6 +3126,7 @@ class ConnectedRegistriesOperations:
         response_headers = {}
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -2467,101 +3193,6 @@ class ConnectedRegistriesOperations:
             )
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    @distributed_trace
-    def list(
-        self, resource_group_name: str, registry_name: str, *, filter: Optional[str] = None, **kwargs: Any
-    ) -> AsyncItemPaged["_models.ConnectedRegistry"]:
-        """Lists all connected registries for the specified container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :keyword filter: An OData filter expression that describes a subset of connectedRegistries to
-         return. The parameters that can be filtered are parent.id (the resource id of the
-         connectedRegistry parent), mode, and connectionState. The supported operator is eq. Default
-         value is None.
-        :paramtype filter: str
-        :return: An iterator like instance of ConnectedRegistry
-        :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.ConnectedRegistry]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[_models._models.ConnectedRegistryListResult] = kwargs.pop("cls", None)
-
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        def prepare_request(next_link=None):
-            if not next_link:
-
-                _request = build_connected_registries_list_request(
-                    resource_group_name=resource_group_name,
-                    registry_name=registry_name,
-                    subscription_id=self._config.subscription_id,
-                    filter=filter,
-                    api_version=self._config.api_version,
-                    headers=_headers,
-                    params=_params,
-                )
-                _request.url = self._client.format_url(_request.url)
-
-            else:
-                # make call to next link with the client's api-version
-                _parsed_next_link = urllib.parse.urlparse(next_link)
-                _next_request_params = case_insensitive_dict(
-                    {
-                        key: [urllib.parse.quote(v) for v in value]
-                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
-                    }
-                )
-                _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
-                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
-                )
-                _request.url = self._client.format_url(_request.url)
-
-            return _request
-
-        async def extract_data(pipeline_response):
-            deserialized = self._deserialize(
-                _models._models.ConnectedRegistryListResult, pipeline_response  # pylint: disable=protected-access
-            )
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.next_link or None, AsyncList(list_of_elem)
-
-        async def get_next(next_link=None):
-            _request = prepare_request(next_link)
-
-            _stream = False
-            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(
-                    _models.ErrorResponse,
-                    pipeline_response,
-                )
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-        return AsyncItemPaged(get_next, extract_data)
-
     async def _deactivate_initial(
         self, resource_group_name: str, registry_name: str, connected_registry_name: str, **kwargs: Any
     ) -> AsyncIterator[bytes]:
@@ -2611,6 +3242,7 @@ class ConnectedRegistriesOperations:
         response_headers = {}
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -2676,6 +3308,65 @@ class ConnectedRegistriesOperations:
                 deserialization_callback=get_long_running_output,
             )
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    @distributed_trace_async
+    async def resync(
+        self, resource_group_name: str, registry_name: str, connected_registry_name: str, **kwargs: Any
+    ) -> None:
+        """Resync the connected registry instance.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param connected_registry_name: The name of the connected registry. Required.
+        :type connected_registry_name: str
+        :return: None
+        :rtype: None
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[None] = kwargs.pop("cls", None)
+
+        _request = build_connected_registries_resync_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            connected_registry_name=connected_registry_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        if cls:
+            return cls(pipeline_response, None, {})  # type: ignore
 
 
 class CredentialSetsOperations:
@@ -2919,6 +3610,7 @@ class CredentialSetsOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -3064,121 +3756,6 @@ class CredentialSetsOperations:
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
-    async def _delete_initial(
-        self, resource_group_name: str, registry_name: str, credential_set_name: str, **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        _request = build_credential_sets_delete_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            credential_set_name=credential_set_name,
-            subscription_id=self._config.subscription_id,
-            api_version=self._config.api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [202, 204]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-
-        deserialized = response.iter_bytes()
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
-    async def begin_delete(
-        self, resource_group_name: str, registry_name: str, credential_set_name: str, **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Deletes a credential set from a container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param credential_set_name: The name of the credential set. Required.
-        :type credential_set_name: str
-        :return: An instance of AsyncLROPoller that returns None
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[None] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._delete_initial(
-                resource_group_name=resource_group_name,
-                registry_name=registry_name,
-                credential_set_name=credential_set_name,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
-            if cls:
-                return cls(pipeline_response, None, {})  # type: ignore
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[None].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
     async def _update_initial(
         self,
         resource_group_name: str,
@@ -3244,6 +3821,7 @@ class CredentialSetsOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -3330,6 +3908,122 @@ class CredentialSetsOperations:
         return AsyncLROPoller[_models.CredentialSet](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
+
+    async def _delete_initial(
+        self, resource_group_name: str, registry_name: str, credential_set_name: str, **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_credential_sets_delete_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            credential_set_name=credential_set_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202, 204]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_delete(
+        self, resource_group_name: str, registry_name: str, credential_set_name: str, **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Deletes a credential set from a container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param credential_set_name: The name of the credential set. Required.
+        :type credential_set_name: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._delete_initial(
+                resource_group_name=resource_group_name,
+                registry_name=registry_name,
+                credential_set_name=credential_set_name,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
 
 class ExportPipelinesOperations:
@@ -3573,6 +4267,7 @@ class ExportPipelinesOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -3767,6 +4462,7 @@ class ExportPipelinesOperations:
         response_headers = {}
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -3832,1543 +4528,6 @@ class ExportPipelinesOperations:
                 deserialization_callback=get_long_running_output,
             )
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-
-class RegistriesOperations:
-    """
-    .. warning::
-        **DO NOT** instantiate this class directly.
-
-        Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerregistry.aio.ContainerRegistryManagementClient`'s
-        :attr:`registries` attribute.
-    """
-
-    models = _models
-
-    def __init__(self, *args, **kwargs) -> None:
-        input_args = list(args)
-        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
-        self._config: ContainerRegistryManagementClientConfiguration = (
-            input_args.pop(0) if input_args else kwargs.pop("config")
-        )
-        self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
-        self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
-
-    async def _import_image_initial(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        parameters: Union[_models.ImportImageParameters, IO[bytes]],
-        **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        content_type = content_type or "application/json"
-        _json = None
-        _content = None
-        if isinstance(parameters, (IOBase, bytes)):
-            _content = parameters
-        else:
-            _json = self._serialize.body(parameters, "ImportImageParameters")
-
-        _request = build_registries_import_image_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            subscription_id=self._config.subscription_id,
-            content_type=content_type,
-            api_version=self._config.api_version,
-            json=_json,
-            content=_content,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-
-        deserialized = response.iter_bytes()
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @overload
-    async def begin_import_image(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        parameters: _models.ImportImageParameters,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Copies an image to this container registry from the specified container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param parameters: The parameters specifying the image to copy and the source container
-         registry. Required.
-        :type parameters: ~azure.mgmt.containerregistry.models.ImportImageParameters
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns None
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def begin_import_image(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        parameters: IO[bytes],
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Copies an image to this container registry from the specified container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param parameters: The parameters specifying the image to copy and the source container
-         registry. Required.
-        :type parameters: IO[bytes]
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns None
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @distributed_trace_async
-    async def begin_import_image(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        parameters: Union[_models.ImportImageParameters, IO[bytes]],
-        **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Copies an image to this container registry from the specified container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param parameters: The parameters specifying the image to copy and the source container
-         registry. Is either a ImportImageParameters type or a IO[bytes] type. Required.
-        :type parameters: ~azure.mgmt.containerregistry.models.ImportImageParameters or IO[bytes]
-        :return: An instance of AsyncLROPoller that returns None
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[None] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._import_image_initial(
-                resource_group_name=resource_group_name,
-                registry_name=registry_name,
-                parameters=parameters,
-                content_type=content_type,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
-            if cls:
-                return cls(pipeline_response, None, {})  # type: ignore
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[None].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    @overload
-    async def check_name_availability(
-        self,
-        registry_name_check_request: _models.RegistryNameCheckRequest,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> _models.RegistryNameStatus:
-        """Checks whether the container registry name is available for use. The name must contain only
-        alphanumeric characters, be globally unique, and between 5 and 50 characters in length.
-
-        :param registry_name_check_request: The object containing information for the availability
-         request. Required.
-        :type registry_name_check_request:
-         ~azure.mgmt.containerregistry.models.RegistryNameCheckRequest
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: RegistryNameStatus
-        :rtype: ~azure.mgmt.containerregistry.models.RegistryNameStatus
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def check_name_availability(
-        self, registry_name_check_request: IO[bytes], *, content_type: str = "application/json", **kwargs: Any
-    ) -> _models.RegistryNameStatus:
-        """Checks whether the container registry name is available for use. The name must contain only
-        alphanumeric characters, be globally unique, and between 5 and 50 characters in length.
-
-        :param registry_name_check_request: The object containing information for the availability
-         request. Required.
-        :type registry_name_check_request: IO[bytes]
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: RegistryNameStatus
-        :rtype: ~azure.mgmt.containerregistry.models.RegistryNameStatus
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @distributed_trace_async
-    async def check_name_availability(
-        self, registry_name_check_request: Union[_models.RegistryNameCheckRequest, IO[bytes]], **kwargs: Any
-    ) -> _models.RegistryNameStatus:
-        """Checks whether the container registry name is available for use. The name must contain only
-        alphanumeric characters, be globally unique, and between 5 and 50 characters in length.
-
-        :param registry_name_check_request: The object containing information for the availability
-         request. Is either a RegistryNameCheckRequest type or a IO[bytes] type. Required.
-        :type registry_name_check_request:
-         ~azure.mgmt.containerregistry.models.RegistryNameCheckRequest or IO[bytes]
-        :return: RegistryNameStatus
-        :rtype: ~azure.mgmt.containerregistry.models.RegistryNameStatus
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.RegistryNameStatus] = kwargs.pop("cls", None)
-
-        content_type = content_type or "application/json"
-        _json = None
-        _content = None
-        if isinstance(registry_name_check_request, (IOBase, bytes)):
-            _content = registry_name_check_request
-        else:
-            _json = self._serialize.body(registry_name_check_request, "RegistryNameCheckRequest")
-
-        _request = build_registries_check_name_availability_request(
-            subscription_id=self._config.subscription_id,
-            content_type=content_type,
-            api_version=self._config.api_version,
-            json=_json,
-            content=_content,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("RegistryNameStatus", pipeline_response.http_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace
-    def list(self, **kwargs: Any) -> AsyncItemPaged["_models.Registry"]:
-        """Lists all the container registries under the specified subscription.
-
-        :return: An iterator like instance of Registry
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.Registry]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[_models._models.RegistryListResult] = kwargs.pop("cls", None)
-
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        def prepare_request(next_link=None):
-            if not next_link:
-
-                _request = build_registries_list_request(
-                    subscription_id=self._config.subscription_id,
-                    api_version=self._config.api_version,
-                    headers=_headers,
-                    params=_params,
-                )
-                _request.url = self._client.format_url(_request.url)
-
-            else:
-                # make call to next link with the client's api-version
-                _parsed_next_link = urllib.parse.urlparse(next_link)
-                _next_request_params = case_insensitive_dict(
-                    {
-                        key: [urllib.parse.quote(v) for v in value]
-                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
-                    }
-                )
-                _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
-                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
-                )
-                _request.url = self._client.format_url(_request.url)
-
-            return _request
-
-        async def extract_data(pipeline_response):
-            deserialized = self._deserialize(
-                _models._models.RegistryListResult, pipeline_response  # pylint: disable=protected-access
-            )
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.next_link or None, AsyncList(list_of_elem)
-
-        async def get_next(next_link=None):
-            _request = prepare_request(next_link)
-
-            _stream = False
-            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-        return AsyncItemPaged(get_next, extract_data)
-
-    @distributed_trace
-    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> AsyncItemPaged["_models.Registry"]:
-        """Lists all the container registries under the specified resource group.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :return: An iterator like instance of Registry
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.Registry]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[_models._models.RegistryListResult] = kwargs.pop("cls", None)
-
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        def prepare_request(next_link=None):
-            if not next_link:
-
-                _request = build_registries_list_by_resource_group_request(
-                    resource_group_name=resource_group_name,
-                    subscription_id=self._config.subscription_id,
-                    api_version=self._config.api_version,
-                    headers=_headers,
-                    params=_params,
-                )
-                _request.url = self._client.format_url(_request.url)
-
-            else:
-                # make call to next link with the client's api-version
-                _parsed_next_link = urllib.parse.urlparse(next_link)
-                _next_request_params = case_insensitive_dict(
-                    {
-                        key: [urllib.parse.quote(v) for v in value]
-                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
-                    }
-                )
-                _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
-                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
-                )
-                _request.url = self._client.format_url(_request.url)
-
-            return _request
-
-        async def extract_data(pipeline_response):
-            deserialized = self._deserialize(
-                _models._models.RegistryListResult, pipeline_response  # pylint: disable=protected-access
-            )
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.next_link or None, AsyncList(list_of_elem)
-
-        async def get_next(next_link=None):
-            _request = prepare_request(next_link)
-
-            _stream = False
-            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-        return AsyncItemPaged(get_next, extract_data)
-
-    @distributed_trace_async
-    async def get(self, resource_group_name: str, registry_name: str, **kwargs: Any) -> _models.Registry:
-        """Gets the properties of the specified container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :return: Registry
-        :rtype: ~azure.mgmt.containerregistry.models.Registry
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[_models.Registry] = kwargs.pop("cls", None)
-
-        _request = build_registries_get_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            subscription_id=self._config.subscription_id,
-            api_version=self._config.api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("Registry", pipeline_response.http_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-    async def _create_initial(
-        self, resource_group_name: str, registry_name: str, registry: Union[_models.Registry, IO[bytes]], **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        content_type = content_type or "application/json"
-        _json = None
-        _content = None
-        if isinstance(registry, (IOBase, bytes)):
-            _content = registry
-        else:
-            _json = self._serialize.body(registry, "Registry")
-
-        _request = build_registries_create_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            subscription_id=self._config.subscription_id,
-            content_type=content_type,
-            api_version=self._config.api_version,
-            json=_json,
-            content=_content,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 201]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 201:
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-        deserialized = response.iter_bytes()
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @overload
-    async def begin_create(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        registry: _models.Registry,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.Registry]:
-        """Creates a container registry with the specified parameters.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param registry: The parameters for creating a container registry. Required.
-        :type registry: ~azure.mgmt.containerregistry.models.Registry
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns Registry
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Registry]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def begin_create(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        registry: IO[bytes],
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.Registry]:
-        """Creates a container registry with the specified parameters.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param registry: The parameters for creating a container registry. Required.
-        :type registry: IO[bytes]
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns Registry
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Registry]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @distributed_trace_async
-    async def begin_create(
-        self, resource_group_name: str, registry_name: str, registry: Union[_models.Registry, IO[bytes]], **kwargs: Any
-    ) -> AsyncLROPoller[_models.Registry]:
-        """Creates a container registry with the specified parameters.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param registry: The parameters for creating a container registry. Is either a Registry type or
-         a IO[bytes] type. Required.
-        :type registry: ~azure.mgmt.containerregistry.models.Registry or IO[bytes]
-        :return: An instance of AsyncLROPoller that returns Registry
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Registry]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.Registry] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._create_initial(
-                resource_group_name=resource_group_name,
-                registry_name=registry_name,
-                registry=registry,
-                content_type=content_type,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("Registry", pipeline_response.http_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
-            return deserialized
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod,
-                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[_models.Registry].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[_models.Registry](
-            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
-        )
-
-    async def _delete_initial(
-        self, resource_group_name: str, registry_name: str, **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        _request = build_registries_delete_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            subscription_id=self._config.subscription_id,
-            api_version=self._config.api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202, 204]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-
-        deserialized = response.iter_bytes()
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
-    async def begin_delete(self, resource_group_name: str, registry_name: str, **kwargs: Any) -> AsyncLROPoller[None]:
-        """Deletes a container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :return: An instance of AsyncLROPoller that returns None
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[None] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._delete_initial(
-                resource_group_name=resource_group_name,
-                registry_name=registry_name,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
-            if cls:
-                return cls(pipeline_response, None, {})  # type: ignore
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[None].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    async def _update_initial(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        registry_update_parameters: Union[_models.RegistryUpdateParameters, IO[bytes]],
-        **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        content_type = content_type or "application/json"
-        _json = None
-        _content = None
-        if isinstance(registry_update_parameters, (IOBase, bytes)):
-            _content = registry_update_parameters
-        else:
-            _json = self._serialize.body(registry_update_parameters, "RegistryUpdateParameters")
-
-        _request = build_registries_update_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            subscription_id=self._config.subscription_id,
-            content_type=content_type,
-            api_version=self._config.api_version,
-            json=_json,
-            content=_content,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 201]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 201:
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-        deserialized = response.iter_bytes()
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @overload
-    async def begin_update(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        registry_update_parameters: _models.RegistryUpdateParameters,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.Registry]:
-        """Updates a container registry with the specified parameters.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param registry_update_parameters: The parameters for updating a container registry. Required.
-        :type registry_update_parameters: ~azure.mgmt.containerregistry.models.RegistryUpdateParameters
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns Registry
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Registry]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def begin_update(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        registry_update_parameters: IO[bytes],
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.Registry]:
-        """Updates a container registry with the specified parameters.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param registry_update_parameters: The parameters for updating a container registry. Required.
-        :type registry_update_parameters: IO[bytes]
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns Registry
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Registry]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @distributed_trace_async
-    async def begin_update(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        registry_update_parameters: Union[_models.RegistryUpdateParameters, IO[bytes]],
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.Registry]:
-        """Updates a container registry with the specified parameters.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param registry_update_parameters: The parameters for updating a container registry. Is either
-         a RegistryUpdateParameters type or a IO[bytes] type. Required.
-        :type registry_update_parameters: ~azure.mgmt.containerregistry.models.RegistryUpdateParameters
-         or IO[bytes]
-        :return: An instance of AsyncLROPoller that returns Registry
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Registry]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.Registry] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._update_initial(
-                resource_group_name=resource_group_name,
-                registry_name=registry_name,
-                registry_update_parameters=registry_update_parameters,
-                content_type=content_type,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("Registry", pipeline_response.http_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
-            return deserialized
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod,
-                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[_models.Registry].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[_models.Registry](
-            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
-        )
-
-    @distributed_trace_async
-    async def list_usages(
-        self, resource_group_name: str, registry_name: str, **kwargs: Any
-    ) -> _models.RegistryUsageListResult:
-        """Gets the quota usages for the specified container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :return: RegistryUsageListResult
-        :rtype: ~azure.mgmt.containerregistry.models.RegistryUsageListResult
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[_models.RegistryUsageListResult] = kwargs.pop("cls", None)
-
-        _request = build_registries_list_usages_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            subscription_id=self._config.subscription_id,
-            api_version=self._config.api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("RegistryUsageListResult", pipeline_response.http_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace
-    def list_private_link_resources(
-        self, resource_group_name: str, registry_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.PrivateLinkResource"]:
-        """Lists the private link resources for a container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :return: An iterator like instance of PrivateLinkResource
-        :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.PrivateLinkResource]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[_models._models.PrivateLinkResourceListResult] = kwargs.pop("cls", None)
-
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        def prepare_request(next_link=None):
-            if not next_link:
-
-                _request = build_registries_list_private_link_resources_request(
-                    resource_group_name=resource_group_name,
-                    registry_name=registry_name,
-                    subscription_id=self._config.subscription_id,
-                    api_version=self._config.api_version,
-                    headers=_headers,
-                    params=_params,
-                )
-                _request.url = self._client.format_url(_request.url)
-
-            else:
-                # make call to next link with the client's api-version
-                _parsed_next_link = urllib.parse.urlparse(next_link)
-                _next_request_params = case_insensitive_dict(
-                    {
-                        key: [urllib.parse.quote(v) for v in value]
-                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
-                    }
-                )
-                _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
-                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
-                )
-                _request.url = self._client.format_url(_request.url)
-
-            return _request
-
-        async def extract_data(pipeline_response):
-            deserialized = self._deserialize(
-                _models._models.PrivateLinkResourceListResult, pipeline_response  # pylint: disable=protected-access
-            )
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.next_link or None, AsyncList(list_of_elem)
-
-        async def get_next(next_link=None):
-            _request = prepare_request(next_link)
-
-            _stream = False
-            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-        return AsyncItemPaged(get_next, extract_data)
-
-    @distributed_trace_async
-    async def get_private_link_resource(
-        self, resource_group_name: str, registry_name: str, group_name: str, **kwargs: Any
-    ) -> _models.PrivateLinkResource:
-        """Gets a private link resource by a specified group name for a container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param group_name: The name of the private link resource. Required.
-        :type group_name: str
-        :return: PrivateLinkResource
-        :rtype: ~azure.mgmt.containerregistry.models.PrivateLinkResource
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[_models.PrivateLinkResource] = kwargs.pop("cls", None)
-
-        _request = build_registries_get_private_link_resource_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            group_name=group_name,
-            subscription_id=self._config.subscription_id,
-            api_version=self._config.api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("PrivateLinkResource", pipeline_response.http_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
-    async def list_credentials(
-        self, resource_group_name: str, registry_name: str, **kwargs: Any
-    ) -> _models.RegistryListCredentialsResult:
-        """Lists the login credentials for the specified container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :return: RegistryListCredentialsResult
-        :rtype: ~azure.mgmt.containerregistry.models.RegistryListCredentialsResult
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[_models.RegistryListCredentialsResult] = kwargs.pop("cls", None)
-
-        _request = build_registries_list_credentials_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            subscription_id=self._config.subscription_id,
-            api_version=self._config.api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("RegistryListCredentialsResult", pipeline_response.http_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
-    async def regenerate_credential(
-        self, resource_group_name: str, registry_name: str, name: Union[str, _models.PasswordName], **kwargs: Any
-    ) -> _models.RegistryListCredentialsResult:
-        """Regenerates one of the login credentials for the specified container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param name: Specifies name of the password which should be regenerated -- password or
-         password2. Known values are: "password" and "password2". Required.
-        :type name: str or ~azure.mgmt.containerregistry.models.PasswordName
-        :return: RegistryListCredentialsResult
-        :rtype: ~azure.mgmt.containerregistry.models.RegistryListCredentialsResult
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: str = kwargs.pop("content_type", _headers.pop("Content-Type", "application/json"))
-        cls: ClsType[_models.RegistryListCredentialsResult] = kwargs.pop("cls", None)
-
-        _regenerate_credential_parameters = _models.RegenerateCredentialParameters(name=name)
-        _json = self._serialize.body(_regenerate_credential_parameters, "RegenerateCredentialParameters")
-
-        _request = build_registries_regenerate_credential_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            subscription_id=self._config.subscription_id,
-            content_type=content_type,
-            api_version=self._config.api_version,
-            json=_json,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize("RegistryListCredentialsResult", pipeline_response.http_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-    async def _generate_credentials_initial(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        generate_credentials_parameters: Union[_models.GenerateCredentialsParameters, IO[bytes]],
-        **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        content_type = content_type or "application/json"
-        _json = None
-        _content = None
-        if isinstance(generate_credentials_parameters, (IOBase, bytes)):
-            _content = generate_credentials_parameters
-        else:
-            _json = self._serialize.body(generate_credentials_parameters, "GenerateCredentialsParameters")
-
-        _request = build_registries_generate_credentials_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            subscription_id=self._config.subscription_id,
-            content_type=content_type,
-            api_version=self._config.api_version,
-            json=_json,
-            content=_content,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-
-        deserialized = response.iter_bytes()
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @overload
-    async def begin_generate_credentials(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        generate_credentials_parameters: _models.GenerateCredentialsParameters,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.GenerateCredentialsResult]:
-        """Generate keys for a token of a specified container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param generate_credentials_parameters: The parameters for generating credentials. Required.
-        :type generate_credentials_parameters:
-         ~azure.mgmt.containerregistry.models.GenerateCredentialsParameters
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns GenerateCredentialsResult
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.GenerateCredentialsResult]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def begin_generate_credentials(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        generate_credentials_parameters: IO[bytes],
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.GenerateCredentialsResult]:
-        """Generate keys for a token of a specified container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param generate_credentials_parameters: The parameters for generating credentials. Required.
-        :type generate_credentials_parameters: IO[bytes]
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns GenerateCredentialsResult
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.GenerateCredentialsResult]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @distributed_trace_async
-    async def begin_generate_credentials(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        generate_credentials_parameters: Union[_models.GenerateCredentialsParameters, IO[bytes]],
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.GenerateCredentialsResult]:
-        """Generate keys for a token of a specified container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param generate_credentials_parameters: The parameters for generating credentials. Is either a
-         GenerateCredentialsParameters type or a IO[bytes] type. Required.
-        :type generate_credentials_parameters:
-         ~azure.mgmt.containerregistry.models.GenerateCredentialsParameters or IO[bytes]
-        :return: An instance of AsyncLROPoller that returns GenerateCredentialsResult
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.GenerateCredentialsResult]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.GenerateCredentialsResult] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._generate_credentials_initial(
-                resource_group_name=resource_group_name,
-                registry_name=registry_name,
-                generate_credentials_parameters=generate_credentials_parameters,
-                content_type=content_type,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("GenerateCredentialsResult", pipeline_response.http_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
-            return deserialized
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[_models.GenerateCredentialsResult].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[_models.GenerateCredentialsResult](
-            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
-        )
 
 
 class ImportPipelinesOperations:
@@ -5612,6 +4771,7 @@ class ImportPipelinesOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -5806,6 +4966,7 @@ class ImportPipelinesOperations:
         response_headers = {}
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -5873,14 +5034,14 @@ class ImportPipelinesOperations:
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
 
-class Operations:
+class ArchivesOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
         :class:`~azure.mgmt.containerregistry.aio.ContainerRegistryManagementClient`'s
-        :attr:`operations` attribute.
+        :attr:`archives` attribute.
     """
 
     models = _models
@@ -5895,18 +5056,26 @@ class Operations:
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list(self, **kwargs: Any) -> AsyncItemPaged["_models.OperationDefinition"]:
-        """Lists all of the available Azure Container Registry REST API operations.
+    def list(
+        self, resource_group_name: str, registry_name: str, package_type: str, **kwargs: Any
+    ) -> AsyncItemPaged["_models.Archive"]:
+        """Lists all archives for the specified container registry and package type.
 
-        :return: An iterator like instance of OperationDefinition
-        :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.OperationDefinition]
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param package_type: The package type. Required.
+        :type package_type: str
+        :return: An iterator like instance of Archive
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.Archive]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[_models._models.OperationListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models._models.ArchiveListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -5919,7 +5088,11 @@ class Operations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_operations_list_request(
+                _request = build_archives_list_request(
+                    resource_group_name=resource_group_name,
+                    registry_name=registry_name,
+                    package_type=package_type,
+                    subscription_id=self._config.subscription_id,
                     api_version=self._config.api_version,
                     headers=_headers,
                     params=_params,
@@ -5945,7 +5118,7 @@ class Operations:
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize(
-                _models._models.OperationListResult, pipeline_response  # pylint: disable=protected-access
+                _models._models.ArchiveListResult, pipeline_response  # pylint: disable=protected-access
             )
             list_of_elem = deserialized.value
             if cls:
@@ -5963,11 +5136,976 @@ class Operations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return AsyncItemPaged(get_next, extract_data)
+
+    @distributed_trace_async
+    async def get(
+        self, resource_group_name: str, registry_name: str, package_type: str, archive_name: str, **kwargs: Any
+    ) -> _models.Archive:
+        """Gets the properties of the archive.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param package_type: The package type. Required.
+        :type package_type: str
+        :param archive_name: The name of the archive resource. Required.
+        :type archive_name: str
+        :return: Archive
+        :rtype: ~azure.mgmt.containerregistry.models.Archive
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models.Archive] = kwargs.pop("cls", None)
+
+        _request = build_archives_get_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            package_type=package_type,
+            archive_name=archive_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("Archive", pipeline_response.http_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
+
+    async def _create_initial(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        package_type: str,
+        archive_name: str,
+        archive_create_parameters: Union[_models.Archive, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(archive_create_parameters, (IOBase, bytes)):
+            _content = archive_create_parameters
+        else:
+            _json = self._serialize.body(archive_create_parameters, "Archive")
+
+        _request = build_archives_create_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            package_type=package_type,
+            archive_name=archive_name,
+            subscription_id=self._config.subscription_id,
+            content_type=content_type,
+            api_version=self._config.api_version,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 201]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 201:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    async def begin_create(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        package_type: str,
+        archive_name: str,
+        archive_create_parameters: _models.Archive,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.Archive]:
+        """Creates a archive for a container registry with the specified parameters.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param package_type: The package type. Required.
+        :type package_type: str
+        :param archive_name: The name of the archive resource. Required.
+        :type archive_name: str
+        :param archive_create_parameters: The parameters for creating a archive. Required.
+        :type archive_create_parameters: ~azure.mgmt.containerregistry.models.Archive
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns Archive
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Archive]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    async def begin_create(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        package_type: str,
+        archive_name: str,
+        archive_create_parameters: IO[bytes],
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.Archive]:
+        """Creates a archive for a container registry with the specified parameters.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param package_type: The package type. Required.
+        :type package_type: str
+        :param archive_name: The name of the archive resource. Required.
+        :type archive_name: str
+        :param archive_create_parameters: The parameters for creating a archive. Required.
+        :type archive_create_parameters: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of AsyncLROPoller that returns Archive
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Archive]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def begin_create(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        package_type: str,
+        archive_name: str,
+        archive_create_parameters: Union[_models.Archive, IO[bytes]],
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.Archive]:
+        """Creates a archive for a container registry with the specified parameters.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param package_type: The package type. Required.
+        :type package_type: str
+        :param archive_name: The name of the archive resource. Required.
+        :type archive_name: str
+        :param archive_create_parameters: The parameters for creating a archive. Is either a Archive
+         type or a IO[bytes] type. Required.
+        :type archive_create_parameters: ~azure.mgmt.containerregistry.models.Archive or IO[bytes]
+        :return: An instance of AsyncLROPoller that returns Archive
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.Archive]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.Archive] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._create_initial(
+                resource_group_name=resource_group_name,
+                registry_name=registry_name,
+                package_type=package_type,
+                archive_name=archive_name,
+                archive_create_parameters=archive_create_parameters,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("Archive", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[_models.Archive].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[_models.Archive](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
+
+    @distributed_trace_async
+    async def update(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        package_type: str,
+        archive_name: str,
+        published_version: Optional[str] = None,
+        **kwargs: Any
+    ) -> _models.Archive:
+        """Updates a archive for a container registry with the specified parameters.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param package_type: The package type. Required.
+        :type package_type: str
+        :param archive_name: The name of the archive resource. Required.
+        :type archive_name: str
+        :param published_version: The published version of the archive. Default value is None.
+        :type published_version: str
+        :return: Archive
+        :rtype: ~azure.mgmt.containerregistry.models.Archive
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: str = kwargs.pop("content_type", _headers.pop("Content-Type", "application/json"))
+        cls: ClsType[_models.Archive] = kwargs.pop("cls", None)
+
+        _archive_update_parameters = _models.ArchiveUpdateParameters(published_version=published_version)
+        _json = self._serialize.body(_archive_update_parameters, "ArchiveUpdateParameters")
+
+        _request = build_archives_update_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            package_type=package_type,
+            archive_name=archive_name,
+            subscription_id=self._config.subscription_id,
+            content_type=content_type,
+            api_version=self._config.api_version,
+            json=_json,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("Archive", pipeline_response.http_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
+
+    async def _delete_initial(
+        self, resource_group_name: str, registry_name: str, package_type: str, archive_name: str, **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_archives_delete_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            package_type=package_type,
+            archive_name=archive_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202, 204]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_delete(
+        self, resource_group_name: str, registry_name: str, package_type: str, archive_name: str, **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Deletes a archive from a container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param package_type: The package type. Required.
+        :type package_type: str
+        :param archive_name: The name of the archive resource. Required.
+        :type archive_name: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._delete_initial(
+                resource_group_name=resource_group_name,
+                registry_name=registry_name,
+                package_type=package_type,
+                archive_name=archive_name,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+
+class ArchiveVersionsOperations:
+    """
+    .. warning::
+        **DO NOT** instantiate this class directly.
+
+        Instead, you should access the following operations through
+        :class:`~azure.mgmt.containerregistry.aio.ContainerRegistryManagementClient`'s
+        :attr:`archive_versions` attribute.
+    """
+
+    models = _models
+
+    def __init__(self, *args, **kwargs) -> None:
+        input_args = list(args)
+        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._config: ContainerRegistryManagementClientConfiguration = (
+            input_args.pop(0) if input_args else kwargs.pop("config")
+        )
+        self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
+        self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
+
+    @distributed_trace
+    def list(
+        self, resource_group_name: str, registry_name: str, package_type: str, archive_name: str, **kwargs: Any
+    ) -> AsyncItemPaged["_models.ArchiveVersion"]:
+        """Lists all archive versions for the specified container registry, repository type and archive
+        name.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param package_type: The package type. Required.
+        :type package_type: str
+        :param archive_name: The name of the archive resource. Required.
+        :type archive_name: str
+        :return: An iterator like instance of ArchiveVersion
+        :rtype:
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerregistry.models.ArchiveVersion]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models._models.ArchiveVersionListResult] = kwargs.pop("cls", None)
+
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        def prepare_request(next_link=None):
+            if not next_link:
+
+                _request = build_archive_versions_list_request(
+                    resource_group_name=resource_group_name,
+                    registry_name=registry_name,
+                    package_type=package_type,
+                    archive_name=archive_name,
+                    subscription_id=self._config.subscription_id,
+                    api_version=self._config.api_version,
+                    headers=_headers,
+                    params=_params,
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            else:
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                _request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            return _request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize(
+                _models._models.ArchiveVersionListResult, pipeline_response  # pylint: disable=protected-access
+            )
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)  # type: ignore
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            _request = prepare_request(next_link)
+
+            _stream = False
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+                _request, stream=_stream, **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(get_next, extract_data)
+
+    @distributed_trace_async
+    async def get(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        package_type: str,
+        archive_name: str,
+        archive_version_name: str,
+        **kwargs: Any
+    ) -> _models.ArchiveVersion:
+        """Gets the properties of the archive version.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param package_type: The package type. Required.
+        :type package_type: str
+        :param archive_name: The name of the archive resource. Required.
+        :type archive_name: str
+        :param archive_version_name: The name of the archive version resource. Required.
+        :type archive_version_name: str
+        :return: ArchiveVersion
+        :rtype: ~azure.mgmt.containerregistry.models.ArchiveVersion
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models.ArchiveVersion] = kwargs.pop("cls", None)
+
+        _request = build_archive_versions_get_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            package_type=package_type,
+            archive_name=archive_name,
+            archive_version_name=archive_version_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("ArchiveVersion", pipeline_response.http_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
+
+    async def _create_initial(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        package_type: str,
+        archive_name: str,
+        archive_version_name: str,
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_archive_versions_create_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            package_type=package_type,
+            archive_name=archive_name,
+            archive_version_name=archive_version_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 201]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 201:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_create(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        package_type: str,
+        archive_name: str,
+        archive_version_name: str,
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.ArchiveVersion]:
+        """Creates a archive version for a container registry with the specified parameters.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param package_type: The package type. Required.
+        :type package_type: str
+        :param archive_name: The name of the archive resource. Required.
+        :type archive_name: str
+        :param archive_version_name: The name of the archive version resource. Required.
+        :type archive_version_name: str
+        :return: An instance of AsyncLROPoller that returns ArchiveVersion
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.ArchiveVersion]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models.ArchiveVersion] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._create_initial(
+                resource_group_name=resource_group_name,
+                registry_name=registry_name,
+                package_type=package_type,
+                archive_name=archive_name,
+                archive_version_name=archive_version_name,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("ArchiveVersion", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[_models.ArchiveVersion].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[_models.ArchiveVersion](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
+
+    async def _delete_initial(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        package_type: str,
+        archive_name: str,
+        archive_version_name: str,
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_archive_versions_delete_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            package_type=package_type,
+            archive_name=archive_name,
+            archive_version_name=archive_version_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202, 204]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_delete(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        package_type: str,
+        archive_name: str,
+        archive_version_name: str,
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Deletes a archive version from a container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param package_type: The package type. Required.
+        :type package_type: str
+        :param archive_name: The name of the archive resource. Required.
+        :type archive_name: str
+        :param archive_version_name: The name of the archive version resource. Required.
+        :type archive_version_name: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._delete_initial(
+                resource_group_name=resource_group_name,
+                registry_name=registry_name,
+                package_type=package_type,
+                archive_name=archive_name,
+                archive_version_name=archive_version_name,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
 
 class PipelineRunsOperations:
@@ -6206,6 +6344,7 @@ class PipelineRunsOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -6341,6 +6480,7 @@ class PipelineRunsOperations:
         response_headers = {}
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -6509,7 +6649,11 @@ class PrivateEndpointConnectionsOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -6565,7 +6709,11 @@ class PrivateEndpointConnectionsOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("PrivateEndpointConnection", pipeline_response.http_response)
 
@@ -6629,13 +6777,18 @@ class PrivateEndpointConnectionsOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 201:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -6765,11 +6918,16 @@ class PrivateEndpointConnectionsOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -6937,7 +7095,11 @@ class ReplicationsOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -6993,7 +7155,11 @@ class ReplicationsOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("Replication", pipeline_response.http_response)
 
@@ -7059,13 +7225,18 @@ class ReplicationsOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 201:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -7208,117 +7379,6 @@ class ReplicationsOperations:
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
-    async def _delete_initial(
-        self, resource_group_name: str, registry_name: str, replication_name: str, **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        _request = build_replications_delete_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            replication_name=replication_name,
-            subscription_id=self._config.subscription_id,
-            api_version=self._config.api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202, 204]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-
-        deserialized = response.iter_bytes()
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
-    async def begin_delete(
-        self, resource_group_name: str, registry_name: str, replication_name: str, **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Deletes a replication from a container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param replication_name: The name of the replication. Required.
-        :type replication_name: str
-        :return: An instance of AsyncLROPoller that returns None
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[None] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._delete_initial(
-                resource_group_name=resource_group_name,
-                registry_name=registry_name,
-                replication_name=replication_name,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
-            if cls:
-                return cls(pipeline_response, None, {})  # type: ignore
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[None].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
     async def _update_initial(
         self,
         resource_group_name: str,
@@ -7373,13 +7433,18 @@ class ReplicationsOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 201:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -7466,6 +7531,122 @@ class ReplicationsOperations:
         return AsyncLROPoller[_models.Replication](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
+
+    async def _delete_initial(
+        self, resource_group_name: str, registry_name: str, replication_name: str, **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_replications_delete_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            replication_name=replication_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202, 204]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_delete(
+        self, resource_group_name: str, registry_name: str, replication_name: str, **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Deletes a replication from a container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param replication_name: The name of the replication. Required.
+        :type replication_name: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._delete_initial(
+                resource_group_name=resource_group_name,
+                registry_name=registry_name,
+                replication_name=replication_name,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
 
 class ScopeMapsOperations:
@@ -7701,6 +7882,7 @@ class ScopeMapsOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -7748,6 +7930,157 @@ class ScopeMapsOperations:
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
             raw_result = await self._create_initial(
+                resource_group_name=resource_group_name,
+                registry_name=registry_name,
+                scope_map_name=scope_map_name,
+                description=description,
+                actions=actions,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("ScopeMap", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[_models.ScopeMap].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[_models.ScopeMap](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
+
+    async def _update_initial(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        scope_map_name: str,
+        description: Optional[str] = None,
+        actions: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: str = kwargs.pop("content_type", _headers.pop("Content-Type", "application/json"))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _scope_map_update_parameters = _models.ScopeMapUpdateParameters(actions=actions, description=description)
+        _json = self._serialize.body(_scope_map_update_parameters, "ScopeMapUpdateParameters")
+
+        _request = build_scope_maps_update_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            scope_map_name=scope_map_name,
+            subscription_id=self._config.subscription_id,
+            content_type=content_type,
+            api_version=self._config.api_version,
+            json=_json,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 201]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 201:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_update(
+        self,
+        resource_group_name: str,
+        registry_name: str,
+        scope_map_name: str,
+        description: Optional[str] = None,
+        actions: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.ScopeMap]:
+        """Updates a scope map with the specified parameters.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param scope_map_name: The name of the scope map. Required.
+        :type scope_map_name: str
+        :param description: The user friendly description of the scope map. Default value is None.
+        :type description: str
+        :param actions: The list of scope permissions for registry artifacts.
+         E.g. repositories/repository-name/pull,
+         repositories/repository-name/delete. Default value is None.
+        :type actions: list[str]
+        :return: An instance of AsyncLROPoller that returns ScopeMap
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.ScopeMap]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type: str = kwargs.pop("content_type", _headers.pop("Content-Type", "application/json"))
+        cls: ClsType[_models.ScopeMap] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._update_initial(
                 resource_group_name=resource_group_name,
                 registry_name=registry_name,
                 scope_map_name=scope_map_name,
@@ -7837,6 +8170,7 @@ class ScopeMapsOperations:
         response_headers = {}
         if response.status_code == 202:
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -7902,156 +8236,6 @@ class ScopeMapsOperations:
                 deserialization_callback=get_long_running_output,
             )
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    async def _update_initial(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        scope_map_name: str,
-        description: Optional[str] = None,
-        actions: Optional[List[str]] = None,
-        **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: str = kwargs.pop("content_type", _headers.pop("Content-Type", "application/json"))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        _scope_map_update_parameters = _models.ScopeMapUpdateParameters(actions=actions, description=description)
-        _json = self._serialize.body(_scope_map_update_parameters, "ScopeMapUpdateParameters")
-
-        _request = build_scope_maps_update_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            scope_map_name=scope_map_name,
-            subscription_id=self._config.subscription_id,
-            content_type=content_type,
-            api_version=self._config.api_version,
-            json=_json,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 201]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 201:
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-        deserialized = response.iter_bytes()
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
-    async def begin_update(
-        self,
-        resource_group_name: str,
-        registry_name: str,
-        scope_map_name: str,
-        description: Optional[str] = None,
-        actions: Optional[List[str]] = None,
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.ScopeMap]:
-        """Updates a scope map with the specified parameters.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param scope_map_name: The name of the scope map. Required.
-        :type scope_map_name: str
-        :param description: The user friendly description of the scope map. Default value is None.
-        :type description: str
-        :param actions: The list of scope permissions for registry artifacts.
-         E.g. repositories/repository-name/pull,
-         repositories/repository-name/delete. Default value is None.
-        :type actions: list[str]
-        :return: An instance of AsyncLROPoller that returns ScopeMap
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerregistry.models.ScopeMap]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = kwargs.pop("params", {}) or {}
-
-        content_type: str = kwargs.pop("content_type", _headers.pop("Content-Type", "application/json"))
-        cls: ClsType[_models.ScopeMap] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._update_initial(
-                resource_group_name=resource_group_name,
-                registry_name=registry_name,
-                scope_map_name=scope_map_name,
-                description=description,
-                actions=actions,
-                content_type=content_type,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ScopeMap", pipeline_response.http_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
-            return deserialized
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod,
-                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[_models.ScopeMap].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[_models.ScopeMap](
-            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
-        )
 
 
 class TokensOperations:
@@ -8290,6 +8474,7 @@ class TokensOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -8432,121 +8617,6 @@ class TokensOperations:
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
-    async def _delete_initial(
-        self, resource_group_name: str, registry_name: str, token_name: str, **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        _request = build_tokens_delete_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            token_name=token_name,
-            subscription_id=self._config.subscription_id,
-            api_version=self._config.api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202, 204]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-
-        deserialized = response.iter_bytes()
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
-    async def begin_delete(
-        self, resource_group_name: str, registry_name: str, token_name: str, **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Deletes a token from a container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param token_name: The name of the token. Required.
-        :type token_name: str
-        :return: An instance of AsyncLROPoller that returns None
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[None] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._delete_initial(
-                resource_group_name=resource_group_name,
-                registry_name=registry_name,
-                token_name=token_name,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
-            if cls:
-                return cls(pipeline_response, None, {})  # type: ignore
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[None].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
     async def _update_initial(
         self,
         resource_group_name: str,
@@ -8615,6 +8685,7 @@ class TokensOperations:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -8758,6 +8829,122 @@ class TokensOperations:
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
+    async def _delete_initial(
+        self, resource_group_name: str, registry_name: str, token_name: str, **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_tokens_delete_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            token_name=token_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202, 204]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_delete(
+        self, resource_group_name: str, registry_name: str, token_name: str, **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Deletes a token from a container registry.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param token_name: The name of the token. Required.
+        :type token_name: str
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._delete_initial(
+                resource_group_name=resource_group_name,
+                registry_name=registry_name,
+                token_name=token_name,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
 
 class WebhooksOperations:
     """
@@ -8856,7 +9043,11 @@ class WebhooksOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -8912,7 +9103,11 @@ class WebhooksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("Webhook", pipeline_response.http_response)
 
@@ -8978,13 +9173,18 @@ class WebhooksOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 201:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -9128,117 +9328,6 @@ class WebhooksOperations:
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
-    async def _delete_initial(
-        self, resource_group_name: str, registry_name: str, webhook_name: str, **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        _request = build_webhooks_delete_request(
-            resource_group_name=resource_group_name,
-            registry_name=registry_name,
-            webhook_name=webhook_name,
-            subscription_id=self._config.subscription_id,
-            api_version=self._config.api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202, 204]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-
-        deserialized = response.iter_bytes()
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @distributed_trace_async
-    async def begin_delete(
-        self, resource_group_name: str, registry_name: str, webhook_name: str, **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Deletes a webhook from a container registry.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param registry_name: The name of the container registry. Required.
-        :type registry_name: str
-        :param webhook_name: The name of the webhook. Required.
-        :type webhook_name: str
-        :return: An instance of AsyncLROPoller that returns None
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = kwargs.pop("params", {}) or {}
-
-        cls: ClsType[None] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._delete_initial(
-                resource_group_name=resource_group_name,
-                registry_name=registry_name,
-                webhook_name=webhook_name,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
-            if cls:
-                return cls(pipeline_response, None, {})  # type: ignore
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[None].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
     async def _update_initial(
         self,
         resource_group_name: str,
@@ -9296,13 +9385,18 @@ class WebhooksOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 201:
             response_headers["Azure-AsyncOperation"] = self._deserialize(
                 "str", response.headers.get("Azure-AsyncOperation")
             )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.iter_bytes()
 
@@ -9446,11 +9540,69 @@ class WebhooksOperations:
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
-    @distributed_trace_async
-    async def ping(
+    async def _delete_initial(
         self, resource_group_name: str, registry_name: str, webhook_name: str, **kwargs: Any
-    ) -> _models.EventInfo:
-        """Triggers a ping event to be sent to the webhook.
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_webhooks_delete_request(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            webhook_name=webhook_name,
+            subscription_id=self._config.subscription_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202, 204]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.iter_bytes()
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_delete(
+        self, resource_group_name: str, registry_name: str, webhook_name: str, **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Deletes a webhook from a container registry.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -9459,8 +9611,66 @@ class WebhooksOperations:
         :type registry_name: str
         :param webhook_name: The name of the webhook. Required.
         :type webhook_name: str
-        :return: EventInfo
-        :rtype: ~azure.mgmt.containerregistry.models.EventInfo
+        :return: An instance of AsyncLROPoller that returns None
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._delete_initial(
+                resource_group_name=resource_group_name,
+                registry_name=registry_name,
+                webhook_name=webhook_name,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    @distributed_trace_async
+    async def get_callback_config(
+        self, resource_group_name: str, registry_name: str, webhook_name: str, **kwargs: Any
+    ) -> _models.CallbackConfig:
+        """Gets the configuration of service URI and custom headers for the webhook.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param registry_name: The name of the container registry. Required.
+        :type registry_name: str
+        :param webhook_name: The name of the webhook. Required.
+        :type webhook_name: str
+        :return: CallbackConfig
+        :rtype: ~azure.mgmt.containerregistry.models.CallbackConfig
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -9474,9 +9684,9 @@ class WebhooksOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[_models.EventInfo] = kwargs.pop("cls", None)
+        cls: ClsType[_models.CallbackConfig] = kwargs.pop("cls", None)
 
-        _request = build_webhooks_ping_request(
+        _request = build_webhooks_get_callback_config_request(
             resource_group_name=resource_group_name,
             registry_name=registry_name,
             webhook_name=webhook_name,
@@ -9496,9 +9706,13 @@ class WebhooksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("EventInfo", pipeline_response.http_response)
+        deserialized = self._deserialize("CallbackConfig", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -9586,17 +9800,21 @@ class WebhooksOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return AsyncItemPaged(get_next, extract_data)
 
     @distributed_trace_async
-    async def get_callback_config(
+    async def ping(
         self, resource_group_name: str, registry_name: str, webhook_name: str, **kwargs: Any
-    ) -> _models.CallbackConfig:
-        """Gets the configuration of service URI and custom headers for the webhook.
+    ) -> _models.EventInfo:
+        """Triggers a ping event to be sent to the webhook.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -9605,8 +9823,8 @@ class WebhooksOperations:
         :type registry_name: str
         :param webhook_name: The name of the webhook. Required.
         :type webhook_name: str
-        :return: CallbackConfig
-        :rtype: ~azure.mgmt.containerregistry.models.CallbackConfig
+        :return: EventInfo
+        :rtype: ~azure.mgmt.containerregistry.models.EventInfo
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -9620,9 +9838,9 @@ class WebhooksOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[_models.CallbackConfig] = kwargs.pop("cls", None)
+        cls: ClsType[_models.EventInfo] = kwargs.pop("cls", None)
 
-        _request = build_webhooks_get_callback_config_request(
+        _request = build_webhooks_ping_request(
             resource_group_name=resource_group_name,
             registry_name=registry_name,
             webhook_name=webhook_name,
@@ -9642,9 +9860,13 @@ class WebhooksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("CallbackConfig", pipeline_response.http_response)
+        deserialized = self._deserialize("EventInfo", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore

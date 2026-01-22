@@ -18,6 +18,7 @@ from azure.cli.command_modules.acr.network_rule import NETWORK_RULE_NOT_SUPPORTE
 
 from .vendored_sdks.containerregistry.models import (
     NetworkRuleSet,
+    RegionalEndpoints,
     Registry,
     RegistryUpdateParameters,
     Sku
@@ -50,7 +51,7 @@ def acr_create_preview(cmd,
                        allow_metadata_search=None,
                        dnl_scope=None,
                        role_assignment_mode=None,
-                       enable_regional_endpoints=None):
+                       regional_endpoints=None):
     from azure.cli.command_modules.acr.custom import (
         _configure_cmk, _configure_metadata_search, _configure_public_network_access,
         _configure_domain_name_label_scope, _configure_role_assignment_mode, _handle_export_policy,
@@ -90,8 +91,8 @@ def acr_create_preview(cmd,
     if role_assignment_mode is not None:
         _configure_role_assignment_mode(cmd, registry, role_assignment_mode)
 
-    if enable_regional_endpoints is not None:
-        _configure_regional_endpoint(cmd, registry, sku, enable_regional_endpoints)
+    if regional_endpoints is not None:
+        _configure_regional_endpoints(cmd, registry, sku, regional_endpoints)
 
     _handle_network_bypass(cmd, registry, allow_trusted_services)
     _handle_export_policy(cmd, registry, allow_exports)
@@ -128,7 +129,7 @@ def acr_update_custom_preview(cmd,
                               tags=None,
                               allow_metadata_search=None,
                               role_assignment_mode=None,
-                              enable_regional_endpoints=None):
+                              regional_endpoints=None):
     instance = acr_update_custom(
         cmd,
         instance,
@@ -145,8 +146,8 @@ def acr_update_custom_preview(cmd,
         role_assignment_mode
     )
 
-    if enable_regional_endpoints is not None:
-        _configure_regional_endpoint(cmd, instance, sku, enable_regional_endpoints)
+    if regional_endpoints is not None:
+        _configure_regional_endpoints(cmd, instance, sku, regional_endpoints)
 
     return instance
 
@@ -161,9 +162,14 @@ def acr_update_set_preview(cmd, client, registry_name, resource_group_name=None,
     if parameters.network_rule_set and registry.sku.name not in get_premium_sku(cmd):
         raise CLIError(NETWORK_RULE_NOT_SUPPORTED)
 
-    if parameters.regional_endpoint_enabled:
+    validate_sku_update(cmd, registry.sku.name, parameters.sku)
+
+    # Determine the effective SKU (new SKU if being updated, otherwise current SKU)
+    sku = parameters.sku.name if parameters.sku else registry.sku.name
+
+    if parameters.regional_endpoints:
         # Regional endpoints require Premium SKU, validate registry tier compatibility
-        if registry.sku.name not in get_premium_sku(cmd):
+        if sku not in get_premium_sku(cmd):
             raise CLIError(REGIONAL_ENDPOINTS_NOT_SUPPORTED)
 
         # Regional endpoints are incompatible with Docker Content Trust (DCT), check for conflicts
@@ -177,8 +183,6 @@ def acr_update_set_preview(cmd, client, registry_name, resource_group_name=None,
                 "(--enable-data-endpoint) for optimal in-region performance "
                 "when using regional endpoints."
             )
-
-    validate_sku_update(cmd, registry.sku.name, parameters.sku)
 
     return client.begin_update(resource_group_name, registry_name, parameters)
 
@@ -195,8 +199,8 @@ def acr_show_preview(cmd, client, registry_name, resource_group_name=None):
         return client.get(resource_group_name, registry_name)
 
 
-def _check_regional_endpoint_afec(cli_ctx):
-    """Check if the regional endpoint AFEC is registered for the subscription.
+def _check_regional_endpoints_afec(cli_ctx):
+    """Check if the regional endpoints AFEC is registered for the subscription.
     This check is only needed during the private preview stage.
     """
     feature_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_FEATURES).features
@@ -207,17 +211,17 @@ def _check_regional_endpoint_afec(cli_ctx):
     return feature_result and feature_result.properties and feature_result.properties.state == "Registered"
 
 
-def _configure_regional_endpoint(cmd, registry, sku, enable_regional_endpoints):
-    if not _check_regional_endpoint_afec(cmd.cli_ctx):
+def _configure_regional_endpoints(cmd, registry, sku, enabled):
+    if not _check_regional_endpoints_afec(cmd.cli_ctx):
         raise CLIError(
-            "usage error: The --enable-regional-endpoints parameter is only applicable to"
+            "usage error: The --regional-endpoints parameter is only applicable to"
             " subscriptions registered with feature {}".format(ACR_AFEC_REGIONAL_ENDPOINT)
         )
 
-    if enable_regional_endpoints and sku and sku not in get_premium_sku(cmd):
+    if enabled and sku and sku not in get_premium_sku(cmd):
         raise CLIError(REGIONAL_ENDPOINTS_NOT_SUPPORTED)
 
-    registry.regional_endpoint_enabled = enable_regional_endpoints
+    registry.regional_endpoints = (RegionalEndpoints.ENABLED if enabled else RegionalEndpoints.DISABLED)
 
 
 def get_registry_by_name(cli_ctx, registry_name, resource_group_name=None):
@@ -307,7 +311,7 @@ def acr_login_preview(cmd,
 
     if all_endpoints:
         registry, resource_group_name = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
-        if registry.regional_endpoint_enabled and registry.regional_endpoint_host_names:
+        if registry.regional_endpoints and registry.regional_endpoint_host_names:
             login_server_list = [login_server] + registry.regional_endpoint_host_names
             logger.warning("Regional endpoints are enabled. Logging in to %d endpoints.", len(login_server_list))
             for url in login_server_list:
@@ -390,7 +394,7 @@ def acr_show_endpoints_preview(cmd,
                 'endpoint': '*.blob.' + cmd.cli_ctx.cloud.suffixes.storage_endpoint,
             })
 
-    if registry.regional_endpoint_enabled:
+    if registry.regional_endpoints:
         info['regionalEndpoints'] = []
         for host in registry.regional_endpoint_host_names:
             info['regionalEndpoints'].append({

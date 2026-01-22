@@ -125,6 +125,15 @@ class EncryptionStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     DISABLED = "disabled"
 
 
+class EndpointProtocol(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The connectivity protocol for the registry."""
+
+    I_PV4 = "IPv4"
+    """IPv4 connectivity only"""
+    I_PV4_AND_I_PV6 = "IPv4AndIPv6"
+    """IPv4 and IPv6 (dual stack) connectivity"""
+
+
 class ExportPolicyStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The value that indicates whether the policy is enabled or not."""
 
@@ -139,15 +148,6 @@ class ImportMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     NO_FORCE = "NoForce"
     FORCE = "Force"
-
-
-class LastModifiedByType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The type of identity that last modified the resource."""
-
-    USER = "User"
-    APPLICATION = "Application"
-    MANAGED_IDENTITY = "ManagedIdentity"
-    KEY = "Key"
 
 
 class LogLevel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -239,6 +239,15 @@ class PublicNetworkAccess(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     DISABLED = "Disabled"
 
 
+class RegionalEndpoints(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Whether or not per-region endpoints are enabled for accessing the registry."""
+
+    ENABLED = "Enabled"
+    """Regional endpoints are enabled."""
+    DISABLED = "Disabled"
+    """Regional endpoints are disabled."""
+
+
 class RegistryUsageUnit(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The unit of measurement."""
 
@@ -284,7 +293,39 @@ class StorageAccessMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The storage access mode used for the customer storage account."""
 
     MANAGED_IDENTITY = "ManagedIdentity"
+    """Managed Identity access mode"""
     SAS_TOKEN = "SasToken"
+    """SAS Token access mode"""
+
+
+class SyncState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The status of the connected registry's most recent sync."""
+
+    SYNC_TOKEN_UPDATE = "SyncTokenUpdate"
+    """Connected Registry sync was triggered by a sync token update"""
+    INITIAL_SYNC = "InitialSync"
+    """Connected Registry sync was triggered by an initial sync during activation"""
+    MANUAL_RESYNC = "ManualResync"
+    """Connected Registry sync was triggered by a manual resync request"""
+    RECOVERY_SERVICE = "RecoveryService"
+    """Connected Registry sync was triggered by the Connected Registry's recovery service"""
+
+
+class SyncTrigger(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The action that triggered the most recent registry sync."""
+
+    NOT_ACTIVATED = "NotActivated"
+    """Connected Registry is not activated"""
+    SYNCING = "Syncing"
+    """Connected Registry is syncing"""
+    FAILED = "Failed"
+    """Connected Registry sync failed"""
+    SUCCEEDED = "Succeeded"
+    """Connected Registry sync succeeded"""
+    TIMED_OUT = "TimedOut"
+    """Connected Registry sync timed out"""
+    PENDING = "Pending"
+    """Connected Registry sync is pending"""
 
 
 class TlsStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):

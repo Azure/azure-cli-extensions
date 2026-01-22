@@ -18,7 +18,7 @@ examples:
         az acr create -n myregistry -g MyResourceGroup --sku Standard --role-assignment-mode rbac-abac
   - name: Create a registry with regional endpoints enabled.
     text: >
-        az acr create -n myregistry -g MyResourceGroup --sku Premium --enable-regional-endpoints true
+        az acr create -n myregistry -g MyResourceGroup --sku Premium --regional-endpoints true
 """
 
 helps['acr update'] = """
@@ -36,7 +36,7 @@ examples:
         az acr update -n myregistry --role-assignment-mode rbac-abac
   - name: Enable regional endpoints on an existing registry.
     text: >
-        az acr update -n myregistry --enable-regional-endpoints true
+        az acr update -n myregistry --regional-endpoints true
 """
 
 helps['acr login'] = """

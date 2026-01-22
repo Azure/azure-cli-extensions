@@ -130,7 +130,7 @@ def _regional_endpoint_uri_to_login_server(uri, login_server_suffix):
 
 
 def _get_azure_registry(cmd, source_registry):
-    """Get Azure registry from login server URI or registry name, handling regional endpoints URI."""
+    """Get Azure registry from login server URI or registry name, handling regional endpoint URI."""
     lookup_uri = source_registry
 
     # Try to get the pre-defined login server suffix.

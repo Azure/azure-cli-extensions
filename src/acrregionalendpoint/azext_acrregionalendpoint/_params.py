@@ -10,20 +10,18 @@ from azure.cli.core.commands.parameters import get_three_state_flag
 def load_arguments_preview(self, _):
     with self.argument_context("acr create") as c:
         c.argument(
-            "enable_regional_endpoints",
-            options_list=['--enable-regional-endpoints', '--regional'],
+            "regional_endpoints",
             arg_type=get_three_state_flag(),
             is_preview=True,
-            help="Enable or disable regional endpoints for the registry.",
+            help="Enable or disable the regional endpoints feature for the registry. If not specified, this is set to disabled by default.",
         )
 
     with self.argument_context("acr update") as c:
         c.argument(
-            "enable_regional_endpoints",
-            options_list=['--enable-regional-endpoints', '--regional'],
+            "regional_endpoints",
             arg_type=get_three_state_flag(),
             is_preview=True,
-            help="Enable or disable regional endpoints for the registry.",
+            help="Enable or disable the regional endpoints feature for the registry.",
         )
 
     with self.argument_context("acr login") as c:

@@ -11,7 +11,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 class AcrRegionalEndpointScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_acrre_')
-    def test_acr_create_with_regional_endpoint_enabled(self):
+    def test_acr_create_with_regional_endpoints_enabled(self):
         registry_name = self.create_random_name('clitestre', length=16)
 
         self.kwargs.update({
@@ -20,15 +20,15 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
             'sku': 'Premium'
         })
 
-        self.cmd('acr create -g {rg} -n {registry_name} --sku {sku} --location {rg_loc} --enable-regional-endpoints true', checks=[
+        self.cmd('acr create -g {rg} -n {registry_name} --sku {sku} --location {rg_loc} --regional-endpoints true', checks=[
             self.check('name', registry_name),
-            self.check('regionalEndpointEnabled', 'True'),
+            self.check('regionalEndpoints', 'Enabled'),
             self.check('regionalEndpointHostNames', [f'{registry_name}.eastus2euap.geo.azurecr.io']),
             self.check('provisioningState', 'Succeeded')
         ])
 
         self.cmd('acr show -g {rg} -n {registry_name}', checks=[
-            self.check('regionalEndpointEnabled', 'True'),
+            self.check('regionalEndpoints', 'Enabled'),
             self.check('regionalEndpointHostNames', [f'{registry_name}.eastus2euap.geo.azurecr.io'])
         ])
 
@@ -41,8 +41,8 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
             self.check('regionalEndpoints[0].region', 'eastus2euap')
         ])
 
-        self.cmd('acr update -g {rg} -n {registry_name} --enable-regional-endpoints false', checks=[
-            self.check('regionalEndpointEnabled', 'False'),
+        self.cmd('acr update -g {rg} -n {registry_name} --regional-endpoints false', checks=[
+            self.check('regionalEndpoints', 'Disabled'),
             self.check('regionalEndpointHostNames', [])
         ])
 
@@ -56,7 +56,7 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
 
 
     @ResourceGroupPreparer(name_prefix='cli_test_acrre_')
-    def test_acr_create_with_regional_endpoint_disabled(self):
+    def test_acr_create_with_regional_endpoints_disabled(self):
         registry_name = self.create_random_name('clitestre', length=16)
 
         self.kwargs.update({
@@ -64,20 +64,20 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
             'sku': 'Premium'
         })
 
-        self.cmd('acr create -g {rg} -n {registry_name} --sku {sku} --location eastus2euap --enable-regional-endpoints false', checks=[
+        self.cmd('acr create -g {rg} -n {registry_name} --sku {sku} --location eastus2euap --regional-endpoints false', checks=[
             self.check('name', registry_name),
-            self.check('regionalEndpointEnabled', 'False'),
+            self.check('regionalEndpoints', 'Disabled'),
             self.check('regionalEndpointHostNames', []),
             self.check('provisioningState', 'Succeeded')
         ])
 
         self.cmd('acr show -g {rg} -n {registry_name}', checks=[
-            self.check('regionalEndpointEnabled', 'False'),
+            self.check('regionalEndpoints', 'Disabled'),
             self.check('regionalEndpointHostNames', [])
         ])
 
-        self.cmd('acr update -g {rg} -n {registry_name} --enable-regional-endpoints true', checks=[
-            self.check('regionalEndpointEnabled', 'True'),
+        self.cmd('acr update -g {rg} -n {registry_name} --regional-endpoints true', checks=[
+            self.check('regionalEndpoints', 'Enabled'),
             self.check('regionalEndpointHostNames', [f'{registry_name}.eastus2euap.geo.azurecr.io'])
         ])
 
@@ -93,9 +93,9 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
             'sku': 'Premium'
         })
 
-        self.cmd('acr create -n {registry_name} -g {rg} --sku {sku} --location eastus2euap --enable-regional-endpoints true',
+        self.cmd('acr create -n {registry_name} -g {rg} --sku {sku} --location eastus2euap --regional-endpoints true',
                  checks=[self.check('name', registry_name),
-                         self.check('regionalEndpointEnabled', 'True'),
+                         self.check('regionalEndpoints', 'Enabled'),
                          self.check('provisioningState', 'Succeeded')])
 
         # using --expose-token and --all-endpoints at the same time is not supported
@@ -107,7 +107,7 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_acrre_')
     @AllowLargeResponse()
-    def test_acr_import_with_regional_endpoint(self):
+    def test_acr_import_with_regional_endpoints(self):
         source_registry_name = self.create_random_name("sourceregistry", 20)
         registry_name = self.create_random_name("targetregistry", 20)
 
@@ -123,9 +123,9 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
         })
 
         # Create source registry with regional endpoints enabled
-        self.cmd('acr create -n {source_registry_name} -g {rg} -l {rg_loc} --sku Premium --enable-regional-endpoints true',
+        self.cmd('acr create -n {source_registry_name} -g {rg} -l {rg_loc} --sku Premium --regional-endpoints true',
                  checks=[self.check('name', '{source_registry_name}'),
-                         self.check('regionalEndpointEnabled', 'True'),
+                         self.check('regionalEndpoints', 'Enabled'),
                          self.check('provisioningState', 'Succeeded')])
 
         # Import image from a registry in a different subscription from the current one
