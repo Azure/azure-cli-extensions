@@ -942,7 +942,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
     return return_dict
 
 
-def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False size=None):
+def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False, size=None):
     """
     This function manages the process of repairing and restoring a specified virtual machine (VM). The process involves
     the creation of a repair VM, the generation of a copy of the problem VM's disk, and the formation of a new resource
