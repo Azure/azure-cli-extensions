@@ -2,7 +2,7 @@
 Release History
 ===============
 
-2.1.3
+2.2.0
 ++++++
 Adding --tags parameter to vm repair create and vm repair repair-and-restore commands to allow users to tag the repair VM for organizational requirements
 

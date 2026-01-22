@@ -38,6 +38,7 @@ def load_arguments(self, _):
         c.argument('os_disk_type', help='Change the OS Disk storage type from the default of PremiumSSD_LRS to the given value.')
         c.argument('tags', help="Space-separated tags in 'key[=value]' format. Will be appended to the tags required for repair resources.")
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources.')
+        c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
 
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
@@ -68,6 +69,7 @@ def load_arguments(self, _):
         c.argument('repair_group_name', help='Name for new or existing resource group that will contain repair VM.')
         c.argument('tags', help="Space-separated tags in 'key[=value]' format. Will be appended to the tags required for repair resources.")
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources.')
+        c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
 
     with self.argument_context('vm repair repair-button') as c:
         c.argument('button_command', help='Button_command for repair VM.')
@@ -79,3 +81,4 @@ def load_arguments(self, _):
         c.argument('repair_group_name', help='Name for new or existing resource group that will contain repair VM.')
         c.argument('tags', help="Space-separated tags in 'key[=value]' format. Will be appended to the tags required for repair resources.")
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources.')
+        c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')

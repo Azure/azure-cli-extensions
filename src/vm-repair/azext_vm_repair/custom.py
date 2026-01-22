@@ -25,7 +25,7 @@ from .repair_utils import (
     _list_resource_ids_in_rg,
     _get_repair_resource_tag,
     _fetch_compatible_windows_os_urn,
-    _fetch_compatible_windows_os_urn_v2,
+    _fetch_matching_windows_os_urn,
     _fetch_run_script_map,
     _fetch_run_script_path,
     _process_ps_parameters,
@@ -54,7 +54,7 @@ from .repair_utils import (
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False, size=None):
     """
     This function creates a repair VM.
 
@@ -77,6 +77,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     - os_disk_type: Set the OS disk storage account type of the repair VM to the specified type. The default is PremiumSSD_LRS.
     - tags: Tags to apply to the repair VM. Should be a dictionary or a string in key[=value] format.
     - copy_tags: If True, tags will be copied from the source VM to the repair VM. Default is False.
+    - size: The size of the repair VM. If not provided, the size of the broken vm will be used.
     """
 
     # Logging all the command parameters, except the sensitive data.
@@ -84,14 +85,15 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     masked_repair_password = '****' if repair_password else None
     masked_repair_username = '****' if repair_username else None
     masked_repair_encrypt_recovery_key = '****' if encrypt_recovery_key else None
-    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, encrypt_recovery_key: %s, disable_trusted_launch: %s, os_disk_type: %s, tags: %s',
-                 vm_name, resource_group_name, masked_repair_password, masked_repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, masked_repair_encrypt_recovery_key, disable_trusted_launch, os_disk_type, tags)
+    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, encrypt_recovery_key: %s, disable_trusted_launch: %s, os_disk_type: %s, tags: %s, size: %s',
+                 vm_name, resource_group_name, masked_repair_password, masked_repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, masked_repair_encrypt_recovery_key, disable_trusted_launch, os_disk_type, tags, size)
 
     # Initializing a command helper object.
     command = command_helper(logger, cmd, 'vm repair create')
 
     # The main command execution block.
     try:
+        # TODO: add permissions checks - can user create VMs, disks, resource groups, etc.
         # Set parameters used in exception handling to avoid Unbound errors:
         existing_rg = None
         copy_disk_id = None
@@ -162,14 +164,15 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 # If the architecture type is not 'V2', select a Gen1 VM
                 os_image_urn = _select_distro_linux(distro)
         else:
-            # TODO: fix this logic, it is possible to error out here if you have a windows VM in a 'Gen2 only' sku
+            # TODO: This logic should be improved - the checks in the called functions are very simple and defaults are outdated - Windows SME input required
             # If the source VM's OS is not Linux, check if a recovery key is provided.
             if encrypt_recovery_key:
-                # If a recovery key is provided, fetch the compatible Windows OS URN for a VM with Bitlocker encryption.
-                os_image_urn = _fetch_compatible_windows_os_urn_v2(source_vm)
+                # If a recovery key is provided, fetch the same Windows OS URN for a VM with Bitlocker encryption.
+                # this also covers Trusted Launch VMs which may have additional security needs, so use the same image
+                os_image_urn = _fetch_matching_windows_os_urn(source_vm)
             else:
                 # If no recovery key is provided, fetch the compatible Windows OS URN for a regular VM.
-                os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
+                os_image_urn = _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view)
             # Setting the OS type to 'Windows'.
             os_type = 'Windows'
 
@@ -194,7 +197,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             create_repair_vm_command += f' --custom-data {_get_cloud_init_script()}'
 
         # Fetching the size of the repair VM.
-        sku = _fetch_compatible_sku(source_vm, enable_nested)
+        sku = _fetch_compatible_sku(source_vm, enable_nested, size)
+
         if not sku:
             # If no compatible size is found, raise an error.
             raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription.')
@@ -426,7 +430,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     except SkuDoesNotSupportHyperV as skuDoesNotSupportHyperV:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(skuDoesNotSupportHyperV)
-        command.message = "v2 sku does not support nested VM in hyperv. Please run command without --enabled-nested."
+        command.message = "provided sku does not support nested VM in hyperv. Please run command without --enabled-nested or provide a valid --size parameter. Cleaning up created resources."
     except ScriptReturnsError as scriptReturnsError:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(scriptReturnsError)
