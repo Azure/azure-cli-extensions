@@ -859,20 +859,21 @@ def load_arguments(self, _):
         c.argument('principal_id', options_list=['--principal-id', '-p'], help="AAD Object ID of the principal to which this Role Assignment is being granted.")
 
     # Soft-deleted Account
-    with self.argument_context('cosmosdb sql softdeleted-account list') as c:
+    with self.argument_context('cosmosdb softdeleted-account list') as c:
         c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted accounts.", required=True)
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help="Name of the resource group. If provided, lists only soft-deleted accounts in that resource group.", required=False)
 
-    with self.argument_context('cosmosdb sql softdeleted-account show') as c:
+    with self.argument_context('cosmosdb softdeleted-account show') as c:
         c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted account.", required=True)
         c.argument('account_name', options_list=['--account-name', '-n'], help="Name of the soft-deleted Cosmos DB account.", required=True)
         c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
 
-    with self.argument_context('cosmosdb sql softdeleted-account delete') as c:
+    with self.argument_context('cosmosdb softdeleted-account delete') as c:
         c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted account.", required=True)
         c.argument('account_name', options_list=['--account-name', '-n'], help="Name of the soft-deleted Cosmos DB account to purge.", required=True)
         c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
 
-    with self.argument_context('cosmosdb sql softdeleted-account recover') as c:
+    with self.argument_context('cosmosdb softdeleted-account recover') as c:
         c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted account.", required=True)
         c.argument('account_name', options_list=['--account-name', '-n'], help="Name of the soft-deleted Cosmos DB account to recover.", required=True)
         c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)

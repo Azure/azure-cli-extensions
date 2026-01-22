@@ -392,7 +392,7 @@ def load_command_table(self, _):
         g.custom_command('restore', 'cli_cosmosdb_table_restore', is_preview=True)
 
     # Soft-deleted Account commands
-    with self.command_group('cosmosdb sql softdeleted-account',
+    with self.command_group('cosmosdb softdeleted-account',
                             cosmosdb_softdeleted_accounts_sdk,
                             client_factory=cf_softdeleted_database_accounts,
                             is_preview=True) as g:

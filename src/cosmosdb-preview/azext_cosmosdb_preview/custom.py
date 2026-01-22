@@ -3465,8 +3465,10 @@ def cli_cosmosdb_fleetspace_account_create(client,
 
 
 # Soft-deleted Account operations
-def cli_cosmosdb_sql_softdeleted_account_list(client, location):
-    """List soft-deleted Cosmos DB accounts by location."""
+def cli_cosmosdb_sql_softdeleted_account_list(client, location, resource_group_name=None):
+    """List soft-deleted Cosmos DB accounts by location, optionally filtered by resource group."""
+    if resource_group_name:
+        return client.list_by_resource_group_and_location(resource_group_name, location)
     return client.list_by_location(location)
 
 

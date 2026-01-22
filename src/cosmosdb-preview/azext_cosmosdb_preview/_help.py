@@ -1847,48 +1847,48 @@ type: command
 short-summary: Delete a Fleet Analytics resource from a Fleet.
 """
 
-helps['cosmosdb sql softdeleted-account'] = """
+helps['cosmosdb softdeleted-account'] = """
 type: group
 short-summary: Manage soft-deleted Azure Cosmos DB accounts.
 """
 
-helps['cosmosdb sql softdeleted-account list'] = """
+helps['cosmosdb softdeleted-account list'] = """
 type: command
 short-summary: List soft-deleted Azure Cosmos DB accounts.
 examples:
   - name: List all soft-deleted Azure Cosmos DB accounts in a subscription.
     text: |
-      az cosmosdb sql softdeleted-account list
+      az cosmosdb softdeleted-account list
   - name: List soft-deleted Azure Cosmos DB accounts in a specific location.
     text: |
-      az cosmosdb sql softdeleted-account list --location westus
+      az cosmosdb softdeleted-account list --location westus
 """
 
-helps['cosmosdb sql softdeleted-account show'] = """
+helps['cosmosdb softdeleted-account show'] = """
 type: command
 short-summary: Show details of a soft-deleted Azure Cosmos DB account.
 examples:
   - name: Show details of a soft-deleted Azure Cosmos DB account.
     text: |
-      az cosmosdb sql softdeleted-account show --location westus --account-name MyAccount
+      az cosmosdb softdeleted-account show --location westus --account-name MyAccount
 """
 
-helps['cosmosdb sql softdeleted-account delete'] = """
+helps['cosmosdb softdeleted-account delete'] = """
 type: command
 short-summary: Permanently delete a soft-deleted Azure Cosmos DB account.
 examples:
   - name: Permanently delete a soft-deleted Azure Cosmos DB account.
     text: |
-      az cosmosdb sql softdeleted-account delete --location westus --account-name MyAccount --resource-group MyResourceGroup
+      az cosmosdb softdeleted-account delete --location westus --account-name MyAccount --resource-group MyResourceGroup
 """
 
-helps['cosmosdb sql softdeleted-account recover'] = """
+helps['cosmosdb softdeleted-account recover'] = """
 type: command
 short-summary: Recover a soft-deleted Azure Cosmos DB account.
 examples:
   - name: Recover a soft-deleted Azure Cosmos DB account.
     text: |
-      az cosmosdb sql softdeleted-account recover --location westus --account-name MyAccount --resource-group MyResourceGroup
+      az cosmosdb softdeleted-account recover --location westus --account-name MyAccount --resource-group MyResourceGroup
 """
 
 helps['cosmosdb sql softdeleted-database'] = """
