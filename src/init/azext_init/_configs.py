@@ -120,5 +120,59 @@ WALK_THROUGH_CONFIG_LIST = [
                 "desc": "Disable the progress bar during long running commands"
             }
         ]
+    },
+    {
+        "configuration": "core.survey_message",
+        "brief": "Survey Message",
+        "description": "This option is used to enable/disable the survey message",
+        "options": [
+            {
+                "option": "On",
+                "value": "true",
+                "desc": "The survey link will be shown",
+                "tag": "default"
+            },
+            {
+                "option": "Off",
+                "value": "false",
+                "desc": "Survey links will never be shown"
+            }
+        ]
+    },
+    {
+        "configuration": "core.collect_telemetry",
+        "brief": "Collect Telemetry",
+        "description": "This option is used to enable/disable telemetry",
+        "options": [
+            {
+                "option": "On",
+                "value": "true",
+                "desc": "Telemetry will be colected",
+                "tag": "default"
+            },
+            {
+                "option": "Off",
+                "value": "false",
+                "desc": "Telemetry will not be collected"
+            }
+        ]
+    },
+    {
+        "configuration": "auto-upgrade.enable",
+        "brief": "Automaticaly upgrade",
+        "description": "This option is used to enable/disable auto-upgrade",
+        "options": [
+            {
+                "option": "enable",
+                "value": "true",
+                "desc": "Auto-upgrade enabled",
+                "tag": "default"
+            },
+            {
+                "option": "disable",
+                "value": "false",
+                "desc": "Auto-upgrade disabled"
+            }
+        ]
     }
 ]

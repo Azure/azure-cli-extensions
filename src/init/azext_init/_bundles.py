@@ -28,6 +28,21 @@ BUILD_IN_INTERACTION_BUNDLES = [
         "brief": "Display a progress bar for long running commands",
         "configuration": "core.disable_progress_bar",
         "value": "false",
+    },
+    {
+        "brief": "Enable the survey prompts",
+        "configuration": "core.survey_message",
+        "value": "true",
+    },
+    {
+        "brief": "Collect telemetry",
+        "configuration": "core.collect_telemetry",
+        "value": "true",
+    },
+    {
+        "brief": "Enable auto-upgrade",
+        "configuration": "auto-upgrade.enable",
+        "value": "true",
     }
 ]
 
@@ -56,5 +71,20 @@ BUILD_IN_AUTOMATION_BUNDLES = [
         "brief": "Display progress bar for long running commands",
         "configuration": "core.disable_progress_bar",
         "value": "true",
+    },
+    {
+        "brief": "Disable the survey prompts",
+        "configuration": "core.survey_message",
+        "value": "false",
+    },
+    {
+        "brief": "Do not collect telemetry",
+        "configuration": "core.collect_telemetry",
+        "value": "false",
+    },
+    {
+        "brief": "Disable auto-upgrade",
+        "configuration": "auto-upgrade.enable",
+        "value": "false",
     }
 ]
