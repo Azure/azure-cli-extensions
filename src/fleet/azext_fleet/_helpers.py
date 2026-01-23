@@ -29,6 +29,8 @@ def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_nam
     """Merge an unencrypted kubeconfig into the file at the specified path, or print it to
     stdout if the path is "-".
     """
+    print("test linter")
+
     # Special case for printing to stdout
     if path == "-":
         print(kubeconfig)
