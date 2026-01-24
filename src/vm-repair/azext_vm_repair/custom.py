@@ -54,7 +54,7 @@ from .repair_utils import (
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False, size=None):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False, size=None):
     """
     This function creates a repair VM.
 
@@ -71,7 +71,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     - enable_nested: If True, nested virtualization will be enabled. Default is False.
     - associate_public_ip: If True, a public IP will be associated with the VM. Default is False.
     - distro: The Linux distribution to use for the repair VM. Default is 'ubuntu'.
-    - yes: If True, confirmation prompts will be skipped. Default is False.
     - encrypt_recovery_key: The Bitlocker recovery key to use for encrypting the VM. Default is an empty string.
     - disable_trusted_launch: A flag parameter that, when used, sets the security type of the repair VM to Standard.
     - os_disk_type: Set the OS disk storage account type of the repair VM to the specified type. The default is PremiumSSD_LRS.
@@ -85,8 +84,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     masked_repair_password = '****' if repair_password else None
     masked_repair_username = '****' if repair_username else None
     masked_repair_encrypt_recovery_key = '****' if encrypt_recovery_key else None
-    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, encrypt_recovery_key: %s, disable_trusted_launch: %s, os_disk_type: %s, tags: %s, size: %s',
-                 vm_name, resource_group_name, masked_repair_password, masked_repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, masked_repair_encrypt_recovery_key, disable_trusted_launch, os_disk_type, tags, size)
+    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, encrypt_recovery_key: %s, disable_trusted_launch: %s, os_disk_type: %s, tags: %s, copy_tags: %s, size: %s',
+                 vm_name, resource_group_name, masked_repair_password, masked_repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, masked_repair_encrypt_recovery_key, disable_trusted_launch, os_disk_type, tags, copy_tags, size)
 
     # Initializing a command helper object.
     command = command_helper(logger, cmd, 'vm repair create')
@@ -180,8 +179,12 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         public_ip_name = _make_public_ip_name(repair_vm_name, associate_public_ip)
 
         # Set up base create vm command
-        # Only include the --public-ip-address argument if associate_public_ip is True. Omitting this argument prevents creation of an unwanted public IP.
-        public_ip_arg = f' --public-ip-address {public_ip_name}' if associate_public_ip else ''
+        # Always include the --public-ip-address argument, but only providee a value if associate_public_ip is True.
+        # Old code would omit the argument entirely if False, which leads to creating a public IP implicitly in some scenarios.
+        if associate_public_ip:
+            public_ip_arg = f' --public-ip-address {public_ip_name}'
+        else:
+            public_ip_arg = ' --public-ip-address ""'
 
         # Assemble the create VM command for passing to azure cli call
         create_repair_vm_command = (
@@ -987,7 +990,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     existing_rg = _check_existing_rg(repair_group_name)
 
     # Create a repair VM, copy of the disk, and a new resource group
-    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True, tags=tags, copy_tags=copy_tags, size=size)
+    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, tags=tags, copy_tags=copy_tags, size=size)
 
     # Log the output of the create operation
     logger.info('create_out: %s', create_out)
@@ -1086,7 +1089,7 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     repair_group_name = 'repair-' + vm_name + '-' + timestamp
     existing_rg = _check_existing_rg(repair_group_name)
 
-    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True, tags=tags, copy_tags=copy_tags, size=size)
+    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, tags=tags, copy_tags=copy_tags, size=size)
 
     # log create_out
     logger.info('create_out: %s', create_out)

@@ -91,9 +91,6 @@ def validate_create(cmd, namespace):
         _prompt_repair_password(namespace)
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
-    # Prompt input for public ip usage
-    if (not namespace.associate_public_ip) and (not namespace.yes):
-        _prompt_public_ip(namespace)
 
 
 def validate_restore(cmd, namespace):

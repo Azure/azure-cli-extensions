@@ -31,9 +31,8 @@ def load_arguments(self, _):
         c.argument('unlock_encrypted_vm', help='Option to auto-unlock encrypted VMs using current subscription auth.')
         c.argument('encrypt_recovery_key', help='Option to auto-unlock encrypted VMs using provided recovery password. The \'--unlock-encrypted-vm\' parameter must be used to use this parameter.')
         c.argument('enable_nested', help='enable nested hyperv.')
-        c.argument('associate_public_ip', help='Option to create a repair vm with a public ip. If this parameter is not used, a private ip will be made.')
+        c.argument('associate_public_ip', help='Option to create a repair vm with a public ip. If this parameter is not used, only a private ip will be made.')
         c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|sles12|sles15|ubuntu20|centos7|centos8|oracle7)')
-        c.argument('yes', help='Option to skip prompt for associating public ip in no Tty mode')
         c.argument('disable_trusted_launch', help='Option to disable Trusted Launch security type on the repair vm by setting the security type to Standard.')
         c.argument('os_disk_type', help='Change the OS Disk storage type from the default of PremiumSSD_LRS to the given value.')
         c.argument('tags', help='Quoted string with space-separated key-value pairs in "key=value" format. Will be appended to the tags required for repair resources.')
@@ -51,10 +50,10 @@ def load_arguments(self, _):
         c.argument('custom_script_file', help='Custom script file to run on VM. Script should be PowerShell for windows, Bash for Linux.')
         c.argument('parameters', nargs='+', help="Space-separated parameters in the format of '[name=]value'. Positional for bash scripts. To avoid splitting on =, use the prefix \'++\' to send the entire string.")
         c.argument('run_on_repair', help="Script will be run on the linked repair VM.")
-        c.argument('preview', help="URL of forked repair script library's map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
+        c.argument('preview', help="URL of forked repair script library map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
 
     with self.argument_context('vm repair list-scripts') as c:
-        c.argument('preview', help="URL of forked repair script library's map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
+        c.argument('preview', help="URL of forked repair script library map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
 
     with self.argument_context('vm repair reset-nic') as c:
         c.argument('subscriptionid', help='Subscription id to default subscription using `az account set -s NAME_OR_ID`.')
@@ -68,7 +67,7 @@ def load_arguments(self, _):
         c.argument('copy_disk_name', help='Name of OS disk copy.')
         c.argument('repair_group_name', help='Name for new or existing resource group that will contain repair VM.')
         c.argument('tags', help='Quoted string with space-separated key-value pairs in "key=value" format. Will be appended to the tags required for repair resources.')
-        c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources.  Can be combined with --tags.')
+        c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources. Can be combined with --tags.')
         c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
 
     with self.argument_context('vm repair repair-button') as c:
@@ -80,5 +79,5 @@ def load_arguments(self, _):
         c.argument('copy_disk_name', help='Name of OS disk copy.')
         c.argument('repair_group_name', help='Name for new or existing resource group that will contain repair VM.')
         c.argument('tags', help='Quoted string with space-separated key-value pairs in "key=value" format. Will be appended to the tags required for repair resources.')
-        c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources.  Can be combined with --tags.')
+        c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources. Can be combined with --tags.')
         c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
