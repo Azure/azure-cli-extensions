@@ -16,6 +16,7 @@ Pending
 ++++++++
 * Fix: correct wrong prompt message f0r init and cleanup
 * Fix: prompt the whole flags including --resource-group, --name and optional --namespace for az aks agent command
+* Improve: cluster mode cleanup will wait for pods to be removed after deletion
 
 1.0.0b15
 ++++++++

@@ -422,6 +422,57 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
         """
         return f"-n {self.cluster_name} -g {self.resource_group_name} --namespace {self.namespace}"
 
+    def _wait_for_pods_removed(self, timeout: int = 60, interval: int = 2) -> bool:
+        """
+        Wait for all AKS agent pods to be removed from the namespace.
+
+        Args:
+            timeout: Maximum time to wait in seconds (default: 60)
+            interval: Time to wait between checks in seconds (default: 2)
+
+        Returns:
+            bool: True if all pods are removed within timeout, False otherwise
+        """
+        import time
+
+        logger.info("Waiting for pods to be removed from namespace '%s'", self.namespace)
+        start_time = time.time()
+
+        while time.time() - start_time < timeout:
+            try:
+                # Check for pods with either label selector
+                agent_pods = self.core_v1.list_namespaced_pod(
+                    namespace=self.namespace,
+                    label_selector=AGENT_LABEL_SELECTOR
+                )
+                mcp_pods = self.core_v1.list_namespaced_pod(
+                    namespace=self.namespace,
+                    label_selector=AKS_MCP_LABEL_SELECTOR
+                )
+
+                total_pods = len(agent_pods.items) + len(mcp_pods.items)
+
+                if total_pods == 0:
+                    logger.info("All pods removed successfully")
+                    return True
+
+                logger.debug("Still %d pod(s) remaining, waiting...", total_pods)
+                time.sleep(interval)
+
+            except ApiException as e:
+                if e.status == 404:
+                    # Namespace might have been deleted, consider this as success
+                    logger.info("Namespace not found, pods are considered removed")
+                    return True
+                logger.warning("Error checking pod status: %s", e)
+                time.sleep(interval)
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                logger.warning("Unexpected error checking pod status: %s", e)
+                time.sleep(interval)
+
+        logger.warning("Timeout waiting for pods to be removed")
+        return False
+
     def deploy_agent(self, chart_version: Optional[str] = None) -> Tuple[bool, str]:
         """
         Deploy AKS agent using helm chart.
@@ -687,6 +738,13 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
             # Delete the LLM configuration secret if requested
             if delete_secret:
                 self.delete_llm_config_secret()
+
+            # Wait for pods to be removed
+            logger.info("Waiting for pods to be removed...")
+            pods_removed = self._wait_for_pods_removed(timeout=60)
+            if not pods_removed:
+                logger.warning("Timeout waiting for all pods to be removed. Some pods may still be terminating.")
+
             return True
         raise AzCLIError(f"Failed to uninstall AKS agent: {output}")
 
