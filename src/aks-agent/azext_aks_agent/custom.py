@@ -227,12 +227,13 @@ def _setup_helm_deployment(console, aks_agent_manager: AKSAgentManager):
     else:
         # Handle non-standard helm status (failed, pending-install, pending-upgrade, etc.)
         cmd_flags = aks_agent_manager.command_flags()
+        init_cmd_flags = aks_agent_manager.init_command_flags()
         console.print(
             f"⚠️  Detected unexpected helm status: {helm_status}\n"
             f"The AKS agent deployment is in an unexpected state.\n\n"
             f"To investigate, run: az aks agent --status {cmd_flags}\n"
             f"To recover:\n"
-            f"  1. Clean up and reinitialize: az aks agent-cleanup {cmd_flags} && az aks agent-init {cmd_flags}\n"
+            f"  1. Clean up and reinitialize: az aks agent-cleanup {cmd_flags} && az aks agent-init {init_cmd_flags}\n"
             f"  2. Check deployment logs for more details",
             style=HELP_COLOR)
         raise AzCLIError(f"Cannot proceed with initialization due to unexpected helm status: {helm_status}")
@@ -329,7 +330,8 @@ def _setup_and_create_llm_config(console, aks_agent_manager: AKSAgentManagerLLMC
             raise AzCLIError(f"Failed to save LLM configuration: {str(e)}")
 
     elif error is not None and action == "retry_input":
-        raise AzCLIError(f"Please re-run `az aks agent-init` to correct the input parameters. {error}")
+        cmd_flags = aks_agent_manager.init_command_flags()
+        raise AzCLIError(f"Please re-run `az aks agent-init {cmd_flags}` to correct the input parameters. {error}")
     else:
         raise AzCLIError(f"Please check your deployed model and network connectivity. {error}")
 
@@ -390,7 +392,7 @@ def _aks_agent_local_status(agent_manager: AKSAgentManagerClient):
         console.print("\n✅ Client mode is configured and ready!", style=SUCCESS_COLOR)
     else:
         console.print("\n❌ No LLM configuration found", style=ERROR_COLOR)
-        cmd_flags = agent_manager.command_flags()
+        cmd_flags = agent_manager.init_command_flags()
         console.print(
             f"Run 'az aks agent-init {cmd_flags}' to set up LLM configuration.", style=INFO_COLOR)
 
@@ -408,7 +410,7 @@ def _aks_agent_status(agent_manager: AKSAgentManager):
         console.print(f"\n✅ Helm Release: {helm_status}", style=SUCCESS_COLOR)
     elif helm_status == "not_found":
         console.print("\n❌ Helm Release: Not found", style=ERROR_COLOR)
-        cmd_flags = agent_manager.command_flags()
+        cmd_flags = agent_manager.init_command_flags()
         console.print(
             f"The AKS agent is not installed. Run 'az aks agent-init {cmd_flags}' to install.", style=INFO_COLOR)
         return
@@ -606,7 +608,7 @@ def aks_agent(
             success, result = agent_manager.get_agent_pods()
             if not success:
                 # get_agent_pods already logged the error, provide helpful message
-                cmd_flags = agent_manager.command_flags()
+                cmd_flags = agent_manager.init_command_flags()
                 error_msg = f"Failed to find AKS agent pods: {result}\n"
                 error_msg += f"The AKS agent may not be deployed. Run 'az aks agent-init {cmd_flags}' to initialize the deployment."
                 raise CLIError(error_msg)

@@ -70,6 +70,15 @@ class AKSAgentManagerLLMConfigBase(ABC):
             AzCLIError: If execution fails
         """
 
+    @abstractmethod
+    def init_command_flags(self) -> str:
+        """
+        Get command flags for init command (without namespace).
+
+        Returns:
+            str: Command flags in format '-n {cluster_name} -g {resource_group_name}'
+        """
+
 
 class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many-instance-attributes
     """
@@ -421,6 +430,15 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
             str: Command flags in format '-n {cluster_name} -g {resource_group_name} --namespace {namespace}'
         """
         return f"-n {self.cluster_name} -g {self.resource_group_name} --namespace {self.namespace}"
+
+    def init_command_flags(self) -> str:
+        """
+        Get command flags for init command (without namespace).
+
+        Returns:
+            str: Command flags in format '-n {cluster_name} -g {resource_group_name}'
+        """
+        return f"-n {self.cluster_name} -g {self.resource_group_name}"
 
     def _wait_for_pods_removed(self, timeout: int = 60, interval: int = 2) -> bool:
         """
@@ -1015,6 +1033,15 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
     def command_flags(self) -> str:
         """
         Get command flags for CLI commands.
+
+        Returns:
+            str: Command flags in format '-n {cluster_name} -g {resource_group_name}'
+        """
+        return f"-n {self.cluster_name} -g {self.resource_group_name}"
+
+    def init_command_flags(self) -> str:
+        """
+        Get command flags for init command (without namespace).
 
         Returns:
             str: Command flags in format '-n {cluster_name} -g {resource_group_name}'
