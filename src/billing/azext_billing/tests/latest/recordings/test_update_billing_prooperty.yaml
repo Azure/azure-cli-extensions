@@ -1,0 +1,66 @@
+interactions:
+- request:
+    body: '{"properties": {"costCenter": "P10109641"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing billing-property update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cost-center
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.6 (Windows-11-10.0.22631-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Billing/billingProperty/default?api-version=2024-04-01
+  response:
+    body:
+      string: '{"name":"default","properties":{"billingAccountAgreementType":"MicrosoftCustomerAgreement","billingAccountDisplayName":"SMB
+        Account 1","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/e261ef40-3517-515d-3680-8be4252ae148:0790f1fc-f274-4457-afc3-f3b0c90850ba_2019-05-31","billingAccountStatus":"Active","billingAccountType":"Individual","billingAccountSubType":"Other","billingCurrency":"USD","billingProfileDisplayName":"Microsoft","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e261ef40-3517-515d-3680-8be4252ae148:0790f1fc-f274-4457-afc3-f3b0c90850ba_2019-05-31/billingProfiles/B5LA-FLMV-BG7-M77W-SGB","billingProfileSpendingLimit":"Off","billingProfileSpendingLimitDetails":[{"startDate":"2024-07-09T00:00:00.0000000Z","type":"Sandbox","status":"Active"}],"billingProfileStatus":"Active","billingProfilePaymentMethodFamily":"Other","billingTenantId":"25190330-c2fa-4110-b63d-5cda77380ac6","costCenter":"P10109641","invoiceSectionDisplayName":"Microsoft
+        (P10109641)","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e261ef40-3517-515d-3680-8be4252ae148:0790f1fc-f274-4457-afc3-f3b0c90850ba_2019-05-31/billingProfiles/B5LA-FLMV-BG7-M77W-SGB/invoiceSections/DVPC-HA6G-PJA-MAOR-SGB","invoiceSectionStatus":"Active","skuDescription":"Microsoft
+        Azure Plan","skuId":"0001","subscriptionBillingStatus":"Active","subscriptionBillingType":"Paid","subscriptionWorkloadType":"Production","productId":"DZH318Z0BPS6","productName":"Microsoft"},"type":"Microsoft.Billing/billingProperty"}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-10-01, 2020-11-01-privatepreview,
+        2024-04-01, 2024-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1526'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 30 Sep 2024 19:10:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-service-version:
+      - 10.6.2811.738
+      x-msedge-ref:
+      - 'Ref A: 1044160A20DF49C8A75368C4B2444665 Ref B: CO6AA3150219027 Ref C: 2024-09-30T19:10:42Z'
+    status:
+      code: 200
+      message: OK
+version: 1
