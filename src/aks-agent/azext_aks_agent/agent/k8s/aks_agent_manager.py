@@ -413,6 +413,15 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
         """
         return self.helm_manager.run_command(args, check=check)
 
+    def command_flags(self) -> str:
+        """
+        Get command flags for CLI commands.
+
+        Returns:
+            str: Command flags in format '-n {cluster_name} -g {resource_group_name} --namespace {namespace}'
+        """
+        return f"-n {self.cluster_name} -g {self.resource_group_name} --namespace {self.namespace}"
+
     def deploy_agent(self, chart_version: Optional[str] = None) -> Tuple[bool, str]:
         """
         Deploy AKS agent using helm chart.
@@ -944,6 +953,15 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
                 logger.warning("Failed to create custom_toolset.yaml: %s", e)
         else:
             logger.debug("custom_toolset.yaml already exists at: %s", custom_toolset_file)
+
+    def command_flags(self) -> str:
+        """
+        Get command flags for CLI commands.
+
+        Returns:
+            str: Command flags in format '-n {cluster_name} -g {resource_group_name}'
+        """
+        return f"-n {self.cluster_name} -g {self.resource_group_name}"
 
     def save_llm_config(self, provider: LLMProvider, params: dict) -> None:
         """

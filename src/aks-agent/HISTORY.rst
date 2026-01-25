@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b16
+++++++++
+* Fix: correct wrong prompt message f0r init and cleanup
+* Fix: prompt the whole flags including --resource-group, --name and optional --namespace for az aks agent command
+
 1.0.0b15
 ++++++++
 * Feature: Add local mode support - run AKS agent in Docker container on local machine as an alternative to cluster deployment
