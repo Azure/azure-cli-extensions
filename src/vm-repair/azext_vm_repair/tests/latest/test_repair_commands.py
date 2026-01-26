@@ -140,6 +140,43 @@ class CreateWithCopyTags(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
+
+class CreateRepairWithSize(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_LinuxManagedCreateRestore(self, resource_group):
+        self.kwargs.update({
+            'vm': 'vm1'
+        })
+
+        # Create test VM
+        self.cmd('vm create -g {rg} -n {vm} --image Ubuntu2404 --admin-username azureadmin --tags "env=vmstate=broken" --admin-password !Passw0rd2018')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Test create with tags
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018 -o json --size Standard_B2als_v2').get_output_in_json()
+        assert result['status'] == STATUS_SUCCESS, result['error_message']
+
+        # Check repair VM and tags
+        repair_vms = self.cmd('vm list -g {} -o json'.format(result['repair_resource_group'])).get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
+        assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copied_disk_name']
+
+        # Validate size
+        assert repair_vm['hardwareProfile']['vmSize'] == 'Standard_B2als_v2'
+
+        # Call Restore
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+
+        # Check swapped OS disk
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        source_vm = vms[0]
+        assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+
+
 @pytest.mark.WindowsUnmanaged
 class WindowsUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
 
