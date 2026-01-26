@@ -43,7 +43,8 @@ setup(
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/azure-changesafety',
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(exclude=["tests", "build", "build.*"]),
     package_data={'azext_changesafety': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
+
