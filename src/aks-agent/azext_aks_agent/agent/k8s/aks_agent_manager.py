@@ -71,6 +71,14 @@ class AKSAgentManagerLLMConfigBase(ABC):
         """
 
     @abstractmethod
+    def command_flags(self) -> str:
+        """
+        Get command flags for general aks-agent commands.
+        Returns:
+            str: Command flags string appropriate for the concrete implementation.
+        """
+
+    @abstractmethod
     def init_command_flags(self) -> str:
         """
         Get command flags for init command (without namespace).
