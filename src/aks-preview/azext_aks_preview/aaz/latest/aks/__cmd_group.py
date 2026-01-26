@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "aks",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Azure Kubernetes Service
+    """Manage Aks
     """
     pass
 

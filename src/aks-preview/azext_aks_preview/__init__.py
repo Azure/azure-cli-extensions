@@ -34,9 +34,6 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
         )
 
     def load_command_table(self, args):
-        super().load_command_table(args)
-
-        # Load AAZ-generated commands from the preview API
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -48,6 +45,7 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
                 aaz_pkg_name=aaz.__name__,
                 args=args
             )
+        super().load_command_table(args)
 
         # Load custom command implementations (will override AAZ commands)
         from azext_aks_preview.commands import load_command_table
