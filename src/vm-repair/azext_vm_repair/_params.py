@@ -38,6 +38,7 @@ def load_arguments(self, _):
         c.argument('tags', help='Quoted string with space-separated key-value pairs in "key=value" format. Will be appended to the tags required for repair resources.')
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources.  Can be combined with --tags.')
         c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
+        c.argument('yes', help='Deprecated - Creates the repair VM without confirmation.  No current behavior change, this parameter will be removed in a future release.')
 
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
@@ -81,3 +82,4 @@ def load_arguments(self, _):
         c.argument('tags', help='Quoted string with space-separated key-value pairs in "key=value" format. Will be appended to the tags required for repair resources.')
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources. Can be combined with --tags.')
         c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
+        c.argument('yes', help='Deprecated - Creates the repair VM without confirmation.  No current behavior change, this parameter will be removed in a future release.')

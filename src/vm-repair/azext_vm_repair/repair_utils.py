@@ -545,14 +545,14 @@ def _select_distro_linux(distro):
         'rhel7': 'RedHat:rhel-raw:7-raw:latest',
         'rhel8': 'RedHat:rhel-raw:8-raw:latest',
         'rhel9': 'RedHat:rhel-raw:9-raw:latest',
-        'rhel10': 'RedHat:rhel-raw:9-raw:latest',
+        'rhel10': 'RedHat:rhel-raw:10-raw:latest',
         'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest',
         'ubuntu22': 'Canonical:0001-com-ubuntu-server-jammy:22_04-lts:latest',
         'ubuntu24': 'Canonical:ubuntu-24_04-lts:server-gen1:latest',
         'centos6': 'OpenLogic:CentOS:6.10:latest',
         'centos7': 'OpenLogic:CentOS:7_9:latest',
         'centos8': 'OpenLogic:CentOS:8_4:latest',
-        'oracle8': 'Oracle:Oracle-Linux:ol810-lvm::latest',
+        'oracle8': 'Oracle:Oracle-Linux:ol810-lvm:latest',
         'oracle9': 'Oracle:Oracle-Linux:ol96-lvm:latest',
         'oracle10': 'Oracle:Oracle-Linux:ol10-lvm:latest',
         'sles12': 'SUSE:sles-12-sp5:gen1:latest',
@@ -887,7 +887,7 @@ def _supports_nested_virtualization(vm_size: str) -> bool:
 
     # Valid x64 VM families
     x64_families = {
-        "d", "ds", "dd", "dds", "das", "dads", "dals", "dalds"
+        "d", "ds", "dd", "dds", "das", "dads", "dals", "dalds",
         "e", "es", "ed", "eds", "eas", "eads",
         "f", "fs", "fsv2", "fx",
         "m"

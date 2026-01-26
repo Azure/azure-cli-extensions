@@ -183,8 +183,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         public_ip_name = _make_public_ip_name(repair_vm_name, associate_public_ip)
 
         # Set up base create vm command
-        # Always include the --public-ip-address argument, but only providee a value if associate_public_ip is True.
-        # Old code would omit the argument entirely if False, which leads to creating a public IP implicitly in some scenarios.
+        # Always include the --public-ip-address argument to 'vm create', but only provide a value if associate_public_ip is True.
+        # Old code would omit the argument entirely if False, which leads to creating a public IP implicitly in some scenarios.  The desired behavior
+        # is to never create a public IP unless explicitly requested.
         if associate_public_ip:
             public_ip_arg = f' --public-ip-address {public_ip_name}'
         else:
