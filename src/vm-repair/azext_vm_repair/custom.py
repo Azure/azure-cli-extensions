@@ -54,7 +54,7 @@ from .repair_utils import (
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False, size=None):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False, size=None, yes=False):
     """
     This function creates a repair VM.
 
@@ -92,6 +92,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
     # The main command execution block.
     try:
+        # Deprecation warning for --yes parameter
+        if yes:
+            logger.warning('The --yes parameter is deprecated and will be removed in a future release. There is currently no behavior change associated with this parameter.')
+
         # TODO: add permissions checks - can user create VMs, disks, resource groups, etc.
         # Set parameters used in exception handling to avoid Unbound errors:
         existing_rg = None
@@ -1064,7 +1068,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     return return_dict
 
 
-def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False, size=None):
+def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False, size=None, yes=False):
     """
     Button-triggered repair operation. Supports tags for the repair VM.
     """
@@ -1074,6 +1078,10 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair repair-button')
+
+    # Deprecation warning for --yes parameter
+    if yes:
+        logger.warning('The --yes parameter is deprecated and will be removed in a future release. There is currently no behavior change associated with this parameter.')
 
     password_length = 30
     password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
