@@ -266,7 +266,7 @@ class EnvironmentMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     STANDARD = "Standard"
     FREE = "Free"
     CONSUMPTION_ONLY = "ConsumptionOnly"
-    ARCHVIED = "Archived"
+    ARCHIVED = "Archived"
 
 
 class EnvironmentProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
