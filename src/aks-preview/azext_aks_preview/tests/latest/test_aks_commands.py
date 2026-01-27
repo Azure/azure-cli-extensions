@@ -21614,6 +21614,7 @@ spec:
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--nodepool-name {node_pool_name} -c 1 "
+            "--node-vm-size standard_d2s_v3 "
             "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
@@ -21718,6 +21719,7 @@ spec:
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--nodepool-name {node_pool_name} -c 1 "
+            "--node-vm-size standard_d2s_v3 "
             "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
