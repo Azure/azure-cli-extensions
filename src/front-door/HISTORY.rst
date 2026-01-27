@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.0
+++++++
+* Fix a bug in ddos rule set creation.
+
 1.4.0
 ++++++
 * Bump swagger version to 2025-10-01
