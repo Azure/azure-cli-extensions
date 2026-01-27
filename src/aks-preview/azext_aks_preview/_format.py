@@ -159,7 +159,11 @@ def aks_agentpool_rollback_versions_table_format(results):
         return []
 
     def _format_rollback_version(result):
-        parsed = compile_jmes("""{\n            kubernetesVersion: orchestrator_version,\n            nodeImageVersion: node_image_version,\n            timestamp: timestamp\n        }""")
+        parsed = compile_jmes("""{
+            kubernetesVersion: orchestrator_version,
+            nodeImageVersion: node_image_version,
+            timestamp: timestamp
+        }""")
         return parsed.search(result, Options(dict_cls=OrderedDict))
 
     return [_format_rollback_version(r) for r in results]
