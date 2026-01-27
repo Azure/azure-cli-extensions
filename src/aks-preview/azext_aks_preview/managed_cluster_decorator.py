@@ -2860,6 +2860,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return True
 
         # If container network logs are not being enabled, return the original value
+        # Return False if not explicitly set to maintain backward compatibility with base class
+        if enable_high_log_scale_mode is None:
+            return False
         return enable_high_log_scale_mode
 
     def _get_enable_vpa(self, enable_validation: bool = False) -> bool:
