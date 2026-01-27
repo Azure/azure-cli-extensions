@@ -259,6 +259,16 @@ class DotNetComponentType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     ASPIRE_DASHBOARD = "AspireDashboard"
 
 
+class EnvironmentMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Mode of the managed environment."""
+
+    WORKLOAD_PROFILES = "WorkloadProfiles"
+    STANDARD = "Standard"
+    FREE = "Free"
+    CONSUMPTION_ONLY = "ConsumptionOnly"
+    ARCHVIED = "Archived"
+
+
 class EnvironmentProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Provisioning state of the Environment."""
 

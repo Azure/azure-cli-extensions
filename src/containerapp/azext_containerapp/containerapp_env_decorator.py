@@ -9,11 +9,12 @@ from knack.log import get_logger
 from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set, _ensure_identity_resource_id, load_cert_file
 from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvCreateDecorator, \
     ContainerAppEnvUpdateDecorator
-from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError, CLIError
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.command_modules.containerapp._client_factory import handle_raw_exception
 
 from ._models import ManagedServiceIdentity, CustomDomainConfiguration
-from ._utils import safe_get
+from ._utils import safe_get, resolve_environment_mode_and_workload_profiles
 from ._client_factory import handle_non_404_status_code_exception
 
 logger = get_logger(__name__)
@@ -53,14 +54,33 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
     def validate_arguments(self):
         super().validate_arguments()
 
+        # Check if user explicitly provided --enable-workload-profiles
+        safe_params = self.cmd.cli_ctx.data.get('safe_params', [])
+        user_provided_workload_profiles = '-w' in safe_params or '--enable-workload-profiles' in safe_params
+        
+        # Only pass enable_workload_profiles if user explicitly provided it
+        workload_profiles_value = self.get_argument_enable_workload_profiles() if user_provided_workload_profiles else None
+
+        # Resolve environment_mode and enable_workload_profiles
+        effective_workload_profiles = resolve_environment_mode_and_workload_profiles(
+            self.get_argument_environment_mode(),
+            workload_profiles_value
+        )
+        self._effective_enable_workload_profiles = effective_workload_profiles
+
+        # Don't create a new environment in Archived mode
+        if (self.get_argument_environment_mode() is not None and
+                self.get_argument_environment_mode().lower() == "archived"):
+            raise ValidationError("Cannot create environment with mode 'Archived'. Please provide a valid mode: [WorkloadProfiles|ConsumptionOnly].")
+
         # Infrastructure Resource Group
         if self.get_argument_infrastructure_resource_group() is not None:
             if not self.get_argument_infrastructure_subnet_resource_id():
                 raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
                                                    "--infrastructure-subnet-resource-id/-s")
-            if not self.get_argument_enable_workload_profiles():
+            if not self._effective_enable_workload_profiles:
                 raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
-                                                   "--enable-workload-profiles/-w")
+                                                   "--environment-mode WorkloadProfiles")
 
         # validate custom domain configuration
         if self.get_argument_hostname():
@@ -78,8 +98,31 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         if self.get_argument_logs_destination() == "log-analytics" and self.get_argument_logs_dynamic_json_columns() is not None:
             safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "dynamicJsonColumns", value=self.get_argument_logs_dynamic_json_columns())
 
+    def _get_effective_workload_profiles(self):
+        if hasattr(self, '_effective_enable_workload_profiles'):
+            return self._effective_enable_workload_profiles
+
+        safe_params = self.cmd.cli_ctx.data.get('safe_params', [])
+
+        # First check if user provided --environment-mode
+        if '--environment-mode' in safe_params:
+            environment_mode = self.get_argument_environment_mode()
+            if environment_mode:
+                # WorkloadProfiles/Standard mode means workload profiles enabled
+                # ConsumptionOnly or Free means workload profiles disabled
+                return environment_mode.lower() == "workloadprofiles" or environment_mode.lower() == "standard"
+        
+        # Fallback: check if user explicitly provided --enable-workload-profiles
+        user_provided_wp = '-w' in safe_params or '--enable-workload-profiles' in safe_params
+        if user_provided_wp:
+            return self.get_argument_enable_workload_profiles()
+        
+        # Default to True if neither --environment-mode nor --enable-workload-profiles was provided
+        return True
+
     def set_up_infrastructure_resource_group(self):
-        if self.get_argument_enable_workload_profiles() and self.get_argument_infrastructure_subnet_resource_id() is not None:
+        effective_workload_profiles = self._get_effective_workload_profiles()
+        if effective_workload_profiles and self.get_argument_infrastructure_subnet_resource_id() is not None:
             self.managed_env_def["properties"]["infrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
 
     def set_up_managed_identity(self):
@@ -110,17 +153,22 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             self.managed_env_def["identity"] = identity_def
 
     def set_up_workload_profiles(self):
-        if self.get_argument_enable_workload_profiles():
-            # If the environment exists, infer the environment type
-            existing_environment = None
-            try:
-                existing_environment = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
-            except Exception as e:
-                handle_non_404_status_code_exception(e)
+        # Use resolved effective value (supports both --environment-mode and deprecated --enable-workload-profiles)
+        effective_workload_profiles = self._get_effective_workload_profiles()
+        # If the environment exists, infer the environment type
+        existing_environment = None
+        try:
+            existing_environment = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+        except Exception as e:
+            handle_non_404_status_code_exception(e)
 
-            if existing_environment and safe_get(existing_environment, "properties", "workloadProfiles") is None:
-                # check if input params include -w/--enable-workload-profiles
-                if self.cmd.cli_ctx.data.get('safe_params') and ('-w' in self.cmd.cli_ctx.data.get('safe_params') or '--enable-workload-profiles' in self.cmd.cli_ctx.data.get('safe_params')):
+
+        if effective_workload_profiles:
+
+            # Check if existing environment is ConsumptionOnly (no workload profiles)
+            if existing_environment:
+                if safe_get(existing_environment, "properties", "workloadProfiles") is None:
+                    # User is trying to enable workload profiles on a ConsumptionOnly environment
                     raise ValidationError(f"Existing environment {self.get_argument_name()} cannot enable workload profiles. If you want to use Consumption and Dedicated environment, please create a new one.")
                 return
 
@@ -148,6 +196,20 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                     }
                     workload_profiles.append(serverless_gpu_profile)
             self.managed_env_def["properties"]["workloadProfiles"] = workload_profiles
+        else:
+            # Check if existing environment is WorkloadProfiles
+            if existing_environment:
+                if safe_get(existing_environment, "properties", "workloadProfiles") is not None:
+                    # User is trying to enable workload profiles on a ConsumptionOnly environment
+                    raise ValidationError(f"Existing environment {self.get_argument_name()} cannot be a Consumption only environment. If you want to use Consumption only environment, please create a new one.")
+                return
+
+        # Set environmentMode based on user input or default to "WorkloadProfiles"
+        environment_mode = self.get_argument_environment_mode()
+        if environment_mode:
+            self.managed_env_def["properties"]["environmentMode"] = environment_mode
+        else:
+            self.managed_env_def["properties"]["environmentMode"] = "WorkloadProfiles"
 
     def set_up_custom_domain_configuration(self):
         if self.get_argument_hostname():
@@ -174,6 +236,9 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
     def get_argument_enable_workload_profiles(self):
         return self.get_param("enable_workload_profiles")
+
+    def get_argument_environment_mode(self):
+        return self.get_param("environment_mode")
 
     def get_argument_enable_dedicated_gpu(self):
         return self.get_param("enable_dedicated_gpu")
@@ -216,8 +281,29 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
 
     def construct_payload(self):
         super().construct_payload()
+        try:
+            r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+        except CLIError as e:
+            handle_raw_exception(e)
 
         self.set_up_public_network_access()
+        self.set_up_environment_mode(r)
+
+    def set_up_environment_mode(self, r):
+        environment_mode = self.get_argument_environment_mode()
+        if environment_mode:
+            current_mode = safe_get(r, "properties", "environmentMode")
+            
+            # Validate environment mode transitions
+            if current_mode and current_mode.lower() != environment_mode.lower() and environment_mode.lower() != "archived":
+                raise ValidationError(f"Cannot change environment mode from '{current_mode}' to '{environment_mode}'. "
+                          "Existing environments can only be changed to 'Archived'.")
+            
+            if current_mode and current_mode.lower() == "archived" and environment_mode.lower() == "consumptiononly":
+                raise ValidationError(f"Cannot change environment mode from 'Archived' to 'ConsumptionOnly'. "
+                          "Please use 'WorkloadProfiles' instead.")
+            
+            safe_set(self.managed_env_def, "properties", "environmentMode", value=environment_mode)
 
     def set_up_public_network_access(self):
         if self.get_argument_public_network_access():
@@ -275,3 +361,6 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
 
     def get_argument_public_network_access(self):
         return self.get_param("public_network_access")
+
+    def get_argument_environment_mode(self):
+        return self.get_param("environment_mode")
