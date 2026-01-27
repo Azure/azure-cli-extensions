@@ -183,6 +183,7 @@ class ContainerAppEnvironment(Resource):
         workload_profile_type=None,
         workload_profile_name=None,
         is_env_for_azml_app=None,
+        environment_mode=None
     ):
         self.resource_type = None
         super().__init__(cmd, name, resource_group, exists)
@@ -211,6 +212,7 @@ class ContainerAppEnvironment(Resource):
         self.workload_profile_type = workload_profile_type
         self.workload_profile_name = workload_profile_name
         self.is_env_for_azml_app = is_env_for_azml_app
+        self.environment_mode = environment_mode
 
     def set_name(self, name_or_rid):
         if is_valid_resource_id(name_or_rid):
@@ -283,6 +285,7 @@ class ContainerAppEnvironment(Resource):
                 workload_profile_type=self.workload_profile_type,
                 workload_profile_name=self.workload_profile_name,
                 is_env_for_azml_app=self.is_env_for_azml_app,
+                environment_mode=self.env
             )
             self.exists = True
 

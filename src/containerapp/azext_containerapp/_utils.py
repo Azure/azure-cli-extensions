@@ -512,6 +512,37 @@ def get_cluster_extension(cmd, cluster_extension_id=None):
         extension_name=resource_name)
 
 
+def resolve_environment_mode_and_workload_profiles(environment_mode, workload_profiles_enabled):
+    # If only environment_mode is specified, derive enable_workload_profiles from it
+    if environment_mode is not None:
+        effective_workload_profiles = environment_mode != 'ConsumptionOnly'
+
+        # Check for conflicts when both are specified
+        if workload_profiles_enabled is not None:
+            if environment_mode == 'ConsumptionOnly' and workload_profiles_enabled:
+                raise ValidationError("Cannot use '--enable-workload-profiles' with '--environment-mode ConsumptionOnly'. Please use '--environment-mode' alone.")
+            if environment_mode != 'ConsumptionOnly' and workload_profiles_enabled is False:
+                raise ValidationError("Cannot use '--enable-workload-profiles false' with '--environment-mode {}'. Please use '--environment-mode' alone.".format(environment_mode))
+
+        return effective_workload_profiles
+
+    # If only enable_workload_profiles is specified (deprecated path)
+    if workload_profiles_enabled is not None:
+        return workload_profiles_enabled
+
+    # Neither specified - default to workload profiles enabled
+    return True
+
+
+def validate_workload_profiles_state(workload_profiles_enabled, environment_mode):
+    """Legacy validation function - kept for backward compatibility."""
+    if environment_mode:
+        if environment_mode == 'ConsumptionOnly' and workload_profiles_enabled:
+            raise ValidationError("Cannot use '--enable-workload-profiles' with '--environment-mode ConsumptionOnly'. Please update the environment mode, or disable workload profiles.")
+        if environment_mode != 'ConsumptionOnly' and workload_profiles_enabled is False:
+            raise ValidationError("Cannot use '--environment-mode' other than 'ConsumptionOnly' with '--enable-workload-profiles false'. Please use '--environment-mode' alone.")
+
+
 def validate_custom_location(cmd, custom_location=None):
     if not is_valid_resource_id(custom_location):
         raise ValidationError('{} is not a valid Azure resource ID.'.format(custom_location))
