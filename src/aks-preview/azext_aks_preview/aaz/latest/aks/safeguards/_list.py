@@ -17,17 +17,17 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List DeploymentSafeguards by parent resource
 
-    :example: List DeploymentSafeguards by parent resource
+    :example: List DeploymentSafeguard resources by managed cluster id
         az aks safeguards list --managed-cluster subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/cluster1
 
-    :example: List DeploymentSafeguards by parent resource
+    :example: List DeploymentSafeguard resources with resourceGroup and clusterName arguments
         az aks safeguards list -g rg1 -n cluster1
     """
 
     _aaz_info = {
-        "version": "2025-05-02-preview",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.containerservice/deploymentsafeguards", "2025-05-02-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.containerservice/deploymentsafeguards", "2025-07-01"],
         ]
     }
 
@@ -51,7 +51,7 @@ class List(AAZCommand):
         _args_schema.managed_cluster = AAZStrArg(
             options=["-c", "--cluster", "--managed-cluster"],
             help="The fully qualified Azure Resource manager identifier of the Managed Cluster.",
-            required=False,  # Will be validated in custom class
+            required=True,
         )
         return cls._args_schema
 
@@ -69,7 +69,7 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
@@ -104,7 +104,6 @@ class List(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "resourceUri", self.ctx.args.managed_cluster,
-                    skip_quote=True,
                     required=True,
                 ),
             }
@@ -114,7 +113,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-05-02-preview",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -168,9 +167,7 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

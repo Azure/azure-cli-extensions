@@ -17,23 +17,26 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Enable Deployment Safeguards for a Managed Cluster
 
-    :example: Creates a DeploymentSafeguards resource at Warn level with a managed cluster resource id
-        az aks safeguards create --resource /subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/cluster1 --level Warn
+    :example: Create a DeploymentSafeguards resource at Warn level with a managed cluster resource id
+        az aks safeguards create --managed-cluster subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/cluster1 --level Warn
 
-    :example: Creates a DeploymentSafeguards resource at Warn level using subscription, resourcegroup, and name tags
+    :example: Create a DeploymentSafeguards resource at Warn level using subscription, resourcegroup, and name tags
         az aks safeguards create --subscription subid1 -g rg1 -n cluster1 --level Warn
 
     :example: Create a DeploymentSafeguards resource at Warn level with ignored namespaces
         az aks safeguards create -g rg1 -n mc1 --excluded-ns ns1 ns2 --level Warn
 
-    :example: Creates a DeploymentSafeguards resource at Warn level with pod security standards level set to Baseline
-        az aks safeguards create --managed-cluster subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/cluster1 --level Warn --pss-level Baseline
+    :example: Create a DeploymentSafeguards resource at Warn level with Pod Security Standards level set to Baseline
+        az aks safeguards create --managed-cluster /subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/cluster1 --level Warn --pss-level Baseline
+
+    :example: Create a DeploymentSafeguards resource with PSS level set to Restricted using -g/-n pattern
+        az aks safeguards create -g rg1 -n cluster1 --level Enforce --pss-level Restricted
     """
 
     _aaz_info = {
-        "version": "2025-05-02-preview",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.containerservice/deploymentsafeguards/default", "2025-05-02-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.containerservice/deploymentsafeguards/default", "2025-07-01"],
         ]
     }
 
@@ -57,7 +60,7 @@ class Create(AAZCommand):
         _args_schema.managed_cluster = AAZStrArg(
             options=["-c", "--cluster", "--managed-cluster"],
             help="The fully qualified Azure Resource manager identifier of the Managed Cluster.",
-            required=False,  # Will be validated in custom class
+            required=True,
         )
 
         # define Arg Group "Properties"
@@ -78,7 +81,6 @@ class Create(AAZCommand):
             options=["--pss-level"],
             arg_group="Properties",
             help="The pod security standards level",
-            is_preview=True,
             enum={"Baseline": "Baseline", "Privileged": "Privileged", "Restricted": "Restricted"},
         )
 
@@ -100,7 +102,7 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
     class DeploymentSafeguardsCreate(AAZHttpOperation):
@@ -150,7 +152,6 @@ class Create(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "resourceUri", self.ctx.args.managed_cluster,
-                    skip_quote=True,
                     required=True,
                 ),
             }
@@ -160,7 +161,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-05-02-preview",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -185,7 +186,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -227,9 +228,7 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
