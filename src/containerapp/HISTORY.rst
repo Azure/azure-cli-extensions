@@ -5,7 +5,8 @@ Release History
 upcoming
 ++++++
 * 'az containerapp function invocations': Update application insights query 
-* 'az containerapp function keys': Update minimum replica check 
+* 'az containerapp function keys': Update minimum replica check
+* 'az containerapp env --environment-mode': Add environment mode to create and update commands
 
 1.3.0b1
 ++++++
