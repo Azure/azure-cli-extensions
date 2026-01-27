@@ -47,8 +47,8 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         self._set_up_custom_domain_configuration()
 
         self._set_up_infrastructure_resource_group()
-        self.set_up_dynamic_json_columns()
-        self.set_up_managed_identity()
+        self._set_up_dynamic_json_columns()
+        self._set_up_managed_identity()
         self._set_up_public_network_access()
 
     def validate_arguments(self):
@@ -88,7 +88,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
                 raise ValidationError("Either --certificate-file or --certificate-akv-url should be set when --dns-suffix is set")
 
-    def set_up_managed_identity(self):
+    def _set_up_managed_identity(self):
         if self.get_argument_system_assigned() or self.get_argument_user_assigned():
             identity_def = ManagedServiceIdentity
             identity_def["type"] = "None"
