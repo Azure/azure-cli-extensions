@@ -20,6 +20,10 @@ from azext_aosm.common.utils import (
 logger = get_logger(__name__)
 ACR_REGISTRY_NAME_PATTERN = r"^([a-zA-Z0-9]+\.azurecr\.io)"
 
+# Azure Container Registry constants
+ACR_OAUTH_SCOPE = "https://containerregistry.azure.net/.default"
+ACR_IMPORT_SERVICE_PRINCIPAL_ID = "00000000-0000-0000-0000-000000000000"
+
 
 # pylint: disable=too-few-public-methods
 class ContainerRegistry:
@@ -239,7 +243,15 @@ class AzureContainerRegistry(ContainerRegistry):
             # the format of input.json. Our usage here won't work cross-tenant since
             # we're attempting to get the token (source) with the same context as that
             # in which we are creating the ACR (i.e. the target tenant)
-            get_token_cmd = [str(shutil.which("az")), "account", "get-access-token"]
+            
+            # Get access token with ACR scope to ensure proper repository permissions
+            get_token_cmd = [
+                str(shutil.which("az")), 
+                "account", 
+                "get-access-token", 
+                "--scope", 
+                ACR_OAUTH_SCOPE
+            ]
             # Dont use call_subprocess_raise_output here as we don't want to log the
             # output
             called_process = subprocess.run(  # noqa: S603
@@ -269,6 +281,30 @@ class AzureContainerRegistry(ContainerRegistry):
             )
 
         try:
+            # Extract source registry name for the --registry parameter
+            source_registry_name = self.registry_name.replace(".azurecr.io", "")
+            
+            # Get the full resource ID for the source registry
+            source_registry_id_cmd = [
+                str(shutil.which("az")),
+                "acr",
+                "show",
+                "--name",
+                source_registry_name,
+                "--query",
+                "id",
+                "--output",
+                "tsv"
+            ]
+            called_process = subprocess.run(  # noqa: S603
+                source_registry_id_cmd,
+                encoding="utf-8",
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            source_registry_id = called_process.stdout.strip()
+
             acr_import_image_cmd = [
                 str(shutil.which("az")),
                 "acr",
@@ -279,8 +315,12 @@ class AzureContainerRegistry(ContainerRegistry):
                 source_image,
                 "--image",
                 f"{image_name}:{image_version}",
+                "--username",
+                ACR_IMPORT_SERVICE_PRINCIPAL_ID,
                 "--password",
                 access_token,
+                "--registry",
+                source_registry_id,
             ]
             call_subprocess_raise_output(acr_import_image_cmd)
         except CLIError as error:
@@ -321,6 +361,49 @@ class AzureContainerRegistry(ContainerRegistry):
                 target_acr,
                 error,
             )
+
+    def _get_subscription_id(self) -> str:
+        """Get the current subscription ID."""
+        try:
+            get_sub_cmd = [str(shutil.which("az")), "account", "show", "--query", "id", "--output", "tsv"]
+            called_process = subprocess.run(  # noqa: S603
+                get_sub_cmd,
+                encoding="utf-8",
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            return called_process.stdout.strip()
+        except subprocess.CalledProcessError as error:
+            logger.debug(error, exc_info=True)
+            raise ClientRequestError("Failed to get subscription ID") from error
+
+    def _get_source_acr_resource_group(self) -> str:
+        """Get the resource group name for the source ACR."""
+        try:
+            registry_name_without_domain = self.registry_name.replace(".azurecr.io", "")
+            get_rg_cmd = [
+                str(shutil.which("az")), 
+                "acr", 
+                "show", 
+                "--name", 
+                registry_name_without_domain, 
+                "--query", 
+                "resourceGroup", 
+                "--output", 
+                "tsv"
+            ]
+            called_process = subprocess.run(  # noqa: S603
+                get_rg_cmd,
+                encoding="utf-8",
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            return called_process.stdout.strip()
+        except subprocess.CalledProcessError as error:
+            logger.debug(error, exc_info=True)
+            raise ClientRequestError(f"Failed to get resource group for ACR {self.registry_name}") from error
 
     def find_image(
         self, image: str, version: str
