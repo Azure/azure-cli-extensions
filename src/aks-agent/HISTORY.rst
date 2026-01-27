@@ -14,9 +14,10 @@ Pending
 
 1.0.0b16
 ++++++++
+* Fix: client mode use AzureCLICredential to authenticate with Azure
 * Fix: correct wrong prompt message for init and cleanup
 * Fix: prompt the whole flags including --resource-group, --name and optional --namespace for az aks agent command
-* Improve: cluster mode cleanup will wait for pods to be removed after deletion
+* Enhancement: cluster mode cleanup will wait for pods to be removed after deletion
 
 1.0.0b15
 ++++++++
