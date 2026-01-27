@@ -4578,7 +4578,11 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.assertEqual(disable_gateway_api_3, False)
 
     def test_get_enable_high_log_scale_mode_default(self):
-        """Test default behavior when no container network logs or high log scale mode is specified."""
+        """Test default behavior when no container network logs or high log scale mode is specified.
+        
+        When enable_high_log_scale_mode is not explicitly set and container network logs are not enabled,
+        the method should return False (not None) to maintain backward compatibility with the base class.
+        """
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict({}),
@@ -4586,7 +4590,21 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         result = ctx.get_enable_high_log_scale_mode()
-        self.assertIsNone(result)
+        self.assertFalse(result)
+
+    def test_get_enable_high_log_scale_mode_explicit_false_without_cnl(self):
+        """Test when user explicitly sets enable_high_log_scale_mode to False without container network logs.
+        
+        This should return False without raising any errors since container network logs are not enabled.
+        """
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_high_log_scale_mode": False}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertFalse(result)
 
     def test_get_enable_high_log_scale_mode_explicit_true(self):
         """Test when user explicitly enables high log scale mode."""
