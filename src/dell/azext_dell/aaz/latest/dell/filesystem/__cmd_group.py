@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dell filesystem",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Filesystem
+    """Manage Dell filesystem resources - create, list, show, update, and delete Dell storage filesystems
     """
     pass
 

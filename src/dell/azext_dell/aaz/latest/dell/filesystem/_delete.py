@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete a FileSystemResource
 
-    :example: FileSystems_Delete_MaximumSet_Gen
-        az dell filesystem delete --resource-group rgDell --filesystem-name abcd
+    :example: Delete a Dell filesystem
+        az dell filesystem delete --resource-group myResourceGroup --filesystem-name mydellfs
     """
 
     _aaz_info = {
@@ -78,7 +78,8 @@ class Delete(AAZCommand):
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
+            session = self.client.send_request(
+                request=request, stream=False, **kwargs)
             if session.http_response.status_code in [202]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,

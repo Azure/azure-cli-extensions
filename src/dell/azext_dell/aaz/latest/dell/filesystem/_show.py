@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get a FileSystemResource
 
-    :example: FileSystems_Get_MaximumSet_Gen
-        az dell filesystem show --resource-group rgDell --filesystem-name abcd
+    :example: Show details of a specific Dell filesystem
+        az dell filesystem show --resource-group myResourceGroup --filesystem-name mydellfs
     """
 
     _aaz_info = {
@@ -72,7 +72,8 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(
+            self.ctx.vars.instance, client_flatten=True)
         return result
 
     class FileSystemsGet(AAZHttpOperation):
@@ -80,7 +81,8 @@ class Show(AAZCommand):
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
+            session = self.client.send_request(
+                request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
 

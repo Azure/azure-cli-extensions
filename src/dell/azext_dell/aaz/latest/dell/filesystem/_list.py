@@ -17,8 +17,11 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List FileSystemResource resources by subscription ID
 
-    :example: FileSystems_ListBySubscription_MaximumSet_Gen
+    :example: List all Dell filesystems in the current subscription
         az dell filesystem list
+
+    :example: List Dell filesystems in a specific resource group
+        az dell filesystem list --resource-group myResourceGroup
     """
 
     _aaz_info = {
@@ -51,8 +54,10 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
-        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(
+            self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(
+            self.ctx.subscription_id)
         if condition_0:
             self.FileSystemsListBySubscription(ctx=self.ctx)()
         if condition_1:
@@ -68,7 +73,8 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        result = self.deserialize_output(
+            self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
@@ -77,7 +83,8 @@ class List(AAZCommand):
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
+            session = self.client.send_request(
+                request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
 
@@ -338,7 +345,8 @@ class List(AAZCommand):
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
+            session = self.client.send_request(
+                request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
 

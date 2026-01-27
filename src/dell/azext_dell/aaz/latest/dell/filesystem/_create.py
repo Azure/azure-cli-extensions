@@ -17,11 +17,8 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a FileSystemResource
 
-    :example: FileSystems_CreateOrUpdate_MaximumSet_Gen
-        az dell filesystem create --resource-group rgDell --filesystem-name abcd --marketplace "{marketplaceSubscriptionStatus:PendingFulfillmentStart,marketplace-subscription-id:mvjcxwndudbylynme,plan-id:eekvwfndjoxijeasksnt,offer-id:bcganbkmvznyqfnvhjuag,publisher-id:trdzykoeskmcwpo,private-offer-id:privateOfferId,plan-name:planeName}" --delegated-subnet-id rqkpvczbtqcxiaivtbuixblb --delegated-subnet-cidr 10.0.0.1/24 --user "{email:jwogfgznmjabdbcjcljjlkxdpc}" --smart-connect-fqdn fqdn --one-fs-url oneFsUrl --dell-reference-number fhewkj --encryption "{encryption-type:'Customer-managed keys (CMK)',key-url:'https://contoso.com/keyurl/keyVersion',encryption-identity-properties:{identity-type:UserAssigned,identity-resource-id:'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'}}" --type UserAssigned --user-assigned-identities "{key7644:{}}" --tags "{key7594:sfkwapubiurgedzveido}" --location cvbmsqftppe
-
-    :example: FileSystems_CreateOrUpdate_MaximumSet_Gen
-        az dell filesystem create --resource-group rgDell --filesystem-name abcd --marketplace "{marketplaceSubscriptionStatus:PendingFulfillmentStart,marketplace-subscription-id:mvjcxwndudbylynme,plan-id:eekvwfndjoxijeasksnt,offer-id:bcganbkmvznyqfnvhjuag,publisher-id:trdzykoeskmcwpo,private-offer-id:privateOfferId,plan-name:planeName}" --delegated-subnet-id rqkpvczbtqcxiaivtbuixblb --delegated-subnet-cidr 10.0.0.1/24 --user "{email:jwogfgznmjabdbcjcljjlkxdpc}" --smart-connect-fqdn fqdn --one-fs-url oneFsUrl --dell-reference-number fhewkj --encryption "{encryption-type:'Customer-managed keys (CMK)',key-url:'https://contoso.com/keyurl/keyVersion',encryption-identity-properties:{identity-type:UserAssigned,identity-resource-id:'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'}}" --type UserAssigned --user-assigned-identities "{key7644:{}}" --tags "{key7594:sfkwapubiurgedzveido}" --location cvbmsqftppe
+    :example: Create a Dell filesystem 
+        az dell filesystem create --resource-group myResourceGroup --filesystem-name mydellfs --location "East US" --delegated-subnet-id "/subscriptions/12345678-1234-1234-1234-123456789abc/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/mySubnet" --delegated-subnet-cidr "10.0.1.0/24" --user "{email:admin@contoso.com}" --smart-connect-fqdn "mydellfs.contoso.com" --one-fs-url "https://mydellfs.onefs.contoso.com" --dell-reference-number "DELL-REF-001" --encryption "{encryption-type:'Microsoft-managed keys (MMK)'}" --marketplace "{marketplace-subscription-id:12345678-1234-1234-1234-123456789abc,plan-id:dell-isilon-plan,offer-id:dell-isilon-offer,publisher-id:dell-technologies}" --tags "{Environment:Production,Owner:StorageTeam}"
     """
 
     _aaz_info = {
@@ -146,7 +143,8 @@ class Create(AAZCommand):
             options=["encryption-type"],
             help="Encryption Type - MMK/CMK",
             required=True,
-            enum={"Customer-managed keys (CMK)": "Customer-managed keys (CMK)", "Microsoft-managed keys (MMK)": "Microsoft-managed keys (MMK)"},
+            enum={"Customer-managed keys (CMK)": "Customer-managed keys (CMK)",
+                  "Microsoft-managed keys (MMK)": "Microsoft-managed keys (MMK)"},
         )
         encryption.key_url = AAZStrArg(
             options=["key-url"],
@@ -161,7 +159,8 @@ class Create(AAZCommand):
         encryption_identity_properties.identity_type = AAZStrArg(
             options=["identity-type"],
             help="Identity type - SystemAssigned/UserAssigned - Only UserAssigned is supported now",
-            enum={"SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
+            enum={"SystemAssigned": "SystemAssigned",
+                  "UserAssigned": "UserAssigned"},
         )
 
         marketplace = cls._args_schema.marketplace
@@ -243,7 +242,8 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(
+            self.ctx.vars.instance, client_flatten=True)
         return result
 
     class FileSystemsCreateOrUpdate(AAZHttpOperation):
@@ -251,7 +251,8 @@ class Create(AAZCommand):
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
+            session = self.client.send_request(
+                request=request, stream=False, **kwargs)
             if session.http_response.status_code in [202]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
@@ -333,25 +334,35 @@ class Create(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                typ_kwargs={
+                    "flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("identity", AAZIdentityObjectType)
-            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={
+                              "flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("capacity", AAZObjectType, ".capacity")
-                properties.set_prop("delegatedSubnetCidr", AAZStrType, ".delegated_subnet_cidr", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("delegatedSubnetId", AAZStrType, ".delegated_subnet_id", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("dellReferenceNumber", AAZStrType, ".dell_reference_number", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("encryption", AAZObjectType, ".encryption", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("fileSystemId", AAZStrType, ".file_system_id")
-                properties.set_prop("marketplace", AAZObjectType, ".marketplace", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("delegatedSubnetCidr", AAZStrType, ".delegated_subnet_cidr", typ_kwargs={
+                                    "flags": {"required": True}})
+                properties.set_prop("delegatedSubnetId", AAZStrType, ".delegated_subnet_id", typ_kwargs={
+                                    "flags": {"required": True}})
+                properties.set_prop("dellReferenceNumber", AAZStrType, ".dell_reference_number", typ_kwargs={
+                                    "flags": {"required": True}})
+                properties.set_prop("encryption", AAZObjectType, ".encryption", typ_kwargs={
+                                    "flags": {"required": True}})
+                properties.set_prop(
+                    "fileSystemId", AAZStrType, ".file_system_id")
+                properties.set_prop("marketplace", AAZObjectType, ".marketplace", typ_kwargs={
+                                    "flags": {"required": True}})
                 properties.set_prop("oneFsUrl", AAZStrType, ".one_fs_url")
-                properties.set_prop("smartConnectFqdn", AAZStrType, ".smart_connect_fqdn")
-                properties.set_prop("user", AAZObjectType, ".user", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("smartConnectFqdn",
+                                    AAZStrType, ".smart_connect_fqdn")
+                properties.set_prop("user", AAZObjectType, ".user", typ_kwargs={
+                                    "flags": {"required": True}})
 
             capacity = _builder.get(".properties.capacity")
             if capacity is not None:
@@ -362,29 +373,41 @@ class Create(AAZCommand):
 
             encryption = _builder.get(".properties.encryption")
             if encryption is not None:
-                encryption.set_prop("encryptionIdentityProperties", AAZObjectType, ".encryption_identity_properties")
-                encryption.set_prop("encryptionType", AAZStrType, ".encryption_type", typ_kwargs={"flags": {"required": True}})
+                encryption.set_prop("encryptionIdentityProperties",
+                                    AAZObjectType, ".encryption_identity_properties")
+                encryption.set_prop("encryptionType", AAZStrType, ".encryption_type", typ_kwargs={
+                                    "flags": {"required": True}})
                 encryption.set_prop("keyUrl", AAZStrType, ".key_url")
 
-            encryption_identity_properties = _builder.get(".properties.encryption.encryptionIdentityProperties")
+            encryption_identity_properties = _builder.get(
+                ".properties.encryption.encryptionIdentityProperties")
             if encryption_identity_properties is not None:
-                encryption_identity_properties.set_prop("identityResourceId", AAZStrType, ".identity_resource_id")
-                encryption_identity_properties.set_prop("identityType", AAZStrType, ".identity_type")
+                encryption_identity_properties.set_prop(
+                    "identityResourceId", AAZStrType, ".identity_resource_id")
+                encryption_identity_properties.set_prop(
+                    "identityType", AAZStrType, ".identity_type")
 
             marketplace = _builder.get(".properties.marketplace")
             if marketplace is not None:
                 marketplace.set_prop("endDate", AAZStrType, ".end_date")
-                marketplace.set_prop("marketplaceSubscriptionId", AAZStrType, ".marketplace_subscription_id")
-                marketplace.set_prop("offerId", AAZStrType, ".offer_id", typ_kwargs={"flags": {"required": True}})
-                marketplace.set_prop("planId", AAZStrType, ".plan_id", typ_kwargs={"flags": {"required": True}})
-                marketplace.set_prop("planName", AAZStrType, ".plan_name", typ_kwargs={"flags": {"required": True}})
-                marketplace.set_prop("privateOfferId", AAZStrType, ".private_offer_id")
-                marketplace.set_prop("publisherId", AAZStrType, ".publisher_id")
+                marketplace.set_prop(
+                    "marketplaceSubscriptionId", AAZStrType, ".marketplace_subscription_id")
+                marketplace.set_prop("offerId", AAZStrType, ".offer_id", typ_kwargs={
+                                     "flags": {"required": True}})
+                marketplace.set_prop("planId", AAZStrType, ".plan_id", typ_kwargs={
+                                     "flags": {"required": True}})
+                marketplace.set_prop("planName", AAZStrType, ".plan_name", typ_kwargs={
+                                     "flags": {"required": True}})
+                marketplace.set_prop(
+                    "privateOfferId", AAZStrType, ".private_offer_id")
+                marketplace.set_prop(
+                    "publisherId", AAZStrType, ".publisher_id")
                 marketplace.set_prop("termUnit", AAZStrType, ".term_unit")
 
             user = _builder.get(".properties.user")
             if user is not None:
-                user.set_prop("email", AAZStrType, ".email", typ_kwargs={"flags": {"secret": True}})
+                user.set_prop("email", AAZStrType, ".email",
+                              typ_kwargs={"flags": {"secret": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:

@@ -18,8 +18,11 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a FileSystemResource
 
-    :example: FileSystems_CreateOrUpdate_MaximumSet_Gen
-        az dell filesystem update --resource-group rgDell --filesystem-name abcd  --delegated-subnet-id rqkpvczbtqcxiaivtbuixblb --delegated-subnet-cidr 10.0.0.1/24 --tags "{key7594:sfkwapubiurgedzveido}"
+    :example: Update Dell filesystem tags
+        az dell filesystem update --resource-group myResourceGroup --filesystem-name mydellfs --tags "{Environment:Staging,Owner:DataTeam,CostCenter:IT-Storage}"
+
+    :example: Update Dell filesystem delegated subnet configuration
+        az dell filesystem update --resource-group myResourceGroup --filesystem-name mydellfs --delegated-subnet-id "/subscriptions/12345678-1234-1234-1234-123456789abc/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/newSubnet" --delegated-subnet-cidr "10.0.3.0/24"
     """
 
     _aaz_info = {
@@ -123,7 +126,8 @@ class Update(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(
+            self.ctx.vars.instance, client_flatten=True)
         return result
 
     class FileSystemsGet(AAZHttpOperation):
@@ -131,7 +135,8 @@ class Update(AAZCommand):
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
+            session = self.client.send_request(
+                request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
 
@@ -389,7 +394,8 @@ class Update(AAZCommand):
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
+            session = self.client.send_request(
+                request=request, stream=False, **kwargs)
             if session.http_response.status_code in [202]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
@@ -687,8 +693,10 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("delegatedSubnetCidr", AAZStrType, ".delegated_subnet_cidr", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("delegatedSubnetId", AAZStrType, ".delegated_subnet_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("delegatedSubnetCidr", AAZStrType, ".delegated_subnet_cidr", typ_kwargs={
+                                    "flags": {"required": True}})
+                properties.set_prop("delegatedSubnetId", AAZStrType, ".delegated_subnet_id", typ_kwargs={
+                                    "flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dell",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Dell
+    """Manage Dell storage resources in Azure
     """
     pass
 
