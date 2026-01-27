@@ -371,33 +371,6 @@ class AzureContainerRegistry(ContainerRegistry):
                 error,
             )
 
-    def _get_source_acr_resource_group(self) -> str:
-        """Get the resource group name for the source ACR."""
-        try:
-            registry_name_without_domain = self.registry_name.replace(".azurecr.io", "")
-            get_rg_cmd = [
-                str(shutil.which("az")),
-                "acr",
-                "show",
-                "--name",
-                registry_name_without_domain,
-                "--query",
-                "resourceGroup",
-                "--output",
-                "tsv"
-            ]
-            called_process = subprocess.run(  # noqa: S603
-                get_rg_cmd,
-                encoding="utf-8",
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-            return called_process.stdout.strip()
-        except subprocess.CalledProcessError as error:
-            logger.debug(error, exc_info=True)
-            raise ClientRequestError(f"Failed to get resource group for ACR {self.registry_name}") from error
-
     def find_image(
         self, image: str, version: str
     ) -> Union[Tuple["AzureContainerRegistry", str], Tuple[None, None]]:
