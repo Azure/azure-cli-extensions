@@ -32,7 +32,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         self.managed_env_def["tags"] = self.get_argument_tags()
         self.managed_env_def["properties"]["zoneRedundant"] = self.get_argument_zone_redundant()
 
-        self.set_up_workload_profiles()
+        self._set_up_workload_profiles()
 
         if self.get_argument_instrumentation_key() is not None:
             self.managed_env_def["properties"]["daprAIInstrumentationKey"] = self.get_argument_instrumentation_key()
@@ -44,12 +44,12 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         # copy end
 
         # overwrite custom_domain_configuration
-        self.set_up_custom_domain_configuration()
+        self._set_up_custom_domain_configuration()
 
-        self.set_up_infrastructure_resource_group()
+        self._set_up_infrastructure_resource_group()
         self.set_up_dynamic_json_columns()
         self.set_up_managed_identity()
-        self.set_up_public_network_access()
+        self._set_up_public_network_access()
 
     def validate_arguments(self):
         super().validate_arguments()
@@ -88,40 +88,6 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
                 raise ValidationError("Either --certificate-file or --certificate-akv-url should be set when --dns-suffix is set")
 
-    def set_up_public_network_access(self):
-        if self.get_argument_public_network_access():
-            safe_set(self.managed_env_def, "properties", "publicNetworkAccess",
-                     value=self.get_argument_public_network_access())
-
-    def set_up_dynamic_json_columns(self):
-        if self.get_argument_logs_destination() == "log-analytics" and self.get_argument_logs_dynamic_json_columns() is not None:
-            safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "dynamicJsonColumns", value=self.get_argument_logs_dynamic_json_columns())
-
-    def _get_effective_workload_profiles(self):
-
-        safe_params = self.cmd.cli_ctx.data.get('safe_params', [])
-
-        # First check if user provided --environment-mode
-        if '--environment-mode' in safe_params:
-            environment_mode = self.get_argument_environment_mode()
-            if environment_mode:
-                # WorkloadProfiles/Standard mode means workload profiles enabled
-                # ConsumptionOnly or Free means workload profiles disabled
-                return environment_mode.lower() == "workloadprofiles" or environment_mode.lower() == "standard"
-
-        # Fallback: check if user explicitly provided --enable-workload-profiles
-        user_provided_wp = '-w' in safe_params or '--enable-workload-profiles' in safe_params
-        if user_provided_wp:
-            return self.get_argument_enable_workload_profiles()
-
-        # Default to True if neither --environment-mode nor --enable-workload-profiles was provided
-        return True
-
-    def set_up_infrastructure_resource_group(self):
-        effective_workload_profiles = self._get_effective_workload_profiles()
-        if effective_workload_profiles and self.get_argument_infrastructure_subnet_resource_id() is not None:
-            self.managed_env_def["properties"]["infrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
-
     def set_up_managed_identity(self):
         if self.get_argument_system_assigned() or self.get_argument_user_assigned():
             identity_def = ManagedServiceIdentity
@@ -149,7 +115,21 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                     identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
             self.managed_env_def["identity"] = identity_def
 
-    def set_up_workload_profiles(self):
+    def _set_up_public_network_access(self):
+        if self.get_argument_public_network_access():
+            safe_set(self.managed_env_def, "properties", "publicNetworkAccess",
+                     value=self.get_argument_public_network_access())
+
+    def _set_up_dynamic_json_columns(self):
+        if self.get_argument_logs_destination() == "log-analytics" and self.get_argument_logs_dynamic_json_columns() is not None:
+            safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "dynamicJsonColumns", value=self.get_argument_logs_dynamic_json_columns())
+
+    def _set_up_infrastructure_resource_group(self):
+        effective_workload_profiles = self._get_effective_workload_profiles()
+        if effective_workload_profiles and self.get_argument_infrastructure_subnet_resource_id() is not None:
+            self.managed_env_def["properties"]["infrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
+
+    def _set_up_workload_profiles(self):
         # Use resolved effective value (supports both --environment-mode and deprecated --enable-workload-profiles)
         effective_workload_profiles = self._get_effective_workload_profiles()
         # If the environment exists, infer the environment type
@@ -207,7 +187,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         else:
             self.managed_env_def["properties"]["environmentMode"] = "WorkloadProfiles"
 
-    def set_up_custom_domain_configuration(self):
+    def _set_up_custom_domain_configuration(self):
         if self.get_argument_hostname():
             custom_domain = CustomDomainConfiguration
             custom_domain["dnsSuffix"] = self.get_argument_hostname()
@@ -266,6 +246,26 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
     def get_argument_workload_profile_name(self):
         return self.get_param("workload_profile_name")
 
+    def _get_effective_workload_profiles(self):
+
+        safe_params = self.cmd.cli_ctx.data.get('safe_params', [])
+
+        # First check if user provided --environment-mode
+        if '--environment-mode' in safe_params:
+            environment_mode = self.get_argument_environment_mode()
+            if environment_mode:
+                # WorkloadProfiles/Standard mode means workload profiles enabled
+                # ConsumptionOnly or Free means workload profiles disabled
+                return environment_mode.lower() == "workloadprofiles" or environment_mode.lower() == "standard"
+
+        # Fallback: check if user explicitly provided --enable-workload-profiles
+        user_provided_wp = '-w' in safe_params or '--enable-workload-profiles' in safe_params
+        if user_provided_wp:
+            return self.get_argument_enable_workload_profiles()
+
+        # Default to True if neither --environment-mode nor --enable-workload-profiles was provided
+        return True
+
 
 class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
     def validate_arguments(self):
@@ -283,9 +283,9 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
             handle_raw_exception(e)
 
         self.set_up_public_network_access()
-        self.set_up_environment_mode(r)
+        self._set_up_environment_mode(r)
 
-    def set_up_environment_mode(self, r):
+    def _set_up_environment_mode(self, r):
         environment_mode = self.get_argument_environment_mode()
         if environment_mode:
             current_mode = safe_get(r, "properties", "environmentMode")
