@@ -534,15 +534,6 @@ def resolve_environment_mode_and_workload_profiles(environment_mode, workload_pr
     return True
 
 
-def validate_workload_profiles_state(workload_profiles_enabled, environment_mode):
-    """Legacy validation function - kept for backward compatibility."""
-    if environment_mode:
-        if environment_mode == 'ConsumptionOnly' and workload_profiles_enabled:
-            raise ValidationError("Cannot use '--enable-workload-profiles' with '--environment-mode ConsumptionOnly'. Please update the environment mode, or disable workload profiles.")
-        if environment_mode != 'ConsumptionOnly' and workload_profiles_enabled is False:
-            raise ValidationError("Cannot use '--environment-mode' other than 'ConsumptionOnly' with '--enable-workload-profiles false'. Please use '--environment-mode' alone.")
-
-
 def validate_custom_location(cmd, custom_location=None):
     if not is_valid_resource_id(custom_location):
         raise ValidationError('{} is not a valid Azure resource ID.'.format(custom_location))

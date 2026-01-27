@@ -5,7 +5,7 @@
 
 import unittest
 from azure.cli.core.azclierror import ValidationError
-from azext_containerapp._utils import validate_workload_profiles_state, resolve_environment_mode_and_workload_profiles
+from azext_containerapp._utils import resolve_environment_mode_and_workload_profiles
 from azext_containerapp._sdk_enums import EnvironmentMode
 
 
@@ -107,38 +107,3 @@ class TestResolveEnvironmentModeAndWorkloadProfiles(unittest.TestCase):
         effective, show_warning = resolve_environment_mode_and_workload_profiles('Standard', True)
         self.assertTrue(effective)
         self.assertTrue(show_warning)
-
-
-class TestValidateWorkloadProfilesState(unittest.TestCase):
-    """Tests for the legacy validate_workload_profiles_state function (kept for backward compatibility)."""
-
-    def test_consumption_only_with_workload_profiles_enabled_raises_error(self):
-        with self.assertRaises(ValidationError) as context:
-            validate_workload_profiles_state(True, 'ConsumptionOnly')
-        self.assertIn("Cannot use '--enable-workload-profiles' with '--environment-mode ConsumptionOnly'", str(context.exception))
-
-    def test_non_consumption_mode_without_workload_profiles_raises_error(self):
-        with self.assertRaises(ValidationError) as context:
-            validate_workload_profiles_state(False, 'WorkloadProfiles')
-        self.assertIn("Cannot use '--environment-mode' other than 'ConsumptionOnly'", str(context.exception))
-
-    def test_consumption_only_without_workload_profiles_succeeds(self):
-        # Should not raise any exception
-        validate_workload_profiles_state(False, 'ConsumptionOnly')
-
-    def test_non_consumption_mode_with_workload_profiles_succeeds(self):
-        # Should not raise any exception
-        validate_workload_profiles_state(True, 'WorkloadProfiles')
-
-    def test_none_environment_mode_with_workload_profiles_enabled_succeeds(self):
-        # Should not raise any exception when environment_mode is None
-        validate_workload_profiles_state(True, None)
-
-    def test_none_environment_mode_without_workload_profiles_succeeds(self):
-        # Should not raise any exception when environment_mode is None
-        validate_workload_profiles_state(False, None)
-
-    def test_none_workload_profiles_with_environment_mode_succeeds(self):
-        # Should not raise any exception when workload_profiles_enabled is None
-        validate_workload_profiles_state(None, 'WorkloadProfiles')
-        validate_workload_profiles_state(None, 'ConsumptionOnly')
