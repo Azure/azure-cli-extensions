@@ -5,7 +5,6 @@
 
 import os
 import time
-from azure.cli.core.azclierror import ValidationError
 import yaml
 import json
 import tempfile
