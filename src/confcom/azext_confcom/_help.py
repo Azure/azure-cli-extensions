@@ -330,7 +330,7 @@ helps[
 """
 
 helps[
-  "confcom containers from_image"
+    "confcom containers from_image"
 ] = """
     type: command
     short-summary: Create a Security Policy Container Definition based on an image reference.

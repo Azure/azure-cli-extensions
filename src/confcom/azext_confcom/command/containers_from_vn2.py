@@ -12,9 +12,17 @@ import re
 import yaml
 
 from azext_confcom import config
-from azext_confcom.lib.platform import PRIVILEDGED_CAPABILITIES, VN2_MOUNTS, VN2_PRIVILEGED_MOUNTS, VN2_WORKLOAD_IDENTITY_ENV_RULES, VN2_WORKLOAD_IDENTITY_MOUNTS
+from azext_confcom.lib.platform import (
+    PRIVILEDGED_CAPABILITIES,
+    VN2_PRIVILEGED_MOUNTS,
+    VN2_WORKLOAD_IDENTITY_ENV_RULES,
+    VN2_WORKLOAD_IDENTITY_MOUNTS,
+)
 from azext_confcom.lib.policy import ContainerUser
-from azext_confcom.lib.containers import from_image as container_from_image, merge_containers, merge_containers
+from azext_confcom.lib.containers import (
+    from_image as container_from_image,
+    merge_containers,
+)
 
 
 def find_vn2_containers(vn2_template):
@@ -41,7 +49,7 @@ def vn2_container_env_rules(template: dict, container: dict, template_variables:
             is_special = re.match('^===VIRTUALNODE2.CC.THIM.(.+)===$', env_var.get('value'))
             yield {
                 "pattern": f"{env_var.get('name')}={'.*' if is_special else env_var.get('value')}",
-                "strategy": "re2" if is_special else"string",
+                "strategy": "re2" if is_special else "string",
                 "required": False,
             }
 
@@ -76,8 +84,17 @@ def vn2_container_env_rules(template: dict, container: dict, template_variables:
 
             elif "resourceFieldRef" in env_var.get('valueFrom'):
                 ref = env_var.get('valueFrom').get("resourceFieldRef", {})
-                container = next(c for c in template["spec"]["containers"] if c.get("name") == ref.get("containerName"))
-                value = container.get("resources", {})
+                ref_container_name = ref.get("containerName") or container.get("name")
+                ref_container = next(
+                    (
+                        c for c in template["spec"]["containers"]
+                        if c.get("name") == ref_container_name
+                    ),
+                    None,
+                )
+                if ref_container is None:
+                    continue
+                value = ref_container.get("resources", {})
                 for part in ref["resource"].split("."):
                     value = value.get(part, {})
                 yield {
@@ -116,6 +133,7 @@ def vn2_container_mounts(template: dict, container: dict) -> list[dict]:
         for m in container.get("volumeMounts", [])
     ]
 
+
 def containers_from_vn2(
     template: str,
     container_name: str
@@ -143,10 +161,14 @@ def containers_from_vn2(
         elif kind in ["Pod", "Deployment", "StatefulSet", "DaemonSet", "Job", "CronJob", "ReplicaSet"]:
             for container in find_vn2_containers(doc):
                 if container.get("name") == container_name:
-                    assert template_container is None and template_doc is None, f"Multiple containers with name {container_name} found."
+                    if template_container is not None or template_doc is not None:
+                        raise AssertionError(
+                            f"Multiple containers with name {container_name} found."
+                        )
                     template_container = container
                     template_doc = doc
-    assert template_container is not None, f"No containers with name {container_name} found."
+    if template_container is None:
+        raise AssertionError(f"No containers with name {container_name} found.")
 
     image_container_def = container_from_image(template_container.get("image"), platform="vn2")
 
@@ -159,20 +181,25 @@ def containers_from_vn2(
                     "pattern": rule.get("pattern") or f"{rule.get('name')}={rule.get('value')}",
                     "strategy": rule.get("strategy", "string"),
                     "required": rule.get("required", False),
-                } for rule in (
-                config.OPENGCS_ENV_RULES
-                + config.FABRIC_ENV_RULES
-                + config.MANAGED_IDENTITY_ENV_RULES
-                + config.ENABLE_RESTART_ENV_RULE
-                + config.VIRTUAL_NODE_ENV_RULES
-            )]
+                }
+                for rule in (
+                    config.OPENGCS_ENV_RULES
+                    + config.FABRIC_ENV_RULES
+                    + config.MANAGED_IDENTITY_ENV_RULES
+                    + config.ENABLE_RESTART_ENV_RULE
+                    + config.VIRTUAL_NODE_ENV_RULES
+                )
+            ]
             + list(vn2_container_env_rules(template_doc, template_container, variables))
         ),
         "mounts": vn2_container_mounts(template_doc, template_container),
     }
 
     # Parse security context
-    security_context = template_doc.get("spec", {}).get("securityContext", {}) | template_container.get("securityContext", {})
+    security_context = (
+        template_doc.get("spec", {}).get("securityContext", {})
+        | template_container.get("securityContext", {})
+    )
     if security_context.get("privileged", False):
         template_container_def["allow_elevated"] = True
         template_container_def["mounts"] += VN2_PRIVILEGED_MOUNTS
@@ -192,7 +219,9 @@ def containers_from_vn2(
             }]
 
     if security_context.get("seccompProfile"):
-        template_container_def["seccomp_profile_sha256"] = sha256(base64.b64decode(security_context.get("seccompProfile"))).hexdigest()
+        template_container_def["seccomp_profile_sha256"] = sha256(
+            base64.b64decode(security_context.get("seccompProfile"))
+        ).hexdigest()
 
     if security_context.get("allowPrivilegeEscalation") is False:
         template_container_def["no_new_privileges"] = True

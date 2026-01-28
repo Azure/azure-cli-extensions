@@ -126,9 +126,9 @@ VN2_WORKLOAD_IDENTITY_MOUNTS = [
     {
         "destination": "/var/run/secrets/azure/tokens",
         "options": [
-          "rbind",
-          "rshared",
-          "ro"
+            "rbind",
+            "rshared",
+            "ro"
         ],
         "source": "sandbox:///tmp/atlas/emptydir/.+",
         "type": "bind"
