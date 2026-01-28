@@ -12,7 +12,7 @@ class AutomationHRWScenarioTest(ScenarioTest):
     def setUp(self):
         # https://vcrpy.readthedocs.io/en/latest/configuration.html#request-matching
         # Exclude 'host' from matching to allow both GitHub and blob storage URLs for VM image aliases
-        self.vcr.match_on = ['scheme', 'method', 'path', 'query']  # not 'host', 'port'
+        self.vcr.match_on = ['scheme', 'method', 'query']  # not 'host', 'port', 'path'
         super(AutomationHRWScenarioTest, self).setUp()
 
     @ResourceGroupPreparer(name_prefix='cli_test_automation_hrw', key='rg', location='westus2')
