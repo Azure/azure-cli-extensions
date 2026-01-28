@@ -92,8 +92,7 @@ class DellScenario(ScenarioTest):
                               '--one-fs-url "https://' + filesystem_name + '.onefs.test.com" '
                               '--dell-reference-number "DELL-TEST-001" '
                               '--encryption \'{{"encryption-type":"Microsoft-managed keys (MMK)"}}\' '
-                              '--tags \'{{"Environment":"Development","Owner":"TestTeam","DEPLOYMENT_MODE":"SkipProvision"}}\' '
-                              '--no-wait')
+                              '--tags \'{{"Environment":"Development","Owner":"TestTeam","DEPLOYMENT_MODE":"SkipProvision"}}\' ')
         except Exception:
             # Expected to fail with validation errors but should create a valid recording
             pass
@@ -138,7 +137,7 @@ class DellScenario(ScenarioTest):
         """Test Dell filesystem delete command with existing resource.
 
         Tests the delete operation against a specific Dell filesystem
-        to validate async deletion with --no-wait flag.
+        to validate synchronous deletion operation.
         """
 
         # Test delete command on existing resource
@@ -147,4 +146,4 @@ class DellScenario(ScenarioTest):
                  '--resource-group praveensingh-test '
                  '--filesystem-name cliSCUS-1 '
                  '--subscription b9aad304-baa9-4d2a-9404-dbdd3ab55ac5 '
-                 '--yes --no-wait')
+                 '--yes')

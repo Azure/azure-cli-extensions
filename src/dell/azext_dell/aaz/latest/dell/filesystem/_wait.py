@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Wait(AAZWaitCommand):
     """Place the CLI in a waiting state until a condition is met.
 
+    :example: Wait until a Dell filesystem reaches a specific state
+        az dell filesystem wait --resource-group myResourceGroup --filesystem-name mydellfs --exists
+
     :example: Wait until a Dell filesystem is successfully created
         az dell filesystem wait --resource-group myResourceGroup --filesystem-name mydellfs --created
 
     :example: Wait until a Dell filesystem is deleted
         az dell filesystem wait --resource-group myResourceGroup --filesystem-name mydellfs --deleted
-
-    :example: Wait until a Dell filesystem exists
-        az dell filesystem wait --resource-group myResourceGroup --filesystem-name mydellfs --exists
 
     :example: Wait with custom timeout and polling interval
         az dell filesystem wait --resource-group myResourceGroup --filesystem-name mydellfs --exists --timeout 3600 --interval 30
