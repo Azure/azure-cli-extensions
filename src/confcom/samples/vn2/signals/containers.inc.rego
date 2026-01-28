@@ -1,137 +1,135 @@
 [
   {
-    "command": [],
+    "id": "mcr.microsoft.com/azurelinux/base/nginx:1@sha256:6b8ca92221f842cd3e1ea3f863a324221cc5cf9e54f47dc76092d9582e0a1807",
+    "name": "app",
+    "layers": [
+      "a189b02d4858578459fda1dfbd7c6a4557c44208b9829e02b931771a6d611c39",
+      "66e9ff28ccda836e7eb180b82db793c6b6cbcd9005a06a961744f26abdc5054c",
+      "2c2883502fc02e5ffb4cea70ca7aa601e94ee1d530aa47645a0fc08b7062acd6",
+      "33dca1b97992e2925a81c7b6cb158e32254de123fcf1b53ec6da811e9260a72e",
+      "4863bc193bdbccac11219d75a165ddefa35c3981f9d978ba19b169e04e85fd30"
+    ],
     "env_rules": [
       {
-        "name": "PATH",
-        "required": false,
+        "pattern": "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
         "strategy": "string",
-        "value": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        "required": false
       },
       {
         "name": "TERM",
-        "required": false,
+        "value": "xterm",
         "strategy": "string",
-        "value": "xterm"
+        "required": false
       },
       {
         "name": "(?i)(FABRIC)_.+",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "HOSTNAME",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "T(E)?MP",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "FabricPackageFileName",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "HostedServiceName",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "IDENTITY_API_VERSION",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "IDENTITY_HEADER",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "IDENTITY_SERVER_THUMBPRINT",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "azurecontainerinstance_restarted_by",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "[A-Z0-9_]+_SERVICE_HOST",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "[A-Z0-9_]+_SERVICE_PORT",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "[A-Z0-9_]+_SERVICE_PORT_[A-Z0-9_]+",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "[A-Z0-9_]+_PORT",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "[A-Z0-9_]+_PORT_[0-9]+_TCP",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "[A-Z0-9_]+_PORT_[0-9]+_TCP_PROTO",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "[A-Z0-9_]+_PORT_[0-9]+_TCP_PORT",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
       },
       {
         "name": "[A-Z0-9_]+_PORT_[0-9]+_TCP_ADDR",
-        "required": false,
+        "value": ".+",
         "strategy": "re2",
-        "value": ".+"
+        "required": false
+      },
+      {
+        "pattern": "APP_MODE=production",
+        "strategy": "string",
+        "required": false
       }
     ],
-    "id": "mcr.microsoft.com/azurelinux/distroless/base@sha256:1e77d97e1e39f22ed9c52f49b3508b4c1044cec23743df9098ac44e025f654f2",
-    "layers": [
-      "243e1b3ce08093f2f0d9cd6a9eafde8737f64fec105ed59c346d309fbe760b58"
-    ],
     "mounts": [
-      {
-        "destination": "/data",
-        "options": [
-          "rbind",
-          "rshared",
-          "ro"
-        ],
-        "source": "sandbox:///tmp/atlas/emptydir/.+",
-        "type": "bind"
-      },
       {
         "destination": "/etc/resolv.conf",
         "options": [
@@ -183,7 +181,14 @@
         "type": "bind"
       }
     ],
-    "name": "app",
+    "command": [
+      "/bin/sh",
+      "-c",
+      "echo hello"
+    ],
+    "signals": [
+      3
+    ],
     "working_dir": "/"
   }
 ]

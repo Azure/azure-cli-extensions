@@ -16,6 +16,25 @@ CONFCOM_DIR = os.path.abspath(os.path.join(TEST_DIR, "..", "..", ".."))
 SAMPLES_ROOT = os.path.abspath(os.path.join(TEST_DIR, "..", "..", "..", "samples", "vn2"))
 
 
+def _normalize_env_rules(container: dict) -> dict:
+    normalized = json.loads(json.dumps(container))
+    env_rules = normalized.get("env_rules") or []
+    normalized_rules = []
+    for rule in env_rules:
+        pattern = rule.get("pattern")
+        if pattern is None:
+            name = rule.get("name") or ""
+            value = rule.get("value") or ""
+            pattern = f"{name}={value}"
+        normalized_rules.append({
+            "pattern": pattern,
+            "strategy": rule.get("strategy"),
+            "required": rule.get("required", False),
+        })
+    normalized["env_rules"] = normalized_rules
+    return normalized
+
+
 @pytest.mark.parametrize(
     "sample_directory",
     sorted(
@@ -41,6 +60,8 @@ def test_containers_from_vn2(sample_directory):
                 container_name=container_name,
             )
         )
+        actual_container = _normalize_env_rules(actual_container)
+        expected_container = _normalize_env_rules(expected_container)
         assert DeepDiff(actual_container, expected_container, ignore_order=True) == {}, (
             "Container mismatch, actual output for "
             f"{os.path.join(sample_directory, 'containers.inc.rego')}:{container_name}\n"

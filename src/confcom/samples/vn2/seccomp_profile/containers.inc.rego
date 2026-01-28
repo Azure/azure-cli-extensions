@@ -1,7 +1,17 @@
 [
   {
-    "command": [],
+    "command": [
+      "/bin/sh",
+      "-c",
+      "echo hello"
+    ],
     "env_rules": [
+      {
+        "name": "APP_MODE",
+        "required": false,
+        "strategy": "string",
+        "value": "production"
+      },
       {
         "name": "PATH",
         "required": false,
@@ -123,16 +133,6 @@
     ],
     "mounts": [
       {
-        "destination": "/data",
-        "options": [
-          "rbind",
-          "rshared",
-          "ro"
-        ],
-        "source": "sandbox:///tmp/atlas/emptydir/.+",
-        "type": "bind"
-      },
-      {
         "destination": "/etc/resolv.conf",
         "options": [
           "rbind",
@@ -183,6 +183,7 @@
         "type": "bind"
       }
     ],
+    "seccomp_profile_sha256": "c2efb9a618661d9debbcb299daa768ffcd28db287d9750ca075e4e2b713402a7",
     "name": "app",
     "working_dir": "/"
   }

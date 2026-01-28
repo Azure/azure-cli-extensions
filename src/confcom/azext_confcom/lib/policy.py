@@ -42,6 +42,13 @@ class ContainerRule:
     required: Optional[bool] = False
 
 
+# TODO: Deprecate
+@dataclass
+class ContainerRuleLegacy:
+    pattern: str
+    strategy: str
+
+
 @dataclass
 class ContainerExecProcesses:
     command: list[str]
@@ -59,9 +66,9 @@ class ContainerMount:
 
 @dataclass
 class ContainerUser:
-    group_idnames: list[ContainerRule] = field(default_factory=lambda: [ContainerRule(pattern="", strategy="any")])
+    group_idnames: list[ContainerRuleLegacy] = field(default_factory=lambda: [ContainerRuleLegacy(pattern="", strategy="any")])
     umask: str = "0022"
-    user_idname: ContainerRule = field(default_factory=lambda: ContainerRule(pattern="", strategy="any"))
+    user_idname: ContainerRuleLegacy = field(default_factory=lambda: ContainerRuleLegacy(pattern="", strategy="any"))
 
 
 @dataclass
@@ -116,3 +123,4 @@ class Fragment:
     framework_version: str = "0.2.3"
     fragments: list[FragmentReference] = field(default_factory=list)
     containers: list[Container] = field(default_factory=list)
+

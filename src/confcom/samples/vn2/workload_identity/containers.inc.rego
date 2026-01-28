@@ -1,126 +1,161 @@
 [
   {
-    "id": "mcr.microsoft.com/azurelinux/distroless/base@sha256:1e77d97e1e39f22ed9c52f49b3508b4c1044cec23743df9098ac44e025f654f2",
-    "name": "app",
-    "layers": [
-      "243e1b3ce08093f2f0d9cd6a9eafde8737f64fec105ed59c346d309fbe760b58"
-    ],
+    "command": [],
     "env_rules": [
       {
-        "pattern": "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "name": "AZURE_CLIENT_ID",
+        "required": false,
+        "strategy": "re2",
+        "value": ".+"
+      },
+      {
+        "name": "AZURE_TENANT_ID",
+        "required": false,
+        "strategy": "re2",
+        "value": ".+"
+      },
+      {
+        "name": "AZURE_FEDERATED_TOKEN_FILE",
+        "required": false,
+        "strategy": "re2",
+        "value": ".+"
+      },
+      {
+        "name": "AZURE_AUTHORITY_HOST",
+        "required": false,
+        "strategy": "re2",
+        "value": ".+"
+      },
+      {
+        "name": "PATH",
+        "required": false,
         "strategy": "string",
-        "required": false
+        "value": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
       },
       {
         "name": "TERM",
-        "value": "xterm",
+        "required": false,
         "strategy": "string",
-        "required": false
+        "value": "xterm"
       },
       {
         "name": "(?i)(FABRIC)_.+",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "HOSTNAME",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "T(E)?MP",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "FabricPackageFileName",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "HostedServiceName",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "IDENTITY_API_VERSION",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "IDENTITY_HEADER",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "IDENTITY_SERVER_THUMBPRINT",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "azurecontainerinstance_restarted_by",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "[A-Z0-9_]+_SERVICE_HOST",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "[A-Z0-9_]+_SERVICE_PORT",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "[A-Z0-9_]+_SERVICE_PORT_[A-Z0-9_]+",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "[A-Z0-9_]+_PORT",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "[A-Z0-9_]+_PORT_[0-9]+_TCP",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "[A-Z0-9_]+_PORT_[0-9]+_TCP_PROTO",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "[A-Z0-9_]+_PORT_[0-9]+_TCP_PORT",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       },
       {
         "name": "[A-Z0-9_]+_PORT_[0-9]+_TCP_ADDR",
-        "value": ".+",
+        "required": false,
         "strategy": "re2",
-        "required": false
+        "value": ".+"
       }
     ],
+    "id": "mcr.microsoft.com/azurelinux/distroless/base@sha256:1e77d97e1e39f22ed9c52f49b3508b4c1044cec23743df9098ac44e025f654f2",
+    "layers": [
+      "243e1b3ce08093f2f0d9cd6a9eafde8737f64fec105ed59c346d309fbe760b58"
+    ],
     "mounts": [
+      {
+        "destination": "/var/run/secrets/azure/tokens",
+        "options": [
+          "rbind",
+          "rshared",
+          "ro"
+        ],
+        "source": "sandbox:///tmp/atlas/emptydir/.+",
+        "type": "bind"
+      },
       {
         "destination": "/etc/resolv.conf",
         "options": [
@@ -172,7 +207,7 @@
         "type": "bind"
       }
     ],
-    "command": [],
+    "name": "app",
     "working_dir": "/"
   }
 ]
