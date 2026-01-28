@@ -9,6 +9,8 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from azure.cli.core.azclierror import CLIInternalError
+from ._config_helper import ConfigurationHelper
 
 
 @register_command(
@@ -18,13 +20,15 @@ from azure.cli.core.aaz import *
 class ShowConfig(AAZCommand):
     """To get a configurations available at specified hierarchical entity
     :example: Show a Configuration
-    az workload-orchestration configuration show -g rg1 --target-name target1 --solution-template-name solutionTemplate1
+              az workload-orchestration configuration show --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-rg rg1 --template-name template1 --version 1.0.0
+    :example: Show a Solution Template Configuration
+              az workload-orchestration configuration show --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-rg rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
     """
 
     _aaz_info = {
         "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutions/{}", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/configurations/{}/dynamicconfigurations/{}/versions/{}", "2025-08-01"],
         ]
     }
 
@@ -44,25 +48,32 @@ class ShowConfig(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
+        
+        _args_schema.hierarchy_id = AAZStrArg(
+            options=["--hierarchy-id"],
+            help="The ARM ID for the target or site at which values needs to be shown",
+            required=True
         )
-        _args_schema.solution_name = AAZStrArg(
-            options=["--solution-template-name"],
-            help="The name of the Solution, This is required only to get solution configurations",
-            # required=True,
-            id_part="name",
+
+        _args_schema.template_subscription = AAZStrArg(
+            options=["--template-subscription"],
+            help="Subscription ID for the template. Only needed if the subscription ID for the template is different than the current subscription ID.",
+            required=False,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
             ),
         )
 
-        _args_schema = cls._args_schema
-        _args_schema.level_name = AAZStrArg(
-            options=["--target-name"],
-            help="The Target or Site name at which values needs to be set",
+        _args_schema.template_rg = AAZStrArg(
+            options=["--template-rg", "-g"],
+            help="Resource group name for the template.",
+            required=True,
+        )
 
-            required = True,
+        _args_schema.template_name = AAZStrArg(
+            options=["--template-name", "-n"],
+            help="The name of the Template (Solution template or Configuration template) to show.",
+            required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
@@ -78,24 +89,22 @@ class ShowConfig(AAZCommand):
         #     nullable=True,
         # )
         _args_schema.version = AAZStrArg(
-            options=["--version"],
-            help="The version of the solution to show configuration for. Defaults to 'version1' if not specified."
+            options=["--version", "-v"],
+            help="Version of the template.",
+            required=True
         )
+
+        _args_schema.solution = AAZBoolArg(
+            options=["--solution"],
+            help="Flag to indicate that we are showing a solution. If not provided, we are showing a config template.",
+            required=False,
+        )
+        
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        version = self.ctx.args.version
-        if version is not None and str(version).lower() != "undefined":
-            self.SolutionRevisionGet(ctx=self.ctx)()
-        else:
-            config_name = str(self.ctx.args.level_name)
-            if len(config_name) > 18:
-                config_name = config_name[:18] + "Config"
-            else:
-                config_name = config_name + "Config"
-            self.ctx.args.level_name = config_name
-            self.SolutionsGet(ctx=self.ctx)()
+        self.SolutionsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -109,37 +118,40 @@ class ShowConfig(AAZCommand):
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         print(result["properties"]["values"])
+        pass
 
     class SolutionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
+            # Get configuration ID using the existing client
+            self.configuration_id = ConfigurationHelper.getConfigurationId(self.ctx.args.hierarchy_id, self.client)
+            
+            # Get template unique identifier for dynamic configuration name
+            template_subscription = self.ctx.args.template_subscription if self.ctx.args.template_subscription else self.ctx.subscription_id
+            solution_flag = self.ctx.args.solution if self.ctx.args.solution else False
+            self.dynamic_configuration_name = ConfigurationHelper.getTemplateUniqueIdentifier(
+                template_subscription,
+                self.ctx.args.template_rg,
+                self.ctx.args.template_name,
+                solution_flag,
+                self.client
+            )
+            
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
-            config = dict()
-            config["properties"] = dict()
-            config["properties"]["values"] = "{}"
-            # # config.config = AAZStrType()
-            # # config.config = "[]"
-            if session.http_response.status_code in [404]:
-                self.ctx.set_var(
-                    "instance",
-                    config,
-                    schema_builder=self._build_schema_on_404
-                )
-            #     return
             else:
                 return self.on_error(session.http_response)
 
-
         @property
         def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/configurations/{configName}/DynamicConfigurations/{solutionName}/versions/version1",
-                **self.url_parameters
-            )
+            # Use the configuration ID and append the dynamic configuration path
+            base_url = self.configuration_id
+            dynamic_config_path = f"/dynamicConfigurations/{self.dynamic_configuration_name}/versions/{self.ctx.args.version}"
+            return base_url + dynamic_config_path
 
         @property
         def method(self):
@@ -148,32 +160,6 @@ class ShowConfig(AAZCommand):
         @property
         def error_format(self):
             return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            sol_name = "common"
-            if has_value(self.ctx.args.solution_name):
-                sol_name = self.ctx.args.solution_name
-
-            parameters = {
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "solutionName", sol_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "configName", self.ctx.args.level_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
 
         @property
         def query_parameters(self):
@@ -205,14 +191,6 @@ class ShowConfig(AAZCommand):
         _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_404(cls):
-            cls._schema_on_200 = AAZObjectType()
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.properties = AAZFreeFormDictType()
-            return cls._schema_on_200
-
-
-        @classmethod
         def _build_schema_on_200(cls):
             if cls._schema_on_200 is not None:
                 return cls._schema_on_200
@@ -239,9 +217,6 @@ class ShowConfig(AAZCommand):
                 flags={"read_only": True},
             )
 
-
-
-
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
@@ -264,7 +239,6 @@ class ShowConfig(AAZCommand):
 
             tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
-
             return cls._schema_on_200
             
     class SolutionRevisionGet(AAZHttpOperation):

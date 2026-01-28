@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-09-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2024-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2025-09-01"],
         ]
     }
 
@@ -152,6 +152,12 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="The block of addresses should be unique across VNet in your subscription as well as on-premise. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22",
         )
+        _args_schema.vcf_license = AAZObjectArg(
+            options=["--vcf-license"],
+            arg_group="Properties",
+            help="The private cloud license",
+            nullable=True,
+        )
 
         encryption = cls._args_schema.encryption
         encryption.key_vault_properties = AAZObjectArg(
@@ -249,6 +255,68 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        vcf_license = cls._args_schema.vcf_license
+        vcf_license.vcf5 = AAZObjectArg(
+            options=["vcf5"],
+        )
+
+        vcf5 = cls._args_schema.vcf_license.vcf5
+        vcf5.contract_number = AAZStrArg(
+            options=["contract-number"],
+            help="The Broadcom contract number associated with the license.",
+            nullable=True,
+        )
+        vcf5.site_id = AAZStrArg(
+            options=["site-id"],
+            help="The Broadcom site ID associated with the license.",
+            nullable=True,
+        )
+        vcf5.cores = AAZIntArg(
+            options=["cores"],
+            help="Number of cores included in the license",
+        )
+        vcf5.end_date = AAZDateTimeArg(
+            options=["end-date"],
+            help="UTC datetime when the license expires",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
+        )
+        vcf5.labels = AAZListArg(
+            options=["labels"],
+            help="Additional labels passed through for license reporting.",
+            nullable=True,
+        )
+        vcf5.license_key = AAZPasswordArg(
+            options=["license-key"],
+            help="License key",
+            nullable=True,
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
+        )
+
+        labels = cls._args_schema.vcf_license.vcf5.labels
+        labels.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.vcf_license.vcf5.labels.Element
+        _element.key = AAZStrArg(
+            options=["key"],
+            help="The key of the label.",
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+        _element.value = AAZStrArg(
+            options=["value"],
+            help="The value of the label.",
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
         # define Arg Group "Sku"
         return cls._args_schema
 
@@ -330,7 +398,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -429,7 +497,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -505,6 +573,7 @@ class Update(AAZCommand):
                 properties.set_prop("internet", AAZStrType, ".internet")
                 properties.set_prop("managementCluster", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkBlock", AAZStrType, ".network_block", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("vcfLicense", AAZObjectType, ".vcf_license")
 
             encryption = _builder.get(".properties.encryption")
             if encryption is not None:
@@ -547,6 +616,29 @@ class Update(AAZCommand):
             hosts = _builder.get(".properties.managementCluster.hosts")
             if hosts is not None:
                 hosts.set_elements(AAZStrType, ".")
+
+            vcf_license = _builder.get(".properties.vcfLicense")
+            if vcf_license is not None:
+                vcf_license.set_const("kind", "vcf5", AAZStrType, ".vcf5", typ_kwargs={"flags": {"required": True}})
+                vcf_license.discriminate_by("kind", "vcf5")
+
+            disc_vcf5 = _builder.get(".properties.vcfLicense{kind:vcf5}")
+            if disc_vcf5 is not None:
+                disc_vcf5.set_prop("broadcomContractNumber", AAZStrType, ".vcf5.contract_number")
+                disc_vcf5.set_prop("broadcomSiteId", AAZStrType, ".vcf5.site_id")
+                disc_vcf5.set_prop("cores", AAZIntType, ".vcf5.cores", typ_kwargs={"flags": {"required": True}})
+                disc_vcf5.set_prop("endDate", AAZStrType, ".vcf5.end_date", typ_kwargs={"flags": {"required": True}})
+                disc_vcf5.set_prop("labels", AAZListType, ".vcf5.labels")
+                disc_vcf5.set_prop("licenseKey", AAZStrType, ".vcf5.license_key", typ_kwargs={"flags": {"secret": True}})
+
+            labels = _builder.get(".properties.vcfLicense{kind:vcf5}.labels")
+            if labels is not None:
+                labels.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.vcfLicense{kind:vcf5}.labels[]")
+            if _elements is not None:
+                _elements.set_prop("key", AAZStrType, ".key", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -727,6 +819,9 @@ class _UpdateHelper:
             serialized_name="vcenterPassword",
             flags={"secret": True},
         )
+        properties.vcf_license = AAZObjectType(
+            serialized_name="vcfLicense",
+        )
         properties.virtual_network_id = AAZStrType(
             serialized_name="virtualNetworkId",
         )
@@ -846,6 +941,46 @@ class _UpdateHelper:
 
         hosts = _schema_private_cloud_read.properties.management_cluster.hosts
         hosts.Element = AAZStrType()
+
+        vcf_license = _schema_private_cloud_read.properties.vcf_license
+        vcf_license.kind = AAZStrType(
+            flags={"required": True},
+        )
+        vcf_license.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+
+        disc_vcf5 = _schema_private_cloud_read.properties.vcf_license.discriminate_by("kind", "vcf5")
+        disc_vcf5.broadcom_contract_number = AAZStrType(
+            serialized_name="broadcomContractNumber",
+        )
+        disc_vcf5.broadcom_site_id = AAZStrType(
+            serialized_name="broadcomSiteId",
+        )
+        disc_vcf5.cores = AAZIntType(
+            flags={"required": True},
+        )
+        disc_vcf5.end_date = AAZStrType(
+            serialized_name="endDate",
+            flags={"required": True},
+        )
+        disc_vcf5.labels = AAZListType()
+        disc_vcf5.license_key = AAZStrType(
+            serialized_name="licenseKey",
+            flags={"secret": True},
+        )
+
+        labels = _schema_private_cloud_read.properties.vcf_license.discriminate_by("kind", "vcf5").labels
+        labels.Element = AAZObjectType()
+
+        _element = _schema_private_cloud_read.properties.vcf_license.discriminate_by("kind", "vcf5").labels.Element
+        _element.key = AAZStrType(
+            flags={"required": True},
+        )
+        _element.value = AAZStrType(
+            flags={"required": True},
+        )
 
         sku = _schema_private_cloud_read.sku
         sku.capacity = AAZIntType()

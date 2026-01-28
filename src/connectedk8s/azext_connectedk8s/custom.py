@@ -2975,8 +2975,6 @@ def enable_features(
     features: list[str],
     kube_config: str | None = None,
     kube_context: str | None = None,
-    azrbac_client_id: str | None = None,
-    azrbac_client_secret: str | None = None,
     azrbac_skip_authz_check: str | None = None,
     skip_ssl_verification: bool = False,
     cl_oid: str | None = None,

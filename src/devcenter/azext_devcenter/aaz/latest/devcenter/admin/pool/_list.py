@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools", "2025-10-01-preview"],
         ]
     }
 
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -260,6 +260,12 @@ class List(AAZCommand):
             active_hours_configuration.auto_start_enable_status = AAZStrType(
                 serialized_name="autoStartEnableStatus",
             )
+            active_hours_configuration.days_of_week_limit = AAZIntType(
+                serialized_name="daysOfWeekLimit",
+            )
+            active_hours_configuration.default_days_of_week = AAZListType(
+                serialized_name="defaultDaysOfWeek",
+            )
             active_hours_configuration.default_end_time_hour = AAZIntType(
                 serialized_name="defaultEndTimeHour",
             )
@@ -272,6 +278,9 @@ class List(AAZCommand):
             active_hours_configuration.keep_awake_enable_status = AAZStrType(
                 serialized_name="keepAwakeEnableStatus",
             )
+
+            default_days_of_week = cls._schema_on_200.value.Element.properties.active_hours_configuration.default_days_of_week
+            default_days_of_week.Element = AAZStrType()
 
             dev_box_definition = cls._schema_on_200.value.Element.properties.dev_box_definition
             dev_box_definition.active_image_reference = AAZObjectType(

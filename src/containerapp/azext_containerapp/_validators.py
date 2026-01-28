@@ -318,7 +318,7 @@ def validate_revision_and_get_name(cmd, resource_group_name, container_app_name,
         if not provided_revision_name:
             logger.debug("No revision name provided for multiple revision mode container app")
             raise ValidationError("Revision name is required when active revision mode is not 'single'.")
-        return provided_revision_name
+        return provided_revision_name, active_revision_mode
     if not provided_revision_name:
         logger.debug("No revision name provided - attempting to determine latest revision")
         revision_name = safe_get(containerapp_def, "properties", "latestRevisionName")
@@ -331,9 +331,9 @@ def validate_revision_and_get_name(cmd, resource_group_name, container_app_name,
         if not revision_name or revision_name is None:
             logger.debug("Could not determine any revision name from container app properties")
             raise ValidationError("Could not determine the latest revision name. Please provide --revision.")
-        return revision_name
+        return revision_name, active_revision_mode
     logger.debug("Using provided revision name: '%s'", provided_revision_name)
-    return provided_revision_name
+    return provided_revision_name, active_revision_mode
 
 
 def validate_functionapp_kind(cmd, resource_group_name, container_app_name):

@@ -12,6 +12,45 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b16
+++++++++
+* Fix: client mode use AzureCLICredential to authenticate with Azure
+* Fix: correct wrong prompt message for init and cleanup
+* Fix: prompt the whole flags including --resource-group, --name and optional --namespace for az aks agent command
+* Enhancement: cluster mode cleanup will wait for pods to be removed after deletion
+
+1.0.0b15
+++++++++
+* Feature: Add local mode support - run AKS agent in Docker container on local machine as an alternative to cluster deployment
+* Feature: Mode selection during `az aks agent-init` - choose between cluster mode (Helm deployment) or local mode (Docker container)
+* Feature: Cluster Mode requires the user to specify the namespace and service account name during `az aks agent-init`
+* Feature: Cluster Mode requires namespace for `az aks agent-cleanup` and `az aks agent`
+* Enhancement: Comprehensive telemetry tracking - track init, cleanup, and startup events with mode information (cluster/local)
+
+1.0.0b14
+++++++++
+* Fix: set stdout to blocking mode to avoid "BlockingIOError: [Errno 35] write could not complete without blocking"
+* Fix: gracefully handle the connection reset error
+* Fix: correct the prompt to user `az aks agent-init` to initialize the aks agent
+* Fix: dont echo the user input for Linux users
+* Close websocket and restore terminal settings after `az aks agent` ends
+
+1.0.0b13
+++++++++
+* Fix subscription id not correctly set in helm chart
+
+1.0.0b12
+++++++++
+* [BREAKING CHANGE]:
+  * aks-agent is now containerized and deployed per Kubernetes cluster along with a managed aks-mcp instance
+  * aks-agent is deployed on the AKS cluster as Helm charts during `az aks agent-init`
+  * aks agent commands now require --resource-group and --name parameters to specify the target AKS cluster
+  * Add `az aks agent-cleanup` to cleanup the AKS agent from the cluster
+* [SECURITY]:
+  * Kubernetes RBAC: Uses cluster roles to securely access Kubernetes resources with least-privilege principles
+  * Azure Workload Identity: Supports Azure workload identity for secure, keyless access to Azure resources
+  * LLM credentials are stored securely in Kubernetes secrets with encryption at rest
+
 1.0.0b11
 ++++++++
 * Fix(agent-init): replace max_tokens with max_completion_tokens for connection check of Azure OpenAI service.

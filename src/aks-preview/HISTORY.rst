@@ -11,7 +11,31 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks nodepool get-rollback-versions`: New command to get available rollback versions for an agent pool.
+* `az aks nodepool rollback`: New command to rollback an agent pool to the most recently used configuration (N-1).
+
+19.0.0b20
++++++++
+* `az aks bastion`: Add new option `--kubeconfig-path` to allow users to specify an existing kubeconfig file
+
+19.0.0b19
++++++++
+* Add add-on support for `ApplicationLoadBalancer` (Application Gateway for Containers)
+* AKS Create and Update parameters for `--enable-application-load-balancer` and `--disable-application-load-balancer`
+  * `az aks applicationloadbalancer enable`: Enable Application Load Balancer add-on for an existing cluster.
+  * `az aks applicationloadbalancer disable`: Disable Application Load Balancer add-on for an existing cluster.
+  * `az aks applicationloadbalancer update`: Update Application Load Balancer add-on for an existing cluster.
+* Remove prerequisite for `--enable-gateway-api` option in `az aks create` and `az aks update` commands - managed Gateway API ingress provider enablement no longer required
+
+19.0.0b18
++++++++
+* Vendor new SDK and bump API version to 2025-10-02-preview.
+* Add option `--gpu-driver` to `az aks nodepool update` to select skipping GPU driver installation.
+
+19.0.0b17
++++++++
 * `az aks bastion`: Correctly configure `$KUBECONFIG` values for tunneling traffic into a private AKS cluster.
+* Update user prompt for `az aks upgrade` command to clarify the implication of the `--control-plane-only` options.
 
 19.0.0b16
 +++++++
@@ -40,7 +64,7 @@ Pending
 
 19.0.0b10
 +++++++
-* Vendor new SDK and bump API version to 2025-08-02-preview.
+* Vendor new SDK and bump API version to 2025-09-02-preview.
 * `az aks update`: Fix `--azure-keyvault-kms-key-vault-network-access` parameter not being correctly applied during cluster creation and updates.
 
 19.0.0b9

@@ -67,7 +67,7 @@ class MeasurementEndpointConditionOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.MeasurementEndpointConditionList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
 
         def prepare_request(next_link=None):
             # Construct headers
@@ -149,7 +149,7 @@ class MeasurementEndpointConditionOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.MeasurementEndpointCondition"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -230,7 +230,7 @@ class MeasurementEndpointConditionOperations:
         error_map.update(kwargs.pop('error_map', {}))
 
         _parameters = models.MeasurementEndpointCondition(type_properties_type=type, variable=variable, operator=operator, constant=constant)
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -306,7 +306,7 @@ class MeasurementEndpointConditionOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
+        api_version = "2024-09-16-preview"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
