@@ -70,6 +70,23 @@ class AKSAgentManagerLLMConfigBase(ABC):
             AzCLIError: If execution fails
         """
 
+    @abstractmethod
+    def command_flags(self) -> str:
+        """
+        Get command flags for general aks-agent commands.
+        Returns:
+            str: Command flags string appropriate for the concrete implementation.
+        """
+
+    @abstractmethod
+    def init_command_flags(self) -> str:
+        """
+        Get command flags for init command (without namespace).
+
+        Returns:
+            str: Command flags in format '-n {cluster_name} -g {resource_group_name}'
+        """
+
 
 class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many-instance-attributes
     """
@@ -413,6 +430,75 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
         """
         return self.helm_manager.run_command(args, check=check)
 
+    def command_flags(self) -> str:
+        """
+        Get command flags for CLI commands.
+
+        Returns:
+            str: Command flags in format '-n {cluster_name} -g {resource_group_name} --namespace {namespace}'
+        """
+        return f"-n {self.cluster_name} -g {self.resource_group_name} --namespace {self.namespace}"
+
+    def init_command_flags(self) -> str:
+        """
+        Get command flags for init command (without namespace).
+
+        Returns:
+            str: Command flags in format '-n {cluster_name} -g {resource_group_name}'
+        """
+        return f"-n {self.cluster_name} -g {self.resource_group_name}"
+
+    def _wait_for_pods_removed(self, timeout: int = 60, interval: int = 2) -> bool:
+        """
+        Wait for all AKS agent pods to be removed from the namespace.
+
+        Args:
+            timeout: Maximum time to wait in seconds (default: 60)
+            interval: Time to wait between checks in seconds (default: 2)
+
+        Returns:
+            bool: True if all pods are removed within timeout, False otherwise
+        """
+        import time
+
+        logger.info("Waiting for pods to be removed from namespace '%s'", self.namespace)
+        start_time = time.time()
+
+        while time.time() - start_time < timeout:
+            try:
+                # Check for pods with either label selector
+                agent_pods = self.core_v1.list_namespaced_pod(
+                    namespace=self.namespace,
+                    label_selector=AGENT_LABEL_SELECTOR
+                )
+                mcp_pods = self.core_v1.list_namespaced_pod(
+                    namespace=self.namespace,
+                    label_selector=AKS_MCP_LABEL_SELECTOR
+                )
+
+                total_pods = len(agent_pods.items) + len(mcp_pods.items)
+
+                if total_pods == 0:
+                    logger.info("All pods removed successfully")
+                    return True
+
+                logger.debug("Still %d pod(s) remaining, waiting...", total_pods)
+                time.sleep(interval)
+
+            except ApiException as e:
+                if e.status == 404:
+                    # Namespace might have been deleted, consider this as success
+                    logger.info("Namespace not found, pods are considered removed")
+                    return True
+                logger.warning("Error checking pod status: %s", e)
+                time.sleep(interval)
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                logger.warning("Unexpected error checking pod status: %s", e)
+                time.sleep(interval)
+
+        logger.warning("Timeout waiting for pods to be removed")
+        return False
+
     def deploy_agent(self, chart_version: Optional[str] = None) -> Tuple[bool, str]:
         """
         Deploy AKS agent using helm chart.
@@ -678,6 +764,13 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
             # Delete the LLM configuration secret if requested
             if delete_secret:
                 self.delete_llm_config_secret()
+
+            # Wait for pods to be removed
+            logger.info("Waiting for pods to be removed...")
+            pods_removed = self._wait_for_pods_removed(timeout=60)
+            if not pods_removed:
+                logger.warning("Timeout waiting for all pods to be removed. Some pods may still be terminating.")
+
             return True
         raise AzCLIError(f"Failed to uninstall AKS agent: {output}")
 
@@ -945,6 +1038,24 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
         else:
             logger.debug("custom_toolset.yaml already exists at: %s", custom_toolset_file)
 
+    def command_flags(self) -> str:
+        """
+        Get command flags for CLI commands.
+
+        Returns:
+            str: Command flags in format '-n {cluster_name} -g {resource_group_name}'
+        """
+        return f"-n {self.cluster_name} -g {self.resource_group_name}"
+
+    def init_command_flags(self) -> str:
+        """
+        Get command flags for init command (without namespace).
+
+        Returns:
+            str: Command flags in format '-n {cluster_name} -g {resource_group_name}'
+        """
+        return f"-n {self.cluster_name} -g {self.resource_group_name}"
+
     def save_llm_config(self, provider: LLMProvider, params: dict) -> None:
         """
         Save LLM configuration using the LLMConfigManager.
@@ -1036,11 +1147,12 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
             # Mount custom_toolset.yaml
             volumes.extend(["-v", f"{custom_toolset_file}:/etc/aks-agent/config/custom_toolset.yaml:ro"])
 
-            # Build environment variables for AKS context
+            # Build environment variables for AKS context and use AzureCLICredential to authenticate
             env_vars = [
-                "-e", f"AKS_RESOURCE_GROUP={self.resource_group_name}",
+                "-e", f"AKS_RESOURCE_GROUP_NAME={self.resource_group_name}",
                 "-e", f"AKS_CLUSTER_NAME={self.cluster_name}",
-                "-e", f"AKS_SUBSCRIPTION_ID={self.subscription_id}"
+                "-e", f"AKS_SUBSCRIPTION_ID={self.subscription_id}",
+                "-e", "AZURE_TOKEN_CREDENTIALS=AzureCLICredential"
             ]
 
             # Prepare the command

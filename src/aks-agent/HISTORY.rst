@@ -12,6 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b16
+++++++++
+* Fix: client mode use AzureCLICredential to authenticate with Azure
+* Fix: correct wrong prompt message for init and cleanup
+* Fix: prompt the whole flags including --resource-group, --name and optional --namespace for az aks agent command
+* Enhancement: cluster mode cleanup will wait for pods to be removed after deletion
+
 1.0.0b15
 ++++++++
 * Feature: Add local mode support - run AKS agent in Docker container on local machine as an alternative to cluster deployment
