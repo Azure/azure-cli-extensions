@@ -187,7 +187,7 @@ def _do_ssh_op(cmd, op_info, op_call):
 
     try:
         if op_info.is_arc():
-            op_info.proxy_path = connectivity_utils.install_client_side_proxy(op_info.ssh_proxy_folder)
+            op_info.proxy_path = connectivity_utils.install_client_side_proxy(cmd, op_info.ssh_proxy_folder)
             (op_info.relay_info, op_info.new_service_config) = connectivity_utils.get_relay_information(
                 cmd, op_info.resource_group_name, op_info.vm_name, op_info.resource_type,
                 cert_lifetime, op_info.port, op_info.yes_without_prompt)
@@ -212,9 +212,18 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
     }
     scope = cloudtoscope.get(cmd.cli_ctx.cloud.name.lower(), None)
     if not scope:
-        raise azclierror.InvalidArgumentValueError(
-            f"Unsupported cloud {cmd.cli_ctx.cloud.name.lower()}",
-            "Supported clouds include azurecloud,azurechinacloud,azureusgovernment")
+        # NST team has determined Airgapped cloud endpoints should not be exposed to customers
+        # This dynamically creates correct scope api endpoints given generic suffixes that are 4 and 5 segments long
+        active_directory_graph_api_array = cmd.cli_ctx.cloud.endpoints.activeDirectoryGraphResourceId.split(".")
+        separator = "."
+        scope_postfix = separator.join(active_directory_graph_api_array[1:])  # default to all but first segment
+
+        if len(active_directory_graph_api_array) not in [4, 5]:
+            raise azclierror.InvalidArgumentValueError(
+                f"Unsupported cloud {cmd.cli_ctx.cloud.name.lower()}",
+                "Supported clouds include azurecloud,azurechinacloud,azureusgovernment")
+
+        scope = f"https://pas.{scope_postfix}/CheckMyAccess/Linux/.default"
 
     scopes = [scope]
     data = _prepare_jwk_data(public_key_file)
