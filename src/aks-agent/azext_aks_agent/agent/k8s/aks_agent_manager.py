@@ -1149,7 +1149,7 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
 
             # Build environment variables for AKS context and use AzureCLICredential to authenticate
             env_vars = [
-                "-e", f"AKS_RESOURCE_GROUP={self.resource_group_name}",
+                "-e", f"AKS_RESOURCE_GROUP_NAME={self.resource_group_name}",
                 "-e", f"AKS_CLUSTER_NAME={self.cluster_name}",
                 "-e", f"AKS_SUBSCRIPTION_ID={self.subscription_id}",
                 "-e", "AZURE_TOKEN_CREDENTIALS=AzureCLICredential"
