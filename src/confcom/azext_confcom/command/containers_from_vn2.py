@@ -53,8 +53,7 @@ def vn2_container_env_rules(template: dict, container: dict, template_variables:
                     env_var.get('valueFrom').get("secretKeyRef", None)
                 )
                 yield {
-                    "name": env_var.get('name'),
-                    "value": template_variables[var_ref.get("name")][var_ref.get("key")],
+                    "pattern": f"{env_var.get('name')}={template_variables[var_ref.get('name')][var_ref.get('key')]}",
                     "strategy": "string",
                     "required": False,
                 }
@@ -62,8 +61,7 @@ def vn2_container_env_rules(template: dict, container: dict, template_variables:
             elif "fieldRef" in env_var.get('valueFrom'):
                 # Existing behaviour is to wildcard this, there is a correct implementation below
                 yield {
-                    "name": env_var.get('name'),
-                    "value": ".*",
+                    "pattern": f"{env_var.get('name')}=.*",
                     "strategy": "re2",
                     "required": False,
                 }
@@ -156,17 +154,21 @@ def containers_from_vn2(
         "name": container_name,
         "command": template_container.get("command", []) + template_container.get("args", []),
         "env_rules": (
-            config.OPENGCS_ENV_RULES
-            + config.FABRIC_ENV_RULES
-            + config.MANAGED_IDENTITY_ENV_RULES
-            + config.ENABLE_RESTART_ENV_RULE
-            + config.VIRTUAL_NODE_ENV_RULES
+            [
+                {
+                    "pattern": rule.get("pattern") or f"{rule.get('name')}={rule.get('value')}",
+                    "strategy": rule.get("strategy", "string"),
+                    "required": rule.get("required", False),
+                } for rule in (
+                config.OPENGCS_ENV_RULES
+                + config.FABRIC_ENV_RULES
+                + config.MANAGED_IDENTITY_ENV_RULES
+                + config.ENABLE_RESTART_ENV_RULE
+                + config.VIRTUAL_NODE_ENV_RULES
+            )]
             + list(vn2_container_env_rules(template_doc, template_container, variables))
         ),
-        "mounts": (
-            VN2_MOUNTS
-            + vn2_container_mounts(template_doc, template_container)
-        ),
+        "mounts": vn2_container_mounts(template_doc, template_container),
     }
 
     # Parse security context

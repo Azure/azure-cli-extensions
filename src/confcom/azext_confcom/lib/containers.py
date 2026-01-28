@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from dataclasses import asdict
 from azext_confcom.lib.images import get_image_layers, get_image_config
 from azext_confcom.lib.platform import ACI_MOUNTS, VN2_MOUNTS
 
@@ -21,9 +22,8 @@ def merge_containers(*args) -> dict:
                 "mounts",
                 "signals",
             }:
-                if key not in merged_container:
-                    merged_container[key] = []
-                merged_container[key] += value
+                existing = merged_container.get(key) or []
+                merged_container[key] = list(existing) + list(value or [])
             else:
                 merged_container[key] = value
 
@@ -33,7 +33,7 @@ def merge_containers(*args) -> dict:
 def from_image(image: str, platform: str) -> dict:
 
     mounts = {
-        "aci": ACI_MOUNTS,
+        "aci": [asdict(mount) for mount in ACI_MOUNTS],
         "vn2": VN2_MOUNTS,
     }.get(platform, None)
 

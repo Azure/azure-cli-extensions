@@ -52,8 +52,7 @@ class ContainerRuleLegacy:
 @dataclass
 class ContainerExecProcesses:
     command: List[str]
-    signals: Optional[List[str]] = OrderlessField(default=None)
-    allow_stdio_access: bool = True
+    signals: Optional[List[int]] = OrderlessField(default=None)
 
 
 @dataclass()
@@ -98,7 +97,7 @@ class Container:
     name: Optional[str] = None
     no_new_privileges: bool = False
     seccomp_profile_sha256: str = ""
-    signals: List[str] = OrderlessField(default_factory=list)
+    signals: List[int] = OrderlessField(default_factory=list)
     user: ContainerUser = Field(default_factory=ContainerUser)
     working_dir: str = "/"
 

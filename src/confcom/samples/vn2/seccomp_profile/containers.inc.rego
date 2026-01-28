@@ -7,124 +7,104 @@
     ],
     "env_rules": [
       {
-        "name": "APP_MODE",
         "required": false,
         "strategy": "string",
-        "value": "production"
+        "pattern": "APP_MODE=production"
       },
       {
-        "name": "PATH",
         "required": false,
         "strategy": "string",
-        "value": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        "pattern": "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
       },
       {
-        "name": "TERM",
         "required": false,
         "strategy": "string",
-        "value": "xterm"
+        "pattern": "TERM=xterm"
       },
       {
-        "name": "(?i)(FABRIC)_.+",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "(?i)(FABRIC)_.+=.+"
       },
       {
-        "name": "HOSTNAME",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "HOSTNAME=.+"
       },
       {
-        "name": "T(E)?MP",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "T(E)?MP=.+"
       },
       {
-        "name": "FabricPackageFileName",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "FabricPackageFileName=.+"
       },
       {
-        "name": "HostedServiceName",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "HostedServiceName=.+"
       },
       {
-        "name": "IDENTITY_API_VERSION",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "IDENTITY_API_VERSION=.+"
       },
       {
-        "name": "IDENTITY_HEADER",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "IDENTITY_HEADER=.+"
       },
       {
-        "name": "IDENTITY_SERVER_THUMBPRINT",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "IDENTITY_SERVER_THUMBPRINT=.+"
       },
       {
-        "name": "azurecontainerinstance_restarted_by",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "azurecontainerinstance_restarted_by=.+"
       },
       {
-        "name": "[A-Z0-9_]+_SERVICE_HOST",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "[A-Z0-9_]+_SERVICE_HOST=.+"
       },
       {
-        "name": "[A-Z0-9_]+_SERVICE_PORT",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "[A-Z0-9_]+_SERVICE_PORT=.+"
       },
       {
-        "name": "[A-Z0-9_]+_SERVICE_PORT_[A-Z0-9_]+",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "[A-Z0-9_]+_SERVICE_PORT_[A-Z0-9_]+=.+"
       },
       {
-        "name": "[A-Z0-9_]+_PORT",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "[A-Z0-9_]+_PORT=.+"
       },
       {
-        "name": "[A-Z0-9_]+_PORT_[0-9]+_TCP",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "[A-Z0-9_]+_PORT_[0-9]+_TCP=.+"
       },
       {
-        "name": "[A-Z0-9_]+_PORT_[0-9]+_TCP_PROTO",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "[A-Z0-9_]+_PORT_[0-9]+_TCP_PROTO=.+"
       },
       {
-        "name": "[A-Z0-9_]+_PORT_[0-9]+_TCP_PORT",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "[A-Z0-9_]+_PORT_[0-9]+_TCP_PORT=.+"
       },
       {
-        "name": "[A-Z0-9_]+_PORT_[0-9]+_TCP_ADDR",
         "required": false,
         "strategy": "re2",
-        "value": ".+"
+        "pattern": "[A-Z0-9_]+_PORT_[0-9]+_TCP_ADDR=.+"
       }
     ],
     "id": "mcr.microsoft.com/azurelinux/distroless/base@sha256:1e77d97e1e39f22ed9c52f49b3508b4c1044cec23743df9098ac44e025f654f2",

@@ -570,7 +570,7 @@ def containers_from_vn2(
     template: str,
     container_name: str,
 ) -> None:
-    _containers_from_vn2(
+    print(_containers_from_vn2(
         template=template,
         container_name=container_name,
-    )
+    ))
