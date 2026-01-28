@@ -4,24 +4,25 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from azure.cli.core.commands.parameters import get_three_state_flag
+from azure.cli.core.commands.parameters import get_enum_type
+from .vendored_sdks.containerregistry.models import RegionalEndpoints
 
 
 def load_arguments_preview(self, _):
     with self.argument_context("acr create") as c:
         c.argument(
             "regional_endpoints",
-            arg_type=get_three_state_flag(),
+            arg_type=get_enum_type(RegionalEndpoints),
             is_preview=True,
-            help="Enable or disable the regional endpoints feature for the registry. If not specified, this is set to disabled by default.",
+            help="Indicates whether or not regional endpoints should be enabled for the registry. If not specified, this is set to disabled by default.",
         )
 
     with self.argument_context("acr update") as c:
         c.argument(
             "regional_endpoints",
-            arg_type=get_three_state_flag(),
+            arg_type=get_enum_type(RegionalEndpoints),
             is_preview=True,
-            help="Enable or disable the regional endpoints feature for the registry.",
+            help="Indicates whether or not regional endpoints should be enabled for the registry. If not specified, this is set to disabled by default.",
         )
 
     with self.argument_context("acr login") as c:

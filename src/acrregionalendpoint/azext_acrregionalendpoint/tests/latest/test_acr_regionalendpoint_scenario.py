@@ -20,7 +20,7 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
             'sku': 'Premium'
         })
 
-        self.cmd('acr create -g {rg} -n {registry_name} --sku {sku} --location {rg_loc} --regional-endpoints true', checks=[
+        self.cmd('acr create -g {rg} -n {registry_name} --sku {sku} --location {rg_loc} --regional-endpoints enabled', checks=[
             self.check('name', registry_name),
             self.check('regionalEndpoints', 'Enabled'),
             self.check('regionalEndpointHostNames', [f'{registry_name}.eastus2euap.geo.azurecr.io']),
@@ -41,7 +41,7 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
             self.check('regionalEndpoints[0].region', 'eastus2euap')
         ])
 
-        self.cmd('acr update -g {rg} -n {registry_name} --regional-endpoints false', checks=[
+        self.cmd('acr update -g {rg} -n {registry_name} --regional-endpoints disabled', checks=[
             self.check('regionalEndpoints', 'Disabled'),
             self.check('regionalEndpointHostNames', [])
         ])
@@ -64,7 +64,7 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
             'sku': 'Premium'
         })
 
-        self.cmd('acr create -g {rg} -n {registry_name} --sku {sku} --location eastus2euap --regional-endpoints false', checks=[
+        self.cmd('acr create -g {rg} -n {registry_name} --sku {sku} --location eastus2euap --regional-endpoints disabled', checks=[
             self.check('name', registry_name),
             self.check('regionalEndpoints', 'Disabled'),
             self.check('regionalEndpointHostNames', []),
@@ -76,7 +76,7 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
             self.check('regionalEndpointHostNames', [])
         ])
 
-        self.cmd('acr update -g {rg} -n {registry_name} --regional-endpoints true', checks=[
+        self.cmd('acr update -g {rg} -n {registry_name} --regional-endpoints enabled', checks=[
             self.check('regionalEndpoints', 'Enabled'),
             self.check('regionalEndpointHostNames', [f'{registry_name}.eastus2euap.geo.azurecr.io'])
         ])
@@ -93,7 +93,7 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
             'sku': 'Premium'
         })
 
-        self.cmd('acr create -n {registry_name} -g {rg} --sku {sku} --location eastus2euap --regional-endpoints true',
+        self.cmd('acr create -n {registry_name} -g {rg} --sku {sku} --location eastus2euap --regional-endpoints enabled',
                  checks=[self.check('name', registry_name),
                          self.check('regionalEndpoints', 'Enabled'),
                          self.check('provisioningState', 'Succeeded')])
@@ -123,7 +123,7 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
         })
 
         # Create source registry with regional endpoints enabled
-        self.cmd('acr create -n {source_registry_name} -g {rg} -l {rg_loc} --sku Premium --regional-endpoints true',
+        self.cmd('acr create -n {source_registry_name} -g {rg} -l {rg_loc} --sku Premium --regional-endpoints enabled',
                  checks=[self.check('name', '{source_registry_name}'),
                          self.check('regionalEndpoints', 'Enabled'),
                          self.check('provisioningState', 'Succeeded')])

@@ -211,17 +211,17 @@ def _check_regional_endpoints_afec(cli_ctx):
     return feature_result and feature_result.properties and feature_result.properties.state == "Registered"
 
 
-def _configure_regional_endpoints(cmd, registry, sku, enabled):
+def _configure_regional_endpoints(cmd, registry, sku, regional_endpoints):
     if not _check_regional_endpoints_afec(cmd.cli_ctx):
         raise CLIError(
             "usage error: The --regional-endpoints parameter is only applicable to"
             " subscriptions registered with feature {}".format(ACR_AFEC_REGIONAL_ENDPOINT)
         )
 
-    if enabled and sku and sku not in get_premium_sku(cmd):
+    if regional_endpoints == RegionalEndpoints.ENABLED and sku and sku not in get_premium_sku(cmd):
         raise CLIError(REGIONAL_ENDPOINTS_NOT_SUPPORTED)
 
-    registry.regional_endpoints = (RegionalEndpoints.ENABLED if enabled else RegionalEndpoints.DISABLED)
+    registry.regional_endpoints = regional_endpoints
 
 
 def get_registry_by_name(cli_ctx, registry_name, resource_group_name=None):

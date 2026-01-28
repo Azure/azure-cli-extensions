@@ -23,7 +23,7 @@ Create a registry with regional endpoints enabled:
 
 .. code-block:: bash
 
-    az acr create --resource-group myResourceGroup --name myRegistry --sku Premium --location westus --regional-endpoints true
+    az acr create --resource-group myResourceGroup --name myRegistry --sku Premium --location westus --regional-endpoints Enabled
 
 **az acr update**
 
@@ -32,10 +32,10 @@ Enable or disable regional endpoints on an existing registry:
 .. code-block:: bash
 
     # Enable regional endpoints
-    az acr update --name myRegistry --regional-endpoints true
+    az acr update --name myRegistry --regional-endpoints Enabled
 
     # Disable regional endpoints
-    az acr update --name myRegistry --regional-endpoints false
+    az acr update --name myRegistry --regional-endpoints Disabled
 
 **az acr login**
 
