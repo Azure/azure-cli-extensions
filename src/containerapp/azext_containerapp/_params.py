@@ -174,7 +174,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env') as c:
         c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']),
                    help="Allow or block all public traffic", is_preview=True)
-        c.argument('environment_mode', options_list=["--environment-mode"], arg_type=get_enum_type(["WorkloadProfiles", "Standard", "Free", "ConsumptionOnly", "Archived"]), help="Mode of the environment. Must be one of 'WorkloadProfiles', 'Standard', 'Free', 'ConsumptionOnly' or 'Archived'. Use this instead of the deprecated '--enable-workload-profiles' flag.", is_preview=True)
+        c.argument('environment_mode', options_list=["--environment-mode"], help="Mode of the environment.", is_preview=True)
 
     with self.argument_context('containerapp env', arg_group='Custom Domain') as c:
         c.argument('certificate_identity', options_list=['--custom-domain-certificate-identity', '--certificate-identity'],
@@ -183,10 +183,7 @@ def load_arguments(self, _):
                    help='The URL pointing to the Azure Key Vault secret that holds the certificate.', is_preview=True)
 
     with self.argument_context('containerapp env create') as c:
-        c.argument('enable_workload_profiles', arg_type=get_three_state_flag(),
-                   options_list=[c.deprecate(target='--enable-workload-profiles', redirect='--environment-mode [WorkloadProfiles|ConsumptionOnly]', hide=True),
-                                 c.deprecate(target='-w', redirect='--environment-mode [WorkloadProfiles|ConsumptionOnly]', hide=True)],
-                   help="Boolean indicating if the environment is enabled to have workload profiles")
+        c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
         c.argument('enable_dedicated_gpu', arg_type=get_three_state_flag(), options_list=["--enable-dedicated-gpu"],
                    help="Boolean indicating if the environment is enabled to have dedicated gpu", is_preview=True)
 

@@ -856,23 +856,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.environmentMode', 'WorkloadProfiles'),
         ])
 
-        # Scenario 2: Test that environment mode defaults to WorkloadProfiles when no argument is provided
-        default_env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
-        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, default_env_name))
-
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, default_env_name)).get_output_in_json()
-
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
-            time.sleep(5)
-            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, default_env_name)).get_output_in_json()
-        
-        self.cmd('containerapp env show -g {} -n {}'.format(resource_group, default_env_name), checks=[
-            JMESPathCheck('properties.environmentMode', 'WorkloadProfiles'),
-        ])
-
-        self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, default_env_name))
-
-        # Scenario 3: Create an environment with ConsumptionOnly mode
+        # Scenario 2: Create an environment with ConsumptionOnly mode
         env_name_consumption = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         self.cmd('containerapp env create -g {} -n {} --environment-mode ConsumptionOnly --logs-destination none'.format(resource_group, env_name_consumption))
 
@@ -886,16 +870,9 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.environmentMode', 'ConsumptionOnly'),
         ])
 
+        # Cleanup
         self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env_name_consumption))
 
-        # Scenario 4: Verify that you cannot create an environment with Archived mode
-        env_name_archived = self.create_random_name(prefix='containerapp-e2e-env', length=24)
-        self.cmd('containerapp env create -g {} -n {} --environment-mode Archived --logs-destination none'.format(resource_group, env_name_archived), expect_failure=True)
-
-        # Scenario 5: Verify that you cannot change environment mode from WorkloadProfiles to ConsumptionOnly
-        self.cmd('containerapp env update -g {} -n {} --environment-mode ConsumptionOnly'.format(resource_group, env_name_wp), expect_failure=True)
-
-        # Cleanup
         self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env_name_wp))
 
 

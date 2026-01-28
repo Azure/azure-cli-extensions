@@ -263,8 +263,6 @@ class EnvironmentMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Mode of the managed environment."""
 
     WORKLOAD_PROFILES = "WorkloadProfiles"
-    STANDARD = "Standard"
-    FREE = "Free"
     CONSUMPTION_ONLY = "ConsumptionOnly"
     ARCHIVED = "Archived"
 
