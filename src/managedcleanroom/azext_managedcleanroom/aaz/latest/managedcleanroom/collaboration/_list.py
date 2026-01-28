@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from ..private_endpoint_util import PrivateEndpointUtil
 
 
 @register_command(
@@ -86,7 +87,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.CleanRoom/collaborations",
+                f"/subscriptions/{{subscriptionId}}/providers/{PrivateEndpointUtil.get_configured_namespace()}/collaborations",
                 **self.url_parameters
             )
 
@@ -309,7 +310,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CleanRoom/collaborations",
+                f"/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroupName}}/providers/{PrivateEndpointUtil.get_configured_namespace()}/collaborations",
                 **self.url_parameters
             )
 

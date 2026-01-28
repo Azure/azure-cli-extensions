@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from ..private_endpoint_util import PrivateEndpointUtil
 
 
 @register_command(
@@ -89,7 +90,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CleanRoom/consortiumViews/{consortiumViewName}",
+                f"/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroupName}}/providers/{PrivateEndpointUtil.get_configured_namespace()}/consortiumViews/{{consortiumViewName}}",
                 **self.url_parameters
             )
 
