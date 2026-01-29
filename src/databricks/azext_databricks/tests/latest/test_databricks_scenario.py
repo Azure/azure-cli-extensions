@@ -746,7 +746,7 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
             self.check('remoteVirtualNetwork.id', '{vnet_id}'),
             self.check('peeringState', 'Initiated')
         ])
-        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg} --no-wait true')
+        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg} --no-wait')
 
         # user vnet id to create
         peering = self.cmd('az databricks workspace vnet-peering create -n {peering_name} --workspace-name {workspace_name} -g {rg} --remote-vnet {vnet_id}', checks=[
@@ -808,7 +808,7 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
         ])
 
         # delete the peering
-        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg} --no-wait true')
+        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg} --no-wait')
         self.cmd('az databricks workspace vnet-peering list --workspace-name {workspace_name} -g {rg}', checks=[
             self.check('length(@)', 0)
         ])
