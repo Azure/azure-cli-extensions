@@ -167,7 +167,7 @@ def acr_update_set_preview(cmd, client, registry_name, resource_group_name=None,
     # Determine the effective SKU (new SKU if being updated, otherwise current SKU)
     sku = parameters.sku.name if parameters.sku else registry.sku.name
 
-    if parameters.regional_endpoints:
+    if parameters.regional_endpoints == RegionalEndpoints.ENABLED:
         # Regional endpoints require Premium SKU, validate registry tier compatibility
         if sku not in get_premium_sku(cmd):
             raise CLIError(REGIONAL_ENDPOINTS_NOT_SUPPORTED)
@@ -394,7 +394,7 @@ def acr_show_endpoints_preview(cmd,
                 'endpoint': '*.blob.' + cmd.cli_ctx.cloud.suffixes.storage_endpoint,
             })
 
-    if registry.regional_endpoints:
+    if registry.regional_endpoints == RegionalEndpoints.ENABLED:
         info['regionalEndpoints'] = []
         for host in registry.regional_endpoint_host_names:
             info['regionalEndpoints'].append({
