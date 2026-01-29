@@ -9,9 +9,8 @@ from knack.log import get_logger
 from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set, _ensure_identity_resource_id, load_cert_file
 from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvCreateDecorator, \
     ContainerAppEnvUpdateDecorator
-from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError, CLIError
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.command_modules.containerapp._client_factory import handle_raw_exception
 
 from ._models import ManagedServiceIdentity, CustomDomainConfiguration
 from ._utils import safe_get, validate_environment_mode_and_workload_profiles_compatible
