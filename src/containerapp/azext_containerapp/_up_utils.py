@@ -285,7 +285,7 @@ class ContainerAppEnvironment(Resource):
                 workload_profile_type=self.workload_profile_type,
                 workload_profile_name=self.workload_profile_name,
                 is_env_for_azml_app=self.is_env_for_azml_app,
-                environment_mode=self.env
+                environment_mode=self.environment_mode
             )
             self.exists = True
 

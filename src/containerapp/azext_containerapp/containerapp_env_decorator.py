@@ -14,7 +14,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp._client_factory import handle_raw_exception
 
 from ._models import ManagedServiceIdentity, CustomDomainConfiguration
-from ._utils import safe_get, resolve_environment_mode_and_workload_profiles
+from ._utils import safe_get, validate_environment_mode_and_workload_profiles_compatible
 from ._client_factory import handle_non_404_status_code_exception
 
 logger = get_logger(__name__)
@@ -32,7 +32,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         self.managed_env_def["tags"] = self.get_argument_tags()
         self.managed_env_def["properties"]["zoneRedundant"] = self.get_argument_zone_redundant()
 
-        self._set_up_workload_profiles()
+        self._set_up_workload_profiles_and_environment_mode()
 
         if self.get_argument_instrumentation_key() is not None:
             self.managed_env_def["properties"]["daprAIInstrumentationKey"] = self.get_argument_instrumentation_key()
@@ -62,7 +62,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         workload_profiles_value = self.get_argument_enable_workload_profiles() if user_provided_workload_profiles else None
 
         # Resolve environment_mode and enable_workload_profiles
-        resolve_environment_mode_and_workload_profiles(
+        validate_environment_mode_and_workload_profiles_compatible(
             self.get_argument_environment_mode(),
             workload_profiles_value
         )
@@ -124,11 +124,13 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                     identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
             self.managed_env_def["identity"] = identity_def
 
-    def _set_up_workload_profiles(self):
-        # Use resolved effective value (supports both --environment-mode and deprecated --enable-workload-profiles)
+    # environment mode and workload profiles are coupled, so set them up together
+    def _set_up_workload_profiles_and_environment_mode(self):
+        # Use resolved effective value (supports both --environment-mode and --enable-workload-profiles)
         effective_workload_profiles = self._get_effective_workload_profiles()
         # If the environment exists, infer the environment type
         existing_environment = None
+        environment_mode = self.get_argument_environment_mode()
         try:
             existing_environment = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
         except Exception as e:
@@ -166,6 +168,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                     }
                     workload_profiles.append(serverless_gpu_profile)
             self.managed_env_def["properties"]["workloadProfiles"] = workload_profiles
+            environment_mode = "WorkloadProfiles" if environment_mode is None else environment_mode
         else:
             # Check if existing environment is WorkloadProfiles
             if existing_environment:
@@ -173,9 +176,8 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                     # User is trying to enable workload profiles on a ConsumptionOnly environment
                     raise ValidationError(f"Existing environment {self.get_argument_name()} cannot be a Consumption only environment. If you want to use Consumption only environment, please create a new one.")
                 return
+            environment_mode = "ConsumptionOnly" if environment_mode is None else environment_mode
 
-        # Set environmentMode based on user input or default to "WorkloadProfiles"
-        environment_mode = self.get_argument_environment_mode()
         if environment_mode:
             self.managed_env_def["properties"]["environmentMode"] = environment_mode
 
