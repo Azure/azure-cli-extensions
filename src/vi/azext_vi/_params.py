@@ -19,5 +19,9 @@ def load_arguments(self, _):
         c.argument('location', validator=get_default_location_from_resource_group)
         c.argument('vi_name', vi_name_type, options_list=['--name', '-n'])
 
-    with self.argument_context('vi list') as c:
-        c.argument('vi_name', vi_name_type, id_part=None)
+    with self.argument_context('vi cameras') as c:
+        c.argument('list', vi_name_type, id_part=None)
+        c.argument('name', options_list=['--name', '-n'], help='Name of the webapp to connect to')
+        c.argument('scan_id', options_list=['--scan-id'], help='Unique scan id')
+        c.argument('timeout', options_list=['--timeout'], help='Timeout for operation in milliseconds')
+        c.argument('slot', help="Name of the deployment slot to use")

@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-
 from azext_vi._help import helps  # pylint: disable=unused-import
 
 
@@ -13,11 +12,8 @@ class ViCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         from azext_vi._client_factory import cf_vi
-        vi_custom = CliCommandType(
-            operations_tmpl='azext_vi.custom#{}',
-            client_factory=cf_vi)
-        super(ViCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=vi_custom)
+        vi_custom = CliCommandType(operations_tmpl='azext_vi.custom#{}', client_factory=cf_vi)
+        super(ViCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=vi_custom)
 
     def load_command_table(self, args):
         from azext_vi.commands import load_command_table

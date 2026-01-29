@@ -22,17 +22,22 @@ helps['vi list'] = """
     short-summary: List Vis.
 """
 
-# helps['vi delete'] = """
-#     type: command
-#     short-summary: Delete a Vi.
-# """
+helps['vi delete'] = """
+    type: command
+    short-summary: Delete a Vi.
+"""
 
-# helps['vi show'] = """
-#     type: command
-#     short-summary: Show details of a Vi.
-# """
+helps['vi show'] = """
+    type: command
+    short-summary: Show details of a Vi.
+"""
 
-# helps['vi update'] = """
-#     type: command
-#     short-summary: Update a Vi.
-# """
+helps['vi update'] = """
+    type: command
+    short-summary: Update a Vi.
+"""
+
+helps['vi troubleshoot'] = """
+    type: command
+    short-summary: troubleshoot a Vi.
+"""

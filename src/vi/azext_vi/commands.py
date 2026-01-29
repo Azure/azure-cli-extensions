@@ -6,24 +6,27 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
 from azext_vi._client_factory import cf_vi
-
+from . import consts
 
 def load_command_table(self, _):
 
-    # TODO: Add command type here
-    # vi_sdk = CliCommandType(
-    #    operations_tmpl='<PATH>.operations#None.{}',
-    #    client_factory=cf_vi)
+    vi_sdk = CliCommandType(
+       operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations._vi_operations#VIOperations{}',
+       client_factory=cf_vi)
 
 
-    with self.command_group('vi') as g:
+    with self.command_group(consts.EXTENSION_NAME, vi_sdk, client_factory=cf_vi, is_preview=True) \
+            as g:
         g.custom_command('create', 'create_vi')
-        # g.command('delete', 'delete')
+        g.custom_command('update', 'update_vi')
         g.custom_command('list', 'list_vi')
-        # g.show_command('show', 'get')
-        # g.generic_update_command('update', setter_name='update', custom_func_name='update_vi')
+        g.custom_show_command('show', 'show_vi')
+        g.custom_command('troubleshoot', 'troubleshoot_vi')
+        g.custom_command('cameras list', 'list_cameras')
+
+    with self.command_group(consts.EXTENSION_NAME + " extension", vi_sdk, client_factory=cf_vi, is_preview=True) \
+            as g:
+        g.custom_command('get', 'get_vi_extension')
 
 
-    with self.command_group('vi', is_preview=True):
-        pass
 
