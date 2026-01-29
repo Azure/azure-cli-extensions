@@ -14,7 +14,7 @@ Pending
 
 1.0.0b17
 ++++++++
-Fix: remove the prompt to user about managed identity client id during `az aks agent-init``
+* Fix: remove the prompt to user about managed identity client id during `az aks agent-init``
  
 1.0.0b16
 ++++++++

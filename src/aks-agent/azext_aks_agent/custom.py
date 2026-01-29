@@ -193,9 +193,9 @@ def _setup_helm_deployment(console, aks_agent_manager: AKSAgentManager):
             "Please ensure you have created the necessary Role and RoleBinding in your namespace for this service account.",
             style=WARNING_COLOR)
         console.print(
-            "If the AKS agent requires access to Azure resources, the service account should be annotated with "
+            "To have access to Azure resources, the service account should be annotated with "
             "'azure.workload.identity/client-id: <managed-identity-client-id>'.",
-            style=INFO_COLOR)
+            style=WARNING_COLOR)
 
         # Prompt user for service account name (required)
         while True:
