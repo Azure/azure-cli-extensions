@@ -311,13 +311,18 @@ def acr_login_preview(cmd,
 
     if all_endpoints:
         registry, resource_group_name = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
-        if registry.regional_endpoints and registry.regional_endpoint_host_names:
+        if registry.regional_endpoints == RegionalEndpoints.ENABLED and registry.regional_endpoint_host_names:
             login_server_list = [login_server] + registry.regional_endpoint_host_names
             logger.warning("Regional endpoints are enabled. Logging in to %d endpoints.", len(login_server_list))
             for url in login_server_list:
                 # Multiple endpoints, show detailed logging for each
                 logger.warning("Logging in to %s", url)
                 _perform_registry_login(url, docker_command, username, password)
+        else:
+            # No regional endpoints configured; fall back to logging into the primary login server
+            logger.warning("No regional endpoints are enabled for this registry. "
+                           "Logging in only to the primary endpoint.")
+            _perform_registry_login(login_server, docker_command, username, password)
     else:
         _perform_registry_login(login_server, docker_command, username, password)
 

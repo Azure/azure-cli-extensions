@@ -16,29 +16,29 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'registry_name': registry_name,
-            'rg_loc': 'eastus2euap',
+            'rg_loc': 'centraluseuap',
             'sku': 'Premium'
         })
 
         self.cmd('acr create -g {rg} -n {registry_name} --sku {sku} --location {rg_loc} --regional-endpoints enabled', checks=[
             self.check('name', registry_name),
             self.check('regionalEndpoints', 'Enabled'),
-            self.check('regionalEndpointHostNames', [f'{registry_name}.eastus2euap.geo.azurecr.io']),
+            self.check('regionalEndpointHostNames', [f'{registry_name}.centraluseuap.geo.azurecr.io']),
             self.check('provisioningState', 'Succeeded')
         ])
 
         self.cmd('acr show -g {rg} -n {registry_name}', checks=[
             self.check('regionalEndpoints', 'Enabled'),
-            self.check('regionalEndpointHostNames', [f'{registry_name}.eastus2euap.geo.azurecr.io'])
+            self.check('regionalEndpointHostNames', [f'{registry_name}.centraluseuap.geo.azurecr.io'])
         ])
 
         self.cmd('acr show-endpoints --name {registry_name} --resource-group {rg}', checks=[
             self.check('length(dataEndpoints)', 1),
             self.check('length(regionalEndpoints)', 1),
             self.check('dataEndpoints[0].endpoint', '*.blob.core.windows.net'),
-            self.check('dataEndpoints[0].region', 'eastus2euap'),
-            self.check('regionalEndpoints[0].endpoint', f'{registry_name}.eastus2euap.geo.azurecr.io'),
-            self.check('regionalEndpoints[0].region', 'eastus2euap')
+            self.check('dataEndpoints[0].region', 'centraluseuap'),
+            self.check('regionalEndpoints[0].endpoint', f'{registry_name}.centraluseuap.geo.azurecr.io'),
+            self.check('regionalEndpoints[0].region', 'centraluseuap')
         ])
 
         self.cmd('acr update -g {rg} -n {registry_name} --regional-endpoints disabled', checks=[
@@ -49,7 +49,7 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
         self.cmd('acr show-endpoints --name {registry_name} --resource-group {rg}', checks=[
             self.check('length(dataEndpoints)', 1),
             self.check('dataEndpoints[0].endpoint', '*.blob.core.windows.net'),
-            self.check('dataEndpoints[0].region', 'eastus2euap'),
+            self.check('dataEndpoints[0].region', 'centraluseuap'),
         ])
 
         self.cmd('acr delete -g {rg} -n {registry_name} --yes')
@@ -64,7 +64,7 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
             'sku': 'Premium'
         })
 
-        self.cmd('acr create -g {rg} -n {registry_name} --sku {sku} --location eastus2euap --regional-endpoints disabled', checks=[
+        self.cmd('acr create -g {rg} -n {registry_name} --sku {sku} --location centraluseuap --regional-endpoints disabled', checks=[
             self.check('name', registry_name),
             self.check('regionalEndpoints', 'Disabled'),
             self.check('regionalEndpointHostNames', []),
@@ -78,7 +78,7 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
 
         self.cmd('acr update -g {rg} -n {registry_name} --regional-endpoints enabled', checks=[
             self.check('regionalEndpoints', 'Enabled'),
-            self.check('regionalEndpointHostNames', [f'{registry_name}.eastus2euap.geo.azurecr.io'])
+            self.check('regionalEndpointHostNames', [f'{registry_name}.centraluseuap.geo.azurecr.io'])
         ])
 
         self.cmd('acr delete -g {rg} -n {registry_name} --yes')
@@ -93,7 +93,7 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
             'sku': 'Premium'
         })
 
-        self.cmd('acr create -n {registry_name} -g {rg} --sku {sku} --location eastus2euap --regional-endpoints enabled',
+        self.cmd('acr create -n {registry_name} -g {rg} --sku {sku} --location centraluseuap --regional-endpoints enabled',
                  checks=[self.check('name', registry_name),
                          self.check('regionalEndpoints', 'Enabled'),
                          self.check('provisioningState', 'Succeeded')])
@@ -115,11 +115,11 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
             'resource_id': '/subscriptions/dfb63c8c-7c89-4ef8-af13-75c1d873c895/resourcegroups/resourcegroupdiffsub/providers/Microsoft.ContainerRegistry/registries/sourceregistrydiffsub',
             'source_registry_name': source_registry_name,
             'registry_name': registry_name,
-            'rg_loc': 'eastus2euap',
+            'rg_loc': 'centraluseuap',
             'source_image': 'microsoft:azure-cli',
             'tag': 'repo:v1',
-            'source_registry_regional_endpoint': f'{source_registry_name}.eastus2euap.geo.azurecr.io',
-            'source_image_regional_endpoint': f'{source_registry_name}.eastus2euap.geo.azurecr.io/microsoft:azure-cli'
+            'source_registry_regional_endpoint': f'{source_registry_name}.centraluseuap.geo.azurecr.io',
+            'source_image_regional_endpoint': f'{source_registry_name}.centraluseuap.geo.azurecr.io/microsoft:azure-cli'
         })
 
         # Create source registry with regional endpoints enabled
