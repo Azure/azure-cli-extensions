@@ -232,7 +232,7 @@ def ensure_container_insights_for_monitoring_preview(
     data_collection_settings=None,
     is_private_cluster=False,
     ampls_resource_id=None,
-    enable_high_log_scale_mode=False,
+    enable_high_log_scale_mode=None,
 ):
     """
     Preview extension version of ensure_container_insights_for_monitoring that uses REST API
@@ -1012,10 +1012,10 @@ def aks_create(
     enable_azure_monitor_logs=False,
     workspace_resource_id=None,
     enable_msi_auth_for_monitoring=True,
-    enable_syslog=False,
+    enable_syslog=None,
     data_collection_settings=None,
     ampls_resource_id=None,
-    enable_high_log_scale_mode=False,
+    enable_high_log_scale_mode=None,
     aci_subnet_name=None,
     appgw_name=None,
     appgw_subnet_cidr=None,
@@ -1275,9 +1275,9 @@ def aks_update(
     disable_azure_monitor_logs=False,
     workspace_resource_id=None,
     enable_msi_auth_for_monitoring=None,
-    enable_syslog=False,
+    enable_syslog=None,
     data_collection_settings=None,
-    enable_high_log_scale_mode=False,
+    enable_high_log_scale_mode=None,
     ampls_resource_id=None,
     enable_secret_rotation=False,
     disable_secret_rotation=False,
@@ -2866,10 +2866,10 @@ def aks_addon_enable(
     enable_msi_auth_for_monitoring=True,
     dns_zone_resource_id=None,
     dns_zone_resource_ids=None,
-    enable_syslog=False,
+    enable_syslog=None,
     data_collection_settings=None,
     ampls_resource_id=None,
-    enable_high_log_scale_mode=False
+    enable_high_log_scale_mode=None
 ):
     return enable_addons(
         cmd,
@@ -2924,10 +2924,10 @@ def aks_addon_update(
     enable_msi_auth_for_monitoring=None,
     dns_zone_resource_id=None,
     dns_zone_resource_ids=None,
-    enable_syslog=False,
+    enable_syslog=None,
     data_collection_settings=None,
     ampls_resource_id=None,
-    enable_high_log_scale_mode=False
+    enable_high_log_scale_mode=None
 ):
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
@@ -3055,10 +3055,10 @@ def aks_enable_addons(
     enable_msi_auth_for_monitoring=True,
     dns_zone_resource_id=None,
     dns_zone_resource_ids=None,
-    enable_syslog=False,
+    enable_syslog=None,
     data_collection_settings=None,
     ampls_resource_id=None,
-    enable_high_log_scale_mode=False,
+    enable_high_log_scale_mode=None,
     aks_custom_headers=None,
 ):
     headers = get_aks_custom_headers(aks_custom_headers)
