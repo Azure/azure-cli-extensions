@@ -131,8 +131,6 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
         self.chart_version = "0.2.0"
 
         # credentials for aks-mcp
-        # Managed identity client ID for accessing Azure resources
-        self.managed_identity_client_id: str = ""
         # Default empty customized cluster role name means using default cluster role
         self.customized_cluster_role_name: str = ""
         # When aks mcp service account is set, helm charts wont create rbac for aks mcp
@@ -202,16 +200,8 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
                     # Read API keys from Kubernetes secret and populate model_list
                     self._populate_api_keys_from_secret()
 
-                # Load managed identity client ID if present
                 mcp_addons = helm_values.get("mcpAddons", {})
                 aks_config = mcp_addons.get("aks", {})
-                azure_config = aks_config.get("azure", {})
-                self.managed_identity_client_id = azure_config.get("clientId")
-
-                if self.managed_identity_client_id:
-                    logger.debug("Managed identity client ID loaded: %s", self.managed_identity_client_id)
-                else:
-                    logger.debug("No managed identity client ID found in Helm values")
 
                 service_account_config = aks_config.get("serviceAccount", {})
                 self.customized_cluster_role_name = service_account_config.get("customClusterRoleName", "")
@@ -934,13 +924,6 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
         helm_values["mcpAddons"]["aks"]["serviceAccount"] = {
             "name": self.aks_mcp_service_account_name,
             "create": False,
-        }
-
-        helm_values["mcpAddons"]["aks"]["workloadIdentity"] = {
-            "enabled": bool(self.managed_identity_client_id)
-        }
-        helm_values["mcpAddons"]["aks"]["azure"] = {
-            "clientId": self.managed_identity_client_id
         }
 
         return helm_values

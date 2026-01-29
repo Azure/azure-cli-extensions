@@ -163,7 +163,7 @@ def _setup_llm_configuration(console, aks_agent_manager: AKSAgentManagerLLMConfi
 
 
 def _setup_helm_deployment(console, aks_agent_manager: AKSAgentManager):
-    """Setup and deploy helm chart with service account and managed identity configuration."""
+    """Setup and deploy helm chart with service account configuration."""
     console.print("\n🚀 Phase 2: Helm Deployment", style=f"bold {HELP_COLOR}")
 
     # Check current helm deployment status
@@ -179,22 +179,6 @@ def _setup_helm_deployment(console, aks_agent_manager: AKSAgentManager):
             f"\n👤 Current service account in namespace '{aks_agent_manager.namespace}': {service_account_name}",
             style="cyan")
 
-        # Prompt for managed identity client ID update
-        existing_client_id = aks_agent_manager.managed_identity_client_id
-        if existing_client_id:
-            console.print(
-                f"\n🔑 Current workload identity (managed identity) client ID: {existing_client_id}", style="cyan")
-            change_client_id = console.input(
-                f"[{HELP_COLOR}]Do you want to change the workload identity client ID? (y/N): [/]").strip().lower()
-
-            if change_client_id in ['y', 'yes']:
-                managed_identity_client_id = _prompt_managed_identity_configuration(console)
-                aks_agent_manager.managed_identity_client_id = managed_identity_client_id
-        else:
-            console.print("\n🔑 No workload identity (managed identity) currently configured.", style="cyan")
-            managed_identity_client_id = _prompt_managed_identity_configuration(console)
-            if managed_identity_client_id:
-                aks_agent_manager.managed_identity_client_id = managed_identity_client_id
     elif helm_status == "not_found":
         console.print(
             f"Helm chart not deployed (status: {helm_status}). Setting up deployment...",
@@ -203,11 +187,15 @@ def _setup_helm_deployment(console, aks_agent_manager: AKSAgentManager):
         # Prompt for service account configuration
         console.print("\n👤 Service Account Configuration", style=f"bold {HELP_COLOR}")
         console.print(
-            f"The AKS agent requires a service account with appropriate permissions in the '{aks_agent_manager.namespace}' namespace.",
+            f"The AKS agent requires a service account with appropriate Azure and Kubernetes permissions in the '{aks_agent_manager.namespace}' namespace.",
             style=INFO_COLOR)
         console.print(
             "Please ensure you have created the necessary Role and RoleBinding in your namespace for this service account.",
             style=WARNING_COLOR)
+        console.print(
+            "If the AKS agent requires access to Azure resources, the service account should be annotated with "
+            "'azure.workload.identity/client-id: <managed-identity-client-id>'.",
+            style=INFO_COLOR)
 
         # Prompt user for service account name (required)
         while True:
@@ -220,10 +208,6 @@ def _setup_helm_deployment(console, aks_agent_manager: AKSAgentManager):
             console.print(
                 "Service account name cannot be empty. Please enter a valid service account name.", style=WARNING_COLOR)
 
-        # Prompt for managed identity client ID
-        managed_identity_client_id = _prompt_managed_identity_configuration(console)
-        if managed_identity_client_id:
-            aks_agent_manager.managed_identity_client_id = managed_identity_client_id
     else:
         # Handle non-standard helm status (failed, pending-install, pending-upgrade, etc.)
         cmd_flags = aks_agent_manager.command_flags()
@@ -267,37 +251,6 @@ def _setup_helm_deployment(console, aks_agent_manager: AKSAgentManager):
             cmd_flags = aks_agent_manager.command_flags()
             console.print(
                 f"You can check the status later using 'az aks agent --status {cmd_flags}'", style="cyan")
-
-
-def _prompt_managed_identity_configuration(console):
-    """Prompt user for managed identity client ID configuration."""
-    console.print("\n🔑 Managed Identity Configuration", style=f"bold {HELP_COLOR}")
-
-    console.print(
-        "To access Azure resources using workload identity, you need to provide the managed identity client ID.",
-        style=INFO_COLOR)
-
-    configure = console.input(
-        f"[{HELP_COLOR}]Do you want to configure managed identity client ID? (Y/n): [/]").strip().lower()
-
-    if configure in ['n', 'no']:
-        console.print(
-            "⚠️  Skipping managed identity configuration. Workload identity will not be configured.",
-            style=WARNING_COLOR
-        )
-        return ""
-
-    while True:
-        client_id = console.input(
-            f"[{HELP_COLOR}]Please enter your managed identity client ID: [/]").strip()
-
-        if client_id:
-            console.print(f"✅ Using managed identity client ID: {client_id}", style=SUCCESS_COLOR)
-            return client_id
-        console.print(
-            "❌ Client ID cannot be empty. Please provide a valid client ID or answer 'N' to skip.",
-            style=ERROR_COLOR
-        )
 
 
 def _setup_and_create_llm_config(console, aks_agent_manager: AKSAgentManagerLLMConfigBase):
