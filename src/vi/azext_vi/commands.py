@@ -15,7 +15,7 @@ def load_command_table(self, _):
        client_factory=cf_vi)
 
 
-    with self.command_group(consts.EXTENSION_NAME, vi_sdk, client_factory=cf_vi, is_preview=True) \
+    with self.command_group(consts.EXTENSION_NAME, vi_sdk, client_factory=cf_vi, is_preview=False) \
             as g:
         g.custom_command('create', 'create_vi')
         g.custom_command('update', 'update_vi')

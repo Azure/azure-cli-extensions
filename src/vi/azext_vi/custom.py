@@ -4,8 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
-import json
-from rich import print_json
+from rich.console import Console
+from rich.table import Table
 
 def create_vi(cmd, resource_group_name=None, vi_name=None, location=None, tags=None):
      raise CLIError('TODO: Implement `vi list`')
@@ -14,9 +14,33 @@ def create_vi(cmd, resource_group_name=None, vi_name=None, location=None, tags=N
 def list_cameras(client, resource_group_name=None):
     response = client.cameras.list(resource_group_name=resource_group_name)
     cameras = response.get('results')
-    print_json(data=cameras)
-#     return cameras
+    console = Console()
+    console.print(json_to_table(cameras))
 
+
+def json_to_table(data: list[dict], title: str = "Cameras") -> Table:
+    """Convert a list of dicts to a Rich table"""
+    if not data:
+        return Table(title="No Results")
+    
+    table = Table(title=title, show_header=True, header_style="bold blue")
+
+    table.add_column("Name", style="cyan", no_wrap=True)
+    table.add_column("Status", style="green")
+    table.add_column("Rtsp url", style="yellow")
+    table.add_column("live Enabled", style="green")
+    table.add_column("recording Enabled", style="green")
+    
+    # Add all rows
+    for item in data:
+        table.add_row(
+            item["name"],
+            item["status"],
+            item["rtspUrl"],
+            str(item["liveStreamingEnabled"]),
+            str(item["recordingEnabled"]))
+    
+    return table
 
 def list_vi(cmd, resource_group_name=None, vi_name=None, location=None, tags=None):
      raise CLIError('TODO: Implement `vi list`')
