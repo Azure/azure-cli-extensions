@@ -512,26 +512,17 @@ def get_cluster_extension(cmd, cluster_extension_id=None):
         extension_name=resource_name)
 
 
-def resolve_environment_mode_and_workload_profiles(environment_mode, workload_profiles_enabled):
+def validate_environment_mode_and_workload_profiles_compatible(environment_mode, workload_profiles_enabled):
     # If only environment_mode is specified, derive enable_workload_profiles from it
     if environment_mode is not None:
-        effective_workload_profiles = environment_mode != 'ConsumptionOnly'
+        is_environment_mode_workload_profiles_enabled = environment_mode.lower() != 'consumptiononly'
 
         # Check for conflicts when both are specified
         if workload_profiles_enabled is not None:
-            if environment_mode == 'ConsumptionOnly' and workload_profiles_enabled:
+            if not is_environment_mode_workload_profiles_enabled and workload_profiles_enabled:
                 raise ValidationError("Cannot use '--enable-workload-profiles' with '--environment-mode ConsumptionOnly'. Please use '--environment-mode' alone.")
-            if environment_mode != 'ConsumptionOnly' and workload_profiles_enabled is False:
+            if is_environment_mode_workload_profiles_enabled and not workload_profiles_enabled:
                 raise ValidationError("Cannot use '--enable-workload-profiles false' with '--environment-mode {}'. Please use '--environment-mode' alone.".format(environment_mode))
-
-        return effective_workload_profiles
-
-    # If only enable_workload_profiles is specified (deprecated path)
-    if workload_profiles_enabled is not None:
-        return workload_profiles_enabled
-
-    # Neither specified - default to workload profiles enabled
-    return True
 
 
 def validate_custom_location(cmd, custom_location=None):
