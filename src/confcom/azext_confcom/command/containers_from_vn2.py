@@ -9,6 +9,7 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import re
+from typing import Optional
 import yaml
 
 from azext_confcom import config
@@ -136,17 +137,18 @@ def vn2_container_mounts(template: dict, container: dict) -> list[dict]:
 
 def containers_from_vn2(
     template: str,
-    container_name: str
-) -> None:
+    container_name: Optional[str] = None
+) -> str:
 
     with Path(template).open("r") as f:
         template_yaml = list(yaml.safe_load_all(f))
 
-    # Find containers matching the specified name (and check there's exactly one)
-    template_container = None
-    template_doc = None
+    # Find containers matching the specified name (if provided)
+    template_containers = []
     variables = {}
     for doc in template_yaml:
+        if not isinstance(doc, dict):
+            continue
         kind = doc.get("kind")
         if kind == "ConfigMap":
             variables[doc["metadata"]["name"]] = {
@@ -160,96 +162,104 @@ def containers_from_vn2(
             }
         elif kind in ["Pod", "Deployment", "StatefulSet", "DaemonSet", "Job", "CronJob", "ReplicaSet"]:
             for container in find_vn2_containers(doc):
-                if container.get("name") == container_name:
-                    if template_container is not None or template_doc is not None:
-                        raise AssertionError(
-                            f"Multiple containers with name {container_name} found."
-                        )
-                    template_container = container
-                    template_doc = doc
-    if template_container is None:
-        raise AssertionError(f"No containers with name {container_name} found.")
+                if container_name and container.get("name") != container_name:
+                    continue
+                template_containers.append((container, doc))
 
-    image_container_def = container_from_image(template_container.get("image"), platform="vn2")
+    if container_name:
+        if not template_containers:
+            raise AssertionError(f"No containers with name {container_name} found.")
+        if len(template_containers) > 1:
+            raise AssertionError(
+                f"Multiple containers with name {container_name} found."
+            )
+    elif not template_containers:
+        raise AssertionError("No containers found.")
 
-    template_container_def = {
-        "name": container_name,
-        "command": template_container.get("command", []) + template_container.get("args", []),
-        "env_rules": (
-            [
-                {
-                    "pattern": rule.get("pattern") or f"{rule.get('name')}={rule.get('value')}",
-                    "strategy": rule.get("strategy", "string"),
-                    "required": rule.get("required", False),
-                }
-                for rule in (
-                    config.OPENGCS_ENV_RULES
-                    + config.FABRIC_ENV_RULES
-                    + config.MANAGED_IDENTITY_ENV_RULES
-                    + config.ENABLE_RESTART_ENV_RULE
-                    + config.VIRTUAL_NODE_ENV_RULES
-                )
-            ]
-            + list(vn2_container_env_rules(template_doc, template_container, variables))
-        ),
-        "mounts": vn2_container_mounts(template_doc, template_container),
-    }
+    container_defs = []
+    for template_container, template_doc in template_containers:
+        image_container_def = container_from_image(template_container.get("image"), platform="vn2")
 
-    # Parse security context
-    security_context = (
-        template_doc.get("spec", {}).get("securityContext", {})
-        | template_container.get("securityContext", {})
-    )
-    if security_context.get("privileged", False):
-        template_container_def["allow_elevated"] = True
-        template_container_def["mounts"] += VN2_PRIVILEGED_MOUNTS
-        template_container_def["capabilities"] = PRIVILEDGED_CAPABILITIES
-
-    if security_context.get("runAsUser") or security_context.get("runAsGroup"):
-        template_container_def["user"] = asdict(ContainerUser())
-        if security_context.get("runAsUser"):
-            template_container_def["user"]["user_idname"] = {
-                "pattern": str(security_context.get("runAsUser")),
-                "strategy": "id",
-            }
-        if security_context.get("runAsGroup"):
-            template_container_def["user"]["group_idnames"] = [{
-                "pattern": str(security_context.get("runAsGroup")),
-                "strategy": "id",
-            }]
-
-    if security_context.get("seccompProfile"):
-        template_container_def["seccomp_profile_sha256"] = sha256(
-            base64.b64decode(security_context.get("seccompProfile"))
-        ).hexdigest()
-
-    if security_context.get("allowPrivilegeEscalation") is False:
-        template_container_def["no_new_privileges"] = True
-
-    # Check for workload identity
-    labels = template_doc.get("metadata", {}).get("labels", {}) or {}
-    if labels.get("azure.workload.identity/use", "false") == "true":
-        template_container_def["env_rules"].extend(VN2_WORKLOAD_IDENTITY_ENV_RULES)
-        template_container_def["mounts"].extend(VN2_WORKLOAD_IDENTITY_MOUNTS)
-
-    exec_processes = [
-        {
-            "command": process.get("exec", {}).get("command", []),
-            "signals": []
+        template_container_def = {
+            "name": template_container.get("name"),
+            "command": template_container.get("command", []) + template_container.get("args", []),
+            "env_rules": (
+                [
+                    {
+                        "pattern": rule.get("pattern") or f"{rule.get('name')}={rule.get('value')}",
+                        "strategy": rule.get("strategy", "string"),
+                        "required": rule.get("required", False),
+                    }
+                    for rule in (
+                        config.OPENGCS_ENV_RULES
+                        + config.FABRIC_ENV_RULES
+                        + config.MANAGED_IDENTITY_ENV_RULES
+                        + config.ENABLE_RESTART_ENV_RULE
+                        + config.VIRTUAL_NODE_ENV_RULES
+                    )
+                ]
+                + list(vn2_container_env_rules(template_doc, template_container, variables))
+            ),
+            "mounts": vn2_container_mounts(template_doc, template_container),
         }
-        for process in [
-            template_container.get("livenessProbe"),
-            template_container.get("readinessProbe"),
-            template_container.get("startupProbe"),
-            template_container.get("lifecycle", {}).get("postStart"),
-            template_container.get("lifecycle", {}).get("preStop"),
-        ]
-        if process is not None
-    ]
-    if exec_processes:
-        template_container_def["exec_processes"] = exec_processes
 
-    return json.dumps(merge_containers(
-        image_container_def,
-        template_container_def,
-    ))
+        # Parse security context
+        security_context = (
+            template_doc.get("spec", {}).get("securityContext", {})
+            | template_container.get("securityContext", {})
+        )
+        if security_context.get("privileged", False):
+            template_container_def["allow_elevated"] = True
+            template_container_def["mounts"] += VN2_PRIVILEGED_MOUNTS
+            template_container_def["capabilities"] = PRIVILEDGED_CAPABILITIES
+
+        if security_context.get("runAsUser") or security_context.get("runAsGroup"):
+            template_container_def["user"] = asdict(ContainerUser())
+            if security_context.get("runAsUser"):
+                template_container_def["user"]["user_idname"] = {
+                    "pattern": str(security_context.get("runAsUser")),
+                    "strategy": "id",
+                }
+            if security_context.get("runAsGroup"):
+                template_container_def["user"]["group_idnames"] = [{
+                    "pattern": str(security_context.get("runAsGroup")),
+                    "strategy": "id",
+                }]
+
+        if security_context.get("seccompProfile"):
+            template_container_def["seccomp_profile_sha256"] = sha256(
+                base64.b64decode(security_context.get("seccompProfile"))
+            ).hexdigest()
+
+        if security_context.get("allowPrivilegeEscalation") is False:
+            template_container_def["no_new_privileges"] = True
+
+        # Check for workload identity
+        labels = template_doc.get("metadata", {}).get("labels", {}) or {}
+        if labels.get("azure.workload.identity/use", "false") == "true":
+            template_container_def["env_rules"].extend(VN2_WORKLOAD_IDENTITY_ENV_RULES)
+            template_container_def["mounts"].extend(VN2_WORKLOAD_IDENTITY_MOUNTS)
+
+        exec_processes = [
+            {
+                "command": process.get("exec", {}).get("command", []),
+                "signals": []
+            }
+            for process in [
+                template_container.get("livenessProbe"),
+                template_container.get("readinessProbe"),
+                template_container.get("startupProbe"),
+                template_container.get("lifecycle", {}).get("postStart"),
+                template_container.get("lifecycle", {}).get("preStop"),
+            ]
+            if process is not None
+        ]
+        if exec_processes:
+            template_container_def["exec_processes"] = exec_processes
+
+        container_defs.append(merge_containers(
+            image_container_def,
+            template_container_def,
+        ))
+
+    return json.dumps(container_defs)

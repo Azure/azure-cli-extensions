@@ -568,7 +568,7 @@ def containers_from_image(
 
 def containers_from_vn2(
     template: str,
-    container_name: str,
+    container_name: Optional[str] = None,
 ) -> None:
     print(_containers_from_vn2(
         template=template,

@@ -494,7 +494,7 @@ def load_arguments(self, _):
         c.argument(
             "container_name",
             options_list=['--name', "-n"],
-            required=True,
+            required=False,
             type=str,
-            help='The name of the container in the template to use'
+            help='The name of the container in the template to use. If omitted, all containers are returned.'
         )

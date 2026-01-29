@@ -35,6 +35,10 @@ def _normalize_env_rules(container: dict) -> dict:
     return normalized
 
 
+def _normalize_containers(containers: list[dict]) -> list[dict]:
+    return [_normalize_env_rules(container) for container in containers]
+
+
 @pytest.mark.parametrize(
     "sample_directory",
     sorted(
@@ -52,15 +56,33 @@ def test_containers_from_vn2(sample_directory):
     with open(expected_containers_path, "r", encoding="utf-8") as f:
         expected_containers = json.load(f)
 
+    actual_containers = json.loads(
+        containers_from_vn2(
+            template=virtual_node_yaml_path,
+            container_name=None,
+        )
+    )
+    actual_containers = _normalize_containers(actual_containers)
+    expected_normalized = _normalize_containers(expected_containers)
+    assert DeepDiff(actual_containers, expected_normalized, ignore_order=True) == {}, (
+        "Container list mismatch, actual output for "
+        f"{os.path.join(sample_directory, 'containers.inc.rego')}\n"
+        f"{actual_containers}"
+    )
+
     for expected_container in expected_containers:
         container_name = expected_container.get("name")
-        actual_container = json.loads(
+        actual_container_list = json.loads(
             containers_from_vn2(
                 template=virtual_node_yaml_path,
                 container_name=container_name,
             )
         )
-        actual_container = _normalize_env_rules(actual_container)
+        assert len(actual_container_list) == 1, (
+            "Expected single container definition for "
+            f"{os.path.join(sample_directory, 'containers.inc.rego')}:{container_name}"
+        )
+        actual_container = _normalize_env_rules(actual_container_list[0])
         expected_container = _normalize_env_rules(expected_container)
         assert DeepDiff(actual_container, expected_container, ignore_order=True) == {}, (
             "Container mismatch, actual output for "

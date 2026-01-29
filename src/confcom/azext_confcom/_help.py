@@ -350,15 +350,17 @@ helps[
     "confcom containers from_vn2"
 ] = """
     type: command
-    short-summary: Create a Security Policy Container Definition based on a VN2 template.
+    short-summary: Create Security Policy Container Definitions based on a VN2 template.
 
     parameters:
         - name: --name -n
           type: string
-          short-summary: 'The name of the container to generate the policy for'
+          short-summary: 'The name of the container to generate the policy for. If omitted, all containers are returned.'
 
 
     examples:
         - name: Input a VN2 Template and generate container definitions
           text: az confcom containers from_vn2 vn2.yaml --name mycontainer
+        - name: Input a VN2 Template and generate container definitions for all containers
+          text: az confcom containers from_vn2 vn2.yaml
     """
