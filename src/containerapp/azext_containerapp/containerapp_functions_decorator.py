@@ -311,9 +311,8 @@ class ContainerAppFunctionInvocationsDecorator(ContainerAppFunctionsDecorator):
             revision_name = "" if self.active_revision_mode.lower() == "single" else revision_name
 
             invocation_traces_query = (
-                f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']) "
-                f"| project timestamp, id, operation_Name, success, resultCode, duration, operation_Id, functionNameFromCustomDimension, "
-                f"cloud_RoleInstance, invocationId=coalesce(tostring(customDimensions['InvocationId']), tostring(customDimensions['faas.invocation_id'])) "
+                f"requests | extend functionNameFromCustomDimension = tostring(customDimensions['faas.name']), "
+                f"invocationId=coalesce(tostring(customDimensions['InvocationId']), tostring(customDimensions['faas.invocation_id'])) "
                 f"| where timestamp > ago({timespan}) "
                 f"| where isempty(\"{revision_name}\") or cloud_RoleInstance contains '{revision_name}' "
                 f"| where operation_Name =~ '{function_name}' or functionNameFromCustomDimension =~ '{function_name}' "
