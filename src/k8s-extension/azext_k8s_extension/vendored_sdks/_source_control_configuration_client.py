@@ -233,8 +233,6 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         else:
             raise ValueError("API version {} does not have operation group 'extension_types'".format(api_version))
         self._config.api_version = api_version
-        # Remove this after testing is done for 2023-05-01-preview
-        self._client._base_url = "https://management.azure.com"
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
