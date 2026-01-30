@@ -67,8 +67,8 @@ class Create(AAZCommand):
             help="Gets or sets the CCF endpoint.",
             required=True,
         )
-        _args_schema.consortium_certificate_pem = AAZStrArg(
-            options=["--consortium-certificate-pem"],
+        _args_schema.certificate_pem = AAZStrArg(
+            options=["--certificate-pem"],
             arg_group="Properties",
             help="Gets or sets the CCF public service certificate in PEM format.",
             required=True,
@@ -238,7 +238,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("consortiumEndpoint", AAZStrType, ".consortium_endpoint", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("consortiumServiceCertificatePem", AAZStrType, ".consortium_certificate_pem", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("consortiumServiceCertificatePem", AAZStrType, ".certificate_pem", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("member", AAZObjectType, ".member", typ_kwargs={"flags": {"required": True}})
 
             member = _builder.get(".properties.member")
