@@ -15,7 +15,7 @@ from azure.mgmt.core import ARMPipelineClient
 from msrest import Deserializer, Serializer
 from azure.mgmt.core.policies import ARMAutoResourceProviderRegistrationPolicy
 from ._configuration import VIManagementClientConfiguration
-from .operations import VICameraOperations
+from .operations import CameraOperations, ExtensionOperations
 from . import models
 
 if TYPE_CHECKING:
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
 
 class VIManagementClient:  # pylint: disable=client-accepts-api-version-keyword,too-many-instance-attributes
-    """FrontDoor Client.
+    """VI Management Client.
 
     :ivar policies: PoliciesOperations operations
     :vartype policies: azure.mgmt.frontdoor.operations.PoliciesOperations
@@ -99,9 +99,14 @@ class VIManagementClient:  # pylint: disable=client-accepts-api-version-keyword,
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
-        self.cameras = VICameraOperations(
+        self.cameras = CameraOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        
+        self.extensions = ExtensionOperations(
             self._client, self._config, self._serialize, self._deserialize)
  
+    def bla(self):
+        pass
 
     def _send_request(self, request: HttpRequest, *, stream: bool = False, **kwargs: Any) -> HttpResponse:
         """Runs the network request through the client's chained policies.

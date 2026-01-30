@@ -4,8 +4,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------
 
-from ._vi_operations import VICameraOperations
+from ._camera_operations import CameraOperations
+from ._extension_operations import ExtensionOperations
 
 __all__ = [
-    'VICameraOperations',
+    'CameraOperations',
+    'ExtensionOperations',
 ]

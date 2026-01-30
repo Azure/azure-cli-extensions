@@ -5,39 +5,34 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.help_files import helps  # pylint: disable=unused-import
+from . import consts
 
-
-helps['vi'] = """
+helps[f'{consts.EXTENSION_NAME}'] = """
     type: group
-    short-summary: Commands to manage Vis.
+    short-summary: Commands to manage Video Indexer for Cloud and Edge.
 """
 
-helps['vi create'] = """
+helps[f'{consts.EXTENSION_NAME} extension'] = """
+    type: group
+    short-summary: Show Video Indexer Extension details.
+"""
+
+helps[f'{consts.EXTENSION_NAME} extension show'] = """
     type: command
-    short-summary: Create a Vi.
+    short-summary: Show Video Indexer Extension details.
 """
 
-helps['vi list'] = """
+helps[f'{consts.EXTENSION_NAME} extension troubleshoot'] = """
     type: command
     short-summary: List Vis.
 """
 
-helps['vi delete'] = """
-    type: command
-    short-summary: Delete a Vi.
+helps[f'{consts.EXTENSION_NAME} camera'] = f"""
+    type: group
+    short-summary: Create a Kubernetes
 """
 
-helps['vi show'] = """
+helps[f'{consts.EXTENSION_NAME} camera list'] = f"""
     type: command
-    short-summary: Show details of a Vi.
-"""
-
-helps['vi update'] = """
-    type: command
-    short-summary: Update a Vi.
-"""
-
-helps['vi troubleshoot'] = """
-    type: command
-    short-summary: troubleshoot a Vi.
+    short-summary: Create a Kubernetes Cluster
 """
