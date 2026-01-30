@@ -27,13 +27,15 @@ helps['changesafety changerecord create'] = """
         Provide at least one target definition to describe which resources or operations the ChangeRecord
         will affect. Targets are expressed as comma or semicolon separated key=value pairs such as
         resourceId=RESOURCE_ID,operation=DELETE. The command is also available through the alias
-        `az changesafety changerecord`. If you omit scheduling flags, the anticipated start time defaults
-        to now and the anticipated end time defaults to eight hours later (UTC).
+        `az changesafety changerecord`. If you omit scheduling flags, the anticipated start time
+        defaults to now and the anticipated end time defaults to eight hours later (UTC).
     parameters:
       - name: --targets
         short-summary: >
             One or more target definitions expressed as key=value pairs (for example
-            resourceId=RESOURCE_ID,operation=CREATE,resourceType=Microsoft.Compute/virtualMachines).
+            resourceId=RESOURCE_ID,operation=DELETE,resourceType=Microsoft.Compute/virtualMachines).
+      - name: --description
+        short-summary: A description of the change being performed.
       - name: --anticipated-start-time
         short-summary: Expected start time in ISO 8601 format. Defaults to current UTC time when omitted.
       - name: --anticipated-end-time
@@ -41,7 +43,7 @@ helps['changesafety changerecord create'] = """
       - name: --change-type
         short-summary: Classify the change such as AppDeployment, Config, ManualTouch, or PolicyDeployment.
       - name: --rollout-type
-        short-summary: Specify the rollout urgency (Normal, Hotfix, or Emergency).
+        short-summary: Specify the rollout type (Normal, Hotfix, or Emergency).
       - name: --stage-map-name --stagemap-name
         short-summary: StageMap name in the current subscription scope; the resource ID is built for you.
       - name: --stage-map
@@ -53,12 +55,15 @@ helps['changesafety changerecord create'] = """
         text: |-
           az changesafety changerecord create -g MyResourceGroup -n changerecord002 --change-type ManualTouch --rollout-type Normal --stage-map "{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ChangeSafety/stageMaps/rolloutStageMap}" --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH" --links "[{name:status,uri:'https://contoso.com/change/rollout-002'}]"
           az changesafety changerecord delete -g MyResourceGroup -n changerecord002 --yes
-      - name: Create a change state for a VM rollout
+      - name: Create a ChangeRecord for a VM rollout
         text: |-
           az changesafety changerecord create -g MyResourceGroup -n changerecord001 --change-type AppDeployment --rollout-type Normal --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PUT"
+      - name: Create a ChangeRecord for deleting a Traffic Manager profile
+        text: |-
+          az changesafety changerecord create -g MyResourceGroup -n delete-trafficmanager --change-type ManualTouch --rollout-type Hotfix --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Network/trafficManagerProfiles/myProfile,operation=DELETE" --description "Delete Traffic Manager profile"
       - name: Create with staging rollout configuration
         text: |-
-          az changesafety changerecord create -g MyResourceGroup -n changerecord-ops01 --rollout-type Hotfix --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Web/sites/myApp,operation=POST"
+          az changesafety changerecord create -g MyResourceGroup -n changerecord-ops01 --change-type AppDeployment --rollout-type Hotfix --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Web/sites/myApp,operation=POST"
       - name: Reference a StageMap by name
         text: |-
           az changesafety changerecord create -g MyResourceGroup -n changerecord003 --change-type ManualTouch --rollout-type Normal --stagemap-name rolloutStageMap --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=DELETE"
@@ -68,20 +73,17 @@ helps['changesafety changerecord update'] = """
     type: command
     short-summary: Update an existing ChangeRecord resource.
     long-summary: >
-        Use this command to modify descriptive metadata, rollout settings, or replace targets for an
-        existing ChangeRecord. When you pass --targets, the supplied definitions overwrite the previous set.
-        This command is also available through the alias `az change-safety change-record`.
+        Use this command to modify descriptive metadata, rollout settings, or scheduling for an
+        existing ChangeRecord. Note: The changeDefinition (targets) cannot be modified after creation.
     parameters:
-      - name: --targets
-        short-summary: >
-            Optional target definitions to replace the existing list. Provide key=value pairs such as
-            resourceId=RESOURCE_ID,operation=DELETE.
       - name: --stage-map-name --stagemap-name
         short-summary: StageMap name in the current subscription scope; the resource ID is built for you.
       - name: --stage-map
         short-summary: Reference an existing StageMap resource using resource-id=RESOURCE_ID and optional parameters key=value pairs.
       - name: --comments
-        short-summary: Provide notes about the latest update to the change state.
+        short-summary: Provide notes about the latest update to the ChangeRecord.
+      - name: --description
+        short-summary: Update the description of the change.
       - name: --anticipated-start-time
         short-summary: Update the expected start time in ISO 8601 format. If omitted, the current value is preserved.
       - name: --anticipated-end-time
@@ -93,9 +95,9 @@ helps['changesafety changerecord update'] = """
       - name: Update scheduling window
         text: |-
           az changesafety changerecord update -g MyResourceGroup -n changerecord001 --anticipated-start-time "2024-09-01T08:00:00Z" --anticipated-end-time "2024-09-01T12:00:00Z"
-      - name: Replace the target definition
+      - name: Update description
         text: |-
-          az changesafety changerecord update -g MyResourceGroup -n changerecord001 --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/myServer,operation=PATCH"
+          az changesafety changerecord update -g MyResourceGroup -n changerecord001 --description "Updated rollout for production deployment"
 """
 
 helps['changesafety changerecord delete'] = """
