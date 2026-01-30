@@ -3544,6 +3544,12 @@ neon postgres project:
   rule_exclusions:
   - require_wait_command_if_no_wait
 
+confcom containers from_vn2:
+  parameters:
+    template:
+      rule_exclusions:
+        - no_positional_parameters
+
 confcom fragment push:
   parameters:
     signed_fragment:
