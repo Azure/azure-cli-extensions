@@ -19,14 +19,15 @@ az changesafety changerecord show    # Display details for a ChangeRecord resour
 Run `az changesafety changerecord -h` to see full parameter details and examples.
 
 ## Examples
-Create a ChangeRecord for a manual touch operation (e.g., Deletes a traffic manager profile):
+Create a ChangeRecord for a manual touch operation (e.g., delete a Traffic Manager profile):
 ```bash
 az changesafety changerecord create \
   -g MyResourceGroup \
-  -n changerecord-vm-maintenance \
+  -n changerecord-delete-tm \
   --change-type ManualTouch \
-  --rollout-type Normal \
-  --targets "subscriptionId=<subId>,operation=DELETES" \
+  --rollout-type Hotfix \
+  --targets "resourceId=/subscriptions/<subId>/resourceGroups/MyResourceGroup/providers/Microsoft.Network/trafficManagerProfiles/myProfile,operation=DELETE" \
+  --description "Delete Traffic Manager profile for maintenance"
 ```
 
 Create a ChangeRecord for an app deployment with a StageMap reference:
