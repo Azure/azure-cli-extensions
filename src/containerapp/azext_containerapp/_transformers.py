@@ -300,3 +300,18 @@ def transform_function_keys_list(result):
             return table
 
     return []
+
+
+def transform_containerapp_list_output_with_kind(apps):
+    """Transform containerapp list output to include the 'kind' field."""
+    result = []
+    for app in apps:
+        props = ['name', 'location', 'resourceGroup', 'provisioningState']
+        item = {k: app[k] for k in app if k in props}
+        item['kind'] = app.get('kind', None)
+        try:
+            item['fqdn'] = app['properties']['configuration']['ingress']['fqdn']
+        except:  # pylint: disable=bare-except
+            item['fqdn'] = None
+        result.append(item)
+    return result

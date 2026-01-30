@@ -337,6 +337,9 @@ def load_arguments(self, _):
         c.argument('managed_env', validator=validate_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
         c.argument('environment_type', arg_type=get_enum_type(["managed", "connected"]), help="Type of environment.", is_preview=True)
 
+    with self.argument_context('containerapp list') as c:
+        c.argument('kind', arg_type=get_enum_type(['functionapp', 'logicapp']), help="Filter by kind. Use 'functionapp' to list only Azure Functions on Container Apps.", is_preview=True)
+
     with self.argument_context('containerapp connected-env') as c:
         c.argument('name', name_type, help='Name of the Container Apps connected environment.')
         c.argument('resource_group_name', arg_type=resource_group_name_type)
