@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "changesafety changestate create",
+    "changesafety changerecord create",
 )
 class Create(AAZCommand):
     """Create a ChangeRecord
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/Microsoft.ChangeSafety/changestates/{}", "2025-09-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.ChangeSafety/changestates/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/changerecords/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.changesafety/changerecords/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -42,7 +42,7 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.change_state_name = AAZStrArg(
+        _args_schema.change_record_name = AAZStrArg(
             options=["-n", "--name", "--change-record-name"],
             help="The name of the ChangeRecord resource.",
             required=True,
@@ -78,6 +78,11 @@ class Create(AAZCommand):
             fmt=AAZDateTimeFormat(
                 protocol="iso",
             ),
+        )
+        _args_schema.change_definition = AAZObjectArg(
+            options=["--change-definition"],
+            arg_group="Properties",
+            help="Change request body and/or resource selection criteria used to identify the targeted resources.",
         )
         _args_schema.change_type = AAZStrArg(
             options=["--change-type"],
@@ -131,6 +136,25 @@ class Create(AAZCommand):
             options=["--stage-map"],
             arg_group="Properties",
             help="Reference to the StageMap, defining progression.",
+        )
+
+        change_definition = cls._args_schema.change_definition
+        change_definition.details = AAZObjectArg(
+            options=["details"],
+            help="Free form object containing additional details for the change definition.",
+            required=True,
+            blank={},
+        )
+        change_definition.kind = AAZStrArg(
+            options=["kind"],
+            help="Kind of the change definition.",
+            required=True,
+            enum={"ApiOperations": "ApiOperations", "Targets": "Targets"},
+        )
+        change_definition.name = AAZStrArg(
+            options=["name"],
+            help="Name of the change definition.",
+            required=True,
         )
 
         links = cls._args_schema.links
@@ -254,12 +278,12 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
-        condition_1 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.ChangeStatesCreateOrUpdateAtSubscriptionLevel(ctx=self.ctx)()
+            self.ChangeRecordsCreateOrUpdateAtSubscriptionLevel(ctx=self.ctx)()
         if condition_1:
-            self.ChangeStatesCreateOrUpdate(ctx=self.ctx)()
+            self.ChangeRecordsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -274,7 +298,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ChangeStatesCreateOrUpdateAtSubscriptionLevel(AAZHttpOperation):
+    class ChangeRecordsCreateOrUpdateAtSubscriptionLevel(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -288,7 +312,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}",
                 **self.url_parameters
             )
 
@@ -304,7 +328,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "changeStateName", self.ctx.args.change_state_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -318,7 +342,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -350,6 +374,7 @@ class Create(AAZCommand):
                 properties.set_prop("additionalData", AAZObjectType, ".additional_data")
                 properties.set_prop("anticipatedEndTime", AAZStrType, ".anticipated_end_time", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("anticipatedStartTime", AAZStrType, ".anticipated_start_time", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("changeDefinition", AAZObjectType, ".change_definition", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("changeType", AAZStrType, ".change_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("comments", AAZStrType, ".comments")
                 properties.set_prop("description", AAZStrType, ".description")
@@ -359,6 +384,12 @@ class Create(AAZCommand):
                 properties.set_prop("releaseLabel", AAZStrType, ".release_label")
                 properties.set_prop("rolloutType", AAZStrType, ".rollout_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("stageMap", AAZObjectType, ".stage_map")
+
+            change_definition = _builder.get(".properties.changeDefinition")
+            if change_definition is not None:
+                change_definition.set_prop("details", AAZObjectType, ".details", typ_kwargs={"flags": {"required": True}})
+                change_definition.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
+                change_definition.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
 
             links = _builder.get(".properties.links")
             if links is not None:
@@ -646,7 +677,7 @@ class Create(AAZCommand):
 
             return cls._schema_on_200_201
 
-    class ChangeStatesCreateOrUpdate(AAZHttpOperation):
+    class ChangeRecordsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -660,7 +691,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}",
                 **self.url_parameters
             )
 
@@ -676,7 +707,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "changeStateName", self.ctx.args.change_state_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -694,7 +725,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -726,6 +757,7 @@ class Create(AAZCommand):
                 properties.set_prop("additionalData", AAZObjectType, ".additional_data")
                 properties.set_prop("anticipatedEndTime", AAZStrType, ".anticipated_end_time", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("anticipatedStartTime", AAZStrType, ".anticipated_start_time", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("changeDefinition", AAZObjectType, ".change_definition", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("changeType", AAZStrType, ".change_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("comments", AAZStrType, ".comments")
                 properties.set_prop("description", AAZStrType, ".description")
@@ -735,6 +767,12 @@ class Create(AAZCommand):
                 properties.set_prop("releaseLabel", AAZStrType, ".release_label")
                 properties.set_prop("rolloutType", AAZStrType, ".rollout_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("stageMap", AAZObjectType, ".stage_map")
+
+            change_definition = _builder.get(".properties.changeDefinition")
+            if change_definition is not None:
+                change_definition.set_prop("details", AAZObjectType, ".details", typ_kwargs={"flags": {"required": True}})
+                change_definition.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
+                change_definition.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
 
             links = _builder.get(".properties.links")
             if links is not None:
