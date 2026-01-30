@@ -29,11 +29,11 @@ from azure.cli.core.aaz._arg_action import (
     _ELEMENT_APPEND_KEY,
 )
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azext_changesafety.aaz.latest.change_safety.change_state import (
-    Create as _ChangeStateCreate,
-    Update as _ChangeStateUpdate,
-    Show as _ChangeStateShow,
-    Delete as _ChangeStateDelete,
+from azext_changesafety.aaz.latest.changesafety.changerecord import (
+    Create as _ChangeRecordCreate,
+    Update as _ChangeRecordUpdate,
+    Show as _ChangeRecordShow,
+    Delete as _ChangeRecordDelete,
 )
 
 
@@ -148,10 +148,10 @@ def _inject_targets_into_result(data, targets):
 
 def _custom_show_schema_builder():
     # Import the generated Show class
-    from azext_changesafety.aaz.latest.change_safety.change_state._show import Show as GeneratedShow
+    from azext_changesafety.aaz.latest.changesafety.changerecord._show import Show as GeneratedShow
 
     # Get the base schema from the generated code
-    base_schema = GeneratedShow.ChangeStatesGet._build_schema_on_200()
+    base_schema = GeneratedShow.ChangeRecordsGet._build_schema_on_200()
 
     # Inject/override the targets schema
     change_definition = base_schema.properties.change_definition
@@ -168,7 +168,7 @@ def _custom_show_schema_builder():
     return base_schema
 
 
-class ChangeStateCreate(_ChangeStateCreate):
+class ChangeRecordCreate(_ChangeRecordCreate):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._raw_targets = []
@@ -312,7 +312,7 @@ class ChangeStateCreate(_ChangeStateCreate):
         """Build the changeDefinition object with targets"""
         targets = self._parse_targets(self._raw_targets)
         self._parsed_targets = targets
-        change_arg = self.ctx.args.change_state_name
+        change_arg = self.ctx.args.change_record_name
         change_name = (
             change_arg.to_serialized_data()
             if has_value(change_arg)
@@ -390,22 +390,22 @@ class ChangeStateCreate(_ChangeStateCreate):
             # The changeDefinition will be set in the content property of the HTTP operations
             pass
 
-    class ChangeStatesCreateOrUpdateAtSubscriptionLevel(
-            _ChangeStateCreate.ChangeStatesCreateOrUpdateAtSubscriptionLevel):
+    class ChangeRecordsCreateOrUpdateAtSubscriptionLevel(
+            _ChangeRecordCreate.ChangeRecordsCreateOrUpdateAtSubscriptionLevel):
         @property
         def content(self):
             content = super().content
             return _inject_change_definition_into_content(content, self.ctx)
 
-    class ChangeStatesCreateOrUpdate(
-            _ChangeStateCreate.ChangeStatesCreateOrUpdate):
+    class ChangeRecordsCreateOrUpdate(
+            _ChangeRecordCreate.ChangeRecordsCreateOrUpdate):
         @property
         def content(self):
             content = super().content
             return _inject_change_definition_into_content(content, self.ctx)
 
 
-class ChangeStateUpdate(_ChangeStateUpdate):
+class ChangeRecordUpdate(_ChangeRecordUpdate):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._raw_targets = []
@@ -485,7 +485,7 @@ class ChangeStateUpdate(_ChangeStateUpdate):
         """Build the changeDefinition object with targets"""
         targets = self._parse_targets(self._raw_targets)
         self._parsed_targets = targets
-        change_arg = self.ctx.args.change_state_name
+        change_arg = self.ctx.args.change_record_name
         change_name = (
             change_arg.to_serialized_data()
             if has_value(change_arg)
@@ -609,28 +609,28 @@ class ChangeStateUpdate(_ChangeStateUpdate):
             # The changeDefinition will be set in the content property of the HTTP operations
             pass
 
-    class ChangeStatesCreateOrUpdateAtSubscriptionLevel(
-            _ChangeStateUpdate.ChangeStatesCreateOrUpdateAtSubscriptionLevel):
+    class ChangeRecordsCreateOrUpdateAtSubscriptionLevel(
+            _ChangeRecordUpdate.ChangeRecordsCreateOrUpdateAtSubscriptionLevel):
         @property
         def content(self):
             content = super().content
             return _inject_change_definition_into_content(content, self.ctx)
 
-    class ChangeStatesCreateOrUpdate(
-            _ChangeStateUpdate.ChangeStatesCreateOrUpdate):
+    class ChangeRecordsCreateOrUpdate(
+            _ChangeRecordUpdate.ChangeRecordsCreateOrUpdate):
         @property
         def content(self):
             content = super().content
             return _inject_change_definition_into_content(content, self.ctx)
 
 
-class ChangeStateShow(_ChangeStateShow):
+class ChangeRecordShow(_ChangeRecordShow):
     def _output(self, *args, **kwargs):
         result = super()._output(*args, **kwargs)
         # Optionally inject targets schema into result if needed
         return result
 
-    class ChangeStatesGetAtSubscriptionLevel(_ChangeStateShow.ChangeStatesGetAtSubscriptionLevel):
+    class ChangeRecordsGetAtSubscriptionLevel(_ChangeRecordShow.ChangeRecordsGetAtSubscriptionLevel):
         def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
@@ -639,7 +639,7 @@ class ChangeStateShow(_ChangeStateShow):
                 schema_builder=_custom_show_schema_builder
             )
 
-    class ChangeStatesGet(_ChangeStateShow.ChangeStatesGet):
+    class ChangeRecordsGet(_ChangeRecordShow.ChangeRecordsGet):
         def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
@@ -649,12 +649,12 @@ class ChangeStateShow(_ChangeStateShow):
             )
 
 
-class ChangeStateDelete(_ChangeStateDelete):
+class ChangeRecordDelete(_ChangeRecordDelete):
     pass
 
 
-ChangeStateCreate.AZ_HELP = {
-    **ChangeStateCreate.AZ_HELP,
+ChangeRecordCreate.AZ_HELP = {
+    **ChangeRecordCreate.AZ_HELP,
     "examples": [
         {
             "name": "Create with StageMap reference and status link",
@@ -699,8 +699,8 @@ ChangeStateCreate.AZ_HELP = {
     ],
 }
 
-ChangeStateUpdate.AZ_HELP = {
-    **ChangeStateUpdate.AZ_HELP,
+ChangeRecordUpdate.AZ_HELP = {
+    **ChangeRecordUpdate.AZ_HELP,
     "examples": [
         {
             "name": "Adjust rollout type and add a comment",
@@ -728,21 +728,21 @@ ChangeStateUpdate.AZ_HELP = {
     ],
 }
 
-ChangeStateDelete.AZ_HELP = {
-    **ChangeStateDelete.AZ_HELP,
+ChangeRecordDelete.AZ_HELP = {
+    **ChangeRecordDelete.AZ_HELP,
     "examples": [
         {
-            "name": "Delete a change state without confirmation",
+            "name": "Delete a change record without confirmation",
             "text": "az changesafety changerecord delete -g MyResourceGroup -n changerecord001 --yes",
         },
     ],
 }
 
-ChangeStateShow.AZ_HELP = {
-    **ChangeStateShow.AZ_HELP,
+ChangeRecordShow.AZ_HELP = {
+    **ChangeRecordShow.AZ_HELP,
     "examples": [
         {
-            "name": "Show a change state",
+            "name": "Show a change record",
             "text": "az changesafety changerecord show -g MyResourceGroup -n changerecord001",
         },
     ],

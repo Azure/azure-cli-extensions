@@ -9,12 +9,12 @@
 # pylint: disable=too-many-statements
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    from .custom import ChangeStateCreate, ChangeStateUpdate, ChangeStateDelete, ChangeStateShow
+    from .custom import ChangeRecordCreate, ChangeRecordUpdate, ChangeRecordDelete, ChangeRecordShow
 
-    create_command = ChangeStateCreate(loader=self)
-    update_command = ChangeStateUpdate(loader=self)
-    delete_command = ChangeStateDelete(loader=self)
-    show_command = ChangeStateShow(loader=self)
+    create_command = ChangeRecordCreate(loader=self)
+    update_command = ChangeRecordUpdate(loader=self)
+    delete_command = ChangeRecordDelete(loader=self)
+    show_command = ChangeRecordShow(loader=self)
 
     self.command_table['changesafety changerecord create'] = create_command
     self.command_table['changesafety changerecord update'] = update_command

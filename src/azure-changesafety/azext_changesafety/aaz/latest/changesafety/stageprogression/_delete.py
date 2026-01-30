@@ -12,24 +12,25 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "changesafety changestate delete",
+    "changesafety stageprogression delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a ChangeRecord
+    """Delete a StageProgression
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/Microsoft.ChangeSafety/changestates/{}", "2025-09-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.ChangeSafety/changestates/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/changestates/{}/stageprogressions/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.changesafety/changestates/{}/stageprogressions/{}", "2026-01-01-preview"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -43,8 +44,8 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.change_state_name = AAZStrArg(
-            options=["-n", "--name", "--change-record-name"],
-            help="The name of the ChangeRecord resource.",
+            options=["--change-state-name"],
+            help="The name of the ChangeState resource.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -54,16 +55,27 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.stage_progression_name = AAZStrArg(
+            options=["-n", "--name", "--stage-progression-name"],
+            help="name of the stageProgression",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-|]{3,100}$",
+                max_length=100,
+                min_length=3,
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
-        condition_1 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id)
         if condition_0:
-            yield self.ChangeStatesDeleteAtSubscriptionLevel(ctx=self.ctx)()
+            self.StageProgressionsDeleteAtSubscriptionLevel(ctx=self.ctx)()
         if condition_1:
-            yield self.ChangeStatesDelete(ctx=self.ctx)()
+            self.StageProgressionsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,46 +86,23 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class ChangeStatesDeleteAtSubscriptionLevel(AAZHttpOperation):
+    class StageProgressionsDeleteAtSubscriptionLevel(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    False,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    False,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    False,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}/stageProgressions/{stageProgressionName}",
                 **self.url_parameters
             )
 
@@ -133,6 +122,10 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "stageProgressionName", self.ctx.args.stage_progression_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -143,58 +136,35 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
             return parameters
 
+        def on_200(self, session):
+            pass
+
         def on_204(self, session):
             pass
 
-        def on_200_201(self, session):
-            pass
-
-    class ChangeStatesDelete(AAZHttpOperation):
+    class StageProgressionsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    False,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    False,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    False,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}/stageProgressions/{stageProgressionName}",
                 **self.url_parameters
             )
 
@@ -218,6 +188,10 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "stageProgressionName", self.ctx.args.stage_progression_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -228,16 +202,16 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
             return parameters
 
-        def on_204(self, session):
+        def on_200(self, session):
             pass
 
-        def on_200_201(self, session):
+        def on_204(self, session):
             pass
 
 
