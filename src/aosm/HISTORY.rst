@@ -2,6 +2,9 @@
 
 Release History
 ===============
+2.0.0b4
+++++++++
+* Fixing the unauthorized error when publishing to ACR
 
 2.0.0b3
 ++++++++
