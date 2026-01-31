@@ -7,6 +7,8 @@
 
 from azure.cli.core import AzCommandsLoader
 from azext_changesafety._help import helps  # pylint: disable=unused-import
+# Import custom to apply AZ_HELP patches for StageMap commands
+from azext_changesafety import custom as _custom  # pylint: disable=unused-import
 
 
 class ChangeRecordCommandsLoader(AzCommandsLoader):

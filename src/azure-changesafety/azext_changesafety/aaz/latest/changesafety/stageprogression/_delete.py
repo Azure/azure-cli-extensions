@@ -22,8 +22,8 @@ class Delete(AAZCommand):
     _aaz_info = {
         "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/changestates/{}/stageprogressions/{}", "2026-01-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.changesafety/changestates/{}/stageprogressions/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/changerecords/{}/stageprogressions/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.changesafety/changerecords/{}/stageprogressions/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -43,9 +43,9 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.change_state_name = AAZStrArg(
-            options=["--change-state-name"],
-            help="The name of the ChangeState resource.",
+        _args_schema.change_record_name = AAZStrArg(
+            options=["--change-record-name"],
+            help="The name of the ChangeRecord resource.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -57,7 +57,7 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg()
         _args_schema.stage_progression_name = AAZStrArg(
             options=["-n", "--name", "--stage-progression-name"],
-            help="name of the stageProgression",
+            help="Name of the stageProgression",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -70,12 +70,12 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
-        condition_1 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.StageProgressionsDeleteAtSubscriptionLevel(ctx=self.ctx)()
+            self.ChangeRecordStageProgressionsDeleteAtSubscriptionLevel(ctx=self.ctx)()
         if condition_1:
-            self.StageProgressionsDelete(ctx=self.ctx)()
+            self.ChangeRecordStageProgressionsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -86,7 +86,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class StageProgressionsDeleteAtSubscriptionLevel(AAZHttpOperation):
+    class ChangeRecordStageProgressionsDeleteAtSubscriptionLevel(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -102,7 +102,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}/stageProgressions/{stageProgressionName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}/stageProgressions/{stageProgressionName}",
                 **self.url_parameters
             )
 
@@ -118,7 +118,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "changeStateName", self.ctx.args.change_state_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -148,7 +148,7 @@ class Delete(AAZCommand):
         def on_204(self, session):
             pass
 
-    class StageProgressionsDelete(AAZHttpOperation):
+    class ChangeRecordStageProgressionsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -164,7 +164,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}/stageProgressions/{stageProgressionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}/stageProgressions/{stageProgressionName}",
                 **self.url_parameters
             )
 
@@ -180,7 +180,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "changeStateName", self.ctx.args.change_state_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
