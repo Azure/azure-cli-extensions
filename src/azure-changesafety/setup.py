@@ -47,4 +47,3 @@ setup(
     package_data={'azext_changesafety': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
-
