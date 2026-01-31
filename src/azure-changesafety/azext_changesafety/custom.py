@@ -23,7 +23,6 @@ from azure.cli.core.aaz import (
     AAZAnyType,
     AAZAnyTypeArg,
     AAZListArg,
-    AAZObjectArg,
     AAZStrArg,
     AAZObjectType,
     AAZStrType,
@@ -163,46 +162,13 @@ def _preserve_change_definition_in_content(content, ctx):
     return content
 
 
-def _normalize_targets_arg(raw_targets):
+def _normalize_targets_arg(raw_targets):  # pylint: disable=too-many-branches
     """Return a list of raw target strings from the parsed CLI argument."""
     if raw_targets is None:
         return []
 
     if isinstance(raw_targets, AAZArgActionOperations):
-        elements = []
-        for keys, data in raw_targets._ops:
-            logger.debug("Processing target op keys=%s data=%s", keys, data)
-            if isinstance(data, AAZPromptInputOperation):
-                data = data()
-
-            normalized_value = ''
-            if isinstance(data, (list, tuple)):
-                normalized_value = ','.join(str(v) for v in data if v is not None)
-            elif data is not None:
-                normalized_value = str(data)
-
-            idx = None
-            key_name = None
-            for key in keys:
-                if key == _ELEMENT_APPEND_KEY:
-                    idx = len(elements)
-                elif isinstance(key, int):
-                    idx = key
-                elif isinstance(key, str):
-                    key_name = key
-
-            if idx is None:
-                idx = len(elements) - 1 if elements else 0
-            while len(elements) <= idx:
-                elements.append('')
-
-            if key_name:
-                combined = f"{key_name}={normalized_value}" if normalized_value else key_name
-                elements[idx] = f"{elements[idx]},{combined}" if elements[idx] else combined
-            else:
-                elements[idx] = normalized_value
-
-        return [value for value in elements if value]
+        return _normalize_aaz_operations(raw_targets)
 
     if hasattr(raw_targets, 'to_serialized_data'):
         values = raw_targets.to_serialized_data()
@@ -211,14 +177,59 @@ def _normalize_targets_arg(raw_targets):
     else:
         values = [raw_targets]
 
-    normalized_values = []
-    for value in values:
-        if value is None:
-            continue
-        text = str(value).strip()
-        if text:
-            normalized_values.append(text)
-    return normalized_values
+    return [str(v).strip() for v in values if v is not None and str(v).strip()]
+
+
+def _normalize_aaz_operations(raw_targets):
+    """Process AAZArgActionOperations to extract target strings."""
+    elements = []
+    for keys, data in raw_targets._ops:  # pylint: disable=protected-access
+        logger.debug("Processing target op keys=%s data=%s", keys, data)
+        if isinstance(data, AAZPromptInputOperation):
+            data = data()
+
+        normalized_value = _normalize_data_value(data)
+        idx, key_name = _extract_index_and_key(keys, len(elements))
+
+        if key_name:
+            # AAZ parsed "key=value,..." - reconstruct the full target string
+            full_target = f"{key_name}={normalized_value}" if normalized_value else key_name
+            _append_or_set_element(elements, idx, full_target)
+        else:
+            _append_or_set_element(elements, idx, normalized_value)
+
+    return [value for value in elements if value]
+
+
+def _normalize_data_value(data):
+    """Convert data to a normalized string value."""
+    if isinstance(data, (list, tuple)):
+        return ','.join(str(v) for v in data if v is not None)
+    return str(data) if data is not None else ''
+
+
+def _extract_index_and_key(keys, current_length):
+    """Extract index and key name from AAZ operation keys."""
+    idx = None
+    key_name = None
+    for key in keys:
+        if key == _ELEMENT_APPEND_KEY:
+            idx = current_length
+        elif isinstance(key, int):
+            idx = key
+        elif isinstance(key, str):
+            key_name = key
+    return idx, key_name
+
+
+def _append_or_set_element(elements, idx, value):
+    """Append or set an element in the list at the given index."""
+    if idx is not None:
+        while len(elements) <= idx:
+            elements.append('')
+        elements[idx] = value
+    else:
+        elements.append(value)
 
 
 def _inject_targets_into_result(data, targets):
@@ -257,6 +268,7 @@ def _build_custom_show_schema():
         AAZObjectType: The extended schema with targets array definition.
     """
     # Get the base schema from the generated code
+    # pylint: disable-next=protected-access
     base_schema = _GeneratedShow.ChangeRecordsGet._build_schema_on_200()
 
     # Inject schema for details.targets - the generated code doesn't know this structure
@@ -509,9 +521,10 @@ class ChangeRecordUpdate(_ChangeRecordUpdate):
             # Capture raw changeDefinition from HTTP response before schema loses details
             data = self.deserialize_http_content(session)
             if data and "properties" in data and "changeDefinition" in data["properties"]:
+                # pylint: disable-next=protected-access
                 self.ctx._original_change_definition = data["properties"]["changeDefinition"]
-                logger.debug("Captured raw changeDefinition from GET response: %s", 
-                           self.ctx._original_change_definition)
+                logger.debug("Captured raw changeDefinition from GET response: %s",
+                             self.ctx._original_change_definition)  # pylint: disable=protected-access
             return super().on_200(session)
 
     class ChangeRecordsGet(_ChangeRecordUpdate.ChangeRecordsGet):
@@ -519,9 +532,10 @@ class ChangeRecordUpdate(_ChangeRecordUpdate):
             # Capture raw changeDefinition from HTTP response before schema loses details
             data = self.deserialize_http_content(session)
             if data and "properties" in data and "changeDefinition" in data["properties"]:
+                # pylint: disable-next=protected-access
                 self.ctx._original_change_definition = data["properties"]["changeDefinition"]
-                logger.debug("Captured raw changeDefinition from GET response: %s", 
-                           self.ctx._original_change_definition)
+                logger.debug("Captured raw changeDefinition from GET response: %s",
+                             self.ctx._original_change_definition)  # pylint: disable=protected-access
             return super().on_200(session)
 
     class ChangeRecordsCreateOrUpdateAtSubscriptionLevel(
@@ -575,6 +589,17 @@ ChangeRecordCreate.AZ_HELP = {
     **ChangeRecordCreate.AZ_HELP,
     "examples": [
         {
+            "name": "Create a ChangeRecord for deleting a Traffic Manager profile",
+            "text": (
+                "az changesafety changerecord create -g MyResourceGroup -n delete-trafficmanager "
+                "--change-type ManualTouch --rollout-type Hotfix "
+                "--targets \"resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/"
+                "resourceGroups/MyResourceGroup/providers/Microsoft.Network/"
+                "trafficManagerProfiles/myProfile,operation=DELETE\" "
+                "--description \"Delete Traffic Manager profile\""
+            ),
+        },
+        {
             "name": "Create with StageMap reference and status link",
             "text": (
                 "az changesafety changerecord create -g MyResourceGroup -n changerecord002 "
@@ -584,7 +609,6 @@ ChangeRecordCreate.AZ_HELP = {
                 "--targets \"resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/"
                 "resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH\" "
                 "--links \"[{name:status,uri:'https://contoso.com/change/rollout-002'}]\"\n"
-                "az changesafety changerecord delete -g MyResourceGroup -n changerecord002 --yes"
             ),
         },
         {
@@ -597,22 +621,42 @@ ChangeRecordCreate.AZ_HELP = {
             ),
         },
         {
-            "name": "Create a ChangeRecord for deleting a Traffic Manager profile",
-            "text": (
-                "az changesafety changerecord create -g MyResourceGroup -n delete-trafficmanager "
-                "--change-type ManualTouch --rollout-type Hotfix "
-                "--targets \"resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/"
-                "resourceGroups/MyResourceGroup/providers/Microsoft.Network/trafficManagerProfiles/myProfile,operation=DELETE\" "
-                "--description \"Delete Traffic Manager profile\""
-            ),
-        },
-        {
             "name": "Create with StageMap name and default schedule",
             "text": (
                 "az changesafety changerecord create -g MyResourceGroup -n changerecord003 "
                 "--change-type ManualTouch --rollout-type Normal --stagemap-name rolloutStageMap "
                 "--targets \"resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/"
                 "resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=DELETE\""
+            ),
+        },
+        {
+            "name": "Create targeting an entire subscription (broad scope)",
+            "text": (
+                "az changesafety changerecord create -g MyResourceGroup -n subscription-wide-change "
+                "--change-type ManualTouch --rollout-type Normal "
+                "--targets \"subscriptionId=00000000-0000-0000-0000-000000000000,operation=PUT\""
+            ),
+        },
+        {
+            "name": "Create targeting a resource group (medium scope)",
+            "text": (
+                "az changesafety changerecord create -g MyResourceGroup -n rg-level-change "
+                "--change-type ManualTouch --rollout-type Normal "
+                "--targets \"subscriptionId=00000000-0000-0000-0000-000000000000,"
+                "resourceGroupName=MyResourceGroup,operation=DELETE\""
+            ),
+        },
+        {
+            "name": "Create with multiple targets at different scopes",
+            "text": (
+                "az changesafety changerecord create -g MyResourceGroup -n multi-scope-change "
+                "--change-type ManualTouch --rollout-type Normal "
+                "--targets \"subscriptionId=00000000-0000-0000-0000-000000000000,operation=PUT\" "
+                "--targets \"subscriptionId=00000000-0000-0000-0000-000000000000,"
+                "resourceGroupName=MyResourceGroup,operation=DELETE\" "
+                "--targets \"resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/"
+                "resourceGroups/MyResourceGroup/providers/Microsoft.Compute/"
+                "virtualMachines/myVm,operation=PATCH\""
             ),
         },
     ],
@@ -662,6 +706,227 @@ ChangeRecordShow.AZ_HELP = {
         {
             "name": "Show a ChangeRecord",
             "text": "az changesafety changerecord show -g MyResourceGroup -n changerecord001",
+        },
+    ],
+}
+
+
+# -----------------------------------------------------------------------------
+# StageMap Help Examples
+# -----------------------------------------------------------------------------
+# pylint: disable=wrong-import-position
+from azext_changesafety.aaz.latest.changesafety.stagemap import (
+    Create as _StageMapCreate,
+    Show as _StageMapShow,
+    Update as _StageMapUpdate,
+    Delete as _StageMapDelete,
+    List as _StageMapList,
+)
+
+_StageMapCreate.AZ_HELP = {
+    **_StageMapCreate.AZ_HELP,
+    "short-summary": "Create a StageMap resource.",
+    "long-summary": (
+        "A StageMap defines the stages through which a change progresses during rollout. "
+        "Each stage has a name and sequence number. Stages are executed in order of their "
+        "sequence values."
+    ),
+    "examples": [
+        {
+            "name": "Create a simple two-stage StageMap",
+            "text": (
+                "az changesafety stagemap create --subscription 00000000-0000-0000-0000-000000000000 "
+                "--stage-map-name rolloutStageMap "
+                "--stages \"[{name:Canary,sequence:1},{name:Production,sequence:2}]\""
+            ),
+        },
+        {
+            "name": "Create a StageMap with three regional stages",
+            "text": (
+                "az changesafety stagemap create --subscription 00000000-0000-0000-0000-000000000000 "
+                "--stage-map-name regional-rollout "
+                "--stages \"[{name:WestUS,sequence:1},{name:EastUS,sequence:2},{name:Global,sequence:3}]\""
+            ),
+        },
+    ],
+}
+
+_StageMapShow.AZ_HELP = {
+    **_StageMapShow.AZ_HELP,
+    "short-summary": "Get details for a StageMap resource.",
+    "examples": [
+        {
+            "name": "Show a StageMap",
+            "text": (
+                "az changesafety stagemap show --subscription 00000000-0000-0000-0000-000000000000 "
+                "--stage-map-name rolloutStageMap"
+            ),
+        },
+    ],
+}
+
+_StageMapUpdate.AZ_HELP = {
+    **_StageMapUpdate.AZ_HELP,
+    "short-summary": "Update an existing StageMap resource.",
+    "long-summary": (
+        "Modify the stages defined in a StageMap. When updating, provide the complete "
+        "list of stages as the update replaces the existing stages array."
+    ),
+    "examples": [
+        {
+            "name": "Add a new stage to an existing StageMap",
+            "text": (
+                "az changesafety stagemap update --subscription 00000000-0000-0000-0000-000000000000 "
+                "--stage-map-name rolloutStageMap "
+                "--stages \"[{name:Canary,sequence:1},{name:Pilot,sequence:2},{name:Production,sequence:3}]\""
+            ),
+        },
+    ],
+}
+
+_StageMapDelete.AZ_HELP = {
+    **_StageMapDelete.AZ_HELP,
+    "short-summary": "Delete a StageMap resource.",
+    "long-summary": (
+        "Delete a StageMap that is no longer needed. Note that StageMap resources "
+        "that are currently referenced by active ChangeRecord resources cannot be deleted."
+    ),
+    "examples": [
+        {
+            "name": "Delete a StageMap",
+            "text": (
+                "az changesafety stagemap delete --subscription 00000000-0000-0000-0000-000000000000 "
+                "--stage-map-name rolloutStageMap --yes"
+            ),
+        },
+    ],
+}
+
+_StageMapList.AZ_HELP = {
+    **_StageMapList.AZ_HELP,
+    "short-summary": "List StageMap resources in a subscription.",
+    "examples": [
+        {
+            "name": "List all StageMaps in the subscription",
+            "text": "az changesafety stagemap list --subscription 00000000-0000-0000-0000-000000000000",
+        },
+    ],
+}
+
+
+# -----------------------------------------------------------------------------
+# StageProgression Help Examples
+# -----------------------------------------------------------------------------
+# pylint: disable=wrong-import-position
+from azext_changesafety.aaz.latest.changesafety.stageprogression import (
+    Create as _StageProgressionCreate,
+    Show as _StageProgressionShow,
+    Update as _StageProgressionUpdate,
+    Delete as _StageProgressionDelete,
+    List as _StageProgressionList,
+)
+
+_StageProgressionCreate.AZ_HELP = {
+    **_StageProgressionCreate.AZ_HELP,
+    "short-summary": "Create a StageProgression to track the progress of a stage in a ChangeRecord.",
+    "long-summary": (
+        "A StageProgression records the execution status of a specific stage defined "
+        "in a StageMap. Use this to track which stages have started, completed, or failed "
+        "during a change rollout."
+    ),
+    "examples": [
+        {
+            "name": "Create a StageProgression for the Canary stage",
+            "text": (
+                "az changesafety stageprogression create "
+                "--subscription 00000000-0000-0000-0000-000000000000 "
+                "--change-record-name myChangeRecord "
+                "-n canary-progression "
+                "--stage-reference Canary "
+                "--status InProgress"
+            ),
+        },
+        {
+            "name": "Create a StageProgression with comments",
+            "text": (
+                "az changesafety stageprogression create "
+                "--subscription 00000000-0000-0000-0000-000000000000 "
+                "--change-record-name myChangeRecord "
+                "-n prod-stage "
+                "--stage-reference Production "
+                "--status InProgress "
+                "--comments \"Starting production rollout\""
+            ),
+        },
+    ],
+}
+
+_StageProgressionShow.AZ_HELP = {
+    **_StageProgressionShow.AZ_HELP,
+    "short-summary": "Get details for a StageProgression.",
+    "examples": [
+        {
+            "name": "Show a StageProgression",
+            "text": (
+                "az changesafety stageprogression show "
+                "--subscription 00000000-0000-0000-0000-000000000000 "
+                "--change-record-name myChangeRecord "
+                "-n canary-progression"
+            ),
+        },
+    ],
+}
+
+_StageProgressionUpdate.AZ_HELP = {
+    **_StageProgressionUpdate.AZ_HELP,
+    "short-summary": "Update a StageProgression status or comments.",
+    "long-summary": (
+        "Update the status of a StageProgression to reflect the current state of "
+        "the stage execution. Common status transitions are InProgress -> Completed "
+        "or InProgress -> Failed."
+    ),
+    "examples": [
+        {
+            "name": "Mark a stage as completed",
+            "text": (
+                "az changesafety stageprogression update "
+                "--subscription 00000000-0000-0000-0000-000000000000 "
+                "--change-record-name myChangeRecord "
+                "-n canary-progression "
+                "--status Completed "
+                "--comments \"Canary validation passed\""
+            ),
+        }
+    ],
+}
+
+_StageProgressionDelete.AZ_HELP = {
+    **_StageProgressionDelete.AZ_HELP,
+    "short-summary": "Delete a StageProgression.",
+    "examples": [
+        {
+            "name": "Delete a StageProgression",
+            "text": (
+                "az changesafety stageprogression delete "
+                "--subscription 00000000-0000-0000-0000-000000000000 "
+                "--change-record-name myChangeRecord "
+                "-n canary-progression --yes"
+            ),
+        },
+    ],
+}
+
+_StageProgressionList.AZ_HELP = {
+    **_StageProgressionList.AZ_HELP,
+    "short-summary": "List all StageProgressions for a ChangeRecord.",
+    "examples": [
+        {
+            "name": "List StageProgressions for a ChangeRecord",
+            "text": (
+                "az changesafety stageprogression list "
+                "--subscription 00000000-0000-0000-0000-000000000000 "
+                "--change-record-name myChangeRecord"
+            ),
         },
     ],
 }

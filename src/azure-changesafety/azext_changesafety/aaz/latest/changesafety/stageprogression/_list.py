@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "changesafety stageprogression list",
 )
 class List(AAZCommand):
-    """List ChangeRecordStageProgression resources by ChangeRecord
+    """List StageProgression resources by ChangeRecord
     """
 
     _aaz_info = {

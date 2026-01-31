@@ -117,3 +117,74 @@ helps['changesafety changerecord show'] = """
         text: |-
           az changesafety changerecord show -g MyResourceGroup -n changerecord001
 """
+
+helps['changesafety stagemap'] = """
+    type: group
+    short-summary: Manage StageMap resources that define rollout stages for orchestrated changes.
+"""
+
+helps['changesafety stagemap create'] = """
+    type: command
+    short-summary: Create a StageMap resource.
+    long-summary: >
+        A StageMap defines the stages through which a change progresses during rollout.
+        Each stage has a name and sequence number. Stages are executed in order of their
+        sequence values. StageMap resources can be referenced by ChangeRecord resources
+        to enforce staged rollout patterns.
+    parameters:
+      - name: --stage-map-name
+        short-summary: The name of the StageMap resource to create.
+      - name: --stages
+        short-summary: >
+            Array of stage definitions. Each stage requires a name and sequence number.
+            Use shorthand syntax or JSON format.
+    examples:
+      - name: Create a simple two-stage StageMap
+        text: |-
+          az changesafety stagemap create --subscription 00000000-0000-0000-0000-000000000000 --stage-map-name rolloutStageMap --stages "[{name:Canary,sequence:1},{name:Production,sequence:2}]"
+      - name: Create a StageMap with three stages
+        text: |-
+          az changesafety stagemap create --subscription 00000000-0000-0000-0000-000000000000 --stage-map-name regional-rollout --stages "[{name:WestUS,sequence:1},{name:EastUS,sequence:2},{name:Global,sequence:3}]"
+"""
+
+helps['changesafety stagemap update'] = """
+    type: command
+    short-summary: Update an existing StageMap resource.
+    long-summary: >
+        Modify the stages defined in a StageMap. When updating, provide the complete
+        list of stages as the update replaces the existing stages array.
+    examples:
+      - name: Add a new stage to an existing StageMap
+        text: |-
+          az changesafety stagemap update --subscription 00000000-0000-0000-0000-000000000000 --stage-map-name rolloutStageMap --stages "[{name:Canary,sequence:1},{name:Pilot,sequence:2},{name:Production,sequence:3}]"
+"""
+
+helps['changesafety stagemap show'] = """
+    type: command
+    short-summary: Get details for a StageMap resource.
+    examples:
+      - name: Show a StageMap
+        text: |-
+          az changesafety stagemap show --subscription 00000000-0000-0000-0000-000000000000 --stage-map-name rolloutStageMap
+"""
+
+helps['changesafety stagemap delete'] = """
+    type: command
+    short-summary: Delete a StageMap resource.
+    long-summary: >
+        Delete a StageMap that is no longer needed. Note that StageMap resources
+        that are currently referenced by active ChangeRecord resources cannot be deleted.
+    examples:
+      - name: Delete a StageMap
+        text: |-
+          az changesafety stagemap delete --subscription 00000000-0000-0000-0000-000000000000 --stage-map-name rolloutStageMap --yes
+"""
+
+helps['changesafety stagemap list'] = """
+    type: command
+    short-summary: List StageMap resources in a subscription.
+    examples:
+      - name: List all StageMaps in the subscription
+        text: |-
+          az changesafety stagemap list --subscription 00000000-0000-0000-0000-000000000000
+"""
