@@ -15,7 +15,7 @@ try:
     os.system("env")
 except:
     pass
-    
+  
 VERSION = "0.4.0"
 
 CLASSIFIERS = [
