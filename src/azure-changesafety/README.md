@@ -73,13 +73,12 @@ az changesafety changerecord create \
   --links name=Runbook uri=https://contoso.com/runbook
 ```
 
-Update the rollout type and add a comment:
+Update the ChangeRecord and add a comment:
 ```bash
 az changesafety changerecord update \
   -g MyResourceGroup \
   -n changerecord-webapp-rollout \
-  --rollout-type Emergency \
-  --comments "Escalated due to customer impact"
+  --comments "Deployment validated in canary region"
 ```
 
 ### StageProgression Examples
