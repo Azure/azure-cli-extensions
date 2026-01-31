@@ -49,6 +49,16 @@ az changesafety stagemap create \
   --stages "[{name:Canary,sequence:1},{name:Production,sequence:2}]"
 ```
 
+Create a StageMap with configurable parameters:
+```bash
+# Parameters use AAZ shorthand: paramName.{string|number|array|object}.property=value
+# Use --parameters paramName.string="??" to explore available properties
+az changesafety stagemap create \
+  --stage-map-name parameterized-rollout \
+  --stages "[{name:Canary,sequence:1},{name:Production,sequence:2}]" \
+  --parameters region.string.default-value=westus batchSize.number.default-value=10
+```
+
 ### ChangeRecord Examples
 Create a ChangeRecord for a manual touch operation (e.g., delete a Traffic Manager profile):
 ```bash

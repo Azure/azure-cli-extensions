@@ -138,6 +138,12 @@ helps['changesafety stagemap create'] = """
         short-summary: >
             Array of stage definitions. Each stage requires a name and sequence number.
             Use shorthand syntax or JSON format.
+      - name: --parameters
+        short-summary: >
+            Optional parameters schema for the StageMap. Define parameters that can be
+            passed when referencing this StageMap from a ChangeRecord. Use AAZ shorthand
+            syntax: paramName.{string|number|array|object}.default-value=value.
+            Run with --parameters paramName.string="??" to see available properties.
     examples:
       - name: Create a simple two-stage StageMap
         text: |-
@@ -145,6 +151,9 @@ helps['changesafety stagemap create'] = """
       - name: Create a StageMap with three stages
         text: |-
           az changesafety stagemap create --subscription 00000000-0000-0000-0000-000000000000 --stage-map-name regional-rollout --stages "[{name:WestUS,sequence:1},{name:EastUS,sequence:2},{name:Global,sequence:3}]"
+      - name: Create a StageMap with parameters
+        text: |-
+          az changesafety stagemap create --subscription 00000000-0000-0000-0000-000000000000 --stage-map-name parameterized-rollout --stages "[{name:Canary,sequence:1},{name:Production,sequence:2}]" --parameters region.string.default-value=westus batchSize.number.default-value=10
 """
 
 helps['changesafety stagemap update'] = """
